@@ -1,4 +1,5 @@
 #include "KDSoapClientInterface.h"
+#include "KDSoapMessage_p.h"
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QDebug>
@@ -10,16 +11,14 @@ class KDSoapClientInterface::Private
 {
 public:
     QNetworkAccessManager accessManager;
-    QString host;
-    QString path;
+    QString endPoint;
     QString messageNamespace;
 };
 
-KDSoapClientInterface::KDSoapClientInterface(const QString& host, const QString& path, const QString& messageNamespace)
+KDSoapClientInterface::KDSoapClientInterface(const QString& endPoint, const QString& messageNamespace)
     : d(new Private)
 {
-    d->host = host;
-    d->path = path;
+    d->endPoint = endPoint;
     d->messageNamespace = messageNamespace;
 }
 
@@ -122,11 +121,7 @@ static QString variantToXMLType(const QVariant& value)
 
 KDSoapPendingCall KDSoapClientInterface::asyncCall(const QString &method, const KDSoapMessage &message, const QString& action)
 {
-    QUrl url;
-    url.setScheme(QString::fromLatin1("http")); // TODO https support
-    url.setHost(d->host);
-    url.setPath(d->path);
-    QNetworkRequest request(url);
+    QNetworkRequest request(QUrl(d->endPoint));
     request.setHeader(QNetworkRequest::ContentTypeHeader, QLatin1String("text/xml"));
     // The soap action seems to be namespace + method in most cases, but not always
     // (e.g. urn:GoogleSearchAction for google).
@@ -156,14 +151,14 @@ KDSoapPendingCall KDSoapClientInterface::asyncCall(const QString &method, const 
     writer.writeStartElement(d->messageNamespace, method);
 
     // Arguments
-    const QMap<QString, QVariant> args = message.arguments();
-    QMapIterator<QString, QVariant> it(args);
+    const KDSoapValueList args = message.d->args;
+    KDSoapValueListIterator it(args);
     while (it.hasNext()) {
-        it.next();
-        const QVariant value = it.value();
+        const KDSoapValue& argument = it.next();
+        const QVariant value = argument.value;
         const QString type = variantToXMLType(value);
         if (!type.isEmpty()) {
-            writer.writeStartElement(d->messageNamespace, it.key());
+            writer.writeStartElement(d->messageNamespace, argument.name);
             writer.writeAttribute(xmlSchemaInstanceNS, QLatin1String("type"), type);
             writer.writeCharacters(variantToTextValue(value));
             writer.writeEndElement();

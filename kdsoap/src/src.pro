@@ -1,7 +1,6 @@
 TEMPLATE = lib
 TARGET = kdsoap
 CONFIG(debug, debug|release):!unix:TARGET = $${TARGET}d
-
 QT -= gui
 
 # Workaround for visual studio integration
@@ -11,12 +10,11 @@ include(../variables.pri)
 INSTALLHEADERS = KDSoapMessage.h \
     KDSoapClientInterface.h \
     KDSoapPendingCall.h \
-    KDSoapPendingCallWatcher.h \
-
+    KDSoapPendingCallWatcher.h
 EXTENSIONLESSHEADERS = 
-PRIVATEHEADERS = \
-    KDSoapPendingCall_p.h \
-    KDSoapPendingCallWatcher_p.h
+PRIVATEHEADERS = KDSoapPendingCall_p.h \
+    KDSoapPendingCallWatcher_p.h \
+    KDSoapMessage_p.h
 HEADERS = $$INSTALLHEADERS \
     $$PRIVATEHEADERS
 SOURCES = KDSoapMessage.cpp \

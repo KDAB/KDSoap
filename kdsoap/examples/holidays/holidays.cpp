@@ -25,10 +25,9 @@ int main(int argc, char **argv)
 
     const int year = 2009;
 
-    const QString hostname = QString::fromLatin1("www.27seconds.com");
-    const QString path = QString::fromLatin1("/Holidays/US/Dates/USHolidayDates.asmx");
+    const QString endPoint = QString::fromLatin1("http://www.27seconds.com/Holidays/US/Dates/USHolidayDates.asmx");
     const QString messageNamespace = QString::fromLatin1("http://www.27seconds.com/Holidays/US/Dates/");
-    KDSoapClientInterface client(hostname, path, messageNamespace);
+    KDSoapClientInterface client(endPoint, messageNamespace);
 
     KDSoapMessage message;
     message.addArgument(QLatin1String("year"), year);
