@@ -29,7 +29,7 @@ void KDSoapPendingCallWatcher::waitForFinished()
 
 void KDSoapPendingCallWatcher::Private::_kd_slotReplyFinished()
 {
-    qDebug() << q->KDSoapPendingCall::d->reply->readAll();
+    q->parseReply();
     emit q->finished(q);
 }
 

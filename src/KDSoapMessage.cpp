@@ -37,3 +37,8 @@ QMap<QString, QVariant> KDSoapMessage::arguments() const
 {
     return d->args;
 }
+
+QVariant KDSoapMessage::argument(const QString &argumentName) const
+{
+    return d->args.value(argumentName);
+}

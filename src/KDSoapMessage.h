@@ -2,7 +2,7 @@
 #define KDSOAPMESSAGE_H
 
 #include <QSharedDataPointer>
-#include <QVariant> // for convenience
+#include <QVariant>
 class QString;
 class KDSoapMessageData;
 class QXmlStreamWriter;
@@ -18,8 +18,11 @@ public:
 
     void addArgument(const QString& argumentName, const QVariant& argumentValue);
 
+    QVariant argument(const QString& argumentName) const;
+
 private:
     friend class KDSoapClientInterface;
+    friend class KDSoapPendingCall;
     QMap<QString, QVariant> arguments() const;
 
     QSharedDataPointer<KDSoapMessageData> d;

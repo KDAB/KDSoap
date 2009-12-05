@@ -14,7 +14,7 @@ public:
 public slots:
     void slotFinished(KDSoapPendingCallWatcher* watcher)
     {
-        qDebug() << "slotFinished!" << watcher;
+        qDebug() << watcher->returnValue().toString();
         QCoreApplication::instance()->quit();
     }
 };
