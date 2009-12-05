@@ -9,7 +9,7 @@
 class Q_DECL_EXPORT KDSoapClientInterface
 {
 public:
-    explicit KDSoapClientInterface(const QString& host, const QString& path, const QString& messageNamespace);
+    explicit KDSoapClientInterface(const QString& endPoint, const QString& messageNamespace);
     ~KDSoapClientInterface();
 
     // TODO lastError like in QDBusAbstractInterface

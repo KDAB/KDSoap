@@ -1,5 +1,6 @@
 #include "KDSoapPendingCall.h"
 #include "KDSoapPendingCall_p.h"
+#include "KDSoapMessage_p.h"
 #include <QNetworkReply>
 #include <QDebug>
 #include <QXmlStreamReader>
@@ -34,7 +35,7 @@ QVariant KDSoapPendingCall::returnValue() const
     // Might be related to the hack below; but it's also what QtSoap did:
     // assume the return struct contains only one value
     // (I provided returnArguments() in case it doesn't)
-    return d->replyMessage.arguments().begin().value();
+    return d->replyMessage.d->args.first().value;
 }
 
 void KDSoapPendingCall::parseReply()
@@ -51,9 +52,11 @@ void KDSoapPendingCall::parseReply()
             // TODO now read the rest into a "struct"
             // For now, this hack:
             if (reader.readNextStartElement()) { // Response
-                //qDebug() << reader.readElementText();
-                if (reader.readNextStartElement()) { // Result
+
+                while (reader.readNextStartElement()) { // Result
+                    qDebug() << "got item" << reader.name().toString();
                     d->replyMessage.addArgument(reader.name().toString(), reader.readElementText());
+                    //reader.skipCurrentElement();
                 }
             }
 
