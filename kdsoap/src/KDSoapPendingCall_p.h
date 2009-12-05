@@ -3,6 +3,7 @@
 
 #include <QSharedData>
 #include <QBuffer>
+#include "KDSoapMessage.h"
 
 class QNetworkReply;
 
@@ -20,6 +21,7 @@ public:
 
     QNetworkReply* reply;
     QBuffer* buffer;
+    KDSoapMessage replyMessage;
 };
 
 #endif // KDSOAPPENDINGCALL_P_H
