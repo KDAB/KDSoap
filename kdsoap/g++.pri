@@ -1,0 +1,29 @@
+*-g++* {
+  NORMAL_CFLAGS = -Wno-long-long -ansi
+  NORMAL_CXXFLAGS = \
+	-Wnon-virtual-dtor -Wundef -Wcast-align \
+	-Wchar-subscripts -Wpointer-arith \
+	-Wwrite-strings -Wpacked -Wformat-security \
+        -Wmissing-format-attribute -Woverloaded-virtual
+
+  # -Wconversion gives too many warnings from Qt-4.4.3 with gcc-4.3.2 (was fine with gcc-4.2.4), so removing it
+
+  NORMAL_CFLAGS += -pedantic
+
+  debug:NORMAL_CXXFLAGS += -O0 -g3
+  debug:NORMAL_CXXFLAGS -= -g
+  USABLE_CXXFLAGS = -Wold-style-cast
+  HARD_CXXFLAGS = -Weffc++ -Wshadow
+  PITA_CXXFLAGS = -Wunreachable-code
+
+  QMAKE_CFLAGS   += $$NORMAL_CFLAGS
+  QMAKE_CXXFLAGS += $$NORMAL_CFLAGS $$NORMAL_CXXFLAGS
+
+  QMAKE_CFLAGS_WARN_ON   += $$NORMAL_CFLAGS -Werror
+  QMAKE_CXXFLAGS_WARN_ON += $$NORMAL_CFLAGS $$NORMAL_CXXFLAGS -Werror
+
+  #QMAKE_CXXFLAGS_WARN_ON += $$USABLE_CXXFLAGS
+  #QMAKE_CXXFLAGS_WARN_ON += $$HARD_CXXFLAGS # headers must compile with this, code doesn't need to; needs patched Qt
+  #QMAKE_CXXFLAGS_WARN_ON += $$PITA_CXXFLAGS # header would be nice, but it's probably pointless, due to noise from Qt and libstdc++
+
+}
