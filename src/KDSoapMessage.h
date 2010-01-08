@@ -3,6 +3,7 @@
 
 #include <QSharedDataPointer>
 #include <QVariant>
+#include "KDSoapValue.h"
 class QString;
 class KDSoapMessageData;
 class QXmlStreamWriter;
@@ -20,11 +21,13 @@ public:
 
     //QVariant argument(const QString& argumentName) const;
 
+    // TODO check if this is needed
+    KDSoapValueList arguments() const;
+
 private:
     friend class KDSoapClientInterface;
     friend class KDSoapPendingCall;
     friend QDebug operator<<(QDebug dbg, const KDSoapMessage &msg);
-    //KDSoapValueList arguments() const;
 
     QSharedDataPointer<KDSoapMessageData> d;
 };

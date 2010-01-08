@@ -1,5 +1,6 @@
 #include "KDSoapClientInterface.h"
 #include "KDSoapMessage.h"
+#include "KDSoapValue.h"
 #include "KDSoapPendingCallWatcher.h"
 #include <QtTest/QtTest>
 #include <QEventLoop>
@@ -20,7 +21,7 @@ public slots:
 
 private slots:
 
-    void testAddIntegers()
+    void testAddIntegers_async()
     {
         const QString endPoint = QString::fromLatin1("http://www.mathertel.de/AJAXEngine/S02_AJAXCoreSamples/CalcService.asmx");
         const QString messageNamespace = QString::fromLatin1("http://www.mathertel.de/CalcFactors/");
@@ -34,6 +35,18 @@ private slots:
                 this, SLOT(slotFinished(KDSoapPendingCallWatcher*)));
         m_eventLoop.exec();
         QCOMPARE(m_returnValue.toInt(), 85);
+    }
+
+    void testAddIntegers_sync()
+    {
+        const QString endPoint = QString::fromLatin1("http://www.mathertel.de/AJAXEngine/S02_AJAXCoreSamples/CalcService.asmx");
+        const QString messageNamespace = QString::fromLatin1("http://www.mathertel.de/CalcFactors/");
+        KDSoapClientInterface client(endPoint, messageNamespace);
+        KDSoapMessage message;
+        message.addArgument(QLatin1String("number1"), 42);
+        message.addArgument(QLatin1String("number2"), 43);
+        KDSoapMessage ret = client.call("AddInteger", message);
+        QCOMPARE(ret.arguments().first().value.toInt(), 85);
     }
 
     void testHolidays()
@@ -54,15 +67,13 @@ private slots:
     }
 
     //  http://www.soapclient.com/soapclient?fn=soapform&template=/clientform.html&soaptemplate=/soapresult.html&soapwsdl=http://soapclient.com/xml/soapresponder.wsdl
-#if 0 // Doesn't work, seems to be a server-side problem
+#if 1 // Doesn't work, seems to be a server-side problem
     void testSoapClientCom()
     {
-        // TODO combine hostname and path in the API, into a single "endpoint"
-        const QString hostname = QString::fromLatin1("soapclient.com");
-        const QString path = QString::fromLatin1("/xml/soapresponder.wsdl");
+        const QString endPoint = QString::fromLatin1("http://soapclient.com//xml/soapresponder.wsdl");
         const QString messageNamespace = QString::fromLatin1("http://www.SoapClient.com/xml/SoapResponder.wsdl");
         const QString action = QString::fromLatin1("http://www.SoapClient.com/SoapObject");
-        KDSoapClientInterface client(hostname, path, messageNamespace);
+        KDSoapClientInterface client(endPoint, messageNamespace);
         KDSoapMessage message;
         message.addArgument(QLatin1String("bstrParam1"), QLatin1String("abc"));
         message.addArgument(QLatin1String("bstrParam2"), QLatin1String("def"));
@@ -89,6 +100,7 @@ private slots:
         connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher*)),
                 this, SLOT(slotFinished(KDSoapPendingCallWatcher*)));
         m_eventLoop.exec();
+        qDebug() << m_returnValue;
         qDebug() << m_returnArguments;
         // TODO QCOMPARE(m_returnArguments[0], QString::fromLatin1("Great Britain"));
     }

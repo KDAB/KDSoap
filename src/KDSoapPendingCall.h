@@ -20,6 +20,7 @@ public:
 
 private:
     friend class KDSoapClientInterface;
+    friend class KDSoapThreadTask;
     KDSoapPendingCall(QNetworkReply* reply, QBuffer* buffer);
 
     friend class KDSoapPendingCallWatcher;

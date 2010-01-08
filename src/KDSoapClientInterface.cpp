@@ -1,4 +1,5 @@
 #include "KDSoapClientInterface.h"
+#include "KDSoapClientInterface_p.h"
 #include "KDSoapMessage_p.h"
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -6,14 +7,6 @@
 #include <QBuffer>
 #include <QXmlStreamWriter>
 #include <QDateTime>
-
-class KDSoapClientInterface::Private
-{
-public:
-    QNetworkAccessManager accessManager;
-    QString endPoint;
-    QString messageNamespace;
-};
 
 KDSoapClientInterface::KDSoapClientInterface(const QString& endPoint, const QString& messageNamespace)
     : d(new Private)
@@ -24,17 +17,9 @@ KDSoapClientInterface::KDSoapClientInterface(const QString& endPoint, const QStr
 
 KDSoapClientInterface::~KDSoapClientInterface()
 {
+    d->thread.stop();
+    d->thread.wait();
     delete d;
-}
-
-KDSoapMessage KDSoapClientInterface::call(const QString& method, const KDSoapMessage &message)
-{
-    // Problem is: I don't want a nested event loop here. Too dangerous for GUI programs.
-    // I wanted a socket->waitFor... but we don't have access to the actual socket in QNetworkAccess.
-    // So the only option that remains is a thread and acquiring a semaphore...
-    (void)message; // TODO
-    (void)method;
-    return KDSoapMessage();
 }
 
 static QString variantToTextValue(const QVariant& value)
@@ -119,20 +104,25 @@ static QString variantToXMLType(const QVariant& value)
     }
 }
 
-KDSoapPendingCall KDSoapClientInterface::asyncCall(const QString &method, const KDSoapMessage &message, const QString& action)
+QNetworkRequest KDSoapClientInterface::Private::prepareRequest(const QString &method, const QString& action)
 {
-    QNetworkRequest request(QUrl(d->endPoint));
+    QNetworkRequest request(QUrl(this->endPoint));
     request.setHeader(QNetworkRequest::ContentTypeHeader, QLatin1String("text/xml"));
     // The soap action seems to be namespace + method in most cases, but not always
     // (e.g. urn:GoogleSearchAction for google).
     QString soapAction = action;
     if (soapAction.isEmpty()) {
         // Does the namespace always end with a '/'?
-        soapAction = d->messageNamespace + /*QChar::fromLatin1('/') +*/ method;
+        soapAction = this->messageNamespace + /*QChar::fromLatin1('/') +*/ method;
     }
     qDebug() << "soapAction=" << soapAction;
     request.setRawHeader("SoapAction", soapAction.toUtf8());
 
+    return request;
+}
+
+QBuffer* KDSoapClientInterface::Private::prepareRequestBuffer(const QString& method, const KDSoapMessage& message)
+{
     QByteArray data;
     QXmlStreamWriter writer(&data);
     writer.writeStartDocument();
@@ -148,7 +138,7 @@ KDSoapPendingCall KDSoapClientInterface::asyncCall(const QString &method, const 
     writer.writeAttribute(soapNS, QLatin1String("encodingStyle"), QLatin1String("http://schemas.xmlsoap.org/soap/encoding/"));
 
     writer.writeStartElement(soapNS, QLatin1String("Body"));
-    writer.writeStartElement(d->messageNamespace, method);
+    writer.writeStartElement(this->messageNamespace, method);
 
     // Arguments
     const KDSoapValueList args = message.d->args;
@@ -158,7 +148,7 @@ KDSoapPendingCall KDSoapClientInterface::asyncCall(const QString &method, const 
         const QVariant value = argument.value;
         const QString type = variantToXMLType(value);
         if (!type.isEmpty()) {
-            writer.writeStartElement(d->messageNamespace, argument.name);
+            writer.writeStartElement(this->messageNamespace, argument.name);
             writer.writeAttribute(xmlSchemaInstanceNS, QLatin1String("type"), type);
             writer.writeCharacters(variantToTextValue(value));
             writer.writeEndElement();
@@ -175,7 +165,27 @@ KDSoapPendingCall KDSoapClientInterface::asyncCall(const QString &method, const 
     QBuffer* buffer = new QBuffer;
     buffer->setData(data);
     buffer->open(QIODevice::ReadOnly);
+    return buffer;
+}
 
+KDSoapPendingCall KDSoapClientInterface::asyncCall(const QString &method, const KDSoapMessage &message, const QString& action)
+{
+    QBuffer* buffer = d->prepareRequestBuffer(method, message);
+    QNetworkRequest request = d->prepareRequest(method, action);
     QNetworkReply* reply = d->accessManager.post(request, buffer);
     return KDSoapPendingCall(reply, buffer);
+}
+
+KDSoapMessage KDSoapClientInterface::call(const QString& method, const KDSoapMessage &message, const QString& action)
+{
+    // Problem is: I don't want a nested event loop here. Too dangerous for GUI programs.
+    // I wanted a socket->waitFor... but we don't have access to the actual socket in QNetworkAccess.
+    // So the only option that remains is a thread and acquiring a semaphore...
+    KDSoapThreadTaskData* task = new KDSoapThreadTaskData(this, method, message, action);
+    d->thread.enqueue(task);
+    if (!d->thread.isRunning())
+        d->thread.start();
+    task->waitForCompletion();
+    // ### TODO what about task->returnValue()?
+    return task->returnArguments();
 }

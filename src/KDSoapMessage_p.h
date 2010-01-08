@@ -1,21 +1,7 @@
 #ifndef KDSOAPMESSAGE_P_H
 #define KDSOAPMESSAGE_P_H
 
-#include <QString>
-#include <QVariant>
-#include <QList>
-
-struct KDSoapValue
-{
-    KDSoapValue(const QString& n, const QVariant& v)
-        : name(n), value(v) {}
-
-    QString name;
-    QVariant value;
-};
-
-typedef QList<KDSoapValue> KDSoapValueList;
-typedef QListIterator<KDSoapValue> KDSoapValueListIterator;
+#include "KDSoapValue.h"
 
 class KDSoapMessageData : public QSharedData
 {
