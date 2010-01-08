@@ -47,3 +47,21 @@ QDebug operator <<(QDebug dbg, const KDSoapMessage &msg)
     }
     return dbg;
 }
+
+bool KDSoapMessage::isFault() const
+{
+    return d->isFault;
+}
+
+QString KDSoapMessage::faultAsString() const
+{
+    return QObject::tr("Fault code: %1\nFault description: %2 (%3)")
+            .arg(d->args.findByName(QLatin1String("faultcode")).toString())
+            .arg(d->args.findByName(QLatin1String("faultstring")).toString())
+            .arg(d->args.findByName(QLatin1String("faultactor")).toString());
+}
+
+void KDSoapMessage::setFault(bool fault)
+{
+    d->isFault = fault;
+}

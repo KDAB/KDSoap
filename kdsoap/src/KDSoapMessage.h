@@ -24,10 +24,14 @@ public:
     // TODO check if this is needed
     KDSoapValueList arguments() const;
 
+    bool isFault() const;
+    QString faultAsString() const;
+
 private:
     friend class KDSoapClientInterface;
     friend class KDSoapPendingCall;
     friend QDebug operator<<(QDebug dbg, const KDSoapMessage &msg);
+    void setFault(bool fault);
 
     QSharedDataPointer<KDSoapMessageData> d;
 };

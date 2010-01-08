@@ -186,6 +186,5 @@ KDSoapMessage KDSoapClientInterface::call(const QString& method, const KDSoapMes
     if (!d->thread.isRunning())
         d->thread.start();
     task->waitForCompletion();
-    // ### TODO what about task->returnValue()?
     return task->returnArguments();
 }

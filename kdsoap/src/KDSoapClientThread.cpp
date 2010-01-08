@@ -63,7 +63,6 @@ void KDSoapThreadTask::process(QNetworkAccessManager& accessManager)
 void KDSoapThreadTask::slotFinished(KDSoapPendingCallWatcher* watcher)
 {
     m_data->m_returnArguments = watcher->returnArguments();
-    m_data->m_returnValue = watcher->returnValue();
     m_data->m_semaphore.release();
     watcher->deleteLater();
 

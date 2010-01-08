@@ -82,10 +82,23 @@ private slots:
         QCOMPARE(ret.arguments().first().value.toString(), QString("Your input parameters are abc and def"));
     }
 
+    void testFault()
+    {
+        const QString endPoint = QString::fromLatin1("http://soapclient.com/xml/doesnotexist");
+        const QString messageNamespace = QString::fromLatin1("incorrect, just for testing");
+        KDSoapClientInterface client(endPoint, messageNamespace);
+        KDSoapMessage message;
+        message.addArgument(QLatin1String("bstrParam1"), QLatin1String("abc"));
+        message.addArgument(QLatin1String("bstrParam2"), QLatin1String("def"));
+        KDSoapMessage ret = client.call("Method1", message);
+        qDebug() << ret;
+        QVERIFY(ret.isFault());
+        QCOMPARE(ret.faultAsString(), QString::fromLatin1("Fault code: SOAP-ENV:Server\nFault description: The parameter is incorrect. (/xml/doesnotexist)"));
+    }
+
     // http://www.service-repository.com/service/wsdl?id=163859
     void testServiceRepositoryCom()
     {
-        // TODO combine hostname and path in the API, into a single "endpoint"
         const QString endPoint = QString::fromLatin1("http://www.thomas-bayer.com/names-service/soap");
         const QString messageNamespace = QString::fromLatin1("http://namesservice.thomas_bayer.com/");
         const QString action = QString::fromLatin1("");
