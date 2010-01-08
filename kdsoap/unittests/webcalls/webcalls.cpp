@@ -46,7 +46,7 @@ private slots:
         message.addArgument(QLatin1String("number1"), 42);
         message.addArgument(QLatin1String("number2"), 43);
         KDSoapMessage ret = client.call("AddInteger", message);
-        QCOMPARE(ret.arguments().first().value.toInt(), 85);
+        QCOMPARE(ret.arguments().first().value().toInt(), 85);
     }
 
     void testHolidays()
@@ -79,7 +79,7 @@ private slots:
         message.addArgument(QLatin1String("bstrParam2"), QLatin1String("def"));
         KDSoapMessage ret = client.call("Method1", message, action);
         qDebug() << ret;
-        QCOMPARE(ret.arguments().first().value.toString(), QString("Your input parameters are abc and def"));
+        QCOMPARE(ret.arguments().first().value().toString(), QString("Your input parameters are abc and def"));
     }
 
     void testFault()
@@ -111,6 +111,7 @@ private slots:
         m_eventLoop.exec();
         qDebug() << m_returnValue;
         qDebug() << m_returnArguments;
+
         // TODO QCOMPARE(m_returnArguments[0], QString::fromLatin1("Great Britain"));
     }
 

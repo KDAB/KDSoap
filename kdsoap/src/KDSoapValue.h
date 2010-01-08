@@ -5,13 +5,19 @@
 #include <QVariant>
 #include <QList>
 
-struct KDSoapValue
+class KDSoapValue
 {
+public:
     KDSoapValue(const QString& n, const QVariant& v)
-        : name(n), value(v) {}
+        : m_name(n), m_value(v) {}
 
-    QString name; // not necessarily unique!
-    QVariant value;
+    // not necessarily unique!
+    QString name() const { return m_name; }
+    QVariant value() const { return m_value; }
+
+private:
+    QString m_name;
+    QVariant m_value;
 };
 
 class KDSoapValueList : public QList<KDSoapValue>
@@ -24,8 +30,8 @@ public:
         const const_iterator e = end();
         for ( ; it != e; ++it) {
             const KDSoapValue& val = *it;
-            if (val.name == name)
-                return val.value;
+            if (val.name() == name)
+                return val.value();
         }
         return QVariant();
     }
