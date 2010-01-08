@@ -3,10 +3,13 @@
 
 #include "KDSoapValue.h"
 
+// TODO: can be moved back to KDSoapMessage.cpp I think
+
 class KDSoapMessageData : public QSharedData
 {
 public:
     KDSoapValueList args;
+    bool isFault;
 };
 
 #endif // KDSOAPMESSAGE_P_H

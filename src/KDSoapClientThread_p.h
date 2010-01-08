@@ -20,7 +20,6 @@ public:
         : m_iface(iface), m_method(method), m_message(message), m_action(action) {}
 
     void waitForCompletion() { m_semaphore.acquire(); }
-    QVariant returnValue() const { return m_returnValue; }
     KDSoapMessage returnArguments() const { return m_returnArguments; }
 
     KDSoapClientInterface* m_iface; // ## TODO: unused?
@@ -28,7 +27,6 @@ public:
     KDSoapMessage m_message;
     QString m_action;
     QSemaphore m_semaphore;
-    QVariant m_returnValue;
     KDSoapMessage m_returnArguments;
 };
 

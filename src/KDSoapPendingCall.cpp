@@ -51,7 +51,9 @@ void KDSoapPendingCall::parseReply()
 
             // TODO now read the rest into a "struct"
             // For now, this hack:
-            if (reader.readNextStartElement()) { // Response
+            if (reader.readNextStartElement()) { // Response or Fault
+                if (reader.name() == "Fault")
+                    d->replyMessage.setFault(true);
 
                 while (reader.readNextStartElement()) { // Result
                     qDebug() << "got item" << reader.name().toString();
