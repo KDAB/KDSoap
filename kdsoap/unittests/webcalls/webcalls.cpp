@@ -67,24 +67,20 @@ private slots:
     }
 
     //  http://www.soapclient.com/soapclient?fn=soapform&template=/clientform.html&soaptemplate=/soapresult.html&soapwsdl=http://soapclient.com/xml/soapresponder.wsdl
-#if 1 // Doesn't work, seems to be a server-side problem
+
     void testSoapClientCom()
     {
-        const QString endPoint = QString::fromLatin1("http://soapclient.com//xml/soapresponder.wsdl");
-        const QString messageNamespace = QString::fromLatin1("http://www.SoapClient.com/xml/SoapResponder.wsdl");
+        const QString endPoint = QString::fromLatin1("http://soapclient.com/xml/soapresponder.wsdl");
+        const QString messageNamespace = QString::fromLatin1("http://www.SoapClient.com/xml/SoapResponder.xsd");
         const QString action = QString::fromLatin1("http://www.SoapClient.com/SoapObject");
         KDSoapClientInterface client(endPoint, messageNamespace);
         KDSoapMessage message;
         message.addArgument(QLatin1String("bstrParam1"), QLatin1String("abc"));
         message.addArgument(QLatin1String("bstrParam2"), QLatin1String("def"));
-        KDSoapPendingCall pendingCall = client.asyncCall("Method1", message, action);
-        KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);
-        connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher*)),
-                this, SLOT(slotFinished(KDSoapPendingCallWatcher*)));
-        m_eventLoop.exec();
-        qDebug() << m_returnValue;
+        KDSoapMessage ret = client.call("Method1", message, action);
+        qDebug() << ret;
+        QCOMPARE(ret.arguments().first().value.toString(), QString("Your input parameters are abc and def"));
     }
-#endif
 
     // http://www.service-repository.com/service/wsdl?id=163859
     void testServiceRepositoryCom()
