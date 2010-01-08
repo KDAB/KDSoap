@@ -19,9 +19,6 @@ public:
 
     void addArgument(const QString& argumentName, const QVariant& argumentValue);
 
-    //QVariant argument(const QString& argumentName) const;
-
-    // TODO check if this is needed
     KDSoapValueList arguments() const;
 
     bool isFault() const;

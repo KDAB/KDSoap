@@ -35,7 +35,7 @@ QVariant KDSoapPendingCall::returnValue() const
     // Might be related to the hack below; but it's also what QtSoap did:
     // assume the return struct contains only one value
     // (I provided returnArguments() in case it doesn't)
-    return d->replyMessage.d->args.first().value;
+    return d->replyMessage.d->args.first().value();
 }
 
 void KDSoapPendingCall::parseReply()

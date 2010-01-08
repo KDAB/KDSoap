@@ -145,10 +145,10 @@ QBuffer* KDSoapClientInterface::Private::prepareRequestBuffer(const QString& met
     KDSoapValueListIterator it(args);
     while (it.hasNext()) {
         const KDSoapValue& argument = it.next();
-        const QVariant value = argument.value;
+        const QVariant value = argument.value();
         const QString type = variantToXMLType(value);
         if (!type.isEmpty()) {
-            writer.writeStartElement(this->messageNamespace, argument.name);
+            writer.writeStartElement(this->messageNamespace, argument.name());
             writer.writeAttribute(xmlSchemaInstanceNS, QLatin1String("type"), type);
             writer.writeCharacters(variantToTextValue(value));
             writer.writeEndElement();
