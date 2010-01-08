@@ -14,10 +14,12 @@ public:
 
     // TODO lastError like in QDBusAbstractInterface
     KDSoapPendingCall asyncCall(const QString& method, const KDSoapMessage &message, const QString& soapAction = QString());
-    KDSoapMessage call(const QString& method, const KDSoapMessage &message);
+    KDSoapMessage call(const QString& method, const KDSoapMessage &message, const QString& soapAction = QString());
     // TODO void callNoReply(const KDSoapMessage &message);
 
 private:
+    friend class KDSoapThreadTask;
+
     class Private;
     Private * const d;
 };

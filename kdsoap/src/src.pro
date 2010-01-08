@@ -10,17 +10,21 @@ include(../variables.pri)
 INSTALLHEADERS = KDSoapMessage.h \
     KDSoapClientInterface.h \
     KDSoapPendingCall.h \
-    KDSoapPendingCallWatcher.h
+    KDSoapPendingCallWatcher.h \
+    KDSoapValue.h
 EXTENSIONLESSHEADERS = 
 PRIVATEHEADERS = KDSoapPendingCall_p.h \
     KDSoapPendingCallWatcher_p.h \
-    KDSoapMessage_p.h
+    KDSoapMessage_p.h \
+    KDSoapClientInterface_p.h \
+    KDSoapClientThread_p.h
 HEADERS = $$INSTALLHEADERS \
     $$PRIVATEHEADERS
 SOURCES = KDSoapMessage.cpp \
     KDSoapClientInterface.cpp \
     KDSoapPendingCall.cpp \
-    KDSoapPendingCallWatcher.cpp
+    KDSoapPendingCallWatcher.cpp \
+    KDSoapClientThread.cpp
 DEFINES += KDSOAP_BUILD_KDSOAP_LIB
 
 # installation targets:
