@@ -107,6 +107,7 @@ static QString variantToXMLType(const QVariant& value)
 QNetworkRequest KDSoapClientInterface::Private::prepareRequest(const QString &method, const QString& action)
 {
     QNetworkRequest request(QUrl(this->endPoint));
+    // Seems SOAP-1.2 uses application/soap+xml instead of text/xml.
     request.setHeader(QNetworkRequest::ContentTypeHeader, QLatin1String("text/xml"));
     // The soap action seems to be namespace + method in most cases, but not always
     // (e.g. urn:GoogleSearchAction for google).

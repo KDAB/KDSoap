@@ -2,6 +2,7 @@
 #include "KDSoapMessage.h"
 #include "KDSoapValue.h"
 #include "KDSoapPendingCallWatcher.h"
+#include "soapresponder.h"
 #include <QtTest/QtTest>
 #include <QEventLoop>
 #include <QDebug>
@@ -68,18 +69,14 @@ private slots:
 
     //  http://www.soapclient.com/soapclient?fn=soapform&template=/clientform.html&soaptemplate=/soapresult.html&soapwsdl=http://soapclient.com/xml/soapresponder.wsdl
 
-    void testSoapClientCom()
+    void testSoapResponder()
     {
-        const QString endPoint = QString::fromLatin1("http://soapclient.com/xml/soapresponder.wsdl");
-        const QString messageNamespace = QString::fromLatin1("http://www.SoapClient.com/xml/SoapResponder.xsd");
-        const QString action = QString::fromLatin1("http://www.SoapClient.com/SoapObject");
-        KDSoapClientInterface client(endPoint, messageNamespace);
-        KDSoapMessage message;
-        message.addArgument(QLatin1String("bstrParam1"), QLatin1String("abc"));
-        message.addArgument(QLatin1String("bstrParam2"), QLatin1String("def"));
-        KDSoapMessage ret = client.call("Method1", message, action);
-        qDebug() << ret;
-        QCOMPARE(ret.arguments().first().value().toString(), QString("Your input parameters are abc and def"));
+        SoapResponder responder;
+        QString ret = responder.Method1("abc", "def");
+        QCOMPARE(ret, QString("Your input parameters are abc and def"));
+
+        // TODO:  void SoapResponder::asyncMethod1(const QString& bstrParam1, const QString& bstrParam2)
+        //    + signals: Method1Done(const QString& returnValue), Method1Error(const KDSoapMessage& fault)
     }
 
     void testFault()

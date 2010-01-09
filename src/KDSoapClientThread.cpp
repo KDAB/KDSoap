@@ -24,14 +24,14 @@ void KDSoapClientThread::run()
     QNetworkAccessManager accessManager;
     QEventLoop eventLoop;
 
-    while ( true ) { // TODO termination?
+    while ( true ) {
         m_mutex.lock();
-        if ( m_queue.isEmpty() ) {
+        if (!m_stopThread && m_queue.isEmpty()) {
             m_queueNotEmpty.wait( &m_mutex );
-            if (m_stopThread) {
-                m_mutex.unlock();
-                break;
-            }
+        }
+        if (m_stopThread) {
+            m_mutex.unlock();
+            break;
         }
         KDSoapThreadTaskData* taskData = m_queue.dequeue();
         m_mutex.unlock();
@@ -71,6 +71,7 @@ void KDSoapThreadTask::slotFinished(KDSoapPendingCallWatcher* watcher)
 
 void KDSoapClientThread::stop()
 {
+    QMutexLocker locker(&m_mutex);
     m_stopThread = true;
     m_queueNotEmpty.wakeAll();
 }

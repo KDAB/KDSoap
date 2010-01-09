@@ -8,6 +8,10 @@
 class KDSoapMessageData : public QSharedData
 {
 public:
+    KDSoapMessageData()
+        : isFault(false)
+    {}
+
     KDSoapValueList args;
     bool isFault;
 };
