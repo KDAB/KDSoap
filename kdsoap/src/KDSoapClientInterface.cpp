@@ -187,5 +187,7 @@ KDSoapMessage KDSoapClientInterface::call(const QString& method, const KDSoapMes
     if (!d->thread.isRunning())
         d->thread.start();
     task->waitForCompletion();
-    return task->returnArguments();
+    KDSoapMessage ret = task->returnArguments();
+    delete task;
+    return ret;
 }

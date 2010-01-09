@@ -69,14 +69,22 @@ private slots:
 
     //  http://www.soapclient.com/soapclient?fn=soapform&template=/clientform.html&soaptemplate=/soapresult.html&soapwsdl=http://soapclient.com/xml/soapresponder.wsdl
 
-    void testSoapResponder()
+    void testSoapResponder_sync()
     {
         SoapResponder responder;
         QString ret = responder.Method1("abc", "def");
         QCOMPARE(ret, QString("Your input parameters are abc and def"));
+    }
 
-        // TODO:  void SoapResponder::asyncMethod1(const QString& bstrParam1, const QString& bstrParam2)
-        //    + signals: Method1Done(const QString& returnValue), Method1Error(const KDSoapMessage& fault)
+    void testSoapResponder_async()
+    {
+        SoapResponder responder;
+        QSignalSpy spyDone(&responder, SIGNAL(Method1Done(QString)));
+        connect(&responder, SIGNAL(Method1Done(QString)), &m_eventLoop, SLOT(quit()));
+        responder.asyncMethod1("abc", "def");
+        m_eventLoop.exec();
+        QCOMPARE(spyDone.count(), 1);
+        QCOMPARE(spyDone[0][0].toString(), QString("Your input parameters are abc and def"));
     }
 
     void testFault()
