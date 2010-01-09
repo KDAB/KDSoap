@@ -16,6 +16,7 @@ KDSoapPendingCallWatcher::~KDSoapPendingCallWatcher()
     delete d;
 }
 
+#if 0
 bool KDSoapPendingCallWatcher::isFinished() const
 {
     // TODO
@@ -26,6 +27,7 @@ void KDSoapPendingCallWatcher::waitForFinished()
 {
     // TODO
 }
+#endif
 
 void KDSoapPendingCallWatcher::Private::_kd_slotReplyFinished()
 {

@@ -11,8 +11,10 @@ public:
     KDSoapPendingCallWatcher(const KDSoapPendingCall &call, QObject *parent=0);
     ~KDSoapPendingCallWatcher();
 
+#if 0
     bool isFinished() const;
     void waitForFinished();
+#endif
 
 Q_SIGNALS:
     void finished(KDSoapPendingCallWatcher *self);
