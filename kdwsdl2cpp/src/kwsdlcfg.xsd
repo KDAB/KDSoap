@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema targetNamespace="http://www.kde.org/standards/kwsdlcfg/1.0"
+            xmlns:tns="http://www.kde.org/standards/kwsdlcfg/1.0"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            version="1.0"
+            elementFormDefault="qualified" >
+
+  <xsd:annotation>
+    <xsd:documentation>
+      Copyright (c) 2006 Tobias Koenig &lt;tokoe@kde.org&gt;
+
+      Permission to use, copy, modify and distribute this schema
+      and its accompanying documentation for any purpose and without fee
+      is hereby granted in perpetuity, provided that the above copyright
+      notice and this paragraph appear in all copies.  The copyright
+      holders make no representation about the suitability of the schema for
+      any purpose. It is provided "as is" without expressed or implied
+      warranty.
+    </xsd:documentation>
+  </xsd:annotation>
+
+	<xsd:simpleType name="Transport">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Qt" />
+			<xsd:enumeration value="KDE" />
+			<xsd:enumeration value="Custom" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+  <xsd:complexType name="NamespaceMapping">
+    <xsd:sequence/>
+    <xsd:attribute name="prefix" type="xsd:string" />
+    <xsd:attribute name="uri" type="xsd:anyURI" />
+  </xsd:complexType>
+
+  <xsd:element name="kwsdlcfg">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="wsdlUrl" type="xsd:string" minOccurs="0" />
+        <xsd:element name="outputFileName" type="xsd:string" minOccurs="0" />
+        <xsd:element name="outputDirectory" type="xsd:string" minOccurs="0" />
+        <xsd:element name="namespaceMapping" type="tns:NamespaceMapping" minOccurs="0" maxOccurs="unbounded" />
+        <xsd:element name="transport" type="tns:Transport" minOccurs="0" default="KDE">
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+</xsd:schema>
