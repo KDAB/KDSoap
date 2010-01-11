@@ -1,0 +1,4 @@
+This is a copy of libkode from KDE (playground/pim/kode, as of 11/01/2010, svn rev 1073117)
+Changes:
+* Removed automakefile.*
+* Ported to qmake

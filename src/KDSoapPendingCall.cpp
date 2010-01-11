@@ -44,14 +44,12 @@ void KDSoapPendingCall::parseReply()
     qDebug() << data;
     QXmlStreamReader reader(data);
     const QString soapNS = QString::fromLatin1("http://schemas.xmlsoap.org/soap/envelope/");
-    const QString xmlSchemaNS = QString::fromLatin1("http://www.w3.org/1999/XMLSchema");
-    const QString xmlSchemaInstanceNS = QString::fromLatin1("http://www.w3.org/1999/XMLSchema-instance");
+    //const QString xmlSchemaNS = QString::fromLatin1("http://www.w3.org/1999/XMLSchema");
+    //const QString xmlSchemaInstanceNS = QString::fromLatin1("http://www.w3.org/1999/XMLSchema-instance");
     if (reader.readNextStartElement() && reader.name() == "Envelope" && reader.namespaceUri() == soapNS) {
         if (reader.readNextStartElement() && reader.name() == "Body" && reader.namespaceUri() == soapNS) {
 
-            // TODO now read the rest into a "struct"
-            // For now, this hack:
-            if (reader.readNextStartElement()) { // Response or Fault
+            if (reader.readNextStartElement()) { // the method: Response or Fault
                 if (reader.name() == "Fault")
                     d->replyMessage.setFault(true);
 
