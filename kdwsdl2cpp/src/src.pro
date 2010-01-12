@@ -14,18 +14,17 @@ SOURCES = compiler.cpp \
     namemapper.cpp \
     settings.cpp \
     typemap.cpp
-HEADERS = compiler.h
+HEADERS = compiler.h \
+    converter.h
 INCLUDEPATH += ..
 QT -= gui
 QT += xml
 
 # Relink when a static lib changed
-unix:PRE_TARGETDEPS += \
-    ../../lib/libkode.a \
+unix:PRE_TARGETDEPS += ../../lib/libkode.a \
     ../../lib/libwsdl.a \
     ../../lib/libxmlschema.a \
     ../../lib/libxmlcommon.a
-
 LIBS += -L../../lib \
     -lkode \
     -lwsdl \

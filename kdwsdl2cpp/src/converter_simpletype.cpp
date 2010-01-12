@@ -225,6 +225,8 @@ void Converter::convertSimpleType( const XSD::SimpleType *type )
 
 void Converter::createSimpleTypeSerializer( const XSD::SimpleType *type )
 {
+    Q_UNUSED(type);
+#ifdef KDAB_DELETED
   const QString typeName = mTypeMap.localType( type->qualifiedName() );
   const QString baseType = mTypeMap.localType( type->baseTypeName() );
 
@@ -423,6 +425,7 @@ void Converter::createSimpleTypeSerializer( const XSD::SimpleType *type )
 
   demarshal.setBody( demarshalCode );
   mSerializer.addFunction( demarshal );
+#endif
 }
 
 static QString escapeEnum( const QString &str )

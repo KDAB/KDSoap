@@ -35,8 +35,9 @@ class Settings
 
     static Settings* self();
 
-    void setGenerateImplementation(bool b);
+    void setGenerateImplementation(bool b, const QString& headerFile);
     bool generateImplementation() const;
+    QString headerFile() const;
 
     void setWsdlFile(const QString &wsdlFile);
     QUrl wsdlUrl() const;
@@ -60,6 +61,7 @@ class Settings
     QString mWsdlFile;
     QString mOutputFileName;
     QString mOutputDirectory;
+    QString mHeaderFile;
     NSMapping mNamespaceMapping;
     bool mImpl;
 };

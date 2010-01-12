@@ -34,12 +34,12 @@ static const char* WSDL2CPP_VERSION_STR = "1.0";
 static void showHelp(const char *appName)
 {
     fprintf(stderr, "%s %s\n", WSDL2CPP_DESCRIPTION, WSDL2CPP_VERSION_STR);
-    fprintf(stderr, "Usage: %s [options] [-impl] <wsdlfile>\n\n"
+    fprintf(stderr, "Usage: %s [options] [-impl <headerfile>] <wsdlfile>\n\n"
             "  -h, -help                 display this help and exit\n"
             "  -v, -version              display version\n"
             "  -d, -dependencies         display the dependencies\n"
             "  -o <file>                 place the output into <file>\n"
-            "  -impl                     generate the implementation file\n"
+            "  -impl <headerfile>        generate the implementation file, and #include <headerfile>\n"
             "\n", appName);
 }
 
@@ -49,6 +49,7 @@ int main( int argc, char **argv )
     QString outputFile;
     bool dependencies = false;
     bool impl = false;
+    QString headerFile;
 
     int arg = 1;
     while (arg < argc) {
@@ -60,6 +61,12 @@ int main( int argc, char **argv )
             dependencies = true;
         } else if (opt == QLatin1String("-impl")) {
             impl = true;
+            ++arg;
+            if (!argv[arg]) {
+                showHelp(argv[0]);
+                return 1;
+            }
+            headerFile = QFile::decodeName(argv[arg]);
         } else if (opt == QLatin1String("-v") || opt == QLatin1String("-version")) {
             fprintf(stderr, "%s %s\n", WSDL2CPP_DESCRIPTION, WSDL2CPP_VERSION_STR);
             return 0;
@@ -92,7 +99,7 @@ int main( int argc, char **argv )
 
     QCoreApplication app( argc, argv );
 
-    Settings::self()->setGenerateImplementation(impl);
+    Settings::self()->setGenerateImplementation(impl, headerFile);
     Settings::self()->setOutputFileName(outputFile);
     Settings::self()->setWsdlFile(fileName);
 

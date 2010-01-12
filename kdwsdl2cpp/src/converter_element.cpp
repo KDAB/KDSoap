@@ -105,6 +105,8 @@ void Converter::convertElement( const XSD::Element *element )
 
 void Converter::createElementSerializer( const XSD::Element *element )
 {
+    Q_UNUSED(element);
+#ifdef KDAB_DELETED
   QString className( mTypeMap.localTypeForElement( QName( element->nameSpace(), element->name() ) ) );
 
   // include header
@@ -167,4 +169,5 @@ void Converter::createElementSerializer( const XSD::Element *element )
 
   mSerializer.addFunction( marshal );
   mSerializer.addFunction( demarshal );
+#endif
 }

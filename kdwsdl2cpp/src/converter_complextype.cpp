@@ -200,6 +200,8 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
 
 void Converter::createComplexTypeSerializer( const XSD::ComplexType *type )
 {
+    Q_UNUSED(type);
+#ifdef KDAB_DELETED
   const QString typeName = mTypeMap.localType( type->qualifiedName() );
   const QString baseType = mTypeMap.localType( type->baseTypeName() );
 
@@ -405,4 +407,5 @@ void Converter::createComplexTypeSerializer( const XSD::ComplexType *type )
 
   demarshal.setBody( demarshalStartCode );
   mSerializer.addFunction( demarshal );
+#endif
 }

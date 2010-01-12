@@ -2,6 +2,7 @@
     This file is part of KDE.
 
     Copyright (c) 2005 Tobias Koenig <tokoe@kde.org>
+    Copyright (c) 2010 David Faure <dfaure@kdab.com>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Library General Public
@@ -20,6 +21,7 @@
 */
 
 #include "converter.h"
+#include <QDebug>
 
 using namespace KWSDL;
 
@@ -27,14 +29,46 @@ void Converter::convertClientService()
 {
   const Service service = mWSDL.definitions().service();
 
+  Q_ASSERT(!service.name().isEmpty());
+
   KODE::Class newClass( service.name() );
+  newClass.setUseDPointer(true);
+  //const QString priv = service.name() + "Private";
   newClass.addBaseClass( mQObject );
+
+  // Files included in the header
   newClass.addHeaderInclude( "QObject" );
   newClass.addHeaderInclude( "QString" );
 
-  KODE::Function ctor( service.name() );
-  KODE::Function dtor( '~' + service.name() );
-  KODE::Code ctorCode, dtorCode;
+  // Files included in the impl, with optional forward-declarations in the header
+  newClass.addInclude("KDSoapMessage.h", "KDSoapMessage");
+  newClass.addInclude("KDSoapClientInterface.h", "KDSoapClientInterface");
+  newClass.addInclude("KDSoapPendingCallWatcher.h");
+
+  // Variables (which will go into the d pointer)
+  KODE::MemberVariable clientInterface("m_clientInterface", "KDSoapClientInterface* ");
+  clientInterface.setInitializer("NULL");
+  newClass.addMemberVariable(clientInterface);
+
+  KODE::MemberVariable lastReply("m_lastReply", "KDSoapMessage");
+  newClass.addMemberVariable(lastReply);
+
+  // Ctor and dtor
+  {
+      KODE::Function ctor( service.name() ); // TODO add QObject* parent = 0 argument
+      KODE::Function dtor( '~' + service.name() );
+      KODE::Code ctorCode, dtorCode;
+
+      //ctorCode += "d = new Private(this);";
+
+      ctor.setBody( ctorCode );
+      newClass.addFunction( ctor );
+
+      dtorCode += "delete d->m_clientInterface;";
+
+      dtor.setBody( dtorCode );
+      newClass.addFunction( dtor );
+  }
 
   const Port::List servicePorts = service.ports();
   Port::List::ConstIterator it;
@@ -70,6 +104,7 @@ void Converter::convertClientService()
 
       QString operationName = lowerlize( (*opIt).name() );
 
+#ifdef KDAB_TEMP
       KODE::MemberVariable transport( operationName + "Transport", "Transport*" );
       newClass.addMemberVariable( transport );
 
@@ -86,16 +121,11 @@ void Converter::convertClientService()
 
       dtorCode += "delete " + transport.name() + ';';
       dtorCode += transport.name() + " = 0;";
+#endif
     }
   }
 
-  ctor.setBody( ctorCode );
-  newClass.addFunction( ctor );
-
-  dtor.setBody( dtorCode );
-  newClass.addFunction( dtor );
-
-  mClasses.append( newClass );
+  mClasses.append(newClass);
 }
 
 void Converter::convertClientInputMessage( const Operation &operation, const Param &param,
@@ -105,6 +135,7 @@ void Converter::convertClientInputMessage( const Operation &operation, const Par
   QString operationName = lowerlize( operation.name() );
   KODE::Function callFunc( mNameMapper.escape( operationName ), "void", KODE::Function::Public );
 
+#ifdef KDAB_TEMP
   // handle soap header
   QString soapHeaderType;
   QString soapHeaderName;
@@ -140,44 +171,43 @@ void Converter::convertClientInputMessage( const Operation &operation, const Par
       }
     }
   }
+#endif
 
   const Message message = mWSDL.findMessage( param.message() );
 
   const Part::List parts = message.parts();
   Part::List::ConstIterator it;
   for ( it = parts.begin(); it != parts.end(); ++it ) {
-    QString lowerName = lowerlize( (*it).name() );
+    const QString lowerName = lowerlize( (*it).name() );
 
     QName type = (*it).type();
     if ( !type.isEmpty() ) {
-      callFunc.addArgument( mTypeMap.localType( type ) + " *" + mNameMapper.escape( lowerName ) );
+      callFunc.addArgument( mTypeMap.localType( type ) + " " + mNameMapper.escape( lowerName ) );
     } else {
-      callFunc.addArgument( mTypeMap.localTypeForElement( (*it).element() ) + " *" + mNameMapper.escape( lowerName ) );
+      callFunc.addArgument( mTypeMap.localTypeForElement( (*it).element() ) + " " + mNameMapper.escape( lowerName ) );
     }
   }
 
   KODE::Code code;
-  code += "QDomDocument doc;";
-  code += "doc.appendChild( doc.createProcessingInstruction( \"xml\", \"version=\\\"1.0\\\" encoding=\\\"UTF-8\\\"\" ) );";
-  code += "QDomElement env = doc.createElement( \"SOAP-ENV:Envelope\" );";
-  code += "env.setAttribute( \"xmlns:SOAP-ENV\", \"http://schemas.xmlsoap.org/soap/envelope/\" );";
 
+  bool hasAction = false;
+  if ( binding.type() == Binding::SOAPBinding ) {
+    const SoapBinding soapBinding( binding.soapBinding() );
+    const SoapBinding::Operation::Map map = soapBinding.operations();
+    const SoapBinding::Operation op = map[ operation.name() ];
+    if (!op.action().isEmpty()) {
+        code += "const QString action = QString::fromLatin1(\"" + op.action() + "\");";
+        hasAction = true;
+    }
+  }
+
+  code += "KDSoapMessage message;";
+
+  // TODO remove mNSManager?
+#ifdef KDAB_TEMP
   const QStringList prefixes = mNSManager.prefixes();
   for ( int i = 0; i < prefixes.count(); ++i )
     code += "env.setAttribute( \"xmlns:" + prefixes[ i ] + "\", \"" + mNSManager.uri( prefixes[ i ] ) + "\" );";
-
-  code += "doc.appendChild( env );";
-  if ( !soapHeaderType.isEmpty() ) {
-    code += "QDomElement header = doc.createElement( \"SOAP-ENV:Header\" );";
-    code += "env.appendChild( header );";
-    code += "Serializer::marshal( doc, header, \"" + soapHeaderName + "\", _header, false );";
-    code += "delete _header;";
-  }
-  code += "QDomElement body = doc.createElement( \"SOAP-ENV:Body\" );";
-  code += "env.appendChild( body );";
-  code.newLine();
-
-  QString parentNode = "body";
 
   // if SOAP style is RPC, we have to add an extra wrapper element
   if ( soapStyle == SoapBinding::RPCStyle ) {
@@ -189,10 +219,12 @@ void Converter::convertClientInputMessage( const Operation &operation, const Par
 
     parentNode = "wrapper";
   }
+#endif
 
   for ( it = parts.begin(); it != parts.end(); ++it ) {
-    QString lowerName = lowerlize( (*it).name() );
+    const QString lowerName = lowerlize( (*it).name() );
 
+#ifdef KDAB_DELETED // what's the soapStyle stuff?
     QString name, noNamespace;
     if ( soapStyle == SoapBinding::RPCStyle ) {
       name = (*it).name();
@@ -206,23 +238,18 @@ void Converter::convertClientInputMessage( const Operation &operation, const Par
         name = mNSManager.fullName( (*it).element().nameSpace(), (*it).element().localName() );
       }
     }
-
     code += "Serializer::marshal( doc, " + parentNode + ", \"" + name + "\", " + mNameMapper.escape( lowerName ) +
             ", " + noNamespace + " );";
     code += "delete " + mNameMapper.escape( lowerName ) + ';';
+#endif
+    code += "message.addArgument(QLatin1String(\"" + (*it).name() + "\"), " + lowerName + ");";
   }
 
-  QString header = "QString()";
-  if ( binding.type() == Binding::SOAPBinding ) {
-    const SoapBinding soapBinding( binding.soapBinding() );
-    const SoapBinding::Operation::Map map = soapBinding.operations();
-    const SoapBinding::Operation op = map[ operation.name() ];
-    header = "\"\\\"" + op.action() + "\\\"\"";
-  }
-
+#ifdef KDAB_DELETED
   code += "qDebug( \"%s\", qPrintable( doc.toString() ) );";
   KODE::MemberVariable transport( operationName + "Transport", "Transport*" );
   code += transport.name() + "->query( doc.toString(), " + header + " );";
+#endif
   callFunc.setBody( code );
 
   newClass.addFunction( callFunc );
@@ -264,9 +291,11 @@ void Converter::convertClientOutputMessage( const Operation &operation, const Pa
 
     QString lowerName = mNameMapper.escape( lowerlize( parts[ i ].name() ) );
 
-    respSignal.addArgument( partType + " *" + lowerName );
+    respSignal.addArgument( partType + " " + lowerName );
 
-    code += partType + " *" + lowerName + " = 0;";
+#ifdef KDAB_TEMP // initialization of local var
+    code += partType + " " + lowerName + " = 0;";
+#endif
   }
   code.newLine();
 
@@ -274,11 +303,12 @@ void Converter::convertClientOutputMessage( const Operation &operation, const Pa
 
   // error signal
   KODE::Function errorSignal( operationName + "Error", "void", KODE::Function::Signal );
-  errorSignal.addArgument( "SoapFault *error" );
-  errorSignal.setDocs( "This signal is emitted whenever the call to " + operationName+ "() failed." );
+  errorSignal.addArgument( "const KDSoapMessage& fault" );
+  errorSignal.setDocs( "This signal is emitted whenever the call to " + operationName + "() failed." );
 
   newClass.addFunction( errorSignal );
 
+#ifdef KDAB_DELETED
   // result slot
   KODE::Function respSlot( operationName + "Slot", "void", KODE::Function::Slot | KODE::Function::Private );
   respSlot.addArgument( "const QString &xml" );
@@ -409,7 +439,9 @@ void Converter::convertClientOutputMessage( const Operation &operation, const Pa
   respSlot.setBody( code );
 
   newClass.addFunction( respSlot );
+#endif
 
+#ifdef KDAB_TEMP
   // error slot
   KODE::Function errorSlot( operationName + "ErrorSlot", "void", KODE::Function::Slot | KODE::Function::Private );
   errorSlot.addArgument( "const QString &msg" );
@@ -423,4 +455,5 @@ void Converter::convertClientOutputMessage( const Operation &operation, const Pa
   errorSlot.setBody( code );
 
   newClass.addFunction( errorSlot );
+#endif
 }

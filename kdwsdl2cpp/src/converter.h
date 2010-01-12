@@ -66,10 +66,12 @@ class Converter
     // Server Stub
     void convertServerService();
 
+#ifdef KDAB_DELETED
     // Transport
     void createKDETransport();
     void createQtTransport();
     void createCustomTransport();
+#endif
 
     // Utils
     void createUtils();
@@ -78,7 +80,9 @@ class Converter
     WSDL mWSDL;
 
     KODE::Class::List mClasses;
+#ifdef KDAB_TEMP
     KODE::Class mSerializer;
+#endif
     KODE::Class mQObject;
 
     NameMapper mNameMapper;

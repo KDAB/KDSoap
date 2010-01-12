@@ -119,12 +119,18 @@ Settings::NSMapping Settings::namespaceMapping() const
   return mNamespaceMapping;
 }
 
-void Settings::setGenerateImplementation(bool b)
+void Settings::setGenerateImplementation(bool b, const QString& headerFile)
 {
-  mImpl = b;
+    mImpl = b;
+    mHeaderFile = headerFile;
 }
 
 bool Settings::generateImplementation() const
 {
-  return mImpl;
+    return mImpl;
+}
+
+QString Settings::headerFile() const
+{
+    return mHeaderFile;
 }
