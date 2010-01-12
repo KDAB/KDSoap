@@ -5,6 +5,10 @@
 
 #include <QDebug>
 
+// TODO a button for an async call, a button for a sync call,
+// and some background operation that will stop working during the sync call
+// (or just a mouseover effect?)
+
 class TestObject : public QObject
 {
     Q_OBJECT
@@ -31,8 +35,6 @@ int main(int argc, char **argv)
 
     KDSoapMessage message;
     message.addArgument(QLatin1String("year"), year);
-    // TODO see how it works in the .wsdl; maybe model with KDSoapAction with multiple ctors?
-    //const QByteArray action = "http://www.27seconds.com/Holidays/US/Dates/GetValentinesDay";
 
     qDebug("Looking up the date of easter in %i...", year);
 
@@ -40,7 +42,7 @@ int main(int argc, char **argv)
 
     //qDebug() << response;
 
-    KDSoapPendingCall pendingCall = client.asyncCall("GetValentinesDay", message/*, action*/);
+    KDSoapPendingCall pendingCall = client.asyncCall("GetValentinesDay", message);
     TestObject test;
     KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, &test);
 

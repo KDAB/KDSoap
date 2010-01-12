@@ -1,2 +1,2 @@
 TEMPLATE = subdirs
-SUBDIRS = holidays
+SUBDIRS = holidays_sync holidays_gui
