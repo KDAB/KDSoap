@@ -24,27 +24,22 @@
 
 #include <QMap>
 #include <QString>
+#include <QUrl>
 
 class Settings
 {
   public:
     typedef QMap<QString, QString> NSMapping;
 
-    enum Transport
-    {
-      QtTransport,
-      KDETransport,
-      CustomTransport
-    };
-
     ~Settings();
 
     static Settings* self();
 
-    bool load( const QString &fileName );
+    void setGenerateImplementation(bool b);
+    bool generateImplementation() const;
 
-    void setWsdlUrl( const QString &wsdlUrl );
-    QString wsdlUrl() const;
+    void setWsdlFile(const QString &wsdlFile);
+    QUrl wsdlUrl() const;
     QString wsdlBaseUrl() const;
     QString wsdlFileName() const;
 
@@ -57,19 +52,16 @@ class Settings
     void setNamespaceMapping( const NSMapping &namespaceMapping );
     NSMapping namespaceMapping() const;
 
-    void setTransport( Transport transport );
-    Transport transport() const;
-
   private:
     Settings();
 
     static Settings *mSelf;
 
-    QString mWsdlUrl;
+    QString mWsdlFile;
     QString mOutputFileName;
     QString mOutputDirectory;
     NSMapping mNamespaceMapping;
-    Transport mTransport;
+    bool mImpl;
 };
 
 #endif

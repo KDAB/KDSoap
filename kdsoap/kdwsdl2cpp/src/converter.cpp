@@ -90,13 +90,6 @@ void Converter::convert()
   createUtils();
   createSoapUtils();
 
-  if ( Settings::self()->transport() == Settings::KDETransport )
-    createKDETransport();
-  else if ( Settings::self()->transport() == Settings::QtTransport )
-    createQtTransport();
-  else if ( Settings::self()->transport() == Settings::CustomTransport )
-    createCustomTransport();
-
   convertTypes();
 
   mClasses.append( mSerializer );

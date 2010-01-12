@@ -26,44 +26,80 @@
 #include <QFile>
 #include <QTimer>
 #include <QCoreApplication>
+#include <QDebug>
+
+static const char* WSDL2CPP_DESCRIPTION = "KDAB's WSDL to C++ compiler";
+static const char* WSDL2CPP_VERSION_STR = "1.0";
+
+static void showHelp(const char *appName)
+{
+    fprintf(stderr, "%s %s\n", WSDL2CPP_DESCRIPTION, WSDL2CPP_VERSION_STR);
+    fprintf(stderr, "Usage: %s [options] [-impl] <wsdlfile>\n\n"
+            "  -h, -help                 display this help and exit\n"
+            "  -v, -version              display version\n"
+            "  -d, -dependencies         display the dependencies\n"
+            "  -o <file>                 place the output into <file>\n"
+            "  -impl                     generate the implementation file\n"
+            "\n", appName);
+}
 
 int main( int argc, char **argv )
 {
-#ifdef KDAB_TEMP
-  KCmdLineOptions options;
-  options.add("c");
-  options.add("configfile <file>", ki18n( "Configuration file" ), "kwsdl.cfg");
-  options.add("d");
-  options.add("outputDirectory <dir>", ki18n( "Directory to generate files in" ), ".");
-  options.add("+wsdl", ki18n( "WSDL file" ));
-  KCmdLineArgs::addCmdLineOptions( options );
+    const char *fileName = 0;
+    QString outputFile;
+    bool dependencies = false;
+    bool impl = false;
 
-  KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
-#endif
+    int arg = 1;
+    while (arg < argc) {
+        QString opt = QString::fromLocal8Bit(argv[arg]);
+        if (opt == QLatin1String("-h") || opt == QLatin1String("-help")) {
+            showHelp(argv[0]);
+            return 0;
+        } else if (opt == QLatin1String("-d") || opt == QLatin1String("-dependencies")) {
+            dependencies = true;
+        } else if (opt == QLatin1String("-impl")) {
+            impl = true;
+        } else if (opt == QLatin1String("-v") || opt == QLatin1String("-version")) {
+            fprintf(stderr, "%s %s\n", WSDL2CPP_DESCRIPTION, WSDL2CPP_VERSION_STR);
+            return 0;
+        } else if (opt == QLatin1String("-o") || opt == QLatin1String("-output")) {
+            ++arg;
+            if (!argv[arg]) {
+                showHelp(argv[0]);
+                return 1;
+            }
+            outputFile = QFile::decodeName(argv[arg]);
+        } else if (!fileName) {
+            fileName = argv[arg];
+        } else {
+            showHelp(argv[0]);
+            return 1;
+        }
 
-  QCoreApplication app( argc, argv );
-
-#ifdef KDAB_TEMP
-  if ( args->isSet( "configfile" ) ) {
-    if ( !Settings::self()->load( args->getOption( "configfile" ) ) )
-      return 1;
-  } else {
-    if ( args->count() != 1 ) {
-      KCmdLineArgs::usageError( i18n( "Neither a config file nor a WSDL url is given." ) );
+        ++arg;
     }
-  }
 
-  if ( args->isSet( "outputDirectory" ) )
-    Settings::self()->setOutputDirectory( args->getOption( "outputDirectory" ) );
+    if (!fileName) {
+        showHelp(argv[0]);
+        return 1;
+    }
 
-  if ( args->count() == 1 )
-    Settings::self()->setWsdlUrl( args->url( 0 ).path() );
-#endif
+    if (dependencies) {
+        // TODO output dependencies
+        return 0;
+    }
 
-  KWSDL::Compiler compiler;
+    QCoreApplication app( argc, argv );
 
-  compiler.run();
-  //QTimer::singleShot( 0, &compiler, SLOT( run() ) ); // why?
+    Settings::self()->setGenerateImplementation(impl);
+    Settings::self()->setOutputFileName(outputFile);
+    Settings::self()->setWsdlFile(fileName);
 
-  return app.exec();
+    KWSDL::Compiler compiler;
+
+    // so that we have an event loop, for downloads
+    QTimer::singleShot( 0, &compiler, SLOT( run() ) );
+
+    return app.exec();
 }

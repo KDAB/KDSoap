@@ -781,20 +781,23 @@ QString Parser::targetNamespace() const
   return d->mNameSpace;
 }
 
+static QUrl urlForLocation(ParserContext *context, const QString& location)
+{
+    QUrl url( location );
+    if ((url.scheme().isEmpty() || url.scheme() == "file")) {
+        QDir dir( location );
+        if (dir.isRelative())
+            url = QUrl::fromLocalFile(context->documentBaseUrl() + '/' + location);
+    }
+    return url;
+}
+
 void Parser::importSchema( ParserContext *context, const QString &location )
 {
   FileProvider provider;
   QString fileName;
-  QString schemaLocation( location );
-
-  QUrl url( location );
-  QDir dir( location );
-
-  if ( (url.scheme().isEmpty() || url.scheme() == "file") && dir.isRelative() )
-    schemaLocation = context->documentBaseUrl() + '/' + location;
-
-  qDebug( "importing schema at %s", qPrintable( schemaLocation ) );
-
+  const QUrl schemaLocation = urlForLocation(context, location);
+  qDebug("importing schema at %s", schemaLocation.toEncoded().constData());
   if ( provider.get( schemaLocation, fileName ) ) {
     QFile file( fileName );
     if ( !file.open( QIODevice::ReadOnly ) ) {
@@ -824,7 +827,7 @@ void Parser::importSchema( ParserContext *context, const QString &location )
     if ( tagName.localName() == "schema" ) {
       parseSchemaTag( context, node );
     } else {
-      qDebug( "No schema tag found in schema file %s", qPrintable(schemaLocation) );
+      qDebug( "No schema tag found in schema file %s", schemaLocation.toEncoded().constData());
     }
 
     d->mNamespaces = joinNamespaces( d->mNamespaces, namespaceManager.uris() );
@@ -841,16 +844,8 @@ void Parser::includeSchema( ParserContext *context, const QString &location )
 {
   FileProvider provider;
   QString fileName;
-  QString schemaLocation( location );
-
-  QUrl url( location );
-  QDir dir( location );
-
-  if ( (url.scheme().isEmpty() || url.scheme() == "file") && dir.isRelative() )
-    schemaLocation = context->documentBaseUrl() + '/' + location;
-
-  qDebug( "including schema at %s", qPrintable( schemaLocation ) );
-
+  const QUrl schemaLocation = urlForLocation(context, location);
+  qDebug("including schema at %s", schemaLocation.toEncoded().constData());
   if ( provider.get( schemaLocation, fileName ) ) {
     QFile file( fileName );
     if ( !file.open( QIODevice::ReadOnly ) ) {
@@ -887,7 +882,7 @@ void Parser::includeSchema( ParserContext *context, const QString &location )
       }
       parseSchemaTag( context, node );
     } else {
-      qDebug( "No schema tag found in schema file %s", qPrintable( schemaLocation ) );
+      qDebug("No schema tag found in schema file %s", schemaLocation.toEncoded().constData());
     }
 
     d->mNamespaces = joinNamespaces( d->mNamespaces, namespaceManager.uris() );

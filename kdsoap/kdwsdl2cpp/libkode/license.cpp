@@ -29,7 +29,7 @@ class License::Private
 {
   public:
     Private()
-      : mType( GPL ), mQtException( false )
+      : mType(License::NoLicense), mQtException( false )
     {
     }
 

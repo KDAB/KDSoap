@@ -24,6 +24,8 @@
 #include <QCoreApplication>
 #include <QEventLoop>
 #include <QFile>
+#include <QUrl>
+#include <QDebug>
 
 #include "fileprovider.h"
 
@@ -32,10 +34,15 @@ FileProvider::FileProvider()
 {
 }
 
-bool FileProvider::get( const QString &url, QString &target )
+bool FileProvider::get( const QUrl &url, QString &target )
 {
   if ( !mFileName.isEmpty() )
     cleanUp();
+
+  if (url.scheme() == QLatin1String("file")) {
+      target = url.toLocalFile();
+      return true;
+  }
 
   if ( target.isEmpty() ) {
 #ifdef KDAB_TEMP
@@ -49,7 +56,7 @@ bool FileProvider::get( const QString &url, QString &target )
 
   mData.truncate( 0 );
 
-  qDebug( "Downloading external schema '%s'", qPrintable( url ) );
+  qDebug("NOT IMPLEMENTED: downloading external schema '%s'", url.toEncoded().constData());
 #ifdef KDAB_TEMP
 
   KIO::TransferJob* job = KIO::get( KUrl( url ), KIO::NoReload, KIO::HideProgressInfo );
