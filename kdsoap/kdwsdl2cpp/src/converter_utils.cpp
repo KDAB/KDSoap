@@ -25,6 +25,7 @@ using namespace KWSDL;
 
 void Converter::createUtils()
 {
+#ifdef KDAB_DELETED
   mSerializer = KODE::Class( "Serializer" );
   mSerializer.addHeaderInclude( "QDomDocument" );
   mSerializer.addHeaderInclude( "QDateTime" );
@@ -144,10 +145,12 @@ void Converter::createUtils()
 
     mSerializer.addFunction( demarshal );
   }
+#endif
 }
 
 void Converter::createSoapUtils()
 {
+#ifdef KDAB_DELETED
   KODE::Class soapFault( "SoapFault" );
   soapFault.setDocs(
       "This class encapsulates error information.\n"
@@ -335,4 +338,5 @@ void Converter::createSoapUtils()
   demarshal.setBody( code );
 
   mSerializer.addFunction( demarshal );
+#endif
 }

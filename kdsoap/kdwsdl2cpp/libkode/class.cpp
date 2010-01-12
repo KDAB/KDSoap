@@ -63,6 +63,7 @@ Class::Class( const Class &other )
 Class::Class( const QString &name, const QString &nameSpace )
   : d( new Private )
 {
+  Q_ASSERT(!name.isEmpty());
   d->mName = name;
   d->mNameSpace = nameSpace;
 }
@@ -84,6 +85,7 @@ Class& Class::operator=( const Class &other )
 
 void Class::setName( const QString &name )
 {
+  Q_ASSERT(!name.isEmpty());
   d->mName = name;
 }
 

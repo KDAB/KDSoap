@@ -37,7 +37,7 @@ QString lowerlize( const QString &str )
 
 
 Converter::Converter()
-{
+{    
   mQObject = KODE::Class( "QObject" );
 }
 
@@ -92,7 +92,9 @@ void Converter::convert()
 
   convertTypes();
 
+#ifdef KDAB_TEMP
   mClasses.append( mSerializer );
+#endif
 
   // TODO: allow server service
   convertClientService();
@@ -100,6 +102,7 @@ void Converter::convert()
 
 void Converter::convertTypes()
 {
+#ifdef KDAB_TEMP
   const XSD::Types types = mWSDL.definitions().type().types();
 
   XSD::ComplexType::List complexTypes = types.complexTypes();
@@ -117,4 +120,5 @@ void Converter::convertTypes()
   XSD::Element::List elements = types.elements();
   for ( int i = 0; i < elements.count(); ++i )
     convertElement( &(elements[ i ]) );
+#endif
 }

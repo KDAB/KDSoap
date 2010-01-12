@@ -64,8 +64,6 @@ void Compiler::download()
     QXmlSimpleReader reader;
     reader.setFeature( "http://xml.org/sax/features/namespace-prefixes", true );
 
-    QDomDocument document( "KWSDL" );
-
     QString errorMsg;
     int errorLine, errorCol;
     QDomDocument doc;

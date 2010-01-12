@@ -22,6 +22,7 @@
 #include <QtCore/QFile>
 #include <QtCore/QStringList>
 #include <QtCore/QTextStream>
+#include <QDebug>
 
 #include "printer.h"
 
@@ -142,6 +143,7 @@ QString Printer::Private::classHeader( const Class &classObject, bool publicMemb
 
   code.addBlock( functionHeaders( functions, classObject.name(), Function::Public ) );
 
+#ifdef KDAB_TEMP // this is only wanted for value classes...
   if ( classObject.useDPointer() && !classObject.memberVariables().isEmpty() ) {
     Function cc( classObject.name() );
     cc.addArgument( "const " + classObject.name() + '&' );
@@ -151,6 +153,7 @@ QString Printer::Private::classHeader( const Class &classObject, bool publicMemb
     list << cc << op;
     code.addBlock( functionHeaders( list, classObject.name(), Function::Public ) );
   }
+#endif
 
   code.addBlock( functionHeaders( functions, classObject.name(), Function::Public | Function::Slot ) );
   code.addBlock( functionHeaders( functions, classObject.name(), Function::Signal ) );
@@ -279,6 +282,8 @@ QString Printer::Private::classImplementation( const Class &classObject, bool ne
   }
 
   if ( classObject.useDPointer() && !classObject.memberVariables().isEmpty() ) {
+
+#ifdef KDAB_TEMP // only for value classes...
     // print copy constructor
     Function cc( classObject.name() );
     cc.addArgument( "const " + functionClassName + "& other" );
@@ -328,6 +333,7 @@ QString Printer::Private::classImplementation( const Class &classObject, bool ne
     code.addBlock( op.body(), 2 );
     code += '}';
     code.newLine();
+#endif
   }
 
   // Generate nested class functions
@@ -544,7 +550,9 @@ void Printer::printHeader( const File &file )
   Class::List classes = file.classes();
   Class::List::ConstIterator it;
   for ( it = classes.constBegin(); it != classes.constEnd(); ++it ) {
+    Q_ASSERT(!(*it).name().isEmpty());
     QStringList includes = (*it).headerIncludes();
+    //qDebug() << "includes=" << includes;
     QStringList::ConstIterator it2;
     for ( it2 = includes.constBegin(); it2 != includes.constEnd(); ++it2 ) {
       if ( !processed.contains( *it2 ) ) {

@@ -88,10 +88,12 @@ void Creator::create( const KODE::Class::List &list )
 
   KODE::File file;
 
-  if (Settings::self()->generateImplementation())
+  if (Settings::self()->generateImplementation()) {
       file.setImplementationFilename( Settings::self()->outputFileName() );
-  else
+      file.setHeaderFilename(Settings::self()->headerFile());
+  } else {
       file.setHeaderFilename( Settings::self()->outputFileName() );
+  }
 
   KODE::Class::List::ConstIterator it;
   for ( it = classes.constBegin(); it != classes.constEnd(); ++it ) {

@@ -205,7 +205,7 @@ TypeMap::TypeMap()
     entry.buildinType = true;
     entry.nameSpace = XMLSchemaURI;
     entry.typeName = "string";
-    entry.localType = "QString";
+    entry.localType = "const QString&";
     entry.headers << "QString";
     entry.forwardDeclarations << "QString";
     mTypeMap.append( entry );
@@ -264,7 +264,7 @@ TypeMap::TypeMap()
     entry.nameSpace = XMLSchemaURI;
     entry.typeName = "token";
     entry.headers << "QString";
-    entry.localType = "QString";
+    entry.localType = "const QString&";
     mTypeMap.append( entry );
    }
 }
