@@ -489,22 +489,27 @@ QString Printer::creationWarning() const
 QString Printer::licenseHeader( const File &file ) const
 {
   Code code;
-  code += "/*";
-  code.setIndent( 4 );
 
-  code += "This file is part of " + file.project() + '.';
-  code.newLine();
+  const QStringList copyrights = file.copyrightStrings();
+  if (!file.project().isEmpty() || !copyrights.isEmpty() || !file.license().text().isEmpty())
+  {
+      code += "/*";
+      code.setIndent( 4 );
 
-  QStringList copyrights = file.copyrightStrings();
-  if ( !copyrights.isEmpty() ) {
-    code.addBlock( copyrights.join( "\n" ) );
-    code.newLine();
+      if (!file.project().isEmpty()) {
+          code += "This file is part of " + file.project() + '.';
+          code.newLine();
+      }
+
+      if ( !copyrights.isEmpty() ) {
+          code.addBlock( copyrights.join( "\n" ) );
+          code.newLine();
+      }
+
+      code.addBlock( file.license().text() );
+      code.setIndent( 0 );
+      code += "*/";
   }
-
-  code.addBlock( file.license().text() );
-
-  code.setIndent( 0 );
-  code += "*/";
 
   return code.text();
 }
@@ -519,14 +524,15 @@ void Printer::printHeader( const File &file )
   out.addBlock( licenseHeader( file ) );
 
   // Create include guard
-  QString className = file.filename();
-  className.replace( "-", "_" );
+  QString className = file.filenameHeader();
+  className.replace( '-', "_" );
 
   QString includeGuard;
   if ( !file.nameSpace().isEmpty() )
     includeGuard += file.nameSpace().toUpper() + '_';
 
-  includeGuard += className.toUpper() + "_H";
+  includeGuard += className.toUpper();
+  includeGuard.replace( '.', "_" );
 
   out += "#ifndef " + includeGuard;
   out += "#define " + includeGuard;
@@ -630,7 +636,7 @@ void Printer::printImplementation( const File &file, bool createHeaderInclude )
 
   // Create includes
   if ( createHeaderInclude ) {
-    out += "#include \"" + file.filename() + ".h\"";
+    out += "#include \"" + file.filenameHeader() + "\"";
     out.newLine();
   }
 
@@ -722,18 +728,19 @@ void Printer::printImplementation( const File &file, bool createHeaderInclude )
       out += d->classImplementation( *it );
   }
 
+  // KDAB: removed; 1) for removing .filename(), and 2) qmake would want moc_foo.cpp anyway
+#ifdef KDAB_DELETED
   if ( containsQObject ) {
     out.newLine();
-    out += "#include \"" + file.filename() + ".moc\"";
+    //out += "#include \"" + file.filename() + ".moc\"";
   }
+#endif
 
   // Print to file
   QString filename = file.filenameImplementation();
 
   if ( !d->mOutputDirectory.isEmpty() )
     filename.prepend( d->mOutputDirectory + '/' );
-
-//  KSaveFile::simpleBackupFile( filename, QString(), ".backup" );
 
   QFile implementation( filename );
   if ( !implementation.open( QIODevice::WriteOnly ) ) {

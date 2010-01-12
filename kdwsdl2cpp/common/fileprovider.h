@@ -32,6 +32,7 @@ class Job;
 }
 class KJob;
 #endif
+class QUrl;
 
 class KXMLCOMMON_EXPORT FileProvider : QObject
 {
@@ -40,7 +41,7 @@ class KXMLCOMMON_EXPORT FileProvider : QObject
   public:
     FileProvider();
 
-    bool get( const QString &url, QString &target );
+    bool get( const QUrl &url, QString &target );
     void cleanUp();
 
 #ifdef KDAB_TEMP

@@ -81,20 +81,25 @@ void Creator::create( const KODE::Class::List &list )
 
   // Set generated header details.
   printer.setCreationWarning( true );
-  printer.setGenerator( QLatin1String( "kwsdl_compiler" ) );
+  printer.setGenerator( QLatin1String( "KDAB's kdwsdl2cpp" ) );
   printer.setSourceFile( Settings::self()->wsdlFileName() );
 
   const KODE::Class::List classes = sortByBaseClass( list );
 
   KODE::File file;
 
-  file.setFilename( Settings::self()->outputFileName() );
+  if (Settings::self()->generateImplementation())
+      file.setImplementationFilename( Settings::self()->outputFileName() );
+  else
+      file.setHeaderFilename( Settings::self()->outputFileName() );
 
   KODE::Class::List::ConstIterator it;
   for ( it = classes.constBegin(); it != classes.constEnd(); ++it ) {
-    file.insertClass( *it );
+      file.insertClass( *it );
   }
 
-  printer.printHeader( file );
-  printer.printImplementation( file );
+  if (Settings::self()->generateImplementation())
+      printer.printImplementation( file );
+  else
+      printer.printHeader( file );
 }

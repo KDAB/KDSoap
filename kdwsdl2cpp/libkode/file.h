@@ -60,14 +60,14 @@ class KODE_EXPORT File
     File& operator=( const File &other );
 
     /**
-     * Sets the @param filename of the file.
+     * Sets the @param filename of the cpp file.
      */
-    void setFilename( const QString &filename );
+    void setImplementationFilename( const QString &filename );
 
     /**
-     * Returns the filename of the file.
+     * Sets the @param filename of the header file.
      */
-    QString filename() const;
+    void setHeaderFilename( const QString &filename );
 
     /**
       Return filename of header file.

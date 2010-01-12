@@ -29,11 +29,12 @@ class File::Private
 {
   public:
     Private()
-      : mProject( "KDE" )
+      : mProject()
     {
     }
 
-    QString mFilename;
+    QString mHeaderFilename;
+    QString mImplFilename;
     QString mNameSpace;
     QString mProject;
     QStringList mCopyrightStrings;
@@ -73,32 +74,40 @@ File& File::operator=( const File &other )
   return *this;
 }
 
-void File::setFilename( const QString &filename )
+void File::setImplementationFilename( const QString &filename )
 {
-  d->mFilename = filename;
+  d->mImplFilename = filename;
 }
 
-QString File::filename() const
+void File::setHeaderFilename( const QString &filename )
 {
-  if ( !d->mFilename.isEmpty() )
-    return d->mFilename;
-
-  if ( !d->mClasses.isEmpty() ) {
-    QString className = d->mClasses[ 0 ].name();
-    return className.toLower();
-  }
-
-  return QString();
+  d->mHeaderFilename = filename;
 }
 
 QString File::filenameHeader() const
 {
-  return filename() + ".h";
+    if ( !d->mHeaderFilename.isEmpty() )
+      return d->mHeaderFilename;
+
+    if ( !d->mClasses.isEmpty() ) {
+      QString className = d->mClasses[ 0 ].name();
+      return className.toLower() + ".h";
+    }
+
+    return QString();
 }
 
 QString File::filenameImplementation() const
 {
-  return filename() + ".cpp";
+    if ( !d->mImplFilename.isEmpty() )
+      return d->mImplFilename;
+
+    if ( !d->mClasses.isEmpty() ) {
+      QString className = d->mClasses[ 0 ].name();
+      return className.toLower() + ".cpp";
+    }
+
+    return QString();
 }
 
 void File::setNameSpace( const QString &nameSpace )

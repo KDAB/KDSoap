@@ -47,7 +47,8 @@ class KODE_EXPORT License
     enum Type {
        GPL,
        LGPL,
-       BSD
+       BSD,
+       NoLicense
     };
 
     /**
