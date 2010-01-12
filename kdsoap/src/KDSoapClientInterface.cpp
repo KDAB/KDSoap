@@ -138,6 +138,9 @@ QBuffer* KDSoapClientInterface::Private::prepareRequestBuffer(const QString& met
     writer.writeStartElement(soapNS, QLatin1String("Envelope"));
     writer.writeAttribute(soapNS, QLatin1String("encodingStyle"), QLatin1String("http://schemas.xmlsoap.org/soap/encoding/"));
 
+    // TODO writer.writeStartElement(soapNS, QLatin1String("Header"));
+    // see commented out code in Converter::convertClientInputMessage
+
     writer.writeStartElement(soapNS, QLatin1String("Body"));
     writer.writeStartElement(this->messageNamespace, method);
 
