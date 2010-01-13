@@ -191,7 +191,7 @@ QString Printer::Private::classHeader( const Class &classObject, bool publicMemb
 
         decl += v.type();
 
-        if ( v.type().right( 1 ) != "*" && v.type().right( 1 ) != "&" )
+        //if ( v.type().right( 1 ) != "*" && v.type().right( 1 ) != "&" )
           decl += ' ';
 
         decl += v.name() + ';';
@@ -466,9 +466,9 @@ QString Printer::functionSignature( const Function &function,
   QString ret = function.returnType();
   if ( !ret.isEmpty() ) {
     s += ret;
-    if ( ret.right( 1 ) != "*" && ret.right( 1 ) != "&" ) {
+    //if ( ret.right( 1 ) != "*" && ret.right( 1 ) != "&" ) {
       s += ' ';
-    }
+    //}
   }
 
   if ( forImplementation )

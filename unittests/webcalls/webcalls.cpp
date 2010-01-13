@@ -2,7 +2,7 @@
 #include "KDSoapMessage.h"
 #include "KDSoapValue.h"
 #include "KDSoapPendingCallWatcher.h"
-#include "soapresponder.h"
+#include "wsdl_soapresponder.h"
 #include <QtTest/QtTest>
 #include <QEventLoop>
 #include <QDebug>
@@ -72,7 +72,7 @@ private slots:
     void testSoapResponder_sync()
     {
         SoapResponder responder;
-        QString ret = responder.Method1("abc", "def");
+        QString ret = responder.method1("abc", "def");
         QCOMPARE(ret, QString("Your input parameters are abc and def"));
     }
 
