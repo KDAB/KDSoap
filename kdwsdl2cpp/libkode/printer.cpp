@@ -260,7 +260,7 @@ QString Printer::Private::classImplementation( const Class &classObject, bool ne
 
     code += '{';
     if ( classObject.useDPointer() && !classObject.memberVariables().isEmpty() &&
-         f.name() == classObject.name() && f.arguments().isEmpty() ) {
+         f.name() == classObject.name() ) {
       code.indent();
       code += "d = new PrivateDPtr;";
       code.unindent();
@@ -441,11 +441,11 @@ void Printer::setSourceFile( const QString &sourceFile )
 
 QString Printer::functionSignature( const Function &function,
                                     const QString &className,
-                                    bool includeClassQualifier )
+                                    bool forImplementation )
 {
   QString s;
 
-  if ( function.isStatic() && !includeClassQualifier ) {
+  if ( function.isStatic() && !forImplementation ) {
     s += "static ";
   }
 
@@ -457,7 +457,7 @@ QString Printer::functionSignature( const Function &function,
     }
   }
 
-  if ( includeClassQualifier )
+  if ( forImplementation )
     s += d->mStyle.className( className ) + "::";
 
   if ( className == function.name() ) {
@@ -468,8 +468,8 @@ QString Printer::functionSignature( const Function &function,
   }
 
   s += '(';
-  if ( !function.arguments().isEmpty() )
-    s += ' ' + function.arguments().join( ", " ) + ' ';
+  if ( function.hasArguments() )
+    s += ' ' + function.arguments( forImplementation ).join( ", " ) + ' ';
   s += ')';
 
   if ( function.isConst() )
