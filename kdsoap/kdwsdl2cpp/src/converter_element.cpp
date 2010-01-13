@@ -30,7 +30,7 @@ void Converter::convertElement( const XSD::Element *element )
 
   newClass.addInclude( QString(), "Serializer" );
 
-  if ( mTypeMap.isBuildinType( element->type() ) ) {
+  if ( mTypeMap.isBuiltinType( element->type() ) ) {
     QString typeName = mTypeMap.localType( element->type() );
 
     KODE::Code ctorCode;

@@ -46,9 +46,9 @@ void Converter::convertClientService()
   newClass.addInclude("KDSoapPendingCallWatcher.h");
 
   // Variables (which will go into the d pointer)
-  KODE::MemberVariable clientInterface("m_clientInterface", "KDSoapClientInterface* ");
-  clientInterface.setInitializer("NULL");
-  newClass.addMemberVariable(clientInterface);
+  KODE::MemberVariable clientInterfaceVar("m_clientInterface", "KDSoapClientInterface*");
+  clientInterfaceVar.setInitializer("NULL");
+  newClass.addMemberVariable(clientInterfaceVar);
 
   KODE::MemberVariable lastReply("m_lastReply", "KDSoapMessage");
   newClass.addMemberVariable(lastReply);
@@ -56,10 +56,10 @@ void Converter::convertClientService()
   // Ctor and dtor
   {
       KODE::Function ctor( service.name() ); // TODO add QObject* parent = 0 argument
+      ctor.addArgument("QObject* parent", "0");
+      ctor.addInitializer("QObject(parent)");
       KODE::Function dtor( '~' + service.name() );
       KODE::Code ctorCode, dtorCode;
-
-      //ctorCode += "d = new Private(this);";
 
       ctor.setBody( ctorCode );
       newClass.addFunction( ctor );
@@ -69,8 +69,21 @@ void Converter::convertClientService()
       dtor.setBody( dtorCode );
       newClass.addFunction( dtor );
   }
+  // lastError() method
+  {
+      KODE::Function lastError("lastError", "QString");
+      KODE::Code code;
+      code += "if (d->m_lastReply.isFault())";
+      code.indent();
+      code += "return d->m_lastReply.faultAsString();";
+      code.unindent();
+      code += "return QString();";
+      lastError.setBody(code);
+      newClass.addFunction(lastError);
+  }
 
   const Port::List servicePorts = service.ports();
+  Q_ASSERT(servicePorts.count() == 1); // if 0, nothing to do, if >1, the loop below needs adjustments...
   Port::List::ConstIterator it;
   for ( it = servicePorts.begin(); it != servicePorts.end(); ++it ) {
     Binding binding = mWSDL.findBinding( (*it).bindingName() );
@@ -84,27 +97,53 @@ void Converter::convertClientService()
         webserviceLocation = address.location();
     }
 
+    // TODO: what if there are multiple ports?
+    // clientInterface() private method
+    {
+        KODE::Function clientInterface("clientInterface", "KDSoapClientInterface*", KODE::Function::Private);
+        KODE::Code code;
+        code += "if (!d->m_clientInterface) {";
+        code.indent();
+        code += "const QString endPoint = QString::fromLatin1(\"" + QLatin1String(webserviceLocation.toEncoded()) + "\");";
+        // TODO? see Parser::targetNamespace() code += "const QString messageNamespace = QString::fromLatin1(\"" +  + "\");";
+        code += "d->m_clientInterface = new KDSoapClientInterface(endPoint, QString() /*TODO*/);";
+        code.unindent();
+        code += "}";
+        code += "return d->m_clientInterface;";
+        clientInterface.setBody(code);
+        newClass.addFunction(clientInterface);
+    }
+
     PortType portType = mWSDL.findPortType( binding.portTypeName() );
     const Operation::List operations = portType.operations();
     Operation::List::ConstIterator opIt;
     for ( opIt = operations.begin(); opIt != operations.end(); ++opIt ) {
-      if ( (*opIt).operationType() == Operation::OneWayOperation ) {
-        convertClientInputMessage( *opIt, (*opIt).input(), binding, newClass );
-      } else if ( (*opIt).operationType() == Operation::RequestResponseOperation ) {
-        convertClientInputMessage( *opIt, (*opIt).input(), binding, newClass );
-        convertClientOutputMessage( *opIt, (*opIt).output(), binding, newClass );
-        // TODO fault
-      } else if ( (*opIt).operationType() == Operation::SolicitResponseOperation ) {
-        convertClientOutputMessage( *opIt, (*opIt).output(), binding, newClass );
-        convertClientInputMessage( *opIt, (*opIt).input(), binding, newClass );
-        // TODO fault
-      } else if ( (*opIt).operationType() == Operation::NotificationOperation ) {
-        convertClientOutputMessage( *opIt, (*opIt).output(), binding, newClass );
-      }
-
-      QString operationName = lowerlize( (*opIt).name() );
+        Operation::OperationType opType = (*opIt).operationType();
+        switch(opType) {
+        case Operation::OneWayOperation:
+            convertClientInputMessage( *opIt, (*opIt).input(), binding, newClass );
+            break;
+        case Operation::RequestResponseOperation: // the standard case
+            // sync method
+            convertClientCall( *opIt, binding, newClass );
+            // async method
+            convertClientInputMessage( *opIt, (*opIt).input(), binding, newClass );
+            convertClientOutputMessage( *opIt, (*opIt).output(), binding, newClass );
+            // TODO fault
+            break;
+        case Operation::SolicitResponseOperation:
+            convertClientOutputMessage( *opIt, (*opIt).output(), binding, newClass );
+            convertClientInputMessage( *opIt, (*opIt).input(), binding, newClass );
+            // TODO fault
+            break;
+        case Operation::NotificationOperation:
+            convertClientOutputMessage( *opIt, (*opIt).output(), binding, newClass );
+            break;
+        }
 
 #ifdef KDAB_TEMP
+      QString operationName = lowerlize( (*opIt).name() );
+
       KODE::MemberVariable transport( operationName + "Transport", "Transport*" );
       newClass.addMemberVariable( transport );
 
@@ -128,14 +167,9 @@ void Converter::convertClientService()
   mClasses.append(newClass);
 }
 
-void Converter::convertClientInputMessage( const Operation &operation, const Param &param,
-                                           const Binding &binding, KODE::Class &newClass )
-{
-  // call
-  QString operationName = lowerlize( operation.name() );
-  KODE::Function callFunc( mNameMapper.escape( operationName ), "void", KODE::Function::Public );
-
+// This code was in convertClientInputMessage
 #ifdef KDAB_TEMP
+{
   // handle soap header
   QString soapHeaderType;
   QString soapHeaderName;
@@ -171,37 +205,125 @@ void Converter::convertClientInputMessage( const Operation &operation, const Par
       }
     }
   }
+}
 #endif
 
-  const Message message = mWSDL.findMessage( param.message() );
+void Converter::clientAddArguments( KODE::Function& callFunc, const Message& message )
+{
+    const Part::List parts = message.parts();
+    Part::List::ConstIterator it;
+    for ( it = parts.begin(); it != parts.end(); ++it ) {
+        const QString lowerName = lowerlize( (*it).name() );
 
-  const Part::List parts = message.parts();
-  Part::List::ConstIterator it;
-  for ( it = parts.begin(); it != parts.end(); ++it ) {
-    const QString lowerName = lowerlize( (*it).name() );
-
-    QName type = (*it).type();
-    if ( !type.isEmpty() ) {
-      callFunc.addArgument( mTypeMap.localType( type ) + " " + mNameMapper.escape( lowerName ) );
-    } else {
-      callFunc.addArgument( mTypeMap.localTypeForElement( (*it).element() ) + " " + mNameMapper.escape( lowerName ) );
+        QName type = (*it).type();
+        if ( !type.isEmpty() ) {
+            callFunc.addArgument( mTypeMap.localType( type, true ) + " " + mNameMapper.escape( lowerName ) );
+        } else {
+            callFunc.addArgument( mTypeMap.localTypeForElement( (*it).element() ) + " " + mNameMapper.escape( lowerName ) );
+        }
     }
-  }
+}
 
+bool Converter::clientAddAction( KODE::Code& code, const Binding &binding, const QString& operationName )
+{
+    bool hasAction = false;
+    if ( binding.type() == Binding::SOAPBinding ) {
+        const SoapBinding soapBinding( binding.soapBinding() );
+        const SoapBinding::Operation::Map map = soapBinding.operations();
+        const SoapBinding::Operation op = map[ operationName ];
+        if (!op.action().isEmpty()) {
+            code += "const QString action = QString::fromLatin1(\"" + op.action() + "\");";
+            hasAction = true;
+        }
+    }
+    return hasAction;
+}
+
+void Converter::clientGenerateMessage( KODE::Code& code, const Message& message )
+{
+    code += "KDSoapMessage message;";
+    const Part::List parts = message.parts();
+    Part::List::ConstIterator it;
+    for ( it = parts.begin(); it != parts.end(); ++it ) {
+        const QString lowerName = lowerlize( (*it).name() );
+
+#ifdef KDAB_DELETED // what's the soapStyle stuff? (standard case is RPCStyle)
+        QString name, noNamespace;
+        if ( soapStyle == SoapBinding::RPCStyle ) {
+            name = (*it).name();
+            noNamespace = "true";
+        } else {
+            noNamespace = "false";
+            QName type = (*it).type();
+            if ( !type.isEmpty() ) {
+                name = mNSManager.fullName( type.nameSpace(), type.localName() );
+            } else {
+                name = mNSManager.fullName( (*it).element().nameSpace(), (*it).element().localName() );
+            }
+        }
+        code += "Serializer::marshal( doc, " + parentNode + ", \"" + name + "\", " + mNameMapper.escape( lowerName ) +
+                ", " + noNamespace + " );";
+        code += "delete " + mNameMapper.escape( lowerName ) + ';';
+#endif
+        code += "message.addArgument(QLatin1String(\"" + (*it).name() + "\"), " + lowerName + ");";
+    }
+}
+
+void Converter::convertClientCall( const Operation &operation, const Binding &binding, KODE::Class &newClass )
+{
+  QString operationName = lowerlize( operation.name() );
+  KODE::Function callFunc( mNameMapper.escape( operationName ), "void", KODE::Function::Public );
+  const Message inputMessage = mWSDL.findMessage( operation.input().message() );
+  const Message outputMessage = mWSDL.findMessage( operation.output().message() );
+  clientAddArguments( callFunc, inputMessage );
   KODE::Code code;
+  const bool hasAction = clientAddAction( code, binding, operation.name() );
+  clientGenerateMessage( code, inputMessage );
+  QString callLine = "d->m_lastReply = clientInterface()->call(QLatin1String(\"" + operationName + "\"), message";
+  if (hasAction) {
+      callLine += ", action";
+  }
+  callLine += ");";
+  code += callLine;
 
-  bool hasAction = false;
-  if ( binding.type() == Binding::SOAPBinding ) {
-    const SoapBinding soapBinding( binding.soapBinding() );
-    const SoapBinding::Operation::Map map = soapBinding.operations();
-    const SoapBinding::Operation op = map[ operation.name() ];
-    if (!op.action().isEmpty()) {
-        code += "const QString action = QString::fromLatin1(\"" + op.action() + "\");";
-        hasAction = true;
-    }
+  code += "if (d->m_lastReply.isFault())";
+  code.indent();
+  code += "return QString();";
+  code.unindent();
+
+  // Return value(s) :
+  const Part::List outParts = outputMessage.parts();
+  if (outParts.count() > 1)
+      qWarning().nospace() << "ERROR: " << operationName << ": complex return types are not implemented yet";
+  QString retType;
+  Part::List::ConstIterator it;
+  for ( it = outParts.begin(); it != outParts.end(); ++it ) {
+      //const QString lowerName = lowerlize( (*it).name() );
+      QName type = (*it).type();
+      if ( !type.isEmpty() ) {
+          retType = mTypeMap.localType( type );
+          callFunc.setReturnType( retType );
+      }
   }
 
-  code += "KDSoapMessage message;";
+  code += QString("return d->m_lastReply.arguments().first().value().value<%1>();").arg(retType);
+
+  callFunc.setBody( code );
+
+  newClass.addFunction( callFunc );
+}
+
+void Converter::convertClientInputMessage( const Operation &operation, const Param &param,
+                                           const Binding &binding, KODE::Class &newClass )
+{
+  QString operationName = lowerlize( operation.name() );
+  KODE::Function asyncFunc( "async" + upperlize( operationName ), "void", KODE::Function::Public );
+
+  const Message message = mWSDL.findMessage( param.message() );
+  clientAddArguments(asyncFunc, message);
+  KODE::Code code;
+  const bool hasAction = clientAddAction( code, binding, operation.name() );
+  clientGenerateMessage( code, message );
 
   // TODO remove mNSManager?
 #ifdef KDAB_TEMP
@@ -221,38 +343,24 @@ void Converter::convertClientInputMessage( const Operation &operation, const Par
   }
 #endif
 
-  for ( it = parts.begin(); it != parts.end(); ++it ) {
-    const QString lowerName = lowerlize( (*it).name() );
-
-#ifdef KDAB_DELETED // what's the soapStyle stuff?
-    QString name, noNamespace;
-    if ( soapStyle == SoapBinding::RPCStyle ) {
-      name = (*it).name();
-      noNamespace = "true";
-    } else {
-      noNamespace = "false";
-      QName type = (*it).type();
-      if ( !type.isEmpty() ) {
-        name = mNSManager.fullName( type.nameSpace(), type.localName() );
-      } else {
-        name = mNSManager.fullName( (*it).element().nameSpace(), (*it).element().localName() );
-      }
-    }
-    code += "Serializer::marshal( doc, " + parentNode + ", \"" + name + "\", " + mNameMapper.escape( lowerName ) +
-            ", " + noNamespace + " );";
-    code += "delete " + mNameMapper.escape( lowerName ) + ';';
-#endif
-    code += "message.addArgument(QLatin1String(\"" + (*it).name() + "\"), " + lowerName + ");";
+  QString callLine = "KDSoapPendingCall pendingCall = clientInterface()->asyncCall(QLatin1String(\"" + operationName + "\"), message";
+  if (hasAction) {
+      callLine += ", action";
   }
+  callLine += ");";
+  code += callLine;
+
+  code += "KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);";
+  code += "connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher*)),\n"
+          "        this, SLOT(_kd_slotMethod1Finished(KDSoapPendingCallWatcher*)));";
 
 #ifdef KDAB_DELETED
-  code += "qDebug( \"%s\", qPrintable( doc.toString() ) );";
   KODE::MemberVariable transport( operationName + "Transport", "Transport*" );
   code += transport.name() + "->query( doc.toString(), " + header + " );";
 #endif
-  callFunc.setBody( code );
+  asyncFunc.setBody( code );
 
-  newClass.addFunction( callFunc );
+  newClass.addFunction( asyncFunc );
 }
 
 void Converter::convertClientOutputMessage( const Operation &operation, const Param &param,
@@ -284,7 +392,7 @@ void Converter::convertClientOutputMessage( const Operation &operation, const Pa
     QString partType;
     QName type = parts[ i ].type();
     if ( !type.isEmpty() ) {
-      partType = mTypeMap.localType( type );
+      partType = mTypeMap.localType( type, true );
     } else {
       partType = mTypeMap.localTypeForElement( parts[ i ].element() );
     }

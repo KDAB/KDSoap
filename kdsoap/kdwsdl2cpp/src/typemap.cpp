@@ -69,7 +69,7 @@ TypeMap::TypeMap()
     entry.typeName = "base64Binary";
     entry.localType = "QByteArray";
     entry.headers << "QByteArray";
-    entry.forwardDeclarations << "QString";
+    entry.forwardDeclarations << "QByteArray"; // was QString ?!
     mTypeMap.append( entry );
   }
   {
@@ -205,7 +205,7 @@ TypeMap::TypeMap()
     entry.buildinType = true;
     entry.nameSpace = XMLSchemaURI;
     entry.typeName = "string";
-    entry.localType = "const QString&";
+    entry.localType = "QString";
     entry.headers << "QString";
     entry.forwardDeclarations << "QString";
     mTypeMap.append( entry );
@@ -289,7 +289,7 @@ bool TypeMap::isBasicType( const QName &typeName )
   return false;
 }
 
-bool TypeMap::isBuildinType( const QName &typeName )
+bool TypeMap::isBuiltinType( const QName &typeName )
 {
   QList<Entry>::ConstIterator it;
   for ( it = mTypeMap.constBegin(); it != mTypeMap.constEnd(); ++it ) {
@@ -300,12 +300,15 @@ bool TypeMap::isBuildinType( const QName &typeName )
   return false;
 }
 
-QString TypeMap::localType( const QName &typeName )
+QString TypeMap::localType( const QName &typeName, bool inputParam )
 {
   QList<Entry>::ConstIterator it;
   for ( it = mTypeMap.constBegin(); it != mTypeMap.constEnd(); ++it ) {
     if ( (*it).typeName == typeName.localName() && (*it).nameSpace == typeName.nameSpace() ) {
-      return (*it).localType;
+      QString type = (*it).localType;
+      if (inputParam && type.startsWith('Q'))
+          return "const " + type + "&";
+      return type;
     }
   }
 
