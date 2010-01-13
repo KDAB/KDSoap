@@ -2,6 +2,7 @@
     This file is part of kdepim.
 
     Copyright (c) 2004 Cornelius Schumacher <schumacher@kde.org>
+    Copyright (c) 2009 David Faure <dfaure@kdab.com>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Library General Public
@@ -124,17 +125,24 @@ class KODE_EXPORT Function
     /**
      * Adds an @param argument to the function.
      */
-    void addArgument( const QString &argument );
+    void addArgument( const QString &argument, const QString& defaultValue = QString() );
 
     /**
      * Sets the complete argument string of the function.
+     * This method does not support default values currently.
      */
     void setArgumentString( const QString &argumentString );
 
     /**
      * Returns the list of all arguments.
+     * @param forImplementation if true, default values are omitted
      */
-    QStringList arguments() const;
+    QStringList arguments( bool forImplementation ) const;
+
+    /**
+     * @return whether the function has any arguments
+     */
+    bool hasArguments() const;
 
     /**
      * Adds an initializer to the function.

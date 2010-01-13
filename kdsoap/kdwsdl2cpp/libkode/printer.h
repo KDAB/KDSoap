@@ -106,12 +106,12 @@ class KODE_EXPORT Printer
      * Returns the function signature for the given @param function
      * with class name @param className.
      *
-     * If @param includeClassQualifier is true, the class qualifier
-     * is part of the signature as well.
+     * If @param forImplementation is true, the class qualifier
+     * is part of the signature as well, and default args are removed.
      */
     QString functionSignature( const Function &function,
                                const QString &className = QString(),
-                               bool includeClassQualifier = false );
+                               bool forImplementation = false );
 
   protected:
     /**

@@ -2,6 +2,7 @@
     This file is part of kdepim.
 
     Copyright (c) 2004 Cornelius Schumacher <schumacher@kde.org>
+    Copyright (c) 2009 David Faure <dfaure@kdab.com>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Library General Public
@@ -33,12 +34,21 @@ class Function::FunctionPrivate
     {
     }
 
+    class Argument
+    {
+    public:
+        Argument(const QString& name, const QString& value)
+            : mArgName(name), mArgDefaultValue(value) {}
+        QString mArgName;
+        QString mArgDefaultValue;
+    };
+
     int mAccess;
     bool mIsConst;
     bool mIsStatic;
     QString mReturnType;
     QString mName;
-    QStringList mArguments;
+    QList<Argument> mArguments;
     QStringList mInitializers;
     QString mBody;
     QString mDocs;
@@ -100,9 +110,9 @@ bool Function::isStatic() const
   return d->mIsStatic;
 }
 
-void Function::addArgument( const QString &argument )
+void Function::addArgument( const QString &argument, const QString& defaultValue )
 {
-  d->mArguments.append( argument );
+  d->mArguments.append( FunctionPrivate::Argument(argument, defaultValue) );
 }
 
 void Function::setArgumentString( const QString &argumentString )
@@ -111,13 +121,23 @@ void Function::setArgumentString( const QString &argumentString )
 
   const QStringList arguments = argumentString.split( "," );
   QStringList::ConstIterator it;
-  for ( it = arguments.constBegin(); it != arguments.constEnd(); ++it )
+  for ( it = arguments.constBegin(); it != arguments.constEnd(); ++it ) {
     addArgument( *it );
+  }
 }
 
-QStringList Function::arguments() const
+QStringList Function::arguments( bool forImplementation ) const
 {
-  return d->mArguments;
+  QStringList lst;
+  Q_FOREACH(const FunctionPrivate::Argument& arg, d->mArguments) {
+      QString argStr = arg.mArgName;
+      if (!forImplementation && !arg.mArgDefaultValue.isEmpty()) {
+          argStr += " = " + arg.mArgDefaultValue;
+      }
+      lst << argStr;
+  }
+
+  return lst;
 }
 
 void Function::addInitializer( const QString &initializer )
@@ -209,4 +229,9 @@ void Function::setDocs( const QString &docs )
 QString Function::docs() const
 {
   return d->mDocs;
+}
+
+bool KODE::Function::hasArguments() const
+{
+  return !d->mArguments.isEmpty();
 }
