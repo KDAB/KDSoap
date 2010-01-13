@@ -100,8 +100,6 @@ QString Printer::Private::classHeader( const Class &classObject, bool publicMemb
     code.newLine();
   }
 
-  Function::List functions = classObject.functions();
-
   Class::List nestedClasses = classObject.nestedClasses();
   // Generate nestedclasses
   if ( !classObject.nestedClasses().isEmpty() ) {
@@ -140,6 +138,8 @@ QString Printer::Private::classHeader( const Class &classObject, bool publicMemb
     code.unindent();
     code.newLine();
   }
+
+  Function::List functions = classObject.functions();
 
   code.addBlock( functionHeaders( functions, classObject.name(), Function::Public ) );
 
@@ -223,9 +223,21 @@ QString Printer::Private::classImplementation( const Class &classObject, bool ne
     Class privateClass( functionClassName + "::PrivateDPtr" );
     MemberVariable::List vars = classObject.memberVariables();
     MemberVariable::List::ConstIterator it;
-    for ( it = vars.constBegin(); it != vars.constEnd(); ++it )
-      privateClass.addMemberVariable( *it );
-    code += classHeader( privateClass, true );
+    Function ctor("PrivateDPtr");
+    bool hasInitializers = false;
+    for ( it = vars.constBegin(); it != vars.constEnd(); ++it ) {
+        MemberVariable v = *it;
+        privateClass.addMemberVariable( v );
+        if ( !v.initializer().isEmpty() ) {
+            ctor.addInitializer( v.name() + '(' + v.initializer() + ')' );
+            hasInitializers = true;
+        }
+    }
+    if (hasInitializers)
+        privateClass.addFunction(ctor);
+    code += classHeader( privateClass, true /*publicMembers*/ );
+    if (hasInitializers)
+        code += classImplementation( privateClass );
   }
 
   MemberVariable::List vars = classObject.memberVariables();
@@ -255,7 +267,9 @@ QString Printer::Private::classImplementation( const Class &classObject, bool ne
     code += mParent->functionSignature( f, functionClassName, true );
 
     if ( !f.initializers().isEmpty() ) {
+      code.indent();
       code += ": " + f.initializers().join( ", " );
+      code.unindent();
     }
 
     code += '{';
