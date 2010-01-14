@@ -2,6 +2,7 @@
     This file is part of kdepim.
 
     Copyright (c) 2004 Cornelius Schumacher <schumacher@kde.org>
+    Copyright (c) 2010 David Faure <dfaure@kdab.com>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Library General Public
@@ -251,10 +252,10 @@ QString Printer::Private::classImplementation( const Class &classObject, bool ne
             hasInitializers = true;
         }
     }
-    if (hasInitializers)
-        privateClass.addFunction(ctor);
+    if ( hasInitializers )
+        privateClass.addFunction( ctor );
     code += classHeader( privateClass, true /*publicMembers*/ );
-    if (hasInitializers)
+    if ( hasInitializers )
         code += classImplementation( privateClass );
   }
 
@@ -791,3 +792,25 @@ void Printer::printImplementation( const File &file, bool createHeaderInclude )
 
   implementation.close();
 }
+
+#if 0 // TODO: port to cmake
+void Printer::printAutoMakefile( const AutoMakefile &am )
+{
+  QString filename = "Makefile.am";
+
+  if ( !d->mOutputDirectory.isEmpty() )
+    filename.prepend( d->mOutputDirectory + '/' );
+
+//  KSaveFile::simpleBackupFile( filename, QString(), ".backup" );
+
+  QFile file( filename );
+  if ( !file.open( QIODevice::WriteOnly ) ) {
+    qWarning( "Can't open '%s' for writing.", qPrintable( filename ) );
+    return;
+  }
+
+  QTextStream ts( &file );
+
+  ts << am.text();
+}
+#endif
