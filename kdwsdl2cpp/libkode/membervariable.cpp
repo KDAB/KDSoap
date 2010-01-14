@@ -49,20 +49,17 @@ MemberVariable::MemberVariable( const QString &name, const QString &type,
 
   if ( name.isEmpty() ) {
     n = "mUndefined";
-#ifdef KDAB_DELETED // don't force a naming scheme on your users
   } else if ( name.length() >= 2  && name[ 0 ] == QChar( 'm' ) &&
               ( name[ 1 ].toUpper() == name[ 1 ] ) ) {
+    n = name;
+  } else if ( name == "q" || name == "d" ) {
     n = name;
   } else {
     n = "m";
     n += name[ 0 ].toUpper();
     n += name.mid( 1 );
   }
-#else
-  } else {
-    n = name;
-  }
-#endif
+
   setName( n );
 }
 
