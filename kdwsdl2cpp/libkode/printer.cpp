@@ -164,14 +164,20 @@ QString Printer::Private::classHeader( const Class &classObject, bool publicMemb
 
   if ( !classObject.memberVariables().isEmpty() ) {
     Function::List::ConstIterator it;
+    // Do we have any private function?
+    bool hasPrivateFunc = false;
+    bool hasPrivateSlot = false;
     for ( it = functions.constBegin(); it != functions.constEnd(); ++it ) {
-      if ( (*it).access() == Function::Private )
-        break;
+        if ( (*it).access() == Function::Private ) {
+            hasPrivateFunc = true;
+        } else if ( (*it).access() == (Function::Private | Function::Slot) ) {
+            hasPrivateSlot = true;
+        }
     }
 
     if ( publicMembers )
       code += "public:";
-    else if ( it == functions.constEnd() )
+    else if ( !hasPrivateFunc || hasPrivateSlot )
       code += "private:";
 
     code.indent();

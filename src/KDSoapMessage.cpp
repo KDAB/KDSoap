@@ -51,9 +51,9 @@ bool KDSoapMessage::isFault() const
 QString KDSoapMessage::faultAsString() const
 {
     return QObject::tr("Fault code: %1\nFault description: %2 (%3)")
-            .arg(d->args.findByName(QLatin1String("faultcode")).toString())
-            .arg(d->args.findByName(QLatin1String("faultstring")).toString())
-            .arg(d->args.findByName(QLatin1String("faultactor")).toString());
+            .arg(d->args.value(QLatin1String("faultcode")).toString())
+            .arg(d->args.value(QLatin1String("faultstring")).toString())
+            .arg(d->args.value(QLatin1String("faultactor")).toString());
 }
 
 void KDSoapMessage::setFault(bool fault)
