@@ -20,19 +20,24 @@
 */
 
 #include <common/messagehandler.h>
+#include <common/nsmanager.h>
 #include <common/parsercontext.h>
+#include <QDebug>
 
 #include "binding.h"
 
 using namespace KWSDL;
 
+static QString soapStandardNamespace = "http://schemas.xmlsoap.org/wsdl/soap/";
+static QString httpStandardNamespace = "http://schemas.xmlsoap.org/wsdl/http/";
+
 Binding::Binding()
-  : mType( SOAPBinding )
+  : mType( UnknownBinding )
 {
 }
 
 Binding::Binding( const QString &nameSpace )
-  : Element( nameSpace ), mType( SOAPBinding )
+  : Element( nameSpace ), mType( UnknownBinding )
 {
 }
 
@@ -53,8 +58,6 @@ void Binding::loadXML( ParserContext *context, const QDomElement &element )
     if ( mPortTypeName.nameSpace().isEmpty() )
       mPortTypeName.setNameSpace( nameSpace() );
 
-  mSoapBinding.parseBinding( context, element );
-
   QDomElement child = element.firstChildElement();
   while ( !child.isNull() ) {
     QName tagName = child.tagName();
@@ -62,6 +65,14 @@ void Binding::loadXML( ParserContext *context, const QDomElement &element )
       BindingOperation operation( nameSpace() );
       operation.loadXML( &mSoapBinding, context, child );
       mOperations.append( operation );
+    } else if ( child.tagName() == context->namespaceManager()->fullName( soapStandardNamespace, "binding" ) ) {
+      mType = SOAPBinding;
+      mSoapBinding.parseBinding( context, child );
+    } else if ( child.tagName() == context->namespaceManager()->fullName( httpStandardNamespace, "binding" ) ) {
+      mType = HTTPBinding;
+      // TODO HTTPBinding
+    } else {
+      // TODO MIMEBinding
     }
 
     child = child.nextSiblingElement();
@@ -131,10 +142,12 @@ Binding::Type Binding::type() const
   return mType;
 }
 
+#if 0
 void Binding::setSoapBinding( const SoapBinding &soapBinding )
 {
   mSoapBinding = soapBinding;
 }
+#endif
 
 SoapBinding Binding::soapBinding() const
 {
@@ -145,6 +158,6 @@ const AbstractBinding *Binding::binding() const
 {
   if ( mType == SOAPBinding )
     return &mSoapBinding;
-  else
+  else // TODO HTTPBinding and MIMEBinding
     return 0;
 }

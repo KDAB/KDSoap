@@ -32,10 +32,7 @@ void NSManager::setPrefix( const QString &prefix, const QString &uri )
 
 QString NSManager::prefix( const QString &uri ) const
 {
-  if ( mMap.contains( uri ) )
-    return mMap[ uri ];
-  else
-    return QString();
+  return mMap.value( uri );
 }
 
 QString NSManager::uri( const QString &prefix ) const

@@ -83,7 +83,6 @@ void Converter::convertClientService()
   }
 
   const Port::List servicePorts = service.ports();
-  Q_ASSERT(servicePorts.count() == 1); // if 0, nothing to do, if >1, the loop below needs adjustments...
   Port::List::ConstIterator it;
   for ( it = servicePorts.begin(); it != servicePorts.end(); ++it ) {
     Binding binding = mWSDL.findBinding( (*it).bindingName() );
@@ -95,9 +94,12 @@ void Converter::convertClientService()
       const SoapBinding::Address address = soapBinding.address();
       if ( address.location().isValid() )
         webserviceLocation = address.location();
+    } else {
+        // ignore non-SOAP bindings, like HTTP GET and HTTP POST
+        continue;
     }
 
-    // TODO: what if there are multiple ports?
+    // TODO: what if there are multiple soap ports?
     // clientInterface() private method
     {
         KODE::Function clientInterface("clientInterface", "KDSoapClientInterface*", KODE::Function::Private);
@@ -115,6 +117,7 @@ void Converter::convertClientService()
     }
 
     PortType portType = mWSDL.findPortType( binding.portTypeName() );
+    //qDebug() << portType.name();
     const Operation::List operations = portType.operations();
     Operation::List::ConstIterator opIt;
     for ( opIt = operations.begin(); opIt != operations.end(); ++opIt ) {
@@ -141,25 +144,9 @@ void Converter::convertClientService()
             break;
         }
 
-#ifdef KDAB_TEMP
+#ifdef KDAB_DELETED
       QString operationName = lowerlize( (*opIt).name() );
-
-      KODE::MemberVariable transport( operationName + "Transport", "Transport*" );
-      newClass.addMemberVariable( transport );
-
       ctorCode += transport.name() + " = new Transport( \"" + webserviceLocation.toString() + "\" );";
-      ctorCode += "connect( " + transport.name() + ", SIGNAL( result( const QString& ) ),";
-      ctorCode.indent();
-      ctorCode += "this, SLOT( " + operationName + "Slot( const QString& ) ) );";
-      ctorCode.unindent();
-      ctorCode += "connect( " + transport.name() + ", SIGNAL( error( const QString& ) ),";
-      ctorCode.indent();
-      ctorCode += "this, SLOT( " + operationName + "ErrorSlot( const QString& ) ) );";
-      ctorCode.unindent();
-
-
-      dtorCode += "delete " + transport.name() + ';';
-      dtorCode += transport.name() + " = 0;";
 #endif
     }
   }

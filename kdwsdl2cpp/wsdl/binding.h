@@ -45,7 +45,8 @@ class KWSDL_EXPORT Binding : public Element
     {
       SOAPBinding,
       HTTPBinding,
-      MIMEBinding
+      MIMEBinding,
+      UnknownBinding
     };
 
     Binding();
@@ -64,7 +65,7 @@ class KWSDL_EXPORT Binding : public Element
     void setOperations( const BindingOperation::List &operations );
     BindingOperation::List operations() const;
 
-    void setSoapBinding( const SoapBinding &soapBinding );
+    //void setSoapBinding( const SoapBinding &soapBinding );
     SoapBinding soapBinding() const;
 
     const AbstractBinding *binding() const;
