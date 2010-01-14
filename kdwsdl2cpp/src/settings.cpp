@@ -89,7 +89,6 @@ QString Settings::outputFileName() const
 {
     if (mOutputFileName.isEmpty()) {
         QFileInfo fi(wsdlFileName());
-        qDebug() << wsdlFileName() << "->" << fi.completeBaseName();
         return "wsdl_" + fi.completeBaseName() + (mImpl ? ".cpp" : ".h");
     }
 
