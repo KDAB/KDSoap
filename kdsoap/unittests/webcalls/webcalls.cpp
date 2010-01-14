@@ -79,8 +79,8 @@ private slots:
     void testSoapResponder_async()
     {
         SoapResponder responder;
-        QSignalSpy spyDone(&responder, SIGNAL(Method1Done(QString)));
-        connect(&responder, SIGNAL(Method1Done(QString)), &m_eventLoop, SLOT(quit()));
+        QSignalSpy spyDone(&responder, SIGNAL(method1Done(QString)));
+        connect(&responder, SIGNAL(method1Done(QString)), &m_eventLoop, SLOT(quit()));
         responder.asyncMethod1("abc", "def");
         m_eventLoop.exec();
         QCOMPARE(spyDone.count(), 1);
