@@ -23,6 +23,7 @@
 #include <common/nsmanager.h>
 #include <common/parsercontext.h>
 
+#include <QDebug>
 #include "soapbinding.h"
 
 using namespace KWSDL;
@@ -724,14 +725,7 @@ SoapBinding::Binding SoapBinding::binding() const
 
 void SoapBinding::parseBinding( ParserContext *context, const QDomElement &parent )
 {
-  QDomElement child = parent.firstChildElement();
-  while ( !child.isNull() ) {
-    if ( child.tagName() == soapPrefix( context ) + "binding" ) {
-      mBinding.loadXML( context, child );
-    }
-
-    child = child.nextSiblingElement();
-  }
+  mBinding.loadXML( context, parent );
 }
 
 void SoapBinding::parseOperation( ParserContext *context, const QString &name, const QDomElement &parent )

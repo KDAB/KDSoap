@@ -78,8 +78,8 @@ void Port::loadXML( ParserContext *context, Binding::List *bindings, const QDomE
       AbstractBinding *binding = const_cast<AbstractBinding*>( (*bindings)[i].binding() );
       if ( binding )
         binding->parsePort( context, element );
-      else
-        context->messageHandler()->error( "No binding set" );
+      //else // ignore unimplemented bindings
+      //  context->messageHandler()->error( "No binding set" );
     }
   }
 }
@@ -105,8 +105,8 @@ void Port::saveXML( ParserContext *context, const Binding::List *bindings, QDomD
 
       if ( binding )
         binding->synthesizePort( context, document, element );
-      else
-        context->messageHandler()->error( "No binding set" );
+      //else // ignore unimplemented bindings
+      //  context->messageHandler()->error( "No binding set" );
     }
   }
 }
