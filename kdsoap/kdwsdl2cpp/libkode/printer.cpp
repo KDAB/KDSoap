@@ -1,5 +1,5 @@
 /*
-    This file was part of kdepim.
+    This file is part of kdepim.
 
     Copyright (c) 2004 Cornelius Schumacher <schumacher@kde.org>
 

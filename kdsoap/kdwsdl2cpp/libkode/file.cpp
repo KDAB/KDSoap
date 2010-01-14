@@ -74,6 +74,12 @@ File& File::operator=( const File &other )
   return *this;
 }
 
+void File::setFilename( const QString& filename )
+{
+  d->mImplFilename = filename + ".cpp";
+  d->mHeaderFilename = filename + ".h";
+}
+
 void File::setImplementationFilename( const QString &filename )
 {
   d->mImplFilename = filename;
