@@ -25,7 +25,7 @@ class KDSoapValueList : public QList<KDSoapValue>
 public:
 
     // for the case where the name is unique
-    QVariant findByName(const QString& name) const {
+    QVariant value(const QString& name) const {
         const_iterator it = begin();
         const const_iterator e = end();
         for ( ; it != e; ++it) {

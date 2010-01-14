@@ -43,7 +43,7 @@ void Converter::convertClientService()
   // Files included in the impl, with optional forward-declarations in the header
   newClass.addInclude("KDSoapMessage.h", "KDSoapMessage");
   newClass.addInclude("KDSoapClientInterface.h", "KDSoapClientInterface");
-  newClass.addInclude("KDSoapPendingCallWatcher.h");
+  newClass.addInclude("KDSoapPendingCallWatcher.h", "KDSoapPendingCallWatcher");
 
   // Variables (which will go into the d pointer)
   KODE::MemberVariable clientInterfaceVar("m_clientInterface", "KDSoapClientInterface*");
@@ -316,7 +316,7 @@ void Converter::convertClientCall( const Operation &operation, const Binding &bi
 void Converter::convertClientInputMessage( const Operation &operation, const Param &param,
                                            const Binding &binding, KODE::Class &newClass )
 {
-  QString operationName = lowerlize( operation.name() );
+  QString operationName = operation.name();
   KODE::Function asyncFunc( "async" + upperlize( operationName ), "void", KODE::Function::Public );
 
   const Message message = mWSDL.findMessage( param.message() );
@@ -350,17 +350,15 @@ void Converter::convertClientInputMessage( const Operation &operation, const Par
   callLine += ");";
   code += callLine;
 
-  code += "KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);";
-  code += "connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher*)),\n"
-          "        this, SLOT(_kd_slotMethod1Finished(KDSoapPendingCallWatcher*)));";
+  if (operation.operationType() == Operation::RequestResponseOperation) {
+      const QString finishedSlotName = "_kd_slot" + upperlize(operationName) + "Finished";
 
-#ifdef KDAB_DELETED
-  KODE::MemberVariable transport( operationName + "Transport", "Transport*" );
-  code += transport.name() + "->query( doc.toString(), " + header + " );";
-#endif
-  asyncFunc.setBody( code );
-
-  newClass.addFunction( asyncFunc );
+      code += "KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);";
+      code += "connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher*)),\n"
+              "        this, SLOT(" + finishedSlotName + "(KDSoapPendingCallWatcher*)));";
+      asyncFunc.setBody( code );
+      newClass.addFunction( asyncFunc );
+  }
 }
 
 void Converter::convertClientOutputMessage( const Operation &operation, const Param &param,
@@ -374,194 +372,67 @@ void Converter::convertClientOutputMessage( const Operation &operation, const Pa
 
   // result signal
   QString operationName = lowerlize( operation.name() );
-  KODE::Function respSignal( operationName + "Response", "void", KODE::Function::Signal );
-
-  respSignal.setDocs( "This signal is emitted whenever the call to " + operationName+ "() succeeded." );
-
-  // If one output message is used by two input messages, don't define
-  // it twice.
-  if ( newClass.hasFunction( respSignal.name() ) )
-    return;
-
-  KODE::Code code;
-
-  const Message message = mWSDL.findMessage( param.message() );
-
-  const Part::List parts = message.parts();
-  for ( int i = 0; i < parts.count(); ++i ) {
-    QString partType;
-    QName type = parts[ i ].type();
-    if ( !type.isEmpty() ) {
-      partType = mTypeMap.localType( type, true );
-    } else {
-      partType = mTypeMap.localTypeForElement( parts[ i ].element() );
-    }
-
-    QString lowerName = mNameMapper.escape( lowerlize( parts[ i ].name() ) );
-
-    respSignal.addArgument( partType + " " + lowerName );
-
-#ifdef KDAB_TEMP // initialization of local var
-    code += partType + " " + lowerName + " = 0;";
-#endif
-  }
-  code.newLine();
-
-  newClass.addFunction( respSignal );
+  KODE::Function doneSignal( operationName + "Done", "void", KODE::Function::Signal );
+  doneSignal.setDocs( "This signal is emitted whenever the call to " + operationName+ "() succeeded." );
 
   // error signal
   KODE::Function errorSignal( operationName + "Error", "void", KODE::Function::Signal );
   errorSignal.addArgument( "const KDSoapMessage& fault" );
   errorSignal.setDocs( "This signal is emitted whenever the call to " + operationName + "() failed." );
 
-  newClass.addFunction( errorSignal );
+  // finished slot
+  const QString finishedSlotName = "_kd_slot" + upperlize(operationName) + "Finished";
+  KODE::Function finishedSlot( finishedSlotName, "void", KODE::Function::Slot | KODE::Function::Private );
+  finishedSlot.addArgument( "KDSoapPendingCallWatcher* watcher" );
 
-#ifdef KDAB_DELETED
-  // result slot
-  KODE::Function respSlot( operationName + "Slot", "void", KODE::Function::Slot | KODE::Function::Private );
-  respSlot.addArgument( "const QString &xml" );
+  // If one output message is used by two input messages, don't define
+  // it twice.
+  // DF: what if the arguments are different? ...
+  //if ( newClass.hasFunction( respSignal.name() ) )
+  //  return;
 
-  code += "QDomDocument doc;";
-  code += "QString errorMsg;";
-  code += "int column, row;";
-  code.newLine();
-  code += "qDebug( \"%s\", qPrintable( xml ) );";
-  code.newLine();
-  code += "if ( !doc.setContent( xml, true, &errorMsg, &row, &column ) ) {";
-  code.indent();
-  code += "qDebug( \"Unable to parse xml: %s (%d:%d)\", qPrintable( errorMsg ), row, column );";
-  code += "return;";
-  code.unindent();
-  code += '}';
-  code.newLine();
-  code += "QDomElement envelope = doc.documentElement();";
-  code += "QDomElement body = envelope.firstChild().toElement();";
+  const Message message = mWSDL.findMessage( param.message() );
 
-  if ( soapStyle == SoapBinding::RPCStyle ) {
-    code += "QDomElement method = body.firstChild().toElement();";
-    code += "if ( method.tagName() == \"Fault\" ) {";
-    code.indent();
-    code += "SoapFault *fault = new SoapFault;";
-    code += "Serializer::demarshal( method, fault );";
-    code += "emit " + errorSignal.name() + "( fault );";
-    code.unindent();
-    code += "} else {";
-    code.indent();
-    code += "QDomNode node = method.firstChild();";
-    code += "while ( !node.isNull() ) {";
-    code.indent();
-    code += "QDomElement element = node.toElement();";
-    code += "if ( !element.isNull() ) {";
-    code.indent();
-
-    QStringList partNames;
-    for ( int i = 0; i < parts.count(); ++i ) {
-      QString partType;
-
-      QName type = parts[ i ].type();
-      if ( !type.isEmpty() ) {
-        partType = mTypeMap.localType( type );
-      } else {
-        partType = mTypeMap.localTypeForElement( parts[ i ].element() );
-      }
-
-      QString lowerName = mNameMapper.escape( lowerlize( parts[ i ].name() ) );
-      partNames << lowerName;
-
-      code += "if ( element.tagName() == \"" + parts[ i ].name() + "\" ) {";
-      code.indent();
-      code += lowerName + " = new " + partType + "();";
-      code += "Serializer::demarshal( method.firstChild().toElement(), " + lowerName + " );";
-      code.unindent();
-      code += '}';
+  QStringList partNames;
+  const Part::List parts = message.parts();
+  for ( int i = 0; i < parts.count(); ++i ) {
+    QString partType, signaturePartType;
+    QName type = parts[ i ].type();
+    if ( !type.isEmpty() ) {
+      signaturePartType = mTypeMap.localType( type, true ); // e.g. const QString&
+      partType = mTypeMap.localType( type ); // e.g. QString
+    } else {
+      signaturePartType = mTypeMap.localTypeForElement( parts[ i ].element() ); // TODO ,true
+      partType = mTypeMap.localTypeForElement( parts[ i ].element() );
     }
-    code.unindent();
-    code += '}';
-    code.newLine();
-    code += "node = node.nextSibling();";
-    code.unindent();
-    code += '}';
-    code.newLine();
-    code += "emit " + respSignal.name() + "( " + partNames.join( "," ) + " );";
-    code.unindent();
-    code += '}';
-  } else { // soapStyle == SoapBinding::DocumentStyle
-    code += "QDomElement method = body.firstChild().toElement();";
-    code += "if ( method.tagName() == \"Fault\" ) {";
-    code.indent();
-    code += "SoapFault *fault = new SoapFault;";
-    code += "Serializer::demarshal( method, fault );";
-    code += "emit " + errorSignal.name() + "( fault );";
-    code.unindent();
-    code += "} else {";
-    code.indent();
-    code += "QDomNode node = body.firstChild();";
-    code += "while ( !node.isNull() ) {";
-    code.indent();
-    code += "QDomElement element = node.toElement();";
-    code += "if ( !element.isNull() ) {";
-    code.indent();
 
-    code += "if ( element.tagName() == \"Fault\" ) {";
-    code.indent();
-    code += "SoapFault *fault = new SoapFault;";
-    code += "Serializer::demarshal( element, fault );";
-    code += "emit " + errorSignal.name() + "( fault );";
-    code += "return;";
-    code.unindent();
-    code += '}';
+    QString lowerName = mNameMapper.escape( lowerlize( parts[ i ].name() ) );
 
-    QStringList partNames;
-    for ( int i = 0; i < parts.count(); ++i ) {
-      QString partType;
+    doneSignal.addArgument( signaturePartType + " " + lowerName );
+    partNames << "args.value(\"" + lowerName + "\").value<" + partType + ">()";
 
-      QName type = parts[ i ].type();
-      if ( !type.isEmpty() ) {
-        partType = mTypeMap.localType( type );
-      } else {
-        partType = mTypeMap.localTypeForElement( parts[ i ].element() );
-      }
-
-      QString lowerName = mNameMapper.escape( lowerlize( parts[ i ].name() ) );
-      partNames << lowerName;
-
-      code += "if ( element.tagName() == \"" + parts[ i ].name() + "\" ) {";
-      code.indent();
-      code += lowerName + " = new " + partType + "();";
-      code += "Serializer::demarshal( method.firstChild().toElement(), " + lowerName + " );";
-      code.unindent();
-      code += '}';
-    }
-    code.unindent();
-    code += '}';
-    code.newLine();
-    code += "node = node.nextSibling();";
-    code.unindent();
-    code += '}';
-    code.newLine();
-    code += "emit " + respSignal.name() + "( " + partNames.join( "," ) + " );";
-    code.unindent();
-    code += '}';
+#ifdef KDAB_TEMP // initialization of local var
+    code += partType + " " + lowerName + " = 0;";
+#endif
   }
 
-  respSlot.setBody( code );
+  newClass.addFunction( doneSignal );
+  newClass.addFunction( errorSignal );
 
-  newClass.addFunction( respSlot );
-#endif
+  KODE::Code slotCode;
+  slotCode += "KDSoapMessage reply = watcher->returnArguments();";
+  slotCode += "if (reply.isFault()) {";
+  slotCode.indent();
+  slotCode += "emit " + errorSignal.name() + "(reply);";
+  slotCode.unindent();
+  slotCode += "} else {";
+  slotCode.indent();
+  slotCode += "KDSoapValueList args = reply.arguments();";
+  slotCode += "emit " + doneSignal.name() + "( " + partNames.join( "," ) + " );";
+  slotCode.unindent();
+  slotCode += '}';
 
-#ifdef KDAB_TEMP
-  // error slot
-  KODE::Function errorSlot( operationName + "ErrorSlot", "void", KODE::Function::Slot | KODE::Function::Private );
-  errorSlot.addArgument( "const QString &msg" );
-  code.clear();
+  finishedSlot.setBody(slotCode);
 
-  code += "SoapFault *fault = new SoapFault;";
-  code += "fault->setCode( \"Connection Error\" );";
-  code += "fault->setDescription( msg );";
-  code += "emit " + errorSignal.name() + "( fault );";
-
-  errorSlot.setBody( code );
-
-  newClass.addFunction( errorSlot );
-#endif
+  newClass.addFunction(finishedSlot);
 }
