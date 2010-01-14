@@ -33,8 +33,8 @@ void Converter::convertClientService()
 
   KODE::Class newClass( service.name() );
   newClass.setUseDPointer(true);
-  //const QString priv = service.name() + "Private";
   newClass.addBaseClass( mQObject );
+  newClass.setDocs(service.documentation());
 
   // Files included in the header
   newClass.addHeaderInclude( "QObject" );
@@ -318,7 +318,6 @@ void Converter::convertClientInputMessage( const Operation &operation, const Par
   const bool hasAction = clientAddAction( code, binding, operation.name() );
   clientGenerateMessage( code, message );
 
-  // TODO remove mNSManager?
 #ifdef KDAB_TEMP
   const QStringList prefixes = mNSManager.prefixes();
   for ( int i = 0; i < prefixes.count(); ++i )

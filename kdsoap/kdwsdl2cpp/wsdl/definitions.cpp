@@ -155,6 +155,8 @@ void Definitions::loadXML( ParserContext *context, const QDomElement &element )
       mBindings.append( binding );
     } else if ( tagName.localName() == "service" ) {
       mService.loadXML( context, &mBindings, child );
+    } else if ( tagName.localName() == "documentation" ) {
+      // ignore documentation for now
     } else {
       context->messageHandler()->warning( QString( "Definitions: unknown tag %1" ).arg( child.tagName() ) );
     }
