@@ -2,3 +2,4 @@ This is a copy of libkode from KDE (playground/pim/kode, as of 11/01/2010, svn r
 Changes:
 * Removed automakefile.*
 * Ported to qmake
+* Many contributions to the code, applied upstream as well.
