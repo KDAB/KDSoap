@@ -79,6 +79,7 @@ void Converter::convertClientService()
       code.unindent();
       code += "return QString();";
       lastError.setBody(code);
+      lastError.setDocs("Return the error from the last blocking call.\nEmpty if no error.");
       newClass.addFunction(lastError);
   }
 
@@ -260,6 +261,7 @@ void Converter::convertClientCall( const Operation &operation, const Binding &bi
 {
   QString operationName = lowerlize( operation.name() );
   KODE::Function callFunc( mNameMapper.escape( operationName ), "void", KODE::Function::Public );
+  callFunc.setDocs(QString("Blocking call to %1.\nNot recommended in a GUI thread.").arg(operation.name()));
   const Message inputMessage = mWSDL.findMessage( operation.input().message() );
   const Message outputMessage = mWSDL.findMessage( operation.output().message() );
   clientAddArguments( callFunc, inputMessage );
@@ -305,7 +307,11 @@ void Converter::convertClientInputMessage( const Operation &operation, const Par
 {
   QString operationName = operation.name();
   KODE::Function asyncFunc( "async" + upperlize( operationName ), "void", KODE::Function::Public );
-
+  asyncFunc.setDocs(QString("Asynchronous call to %1.\n"
+                            "Remember to connect to %2 and %3.")
+                    .arg(operation.name())
+                    .arg(lowerlize(operationName) + "Done")
+                    .arg(lowerlize(operationName) + "Error"));
   const Message message = mWSDL.findMessage( param.message() );
   clientAddArguments(asyncFunc, message);
   KODE::Code code;
