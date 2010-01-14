@@ -41,6 +41,7 @@ class Printer::Private
     Code functionHeaders( const Function::List &functions,
                           const QString &className,
                           int access );
+    QString formatType( const QString& type ) const;
 
     Printer *mParent;
     Style mStyle;
@@ -49,6 +50,20 @@ class Printer::Private
     QString mOutputDirectory;
     QString mSourceFile;
 };
+
+QString Printer::Private::formatType( const QString& type ) const
+{
+  QString s = type;
+  if ( s.endsWith( '*' ) || s.endsWith( '&' ) ) {
+      if ( s.at( s.length() - 2 ) != ' ' ) {
+          // Turn "Foo*" into "Foo *" for readability
+          s.insert( s.length() - 1, ' ' );
+      }
+  } else {
+      s += ' ';
+  }
+  return s;
+}
 
 QString Printer::Private::classHeader( const Class &classObject, bool publicMembers, bool nestedClass )
 {
@@ -195,10 +210,7 @@ QString Printer::Private::classHeader( const Class &classObject, bool publicMemb
         if ( v.isStatic() )
           decl += "static ";
 
-        decl += v.type();
-
-        //if ( v.type().right( 1 ) != "*" && v.type().right( 1 ) != "&" )
-          decl += ' ';
+        decl += formatType( v.type() );
 
         decl += v.name() + ';';
 
@@ -471,10 +483,7 @@ QString Printer::functionSignature( const Function &function,
 
   QString ret = function.returnType();
   if ( !ret.isEmpty() ) {
-    s += ret;
-    //if ( ret.right( 1 ) != "*" && ret.right( 1 ) != "&" ) {
-      s += ' ';
-    //}
+    s += d->formatType( ret );
   }
 
   if ( forImplementation )
