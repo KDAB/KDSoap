@@ -21,12 +21,18 @@
 
 #include "nsmanager.h"
 
+#include <QDebug>
+
+// maybe port to QXmlNamespaceSupport?
+
 NSManager::NSManager()
 {
 }
 
 void NSManager::setPrefix( const QString &prefix, const QString &uri )
 {
+  // Note that it's allowed to have two prefixes for the same namespace uri.
+  //qDebug() << "NSManager::setPrefix" << uri << "->" << prefix;
   mMap.insert( uri, prefix );
 }
 
@@ -37,13 +43,7 @@ QString NSManager::prefix( const QString &uri ) const
 
 QString NSManager::uri( const QString &prefix ) const
 {
-  QMap<QString, QString>::ConstIterator it;
-  for ( it = mMap.begin(); it != mMap.end(); ++it ) {
-    if ( it.value() == prefix )
-      return it.key();
-  }
-
-  return QString();
+  return mMap.key( prefix ); // linear search
 }
 
 void NSManager::splitName( const QString &qname, QString &prefix, QString &localname ) const
