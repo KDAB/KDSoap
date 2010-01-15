@@ -401,7 +401,7 @@ void Converter::convertClientOutputMessage( const Operation &operation, const Pa
   //  return;
 
   KODE::Code slotCode;
-  slotCode += "const KDSoapMessage reply = watcher->returnArguments();";
+  slotCode += "const KDSoapMessage reply = watcher->returnMessage();";
   slotCode += "if (reply.isFault()) {";
   slotCode.indent();
   slotCode += "emit " + errorSignal.name() + "(reply);";
