@@ -54,7 +54,7 @@ class KXMLCOMMON_EXPORT NSManager
     void dump() const;
 
   private:
-    QMap<QString, QString> mMap;
+    QMultiMap<QString, QString> mMap;
 };
 
 #endif
