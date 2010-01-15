@@ -72,6 +72,8 @@ void PortType::loadXML( ParserContext *context, const QDomElement &element )
       Operation operation( nameSpace() );
       operation.loadXML( context, child );
       mOperations.append( operation );
+    } else if ( tagName.localName() == "documentation") {
+      setDocumentation( child.text().trimmed() );
     } else {
       context->messageHandler()->warning( QString( "PortType: unknown tag %1" ).arg( child.tagName() ) );
     }
