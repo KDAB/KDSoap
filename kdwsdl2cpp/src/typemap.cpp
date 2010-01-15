@@ -170,14 +170,11 @@ TypeMap::TypeMap()
     entry.typeName = "integer";
     entry.localType = "int";
     mTypeMap.append( entry );
-  }
-  {
-    Entry entry;
-    entry.basicType = true;
-    entry.buildinType = true;
-    entry.nameSpace = XMLSchemaURI;
+
     entry.typeName = "int";
-    entry.localType = "int";
+    mTypeMap.append( entry );
+
+    entry.typeName = "nonPositiveInteger";
     mTypeMap.append( entry );
   }
   {
@@ -236,15 +233,6 @@ TypeMap::TypeMap()
     entry.basicType = true;
     entry.buildinType = true;
     entry.nameSpace = XMLSchemaURI;
-    entry.typeName = "unsignedInt";
-    entry.localType = "unsigned int";
-    mTypeMap.append( entry );
-  }
-  {
-    Entry entry;
-    entry.basicType = true;
-    entry.buildinType = true;
-    entry.nameSpace = XMLSchemaURI;
     entry.typeName = "unsignedLong";
     entry.localType = "unsigned long";
     mTypeMap.append( entry );
@@ -256,6 +244,12 @@ TypeMap::TypeMap()
     entry.nameSpace = XMLSchemaURI;
     entry.typeName = "positiveInteger";
     entry.localType = "unsigned int";
+    mTypeMap.append( entry );
+
+    entry.typeName = "nonNegativeInteger";
+    mTypeMap.append( entry );
+
+    entry.typeName = "unsignedInt";
     mTypeMap.append( entry );
   }
   {
@@ -305,7 +299,11 @@ bool TypeMap::isBuiltinType( const QName &typeName )
 QString TypeMap::localType( const QName &typeName )
 {
   QList<Entry>::ConstIterator it = typeEntry( typeName );
-  return it != mTypeMap.constEnd() ? (*it).localType : QString();
+  if ( it == mTypeMap.constEnd() ) {
+      qDebug() << "basic type not found:" << typeName.qname();
+      return QString();
+  }
+  return (*it).localType;
 }
 
 QStringList TypeMap::headers( const QName &typeName )
