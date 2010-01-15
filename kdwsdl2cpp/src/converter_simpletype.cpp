@@ -21,6 +21,8 @@
 
 #include "converter.h"
 
+#include <QDebug>
+
 using namespace KWSDL;
 
 static QString escapeEnum( const QString& );
@@ -30,6 +32,7 @@ static KODE::Code createRangeCheckCode( const XSD::SimpleType*, const QString&, 
 void Converter::convertSimpleType( const XSD::SimpleType *type )
 {
   const QString typeName( mTypeMap.localType( type->qualifiedName() ) );
+  qDebug() << "convertSimpleType:" << type->qualifiedName().qname() << typeName;
   KODE::Class newClass( typeName );
 
   newClass.addInclude( QString(), "Serializer" );
@@ -98,6 +101,7 @@ void Converter::convertSimpleType( const XSD::SimpleType *type )
 
       const QName baseName = type->baseTypeName();
       const QString typeName = mTypeMap.localType( baseName );
+      Q_ASSERT(!typeName.isEmpty());
 
       classDocumentation += "Whenever you have to pass an object of type " + newClass.name() +
                             " you can also pass the value directly (e.g. someMethod( (" + typeName + "*)value  )).";

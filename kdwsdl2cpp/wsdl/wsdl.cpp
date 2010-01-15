@@ -20,6 +20,7 @@
 */
 
 #include "wsdl.h"
+#include <QDebug>
 
 using namespace KWSDL;
 
@@ -46,7 +47,7 @@ void WSDL::setNamespaceManager( const NSManager &namespaceManager )
   mNamespaceManager = namespaceManager;
 }
 
-NSManager WSDL::namespaceManager() const
+const NSManager& WSDL::namespaceManager() const
 {
   return mNamespaceManager;
 }
@@ -97,11 +98,13 @@ Message WSDL::findMessage( const QName &messageName ) const
   const Message::List list = mDefinitions.messages();
   Message::List::ConstIterator it;
   for ( it = list.constBegin(); it != list.constEnd(); ++it ) {
+    //qDebug() << (*it).name() << (*it).nameSpace();
     if ( (*it).name() == messageName.localName() && (*it).nameSpace() == messageName.nameSpace() ) {
       return *it;
     }
   }
-  qDebug( "findMessage: no match found for '%s'!", qPrintable( messageName.qname() ) );
+  qDebug() << "findMessage: no match found for" << messageName.qname()
+          << "(localName=" << messageName.localName() << " nameSpace=" << messageName.nameSpace() << ")";
 
   return Message();
 }

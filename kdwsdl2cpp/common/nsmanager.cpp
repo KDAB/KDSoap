@@ -33,7 +33,9 @@ void NSManager::setPrefix( const QString &prefix, const QString &uri )
 {
   // Note that it's allowed to have two prefixes for the same namespace uri.
   //qDebug() << "NSManager::setPrefix" << uri << "->" << prefix;
-  mMap.insert( uri, prefix );
+  if ( !mMap.contains( uri, prefix ) ) {
+    mMap.insert( uri, prefix );
+  }
 }
 
 QString NSManager::prefix( const QString &uri ) const
