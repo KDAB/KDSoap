@@ -72,6 +72,8 @@ void Message::loadXML( ParserContext *context, const QDomElement &element )
       Part part( nameSpace() );
       part.loadXML( context, child );
       mParts.append( part );
+    } else if ( tagName.localName() == "documentation") {
+      setDocumentation( child.text().trimmed() );
     } else {
       context->messageHandler()->warning( QString( "Message: unknown tag %1" ).arg( child.tagName() ) );
     }
