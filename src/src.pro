@@ -24,7 +24,8 @@ SOURCES = KDSoapMessage.cpp \
     KDSoapClientInterface.cpp \
     KDSoapPendingCall.cpp \
     KDSoapPendingCallWatcher.cpp \
-    KDSoapClientThread.cpp
+    KDSoapClientThread.cpp \
+    KDSoapValue.cpp
 DEFINES += KDSOAP_BUILD_KDSOAP_LIB
 
 # installation targets:

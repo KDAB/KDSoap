@@ -47,7 +47,7 @@ class Converter
     void convertTypes();
 
     void convertComplexType( const XSD::ComplexType* );
-    void createComplexTypeSerializer( const XSD::ComplexType* );
+    void createComplexTypeSerializer( KODE::Class&, const XSD::ComplexType* );
 
     void convertSimpleType( const XSD::SimpleType* );
     void createSimpleTypeSerializer( const XSD::SimpleType* );
@@ -63,7 +63,7 @@ class Converter
     void convertClientCall( const Operation&, const Binding&, KODE::Class& );
     void convertClientInputMessage( const Operation&, const Param&, const Binding&, KODE::Class& );
     void convertClientOutputMessage( const Operation&, const Param&, const Binding&, KODE::Class& );
-    void clientAddArguments( KODE::Function& callFunc, const Message& message );
+    void clientAddArguments( KODE::Function& callFunc, const Message& message, KODE::Class& );
     bool clientAddAction( KODE::Code& code, const Binding &binding, const QString& operationName );
     void clientGenerateMessage( KODE::Code& code, const Message& message );
 

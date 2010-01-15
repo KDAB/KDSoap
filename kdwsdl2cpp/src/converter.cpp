@@ -22,6 +22,7 @@
 #include "settings.h"
 
 #include "converter.h"
+#include <QDebug>
 
 using namespace KWSDL;
 
@@ -102,23 +103,28 @@ void Converter::convert()
 
 void Converter::convertTypes()
 {
-#ifdef KDAB_TEMP
+  // This is only used in "Document" style, to create the classes representing the types defined in the XSD.
+  // It is not needed/used in "rpc" style.
+
   const XSD::Types types = mWSDL.definitions().type().types();
 
   XSD::ComplexType::List complexTypes = types.complexTypes();
+  qDebug() << "Converting" << complexTypes.count() << "complex types";
   for ( int i = 0; i < complexTypes.count(); ++i )
     convertComplexType( &(complexTypes[ i ]) );
 
   XSD::SimpleType::List simpleTypes = types.simpleTypes();
+  qDebug() << "Converting" << simpleTypes.count() << "simple types";
   for ( int i = 0; i < simpleTypes.count(); ++i )
     convertSimpleType( &(simpleTypes[ i ]) );
 
   XSD::Attribute::List attributes = types.attributes();
+  qDebug() << "Converting" << attributes.count() << "attributes";
   for ( int i = 0; i < attributes.count(); ++i )
     convertAttribute( &(attributes[ i ]) );
 
   XSD::Element::List elements = types.elements();
+  qDebug() << "Converting" << elements.count() << "elements";
   for ( int i = 0; i < elements.count(); ++i )
     convertElement( &(elements[ i ]) );
-#endif
 }

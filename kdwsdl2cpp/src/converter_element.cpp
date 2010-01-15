@@ -20,6 +20,7 @@
 */
 
 #include "converter.h"
+#include <QDebug>
 
 using namespace KWSDL;
 
@@ -28,7 +29,7 @@ void Converter::convertElement( const XSD::Element *element )
   const QString className( mTypeMap.localTypeForElement( QName( element->nameSpace(), element->name() ) ) );
   KODE::Class newClass( className );
 
-  newClass.addInclude( QString(), "Serializer" );
+  //newClass.addInclude( QString(), "Serializer" );
 
   if ( mTypeMap.isBuiltinType( element->type() ) ) {
     QString typeName = mTypeMap.localType( element->type() );
@@ -105,10 +106,10 @@ void Converter::convertElement( const XSD::Element *element )
 
 void Converter::createElementSerializer( const XSD::Element *element )
 {
-    Q_UNUSED(element);
-#ifdef KDAB_DELETED
   QString className( mTypeMap.localTypeForElement( QName( element->nameSpace(), element->name() ) ) );
+  //qDebug() << "would create serializer for" << className << mTypeMap.forwardDeclarationsForElement( element->qualifiedName() );
 
+#ifdef KDAB_DELETED
   // include header
   mSerializer.addIncludes( QStringList(), mTypeMap.forwardDeclarationsForElement( element->qualifiedName() ) );
 

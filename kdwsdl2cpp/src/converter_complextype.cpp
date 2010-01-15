@@ -21,6 +21,8 @@
 
 #include "converter.h"
 
+#include <QDebug>
+
 using namespace KWSDL;
 
 void Converter::convertComplexType( const XSD::ComplexType *type )
@@ -28,7 +30,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
   const QString typeName( mTypeMap.localType( type->qualifiedName() ) );
   KODE::Class newClass( typeName );
 
-  newClass.addInclude( QString(), "Serializer" );
+  newClass.addInclude( QString(), "KDSoapValueList" );
 
   KODE::Code ctorBody;
   KODE::Code dtorBody;
@@ -45,6 +47,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
 
       // include header
       newClass.addIncludes( QStringList(), mTypeMap.forwardDeclarations( baseName ) );
+      newClass.addHeaderIncludes( mTypeMap.headerIncludes( baseName ) );
 
       // member variables
       KODE::MemberVariable variable( "value", typeName + '*' );
@@ -105,29 +108,29 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
     QString typeName = mTypeMap.localType( (*elemIt).type() );
 
     if ( (*elemIt).maxOccurs() > 1 )
-      typeName = "QList<" + typeName + "*>";
+      typeName = "QList<" + typeName + ">";
 
     // member variables
-    KODE::MemberVariable variable( (*elemIt).name(), typeName + '*' );
+    KODE::MemberVariable variable( (*elemIt).name(), typeName );
     newClass.addMemberVariable( variable );
 
-    ctorBody += variable.name() + " = 0;";
-    if ( (*elemIt).maxOccurs() > 1 ) {
-      dtorBody += "qDeleteAll( *" + variable.name() + " );";
-      dtorBody += variable.name() + "->clear();";
-    }
-    dtorBody += "delete " + variable.name() + "; " + variable.name() + " = 0;";
+    //ctorBody += variable.name() + " = 0;";
+    //if ( (*elemIt).maxOccurs() > 1 ) {
+      //dtorBody += "qDeleteAll( *" + variable.name() + " );";
+      //dtorBody += variable.name() + ".clear();";
+    //}
+    //dtorBody += "delete " + variable.name() + "; " + variable.name() + " = 0;";
 
-    QString upperName = upperlize( (*elemIt).name() );
-    QString lowerName = lowerlize( (*elemIt).name() );
+    const QString upperName = upperlize( (*elemIt).name() );
+    const QString lowerName = lowerlize( (*elemIt).name() );
 
     // setter method
     KODE::Function setter( "set" + upperName, "void" );
-    setter.addArgument( typeName + " *" + mNameMapper.escape( lowerName ) );
+    setter.addArgument( mTypeMap.inputType( typeName, false ) + ' ' + mNameMapper.escape( lowerName ) );
     setter.setBody( variable.name() + " = " + mNameMapper.escape( lowerName ) + ';' );
 
     // getter method
-    KODE::Function getter( mNameMapper.escape( lowerName ), typeName + '*' );
+    KODE::Function getter( mNameMapper.escape( lowerName ), typeName );
     getter.setBody( "return " + variable.name() + ';' );
     getter.setConst( true );
 
@@ -136,11 +139,12 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
 
     // include header
     newClass.addIncludes( QStringList(), mTypeMap.forwardDeclarations( (*elemIt).type() ) );
+    newClass.addHeaderIncludes( mTypeMap.headerIncludes( (*elemIt).type() ) );
     if ( (*elemIt).maxOccurs() > 1 )
       newClass.addHeaderIncludes( QStringList( "QList" ) );
   }
 
-  // attributes
+  // attributes - TODO test and port
   XSD::Attribute::List attributes = type->attributes();
   XSD::Attribute::List::ConstIterator attrIt;
   for ( attrIt = attributes.constBegin(); attrIt != attributes.constEnd(); ++attrIt ) {
@@ -181,11 +185,12 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
 
     // include header
     newClass.addIncludes( QStringList(), mTypeMap.forwardDeclarations( (*attrIt).type() ) );
+    newClass.addHeaderIncludes( mTypeMap.headerIncludes( (*attrIt).type() ) );
     if ( isArray )
       newClass.addHeaderIncludes( QStringList( "QList" ) );
   }
 
-  createComplexTypeSerializer( type );
+  createComplexTypeSerializer( newClass, type );
 
   KODE::Function ctor( upperlize( newClass.name() ) );
   ctor.setBody( ctorBody );
@@ -198,8 +203,77 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
   mClasses.append( newClass );
 }
 
-void Converter::createComplexTypeSerializer( const XSD::ComplexType *type )
+void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::ComplexType *type )
 {
+    KODE::Function serializeFunc( "serialize", "void" );
+    serializeFunc.addArgument( "KDSoapValueList& args" );
+    serializeFunc.setConst( true );
+
+    KODE::Function deserializeFunc( "deserialize", "void" );
+    deserializeFunc.addArgument( "const KDSoapValueList& args" );
+
+    KODE::Code marshalCode, demarshalCode;
+
+    if ( type->baseTypeName() != XmlAnyType && !type->baseTypeName().isEmpty() && !type->isArray() ) {
+        qDebug() << "TODO: handle marshalling/demarshalling of base types";
+    }
+
+    // elements
+    XSD::Element::List elements = type->elements();
+
+    if ( !elements.isEmpty() ) {
+        demarshalCode += "for (int argNr = 0; argNr < args.count(); ++argNr) {";
+        demarshalCode.indent();
+        demarshalCode += "const KDSoapValue& val = args.at(argNr);";
+        demarshalCode += "const QString name = val.name();";
+        demarshalCode += "const QVariant value = val.value();";
+    }
+
+    Q_FOREACH( const XSD::Element& elem, elements ) {
+
+        const QString typeName = mTypeMap.localType( elem.type() );
+        KODE::MemberVariable variable( elem.name(), typeName ); // was already added; this is just for the naming
+        //const QString upperName = upperlize( elem.name() );
+        //const QString lowerName = lowerlize( elem.name() );
+
+        demarshalCode += "if (name == \"" + elem.name() + "\") {";
+        demarshalCode.indent();
+
+        if ( elem.maxOccurs() > 1 ) {
+            //const QString typePrefix = mNSManager.prefix( elem.type().nameSpace() );
+
+            marshalCode += "for (int i = 0; i < " + variable.name() + ".count(); ++i) {";
+            marshalCode.indent();
+            marshalCode += "args.append(KDSoapValue(\"" + elem.name() + "\", " + variable.name() + ".at(i)));";
+            marshalCode.unindent();
+            marshalCode += '}';
+
+            demarshalCode += variable.name() + ".append(value.value<" + typeName + ">());";
+        } else {
+            marshalCode += "args.append(KDSoapValue(\"" + elem.name() + "\", " + variable.name() + "));";
+
+            demarshalCode += variable.name() + " = value.value<" + typeName + ">();";
+        }
+
+        demarshalCode.unindent();
+        demarshalCode += "}";
+    }
+
+    if ( !type->attributes().isEmpty() ) {
+        qDebug() << "TODO: handling marshalling of attributes";
+    }
+
+    serializeFunc.setBody( marshalCode );
+    newClass.addFunction( serializeFunc );
+
+    if ( !elements.isEmpty() ) {
+        demarshalCode.unindent();
+        demarshalCode += "}";
+    }
+
+    deserializeFunc.setBody( demarshalCode );
+    newClass.addFunction( deserializeFunc );
+
     Q_UNUSED(type);
 #ifdef KDAB_DELETED
   const QString typeName = mTypeMap.localType( type->qualifiedName() );

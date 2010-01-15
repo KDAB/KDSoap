@@ -103,6 +103,7 @@ void Converter::convertSimpleType( const XSD::SimpleType *type )
                             " you can also pass the value directly (e.g. someMethod( (" + typeName + "*)value  )).";
       // include header
       newClass.addIncludes( QStringList(), mTypeMap.forwardDeclarations( baseName ) );
+      newClass.addHeaderIncludes( mTypeMap.headerIncludes( baseName ) );
 
       // member variables
       KODE::MemberVariable variable( "value", typeName + '*' );
@@ -181,6 +182,7 @@ void Converter::convertSimpleType( const XSD::SimpleType *type )
 
     // include header
     newClass.addIncludes( QStringList(), mTypeMap.forwardDeclarations( baseName ) );
+    newClass.addHeaderIncludes( mTypeMap.headerIncludes( baseName ) );
 
     // member variables
     KODE::MemberVariable variable( "entries", "QList<" + typeName + "*>*" );

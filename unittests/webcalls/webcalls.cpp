@@ -22,6 +22,28 @@ public slots:
 
 private slots:
 
+    // Soap in RPC mode; using WSDL-generated class
+    // http://www.soapclient.com/soapclient?fn=soapform&template=/clientform.html&soaptemplate=/soapresult.html&soapwsdl=http://soapclient.com/xml/soapresponder.wsdl
+    void testSoapResponder_sync()
+    {
+        SoapResponder responder;
+        QString ret = responder.method1("abc", "def");
+        QCOMPARE(ret, QString("Your input parameters are abc and def"));
+    }
+
+    void testSoapResponder_async()
+    {
+        SoapResponder responder;
+        QSignalSpy spyDone(&responder, SIGNAL(method1Done(QString)));
+        connect(&responder, SIGNAL(method1Done(QString)), &m_eventLoop, SLOT(quit()));
+        responder.asyncMethod1("abc", "def");
+        m_eventLoop.exec();
+        QCOMPARE(spyDone.count(), 1);
+        QCOMPARE(spyDone[0][0].toString(), QString("Your input parameters are abc and def"));
+    }
+
+    // Soap in Document mode.
+
     void testAddIntegers_async()
     {
         const QString endPoint = QString::fromLatin1("http://www.mathertel.de/AJAXEngine/S02_AJAXCoreSamples/CalcService.asmx");
@@ -50,6 +72,7 @@ private slots:
         QCOMPARE(ret.arguments().first().value().toInt(), 85);
     }
 
+
     void testHolidays()
     {
         const int year = 2009;
@@ -65,26 +88,6 @@ private slots:
         m_eventLoop.exec();
         // TODO how are we supposed to know / tell that it's a datetime?
         QCOMPARE(m_returnValue, QVariant("2009-02-14T00:00:00.0000000-05:00"));
-    }
-
-    //  http://www.soapclient.com/soapclient?fn=soapform&template=/clientform.html&soaptemplate=/soapresult.html&soapwsdl=http://soapclient.com/xml/soapresponder.wsdl
-
-    void testSoapResponder_sync()
-    {
-        SoapResponder responder;
-        QString ret = responder.method1("abc", "def");
-        QCOMPARE(ret, QString("Your input parameters are abc and def"));
-    }
-
-    void testSoapResponder_async()
-    {
-        SoapResponder responder;
-        QSignalSpy spyDone(&responder, SIGNAL(method1Done(QString)));
-        connect(&responder, SIGNAL(method1Done(QString)), &m_eventLoop, SLOT(quit()));
-        responder.asyncMethod1("abc", "def");
-        m_eventLoop.exec();
-        QCOMPARE(spyDone.count(), 1);
-        QCOMPARE(spyDone[0][0].toString(), QString("Your input parameters are abc and def"));
     }
 
     void testFault()

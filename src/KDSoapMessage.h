@@ -17,9 +17,24 @@ public:
     KDSoapMessage(const KDSoapMessage& other);
     KDSoapMessage &operator=(const KDSoapMessage &other);
 
+    /**
+     * Adds an argument to the message.
+     *
+     * Equivalent to arguments().append(KDSoapValue(argumentName, argumentValue));
+     */
     void addArgument(const QString& argumentName, const QVariant& argumentValue);
 
-    KDSoapValueList arguments() const;
+    /**
+     * Returns the arguments for the message.
+     * The list can be modified, in order to modify the message.
+     */
+    KDSoapValueList& arguments();
+
+    /**
+     * Returns the arguments for the message.
+     * The list is readonly; useful for inspecting a response.
+     */
+    const KDSoapValueList& arguments() const;
 
     bool isFault() const;
     QString faultAsString() const;
