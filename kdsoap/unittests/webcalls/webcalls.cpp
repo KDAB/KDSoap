@@ -58,6 +58,7 @@ private slots:
         m_eventLoop.exec();
         QVERIFY(!m_returnMessage.isFault());
         QCOMPARE(m_returnMessage.arguments().first().value().toInt(), 85);
+        QCOMPARE(watcher->returnValue().toInt(), 85);
     }
 
     void testAddIntegers_sync()

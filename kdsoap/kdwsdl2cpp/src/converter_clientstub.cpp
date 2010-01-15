@@ -108,8 +108,8 @@ void Converter::convertClientService()
         code += "if (!d->m_clientInterface) {";
         code.indent();
         code += "const QString endPoint = QString::fromLatin1(\"" + QLatin1String(webserviceLocation.toEncoded()) + "\");";
-        // TODO? see Parser::targetNamespace() code += "const QString messageNamespace = QString::fromLatin1(\"" +  + "\");";
-        code += "d->m_clientInterface = new KDSoapClientInterface(endPoint, QString() /*TODO*/);";
+        code += "const QString messageNamespace = QString::fromLatin1(\"" + mWSDL.definitions().targetNamespace() + "\");";
+        code += "d->m_clientInterface = new KDSoapClientInterface(endPoint, messageNamespace);";
         code.unindent();
         code += "}";
         code += "return d->m_clientInterface;";
