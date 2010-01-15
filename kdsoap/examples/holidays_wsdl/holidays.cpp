@@ -15,9 +15,9 @@ int main(int argc, char **argv)
     qDebug("Looking up the date of easter in %i...", year);
 
     USHolidayDates holidays;
-    NS7__GetValentinesDayElement parameters;
+    TNS__GetValentinesDayElement parameters;
     parameters.setYear(year);
-    NS7__GetValentinesDayResponseElement response = holidays.getValentinesDay(parameters);
+    TNS__GetValentinesDayResponseElement response = holidays.getValentinesDay(parameters);
 
     qDebug("%s", qPrintable(response.getValentinesDayResult().toString()));
 

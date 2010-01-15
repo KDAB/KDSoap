@@ -24,6 +24,7 @@
 #include <common/parsercontext.h>
 
 #include "definitions.h"
+#include <QDebug>
 
 using namespace KWSDL;
 
@@ -128,6 +129,7 @@ void Definitions::loadXML( ParserContext *context, const QDomElement &element )
     QDomAttr attribute = attributes.item( i ).toAttr();
     if ( attribute.name().startsWith( "xmlns:" ) ) {
       QString prefix = attribute.name().mid( 6 );
+      //qDebug() << "Setting prefix" << prefix << "for ns" << attribute.value();
       context->namespaceManager()->setPrefix( prefix, attribute.value() );
     }
   }
@@ -144,6 +146,7 @@ void Definitions::loadXML( ParserContext *context, const QDomElement &element )
     } else if ( tagName.localName() == "message" ) {
       Message message( mTargetNamespace );
       message.loadXML( context, child );
+      //qDebug() << "Definitions: found message" << message.name() << message.nameSpace();
       mMessages.append( message );
     } else if ( tagName.localName() == "portType" ) {
       PortType portType( mTargetNamespace );

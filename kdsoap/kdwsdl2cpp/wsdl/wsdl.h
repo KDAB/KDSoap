@@ -38,7 +38,7 @@ class KWSDL_EXPORT WSDL
     Definitions definitions() const;
 
     void setNamespaceManager( const NSManager &namespaceManager );
-    NSManager namespaceManager() const;
+    const NSManager& namespaceManager() const;
 
     Binding findBinding( const QName &bindingName ) const;
     BindingOperation findBindingOperation( const Binding &binding, const QString &operationName );

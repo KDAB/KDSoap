@@ -55,9 +55,8 @@ void Converter::setWSDL( const WSDL &wsdl )
       namespaces.append( wsdlNamespaces[ i ] );
   }
 
-  // create new prefix table
-  for ( int i = 0; i < namespaces.count(); ++i )
-    mNSManager.setPrefix( QString( "ns%1" ).arg( i + 1 ), namespaces[ i ] );
+  // Keep the prefixes from the wsdl parsing, they are more meaningful than ns1 :)
+  mNSManager = wsdl.namespaceManager();
 
   // overwrite some default prefixes
   mNSManager.setPrefix( "soapenc", "http://schemas.xmlsoap.org/soap/encoding/" );
@@ -96,6 +95,8 @@ void Converter::convert()
 #ifdef KDAB_TEMP
   mClasses.append( mSerializer );
 #endif
+
+//  mNSManager.dump();
 
   // TODO: allow server service
   convertClientService();
