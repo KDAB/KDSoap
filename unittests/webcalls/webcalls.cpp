@@ -15,8 +15,7 @@ public:
 public slots:
     void slotFinished(KDSoapPendingCallWatcher* watcher)
     {
-        m_returnArguments = watcher->returnArguments();
-        m_returnValue = watcher->returnValue();
+        m_returnMessage = watcher->returnArguments();
         m_eventLoop.quit();
     }
 
@@ -57,7 +56,8 @@ private slots:
         connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher*)),
                 this, SLOT(slotFinished(KDSoapPendingCallWatcher*)));
         m_eventLoop.exec();
-        QCOMPARE(m_returnValue.toInt(), 85);
+        QVERIFY(!m_returnMessage.isFault());
+        QCOMPARE(m_returnMessage.arguments().first().value().toInt(), 85);
     }
 
     void testAddIntegers_sync()
@@ -86,8 +86,8 @@ private slots:
         connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher*)),
                 this, SLOT(slotFinished(KDSoapPendingCallWatcher*)));
         m_eventLoop.exec();
-        // TODO how are we supposed to know / tell that it's a datetime?
-        QCOMPARE(m_returnValue, QVariant("2009-02-14T00:00:00.0000000-05:00"));
+        QVERIFY(!m_returnMessage.isFault());
+        QCOMPARE(m_returnMessage.arguments().first().value(), QVariant("2009-02-14T00:00:00.0000000-05:00"));
     }
 
     void testFault()
@@ -117,8 +117,7 @@ private slots:
         connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher*)),
                 this, SLOT(slotFinished(KDSoapPendingCallWatcher*)));
         m_eventLoop.exec();
-        qDebug() << m_returnValue;
-        qDebug() << m_returnArguments;
+        qDebug() << m_returnMessage;
 
         // TODO QCOMPARE(m_returnArguments[0], QString::fromLatin1("Great Britain"));
     }
@@ -128,8 +127,7 @@ private slots:
 
 private:
     QEventLoop m_eventLoop;
-    QVariant m_returnValue;
-    KDSoapMessage m_returnArguments;
+    KDSoapMessage m_returnMessage;
 };
 
 QTEST_MAIN(TestObject)

@@ -5,24 +5,21 @@
 
 #include <QDebug>
 
+#include "wsdl_holidays.h"
+
 int main(int argc, char **argv)
 {
     QCoreApplication app(argc, argv);
 
     const int year = 2009;
-
-    const QString endPoint = QString::fromLatin1("http://www.27seconds.com/Holidays/US/Dates/USHolidayDates.asmx");
-    const QString messageNamespace = QString::fromLatin1("http://www.27seconds.com/Holidays/US/Dates/");
-    KDSoapClientInterface client(endPoint, messageNamespace);
-
-    KDSoapMessage message;
-    message.addArgument(QLatin1String("year"), year);
-
     qDebug("Looking up the date of easter in %i...", year);
 
-    KDSoapMessage response = client.call("GetValentinesDay", message);
+    USHolidayDates holidays;
+    NS7__GetValentinesDayElement parameters;
+    parameters.setYear(year);
+    NS7__GetValentinesDayResponseElement response = holidays.getValentinesDay(parameters);
 
-    qDebug("%s", qPrintable(response.arguments()[0].value().toString()));
+    qDebug("%s", qPrintable(response.getValentinesDayResult().toString()));
 
     return 0;
 }

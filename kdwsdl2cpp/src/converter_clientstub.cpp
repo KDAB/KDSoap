@@ -266,8 +266,8 @@ void Converter::clientGenerateMessage( KODE::Code& code, const Message& message 
 
 void Converter::convertClientCall( const Operation &operation, const Binding &binding, KODE::Class &newClass )
 {
-  QString operationName = lowerlize( operation.name() );
-  KODE::Function callFunc( mNameMapper.escape( operationName ), "void", KODE::Function::Public );
+  const QString methodName = lowerlize( operation.name() );
+  KODE::Function callFunc( mNameMapper.escape( methodName ), "void", KODE::Function::Public );
   callFunc.setDocs(QString("Blocking call to %1.\nNot recommended in a GUI thread.").arg(operation.name()));
   const Message inputMessage = mWSDL.findMessage( operation.input().message() );
   const Message outputMessage = mWSDL.findMessage( operation.output().message() );
@@ -275,7 +275,7 @@ void Converter::convertClientCall( const Operation &operation, const Binding &bi
   KODE::Code code;
   const bool hasAction = clientAddAction( code, binding, operation.name() );
   clientGenerateMessage( code, inputMessage );
-  QString callLine = "d->m_lastReply = clientInterface()->call(QLatin1String(\"" + operationName + "\"), message";
+  QString callLine = "d->m_lastReply = clientInterface()->call(QLatin1String(\"" + operation.name() + "\"), message";
   if (hasAction) {
       callLine += ", action";
   }
@@ -285,7 +285,7 @@ void Converter::convertClientCall( const Operation &operation, const Binding &bi
   // Return value(s) :
   const Part::List outParts = outputMessage.parts();
   if (outParts.count() > 1)
-      qWarning().nospace() << "ERROR: " << operationName << ": complex return types are not implemented yet";
+      qWarning().nospace() << "ERROR: " << methodName << ": complex return types are not implemented yet";
   QString retType;
   bool isElement = false;
   Q_FOREACH( const Part& outPart, outParts ) {
