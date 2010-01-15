@@ -15,7 +15,7 @@ public:
 public slots:
     void slotFinished(KDSoapPendingCallWatcher* watcher)
     {
-        m_returnMessage = watcher->returnArguments();
+        m_returnMessage = watcher->returnMessage();
         m_eventLoop.quit();
     }
 

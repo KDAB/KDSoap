@@ -15,8 +15,11 @@ public:
 
     KDSoapPendingCall &operator=(const KDSoapPendingCall &other);
 
+    KDSoapMessage returnMessage() const;
+
+    /// Helper method for the simple case where a single argument is returned:
+    /// Returns the value of that single argument.
     QVariant returnValue() const;
-    KDSoapMessage returnArguments() const;
 
 private:
     friend class KDSoapClientInterface;
