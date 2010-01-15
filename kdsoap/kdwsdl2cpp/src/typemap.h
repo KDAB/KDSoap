@@ -46,9 +46,10 @@ class TypeMap
     bool isBasicType( const QName &typeName );
     bool isBuiltinType( const QName &typeName );
 
-    QString localType( const QName &typeName, bool inputParam = false );
+    QString localType( const QName &typeName );
     QStringList headers( const QName &typeName );
     QStringList forwardDeclarations( const QName &typeName );
+    QStringList headerIncludes( const QName &typeName );
     QString localNameSpace( const QName &typeName );
 
     QString localTypeForElement( const QName &typeName );
@@ -63,6 +64,10 @@ class TypeMap
 
     void addSchemaTypes( const XSD::Types &types );
 
+    /// Returns the type to use for an 'input' parameter,
+    /// for instance "const QString&" for QString.
+    QString inputType( const QString& localType, bool isElement ) const;
+
     void dump();
 
   private:
@@ -76,7 +81,11 @@ class TypeMap
         QString localType;
         QStringList headers;
         QStringList forwardDeclarations;
+        QStringList headerIncludes;
     };
+
+    QList<Entry>::ConstIterator typeEntry( const QName &typeName ) const;
+    QList<Entry>::ConstIterator elementEntry( const QName &typeName ) const;
 
     QList<Entry> mTypeMap;
     QList<Entry> mElementMap;

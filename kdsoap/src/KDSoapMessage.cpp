@@ -28,7 +28,12 @@ void KDSoapMessage::addArgument(const QString &argumentName, const QVariant& arg
     d->args.append(KDSoapValue(argumentName, argumentValue));
 }
 
-KDSoapValueList KDSoapMessage::arguments() const
+KDSoapValueList& KDSoapMessage::arguments()
+{
+    return d->args;
+}
+
+const KDSoapValueList& KDSoapMessage::arguments() const
 {
     return d->args;
 }

@@ -155,8 +155,10 @@ QBuffer* KDSoapClientInterface::Private::prepareRequestBuffer(const QString& met
             writer.writeStartElement(this->messageNamespace, argument.name());
             writer.writeAttribute(xmlSchemaInstanceNS, QLatin1String("type"), type);
             writer.writeCharacters(variantToTextValue(value));
+            // TODO recurse into child values [probably: instead of the writeCharacters]
             writer.writeEndElement();
         }
+
     }
 
     writer.writeEndElement(); // <method>
