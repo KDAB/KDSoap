@@ -81,6 +81,8 @@ class SCHEMA_EXPORT ComplexType : public XSDType
     void addAttribute( const Attribute &attribute );
     void addElement( const Element &element );
 
+    bool isEmpty() const;
+
   private:
     class Private;
     Private *d;

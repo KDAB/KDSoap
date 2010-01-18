@@ -26,6 +26,8 @@
 
 #include "creator.h"
 
+#include <QDebug>
+
 using namespace KWSDL;
 
 /**
@@ -63,6 +65,9 @@ static KODE::Class::List sortByBaseClass( const KODE::Class::List &classes )
 
         it = allClasses.erase( it );
         it--;
+      } else {
+        qDebug() << "ERROR: Base class not found:" << baseClassName << "for class" << (*it).name();
+        return retval;
       }
     }
   }

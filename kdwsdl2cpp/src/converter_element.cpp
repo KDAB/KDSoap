@@ -93,7 +93,10 @@ void Converter::convertElement( const XSD::Element *element )
     // we inherit from the anonymous type, so we can provide the same
     // interface as the anonymous type
     QString anonName = mTypeMap.localType( element->type() );
-    newClass.addBaseClass( KODE::Class( anonName ) );
+    if (!anonName.isEmpty()) {
+      qDebug() << "converter_element: adding base class" << anonName << "for" << newClass.name();
+      newClass.addBaseClass( KODE::Class( anonName ) );
+    }
   }
 
   if ( !element->documentation().isEmpty() )
