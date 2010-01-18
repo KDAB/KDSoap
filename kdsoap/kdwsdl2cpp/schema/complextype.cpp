@@ -170,4 +170,9 @@ void ComplexType::addElement( const Element &element )
   d->mElements.append( element );
 }
 
+bool ComplexType::isEmpty() const
+{
+  return d->mAttributeGroups.isEmpty() && d->mAttributes.isEmpty() && d->mElements.isEmpty();
+}
+
 }

@@ -414,16 +414,18 @@ void TypeMap::addSchemaTypes( const XSD::Types &types )
   XSD::ComplexType::List complexTypes = types.complexTypes();
   XSD::ComplexType::List::ConstIterator complexIt;
   for ( complexIt = complexTypes.constBegin(); complexIt != complexTypes.constEnd(); ++complexIt ) {
-    Entry entry;
-    entry.basicType = false;
-    entry.buildinType = false;
-    entry.nameSpace = (*complexIt).nameSpace();
-    entry.typeName = (*complexIt).name();
-    entry.localType = mNSManager->prefix( entry.nameSpace ).toUpper() + "__" + adaptLocalTypeName( (*complexIt).name() );
-    entry.headers << (*complexIt).name().toLower() + ".h";
-    entry.forwardDeclarations << entry.localType;
+    if (!(*complexIt).isEmpty()) {
+      Entry entry;
+      entry.basicType = false;
+      entry.buildinType = false;
+      entry.nameSpace = (*complexIt).nameSpace();
+      entry.typeName = (*complexIt).name();
+      entry.localType = mNSManager->prefix( entry.nameSpace ).toUpper() + "__" + adaptLocalTypeName( (*complexIt).name() );
+      entry.headers << (*complexIt).name().toLower() + ".h";
+      entry.forwardDeclarations << entry.localType;
 
-    mTypeMap.append( entry );
+      mTypeMap.append( entry );
+    }
   }
 
   XSD::Attribute::List attributes = types.attributes();
