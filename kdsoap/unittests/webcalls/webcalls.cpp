@@ -3,6 +3,7 @@
 #include "KDSoapValue.h"
 #include "KDSoapPendingCallWatcher.h"
 #include "wsdl_soapresponder.h"
+#include "wsdl_thomas-bayer.h"
 #include <QtTest/QtTest>
 #include <QEventLoop>
 #include <QDebug>
@@ -73,6 +74,11 @@ private slots:
         QCOMPARE(ret.arguments().first().value().toInt(), 85);
     }
 
+    void testAddIntegers_wsdl()
+    {
+        NamesServiceService serv;
+        qDebug() << serv.getCountries().country(); // TODO countryList()?
+    }
 
     void testHolidays()
     {

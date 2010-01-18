@@ -27,6 +27,9 @@ using namespace KWSDL;
 
 void Converter::convertElement( const XSD::Element *element )
 {
+    // TEST
+    return;
+
   const QString className( mTypeMap.localTypeForElement( QName( element->nameSpace(), element->name() ) ) );
   KODE::Class newClass( className );
 
@@ -41,27 +44,27 @@ void Converter::convertElement( const XSD::Element *element )
     KODE::Code dtorCode;
 
     // member variables
-    KODE::MemberVariable variable( "value", typeName + '*' );
+    KODE::MemberVariable variable( "value", typeName );
     newClass.addMemberVariable( variable );
 
-    ctorCode += variable.name() + " = 0;";
-    dtorCode += "delete " + variable.name() + "; " + variable.name() + " = 0;";
+    ctorCode += variable.name() + " = 0;"; // NOT GOOD FOR QString!
+    //dtorCode += "delete " + variable.name() + "; " + variable.name() + " = 0;";
 
     // setter method
     KODE::Function setter( "setValue", "void" );
-    setter.addArgument( typeName + " *value" );
+    setter.addArgument( typeName + " value" );
     KODE::Code setterBody;
     setterBody += variable.name() + " = value;";
     setter.setBody( setterBody );
 
     // getter method
-    KODE::Function getter( "value", typeName + '*' );
+    KODE::Function getter( "value", typeName );
     getter.setBody( "return " + variable.name() + ';' );
     getter.setConst( true );
 
     // convenience constructor
     KODE::Function conctor( upperlize( newClass.name() ) );
-    conctor.addArgument( typeName + " *value" );
+    conctor.addArgument( typeName + " value" );
     KODE::Code code;
     code += variable.name() + " = value;";
     conctor.setBody( code );
@@ -70,14 +73,14 @@ void Converter::convertElement( const XSD::Element *element )
       KODE::Function charctor( upperlize( newClass.name() ) );
       charctor.addArgument( "const char *charValue" );
       KODE::Code code;
-      code += variable.name() + " = new QString( charValue );";
+      code += variable.name() + " = QString( charValue );";
       charctor.setBody( code );
 
       newClass.addFunction( charctor );
     }
 
     // type operator
-    KODE::Function op( "operator const " + typeName + '*' );
+    KODE::Function op( "operator const " + typeName );
     op.setBody( "return " + variable.name() + ';' );
     op.setConst( true );
 

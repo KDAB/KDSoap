@@ -455,16 +455,18 @@ void TypeMap::addSchemaTypes( const XSD::Types &types )
     entry.nameSpace = (*elemIt).nameSpace();
     entry.typeName = (*elemIt).name();
 
-    // Let's see if we can simplify the element type.
     QString resolvedType = localType( (*elemIt).type() );
-    if ( resolvedType == "void" ) { // TODO or a basic type
-      entry.localType = resolvedType;
-    } else {
+    Q_ASSERT( !resolvedType.isEmpty() );
+    entry.localType = resolvedType;
+
+    // The "FooElement" type isn't necessary, we just point to the resolved type
+    // directly, this is much simpler.
+    /*} else {
       entry.localType = mNSManager->prefix( entry.nameSpace ).toUpper() + "__" + adaptLocalTypeName( (*elemIt).name() + "Element" );
       entry.headers << (*elemIt).name().toLower() + "element.h";
       entry.forwardDeclarations << entry.localType;
-    }
-    qDebug() << "Adding TypeMap entry for element" << entry.localType << resolvedType;
+    }*/
+    //qDebug() << "Adding TypeMap entry for element" << entry.typeName << resolvedType;
     mElementMap.append( entry );
   }
 }
