@@ -2,6 +2,7 @@
     This file is part of KDE.
 
     Copyright (c) 2005 Tobias Koenig <tokoe@kde.org>
+    Copyright (c) 2010 David Faure <dfaure@kdab.com>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Library General Public
@@ -28,6 +29,8 @@ void Converter::convertElement( const XSD::Element *element )
 {
   const QString className( mTypeMap.localTypeForElement( QName( element->nameSpace(), element->name() ) ) );
   KODE::Class newClass( className );
+
+  qDebug() << "convertElement:" << element->type().qname() << "class=" << className;
 
   //newClass.addInclude( QString(), "Serializer" );
 
@@ -93,7 +96,7 @@ void Converter::convertElement( const XSD::Element *element )
     // we inherit from the anonymous type, so we can provide the same
     // interface as the anonymous type
     QString anonName = mTypeMap.localType( element->type() );
-    if (!anonName.isEmpty()) {
+    if (anonName != "void") {
       qDebug() << "converter_element: adding base class" << anonName << "for" << newClass.name();
       newClass.addBaseClass( KODE::Class( anonName ) );
     }

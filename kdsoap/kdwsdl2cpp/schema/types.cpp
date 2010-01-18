@@ -125,7 +125,7 @@ QStringList Types::namespaces() const
 
 ComplexType Types::complexType( const Element &element ) const
 {
-  foreach( ComplexType type, d->mComplexTypes ) {
+  foreach( const ComplexType& type, d->mComplexTypes ) {
     if( element.type() == type.name() ) return type;
   }
   return ComplexType();
@@ -134,7 +134,7 @@ ComplexType Types::complexType( const Element &element ) const
 SimpleType Types::simpleType( const QName &typeName ) const
 {
   qDebug() << "Types::simpleType()" << typeName.qname();
-  foreach( SimpleType type, d->mSimpleTypes ) {
+  foreach( const SimpleType& type, d->mSimpleTypes ) {
     qDebug() << "  BASETYPENAME:" << type.baseTypeName().qname();
     if ( type.qualifiedName() == typeName ) return type;
   }
