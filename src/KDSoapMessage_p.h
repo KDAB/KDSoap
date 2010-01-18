@@ -3,7 +3,7 @@
 
 #include "KDSoapValue.h"
 
-// TODO: can be moved back to KDSoapMessage.cpp I think
+// TODO: can be moved back to KDSoapMessage.cpp
 
 class KDSoapMessageData : public QSharedData
 {
