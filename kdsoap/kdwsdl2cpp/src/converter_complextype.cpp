@@ -1,6 +1,4 @@
 /*
-    This file is part of KDE.
-
     Copyright (c) 2005 Tobias Koenig <tokoe@kde.org>
     Copyright (c) 2010 David Faure <dfaure@kdab.com>
 
@@ -240,13 +238,14 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
 
     Q_FOREACH( const XSD::Element& elem, elements ) {
 
+        const QString elemName = elem.name();
         const QString typeName = mTypeMap.localType( elem.type() );
-        KODE::MemberVariable variable( elem.name(), typeName ); // was already added; this is just for the naming
+        KODE::MemberVariable variable( elemName, typeName ); // was already added; this is just for the naming
         //const QString upperName = upperlize( elem.name() );
         //const QString lowerName = lowerlize( elem.name() );
         const QString variableName = "d->" + variable.name();
 
-        demarshalCode += "if (name == \"" + elem.name() + "\") {";
+        demarshalCode += "if (name == \"" + elemName + "\") {";
         demarshalCode.indent();
 
         if ( elem.maxOccurs() > 1 ) {
@@ -254,15 +253,24 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
 
             marshalCode += "for (int i = 0; i < " + variableName + ".count(); ++i) {";
             marshalCode.indent();
-            marshalCode += "args.append(KDSoapValue(\"" + elem.name() + "\", " + variableName + ".at(i)));";
+            // TODO factorize code from the 'else' below, to call it here (with the .at(i) appended)
+            marshalCode += "args.append(KDSoapValue(\"" + elemName + "\", " + variableName + ".at(i)));";
             marshalCode.unindent();
             marshalCode += '}';
 
             demarshalCode += variableName + ".append(value.value<" + typeName + ">());";
         } else {
-            marshalCode += "args.append(KDSoapValue(\"" + elem.name() + "\", " + variableName + "));";
-
-            demarshalCode += variableName + " = value.value<" + typeName + ">();";
+            QString value;
+            if ( mTypeMap.isBuiltinType( elem.type() ) ) {
+                value = variableName;
+                demarshalCode += variableName + " = value.value<" + typeName + ">();";
+            } else {
+                marshalCode += "KDSoapValueList " + elemName + ";";
+                marshalCode += variableName + ".serialize(" + elemName + ");";
+                value = "QVariant::fromValue(" + elemName + ")";
+                demarshalCode += variableName + ".deserialize(value.value<KDSoapValueList>());";
+            }
+            marshalCode += "args.append(KDSoapValue(\"" + elemName + "\", " + value + "));";
         }
 
         demarshalCode.unindent();

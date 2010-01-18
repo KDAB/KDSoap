@@ -12,6 +12,8 @@ public:
         : m_name(n), m_value(v) {}
 
     QString name() const { return m_name; }
+
+    // Can be any basic type, or a KDSoapValueList
     QVariant value() const { return m_value; }
 
 private:
@@ -33,5 +35,7 @@ public:
 };
 
 typedef QListIterator<KDSoapValue> KDSoapValueListIterator;
+
+Q_DECLARE_METATYPE(KDSoapValueList)
 
 #endif // KDSOAPVALUE_H
