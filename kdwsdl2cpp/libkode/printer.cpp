@@ -584,18 +584,20 @@ void Printer::printHeader( const File &file )
   out.newLine();
 
   // Create includes
-  QStringList processed;
-  Class::List classes = file.classes();
-  Class::List::ConstIterator it;
-  for ( it = classes.constBegin(); it != classes.constEnd(); ++it ) {
-    Q_ASSERT(!(*it).name().isEmpty());
-    QStringList includes = (*it).headerIncludes();
+  QSet<QString> processed;
+  const Class::List classes = file.classes();
+  Q_FOREACH( const Class& cl, classes )
+  {
+    Q_ASSERT( !cl.name().isEmpty() );
+    QStringList includes = cl.headerIncludes();
+    if ( cl.useSharedData() )
+        includes.append( "QSharedData" );
     //qDebug() << "includes=" << includes;
     QStringList::ConstIterator it2;
     for ( it2 = includes.constBegin(); it2 != includes.constEnd(); ++it2 ) {
       if ( !processed.contains( *it2 ) ) {
         out += "#include <" + *it2 + '>';
-        processed.append( *it2 );
+        processed.insert( *it2 );
       }
     }
   }
@@ -613,13 +615,14 @@ void Printer::printHeader( const File &file )
 
   // Create forward declarations
   processed.clear();
+  Class::List::ConstIterator it;
   for ( it = classes.constBegin(); it != classes.constEnd(); ++it ) {
     QStringList decls = (*it).forwardDeclarations();
     QStringList::ConstIterator it2;
     for ( it2 = decls.constBegin(); it2 != decls.constEnd(); ++it2 ) {
       if ( !processed.contains( *it2 ) ) {
         out += "class " + *it2 + ';';
-        processed.append( *it2 );
+        processed.insert( *it2 );
       }
     }
   }

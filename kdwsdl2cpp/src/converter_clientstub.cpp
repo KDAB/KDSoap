@@ -212,7 +212,9 @@ void Converter::clientAddArguments( KODE::Function& callFunc, const Message& mes
             // Forward declaration of element class
             newClass.addIncludes( QStringList(), mTypeMap.forwardDeclarationsForElement( part.element() ) );
         }
-        callFunc.addArgument( mTypeMap.inputType( argType, part.type().isEmpty() ) + ' ' + mNameMapper.escape( lowerName ) );
+        if ( argType != "void" ) {
+            callFunc.addArgument( mTypeMap.inputType( argType, part.type().isEmpty() ) + ' ' + mNameMapper.escape( lowerName ) );
+        }
     }
 }
 
@@ -256,10 +258,15 @@ void Converter::clientGenerateMessage( KODE::Code& code, const Message& message 
                 ", " + noNamespace + " );";
         code += "delete " + mNameMapper.escape( lowerName ) + ';';
 #endif
-        if ( !part.type().isEmpty() ) {
+        QString argType;
+        QName type = part.type();
+        if ( !type.isEmpty() ) {
+            argType = mTypeMap.localType( type );
             code += "message.addArgument(QLatin1String(\"" + part.name() + "\"), " + lowerName + ");";
         } else {
-            code += lowerName + ".serialize( message.arguments() );";
+            argType = mTypeMap.localTypeForElement( part.element() );
+            if ( argType != "void" )
+                code += lowerName + ".serialize( message.arguments() );";
         }
     }
 }
@@ -427,7 +434,9 @@ void Converter::convertClientOutputMessage( const Operation &operation, const Pa
 
     QString lowerName = mNameMapper.escape( lowerlize( part.name() ) );
 
-    doneSignal.addArgument( mTypeMap.inputType( partType, part.type().isEmpty() ) + ' ' + lowerName );
+    if ( partType != "void" ) {
+        doneSignal.addArgument( mTypeMap.inputType( partType, part.type().isEmpty() ) + ' ' + lowerName );
+    }
 
     if ( !type.isEmpty() ) {
         partNames << "args.value(\"" + lowerName + "\").value<" + partType + ">()";

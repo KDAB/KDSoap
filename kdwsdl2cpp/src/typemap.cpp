@@ -2,6 +2,7 @@
     This file is part of KDE.
 
     Copyright (c) 2005 Tobias Koenig <tokoe@kde.org>
+    Copyright (c) 2010 David Faure <dfaure@kdab.com>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Library General Public
@@ -43,7 +44,7 @@ TypeMap::TypeMap()
   {
     Entry entry;
     entry.basicType = false;
-    entry.buildinType = true;
+    entry.builtinType = true;
     entry.nameSpace = XMLSchemaURI;
     entry.typeName = "any";
     entry.localType = "QString";
@@ -54,7 +55,7 @@ TypeMap::TypeMap()
   {
     Entry entry;
     entry.basicType = false;
-    entry.buildinType = true;
+    entry.builtinType = true;
     entry.nameSpace = XMLSchemaURI;
     entry.typeName = "anyURI";
     entry.localType = "QString";
@@ -65,7 +66,7 @@ TypeMap::TypeMap()
   {
     Entry entry;
     entry.basicType = false;
-    entry.buildinType = true;
+    entry.builtinType = true;
     entry.nameSpace = XMLSchemaURI;
     entry.typeName = "base64Binary";
     entry.localType = "QByteArray";
@@ -76,7 +77,7 @@ TypeMap::TypeMap()
   {
     Entry entry;
     entry.basicType = false;
-    entry.buildinType = true;
+    entry.builtinType = true;
     entry.nameSpace = XMLSchemaURI;
     entry.typeName = "binary";
     entry.localType = "QByteArray";
@@ -87,7 +88,7 @@ TypeMap::TypeMap()
   {
     Entry entry;
     entry.basicType = true;
-    entry.buildinType = true;
+    entry.builtinType = true;
     entry.nameSpace = XMLSchemaURI;
     entry.typeName = "boolean";
     entry.localType = "bool";
@@ -96,7 +97,7 @@ TypeMap::TypeMap()
   {
     Entry entry;
     entry.basicType = true;
-    entry.buildinType = true;
+    entry.builtinType = true;
     entry.nameSpace = XMLSchemaURI;
     entry.typeName = "byte";
     entry.localType = "char";
@@ -105,7 +106,7 @@ TypeMap::TypeMap()
   {
     Entry entry;
     entry.basicType = false;
-    entry.buildinType = true;
+    entry.builtinType = true;
     entry.nameSpace = XMLSchemaURI;
     entry.typeName = "date";
     entry.localType = "QDate";
@@ -116,7 +117,7 @@ TypeMap::TypeMap()
   {
     Entry entry;
     entry.basicType = false;
-    entry.buildinType = true;
+    entry.builtinType = true;
     entry.nameSpace = XMLSchemaURI;
     entry.typeName = "dateTime";
     entry.localType = "QDateTime";
@@ -127,7 +128,7 @@ TypeMap::TypeMap()
   {
     Entry entry;
     entry.basicType = true;
-    entry.buildinType = true;
+    entry.builtinType = true;
     entry.nameSpace = XMLSchemaURI;
     entry.typeName = "decimal";
     entry.localType = "float";
@@ -136,7 +137,7 @@ TypeMap::TypeMap()
   {
     Entry entry;
     entry.basicType = true;
-    entry.buildinType = true;
+    entry.builtinType = true;
     entry.nameSpace = XMLSchemaURI;
     entry.typeName = "double";
     entry.localType = "double";
@@ -145,7 +146,7 @@ TypeMap::TypeMap()
   { // TODO: add duration class
     Entry entry;
     entry.basicType = false;
-    entry.buildinType = true;
+    entry.builtinType = true;
     entry.nameSpace = XMLSchemaURI;
     entry.typeName = "duration";
     entry.localType = "QString";
@@ -156,7 +157,7 @@ TypeMap::TypeMap()
   {
     Entry entry;
     entry.basicType = true;
-    entry.buildinType = true;
+    entry.builtinType = true;
     entry.nameSpace = XMLSchemaURI;
     entry.typeName = "float";
     entry.localType = "float";
@@ -165,7 +166,7 @@ TypeMap::TypeMap()
   {
     Entry entry;
     entry.basicType = true;
-    entry.buildinType = true;
+    entry.builtinType = true;
     entry.nameSpace = XMLSchemaURI;
     entry.typeName = "integer";
     entry.localType = "int";
@@ -180,7 +181,7 @@ TypeMap::TypeMap()
   {
     Entry entry;
     entry.basicType = false;
-    entry.buildinType = true;
+    entry.builtinType = true;
     entry.nameSpace = XMLSchemaURI;
     entry.typeName = "language";
     entry.localType = "QString";
@@ -191,7 +192,7 @@ TypeMap::TypeMap()
   {
     Entry entry;
     entry.basicType = true;
-    entry.buildinType = true;
+    entry.builtinType = true;
     entry.nameSpace = XMLSchemaURI;
     entry.typeName = "short";
     entry.localType = "short";
@@ -200,7 +201,7 @@ TypeMap::TypeMap()
   {
     Entry entry;
     entry.basicType = false;
-    entry.buildinType = true;
+    entry.builtinType = true;
     entry.nameSpace = XMLSchemaURI;
     entry.typeName = "string";
     entry.localType = "QString";
@@ -211,7 +212,7 @@ TypeMap::TypeMap()
   {
     Entry entry;
     entry.basicType = false;
-    entry.buildinType = true;
+    entry.builtinType = true;
     entry.nameSpace = XMLSchemaURI;
     entry.typeName = "time";
     entry.localType = "QTime";
@@ -222,7 +223,7 @@ TypeMap::TypeMap()
   {
     Entry entry;
     entry.basicType = true;
-    entry.buildinType = true;
+    entry.builtinType = true;
     entry.nameSpace = XMLSchemaURI;
     entry.typeName = "unsignedByte";
     entry.localType = "unsigned char";
@@ -231,7 +232,7 @@ TypeMap::TypeMap()
   {
     Entry entry;
     entry.basicType = true;
-    entry.buildinType = true;
+    entry.builtinType = true;
     entry.nameSpace = XMLSchemaURI;
     entry.typeName = "unsignedLong";
     entry.localType = "unsigned long";
@@ -240,7 +241,7 @@ TypeMap::TypeMap()
   {
     Entry entry;
     entry.basicType = true;
-    entry.buildinType = true;
+    entry.builtinType = true;
     entry.nameSpace = XMLSchemaURI;
     entry.typeName = "positiveInteger";
     entry.localType = "unsigned int";
@@ -255,7 +256,7 @@ TypeMap::TypeMap()
   {
     Entry entry;
     entry.basicType = true;
-    entry.buildinType = true;
+    entry.builtinType = true;
     entry.nameSpace = XMLSchemaURI;
     entry.typeName = "token";
     entry.headers << "QString";
@@ -293,7 +294,7 @@ bool TypeMap::isBasicType( const QName &typeName )
 bool TypeMap::isBuiltinType( const QName &typeName )
 {
   QList<Entry>::ConstIterator it = typeEntry( typeName );
-  return it != mTypeMap.constEnd() ? (*it).buildinType : false;
+  return it != mTypeMap.constEnd() ? (*it).builtinType : false;
 }
 
 QString TypeMap::localType( const QName &typeName )
@@ -401,7 +402,7 @@ void TypeMap::addSchemaTypes( const XSD::Types &types )
   for ( simpleIt = simpleTypes.constBegin(); simpleIt != simpleTypes.constEnd(); ++simpleIt ) {
     Entry entry;
     entry.basicType = false;
-    entry.buildinType = false;
+    entry.builtinType = false;
     entry.nameSpace = (*simpleIt).nameSpace();
     entry.typeName = (*simpleIt).name();
     entry.localType = mNSManager->prefix( entry.nameSpace ).toUpper() + "__" + adaptLocalTypeName( (*simpleIt).name() );
@@ -414,18 +415,20 @@ void TypeMap::addSchemaTypes( const XSD::Types &types )
   XSD::ComplexType::List complexTypes = types.complexTypes();
   XSD::ComplexType::List::ConstIterator complexIt;
   for ( complexIt = complexTypes.constBegin(); complexIt != complexTypes.constEnd(); ++complexIt ) {
-    if (!(*complexIt).isEmpty()) {
-      Entry entry;
-      entry.basicType = false;
-      entry.buildinType = false;
-      entry.nameSpace = (*complexIt).nameSpace();
-      entry.typeName = (*complexIt).name();
-      entry.localType = mNSManager->prefix( entry.nameSpace ).toUpper() + "__" + adaptLocalTypeName( (*complexIt).name() );
-      entry.headers << (*complexIt).name().toLower() + ".h";
-      entry.forwardDeclarations << entry.localType;
-
-      mTypeMap.append( entry );
+    Entry entry;
+    entry.basicType = false;
+    entry.builtinType = false;
+    entry.nameSpace = (*complexIt).nameSpace();
+    entry.typeName = (*complexIt).name();
+    if ( (*complexIt).isEmpty() )
+        entry.localType = "void";
+    else {
+        entry.localType = mNSManager->prefix( entry.nameSpace ).toUpper() + "__" + adaptLocalTypeName( (*complexIt).name() );
+        entry.headers << (*complexIt).name().toLower() + ".h";
+        entry.forwardDeclarations << entry.localType;
     }
+
+    mTypeMap.append( entry );
   }
 
   XSD::Attribute::List attributes = types.attributes();
@@ -433,7 +436,7 @@ void TypeMap::addSchemaTypes( const XSD::Types &types )
   for ( attrIt = attributes.constBegin(); attrIt != attributes.constEnd(); ++attrIt ) {
     Entry entry;
     entry.basicType = false;
-    entry.buildinType = false;
+    entry.builtinType = false;
     entry.nameSpace = (*attrIt).nameSpace();
     entry.typeName = (*attrIt).name();
     entry.localType = mNSManager->prefix( entry.nameSpace ).toUpper() + "__" + adaptLocalTypeName( (*attrIt).name() + "Attribute" );
@@ -448,13 +451,20 @@ void TypeMap::addSchemaTypes( const XSD::Types &types )
   for ( elemIt = elements.constBegin(); elemIt != elements.constEnd(); ++elemIt ) {
     Entry entry;
     entry.basicType = false;
-    entry.buildinType = false;
+    entry.builtinType = false;
     entry.nameSpace = (*elemIt).nameSpace();
     entry.typeName = (*elemIt).name();
-    entry.localType = mNSManager->prefix( entry.nameSpace ).toUpper() + "__" + adaptLocalTypeName( (*elemIt).name() + "Element" );
-    entry.headers << (*elemIt).name().toLower() + "element.h";
-    entry.forwardDeclarations << entry.localType;
 
+    // Let's see if we can simplify the element type.
+    QString resolvedType = localType( (*elemIt).type() );
+    if ( resolvedType == "void" ) { // TODO or a basic type
+      entry.localType = resolvedType;
+    } else {
+      entry.localType = mNSManager->prefix( entry.nameSpace ).toUpper() + "__" + adaptLocalTypeName( (*elemIt).name() + "Element" );
+      entry.headers << (*elemIt).name().toLower() + "element.h";
+      entry.forwardDeclarations << entry.localType;
+    }
+    qDebug() << "Adding TypeMap entry for element" << entry.localType << resolvedType;
     mElementMap.append( entry );
   }
 }
@@ -462,6 +472,7 @@ void TypeMap::addSchemaTypes( const XSD::Types &types )
 QString TypeMap::inputType( const QString &localType, bool isElement ) const
 {
     QString type = localType;
+    Q_ASSERT( type != "void" ); // Don't call this if type is void, skip the whole arg instead.
     if ( type.startsWith('Q') || isElement ) {
         type = "const " + type + "&";
     }
