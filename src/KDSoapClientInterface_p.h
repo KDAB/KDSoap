@@ -2,6 +2,8 @@
 #define KDSOAPCLIENTINTERFACE_P_H
 
 #include <QNetworkAccessManager>
+#include <QXmlStreamWriter>
+
 #include "KDSoapClientInterface.h"
 #include "KDSoapClientThread_p.h"
 class QBuffer;
@@ -17,6 +19,7 @@ public:
 
     QNetworkRequest prepareRequest(const QString &method, const QString& action);
     QBuffer* prepareRequestBuffer(const QString& method, const KDSoapMessage& message);
+    void writeArguments(QXmlStreamWriter& writer, const KDSoapValueList& args);
 };
 
 #endif // KDSOAPCLIENTINTERFACE_P_H

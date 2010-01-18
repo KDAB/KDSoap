@@ -1,6 +1,4 @@
 /*
-    This file is part of KDE.
-
     Copyright (c) 2005 Tobias Koenig <tokoe@kde.org>
     Copyright (c) 2010 David Faure <dfaure@kdab.com>
 

@@ -8,6 +8,8 @@
 #include <QXmlStreamWriter>
 #include <QDateTime>
 
+static const char* xmlSchemaInstanceNS = "http://www.w3.org/1999/XMLSchema-instance";
+
 KDSoapClientInterface::KDSoapClientInterface(const QString& endPoint, const QString& messageNamespace)
     : d(new Private)
 {
@@ -130,10 +132,10 @@ QBuffer* KDSoapClientInterface::Private::prepareRequestBuffer(const QString& met
 
     const QString soapNS = QString::fromLatin1("http://schemas.xmlsoap.org/soap/envelope/");
     const QString xmlSchemaNS = QString::fromLatin1("http://www.w3.org/1999/XMLSchema");
-    const QString xmlSchemaInstanceNS = QString::fromLatin1("http://www.w3.org/1999/XMLSchema-instance");
+
     writer.writeNamespace(soapNS, QLatin1String("soap"));
     writer.writeNamespace(xmlSchemaNS, QLatin1String("xsd"));
-    writer.writeNamespace(xmlSchemaInstanceNS, QLatin1String("xsi"));
+    writer.writeNamespace(QLatin1String(xmlSchemaInstanceNS), QLatin1String("xsi"));
 
     writer.writeStartElement(soapNS, QLatin1String("Envelope"));
     writer.writeAttribute(soapNS, QLatin1String("encodingStyle"), QLatin1String("http://schemas.xmlsoap.org/soap/encoding/"));
@@ -146,20 +148,7 @@ QBuffer* KDSoapClientInterface::Private::prepareRequestBuffer(const QString& met
 
     // Arguments
     const KDSoapValueList args = message.d->args;
-    KDSoapValueListIterator it(args);
-    while (it.hasNext()) {
-        const KDSoapValue& argument = it.next();
-        const QVariant value = argument.value();
-        const QString type = variantToXMLType(value);
-        if (!type.isEmpty()) {
-            writer.writeStartElement(this->messageNamespace, argument.name());
-            writer.writeAttribute(xmlSchemaInstanceNS, QLatin1String("type"), type);
-            writer.writeCharacters(variantToTextValue(value));
-            // TODO recurse into child values [probably: instead of the writeCharacters]
-            writer.writeEndElement();
-        }
-
-    }
+    writeArguments( writer, args );
 
     writer.writeEndElement(); // <method>
     writer.writeEndElement(); // Body
@@ -172,6 +161,29 @@ QBuffer* KDSoapClientInterface::Private::prepareRequestBuffer(const QString& met
     buffer->setData(data);
     buffer->open(QIODevice::ReadOnly);
     return buffer;
+}
+
+void KDSoapClientInterface::Private::writeArguments(QXmlStreamWriter& writer, const KDSoapValueList& args)
+{
+    KDSoapValueListIterator it(args);
+    while (it.hasNext()) {
+        const KDSoapValue& argument = it.next();
+        const QVariant value = argument.value();
+        if ( value.canConvert<KDSoapValueList>() ) {
+            writer.writeStartElement(this->messageNamespace, argument.name());
+            const KDSoapValueList children = value.value<KDSoapValueList>();
+            writeArguments( writer, children );
+            writer.writeEndElement();
+        } else {
+            const QString type = variantToXMLType(value);
+            if (!type.isEmpty()) {
+                writer.writeStartElement(this->messageNamespace, argument.name());
+                writer.writeAttribute(QLatin1String(xmlSchemaInstanceNS), QLatin1String("type"), type);
+                writer.writeCharacters(variantToTextValue(value));
+                writer.writeEndElement();
+            }
+        }
+    }
 }
 
 KDSoapPendingCall KDSoapClientInterface::asyncCall(const QString &method, const KDSoapMessage &message, const QString& action)
