@@ -159,8 +159,7 @@ QString Printer::Private::classHeader( const Class &classObject, bool publicMemb
 
   code.addBlock( functionHeaders( functions, classObject.name(), Function::Public ) );
 
-#ifdef KDAB_TEMP // this is only wanted for value classes...
-  if ( classObject.useDPointer() && !classObject.memberVariables().isEmpty() ) {
+  if ( classObject.canBeCopied() && classObject.useDPointer() && !classObject.memberVariables().isEmpty() ) {
     Function cc( classObject.name() );
     cc.addArgument( "const " + classObject.name() + '&' );
     Function op( "operator=", classObject.name() + "& " );
@@ -169,7 +168,6 @@ QString Printer::Private::classHeader( const Class &classObject, bool publicMemb
     list << cc << op;
     code.addBlock( functionHeaders( list, classObject.name(), Function::Public ) );
   }
-#endif
 
   code.addBlock( functionHeaders( functions, classObject.name(), Function::Public | Function::Slot ) );
   code.addBlock( functionHeaders( functions, classObject.name(), Function::Signal ) );
@@ -200,7 +198,10 @@ QString Printer::Private::classHeader( const Class &classObject, bool publicMemb
 
     if ( classObject.useDPointer() && !classObject.memberVariables().isEmpty() ) {
       code += "class PrivateDPtr;";
-      code += "PrivateDPtr *d;";
+      if ( classObject.useSharedData() )
+        code += "QSharedDataPointer<PrivateDPtr> d;";
+      else
+        code += "PrivateDPtr *d;";
     } else {
       MemberVariable::List variables = classObject.memberVariables();
       MemberVariable::List::ConstIterator it2;
@@ -240,6 +241,9 @@ QString Printer::Private::classImplementation( const Class &classObject, bool ne
 
   if ( classObject.useDPointer() && !classObject.memberVariables().isEmpty() ) {
     Class privateClass( functionClassName + "::PrivateDPtr" );
+    if ( classObject.useSharedData() ) {
+        privateClass.addBaseClass( Class("QSharedData") );
+    }
     MemberVariable::List vars = classObject.memberVariables();
     MemberVariable::List::ConstIterator it;
     Function ctor("PrivateDPtr");
@@ -287,22 +291,20 @@ QString Printer::Private::classImplementation( const Class &classObject, bool ne
 
     if ( !f.initializers().isEmpty() ) {
       code.indent();
-      code += ": " + f.initializers().join( ", " );
+      QStringList inits = f.initializers();
+      if ( classObject.useDPointer() && !classObject.memberVariables().isEmpty() &&
+           f.name() == classObject.name() ) {
+          inits.append( "d(new PrivateDPtr)" );
+      }
+      code += ": " + inits.join( ", " );
       code.unindent();
     }
 
     code += '{';
-    if ( classObject.useDPointer() && !classObject.memberVariables().isEmpty() &&
-         f.name() == classObject.name() ) {
-      code.indent();
-      code += "d = new PrivateDPtr;";
-      code.unindent();
-      code.newLine();
-    }
-
     code.addBlock( f.body(), 2 );
 
-    if ( classObject.useDPointer() && !classObject.memberVariables().isEmpty() &&
+    if ( classObject.useDPointer() && !classObject.useSharedData() &&
+        !classObject.memberVariables().isEmpty() &&
         f.name() == '~' + classObject.name() ) {
       code.newLine();
       code.indent();
@@ -314,28 +316,31 @@ QString Printer::Private::classImplementation( const Class &classObject, bool ne
     code.newLine();
   }
 
-  if ( classObject.useDPointer() && !classObject.memberVariables().isEmpty() ) {
+  if ( classObject.useDPointer() && classObject.canBeCopied() && !classObject.memberVariables().isEmpty() ) {
 
-#ifdef KDAB_TEMP // only for value classes...
     // print copy constructor
     Function cc( classObject.name() );
     cc.addArgument( "const " + functionClassName + "& other" );
 
     Code body;
-    body += "d = new PrivateDPtr;";
-    body += "*d = *other.d;";
+    if ( !classObject.useSharedData() ) {
+      body += "d = new PrivateDPtr;";
+      body += "*d = *other.d;";
+    }
     cc.setBody( body );
 
     code += mParent->functionSignature( cc, functionClassName, true );
 
     // call copy constructor of base classes
+    QStringList list;
     Class::List baseClasses = classObject.baseClasses();
-    if ( !baseClasses.isEmpty() ) {
-      QStringList list;
-      for ( int i = 0; i < baseClasses.count(); ++i ) {
-        list.append( baseClasses[ i ].name() + "( other )" );
-      }
-
+    for ( int i = 0; i < baseClasses.count(); ++i ) {
+      list.append( baseClasses[ i ].name() + "( other )" );
+    }
+    if ( classObject.useSharedData() ) {
+      list.append( "d( other.d )" );
+    }
+    if ( !list.isEmpty() ) {
       code.indent();
       code += ": " + list.join( ", " );
       code.unindent();
@@ -356,7 +361,11 @@ QString Printer::Private::classImplementation( const Class &classObject, bool ne
     body += "return *this;";
     body.unindent();
     body.newLine();
-    body += "*d = *other.d;";
+    if ( classObject.useSharedData() )
+      body += "d = other.d;";
+    else
+      body += "*d = *other.d;";
+
     body.newLine();
     body += "return *this;";
     op.setBody( body );
@@ -366,7 +375,6 @@ QString Printer::Private::classImplementation( const Class &classObject, bool ne
     code.addBlock( op.body(), 2 );
     code += '}';
     code.newLine();
-#endif
   }
 
   // Generate nested class functions

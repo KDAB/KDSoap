@@ -2,6 +2,7 @@
     This file is part of kdepim.
 
     Copyright (c) 2004 Cornelius Schumacher <schumacher@kde.org>
+    Copyright (c) 2010 David Faure <dfaure@kdab.com>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Library General Public
@@ -29,13 +30,17 @@ class Class::Private
 {
   public:
     Private()
-      : mUseDPointer( false )
+      : mUseDPointer( false ),
+        mUseSharedData( false ),
+        mCanBeCopied( false )
     {
     }
 
     QString mName;
     QString mNameSpace;
     bool mUseDPointer;
+    bool mUseSharedData;
+    bool mCanBeCopied;
     Function::List mFunctions;
     MemberVariable::List mMemberVariables;
     QStringList mIncludes;
@@ -104,7 +109,7 @@ QString Class::nameSpace() const
   return d->mNameSpace;
 }
 
-void Class::setUseDPointer( const bool &useDPointer )
+void Class::setUseDPointer( bool useDPointer )
 {
   d->mUseDPointer = useDPointer;
 }
@@ -112,6 +117,30 @@ void Class::setUseDPointer( const bool &useDPointer )
 bool Class::useDPointer() const
 {
   return d->mUseDPointer;
+}
+
+void Class::setUseSharedData( bool b )
+{
+  d->mUseSharedData = b;
+  if ( b ) {
+    setUseDPointer( true );
+    d->mCanBeCopied = true;
+  }
+}
+
+bool Class::useSharedData() const
+{
+  return d->mUseSharedData;
+}
+
+void Class::setCanBeCopied( bool b )
+{
+  d->mCanBeCopied = b;
+}
+
+bool Class::canBeCopied() const
+{
+  return d->mCanBeCopied;
 }
 
 void Class::addInclude( const QString &include,
