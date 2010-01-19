@@ -72,6 +72,8 @@ class TypeMap
     void dump();
 
   private:
+    void addBuiltinType( const char* typeName, const char* localType );
+
     class Entry
     {
       public:
