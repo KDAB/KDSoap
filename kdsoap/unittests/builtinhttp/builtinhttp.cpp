@@ -17,10 +17,10 @@ public:
     void testMyWsdl()
     {
         MyWsdl service;
-        XSD1__EmployeeType employeeType;
-        employeeType.setType(XSD1__EmployeeTypeEnum::Developer);
-        employeeType.setOtherRoles(QList<XSD1__EmployeeTypeEnum>() << XSD1__EmployeeTypeEnum::TeamLeader);
-        service.addEmployee(employeeType, QString::fromLatin1("David"));
+        KDAB__EmployeeType employeeType;
+        employeeType.setType(KDAB__EmployeeTypeEnum::Developer);
+        employeeType.setOtherRoles(QList<KDAB__EmployeeTypeEnum>() << KDAB__EmployeeTypeEnum::TeamLeader);
+        service.addEmployee(employeeType, KDAB__EmployeeName(QString::fromLatin1("David")), QString::fromLatin1("France"));
     }
 };
 

@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?> 
 <definitions  name ='MyWsdl'   targetNamespace = 'http://www.kdab.com/xml/MyWsdl.wsdl'
-	 xmlns:tns='http://www.kdab.com/xml/MyWsdl.wsdl' 
-	 xmlns:xsd1='http://www.kdab.com/xml/MyWsdl.xsd' 
+	 xmlns:kwsdl='http://www.kdab.com/xml/MyWsdl.wsdl' 
+	 xmlns:kdab='http://www.kdab.com/xml/MyWsdl.xsd' 
 	 xmlns:xsd='http://www.w3.org/2001/XMLSchema' 
 	 xmlns:soap='http://schemas.xmlsoap.org/wsdl/soap/' 
 	 xmlns='http://schemas.xmlsoap.org/wsdl/'>
@@ -14,10 +14,14 @@
           </sequence>
         </complexType>
       </element>
-      <simpleType name="EmployeeName">
+      <simpleType name="LimitedString">
         <restriction base="xsd:string">
           <minLength value="1"/>
           <maxLength value="128"/>
+        </restriction>
+      </simpleType>
+      <simpleType name="EmployeeName">
+        <restriction base="kdab:LimitedString">
         </restriction>
       </simpleType>
       <simpleType name="EmployeeTypeEnum">
@@ -32,16 +36,17 @@
       <element name="EmployeeType">
         <complexType>
           <sequence>
-            <element name="type" type="xsd1:EmployeeTypeEnum"/>
-            <element name="otherRoles" type="xsd1:EmployeeTypeEnum" minOccurs="0" maxOccurs="unbounded"/>
+            <element name="type" type="kdab:EmployeeTypeEnum"/>
+            <element name="otherRoles" type="kdab:EmployeeTypeEnum" minOccurs="0" maxOccurs="unbounded"/>
           </sequence>
         </complexType>
       </element>
     </xsd:schema>
   </types>
   <message name='addEmployee'>
-    <part name='employeeType' type='xsd1:EmployeeType'/>
-    <part name='employeeName' type='xsd1:EmployeeName'/>
+    <part name='employeeType' type='kdab:EmployeeType'/>
+    <part name='employeeName' type='kdab:EmployeeName'/>
+    <part name='employeeCountry' type='kdab:LimitedString'/>
   </message>
   <message name='addEmployeeResponse'>
     <part name='bstrReturn' type='xsd:string'/>
@@ -49,11 +54,11 @@
 
   <portType name='MyWsdlPortType'>
     <operation name='addEmployee'>
-      <input message='tns:addEmployee' />
-      <output message='tns:addEmployeeResponse' />
+      <input message='kwsdl:addEmployee' />
+      <output message='kwsdl:addEmployeeResponse' />
     </operation>
   </portType>
-  <binding name='MyWsdlBinding' type='tns:MyWsdlPortType' >
+  <binding name='MyWsdlBinding' type='kwsdl:MyWsdlPortType' >
     <soap:binding style='rpc' transport='http://schemas.xmlsoap.org/soap/http' />
     <operation name='addEmployee' >
       <soap:operation soapAction='http://www.kdab.com/SoapAction' />
@@ -66,7 +71,7 @@
     </operation>
   </binding>
   <service name='MyWsdl' >
-    <port name='MyWsdlPortType' binding='tns:MyWsdlBinding' >
+    <port name='MyWsdlPortType' binding='kwsdl:MyWsdlBinding' >
       <soap:address location='http://127.0.0.1:4242/xml/mywsdl.wsdl' />
     </port>
   </service>
