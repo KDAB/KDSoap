@@ -2,6 +2,7 @@
     This file is part of KDE.
 
     Copyright (c) 2005 Tobias Koenig <tokoe@kde.org>
+    Copyright (c) 2010 David Faure <dfaure@kdab.com>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Library General Public
@@ -28,6 +29,10 @@ using namespace KWSDL;
 static QString escapeEnum( const QString& );
 static KODE::Code createRangeCheckCode( const XSD::SimpleType*, const QString&, KODE::Class& );
 
+// Overall logic:
+// if ENUM -> define "Type" and "type" variable
+// if basic type -> "value" variable
+// else if list -> ...
 
 void Converter::convertSimpleType( const XSD::SimpleType *type )
 {
@@ -226,16 +231,67 @@ void Converter::convertSimpleType( const XSD::SimpleType *type )
 
 void Converter::createSimpleTypeSerializer( KODE::Class& newClass, const XSD::SimpleType *type )
 {
-    //const QString typeName = mTypeMap.localType( type->qualifiedName() );
-    const QString baseType = mTypeMap.localType( type->baseTypeName() );
+    const QString typeName = mTypeMap.localType( type->qualifiedName() );
+    //QString serializeType;
+    //if ( mTypeMap.isBuiltinType( type->baseTypeName() ) ) // serialize to QString, int, etc.
+    //    serializeType = mTypeMap.localType( type->baseTypeName() );
 
-    KODE::Function serializeFunc( "serialize", baseType );
+    KODE::Function serializeFunc( "serialize", "QVariant" );
     serializeFunc.setConst( true );
 
     KODE::Function deserializeFunc( "deserialize", "void" );
     deserializeFunc.addArgument( mTypeMap.localInputType( type->baseTypeName(), QName() ) + " args" );
 
-    serializeFunc.addBodyLine( "return " + baseType + "(); // TODO" );
+    if ( type->subType() == XSD::SimpleType::TypeRestriction ) {
+        // is an enumeration
+        if ( type->facetType() & XSD::SimpleType::ENUM ) {
+            const QStringList enums = type->facetEnums();
+            QStringList escapedEnums;
+            for ( int i = 0; i < enums.count(); ++i )
+                escapedEnums.append( escapeEnum( enums[ i ] ) );
+
+            KODE::MemberVariable variable( "type", "Type" ); // just for the naming
+
+            KODE::Code code;
+            code += "switch ( " + variable.name() + " ) {";
+            code.indent();
+            for ( int i = 0; i < enums.count(); ++i ) {
+                code += "case " + typeName + "::" + escapedEnums[ i ] + ':';
+                code.indent();
+                code += "return QString::fromLatin1(\"" + enums[ i ] + "\");";
+                code.unindent();
+            }
+            code += "default:";
+            code.indent();
+            code += "qDebug(\"Unknown enum %d passed.\", " + variable.name() + ");";
+            code += "break;";
+            code.unindent();
+            code.unindent();
+            code += '}';
+            code.newLine();
+            code += "return QVariant();";
+            serializeFunc.setBody( code );
+        }
+        if ( type->baseTypeName() != XmlAnyType
+            && !type->baseTypeName().isEmpty()
+            && !(type->facetType() & XSD::SimpleType::ENUM) ) {
+            // basic type
+
+            KODE::MemberVariable variable( "value", typeName ); // just for the naming
+            const QName baseType = type->baseTypeName();
+            if ( mTypeMap.isBuiltinType( baseType ) ) // serialize from QString, int, etc.
+                serializeFunc.addBodyLine( "return QVariant::fromValue(" + variable.name() + ");" );
+            else { // inherits another simple type, need to call its serialize method
+                serializeFunc.addBodyLine( "return " + variable.name() + ".serialize();" );
+            }
+        }
+    } else {
+        // TODO lists
+        //if ( mTypeMap.isBuiltinType( type->baseTypeName() ) ) // serialize from QString, int, etc.
+        //    serializeFunc.addBodyLine( "return QVariant::fromValue(" + variable.name() + ");" );
+        //else
+            serializeFunc.addBodyLine( "return QVariant(); // TODO" );
+    }
 
     deserializeFunc.addBodyLine( "Q_UNUSED(args);/*TODO*/" );
 

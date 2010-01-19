@@ -258,6 +258,7 @@ void Converter::clientGenerateMessage( KODE::Code& code, const Message& message 
             if ( isBuiltin ) {
                 code += "message.addArgument(" + partNameStr + ", " + lowerName + ");";
             } else {
+                // TODO remove ::fromValue. Means returning a QVariant in complex types.
                 code += "message.addArgument(" + partNameStr + ", QVariant::fromValue(" + lowerName + ".serialize()));";
             }
         }
