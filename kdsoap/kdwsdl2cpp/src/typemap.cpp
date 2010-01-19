@@ -103,19 +103,19 @@ QList<TypeMap::Entry>::ConstIterator TypeMap::typeEntry( const QName &typeName )
     return it;
 }
 
-bool TypeMap::isBasicType( const QName &typeName )
+bool TypeMap::isBasicType( const QName &typeName ) const
 {
   QList<Entry>::ConstIterator it = typeEntry( typeName );
   return it != mTypeMap.constEnd() ? (*it).basicType : false;
 }
 
-bool TypeMap::isBuiltinType( const QName &typeName )
+bool TypeMap::isBuiltinType( const QName &typeName ) const
 {
   QList<Entry>::ConstIterator it = typeEntry( typeName );
   return it != mTypeMap.constEnd() ? (*it).builtinType : false;
 }
 
-QString TypeMap::localType( const QName &typeName )
+QString TypeMap::localType( const QName &typeName ) const
 {
   QList<Entry>::ConstIterator it = typeEntry( typeName );
   if ( it == mTypeMap.constEnd() ) {
@@ -125,7 +125,7 @@ QString TypeMap::localType( const QName &typeName )
   return (*it).localType;
 }
 
-QString TypeMap::baseType(const QName &typeName)
+QString TypeMap::baseType(const QName &typeName) const
 {
   QList<Entry>::ConstIterator it = typeEntry( typeName );
   if ( it == mTypeMap.constEnd() || (*it).baseType.isEmpty() ) {
@@ -135,19 +135,19 @@ QString TypeMap::baseType(const QName &typeName)
   return localType( base );
 }
 
-QStringList TypeMap::headers( const QName &typeName )
+QStringList TypeMap::headers( const QName &typeName ) const
 {
   QList<Entry>::ConstIterator it = typeEntry( typeName );
   return it != mTypeMap.constEnd() ? (*it).headers : QStringList();
 }
 
-QStringList TypeMap::forwardDeclarations( const QName &typeName )
+QStringList TypeMap::forwardDeclarations( const QName &typeName ) const
 {
   QList<Entry>::ConstIterator it = typeEntry( typeName );
   return it != mTypeMap.constEnd() ? (*it).forwardDeclarations : QStringList();
 }
 
-QStringList TypeMap::headerIncludes( const QName &typeName )
+QStringList TypeMap::headerIncludes( const QName &typeName ) const
 {
   QList<Entry>::ConstIterator it = typeEntry( typeName );
   return it != mTypeMap.constEnd() ? (*it).headerIncludes : QStringList();
@@ -155,7 +155,7 @@ QStringList TypeMap::headerIncludes( const QName &typeName )
 
 
 
-QString TypeMap::localTypeForAttribute( const QName &typeName )
+QString TypeMap::localTypeForAttribute( const QName &typeName ) const
 {
   QList<Entry>::ConstIterator it;
   for ( it = mAttributeMap.constBegin(); it != mAttributeMap.constEnd(); ++it ) {
@@ -166,7 +166,7 @@ QString TypeMap::localTypeForAttribute( const QName &typeName )
   return QString();
 }
 
-QStringList TypeMap::headersForAttribute( const QName &typeName )
+QStringList TypeMap::headersForAttribute( const QName &typeName ) const
 {
   QList<Entry>::ConstIterator it;
   for ( it = mAttributeMap.constBegin(); it != mAttributeMap.constEnd(); ++it ) {
@@ -177,7 +177,7 @@ QStringList TypeMap::headersForAttribute( const QName &typeName )
   return QStringList();
 }
 
-QStringList TypeMap::forwardDeclarationsForAttribute( const QName &typeName )
+QStringList TypeMap::forwardDeclarationsForAttribute( const QName &typeName ) const
 {
   QList<Entry>::ConstIterator it;
   for ( it = mAttributeMap.constBegin(); it != mAttributeMap.constEnd(); ++it ) {
@@ -198,7 +198,7 @@ QList<TypeMap::Entry>::ConstIterator TypeMap::elementEntry( const QName &typeNam
   return it;
 }
 
-QString TypeMap::localTypeForElement( const QName &typeName )
+QString TypeMap::localTypeForElement( const QName &typeName ) const
 {
   QList<Entry>::ConstIterator it = elementEntry( typeName );
   if ( it != mElementMap.constEnd() ) {
@@ -209,13 +209,13 @@ QString TypeMap::localTypeForElement( const QName &typeName )
   return QString();
 }
 
-QStringList TypeMap::headersForElement( const QName &typeName )
+QStringList TypeMap::headersForElement( const QName &typeName ) const
 {
   QList<Entry>::ConstIterator it = elementEntry( typeName );
   return it != mElementMap.constEnd() ? (*it).headers : QStringList();
 }
 
-QStringList TypeMap::forwardDeclarationsForElement( const QName &typeName )
+QStringList TypeMap::forwardDeclarationsForElement( const QName &typeName ) const
 {
   QList<Entry>::ConstIterator it = elementEntry( typeName );
   return it != mElementMap.constEnd() ? (*it).forwardDeclarations : QStringList();
@@ -235,7 +235,7 @@ void TypeMap::addSchemaTypes( const XSD::Types &types )
     entry.typeName = (*simpleIt).name();
     entry.localType = mNSManager->prefix( entry.nameSpace ).toUpper() + "__" + adaptLocalTypeName( (*simpleIt).name() );
     entry.baseType = (*simpleIt).baseTypeName();
-    qDebug() << entry.baseType.nameSpace() << entry.baseType.localName() << entry.baseType.qname();
+    //qDebug() << entry.baseType.nameSpace() << entry.baseType.localName() << entry.baseType.qname();
     //entry.headers << (*simpleIt).name().toLower() + ".h";
     entry.forwardDeclarations << entry.localType;
 
@@ -309,7 +309,7 @@ QString TypeMap::inputType( const QString &localType, bool isElement ) const
     return type;
 }
 
-void TypeMap::dump()
+void TypeMap::dump() const
 {
   qDebug( "--------------------------------" );
   qDebug( "Types:" );

@@ -14,10 +14,18 @@
           </sequence>
         </complexType>
       </element>
+      <simpleType name="EmployeeName">
+        <restriction base="xsd:string">
+          <minLength value="1"/>
+          <maxLength value="128"/>
+        </restriction>
+      </simpleType>
       <simpleType name="EmployeeTypeEnum">
         <restriction base="xsd:string">
           <enumeration value="Janitor"/>
           <enumeration value="Developer"/>
+          <enumeration value="Tester"/>
+          <enumeration value="TeamLeader"/>
           <enumeration value="CEO"/>
         </restriction>
       </simpleType>
@@ -25,6 +33,7 @@
         <complexType>
           <sequence>
             <element name="type" type="xsd1:EmployeeTypeEnum"/>
+            <element name="otherRoles" type="xsd1:EmployeeTypeEnum" minOccurs="0" maxOccurs="unbounded"/>
           </sequence>
         </complexType>
       </element>
@@ -32,7 +41,7 @@
   </types>
   <message name='addEmployee'>
     <part name='employeeType' type='xsd1:EmployeeType'/>
-    <part name='employeeName' type='xsd:string'/>
+    <part name='employeeName' type='xsd1:EmployeeName'/>
   </message>
   <message name='addEmployeeResponse'>
     <part name='bstrReturn' type='xsd:string'/>

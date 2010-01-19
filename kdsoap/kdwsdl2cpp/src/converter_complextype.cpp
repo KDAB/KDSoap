@@ -210,6 +210,36 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
   mClasses.append( newClass );
 }
 
+// Helper method for the generation of the serialize() method
+static KODE::Code appendElementArg( const TypeMap& typeMap, const XSD::Element& elem, const QString& localVariableName )
+{
+    KODE::Code block;
+    QString value;
+    if ( typeMap.isBuiltinType( elem.type() ) ) {
+        value = localVariableName;
+    } else {
+        value = "QVariant::fromValue(" + localVariableName + ".serialize())";
+    }
+    block += "args.append(KDSoapValue(QString::fromLatin1(\"" + elem.name() + "\"), " + value + "));";
+    return block;
+}
+
+// Helper method for the generation of the deserialize() method
+static KODE::Code demarshalVar( TypeMap& typeMap, const XSD::Element& elem, const QString& variableName, const QString& typeName )
+{
+    KODE::Code code;
+    if ( typeMap.isBuiltinType( elem.type() ) ) {
+        code += variableName + " = value.value<" + typeName + ">();";
+    } else {
+        const QString baseType = typeMap.baseType( elem.type() );
+        if ( baseType.isEmpty() ) // ### assuming complex type. TODO: isComplexType?
+            code += variableName + ".deserialize(value.value<KDSoapValueList>());";
+        else
+            code += variableName + ".deserialize(value.value<" + baseType + ">());";
+    }
+    return code;
+}
+
 void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::ComplexType *type )
 {
     KODE::Function serializeFunc( "serialize", "KDSoapValueList" );
@@ -254,27 +284,17 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
 
             marshalCode += "for (int i = 0; i < " + variableName + ".count(); ++i) {";
             marshalCode.indent();
-            // TODO factorize code from the 'else' below, to call it here (with the .at(i) appended)
-            marshalCode += "args.append(KDSoapValue(QString::fromLatin1(\"" + elemName + "\"), " + variableName + ".at(i)));";
+            marshalCode.addBlock( appendElementArg( mTypeMap, elem, variableName + ".at(i)" ) );
             marshalCode.unindent();
             marshalCode += '}';
 
-            // TODO and for this too, for non-builtin types, right?
-            demarshalCode += variableName + ".append(value.value<" + typeName + ">());";
+            const QString tempVar = variable.name() + "Temp"; // we need a temp var in case of deserialize()
+            demarshalCode += typeName + " " + tempVar + ";";
+            demarshalCode.addBlock( demarshalVar( mTypeMap, elem, tempVar, typeName ) );
+            demarshalCode += variableName + ".append(" + tempVar + ");";
         } else {
-            QString value;
-            if ( mTypeMap.isBuiltinType( elem.type() ) ) {
-                value = variableName;
-                demarshalCode += variableName + " = value.value<" + typeName + ">();";
-            } else {
-                value = "QVariant::fromValue(" + variableName + ".serialize())";
-                const QString baseType = mTypeMap.baseType( elem.type() );
-                if ( baseType.isEmpty() ) // ### assuming complex type. TODO: isComplexType?
-                    demarshalCode += variableName + ".deserialize(value.value<KDSoapValueList>());";
-                else
-                    demarshalCode += variableName + ".deserialize(value.value<" + baseType + ">());";
-            }
-            marshalCode += "args.append(KDSoapValue(QString::fromLatin1(\"" + elemName + "\"), " + value + "));";
+            marshalCode.addBlock( appendElementArg( mTypeMap, elem, variableName ) );
+            demarshalCode.addBlock( demarshalVar( mTypeMap, elem, variableName, typeName ) );
         }
 
         demarshalCode.unindent();

@@ -180,7 +180,7 @@ void Code::addFormattedText( const QString &text )
 
   QStringList::ConstIterator it;
   for ( it = words.constBegin(); it != words.constEnd(); ++it ) {
-    if ( (int)(*it).length() + lineLength >= maxWidth ) {
+    if ( (*it).length() + lineLength >= maxWidth ) {
       line = line.trimmed();
       addLine( line );
       line.truncate( 0 );

@@ -19,7 +19,8 @@ public:
         MyWsdl service;
         XSD1__EmployeeType employeeType;
         employeeType.setType(XSD1__EmployeeTypeEnum::Developer);
-        service.addEmployee(employeeType, QLatin1String("David"));
+        employeeType.setOtherRoles(QList<XSD1__EmployeeTypeEnum>() << XSD1__EmployeeTypeEnum::TeamLeader);
+        service.addEmployee(employeeType, QString::fromLatin1("David"));
     }
 };
 

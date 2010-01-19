@@ -100,11 +100,13 @@ class KODE_EXPORT Code
 
     /**
      * Adds the given @param block to the code block.
+     * The current indent will be prepended before every line of the block.
      */
     void addBlock( const Code &block );
 
     /**
      * Adds the given @param block to the code block.
+     * The current indent will be prepended before every line of the block.
      */
     void addBlock( const QString &block );
 
@@ -151,6 +153,8 @@ class KODE_EXPORT Code
 
     /**
      * Adds the given @param block to the code block.
+     * @param block is supposed to be fully indented already
+     * (otherwise, use addBlock)
      */
     Code &operator+=( const Code &block );
 
