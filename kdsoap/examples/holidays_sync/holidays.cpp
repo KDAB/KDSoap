@@ -20,7 +20,7 @@ int main(int argc, char **argv)
 
     qDebug("Looking up the date of easter in %i...", year);
 
-    KDSoapMessage response = client.call("GetValentinesDay", message);
+    KDSoapMessage response = client.call(QLatin1String("GetValentinesDay"), message);
 
     qDebug("%s", qPrintable(response.arguments()[0].value().toString()));
 

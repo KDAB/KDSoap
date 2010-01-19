@@ -76,7 +76,7 @@ void Converter::setWSDL( const WSDL &wsdl )
 
   // set the xsd types
   mTypeMap.addSchemaTypes( wsdl.definitions().type().types() );
-//  mTypeMap.dump();
+  mTypeMap.dump();
 }
 
 KODE::Class::List Converter::classes() const
@@ -86,14 +86,9 @@ KODE::Class::List Converter::classes() const
 
 void Converter::convert()
 {
-  createUtils();
   createSoapUtils();
 
   convertTypes();
-
-#ifdef KDAB_TEMP
-  mClasses.append( mSerializer );
-#endif
 
 //  mNSManager.dump();
 
@@ -123,8 +118,8 @@ void Converter::convertTypes()
   for ( int i = 0; i < attributes.count(); ++i )
     convertAttribute( &(attributes[ i ]) );
 
-  XSD::Element::List elements = types.elements();
-  qDebug() << "Converting" << elements.count() << "elements";
-  for ( int i = 0; i < elements.count(); ++i )
-    convertElement( &(elements[ i ]) );
+  //XSD::Element::List elements = types.elements();
+  //qDebug() << "Converting" << elements.count() << "elements";
+  //for ( int i = 0; i < elements.count(); ++i )
+  //  convertElement( &(elements[ i ]) );
 }

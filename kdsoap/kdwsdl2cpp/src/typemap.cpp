@@ -125,6 +125,16 @@ QString TypeMap::localType( const QName &typeName )
   return (*it).localType;
 }
 
+QString TypeMap::baseType(const QName &typeName)
+{
+  QList<Entry>::ConstIterator it = typeEntry( typeName );
+  if ( it == mTypeMap.constEnd() || (*it).baseType.isEmpty() ) {
+      return QString();
+  }
+  const QName base = (*it).baseType;
+  return localType( base );
+}
+
 QStringList TypeMap::headers( const QName &typeName )
 {
   QList<Entry>::ConstIterator it = typeEntry( typeName );
@@ -224,7 +234,9 @@ void TypeMap::addSchemaTypes( const XSD::Types &types )
     entry.nameSpace = (*simpleIt).nameSpace();
     entry.typeName = (*simpleIt).name();
     entry.localType = mNSManager->prefix( entry.nameSpace ).toUpper() + "__" + adaptLocalTypeName( (*simpleIt).name() );
-    entry.headers << (*simpleIt).name().toLower() + ".h";
+    entry.baseType = (*simpleIt).baseTypeName();
+    qDebug() << entry.baseType.nameSpace() << entry.baseType.localName() << entry.baseType.qname();
+    //entry.headers << (*simpleIt).name().toLower() + ".h";
     entry.forwardDeclarations << entry.localType;
 
     mTypeMap.append( entry );
@@ -242,7 +254,7 @@ void TypeMap::addSchemaTypes( const XSD::Types &types )
         entry.localType = "void";
     else {
         entry.localType = mNSManager->prefix( entry.nameSpace ).toUpper() + "__" + adaptLocalTypeName( (*complexIt).name() );
-        entry.headers << (*complexIt).name().toLower() + ".h";
+        //entry.headers << (*complexIt).name().toLower() + ".h";
         entry.forwardDeclarations << entry.localType;
     }
 
@@ -281,8 +293,6 @@ void TypeMap::addSchemaTypes( const XSD::Types &types )
     // directly, this is much simpler.
     /*} else {
       entry.localType = mNSManager->prefix( entry.nameSpace ).toUpper() + "__" + adaptLocalTypeName( (*elemIt).name() + "Element" );
-      entry.headers << (*elemIt).name().toLower() + "element.h";
-      entry.forwardDeclarations << entry.localType;
     }*/
     //qDebug() << "Adding TypeMap entry for element" << entry.typeName << resolvedType;
     mElementMap.append( entry );
@@ -305,12 +315,12 @@ void TypeMap::dump()
   qDebug( "Types:" );
   for ( int i = 0; i < mTypeMap.count(); ++i ) {
     qDebug( "%s\t%s\t%s\t%s\t%s\t%s",
-            ( mTypeMap[ i ].basicType ? "basic" : "not basic" ),
-              qPrintable( mTypeMap[ i ].nameSpace ),
-              qPrintable( mTypeMap[ i ].typeName ),
-              qPrintable( mTypeMap[ i ].localType ),
-              qPrintable( mTypeMap[ i ].headers.join( "," ) ),
-              qPrintable( mTypeMap[ i ].headerIncludes.join( "," ) ) );
+            qPrintable( mTypeMap[ i ].nameSpace ),
+            qPrintable( mTypeMap[ i ].typeName ),
+            qPrintable( mTypeMap[ i ].localType ),
+            qPrintable( mTypeMap[ i ].headers.join( "," ) ),
+            qPrintable( mTypeMap[ i ].headerIncludes.join( "," ) ),
+            mTypeMap[ i ].basicType ? "basic" : "not basic" );
   }
 
   qDebug( "--------------------------------" );

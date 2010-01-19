@@ -165,6 +165,7 @@ bool Parser::parseSchemaTag( ParserContext *context, const QDomElement &root )
   QDomElement element = root.firstChildElement();
   while ( !element.isNull() ) {
     QName name = element.tagName();
+    //qDebug() << "Parsing" << name.localName();
     if ( name.localName() == QLatin1String("import") ) {
       parseImport( context, element );
     } else if ( name.localName() == QLatin1String("element") ) {

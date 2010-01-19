@@ -25,17 +25,13 @@
 
 using namespace KWSDL;
 
+#ifdef KDAB_DELETED
 void Converter::convertElement( const XSD::Element *element )
 {
-    // TEST
-    return;
-
   const QString className( mTypeMap.localTypeForElement( QName( element->nameSpace(), element->name() ) ) );
   KODE::Class newClass( className );
 
   qDebug() << "convertElement:" << element->type().qname() << "class=" << className;
-
-  //newClass.addInclude( QString(), "Serializer" );
 
   if ( mTypeMap.isBuiltinType( element->type() ) ) {
     QString typeName = mTypeMap.localType( element->type() );
@@ -112,13 +108,14 @@ void Converter::convertElement( const XSD::Element *element )
 
   createElementSerializer( element );
 }
+#endif
 
+#ifdef KDAB_DELETED
 void Converter::createElementSerializer( const XSD::Element *element )
 {
   QString className( mTypeMap.localTypeForElement( QName( element->nameSpace(), element->name() ) ) );
   //qDebug() << "would create serializer for" << className << mTypeMap.forwardDeclarationsForElement( element->qualifiedName() );
 
-#ifdef KDAB_DELETED
   // include header
   mSerializer.addIncludes( QStringList(), mTypeMap.forwardDeclarationsForElement( element->qualifiedName() ) );
 
@@ -179,5 +176,5 @@ void Converter::createElementSerializer( const XSD::Element *element )
 
   mSerializer.addFunction( marshal );
   mSerializer.addFunction( demarshal );
-#endif
 }
+#endif

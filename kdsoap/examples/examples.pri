@@ -21,6 +21,6 @@ LIBS        += -L$$KDSOAP_PATH/lib -l$$KDSOAPLIB
 !isEmpty(QMAKE_RPATH):LIBS += $$QMAKE_RPATH$$KDSOAP_PATH/lib
 
 include(../variables.pri)
-DEFINES -= QT_NO_CAST_FROM_ASCII
+#DEFINES -= QT_NO_CAST_FROM_ASCII
 
 include(../kdwsdl2cpp.pri)

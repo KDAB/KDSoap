@@ -50,13 +50,13 @@ class Converter
     void createComplexTypeSerializer( KODE::Class&, const XSD::ComplexType* );
 
     void convertSimpleType( const XSD::SimpleType* );
-    void createSimpleTypeSerializer( const XSD::SimpleType* );
+    void createSimpleTypeSerializer( KODE::Class&, const XSD::SimpleType* );
 
     void convertAttribute( const XSD::Attribute* );
     void createAttributeSerializer( const XSD::Attribute* );
 
-    void convertElement( const XSD::Element* );
-    void createElementSerializer( const XSD::Element* );
+    //void convertElement( const XSD::Element* );
+    //void createElementSerializer( const XSD::Element* );
 
     // Client Stub
     void convertClientService();
@@ -70,23 +70,12 @@ class Converter
     // Server Stub
     void convertServerService();
 
-#ifdef KDAB_DELETED
-    // Transport
-    void createKDETransport();
-    void createQtTransport();
-    void createCustomTransport();
-#endif
-
     // Utils
-    void createUtils();
     void createSoapUtils();
 
     WSDL mWSDL;
 
     KODE::Class::List mClasses;
-#ifdef KDAB_TEMP
-    KODE::Class mSerializer;
-#endif
     KODE::Class mQObject;
 
     NameMapper mNameMapper;

@@ -48,6 +48,7 @@ class TypeMap
     bool isBuiltinType( const QName &typeName );
 
     QString localType( const QName &typeName );
+    QString baseType( const QName &typeName );
     QStringList headers( const QName &typeName );
     QStringList forwardDeclarations( const QName &typeName );
     QStringList headerIncludes( const QName &typeName );
@@ -83,6 +84,7 @@ class TypeMap
         QString nameSpace;
         QString typeName;
         QString localType;
+        QName baseType;
         QStringList headers;
         QStringList forwardDeclarations;
         QStringList headerIncludes;

@@ -1,5 +1,5 @@
 TEMPLATE = subdirs
-SUBDIRS = webcalls
+SUBDIRS = webcalls builtinhttp
 
 WIN_BINDIR=release
 CONFIG(debug, debug|release) {
