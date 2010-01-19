@@ -42,7 +42,7 @@ int main(int argc, char **argv)
 
     //qDebug() << response;
 
-    KDSoapPendingCall pendingCall = client.asyncCall("GetValentinesDay", message);
+    KDSoapPendingCall pendingCall = client.asyncCall(QLatin1String("GetValentinesDay"), message);
     TestObject test;
     KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, &test);
 

@@ -159,7 +159,7 @@ bool Definitions::loadXML( ParserContext *context, const QDomElement &element )
       mBindings.append( binding );
     } else if ( tagName.localName() == "service" ) {
       const QString name = child.attribute( "name" );
-      qDebug() << "Service:" << name << "looking for" << mWantedService;
+      //qDebug() << "Service:" << name << "looking for" << mWantedService;
       // is this the service we want?
       if ( mWantedService.isEmpty() || mWantedService == name ) {
         if ( !foundService ) {

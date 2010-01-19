@@ -27,8 +27,8 @@ private slots:
     void testSoapResponder_sync()
     {
         SoapResponder responder;
-        QString ret = responder.method1("abc", "def");
-        QCOMPARE(ret, QString("Your input parameters are abc and def"));
+        QString ret = responder.method1(QLatin1String("abc"), QLatin1String("def"));
+        QCOMPARE(ret, QString::fromLatin1("Your input parameters are abc and def"));
     }
 
     void testSoapResponder_async()
@@ -36,10 +36,10 @@ private slots:
         SoapResponder responder;
         QSignalSpy spyDone(&responder, SIGNAL(method1Done(QString)));
         connect(&responder, SIGNAL(method1Done(QString)), &m_eventLoop, SLOT(quit()));
-        responder.asyncMethod1("abc", "def");
+        responder.asyncMethod1(QLatin1String("abc"), QLatin1String("def"));
         m_eventLoop.exec();
         QCOMPARE(spyDone.count(), 1);
-        QCOMPARE(spyDone[0][0].toString(), QString("Your input parameters are abc and def"));
+        QCOMPARE(spyDone[0][0].toString(), QString::fromLatin1("Your input parameters are abc and def"));
     }
 
     // Soap in Document mode.
@@ -52,7 +52,7 @@ private slots:
         KDSoapMessage message;
         message.addArgument(QLatin1String("number1"), 42);
         message.addArgument(QLatin1String("number2"), 43);
-        KDSoapPendingCall pendingCall = client.asyncCall("AddInteger", message/*, action*/);
+        KDSoapPendingCall pendingCall = client.asyncCall(QLatin1String("AddInteger"), message/*, action*/);
         KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);
         connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher*)),
                 this, SLOT(slotFinished(KDSoapPendingCallWatcher*)));
@@ -70,7 +70,7 @@ private slots:
         KDSoapMessage message;
         message.addArgument(QLatin1String("number1"), 42);
         message.addArgument(QLatin1String("number2"), 43);
-        KDSoapMessage ret = client.call("AddInteger", message);
+        KDSoapMessage ret = client.call(QLatin1String("AddInteger"), message);
         QCOMPARE(ret.arguments().first().value().toInt(), 85);
     }
 
@@ -88,13 +88,13 @@ private slots:
         KDSoapClientInterface client(endPoint, messageNamespace);
         KDSoapMessage message;
         message.addArgument(QLatin1String("year"), year);
-        KDSoapPendingCall pendingCall = client.asyncCall("GetValentinesDay", message/*, action*/);
+        KDSoapPendingCall pendingCall = client.asyncCall(QLatin1String("GetValentinesDay"), message/*, action*/);
         KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);
         connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher*)),
                 this, SLOT(slotFinished(KDSoapPendingCallWatcher*)));
         m_eventLoop.exec();
         QVERIFY(!m_returnMessage.isFault());
-        QCOMPARE(m_returnMessage.arguments().first().value(), QVariant("2009-02-14T00:00:00.0000000-05:00"));
+        QCOMPARE(m_returnMessage.arguments().first().value(), QVariant(QString::fromLatin1("2009-02-14T00:00:00.0000000-05:00")));
     }
 
     void testFault()
@@ -105,7 +105,7 @@ private slots:
         KDSoapMessage message;
         message.addArgument(QLatin1String("bstrParam1"), QLatin1String("abc"));
         message.addArgument(QLatin1String("bstrParam2"), QLatin1String("def"));
-        KDSoapMessage ret = client.call("Method1", message);
+        KDSoapMessage ret = client.call(QLatin1String("Method1"), message);
         qDebug() << ret;
         QVERIFY(ret.isFault());
         QCOMPARE(ret.faultAsString(), QString::fromLatin1("Fault code: SOAP-ENV:Server\nFault description: The parameter is incorrect. (/xml/doesnotexist)"));
@@ -119,7 +119,7 @@ private slots:
         const QString action = QString::fromLatin1("");
         KDSoapClientInterface client(endPoint, messageNamespace);
         KDSoapMessage message;
-        KDSoapPendingCall pendingCall = client.asyncCall("getCountries", message, action);
+        KDSoapPendingCall pendingCall = client.asyncCall(QLatin1String("getCountries"), message, action);
         KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);
         connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher*)),
                 this, SLOT(slotFinished(KDSoapPendingCallWatcher*)));

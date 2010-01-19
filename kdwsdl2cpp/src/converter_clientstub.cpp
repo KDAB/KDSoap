@@ -257,14 +257,21 @@ void Converter::clientGenerateMessage( KODE::Code& code, const Message& message 
         code += "delete " + mNameMapper.escape( lowerName ) + ';';
 #endif
         QString argType;
+        bool isBuiltin = false;
         QName type = part.type();
         if ( !type.isEmpty() ) {
             argType = mTypeMap.localType( type );
-            code += "message.addArgument(QLatin1String(\"" + part.name() + "\"), " + lowerName + ");";
+            isBuiltin = mTypeMap.isBuiltinType( type );
         } else {
             argType = mTypeMap.localTypeForElement( part.element() );
-            if ( argType != "void" )
-                code += lowerName + ".serialize( message.arguments() );";
+        }
+        if ( argType != "void" ) {
+            const QString partNameStr = "QLatin1String(\"" + part.name() + "\")";
+            if ( isBuiltin ) {
+                code += "message.addArgument(" + partNameStr + ", " + lowerName + ");";
+            } else {
+                code += "message.addArgument(" + partNameStr + ", QVariant::fromValue(" + lowerName + ".serialize()));";
+            }
         }
     }
 }
@@ -437,7 +444,7 @@ void Converter::convertClientOutputMessage( const Operation &operation, const Pa
     }
 
     if ( !type.isEmpty() ) {
-        partNames << "args.value(\"" + lowerName + "\").value<" + partType + ">()";
+        partNames << "args.value(QLatin1String(\"" + lowerName + "\")).value<" + partType + ">()";
     } else {
         slotCode += partType + " ret;"; // local var. TODO ret1/ret2 etc. if more than one.
         slotCode += "ret.deserialize(d_ptr->m_lastReply.arguments());";

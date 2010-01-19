@@ -58,7 +58,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
 
       const QString variableName = "d_ptr->" + variable.name();
 
-      ctorBody += variableName + " = 0;";
+      //ctorBody += variableName + " = 0;";
 
       // setter method
       KODE::Function setter( "setValue", "void" );
@@ -212,8 +212,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
 
 void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::ComplexType *type )
 {
-    KODE::Function serializeFunc( "serialize", "void" );
-    serializeFunc.addArgument( "KDSoapValueList& args" );
+    KODE::Function serializeFunc( "serialize", "KDSoapValueList" );
     serializeFunc.setConst( true );
 
     KODE::Function deserializeFunc( "deserialize", "void" );
@@ -224,6 +223,8 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
     if ( type->baseTypeName() != XmlAnyType && !type->baseTypeName().isEmpty() && !type->isArray() ) {
         qDebug() << "TODO: handle marshalling/demarshalling of base types";
     }
+
+    marshalCode += "KDSoapValueList args;";
 
     // elements
     XSD::Element::List elements = type->elements();
@@ -245,7 +246,7 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
         //const QString lowerName = lowerlize( elem.name() );
         const QString variableName = "d_ptr->" + variable.name();
 
-        demarshalCode += "if (name == \"" + elemName + "\") {";
+        demarshalCode += "if (name == QLatin1String(\"" + elemName + "\")) {";
         demarshalCode.indent();
 
         if ( elem.maxOccurs() > 1 ) {
@@ -254,10 +255,11 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
             marshalCode += "for (int i = 0; i < " + variableName + ".count(); ++i) {";
             marshalCode.indent();
             // TODO factorize code from the 'else' below, to call it here (with the .at(i) appended)
-            marshalCode += "args.append(KDSoapValue(\"" + elemName + "\", " + variableName + ".at(i)));";
+            marshalCode += "args.append(KDSoapValue(QString::fromLatin1(\"" + elemName + "\"), " + variableName + ".at(i)));";
             marshalCode.unindent();
             marshalCode += '}';
 
+            // TODO and for this too, for non-builtin types, right?
             demarshalCode += variableName + ".append(value.value<" + typeName + ">());";
         } else {
             QString value;
@@ -265,21 +267,25 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
                 value = variableName;
                 demarshalCode += variableName + " = value.value<" + typeName + ">();";
             } else {
-                marshalCode += "KDSoapValueList " + elemName + ";";
-                marshalCode += variableName + ".serialize(" + elemName + ");";
-                value = "QVariant::fromValue(" + elemName + ")";
-                demarshalCode += variableName + ".deserialize(value.value<KDSoapValueList>());";
+                value = "QVariant::fromValue(" + variableName + ".serialize())";
+                const QString baseType = mTypeMap.baseType( elem.type() );
+                if ( baseType.isEmpty() ) // ### assuming complex type. TODO: isComplexType?
+                    demarshalCode += variableName + ".deserialize(value.value<KDSoapValueList>());";
+                else
+                    demarshalCode += variableName + ".deserialize(value.value<" + baseType + ">());";
             }
-            marshalCode += "args.append(KDSoapValue(\"" + elemName + "\", " + value + "));";
+            marshalCode += "args.append(KDSoapValue(QString::fromLatin1(\"" + elemName + "\"), " + value + "));";
         }
 
         demarshalCode.unindent();
         demarshalCode += "}";
-    }
+    } // end: for each element
 
     if ( !type->attributes().isEmpty() ) {
         qDebug() << "TODO: handling marshalling of attributes";
     }
+
+    marshalCode += "return args;";
 
     serializeFunc.setBody( marshalCode );
     newClass.addFunction( serializeFunc );

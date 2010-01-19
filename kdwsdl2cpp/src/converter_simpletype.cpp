@@ -35,8 +35,6 @@ void Converter::convertSimpleType( const XSD::SimpleType *type )
   qDebug() << "convertSimpleType:" << type->qualifiedName().qname() << typeName;
   KODE::Class newClass( typeName );
 
-  newClass.addInclude( QString(), "Serializer" );
-
   KODE::Code ctorBody;
   KODE::Code dtorBody;
 
@@ -56,7 +54,7 @@ void Converter::convertSimpleType( const XSD::SimpleType *type )
       newClass.addEnum( KODE::Enum( "Type", enums ) );
 
       classDocumentation += "Whenever you have to pass an object of type " + newClass.name() +
-                            " you can also pass the enum directly (e.g. someMethod( " + newClass.name() + "::" + enums.first() + "  )).";
+                            " you can also pass the enum directly. Example:\nsomeMethod( " + newClass.name() + "::" + enums.first() + " )).";
 
       // member variables
       KODE::MemberVariable variable( "type", "Type" );
@@ -74,13 +72,13 @@ void Converter::convertSimpleType( const XSD::SimpleType *type )
 
       // convenience constructor
       KODE::Function conctor( upperlize( newClass.name() ) );
-      conctor.addArgument( "const " + upperlize( newClass.name() ) + "::Type &type" );
+      conctor.addArgument( "const Type &type" );
       KODE::Code code;
       code += variable.name() + " = type;";
       conctor.setBody( code );
 
       // type operator
-      KODE::Function op( "operator const " + upperlize( newClass.name() ) + "::Type" );
+      KODE::Function op( "operator Type" );
       op.setBody( "return " + variable.name() + ';' );
       op.setConst( true );
 
@@ -104,23 +102,23 @@ void Converter::convertSimpleType( const XSD::SimpleType *type )
       Q_ASSERT(!typeName.isEmpty());
 
       classDocumentation += "Whenever you have to pass an object of type " + newClass.name() +
-                            " you can also pass the value directly (e.g. someMethod( (" + typeName + "*)value  )).";
+                            " you can also pass the value directly (e.g. someMethod( (" + typeName + ")value )).";
       // include header
       newClass.addIncludes( QStringList(), mTypeMap.forwardDeclarations( baseName ) );
       newClass.addHeaderIncludes( mTypeMap.headerIncludes( baseName ) );
 
       // member variables
-      KODE::MemberVariable variable( "value", typeName + '*' );
+      KODE::MemberVariable variable( "value", typeName );
       newClass.addMemberVariable( variable );
 
-      ctorBody += variable.name() + " = 0;";
-      dtorBody += "delete " + variable.name() + "; " + variable.name() + " = 0;";
+      //ctorBody += variable.name() + " = 0;";
+      //dtorBody += "delete " + variable.name() + "; " + variable.name() + " = 0;";
 
       // setter method
       KODE::Function setter( "setValue", "void" );
-      setter.addArgument( typeName + " *value" );
+      setter.addArgument( typeName + " value" );
       KODE::Code setterBody;
-      setterBody += createRangeCheckCode( type, "(*value)", newClass );
+      setterBody += createRangeCheckCode( type, "(value)", newClass );
       setterBody.newLine();
       setterBody += "if ( !rangeOk )";
       setterBody.indent();
@@ -131,15 +129,15 @@ void Converter::convertSimpleType( const XSD::SimpleType *type )
       setter.setBody( setterBody );
 
       // getter method
-      KODE::Function getter( "value", typeName + '*' );
+      KODE::Function getter( "value", typeName );
       getter.setBody( "return " + variable.name() + ';' );
       getter.setConst( true );
 
       // convenience constructor
       KODE::Function conctor( upperlize( newClass.name() ) );
-      conctor.addArgument( typeName + " *value" );
+      conctor.addArgument( typeName + " value" );
       KODE::Code code;
-      code += createRangeCheckCode( type, "(*value)", newClass );
+      code += createRangeCheckCode( type, "(value)", newClass );
       code.newLine();
       code += "if ( !rangeOk )";
       code.indent();
@@ -153,8 +151,8 @@ void Converter::convertSimpleType( const XSD::SimpleType *type )
         KODE::Function charctor( upperlize( newClass.name() ) );
         charctor.addArgument( "const char *charValue" );
         KODE::Code code;
-        code += "QString *value = new QString( charValue );";
-        code += createRangeCheckCode( type, "(*value)", newClass );
+        code += "QString value( charValue );";
+        code += createRangeCheckCode( type, "(value)", newClass );
         code.newLine();
         code += "if ( !rangeOk )";
         code.indent();
@@ -168,7 +166,7 @@ void Converter::convertSimpleType( const XSD::SimpleType *type )
       }
 
       // type operator
-      KODE::Function op( "operator const " + typeName + '*' );
+      KODE::Function op( "operator " + typeName );
       op.setBody( "return " + variable.name() + ';' );
       op.setConst( true );
 
@@ -189,21 +187,21 @@ void Converter::convertSimpleType( const XSD::SimpleType *type )
     newClass.addHeaderIncludes( mTypeMap.headerIncludes( baseName ) );
 
     // member variables
-    KODE::MemberVariable variable( "entries", "QList<" + typeName + "*>*" );
+    KODE::MemberVariable variable( "entries", "QList<" + typeName + ">" );
     newClass.addMemberVariable( variable );
 
-    ctorBody += variable.name() + " = 0;";
-    dtorBody += "qDeleteAll( *" + variable.name() + " );";
-    dtorBody += variable.name() + "->clear();";
-    dtorBody += "delete " + variable.name() + "; " + variable.name() + " = 0;";
+    //ctorBody += variable.name() + " = 0;";
+    //dtorBody += "qDeleteAll( *" + variable.name() + " );";
+    //dtorBody += variable.name() + "->clear();";
+    //dtorBody += "delete " + variable.name() + "; " + variable.name() + " = 0;";
 
     // setter method
     KODE::Function setter( "setEntries", "void" );
-    setter.addArgument( "QList<" + typeName + "*> *entries" );
+    setter.addArgument( "QList<" + typeName + "> entries" );
     setter.setBody( variable.name() + " = entries;" );
 
     // getter method
-    KODE::Function getter( "entries", "QList<" + typeName + "*>*" );
+    KODE::Function getter( "entries", "QList<" + typeName + ">" );
     getter.setBody( "return " + variable.name() + ';' );
     getter.setConst( true );
 
@@ -216,7 +214,7 @@ void Converter::convertSimpleType( const XSD::SimpleType *type )
   else
     newClass.setDocs( classDocumentation );
 
-  createSimpleTypeSerializer( type );
+  createSimpleTypeSerializer( newClass, type );
 
   KODE::Function ctor( upperlize( newClass.name() ) );
   ctor.setBody( ctorBody );
@@ -229,12 +227,25 @@ void Converter::convertSimpleType( const XSD::SimpleType *type )
   mClasses.append( newClass );
 }
 
-void Converter::createSimpleTypeSerializer( const XSD::SimpleType *type )
+void Converter::createSimpleTypeSerializer( KODE::Class& newClass, const XSD::SimpleType *type )
 {
-    Q_UNUSED(type);
+    const QString typeName = mTypeMap.localType( type->qualifiedName() );
+    const QString baseType = mTypeMap.localType( type->baseTypeName() );
+
+    KODE::Function serializeFunc( "serialize", baseType );
+    serializeFunc.setConst( true );
+
+    KODE::Function deserializeFunc( "deserialize", "void" );
+    deserializeFunc.addArgument( mTypeMap.inputType( baseType, false ) + " args" );
+
+    serializeFunc.addBodyLine( "return " + baseType + "(); // TODO" );
+
+    deserializeFunc.addBodyLine( "Q_UNUSED(args);/*TODO*/" );
+
+    newClass.addFunction( serializeFunc );
+    newClass.addFunction( deserializeFunc );
+
 #ifdef KDAB_DELETED
-  const QString typeName = mTypeMap.localType( type->qualifiedName() );
-  const QString baseType = mTypeMap.localType( type->baseTypeName() );
 
   KODE::Function marshal( "marshal", "void" );
   marshal.setStatic( true );
