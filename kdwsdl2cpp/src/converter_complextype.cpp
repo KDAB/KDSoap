@@ -30,7 +30,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
     return;
   const QString typeName( mTypeMap.localType( type->qualifiedName() ) );
   KODE::Class newClass( typeName );
-  newClass.setUseSharedData( true );
+  newClass.setUseSharedData( true, "d_ptr" /*avoid clash with possible d() method */ );
   //qDebug() << typeName;
 
   newClass.addInclude( QString(), "KDSoapValueList" );
@@ -56,7 +56,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
       KODE::MemberVariable variable( "value", typeName );
       newClass.addMemberVariable( variable );
 
-      const QString variableName = "d->" + variable.name();
+      const QString variableName = "d_ptr->" + variable.name();
 
       ctorBody += variableName + " = 0;";
 
@@ -118,7 +118,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
     KODE::MemberVariable variable( (*elemIt).name(), typeName );
     newClass.addMemberVariable( variable );
 
-    const QString variableName = "d->" + variable.name();
+    const QString variableName = "d_ptr->" + variable.name();
 
     //ctorBody += variableName + " = 0;";
     //if ( (*elemIt).maxOccurs() > 1 ) {
@@ -165,7 +165,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
     // member variables
     KODE::MemberVariable variable( (*attrIt).name(), typeName );
     newClass.addMemberVariable( variable );
-    const QString variableName = "d->" + variable.name();
+    const QString variableName = "d_ptr->" + variable.name();
 
     //ctorBody += variableName + " = 0;";
     //if ( isArray ) {
@@ -243,7 +243,7 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
         KODE::MemberVariable variable( elemName, typeName ); // was already added; this is just for the naming
         //const QString upperName = upperlize( elem.name() );
         //const QString lowerName = lowerlize( elem.name() );
-        const QString variableName = "d->" + variable.name();
+        const QString variableName = "d_ptr->" + variable.name();
 
         demarshalCode += "if (name == \"" + elemName + "\") {";
         demarshalCode.indent();

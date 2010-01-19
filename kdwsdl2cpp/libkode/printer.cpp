@@ -199,9 +199,9 @@ QString Printer::Private::classHeader( const Class &classObject, bool publicMemb
     if ( classObject.useDPointer() && !classObject.memberVariables().isEmpty() ) {
       code += "class PrivateDPtr;";
       if ( classObject.useSharedData() )
-        code += "QSharedDataPointer<PrivateDPtr> d;";
+        code += "QSharedDataPointer<PrivateDPtr> " + classObject.dPointerName() + ";";
       else
-        code += "PrivateDPtr *d;";
+        code += "PrivateDPtr *" + classObject.dPointerName() + ";";
     } else {
       MemberVariable::List variables = classObject.memberVariables();
       MemberVariable::List::ConstIterator it2;
@@ -294,7 +294,7 @@ QString Printer::Private::classImplementation( const Class &classObject, bool ne
       QStringList inits = f.initializers();
       if ( classObject.useDPointer() && !classObject.memberVariables().isEmpty() &&
            f.name() == classObject.name() ) {
-          inits.append( "d(new PrivateDPtr)" );
+          inits.append( classObject.dPointerName() + "(new PrivateDPtr)" );
       }
       code += ": " + inits.join( ", " );
       code.unindent();
@@ -308,8 +308,8 @@ QString Printer::Private::classImplementation( const Class &classObject, bool ne
         f.name() == '~' + classObject.name() ) {
       code.newLine();
       code.indent();
-      code += "delete d;";
-      code += "d = 0;";
+      code += "delete " + classObject.dPointerName() + ";";
+      code += classObject.dPointerName() + " = 0;";
       code.unindent();
     }
     code += '}';
@@ -324,8 +324,8 @@ QString Printer::Private::classImplementation( const Class &classObject, bool ne
 
     Code body;
     if ( !classObject.useSharedData() ) {
-      body += "d = new PrivateDPtr;";
-      body += "*d = *other.d;";
+      body += classObject.dPointerName() + " = new PrivateDPtr;";
+      body += "*" + classObject.dPointerName() + " = *other." + classObject.dPointerName() + ";";
     }
     cc.setBody( body );
 
@@ -338,7 +338,7 @@ QString Printer::Private::classImplementation( const Class &classObject, bool ne
       list.append( baseClasses[ i ].name() + "( other )" );
     }
     if ( classObject.useSharedData() ) {
-      list.append( "d( other.d )" );
+      list.append( classObject.dPointerName() + "( other." + classObject.dPointerName() + " )" );
     }
     if ( !list.isEmpty() ) {
       code.indent();
@@ -362,9 +362,9 @@ QString Printer::Private::classImplementation( const Class &classObject, bool ne
     body.unindent();
     body.newLine();
     if ( classObject.useSharedData() )
-      body += "d = other.d;";
+      body += classObject.dPointerName() + " = other." + classObject.dPointerName() + ";";
     else
-      body += "*d = *other.d;";
+      body += "*" + classObject.dPointerName() + " = *other." + classObject.dPointerName() + ";";
 
     body.newLine();
     body += "return *this;";
