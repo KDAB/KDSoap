@@ -53,6 +53,9 @@ class Settings
     void setNamespaceMapping( const NSMapping &namespaceMapping );
     NSMapping namespaceMapping() const;
 
+    void setWantedService( const QString& service );
+    QString wantedService() const;
+
   private:
     Settings();
 
@@ -62,6 +65,7 @@ class Settings
     QString mOutputFileName;
     QString mOutputDirectory;
     QString mHeaderFile;
+    QString mWantedService;
     NSMapping mNamespaceMapping;
     bool mImpl;
 };

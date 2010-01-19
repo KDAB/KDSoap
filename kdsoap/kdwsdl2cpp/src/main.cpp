@@ -38,6 +38,7 @@ static void showHelp(const char *appName)
             "  -h, -help                 display this help and exit\n"
             "  -v, -version              display version\n"
             "  -d, -dependencies         display the dependencies\n"
+            "  -s, -service              name of the service to generate\n"
             "  -o <file>                 place the output into <file>\n"
             "  -impl <headerfile>        generate the implementation file, and #include <headerfile>\n"
             "\n", appName);
@@ -50,6 +51,7 @@ int main( int argc, char **argv )
     bool dependencies = false;
     bool impl = false;
     QString headerFile;
+    QString serviceName;
 
     int arg = 1;
     while (arg < argc) {
@@ -77,6 +79,13 @@ int main( int argc, char **argv )
                 return 1;
             }
             outputFile = QFile::decodeName(argv[arg]);
+        } else if (opt == QLatin1String("-s") || opt == QLatin1String("-service")) {
+            ++arg;
+            if (!argv[arg]) {
+                showHelp(argv[0]);
+                return 1;
+            }
+            serviceName = QFile::decodeName(argv[arg]);
         } else if (!fileName) {
             fileName = argv[arg];
         } else {
@@ -102,6 +111,7 @@ int main( int argc, char **argv )
     Settings::self()->setGenerateImplementation(impl, headerFile);
     Settings::self()->setOutputFileName(outputFile);
     Settings::self()->setWsdlFile(fileName);
+    Settings::self()->setWantedService(serviceName);
 
     KWSDL::Compiler compiler;
 

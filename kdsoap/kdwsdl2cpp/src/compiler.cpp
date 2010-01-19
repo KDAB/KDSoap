@@ -89,12 +89,16 @@ void Compiler::parse( const QDomElement &element )
   context.setDocumentBaseUrl( Settings::self()->wsdlBaseUrl() );
 
   Definitions definitions;
-  definitions.loadXML( &context, element );
+  definitions.setWantedService( Settings::self()->wantedService() );
+  if ( definitions.loadXML( &context, element ) ) {
 
-  mWSDL.setDefinitions( definitions );
-  mWSDL.setNamespaceManager( namespaceManager );
+      mWSDL.setDefinitions( definitions );
+      mWSDL.setNamespaceManager( namespaceManager );
 
-  create();
+      create();
+  } else {
+      QCoreApplication::exit( 3 );
+  }
 }
 
 void Compiler::create()

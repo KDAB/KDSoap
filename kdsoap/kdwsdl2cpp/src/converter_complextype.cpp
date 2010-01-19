@@ -31,7 +31,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
   const QString typeName( mTypeMap.localType( type->qualifiedName() ) );
   KODE::Class newClass( typeName );
   newClass.setUseSharedData( true );
-  qDebug() << typeName;
+  //qDebug() << typeName;
 
   newClass.addInclude( QString(), "KDSoapValueList" );
 

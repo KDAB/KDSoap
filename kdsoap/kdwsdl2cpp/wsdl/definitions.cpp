@@ -119,7 +119,7 @@ Type Definitions::type() const
   return mType;
 }
 
-void Definitions::loadXML( ParserContext *context, const QDomElement &element )
+bool Definitions::loadXML( ParserContext *context, const QDomElement &element )
 {
   setTargetNamespace( element.attribute( "targetNamespace" ) );
   mName = element.attribute( "name" );
@@ -134,6 +134,7 @@ void Definitions::loadXML( ParserContext *context, const QDomElement &element )
     }
   }
 
+  bool foundService = false;
   QDomElement child = element.firstChildElement();
   while ( !child.isNull() ) {
     QName tagName = child.tagName();
@@ -157,7 +158,17 @@ void Definitions::loadXML( ParserContext *context, const QDomElement &element )
       binding.loadXML( context, child );
       mBindings.append( binding );
     } else if ( tagName.localName() == "service" ) {
-      mService.loadXML( context, &mBindings, child );
+      const QString name = child.attribute( "name" );
+      qDebug() << "Service:" << name << "looking for" << mWantedService;
+      // is this the service we want?
+      if ( mWantedService.isEmpty() || mWantedService == name ) {
+        if ( !foundService ) {
+          mService.loadXML( context, &mBindings, child );
+          foundService = true;
+        } else {
+          qDebug() << "WARNING: multiple service tags found. Use -s to specify the one you want.";
+        }
+      }
     } else if ( tagName.localName() == "documentation" ) {
       // ignore documentation for now
     } else {
@@ -166,6 +177,12 @@ void Definitions::loadXML( ParserContext *context, const QDomElement &element )
 
     child = child.nextSiblingElement();
   }
+
+  if ( !foundService ) {
+    qDebug() << "WARNING: no service tags found. There is nothing to generate!";
+    return false;
+  }
+  return true;
 }
 
 void Definitions::saveXML( ParserContext *context, QDomDocument &document ) const
@@ -209,4 +226,9 @@ void Definitions::saveXML( ParserContext *context, QDomDocument &document ) cons
   }
 
   mService.saveXML( context, &mBindings, document, element );
+}
+
+void Definitions::setWantedService(const QString &name)
+{
+  mWantedService = name;
 }
