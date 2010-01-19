@@ -115,6 +115,14 @@ bool TypeMap::isBuiltinType( const QName &typeName ) const
   return it != mTypeMap.constEnd() ? (*it).builtinType : false;
 }
 
+bool TypeMap::isComplexType( const QName &typeName, const QName& elementName ) const
+{
+    // Note the use of typeEntry even for the element name;
+    // the (now useless?) entry in mElementMap doesn't have complexType set
+    QList<Entry>::ConstIterator it = !typeName.isEmpty() ? typeEntry( typeName ) : typeEntry( elementName );
+    return it != mTypeMap.constEnd() ? (*it).complexType : false;
+}
+
 QString TypeMap::localType( const QName &typeName ) const
 {
   QList<Entry>::ConstIterator it = typeEntry( typeName );
@@ -250,6 +258,7 @@ void TypeMap::addSchemaTypes( const XSD::Types &types )
     Entry entry;
     entry.basicType = false;
     entry.builtinType = false;
+    entry.complexType = true;
     entry.nameSpace = (*complexIt).nameSpace();
     entry.typeName = (*complexIt).name();
     if ( (*complexIt).isEmpty() )
@@ -312,7 +321,7 @@ void TypeMap::dump() const
             qPrintable( mTypeMap[ i ].localType ),
             qPrintable( mTypeMap[ i ].headers.join( "," ) ),
             qPrintable( mTypeMap[ i ].headerIncludes.join( "," ) ),
-            mTypeMap[ i ].basicType ? "basic" : "not basic" );
+            mTypeMap[ i ].basicType ? "basic" : mTypeMap[i].complexType ? "complex" : "" );
   }
 
   qDebug( "--------------------------------" );
@@ -331,12 +340,13 @@ void TypeMap::dump() const
   qDebug( "Elements:" );
   for ( int i = 0; i < mElementMap.count(); ++i ) {
     Q_ASSERT( !mElementMap[ i ].basicType );
-    qDebug( "%s\t%s\t%s\t%s\t%s",
+    qDebug( "%s\t%s\t%s\t%s\t%s\t%s",
               qPrintable( mElementMap[ i ].nameSpace ),
               qPrintable( mElementMap[ i ].typeName ),
               qPrintable( mElementMap[ i ].localType ),
               qPrintable( mElementMap[ i ].headers.join( "," ) ),
-              qPrintable( mElementMap[ i ].headerIncludes.join( "," ) ) );
+              qPrintable( mElementMap[ i ].headerIncludes.join( "," ) ),
+              mTypeMap[ i ].basicType ? "basic" : mTypeMap[i].complexType ? "complex" : "" );
   }
 }
 

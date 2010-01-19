@@ -76,7 +76,9 @@ void Converter::setWSDL( const WSDL &wsdl )
 
   // set the xsd types
   mTypeMap.addSchemaTypes( wsdl.definitions().type().types() );
-//  mTypeMap.dump();
+
+  if (qgetenv("KDSOAP_TYPE_DEBUG").toInt())
+    mTypeMap.dump();
 }
 
 KODE::Class::List Converter::classes() const

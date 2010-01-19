@@ -52,21 +52,40 @@
     <part name='bstrReturn' type='xsd:string'/>
   </message>
 
+  <message name='getEmployeeCountry'>
+     <part name='employeeName' type='kdab:EmployeeName'/>
+  </message>
+  <message name='getEmployeeCountryResponse'>
+     <part name='employeeCountry' type='kdab:LimitedString'/>
+  </message>
+
   <portType name='MyWsdlPortType'>
     <operation name='addEmployee'>
       <input message='kwsdl:addEmployee' />
       <output message='kwsdl:addEmployeeResponse' />
     </operation>
+    <operation name='getEmployeeCountry'>
+      <input message='kwsdl:getEmployeeCountry' />
+      <output message='kwsdl:getEmployeeCountryResponse' />
+    </operation>
   </portType>
   <binding name='MyWsdlBinding' type='kwsdl:MyWsdlPortType' >
     <soap:binding style='rpc' transport='http://schemas.xmlsoap.org/soap/http' />
     <operation name='addEmployee' >
-      <soap:operation soapAction='http://www.kdab.com/SoapAction' />
+      <soap:operation soapAction='http://www.kdab.com/AddEmployee' />
       <input>
-        <soap:body use='encoded' namespace='http://www.kdab.com/xml/MyWsdl.xsd'  encodingStyle='http://schemas.xmlsoap.org/soap/encoding/' />
+        <soap:body use='literal'/>
       </input>
       <output>
-        <soap:body use='encoded' namespace='http://www.kdab.com/xml/MyWsdl.xsd'  encodingStyle='http://schemas.xmlsoap.org/soap/encoding/' />
+        <soap:body use='literal'/>
+      </output>
+    </operation>
+    <operation name='getEmployeeCountry'>
+      <input>
+        <soap:body use='literal'/>
+      </input>
+      <output>
+        <soap:body use='literal'/>
       </output>
     </operation>
   </binding>

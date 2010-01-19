@@ -289,11 +289,14 @@ void Converter::convertClientCall( const Operation &operation, const Binding &bi
       qWarning().nospace() << "ERROR: " << methodName << ": complex return types are not implemented yet";
   QString retType;
   bool isBuiltin = false;
+  bool isComplex = false;
   Q_FOREACH( const Part& outPart, outParts ) {
       //const QString lowerName = lowerlize( outPart.name() );
 
       retType = mTypeMap.localType( outPart.type(), outPart.element() );
       isBuiltin = mTypeMap.isBuiltinType( outPart.type() );
+      isComplex = mTypeMap.isComplexType( outPart.type(), outPart.element() );
+      //qDebug() << retType << "isComplex=" << isComplex;
 
       callFunc.setReturnType( retType );
       break; // only one...
@@ -304,12 +307,18 @@ void Converter::convertClientCall( const Operation &operation, const Binding &bi
   code += "return " + retType + "();"; // default-constructed value
   code.unindent();
 
-  if ( isBuiltin ) {
-      code += QString("return d_ptr->m_lastReply.arguments().first().value().value<%1>();").arg(retType);
-  } else {
+  if ( isComplex ) {
       code += retType + " ret;"; // local var
       code += "ret.deserialize(d_ptr->m_lastReply.arguments());";
       code += "return ret;";
+  } else {
+      if ( isBuiltin ) {
+          code += QString("return d_ptr->m_lastReply.arguments().first().value().value<%1>();").arg(retType);
+      } else {
+          code += retType + " ret;"; // local var
+          code += "ret.deserialize(d_ptr->m_lastReply.arguments().first().value());";
+          code += "return ret;";
+      }
   }
 
   callFunc.setBody( code );
@@ -416,6 +425,7 @@ void Converter::convertClientOutputMessage( const Operation &operation, const Pa
     const QString partType = mTypeMap.localType( part.type(), part.element() );
     Q_ASSERT(!partType.isEmpty());
     const bool isBuiltin = mTypeMap.isBuiltinType( part.type() );
+    const bool isComplex = mTypeMap.isComplexType( part.type(), part.element() );
 
     QString lowerName = mNameMapper.escape( lowerlize( part.name() ) );
 
@@ -423,20 +433,23 @@ void Converter::convertClientOutputMessage( const Operation &operation, const Pa
         doneSignal.addArgument( mTypeMap.localInputType( part.type(), part.element() ) + ' ' + lowerName );
     }
 
-    if ( isBuiltin ) {
-        partNames << "args.value(QLatin1String(\"" + lowerName + "\")).value<" + partType + ">()";
-    } else {
-        slotCode += partType + " ret;"; // local var. TODO ret1/ret2 etc. if more than one.
-        slotCode += "ret.deserialize(d_ptr->m_lastReply.arguments());";
+    if ( isComplex ) {
+        slotCode += partType + " ret;"; // local var
+        slotCode += "ret.deserialize(args);";
         partNames << "ret";
+    } else {
+        const QString value = "args.value(QLatin1String(\"" + lowerName + "\"))";
+        if ( isBuiltin ) {
+            partNames << value + ".value<" + partType + ">()";
+        } else {
+            slotCode += partType + " ret;"; // local var. TODO ret1/ret2 etc. if more than one.
+            slotCode += "ret.deserialize(" + value + ");";
+            partNames << "ret";
+        }
     }
 
     // Forward declaration of element class
     //newClass.addIncludes( QStringList(), mTypeMap.forwardDeclarationsForElement( part.element() ) );
-
-#ifdef KDAB_TEMP // initialization of local var
-    code += partType + " " + lowerName + " = 0;";
-#endif
   }
 
   newClass.addFunction( doneSignal );

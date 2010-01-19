@@ -232,15 +232,12 @@ void Converter::convertSimpleType( const XSD::SimpleType *type )
 void Converter::createSimpleTypeSerializer( KODE::Class& newClass, const XSD::SimpleType *type )
 {
     const QString typeName = mTypeMap.localType( type->qualifiedName() );
-    //QString serializeType;
-    //if ( mTypeMap.isBuiltinType( type->baseTypeName() ) ) // serialize to QString, int, etc.
-    //    serializeType = mTypeMap.localType( type->baseTypeName() );
 
     KODE::Function serializeFunc( "serialize", "QVariant" );
     serializeFunc.setConst( true );
 
     KODE::Function deserializeFunc( "deserialize", "void" );
-    deserializeFunc.addArgument( mTypeMap.localInputType( type->baseTypeName(), QName() ) + " args" );
+    deserializeFunc.addArgument( "const QVariant& value" );
 
     if ( type->subType() == XSD::SimpleType::TypeRestriction ) {
         // is an enumeration
@@ -287,13 +284,10 @@ void Converter::createSimpleTypeSerializer( KODE::Class& newClass, const XSD::Si
         }
     } else {
         // TODO lists
-        //if ( mTypeMap.isBuiltinType( type->baseTypeName() ) ) // serialize from QString, int, etc.
-        //    serializeFunc.addBodyLine( "return QVariant::fromValue(" + variable.name() + ");" );
-        //else
-            serializeFunc.addBodyLine( "return QVariant(); // TODO" );
+        serializeFunc.addBodyLine( "return QVariant(); // TODO: lists" );
     }
 
-    deserializeFunc.addBodyLine( "Q_UNUSED(args);/*TODO*/" );
+    deserializeFunc.addBodyLine( "Q_UNUSED(value);/*TODO*/" );
 
     newClass.addFunction( serializeFunc );
     newClass.addFunction( deserializeFunc );
