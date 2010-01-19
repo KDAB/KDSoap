@@ -24,6 +24,10 @@
         <restriction base="kdab:LimitedString">
         </restriction>
       </simpleType>
+      <simpleType name="TeamName">
+        <restriction base="kdab:LimitedString">
+        </restriction>
+      </simpleType>
       <simpleType name="EmployeeTypeEnum">
         <restriction base="xsd:string">
           <enumeration value="Janitor"/>
@@ -38,6 +42,9 @@
           <sequence>
             <element name="type" type="kdab:EmployeeTypeEnum"/>
             <element name="otherRoles" type="kdab:EmployeeTypeEnum" minOccurs="0" maxOccurs="unbounded"/>
+            <sequence maxOccurs="3">
+             <element name="team" type="kdab:TeamName"/>
+            </sequence>
           </sequence>
         </complexType>
       </element>

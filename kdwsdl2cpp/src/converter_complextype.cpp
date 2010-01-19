@@ -236,11 +236,11 @@ static KODE::Code demarshalVar( TypeMap& typeMap, const XSD::Element& elem, cons
     if ( typeMap.isBuiltinType( elem.type() ) ) {
         code += variableName + " = value.value<" + typeName + ">();";
     } else {
-        const QString baseType = typeMap.baseType( elem.type() );
-        if ( baseType.isEmpty() ) // ### assuming complex type. TODO: isComplexType?
+        if ( typeMap.isComplexType( elem.type(), QName() ) ) {
             code += variableName + ".deserialize(value.value<KDSoapValueList>());";
-        else
-            code += variableName + ".deserialize(value.value<" + baseType + ">());";
+        } else {
+            code += variableName + ".deserialize(value);";
+        }
     }
     return code;
 }
