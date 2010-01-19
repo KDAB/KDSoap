@@ -116,7 +116,7 @@ void Converter::convertSimpleType( const XSD::SimpleType *type )
 
       // setter method
       KODE::Function setter( "setValue", "void" );
-      setter.addArgument( typeName + " value" );
+      setter.addArgument( mTypeMap.inputType( typeName, false ) + " value" );
       KODE::Code setterBody;
       setterBody += createRangeCheckCode( type, "(value)", newClass );
       setterBody.newLine();
@@ -135,7 +135,7 @@ void Converter::convertSimpleType( const XSD::SimpleType *type )
 
       // convenience constructor
       KODE::Function conctor( upperlize( newClass.name() ) );
-      conctor.addArgument( typeName + " value" );
+      conctor.addArgument( mTypeMap.inputType( typeName, false ) + " value" );
       KODE::Code code;
       code += createRangeCheckCode( type, "(value)", newClass );
       code.newLine();
@@ -147,6 +147,7 @@ void Converter::convertSimpleType( const XSD::SimpleType *type )
       code += variable.name() + " = value;";
       conctor.setBody( code );
 
+#if 0
       if ( typeName == "QString" ) {
         KODE::Function charctor( upperlize( newClass.name() ) );
         charctor.addArgument( "const char *charValue" );
@@ -164,6 +165,7 @@ void Converter::convertSimpleType( const XSD::SimpleType *type )
 
         newClass.addFunction( charctor );
       }
+#endif
 
       // type operator
       KODE::Function op( "operator " + typeName );
@@ -229,7 +231,7 @@ void Converter::convertSimpleType( const XSD::SimpleType *type )
 
 void Converter::createSimpleTypeSerializer( KODE::Class& newClass, const XSD::SimpleType *type )
 {
-    const QString typeName = mTypeMap.localType( type->qualifiedName() );
+    //const QString typeName = mTypeMap.localType( type->qualifiedName() );
     const QString baseType = mTypeMap.localType( type->baseTypeName() );
 
     KODE::Function serializeFunc( "serialize", baseType );

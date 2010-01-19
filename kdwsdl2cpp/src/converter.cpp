@@ -76,7 +76,7 @@ void Converter::setWSDL( const WSDL &wsdl )
 
   // set the xsd types
   mTypeMap.addSchemaTypes( wsdl.definitions().type().types() );
-  mTypeMap.dump();
+//  mTypeMap.dump();
 }
 
 KODE::Class::List Converter::classes() const
