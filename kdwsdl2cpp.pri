@@ -2,7 +2,9 @@ isEmpty(WSDL_DIR):WSDL_DIR = .
 isEmpty(WSDL_SOURCES_DIR):WSDL_SOURCES_DIR = $$WSDL_DIR
 isEmpty(WSDL_HEADERS_DIR):WSDL_HEADERS_DIR = $$WSDL_DIR
 isEmpty(KD_MOD_WSDL):KD_MOD_WSDL = wsdl_
-KDWSDL2CPP = $$KDSOAP_PATH/bin/kdwsdl2cpp
+
+isEmpty(KDSOAPDIR): KDWSDL2CPP = $$KDSOAP_PATH/bin/kdwsdl2cpp
+!isEmpty(KDSOAPDIR): KDWSDL2CPP = $$KDSOAPDIR/bin/kdwsdl2cpp
 
 kdwsdl_h.commands = $$KDWSDL2CPP ${QMAKE_FILE_IN} -o ${QMAKE_FILE_OUT}
 #kdwsdl_h.depend_command = "$$KDWSDL2CPP" -d "${QMAKE_FILE_IN}"
