@@ -196,22 +196,13 @@ void Converter::convertClientService()
 
 void Converter::clientAddArguments( KODE::Function& callFunc, const Message& message, KODE::Class& newClass )
 {
+    Q_UNUSED(newClass); // TODO cleanup arg
     const Part::List parts = message.parts();
     Q_FOREACH( const Part& part, parts ) {
         const QString lowerName = lowerlize( part.name() );
-
-        QString argType;
-        QName type = part.type();
-        if ( !type.isEmpty() ) {
-            argType = mTypeMap.localType( type );
-        } else {
-            argType = mTypeMap.localTypeForElement( part.element() );
-
-            // Forward declaration of element class
-            newClass.addIncludes( QStringList(), mTypeMap.forwardDeclarationsForElement( part.element() ) );
-        }
+        const QString argType = mTypeMap.localInputType( part.type(), part.element() );
         if ( argType != "void" ) {
-            callFunc.addArgument( mTypeMap.inputType( argType, part.type().isEmpty() ) + ' ' + mNameMapper.escape( lowerName ) );
+            callFunc.addArgument( argType + ' ' + mNameMapper.escape( lowerName ) );
         }
     }
 }
@@ -256,14 +247,11 @@ void Converter::clientGenerateMessage( KODE::Code& code, const Message& message 
                 ", " + noNamespace + " );";
         code += "delete " + mNameMapper.escape( lowerName ) + ';';
 #endif
-        QString argType;
+        QString argType = mTypeMap.localType( part.type(), part.element() );
         bool isBuiltin = false;
-        QName type = part.type();
+        const QName type = part.type();
         if ( !type.isEmpty() ) {
-            argType = mTypeMap.localType( type );
             isBuiltin = mTypeMap.isBuiltinType( type );
-        } else {
-            argType = mTypeMap.localTypeForElement( part.element() );
         }
         if ( argType != "void" ) {
             const QString partNameStr = "QLatin1String(\"" + part.name() + "\")";
@@ -299,16 +287,13 @@ void Converter::convertClientCall( const Operation &operation, const Binding &bi
   if (outParts.count() > 1)
       qWarning().nospace() << "ERROR: " << methodName << ": complex return types are not implemented yet";
   QString retType;
-  bool isElement = false;
+  bool isBuiltin = false;
   Q_FOREACH( const Part& outPart, outParts ) {
       //const QString lowerName = lowerlize( outPart.name() );
-      const QName type = outPart.type();
-      if ( !type.isEmpty() ) {
-          retType = mTypeMap.localType( type );
-      } else {
-          retType = mTypeMap.localTypeForElement( outPart.element() );
-          isElement = true;
-      }
+
+      retType = mTypeMap.localType( outPart.type(), outPart.element() );
+      isBuiltin = mTypeMap.isBuiltinType( outPart.type() );
+
       callFunc.setReturnType( retType );
       break; // only one...
   }
@@ -318,7 +303,7 @@ void Converter::convertClientCall( const Operation &operation, const Binding &bi
   code += "return " + retType + "();"; // default-constructed value
   code.unindent();
 
-  if ( !isElement ) {
+  if ( isBuiltin ) {
       code += QString("return d_ptr->m_lastReply.arguments().first().value().value<%1>();").arg(retType);
   } else {
       code += retType + " ret;"; // local var
@@ -427,23 +412,17 @@ void Converter::convertClientOutputMessage( const Operation &operation, const Pa
   QStringList partNames;
   const Part::List parts = message.parts();
   Q_FOREACH( const Part& part, parts ) {
-    QString partType;
-    QName type = part.type();
-    if ( !type.isEmpty() ) {
-      partType = mTypeMap.localType( type ); // e.g. QString
-    } else {
-      //qDebug() << part.element().qname();
-      partType = mTypeMap.localTypeForElement( part.element() );
-    }
+    const QString partType = mTypeMap.localType( part.type(), part.element() );
     Q_ASSERT(!partType.isEmpty());
+    const bool isBuiltin = mTypeMap.isBuiltinType( part.type() );
 
     QString lowerName = mNameMapper.escape( lowerlize( part.name() ) );
 
     if ( partType != "void" ) {
-        doneSignal.addArgument( mTypeMap.inputType( partType, part.type().isEmpty() ) + ' ' + lowerName );
+        doneSignal.addArgument( mTypeMap.localInputType( part.type(), part.element() ) + ' ' + lowerName );
     }
 
-    if ( !type.isEmpty() ) {
+    if ( isBuiltin ) {
         partNames << "args.value(QLatin1String(\"" + lowerName + "\")).value<" + partType + ">()";
     } else {
         slotCode += partType + " ret;"; // local var. TODO ret1/ret2 etc. if more than one.
@@ -452,7 +431,7 @@ void Converter::convertClientOutputMessage( const Operation &operation, const Pa
     }
 
     // Forward declaration of element class
-    newClass.addIncludes( QStringList(), mTypeMap.forwardDeclarationsForElement( part.element() ) );
+    //newClass.addIncludes( QStringList(), mTypeMap.forwardDeclarationsForElement( part.element() ) );
 
 #ifdef KDAB_TEMP // initialization of local var
     code += partType + " " + lowerName + " = 0;";

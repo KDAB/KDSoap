@@ -209,11 +209,13 @@ QString TypeMap::localTypeForElement( const QName &typeName ) const
   return QString();
 }
 
+#if 0
 QStringList TypeMap::headersForElement( const QName &typeName ) const
 {
   QList<Entry>::ConstIterator it = elementEntry( typeName );
   return it != mElementMap.constEnd() ? (*it).headers : QStringList();
 }
+#endif
 
 QStringList TypeMap::forwardDeclarationsForElement( const QName &typeName ) const
 {
@@ -299,16 +301,6 @@ void TypeMap::addSchemaTypes( const XSD::Types &types )
   }
 }
 
-QString TypeMap::inputType( const QString &localType, bool isElement ) const
-{
-    QString type = localType;
-    Q_ASSERT( type != "void" ); // Don't call this if type is void, skip the whole arg instead.
-    if ( type.startsWith('Q') || isElement ) {
-        type = "const " + type + "&";
-    }
-    return type;
-}
-
 void TypeMap::dump() const
 {
   qDebug( "--------------------------------" );
@@ -346,4 +338,33 @@ void TypeMap::dump() const
               qPrintable( mElementMap[ i ].headers.join( "," ) ),
               qPrintable( mElementMap[ i ].headerIncludes.join( "," ) ) );
   }
+}
+
+QString TypeMap::localType( const QName &typeName, const QName& elementName ) const
+{
+    if ( !typeName.isEmpty() ) {
+        return localType( typeName );
+    } else {
+        return localTypeForElement( elementName );
+    }
+}
+
+QString TypeMap::localInputType( const QName &typeName, const QName& elementName ) const
+{
+    if ( !typeName.isEmpty() ) {
+        QList<Entry>::ConstIterator it = typeEntry( typeName );
+        if ( it == mTypeMap.constEnd() ) {
+            qDebug() << "ERROR: type not found:" << typeName.qname();
+            return QString();
+        }
+        QString argType = (*it).localType;
+        if (!(*it).basicType)
+            argType = "const " + argType + '&';
+        return argType;
+    } else {
+        QString argType = localTypeForElement( elementName );
+        if ( !argType.isEmpty() && argType != "void" )
+            argType = "const " + argType + '&';
+        return argType;
+    }
 }

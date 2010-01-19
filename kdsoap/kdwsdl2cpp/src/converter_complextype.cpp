@@ -75,6 +75,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
       conctor.addArgument( typeName + " value" );
       conctor.setBody( variableName + " = value;" );
 
+#if 0
       if ( typeName == "QString" ) {
         KODE::Function charctor( upperlize( newClass.name() ) );
         charctor.addArgument( "const char *charValue" );
@@ -82,6 +83,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
 
         newClass.addFunction( charctor );
       }
+#endif
 
       // type operator
       KODE::Function op( "operator const " + typeName );
@@ -110,9 +112,12 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
   XSD::Element::List::ConstIterator elemIt;
   for ( elemIt = elements.constBegin(); elemIt != elements.constEnd(); ++elemIt ) {
     QString typeName = mTypeMap.localType( (*elemIt).type() );
+    QString inputTypeName = mTypeMap.localInputType( (*elemIt).type(), QName() );
 
-    if ( (*elemIt).maxOccurs() > 1 )
+    if ( (*elemIt).maxOccurs() > 1 ) {
       typeName = "QList<" + typeName + ">";
+      inputTypeName = "const " + typeName + "&";
+    }
 
     // member variables
     KODE::MemberVariable variable( (*elemIt).name(), typeName );
@@ -132,7 +137,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
 
     // setter method
     KODE::Function setter( "set" + upperName, "void" );
-    setter.addArgument( mTypeMap.inputType( typeName, false ) + ' ' + mNameMapper.escape( lowerName ) );
+    setter.addArgument( inputTypeName + ' ' + mNameMapper.escape( lowerName ) );
     setter.setBody( variableName + " = " + mNameMapper.escape( lowerName ) + ';' );
 
     // getter method
