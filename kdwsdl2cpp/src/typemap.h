@@ -52,12 +52,19 @@ class TypeMap
     QStringList headers( const QName &typeName ) const;
     QStringList forwardDeclarations( const QName &typeName ) const;
     QStringList headerIncludes( const QName &typeName ) const;
-    QString localNameSpace( const QName &typeName ) const;
+    //QString localNameSpace( const QName &typeName ) const;
 
-    QString localTypeForElement( const QName &typeName ) const;
-    QStringList headersForElement( const QName &typeName ) const;
+    //QStringList headersForElement( const QName &typeName ) const;
     QStringList forwardDeclarationsForElement( const QName &typeName ) const;
-    QString localNameSpaceForElement( const QName &typeName ) const;
+
+    /// Convenience methods:
+    /// Returns the local type for the given type or element (either one or the other is set)
+    QString localType( const QName& typeName, const QName& elementName ) const;
+    /// Returns the local type as an "input" parameter, for the given type or element
+    /// (either one or the other is set)
+    /// For instance "const QString&" for typeName = "xsd:string",
+    /// and "const MyElement&" for elementName = "MyElement".
+    QString localInputType( const QName& typeName, const QName& elementName ) const;
 
     QString localTypeForAttribute( const QName &typeName ) const;
     QStringList headersForAttribute( const QName &typeName ) const;
@@ -66,14 +73,11 @@ class TypeMap
 
     void addSchemaTypes( const XSD::Types &types );
 
-    /// Returns the type to use for an 'input' parameter,
-    /// for instance "const QString&" for QString.
-    QString inputType( const QString& localType, bool isElement ) const;
-
     void dump() const;
 
   private:
     void addBuiltinType( const char* typeName, const char* localType );
+    QString localTypeForElement( const QName &typeName ) const;
 
     class Entry
     {

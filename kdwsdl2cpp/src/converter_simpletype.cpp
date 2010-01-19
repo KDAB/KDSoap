@@ -116,7 +116,7 @@ void Converter::convertSimpleType( const XSD::SimpleType *type )
 
       // setter method
       KODE::Function setter( "setValue", "void" );
-      setter.addArgument( mTypeMap.inputType( typeName, false ) + " value" );
+      setter.addArgument( mTypeMap.localInputType( baseName, QName() ) + " value" );
       KODE::Code setterBody;
       if ( type->facetType() != XSD::SimpleType::NONE ) {
         setterBody += createRangeCheckCode( type, "(value)", newClass );
@@ -137,7 +137,7 @@ void Converter::convertSimpleType( const XSD::SimpleType *type )
 
       // convenience constructor
       KODE::Function conctor( upperlize( newClass.name() ) );
-      conctor.addArgument( mTypeMap.inputType( typeName, false ) + " value" );
+      conctor.addArgument( mTypeMap.localInputType( baseName, QName() ) + " value" );
       KODE::Code code;
       code += "setValue( value );";
       conctor.setBody( code );
@@ -233,7 +233,7 @@ void Converter::createSimpleTypeSerializer( KODE::Class& newClass, const XSD::Si
     serializeFunc.setConst( true );
 
     KODE::Function deserializeFunc( "deserialize", "void" );
-    deserializeFunc.addArgument( mTypeMap.inputType( baseType, false ) + " args" );
+    deserializeFunc.addArgument( mTypeMap.localInputType( type->baseTypeName(), QName() ) + " args" );
 
     serializeFunc.addBodyLine( "return " + baseType + "(); // TODO" );
 
