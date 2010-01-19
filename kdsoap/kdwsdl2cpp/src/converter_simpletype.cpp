@@ -118,13 +118,15 @@ void Converter::convertSimpleType( const XSD::SimpleType *type )
       KODE::Function setter( "setValue", "void" );
       setter.addArgument( mTypeMap.inputType( typeName, false ) + " value" );
       KODE::Code setterBody;
-      setterBody += createRangeCheckCode( type, "(value)", newClass );
-      setterBody.newLine();
-      setterBody += "if ( !rangeOk )";
-      setterBody.indent();
-      setterBody += "qDebug( \"Invalid range in " + newClass.name() + "::" + setter.name() + "()\" );";
-      setterBody.unindent();
-      setterBody.newLine();
+      if ( type->facetType() != XSD::SimpleType::NONE ) {
+        setterBody += createRangeCheckCode( type, "(value)", newClass );
+        setterBody.newLine();
+        setterBody += "if ( !rangeOk )";
+        setterBody.indent();
+        setterBody += "qDebug( \"Invalid range in " + newClass.name() + "::" + setter.name() + "()\" );";
+        setterBody.unindent();
+        setterBody.newLine();
+      }
       setterBody += variable.name() + " = value;";
       setter.setBody( setterBody );
 
@@ -137,14 +139,7 @@ void Converter::convertSimpleType( const XSD::SimpleType *type )
       KODE::Function conctor( upperlize( newClass.name() ) );
       conctor.addArgument( mTypeMap.inputType( typeName, false ) + " value" );
       KODE::Code code;
-      code += createRangeCheckCode( type, "(value)", newClass );
-      code.newLine();
-      code += "if ( !rangeOk )";
-      code.indent();
-      code += "qDebug( \"Invalid range in " + newClass.name() + "::" + conctor.name() + "()\" );";
-      code.unindent();
-      code.newLine();
-      code += variable.name() + " = value;";
+      code += "setValue( value );";
       conctor.setBody( code );
 
 #if 0
