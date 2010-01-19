@@ -30,7 +30,7 @@ void Converter::convertClientService()
   Q_ASSERT(!service.name().isEmpty());
 
   KODE::Class newClass( service.name() );
-  newClass.setUseDPointer(true);
+  newClass.setUseDPointer( true, "d_ptr" /*avoid clash with possible d() method*/ );
   newClass.addBaseClass( mQObject );
   newClass.setDocs(service.documentation());
 
@@ -62,7 +62,7 @@ void Converter::convertClientService()
       ctor.setBody( ctorCode );
       newClass.addFunction( ctor );
 
-      dtorCode += "delete d->m_clientInterface;";
+      dtorCode += "delete d_ptr->m_clientInterface;";
 
       dtor.setBody( dtorCode );
       newClass.addFunction( dtor );
@@ -71,9 +71,9 @@ void Converter::convertClientService()
   {
       KODE::Function lastError("lastError", "QString");
       KODE::Code code;
-      code += "if (d->m_lastReply.isFault())";
+      code += "if (d_ptr->m_lastReply.isFault())";
       code.indent();
-      code += "return d->m_lastReply.faultAsString();";
+      code += "return d_ptr->m_lastReply.faultAsString();";
       code.unindent();
       code += "return QString();";
       lastError.setBody(code);
@@ -103,14 +103,14 @@ void Converter::convertClientService()
     {
         KODE::Function clientInterface("clientInterface", "KDSoapClientInterface*", KODE::Function::Private);
         KODE::Code code;
-        code += "if (!d->m_clientInterface) {";
+        code += "if (!d_ptr->m_clientInterface) {";
         code.indent();
         code += "const QString endPoint = QString::fromLatin1(\"" + QLatin1String(webserviceLocation.toEncoded()) + "\");";
         code += "const QString messageNamespace = QString::fromLatin1(\"" + mWSDL.definitions().targetNamespace() + "\");";
-        code += "d->m_clientInterface = new KDSoapClientInterface(endPoint, messageNamespace);";
+        code += "d_ptr->m_clientInterface = new KDSoapClientInterface(endPoint, messageNamespace);";
         code.unindent();
         code += "}";
-        code += "return d->m_clientInterface;";
+        code += "return d_ptr->m_clientInterface;";
         clientInterface.setBody(code);
         newClass.addFunction(clientInterface);
     }
@@ -280,7 +280,7 @@ void Converter::convertClientCall( const Operation &operation, const Binding &bi
   KODE::Code code;
   const bool hasAction = clientAddAction( code, binding, operation.name() );
   clientGenerateMessage( code, inputMessage );
-  QString callLine = "d->m_lastReply = clientInterface()->call(QLatin1String(\"" + operation.name() + "\"), message";
+  QString callLine = "d_ptr->m_lastReply = clientInterface()->call(QLatin1String(\"" + operation.name() + "\"), message";
   if (hasAction) {
       callLine += ", action";
   }
@@ -306,16 +306,16 @@ void Converter::convertClientCall( const Operation &operation, const Binding &bi
       break; // only one...
   }
 
-  code += "if (d->m_lastReply.isFault())";
+  code += "if (d_ptr->m_lastReply.isFault())";
   code.indent();
   code += "return " + retType + "();"; // default-constructed value
   code.unindent();
 
   if ( !isElement ) {
-      code += QString("return d->m_lastReply.arguments().first().value().value<%1>();").arg(retType);
+      code += QString("return d_ptr->m_lastReply.arguments().first().value().value<%1>();").arg(retType);
   } else {
       code += retType + " ret;"; // local var
-      code += "ret.deserialize( d->m_lastReply.arguments() );";
+      code += "ret.deserialize(d_ptr->m_lastReply.arguments());";
       code += "return ret;";
   }
 
@@ -440,7 +440,7 @@ void Converter::convertClientOutputMessage( const Operation &operation, const Pa
         partNames << "args.value(\"" + lowerName + "\").value<" + partType + ">()";
     } else {
         slotCode += partType + " ret;"; // local var. TODO ret1/ret2 etc. if more than one.
-        slotCode += "ret.deserialize( d->m_lastReply.arguments() );";
+        slotCode += "ret.deserialize(d_ptr->m_lastReply.arguments());";
         partNames << "ret";
     }
 

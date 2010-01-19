@@ -30,7 +30,7 @@ class Class::Private
 {
   public:
     Private()
-      : mUseDPointer( false ),
+      : mDPointer(),
         mUseSharedData( false ),
         mCanBeCopied( false )
     {
@@ -38,7 +38,7 @@ class Class::Private
 
     QString mName;
     QString mNameSpace;
-    bool mUseDPointer;
+    QString mDPointer;
     bool mUseSharedData;
     bool mCanBeCopied;
     Function::List mFunctions;
@@ -109,21 +109,21 @@ QString Class::nameSpace() const
   return d->mNameSpace;
 }
 
-void Class::setUseDPointer( bool useDPointer )
+void Class::setUseDPointer( bool useDPointer, const QString& dPointer )
 {
-  d->mUseDPointer = useDPointer;
+  d->mDPointer = useDPointer ? dPointer : QString();
 }
 
 bool Class::useDPointer() const
 {
-  return d->mUseDPointer;
+  return !d->mDPointer.isEmpty();
 }
 
-void Class::setUseSharedData( bool b )
+void Class::setUseSharedData( bool b, const QString& dPointer )
 {
   d->mUseSharedData = b;
   if ( b ) {
-    setUseDPointer( true );
+    setUseDPointer( true, dPointer );
     d->mCanBeCopied = true;
   }
 }
@@ -308,4 +308,9 @@ QString Class::parentClassName() const
 void Class::setParentClassName( const QString &parentClassName )
 {
   d->mParentClassName = parentClassName;
+}
+
+QString Class::dPointerName() const
+{
+  return d->mDPointer;
 }

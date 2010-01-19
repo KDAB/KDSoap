@@ -100,12 +100,18 @@ class KODE_EXPORT Class
      * Sets whether the class object shall use a d-pointer to store
      * its member variables.
      */
-    void setUseDPointer( bool useDPointer );
+    void setUseDPointer( bool useDPointer, const QString& dPointer = "d" );
 
     /**
      * Returns whether the class object uses a d-pointer.
      */
     bool useDPointer() const;
+
+    /**
+     * Returns the name of the d pointer.
+     * Usually d, but can be set to something else to avoid clashes with a d() method for instance.
+     */
+    QString dPointerName() const;
 
     /**
      * Sets whether the class object shall use a QSharedDataPointer d-pointer
@@ -114,7 +120,7 @@ class KODE_EXPORT Class
      *
      * Setting this to true automatically sets canBeCopied to true and useDPointer to true.
      */
-    void setUseSharedData( bool b );
+    void setUseSharedData( bool b, const QString& dPointer = "d" );
 
     /**
      * Returns whether the class object uses a QSharedDataPointer d-pointer.
