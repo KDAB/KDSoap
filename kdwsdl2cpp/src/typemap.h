@@ -44,7 +44,16 @@ class TypeMap
 
     void setNSManager( NSManager *manager );
 
+    /**
+     * Returns true if @p typeName refers to a "plain old datatype", like int or char.
+     * Example: @p typeName is "xsd:nonPositiveInteger".
+     */
     bool isBasicType( const QName &typeName ) const;
+    /**
+     * Returns true if @p typeName refers to a builtin type,
+     * i.e. a type we always know about, from XML schema.
+     * Example: @p typeName is "xsd:string".
+     */
     bool isBuiltinType( const QName &typeName ) const;
 
     QString localType( const QName &typeName ) const;
@@ -66,6 +75,12 @@ class TypeMap
     /// and "const MyElement&" for elementName = "MyElement".
     QString localInputType( const QName& typeName, const QName& elementName ) const;
 
+    /**
+     * Returns true if @p typeName (or @p elementName, only one is set) refers to a complex type,
+     * i.e. one with multiple named values, rather than just one value.
+     */
+    bool isComplexType( const QName &typeName, const QName& elementName ) const;
+
     QString localTypeForAttribute( const QName &typeName ) const;
     QStringList headersForAttribute( const QName &typeName ) const;
     QStringList forwardDeclarationsForAttribute( const QName &typeName ) const;
@@ -82,9 +97,10 @@ class TypeMap
     class Entry
     {
       public:
-        Entry() : basicType(false), builtinType(false) {}
+        Entry() : basicType(false), builtinType(false), complexType(false) {}
         bool basicType;
         bool builtinType;
+        bool complexType;
         QString nameSpace;
         QString typeName;
         QString localType;

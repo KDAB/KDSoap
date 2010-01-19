@@ -26,7 +26,7 @@ using namespace KWSDL;
 
 void Converter::convertComplexType( const XSD::ComplexType *type )
 {
-  if (type->isEmpty())
+  if ( type->isEmpty() )
     return;
   const QString typeName( mTypeMap.localType( type->qualifiedName() ) );
   KODE::Class newClass( typeName );
