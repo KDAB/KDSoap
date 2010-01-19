@@ -45,6 +45,8 @@ class KWSDL_EXPORT Definitions
     Definitions();
     ~Definitions();
 
+    void setWantedService( const QString& name );
+
     void setName( const QString &name );
     QString name() const;
 
@@ -69,7 +71,7 @@ class KWSDL_EXPORT Definitions
     void setType( const Type &type );
     Type type() const;
 
-    void loadXML( ParserContext *context, const QDomElement &element );
+    bool loadXML( ParserContext *context, const QDomElement &element );
     void saveXML( ParserContext *context, QDomDocument &document ) const;
 
   private:
@@ -82,6 +84,7 @@ class KWSDL_EXPORT Definitions
 
     QString mTargetNamespace;
     QString mName;
+    QString mWantedService;
 };
 
 }

@@ -133,3 +133,13 @@ QString Settings::headerFile() const
 {
     return mHeaderFile;
 }
+
+void Settings::setWantedService(const QString &service)
+{
+    mWantedService = service;
+}
+
+QString Settings::wantedService() const
+{
+    return mWantedService;
+}
