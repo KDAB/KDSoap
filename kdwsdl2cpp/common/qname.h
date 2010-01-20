@@ -25,6 +25,7 @@
 
 #include <QString>
 #include <QList>
+#include <QHash>
 
 #include <kode_export.h>
 
@@ -34,7 +35,7 @@ class KXMLCOMMON_EXPORT QName
     typedef QList<QName> List;
 
     QName();
-    QName( const QString &name );
+    QName( const QString &name ); // TODO explicit?
     QName( const QString &nameSpace, const QString &localName );
 
     void operator=( const QString &name );
@@ -58,5 +59,9 @@ class KXMLCOMMON_EXPORT QName
     QString mLocalName;
     QString mPrefix;
 };
+
+inline uint qHash(const QName& qn) { return ::qHash(qn.qname()); }
+
+QDebug operator<<(QDebug dbg, const QName &qn);
 
 #endif

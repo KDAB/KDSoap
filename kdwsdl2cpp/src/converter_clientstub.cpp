@@ -53,7 +53,7 @@ void Converter::convertClientService()
 
   // Ctor and dtor
   {
-      KODE::Function ctor( service.name() ); // TODO add QObject* parent = 0 argument
+      KODE::Function ctor( service.name() );
       ctor.addArgument("QObject* parent", "0");
       ctor.addInitializer("QObject(parent)");
       KODE::Function dtor( '~' + service.name() );

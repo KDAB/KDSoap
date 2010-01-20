@@ -56,7 +56,8 @@ class SCHEMA_EXPORT Types
     void setNamespaces( const QStringList &namespaces );
     QStringList namespaces() const;
 
-    ComplexType complexType( const Element & ) const;
+    //ComplexType complexType( const Element & ) const;
+    ComplexType complexType( const QName & ) const;
 
     SimpleType simpleType( const QName & ) const;
 

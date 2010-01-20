@@ -30,7 +30,6 @@
 #include <QFile>
 
 #include "types.h"
-#include "typestable.h"
 #include "annotation.h"
 #include <kode_export.h>
 

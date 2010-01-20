@@ -40,7 +40,7 @@ class KWSDL_EXPORT Type : public Element
     Type( const QString &nameSpace );
     ~Type();
 
-    void setType( const XSD::Types &types );
+    void setTypes( const XSD::Types &types );
     XSD::Types types() const;
 
     void loadXML( ParserContext *context, const QDomElement &element );

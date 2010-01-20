@@ -44,6 +44,7 @@ class Converter
     KODE::Class::List classes() const;
 
   private:
+    void cleanupUnusedTypes();
     void convertTypes();
 
     void convertComplexType( const XSD::ComplexType* );

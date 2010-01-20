@@ -42,7 +42,7 @@ Type::~Type()
 {
 }
 
-void Type::setType( const XSD::Types &types )
+void Type::setTypes( const XSD::Types &types )
 {
   mTypes = types;
 }

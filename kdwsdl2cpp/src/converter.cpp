@@ -74,11 +74,150 @@ void Converter::setWSDL( const WSDL &wsdl )
 
   mTypeMap.setNSManager( &mNSManager );
 
+  cleanupUnusedTypes();
+
   // set the xsd types
-  mTypeMap.addSchemaTypes( wsdl.definitions().type().types() );
+  mTypeMap.addSchemaTypes( mWSDL.definitions().type().types() );
 
   if (qgetenv("KDSOAP_TYPE_DEBUG").toInt())
     mTypeMap.dump();
+}
+
+void Converter::cleanupUnusedTypes()
+{
+    // Keep only the portTypes, messages, and types that are actually used, no point in generating unused classes.
+
+    Definitions definitions = mWSDL.definitions();
+    Type type = definitions.type();
+    XSD::Types types = type.types();
+
+    const bool printDebug = qgetenv("KDSOAP_TYPE_DEBUG").toInt();
+    if (printDebug) {
+        qDebug() << "Before cleanup:";
+        qDebug() << definitions.messages().count() << "messages";
+        qDebug() << types.complexTypes().count() << "complex types";
+        qDebug() << types.simpleTypes().count() << "simple types";
+        qDebug() << types.elements().count() << "elements";
+    }
+
+    Q_FOREACH(const XSD::Element& elem, types.elements()) {
+        qDebug() << "element:" << elem.qualifiedName();
+    }
+
+    QSet<QName> usedMessageNames;
+    //QSet<QName> portTypeNames;
+    Q_FOREACH( const Port& port, definitions.service().ports() ) {
+        Binding binding = mWSDL.findBinding( port.bindingName() );
+        //portTypeNames.insert( binding.portTypeName() );
+        PortType portType = mWSDL.findPortType( binding.portTypeName() );
+        const Operation::List operations = portType.operations();
+        //qDebug() << "portType" << portType.name() << operations.count() << "operations";
+        Q_FOREACH( const Operation& operation, operations ) {
+            //qDebug() << "  operation" << operation.operationType();
+            switch(operation.operationType()) {
+            case Operation::OneWayOperation:
+                usedMessageNames.insert(operation.input().message());
+                break;
+            case Operation::RequestResponseOperation:
+            case Operation::SolicitResponseOperation:
+                usedMessageNames.insert(operation.input().message());
+                usedMessageNames.insert(operation.output().message());
+                break;
+            case Operation::NotificationOperation:
+                usedMessageNames.insert(operation.output().message());
+                break;
+            };
+        }
+    }
+
+    // Keep only the messages in usedMessageNames
+    QSet<QName> usedTypes;
+    QSet<QString> usedTypesStrings; // for debug
+    QSet<QName> usedElementNames;
+    Message::List newMessages;
+    Q_FOREACH(const QName& messageName, usedMessageNames.toList() /*slow!*/) {
+        //qDebug() << messageName;
+        Message message = mWSDL.findMessage(messageName);
+        newMessages.append(message);
+        Q_FOREACH(const Part& part, message.parts()) {
+            if (!part.type().isEmpty()) {
+                usedTypes.insert(part.type());
+                usedTypesStrings.insert(part.type().qname());
+            } else {
+                const QName elemName = part.element();
+                XSD::Element element = mWSDL.findElement(elemName);
+                usedElementNames.insert(element.qualifiedName());
+                usedTypes.insert(element.type());
+                usedTypesStrings.insert(element.type().qname());
+            }
+        }
+    }
+
+    //qDebug() << "usedTypes:" << usedTypesStrings.toList();
+
+    // keep only the types used in these messages
+    XSD::ComplexType::List usedComplexTypes;
+    XSD::SimpleType::List usedSimpleTypes;
+    QSet<QName> allUsedTypes = usedTypes;
+    do {
+        QSet<QName> alsoUsedTypes;
+        Q_FOREACH(const QName& typeName, usedTypes.toList() /*slow!*/) {
+            if (typeName.isEmpty())
+                continue;
+            if (mTypeMap.isBuiltinType(typeName))
+                continue;
+            //qDebug() << typeName;
+            XSD::ComplexType complexType = types.complexType(typeName);
+            if (!complexType.name().isEmpty()) { // found it as a complex type
+                usedComplexTypes.append(complexType);
+
+                Q_FOREACH(const XSD::Element& element, complexType.elements()) {
+                    if (!allUsedTypes.contains(element.type()) && !alsoUsedTypes.contains(element.type())) {
+                        alsoUsedTypes.insert(element.type());
+                        allUsedTypes.insert(element.type());
+                    }
+                }
+
+            } else {
+                XSD::SimpleType simpleType = types.simpleType(typeName);
+                if (!simpleType.name().isEmpty()) {
+                    usedSimpleTypes.append(simpleType);
+                    if (!allUsedTypes.contains(simpleType.baseTypeName()) && !alsoUsedTypes.contains(simpleType.baseTypeName())) {
+                        alsoUsedTypes.insert(simpleType.baseTypeName());
+                        allUsedTypes.insert(simpleType.baseTypeName());
+                    }
+                } // we rely on the warning in simpleType if not found.
+            }
+        }
+        usedTypes = alsoUsedTypes;
+    } while (!usedTypes.isEmpty());
+
+    XSD::Element::List usedElements;
+    QSetIterator<QName> elemIt(usedElementNames);
+    while (elemIt.hasNext()) {
+        const QName name = elemIt.next();
+        XSD::Element element = mWSDL.findElement(name);
+        if (element.name().isEmpty())
+            qDebug() << name << "not found";
+        else
+            usedElements.append(element);
+    }
+    definitions.setMessages(newMessages);
+    types.setComplexTypes(usedComplexTypes);
+    types.setSimpleTypes(usedSimpleTypes);
+    types.setElements(usedElements);
+    type.setTypes(types);
+    definitions.setType(type);
+
+    mWSDL.setDefinitions(definitions);
+
+    if (printDebug) {
+        qDebug() << "After cleanup:";
+        qDebug() << definitions.messages().count() << "messages";
+        qDebug() << types.complexTypes().count() << "complex types";
+        qDebug() << types.simpleTypes().count() << "simple types";
+        qDebug() << types.elements().count() << "elements";
+    }
 }
 
 KODE::Class::List Converter::classes() const
@@ -100,9 +239,6 @@ void Converter::convert()
 
 void Converter::convertTypes()
 {
-  // This is only used in "Document" style, to create the classes representing the types defined in the XSD.
-  // It is not needed/used in "rpc" style.
-
   const XSD::Types types = mWSDL.definitions().type().types();
 
   XSD::ComplexType::List complexTypes = types.complexTypes();
