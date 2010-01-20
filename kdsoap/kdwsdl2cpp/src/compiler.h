@@ -25,8 +25,6 @@
 #include <QDomElement>
 #include <QObject>
 
-#include <wsdl/wsdl.h>
-
 namespace KWSDL {
 
 class Compiler : public QObject
@@ -42,10 +40,6 @@ class Compiler : public QObject
   private slots:
     void download();
     void parse( const QDomElement& );
-    void create();
-
-  private:
-    WSDL mWSDL;
 };
 
 }

@@ -21,6 +21,7 @@
  */
 
 #include "qname.h"
+#include <QDebug>
 
 QName::QName()
 {
@@ -92,4 +93,10 @@ void QName::parse( const QString &str )
     mLocalName = str.mid( pos + 1 );
   } else
     mLocalName = str;
+}
+
+QDebug operator <<(QDebug dbg, const QName &qn)
+{
+    dbg << qn.qname();
+    return dbg;
 }

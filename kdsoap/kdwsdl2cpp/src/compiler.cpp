@@ -23,6 +23,8 @@
 #include <QFile>
 #include <QDebug>
 
+#include <wsdl/wsdl.h>
+
 #include <common/fileprovider.h>
 #include <common/messagehandler.h>
 #include <common/parsercontext.h>
@@ -92,26 +94,22 @@ void Compiler::parse( const QDomElement &element )
   definitions.setWantedService( Settings::self()->wantedService() );
   if ( definitions.loadXML( &context, element ) ) {
 
-      mWSDL.setDefinitions( definitions );
-      mWSDL.setNamespaceManager( namespaceManager );
+      WSDL wsdl;
+      wsdl.setDefinitions( definitions );
+      wsdl.setNamespaceManager( namespaceManager );
 
-      create();
+      KWSDL::Converter converter;
+      converter.setWSDL( wsdl );
+
+      converter.convert();
+
+      KWSDL::Creator creator;
+      creator.create( converter.classes() );
+
+      QCoreApplication::exit( 0 );
   } else {
       QCoreApplication::exit( 3 );
   }
-}
-
-void Compiler::create()
-{
-  KWSDL::Converter converter;
-  converter.setWSDL( mWSDL );
-
-  converter.convert();
-
-  KWSDL::Creator creator;
-  creator.create( converter.classes() );
-
-  QCoreApplication::exit( 0 );
 }
 
 #include "moc_compiler.cpp"

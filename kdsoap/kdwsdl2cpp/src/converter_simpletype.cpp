@@ -37,7 +37,7 @@ static KODE::Code createRangeCheckCode( const XSD::SimpleType*, const QString&, 
 void Converter::convertSimpleType( const XSD::SimpleType *type )
 {
   const QString typeName( mTypeMap.localType( type->qualifiedName() ) );
-  qDebug() << "convertSimpleType:" << type->qualifiedName().qname() << typeName;
+  //qDebug() << "convertSimpleType:" << type->qualifiedName() << typeName;
   KODE::Class newClass( typeName );
 
   KODE::Code ctorBody;

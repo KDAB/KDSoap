@@ -127,7 +127,7 @@ QString TypeMap::localType( const QName &typeName ) const
 {
   QList<Entry>::ConstIterator it = typeEntry( typeName );
   if ( it == mTypeMap.constEnd() ) {
-      qDebug() << "ERROR: basic type not found:" << typeName.qname();
+      qDebug() << "ERROR: basic type not found:" << typeName;
       return QString();
   }
   return (*it).localType;
@@ -213,7 +213,7 @@ QString TypeMap::localTypeForElement( const QName &typeName ) const
       return (*it).localType;
   }
 
-  qDebug() << "TypeMap::localTypeForElement: unknown type" << typeName.qname();
+  qDebug() << "TypeMap::localTypeForElement: unknown type" << typeName;
   return QString();
 }
 
@@ -245,7 +245,7 @@ void TypeMap::addSchemaTypes( const XSD::Types &types )
     entry.typeName = (*simpleIt).name();
     entry.localType = mNSManager->prefix( entry.nameSpace ).toUpper() + "__" + adaptLocalTypeName( (*simpleIt).name() );
     entry.baseType = (*simpleIt).baseTypeName();
-    //qDebug() << entry.baseType.nameSpace() << entry.baseType.localName() << entry.baseType.qname();
+    //qDebug() << entry.baseType.nameSpace() << entry.baseType.localName() << entry.baseType;
     //entry.headers << (*simpleIt).name().toLower() + ".h";
     entry.forwardDeclarations << entry.localType;
 
@@ -364,7 +364,7 @@ QString TypeMap::localInputType( const QName &typeName, const QName& elementName
     if ( !typeName.isEmpty() ) {
         QList<Entry>::ConstIterator it = typeEntry( typeName );
         if ( it == mTypeMap.constEnd() ) {
-            qDebug() << "ERROR: type not found:" << typeName.qname();
+            qDebug() << "ERROR: type not found:" << typeName;
             return QString();
         }
         QString argType = (*it).localType;
