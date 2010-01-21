@@ -90,6 +90,23 @@ class KODE_EXPORT Printer
     void setSourceFile( const QString &sourceFile );
 
     /**
+     * Sets whether labels (public:, private: etc.) should define
+     * an indentation level. I.e. they are indented and then their
+     * contents are indented even more.
+     */
+    void setLabelsDefineIndent( bool b );
+
+    /**
+     * Sets whether labels should be indented.
+     *
+     * setIndentLabels(true) + setLabelsDefineIndent(false) -> label at same level as contents
+     * setIndentLabels(false) + setLabelsDefineIndent(false) -> Qt coding style
+     * setIndentLabels(true) + setLabelsDefineIndent(true) -> kdepim coding style, default here.
+     * setIndentLabels(false) + setLabelsDefineIndent(true) -> doesn't really make sense.
+     */
+    void setIndentLabels( bool b );
+
+    /**
      * Prints the header of the class definitions in @param file.
      */
     void printHeader( const File &file );

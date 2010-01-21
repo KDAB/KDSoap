@@ -109,6 +109,12 @@ class SCHEMA_EXPORT SimpleType : public XSDType
     int facetFractionDigits() const;
     QString facetPattern() const;
 
+    /**
+     * Return true if this type is just a restriction of another type.
+     * False for enums, and false if the base type is any.
+     */
+    bool isRestriction() const;
+
   private:
     class Private;
     Private *d;
@@ -118,14 +124,6 @@ class SCHEMA_EXPORT SimpleTypeList : public QList<SimpleType>
 {
 public:
     const_iterator findSimpleType(const QName& qualifiedName) const;
-
-    /**
-     * If C is a restriction of B and B is a restriction of A,
-     * then mostBasicType(C) == A.
-     * Of course this stops at anything that is not a restriction,
-     * e.g. lists or unions.
-     */
-    QName mostBasicType(const QName& basicType) const;
 };
 
 }
