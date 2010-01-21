@@ -142,11 +142,6 @@ void Converter::convertClientService()
             convertClientOutputMessage( *opIt, (*opIt).output(), binding, newClass );
             break;
         }
-
-#ifdef KDAB_DELETED
-      QString operationName = lowerlize( (*opIt).name() );
-      ctorCode += transport.name() + " = new Transport( \"" + webserviceLocation.toString() + "\" );";
-#endif
     }
   }
 
@@ -194,9 +189,8 @@ void Converter::convertClientService()
 }
 #endif
 
-void Converter::clientAddArguments( KODE::Function& callFunc, const Message& message, KODE::Class& newClass )
+void Converter::clientAddArguments( KODE::Function& callFunc, const Message& message )
 {
-    Q_UNUSED(newClass); // TODO cleanup arg
     const Part::List parts = message.parts();
     Q_FOREACH( const Part& part, parts ) {
         const QString lowerName = lowerlize( part.name() );
@@ -228,25 +222,6 @@ void Converter::clientGenerateMessage( KODE::Code& code, const Message& message 
     const Part::List parts = message.parts();
     Q_FOREACH( const Part& part, parts ) {
         const QString lowerName = lowerlize( part.name() );
-
-#ifdef KDAB_DELETED // still needed?
-        QString name, noNamespace;
-        if ( soapStyle == SoapBinding::RPCStyle ) {
-            name = part.name();
-            noNamespace = "true";
-        } else {
-            noNamespace = "false";
-            QName type = part.type();
-            if ( !type.isEmpty() ) {
-                name = mNSManager.fullName( type.nameSpace(), type.localName() );
-            } else {
-                name = mNSManager.fullName( part.element().nameSpace(), part.element().localName() );
-            }
-        }
-        code += "Serializer::marshal( doc, " + parentNode + ", \"" + name + "\", " + mNameMapper.escape( lowerName ) +
-                ", " + noNamespace + " );";
-        code += "delete " + mNameMapper.escape( lowerName ) + ';';
-#endif
         QString argType = mTypeMap.localType( part.type(), part.element() );
         bool isBuiltin = false;
         const QName type = part.type();
@@ -258,8 +233,7 @@ void Converter::clientGenerateMessage( KODE::Code& code, const Message& message 
             if ( isBuiltin ) {
                 code += "message.addArgument(" + partNameStr + ", " + lowerName + ");";
             } else {
-                // TODO remove ::fromValue. Means returning a QVariant in complex types.
-                code += "message.addArgument(" + partNameStr + ", QVariant::fromValue(" + lowerName + ".serialize()));";
+                code += "message.addArgument(" + partNameStr + ", " + lowerName + ".serialize());";
             }
         }
     }
@@ -272,7 +246,7 @@ void Converter::convertClientCall( const Operation &operation, const Binding &bi
   callFunc.setDocs(QString("Blocking call to %1.\nNot recommended in a GUI thread.").arg(operation.name()));
   const Message inputMessage = mWSDL.findMessage( operation.input().message() );
   const Message outputMessage = mWSDL.findMessage( operation.output().message() );
-  clientAddArguments( callFunc, inputMessage, newClass );
+  clientAddArguments( callFunc, inputMessage );
   KODE::Code code;
   const bool hasAction = clientAddAction( code, binding, operation.name() );
   clientGenerateMessage( code, inputMessage );
@@ -309,7 +283,7 @@ void Converter::convertClientCall( const Operation &operation, const Binding &bi
 
   if ( isComplex ) {
       code += retType + " ret;"; // local var
-      code += "ret.deserialize(d_ptr->m_lastReply.arguments());";
+      code += "ret.deserialize(QVariant::fromValue(d_ptr->m_lastReply.arguments()));";
       code += "return ret;";
   } else {
       if ( isBuiltin ) {
@@ -337,7 +311,7 @@ void Converter::convertClientInputMessage( const Operation &operation, const Par
                     .arg(lowerlize(operationName) + "Done")
                     .arg(lowerlize(operationName) + "Error"));
   const Message message = mWSDL.findMessage( param.message() );
-  clientAddArguments( asyncFunc, message, newClass );
+  clientAddArguments( asyncFunc, message );
   KODE::Code code;
   const bool hasAction = clientAddAction( code, binding, operation.name() );
   clientGenerateMessage( code, message );
@@ -435,7 +409,7 @@ void Converter::convertClientOutputMessage( const Operation &operation, const Pa
 
     if ( isComplex ) {
         slotCode += partType + " ret;"; // local var
-        slotCode += "ret.deserialize(args);";
+        slotCode += "ret.deserialize(QVariant::fromValue(args));";
         partNames << "ret";
     } else {
         const QString value = "args.value(QLatin1String(\"" + lowerName + "\"))";

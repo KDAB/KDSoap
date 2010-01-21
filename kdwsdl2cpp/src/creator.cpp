@@ -30,51 +30,6 @@
 
 using namespace KWSDL;
 
-/**
- * This method sorts a list of classes in a way that the base class
- * of a class always appears before the class itself.
- */
-static KODE::Class::List sortByBaseClass( const KODE::Class::List &classes )
-{
-  KODE::Class::List allClasses( classes );
-  KODE::Class::List retval;
-
-  QStringList classNames;
-
-  // copy all classes without a base class
-  KODE::Class::List::Iterator it;
-  for ( it = allClasses.begin(); it != allClasses.end(); ++it ) {
-    if ( (*it).baseClasses().isEmpty() || (*it).baseClasses().first().name().startsWith( "Q" ) ) {
-      retval.append( *it );
-      classNames.append( (*it).name() );
-
-      it = allClasses.erase( it );
-      it--;
-    }
-  }
-
-  while ( allClasses.count() > 0 ) {
-    // copy all classes which have a class from retval
-    // as base class
-    for ( it = allClasses.begin(); it != allClasses.end(); ++it ) {
-      const QString baseClassName = (*it).baseClasses().first().name();
-
-      if ( classNames.contains( baseClassName ) ) {
-        retval.append( *it );
-        classNames.append( (*it).name() );
-
-        it = allClasses.erase( it );
-        it--;
-      } else {
-        qDebug() << "ERROR: Base class not found:" << baseClassName << "for class" << (*it).name();
-        return retval;
-      }
-    }
-  }
-
-  return retval;
-}
-
 Creator::Creator()
 {
 }
@@ -89,7 +44,9 @@ void Creator::create( const KODE::Class::List &list )
   printer.setGenerator( QLatin1String( "KDAB's kdwsdl2cpp" ) );
   printer.setSourceFile( Settings::self()->wsdlFileName() );
 
-  const KODE::Class::List classes = sortByBaseClass( list );
+  KODE::Class::List classes = list;
+  classes.sortByDependencies();
+  // TODO move service to the end
 
   KODE::File file;
 

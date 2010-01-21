@@ -31,7 +31,7 @@ static KODE::Code createRangeCheckCode( const XSD::SimpleType*, const QString&, 
 
 // Overall logic:
 // if ENUM -> define "Type" and "type" variable
-// if basic type -> "value" variable
+// if restricts a basic type or another simple type -> "value" variable
 // else if list -> ...
 
 void Converter::convertSimpleType( const XSD::SimpleType *type )
@@ -100,7 +100,7 @@ void Converter::convertSimpleType( const XSD::SimpleType *type )
     if ( type->baseTypeName() != XmlAnyType
         && !type->baseTypeName().isEmpty()
         && !(type->facetType() & XSD::SimpleType::ENUM) ) {
-      classDocumentation = "This class encapsulates an basic type.\n";
+      classDocumentation = "This class encapsulates a simple type.\n";
 
       const QName baseName = type->baseTypeName();
       const QString typeName = mTypeMap.localType( baseName );
@@ -272,7 +272,7 @@ void Converter::createSimpleTypeSerializer( KODE::Class& newClass, const XSD::Si
         if ( type->baseTypeName() != XmlAnyType
             && !type->baseTypeName().isEmpty()
             && !(type->facetType() & XSD::SimpleType::ENUM) ) {
-            // basic type
+            // 'inherits' a basic type or another simple type -> using value.
 
             KODE::MemberVariable variable( "value", typeName ); // just for the naming
             const QName baseType = type->baseTypeName();

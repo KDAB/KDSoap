@@ -236,22 +236,18 @@ static KODE::Code demarshalVar( TypeMap& typeMap, const XSD::Element& elem, cons
     if ( typeMap.isBuiltinType( elem.type() ) ) {
         code += variableName + " = value.value<" + typeName + ">();";
     } else {
-        if ( typeMap.isComplexType( elem.type(), QName() ) ) {
-            code += variableName + ".deserialize(value.value<KDSoapValueList>());";
-        } else {
-            code += variableName + ".deserialize(value);";
-        }
+        code += variableName + ".deserialize(value);";
     }
     return code;
 }
 
 void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::ComplexType *type )
 {
-    KODE::Function serializeFunc( "serialize", "KDSoapValueList" );
+    KODE::Function serializeFunc( "serialize", "QVariant" );
     serializeFunc.setConst( true );
 
     KODE::Function deserializeFunc( "deserialize", "void" );
-    deserializeFunc.addArgument( "const KDSoapValueList& args" );
+    deserializeFunc.addArgument( "const QVariant& value" );
 
     KODE::Code marshalCode, demarshalCode;
 
@@ -265,6 +261,7 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
     XSD::Element::List elements = type->elements();
 
     if ( !elements.isEmpty() ) {
+        demarshalCode += "KDSoapValueList args = value.value<KDSoapValueList>();";
         demarshalCode += "for (int argNr = 0; argNr < args.count(); ++argNr) {";
         demarshalCode.indent();
         demarshalCode += "const KDSoapValue& val = args.at(argNr);";
@@ -310,7 +307,7 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
         qDebug() << "TODO: handling marshalling of attributes";
     }
 
-    marshalCode += "return args;";
+    marshalCode += "return QVariant::fromValue(args);";
 
     serializeFunc.setBody( marshalCode );
     newClass.addFunction( serializeFunc );

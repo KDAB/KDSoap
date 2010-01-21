@@ -22,7 +22,7 @@ public:
     void waitForCompletion() { m_semaphore.acquire(); }
     KDSoapMessage returnArguments() const { return m_returnArguments; }
 
-    KDSoapClientInterface* m_iface; // ## TODO: unused?
+    KDSoapClientInterface* m_iface; // used by KDSoapThreadTask::process()
     QString m_method;
     KDSoapMessage m_message;
     QString m_action;

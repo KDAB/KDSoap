@@ -98,10 +98,10 @@ void Converter::cleanupUnusedTypes()
         qDebug() << types.complexTypes().count() << "complex types";
         qDebug() << types.simpleTypes().count() << "simple types";
         qDebug() << types.elements().count() << "elements";
-    }
 
-    Q_FOREACH(const XSD::Element& elem, types.elements()) {
-        qDebug() << "element:" << elem.qualifiedName();
+        //Q_FOREACH(const XSD::Element& elem, types.elements()) {
+        //    qDebug() << "element:" << elem.qualifiedName();
+        //}
     }
 
     QSet<QName> usedMessageNames;
@@ -241,15 +241,15 @@ void Converter::convertTypes()
 {
   const XSD::Types types = mWSDL.definitions().type().types();
 
-  XSD::ComplexType::List complexTypes = types.complexTypes();
-  qDebug() << "Converting" << complexTypes.count() << "complex types";
-  for ( int i = 0; i < complexTypes.count(); ++i )
-    convertComplexType( &(complexTypes[ i ]) );
-
   XSD::SimpleType::List simpleTypes = types.simpleTypes();
   qDebug() << "Converting" << simpleTypes.count() << "simple types";
   for ( int i = 0; i < simpleTypes.count(); ++i )
     convertSimpleType( &(simpleTypes[ i ]) );
+
+  XSD::ComplexType::List complexTypes = types.complexTypes();
+  qDebug() << "Converting" << complexTypes.count() << "complex types";
+  for ( int i = 0; i < complexTypes.count(); ++i )
+    convertComplexType( &(complexTypes[ i ]) );
 
   XSD::Attribute::List attributes = types.attributes();
   qDebug() << "Converting" << attributes.count() << "attributes";

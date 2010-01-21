@@ -52,4 +52,4 @@ int main(int argc, char **argv)
     return app.exec();
 }
 
-#include "holidays.moc"
+#include "holidays_gui.moc"

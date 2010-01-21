@@ -35,6 +35,7 @@ class QString;
 
 namespace KODE {
 
+class ClassList;
 /**
  * This class abstracts a class object with functions,
  * member variables etc.
@@ -42,7 +43,7 @@ namespace KODE {
 class KODE_EXPORT Class
 {
   public:
-    typedef QList<Class> List;
+    typedef ClassList List;
 
     /**
      * Creates a new class object.
@@ -284,6 +285,12 @@ class KODE_EXPORT Class
   private:
     class Private;
     Private* d;
+};
+
+class ClassList: public QList<Class>
+{
+public:
+    void sortByDependencies();
 };
 
 }
