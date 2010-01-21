@@ -185,7 +185,7 @@ QString Printer::Private::classHeader( const Class &classObject, bool publicMemb
   if ( classObject.canBeCopied() && classObject.useDPointer() && !classObject.memberVariables().isEmpty() ) {
     Function cc( classObject.name() );
     cc.addArgument( "const " + classObject.name() + '&' );
-    Function op( "operator=", classObject.name() + "& " );
+    Function op( "operator=", classObject.name() + '&' );
     op.addArgument( "const " + classObject.name() + '&' );
     Function::List list;
     list << cc << op;
@@ -652,14 +652,13 @@ void Printer::printHeader( const File &file )
   processed.clear();
   Class::List::ConstIterator it;
   for ( it = classes.constBegin(); it != classes.constEnd(); ++it ) {
-    QStringList decls = (*it).forwardDeclarations();
-    QStringList::ConstIterator it2;
-    for ( it2 = decls.constBegin(); it2 != decls.constEnd(); ++it2 ) {
-      if ( !processed.contains( *it2 ) ) {
-        out += "class " + *it2 + ';';
-        processed.insert( *it2 );
-      }
-    }
+    const QStringList decls = (*it).forwardDeclarations();
+    processed += decls.toSet();
+  }
+  QStringList fwdClasses = processed.toList();
+  fwdClasses.sort();
+  Q_FOREACH( const QString& cl, fwdClasses ) {
+    out += "class " + cl + ';';
   }
 
   if ( !processed.isEmpty() )
