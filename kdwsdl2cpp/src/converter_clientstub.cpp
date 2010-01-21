@@ -70,6 +70,7 @@ void Converter::convertClientService()
   // lastError() method
   {
       KODE::Function lastError("lastError", "QString");
+      lastError.setConst(true);
       KODE::Code code;
       code += "if (d_ptr->m_lastReply.isFault())";
       code.indent();

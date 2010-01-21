@@ -50,8 +50,8 @@ class Converter
     void convertComplexType( const XSD::ComplexType* );
     void createComplexTypeSerializer( KODE::Class&, const XSD::ComplexType* );
 
-    void convertSimpleType( const XSD::SimpleType* );
-    void createSimpleTypeSerializer( KODE::Class&, const XSD::SimpleType* );
+    void convertSimpleType( const XSD::SimpleType*, const XSD::SimpleType::List& simpleTypeList );
+    void createSimpleTypeSerializer( KODE::Class&, const XSD::SimpleType*, const XSD::SimpleType::List& simpleTypeList );
 
     void convertAttribute( const XSD::Attribute* );
     void createAttributeSerializer( const XSD::Attribute* );

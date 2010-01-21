@@ -244,7 +244,7 @@ void Converter::convertTypes()
   XSD::SimpleType::List simpleTypes = types.simpleTypes();
   qDebug() << "Converting" << simpleTypes.count() << "simple types";
   for ( int i = 0; i < simpleTypes.count(); ++i )
-    convertSimpleType( &(simpleTypes[ i ]) );
+    convertSimpleType( &(simpleTypes[ i ]), simpleTypes );
 
   XSD::ComplexType::List complexTypes = types.complexTypes();
   qDebug() << "Converting" << complexTypes.count() << "complex types";

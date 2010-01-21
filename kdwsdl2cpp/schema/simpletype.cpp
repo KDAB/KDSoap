@@ -294,4 +294,29 @@ QString SimpleType::facetPattern() const
   return d->mFacetValue.pattern;
 }
 
+SimpleTypeList::const_iterator SimpleTypeList::findSimpleType(const QName &qualifiedName) const
+{
+  const_iterator it = constBegin();
+  for ( ; it != constEnd(); ++it )
+    if ((*it).qualifiedName() == qualifiedName)
+      break;
+  return it;
+}
+
+QName SimpleTypeList::mostBasicType(const QName &basicType) const
+{
+  static QName XmlAnyType( "http://www.w3.org/2001/XMLSchema", "any" );
+  QName currentType = basicType;
+  Q_FOREVER {
+      const_iterator it = findSimpleType(currentType);
+      if (it != constEnd() && (*it).baseTypeName() != XmlAnyType && !(*it).baseTypeName().isEmpty()
+          && !((*it).facetType() & XSD::SimpleType::ENUM)) {
+          currentType = (*it).baseTypeName();
+          continue;
+      }
+      break;
+  }
+  return currentType;
+}
+
 }
