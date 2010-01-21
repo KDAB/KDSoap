@@ -2,8 +2,6 @@
 #include "KDSoapMessage.h"
 #include "KDSoapValue.h"
 #include "KDSoapPendingCallWatcher.h"
-#include "wsdl_soapresponder.h"
-#include "wsdl_thomas-bayer.h"
 #include <QtTest/QtTest>
 #include <QEventLoop>
 #include <QDebug>
@@ -21,26 +19,6 @@ public slots:
     }
 
 private slots:
-
-    // Soap in RPC mode; using WSDL-generated class
-    // http://www.soapclient.com/soapclient?fn=soapform&template=/clientform.html&soaptemplate=/soapresult.html&soapwsdl=http://soapclient.com/xml/soapresponder.wsdl
-    void testSoapResponder_sync()
-    {
-        SoapResponder responder;
-        QString ret = responder.method1(QLatin1String("abc"), QLatin1String("def"));
-        QCOMPARE(ret, QString::fromLatin1("Your input parameters are abc and def"));
-    }
-
-    void testSoapResponder_async()
-    {
-        SoapResponder responder;
-        QSignalSpy spyDone(&responder, SIGNAL(method1Done(QString)));
-        connect(&responder, SIGNAL(method1Done(QString)), &m_eventLoop, SLOT(quit()));
-        responder.asyncMethod1(QLatin1String("abc"), QLatin1String("def"));
-        m_eventLoop.exec();
-        QCOMPARE(spyDone.count(), 1);
-        QCOMPARE(spyDone[0][0].toString(), QString::fromLatin1("Your input parameters are abc and def"));
-    }
 
     // Soap in Document mode.
 
@@ -72,12 +50,6 @@ private slots:
         message.addArgument(QLatin1String("number2"), 43);
         KDSoapMessage ret = client.call(QLatin1String("AddInteger"), message);
         QCOMPARE(ret.arguments().first().value().toInt(), 85);
-    }
-
-    void testAddIntegers_wsdl()
-    {
-        NamesServiceService serv;
-        qDebug() << serv.getCountries().country(); // TODO countryList()?
     }
 
     void testHolidays()

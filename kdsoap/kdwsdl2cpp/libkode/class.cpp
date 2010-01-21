@@ -24,6 +24,8 @@
 
 #include "class.h"
 
+#include <QDebug>
+
 using namespace KODE;
 
 class Class::Private
@@ -313,4 +315,95 @@ void Class::setParentClassName( const QString &parentClassName )
 QString Class::dPointerName() const
 {
   return d->mDPointer;
+}
+
+////
+
+// Returns what a class depends on: its base class(es) and any by-value member var
+static QStringList dependenciesForClass( const Class& aClass, const QStringList& allClasses )
+{
+    QStringList lst;
+    Q_FOREACH( const Class& baseClass, aClass.baseClasses() ) {
+        if ( !baseClass.name().startsWith('Q') )
+            lst.append( baseClass.name() );
+    }
+    Q_FOREACH( const MemberVariable& member, aClass.memberVariables() ) {
+        const QString type = member.type();
+        if ( allClasses.contains( type ) ) {
+            lst.append(type);
+        }
+    }
+
+    return lst;
+}
+
+static bool allKnown( const QStringList& deps, const QStringList& classNames )
+{
+    Q_FOREACH(const QString& dep, deps) {
+        if (!classNames.contains(dep)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+
+/**
+ * This method sorts a list of classes in a way that the base class
+ * of a class always appears before the class itself.
+ */
+static Class::List sortByDependenciesHelper( const Class::List &classes )
+{
+    Class::List allClasses( classes );
+    QStringList allClassNames;
+    Q_FOREACH( const Class& c, classes )
+        allClassNames.append( c.name() );
+
+    Class::List retval;
+
+    QStringList classNames;
+
+    // copy all classes without dependencies
+    Class::List::Iterator it;
+    for ( it = allClasses.begin(); it != allClasses.end(); ++it ) {
+      if ( dependenciesForClass( *it, allClassNames ).isEmpty() ) {
+        retval.append( *it );
+        classNames.append( (*it).name() );
+
+        it = allClasses.erase( it );
+        it--;
+      }
+    }
+
+    while ( allClasses.count() > 0 ) {
+      const int currentCount = allClasses.count();
+      // copy all classes which have a class from retval/classNames (i.e. already written out)
+      // as base class - or as member variable
+      for ( it = allClasses.begin(); it != allClasses.end(); ++it ) {
+
+        const QStringList deps = dependenciesForClass( *it, allClassNames );
+        if ( allKnown( deps, classNames ) ) {
+          retval.append( *it );
+          classNames.append( (*it).name() );
+
+          it = allClasses.erase( it );
+          it--;
+        }
+      }
+      if (allClasses.count() == currentCount) {
+          // We didn't resolve anything this time around, so let's not loop forever
+          qDebug() << "Couldn't find class dependencies (base classes, member vars) for classes";
+          for ( it = allClasses.begin(); it != allClasses.end(); ++it ) {
+              qDebug() << (*it).name();
+          }
+          return retval;
+      }
+    }
+
+    return retval;
+}
+
+void ClassList::sortByDependencies()
+{
+    *this = sortByDependenciesHelper(*this);
 }
