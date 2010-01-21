@@ -291,6 +291,8 @@ class ClassList: public QList<Class>
 {
 public:
     void sortByDependencies();
+
+    iterator findClass(const QString& name);
 };
 
 }

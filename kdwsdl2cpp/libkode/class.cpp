@@ -407,3 +407,12 @@ void ClassList::sortByDependencies()
 {
     *this = sortByDependenciesHelper(*this);
 }
+
+ClassList::iterator ClassList::findClass(const QString &name)
+{
+    ClassList::iterator it = begin();
+    for (; it != end(); ++it)
+        if ((*it).name() == name)
+            break;
+    return it;
+}
