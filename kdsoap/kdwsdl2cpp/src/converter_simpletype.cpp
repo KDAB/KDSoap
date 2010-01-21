@@ -34,7 +34,7 @@ static KODE::Code createRangeCheckCode( const XSD::SimpleType*, const QString&, 
 // if restricts a basic type or another simple type -> "value" variable
 // else if list -> ...
 
-void Converter::convertSimpleType( const XSD::SimpleType *type )
+void Converter::convertSimpleType( const XSD::SimpleType *type, const XSD::SimpleType::List& simpleTypeList )
 {
   const QString typeName( mTypeMap.localType( type->qualifiedName() ) );
   //qDebug() << "convertSimpleType:" << type->qualifiedName() << typeName;
@@ -102,7 +102,7 @@ void Converter::convertSimpleType( const XSD::SimpleType *type )
         && !(type->facetType() & XSD::SimpleType::ENUM) ) {
       classDocumentation = "This class encapsulates a simple type.\n";
 
-      const QName baseName = type->baseTypeName();
+      const QName baseName = simpleTypeList.mostBasicType(type->baseTypeName());
       const QString typeName = mTypeMap.localType( baseName );
       Q_ASSERT(!typeName.isEmpty());
 
@@ -115,9 +115,6 @@ void Converter::convertSimpleType( const XSD::SimpleType *type )
       // member variables
       KODE::MemberVariable variable( "value", typeName );
       newClass.addMemberVariable( variable );
-
-      //ctorBody += variable.name() + " = 0;";
-      //dtorBody += "delete " + variable.name() + "; " + variable.name() + " = 0;";
 
       // setter method
       KODE::Function setter( "setValue", "void" );
@@ -216,7 +213,7 @@ void Converter::convertSimpleType( const XSD::SimpleType *type )
   else
     newClass.setDocs( classDocumentation );
 
-  createSimpleTypeSerializer( newClass, type );
+  createSimpleTypeSerializer( newClass, type, simpleTypeList );
 
   KODE::Function ctor( upperlize( newClass.name() ) );
   ctor.setBody( ctorBody );
@@ -229,7 +226,7 @@ void Converter::convertSimpleType( const XSD::SimpleType *type )
   mClasses.append( newClass );
 }
 
-void Converter::createSimpleTypeSerializer( KODE::Class& newClass, const XSD::SimpleType *type )
+void Converter::createSimpleTypeSerializer( KODE::Class& newClass, const XSD::SimpleType *type, const XSD::SimpleType::List& simpleTypeList )
 {
     const QString typeName = mTypeMap.localType( type->qualifiedName() );
 
@@ -275,7 +272,7 @@ void Converter::createSimpleTypeSerializer( KODE::Class& newClass, const XSD::Si
             // 'inherits' a basic type or another simple type -> using value.
 
             KODE::MemberVariable variable( "value", typeName ); // just for the naming
-            const QName baseType = type->baseTypeName();
+            const QName baseType = simpleTypeList.mostBasicType(type->baseTypeName());
             if ( mTypeMap.isBuiltinType( baseType ) ) // serialize from QString, int, etc.
                 serializeFunc.addBodyLine( "return QVariant::fromValue(" + variable.name() + ");" );
             else { // inherits another simple type, need to call its serialize method

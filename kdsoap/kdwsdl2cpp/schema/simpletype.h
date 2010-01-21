@@ -31,10 +31,12 @@
 
 namespace XSD {
 
+class SimpleTypeList;
+
 class SCHEMA_EXPORT SimpleType : public XSDType
 {
   public:
-    typedef QList<SimpleType> List;
+    typedef SimpleTypeList List;
 
     enum FacetType
     {
@@ -110,6 +112,20 @@ class SCHEMA_EXPORT SimpleType : public XSDType
   private:
     class Private;
     Private *d;
+};
+
+class SCHEMA_EXPORT SimpleTypeList : public QList<SimpleType>
+{
+public:
+    const_iterator findSimpleType(const QName& qualifiedName) const;
+
+    /**
+     * If C is a restriction of B and B is a restriction of A,
+     * then mostBasicType(C) == A.
+     * Of course this stops at anything that is not a restriction,
+     * e.g. lists or unions.
+     */
+    QName mostBasicType(const QName& basicType) const;
 };
 
 }

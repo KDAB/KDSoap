@@ -20,6 +20,7 @@ public:
         KDAB__EmployeeType employeeType;
         employeeType.setType(KDAB__EmployeeTypeEnum::Developer);
         employeeType.setOtherRoles(QList<KDAB__EmployeeTypeEnum>() << KDAB__EmployeeTypeEnum::TeamLeader);
+        employeeType.setTeam(QString::fromLatin1("Minitel"));
         service.addEmployee(employeeType, KDAB__EmployeeName(QString::fromLatin1("David")), QString::fromLatin1("France"));
     }
 };
