@@ -158,7 +158,7 @@ void Converter::convertSimpleType( const XSD::SimpleType *type, const XSD::Simpl
       newClass.addFunction( conctor );
 
       // even more convenient constructor, for the case of multiple-level simple-type restrictions
-      qDebug() << typeName << ": baseName=" << baseName << "further up:" << parentBasicTypes;
+      //qDebug() << typeName << ": baseName=" << baseName << "further up:" << parentBasicTypes;
       if ( parentBasicTypes.count() > 1 ) {
           parentBasicTypes.removeLast(); // the top-most one is in "currentType", so it's the input arg.
           KODE::Function baseCtor( conctor.name() );

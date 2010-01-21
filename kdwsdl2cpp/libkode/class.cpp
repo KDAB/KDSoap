@@ -350,7 +350,8 @@ static bool allKnown( const QStringList& deps, const QStringList& classNames )
 
 /**
  * This method sorts a list of classes in a way that the base class
- * of a class always appears before the class itself.
+ * of a class, as well as the classes it use by value in member vars,
+ * always appear before the class itself.
  */
 static Class::List sortByDependenciesHelper( const Class::List &classes )
 {
