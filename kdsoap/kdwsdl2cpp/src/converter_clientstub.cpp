@@ -145,6 +145,10 @@ void Converter::convertClientService()
     }
   }
 
+  // First sort all classes so that the order compiles
+  mClasses.sortByDependencies();
+  // Then add the service, at the end
+
   mClasses.append(newClass);
 }
 

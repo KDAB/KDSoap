@@ -34,7 +34,7 @@ Creator::Creator()
 {
 }
 
-void Creator::create( const KODE::Class::List &list )
+void Creator::create( const KODE::Class::List &classes )
 {
   KODE::Printer printer;
   printer.setOutputDirectory( Settings::self()->outputDirectory() );
@@ -43,10 +43,6 @@ void Creator::create( const KODE::Class::List &list )
   printer.setCreationWarning( true );
   printer.setGenerator( QLatin1String( "KDAB's kdwsdl2cpp" ) );
   printer.setSourceFile( Settings::self()->wsdlFileName() );
-
-  KODE::Class::List classes = list;
-  classes.sortByDependencies();
-  // TODO move service to the end
 
   KODE::File file;
 
