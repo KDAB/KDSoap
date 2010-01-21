@@ -40,12 +40,10 @@ void Converter::convertSimpleType( const XSD::SimpleType *type, const XSD::Simpl
   //qDebug() << "convertSimpleType:" << type->qualifiedName() << typeName;
   KODE::Class newClass( typeName );
 
-  KODE::Code ctorBody;
-  KODE::Code dtorBody;
-
   QString classDocumentation;
 
-  if ( type->subType() == XSD::SimpleType::TypeRestriction ) {
+  switch( type->subType() ) {
+  case XSD::SimpleType::TypeRestriction: {
     /**
       Use setter and getter method for enums as well.
      */
@@ -59,7 +57,8 @@ void Converter::convertSimpleType( const XSD::SimpleType *type, const XSD::Simpl
       newClass.addEnum( KODE::Enum( "Type", enums ) );
 
       classDocumentation += "Whenever you have to pass an object of type " + newClass.name() +
-                            " you can also pass the enum directly. Example:\nsomeMethod( " + newClass.name() + "::" + enums.first() + " )).";
+                            " you can also pass the enum directly. Example:\n" +
+                            "someMethod(" + newClass.name() + "::" + enums.first() + ").";
 
       // member variables
       KODE::MemberVariable variable( "type", "Type" );
@@ -102,18 +101,31 @@ void Converter::convertSimpleType( const XSD::SimpleType *type, const XSD::Simpl
         && !(type->facetType() & XSD::SimpleType::ENUM) ) {
       classDocumentation = "This class encapsulates a simple type.\n";
 
-      const QName baseName = simpleTypeList.mostBasicType(type->baseTypeName());
-      const QString typeName = mTypeMap.localType( baseName );
-      Q_ASSERT(!typeName.isEmpty());
+      const QName baseName = type->baseTypeName();
+      const QString baseTypeName = mTypeMap.localType( baseName );
+      Q_ASSERT(!baseTypeName.isEmpty());
+
+      QList<QName> parentBasicTypes;
+      parentBasicTypes.append(baseName);
+      QName currentType = baseName;
+      Q_FOREVER {
+          XSD::SimpleType::List::const_iterator it = simpleTypeList.findSimpleType( currentType );
+          if ( it != simpleTypeList.constEnd() && (*it).isRestriction() ) {
+              currentType = (*it).baseTypeName();
+              parentBasicTypes.append( currentType );
+              continue;
+          }
+          break;
+      }
 
       classDocumentation += "Whenever you have to pass an object of type " + newClass.name() +
-                            " you can also pass the value directly (e.g. someMethod( (" + typeName + ")value )).";
+                            " you can also pass the value directly as a " + mTypeMap.localType( currentType ) + '.';
       // include header
       newClass.addIncludes( QStringList(), mTypeMap.forwardDeclarations( baseName ) );
       newClass.addHeaderIncludes( mTypeMap.headerIncludes( baseName ) );
 
       // member variables
-      KODE::MemberVariable variable( "value", typeName );
+      KODE::MemberVariable variable( "value", baseTypeName );
       newClass.addMemberVariable( variable );
 
       // setter method
@@ -123,58 +135,53 @@ void Converter::convertSimpleType( const XSD::SimpleType *type, const XSD::Simpl
       if ( type->facetType() != XSD::SimpleType::NONE ) {
         setterBody += createRangeCheckCode( type, "(value)", newClass );
         setterBody.newLine();
-        setterBody += "if ( !rangeOk )";
+        setterBody += "if (!rangeOk)";
         setterBody.indent();
         setterBody += "qDebug( \"Invalid range in " + newClass.name() + "::" + setter.name() + "()\" );";
         setterBody.unindent();
         setterBody.newLine();
       }
-      setterBody += variable.name() + " = value;";
+      setterBody += variable.name() + " = value;"; // ### call setValue in base class?
       setter.setBody( setterBody );
+      newClass.addFunction( setter );
 
       // getter method
-      KODE::Function getter( "value", typeName );
+      KODE::Function getter( "value", baseTypeName );
       getter.setBody( "return " + variable.name() + ';' );
       getter.setConst( true );
+      newClass.addFunction( getter );
 
       // convenience constructor
       KODE::Function conctor( upperlize( newClass.name() ) );
       conctor.addArgument( mTypeMap.localInputType( baseName, QName() ) + " value" );
-      KODE::Code code;
-      code += "setValue( value );";
-      conctor.setBody( code );
+      conctor.addBodyLine( "setValue(value);" );
+      newClass.addFunction( conctor );
 
-#if 0
-      if ( typeName == "QString" ) {
-        KODE::Function charctor( upperlize( newClass.name() ) );
-        charctor.addArgument( "const char *charValue" );
-        KODE::Code code;
-        code += "QString value( charValue );";
-        code += createRangeCheckCode( type, "(value)", newClass );
-        code.newLine();
-        code += "if ( !rangeOk )";
-        code.indent();
-        code += "qDebug( \"Invalid range in " + newClass.name() + "::" + charctor.name() + "()\" );";
-        code.unindent();
-        code.newLine();
-        code += variable.name() + " = value;";
-        charctor.setBody( code );
-
-        newClass.addFunction( charctor );
+      // even more convenient constructor, for the case of multiple-level simple-type restrictions
+      qDebug() << typeName << ": baseName=" << baseName << "further up:" << parentBasicTypes;
+      if ( parentBasicTypes.count() > 1 ) {
+          parentBasicTypes.removeLast(); // the top-most one is in "currentType", so it's the input arg.
+          KODE::Function baseCtor( conctor.name() );
+          baseCtor.addArgument( mTypeMap.localInputType( currentType, QName() ) + " value" );
+          QString beginLine = "setValue(";
+          QString endLine = ")";
+          Q_FOREACH(const QName& base, parentBasicTypes) {
+              beginLine += mTypeMap.localType( base ) + '(';
+              endLine += ')';
+          }
+          baseCtor.addBodyLine( beginLine + "value" + endLine + ';' );
+          newClass.addFunction( baseCtor );
       }
-#endif
 
       // type operator
-      KODE::Function op( "operator " + typeName );
+      KODE::Function op( "operator " + baseTypeName );
       op.setBody( "return " + variable.name() + ';' );
       op.setConst( true );
-
-      newClass.addFunction( conctor );
       newClass.addFunction( op );
-      newClass.addFunction( setter );
-      newClass.addFunction( getter );
     }
-  } else if ( type->subType() == XSD::SimpleType::TypeList ) {
+  }
+  break;
+  case XSD::SimpleType::TypeList: {
     classDocumentation = "This class encapsulates a list type.";
 
     newClass.addHeaderInclude( "QList" );
@@ -189,11 +196,6 @@ void Converter::convertSimpleType( const XSD::SimpleType *type, const XSD::Simpl
     KODE::MemberVariable variable( "entries", "QList<" + typeName + ">" );
     newClass.addMemberVariable( variable );
 
-    //ctorBody += variable.name() + " = 0;";
-    //dtorBody += "qDeleteAll( *" + variable.name() + " );";
-    //dtorBody += variable.name() + "->clear();";
-    //dtorBody += "delete " + variable.name() + "; " + variable.name() + " = 0;";
-
     // setter method
     KODE::Function setter( "setEntries", "void" );
     setter.addArgument( "QList<" + typeName + "> entries" );
@@ -207,6 +209,12 @@ void Converter::convertSimpleType( const XSD::SimpleType *type, const XSD::Simpl
     newClass.addFunction( setter );
     newClass.addFunction( getter );
   }
+  break;
+  case XSD::SimpleType::TypeUnion:
+      classDocumentation = "This class encapsulates a union type. NOT IMPLEMENTED.";
+      qDebug() << "ERROR: unions are not implemented";
+      break;
+  };
 
   if ( !type->documentation().isEmpty() )
     newClass.setDocs( type->documentation().simplified() );
@@ -215,12 +223,12 @@ void Converter::convertSimpleType( const XSD::SimpleType *type, const XSD::Simpl
 
   createSimpleTypeSerializer( newClass, type, simpleTypeList );
 
-  KODE::Function ctor( upperlize( newClass.name() ) );
-  ctor.setBody( ctorBody );
-  newClass.addFunction( ctor );
+  // Empty ctor. Needed for derived simpleTypes (which use this one as value).
+  KODE::Function emptyCtor( upperlize( newClass.name() ) );
+  newClass.addFunction( emptyCtor );
 
+  // Empty dtor. Just in case ;)
   KODE::Function dtor( '~' + upperlize( newClass.name() ) );
-  dtor.setBody( dtorBody );
   newClass.addFunction( dtor );
 
   mClasses.append( newClass );
@@ -272,7 +280,10 @@ void Converter::createSimpleTypeSerializer( KODE::Class& newClass, const XSD::Si
             // 'inherits' a basic type or another simple type -> using value.
 
             KODE::MemberVariable variable( "value", typeName ); // just for the naming
-            const QName baseType = simpleTypeList.mostBasicType(type->baseTypeName());
+            const QName baseType = type->baseTypeName();
+            Q_UNUSED(simpleTypeList);
+            //const QName mostBasicTypeName = simpleTypeList.mostBasicType( baseType );
+            //Q_UNUSED(mostBasicTypeName);
             if ( mTypeMap.isBuiltinType( baseType ) ) // serialize from QString, int, etc.
                 serializeFunc.addBodyLine( "return QVariant::fromValue(" + variable.name() + ");" );
             else { // inherits another simple type, need to call its serialize method

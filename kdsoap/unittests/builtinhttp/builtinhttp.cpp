@@ -14,6 +14,7 @@ class TestObject : public QObject
     Q_OBJECT
 public:
 
+private Q_SLOTS:
     void testMyWsdl()
     {
         MyWsdl service;

@@ -25,6 +25,8 @@
 
 using namespace KODE;
 
+static int s_defaultIndentation = 2;
+
 class Code::Private
 {
   public:
@@ -87,12 +89,12 @@ void Code::setIndent( int indent )
 
 void Code::indent()
 {
-  d->mIndent += 2;
+  d->mIndent += s_defaultIndentation;
 }
 
 void Code::unindent()
 {
-  d->mIndent -= 2;
+  d->mIndent -= s_defaultIndentation;
   if ( d->mIndent < 0 )
     d->mIndent = 0;
 }
@@ -227,4 +229,14 @@ Code &Code::operator+=( const Code &code )
 {
   d->mText += code.d->mText;
   return *this;
+}
+
+void Code::setDefaultIndentation(int indent)
+{
+  s_defaultIndentation = indent;
+}
+
+int Code::defaultIndentation()
+{
+  return s_defaultIndentation;
 }

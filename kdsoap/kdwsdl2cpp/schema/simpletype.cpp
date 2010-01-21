@@ -28,13 +28,12 @@ class SimpleType::Private
 {
 public:
     Private()
-      : mRestriction( false ), mFacetId( NONE ), mAnonymous( false ),
+      : mFacetId( NONE ), mAnonymous( false ),
         mSubType( TypeRestriction )
     {}
 
     QString mDocumentation;
     QName mBaseTypeName;
-    bool mRestriction;
     int mFacetId;
     bool mAnonymous;
     QStringList mEnums;
@@ -106,7 +105,6 @@ QString SimpleType::documentation() const
 void SimpleType::setBaseTypeName( const QName &baseTypeName )
 {
   d->mBaseTypeName = baseTypeName;
-  d->mRestriction = true;
 }
 
 QName SimpleType::baseTypeName() const
@@ -294,6 +292,13 @@ QString SimpleType::facetPattern() const
   return d->mFacetValue.pattern;
 }
 
+bool SimpleType::isRestriction() const
+{
+    static QName XmlAnyType( "http://www.w3.org/2001/XMLSchema", "any" );
+    return d->mSubType == TypeRestriction && d->mBaseTypeName != XmlAnyType && !d->mBaseTypeName.isEmpty()
+            && !(d->mFacetId & ENUM);
+}
+
 SimpleTypeList::const_iterator SimpleTypeList::findSimpleType(const QName &qualifiedName) const
 {
   const_iterator it = constBegin();
@@ -301,22 +306,6 @@ SimpleTypeList::const_iterator SimpleTypeList::findSimpleType(const QName &quali
     if ((*it).qualifiedName() == qualifiedName)
       break;
   return it;
-}
-
-QName SimpleTypeList::mostBasicType(const QName &basicType) const
-{
-  static QName XmlAnyType( "http://www.w3.org/2001/XMLSchema", "any" );
-  QName currentType = basicType;
-  Q_FOREVER {
-      const_iterator it = findSimpleType(currentType);
-      if (it != constEnd() && (*it).baseTypeName() != XmlAnyType && !(*it).baseTypeName().isEmpty()
-          && !((*it).facetType() & XSD::SimpleType::ENUM)) {
-          currentType = (*it).baseTypeName();
-          continue;
-      }
-      break;
-  }
-  return currentType;
 }
 
 }

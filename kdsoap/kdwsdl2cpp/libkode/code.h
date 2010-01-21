@@ -164,6 +164,16 @@ class KODE_EXPORT Code
      */
     static QString spaces( int count );
 
+    /**
+     * Sets the default indentation used by indent().
+     */
+    static void setDefaultIndentation( int indent );
+
+    /**
+     * Returns the default indentation used by indent().
+     */
+    static int defaultIndentation();
+
   private:
     class Private;
     Private *d;

@@ -44,6 +44,10 @@ void Creator::create( const KODE::Class::List &classes )
   printer.setGenerator( QLatin1String( "KDAB's kdwsdl2cpp" ) );
   printer.setSourceFile( Settings::self()->wsdlFileName() );
 
+  // Qt-like coding style
+  printer.setLabelsDefineIndent( false );
+  printer.setIndentLabels( false );
+
   KODE::File file;
 
   if (Settings::self()->generateImplementation()) {
