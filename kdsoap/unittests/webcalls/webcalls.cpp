@@ -6,7 +6,7 @@
 #include <QEventLoop>
 #include <QDebug>
 
-class TestObject : public QObject
+class WebCalls : public QObject
 {
     Q_OBJECT
 public:
@@ -109,6 +109,6 @@ private:
     KDSoapMessage m_returnMessage;
 };
 
-QTEST_MAIN(TestObject)
+QTEST_MAIN(WebCalls)
 
 #include "webcalls.moc"

@@ -7,7 +7,7 @@
 #include <QEventLoop>
 #include <QDebug>
 
-class TestObject : public QObject
+class WebCallsWSDL : public QObject
 {
     Q_OBJECT
 public:
@@ -47,6 +47,6 @@ private slots:
     // http://www.holidaywebservice.com/Holidays/HolidayService.asmx?op=GetHolidaysForYear
 };
 
-QTEST_MAIN(TestObject)
+QTEST_MAIN(WebCallsWSDL)
 
 #include "webcalls_wsdl.moc"
