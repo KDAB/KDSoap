@@ -9,7 +9,7 @@
 
 // TODO: builtin http server
 
-class TestObject : public QObject
+class BuiltinHttp : public QObject
 {
     Q_OBJECT
 public:
@@ -26,6 +26,6 @@ private Q_SLOTS:
     }
 };
 
-QTEST_MAIN(TestObject)
+QTEST_MAIN(BuiltinHttp)
 
 #include "builtinhttp.moc"
