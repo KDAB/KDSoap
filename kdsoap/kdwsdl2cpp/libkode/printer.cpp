@@ -315,13 +315,13 @@ QString Printer::Private::classImplementation( const Class &classObject, bool ne
 
     code += mParent->functionSignature( f, functionClassName, true );
 
-    if ( !f.initializers().isEmpty() ) {
+    QStringList inits = f.initializers();
+    if ( classObject.useDPointer() && !classObject.memberVariables().isEmpty() &&
+         f.name() == classObject.name() ) {
+      inits.append( classObject.dPointerName() + "(new PrivateDPtr)" );
+    }
+    if (!inits.isEmpty()) {
       code.indent();
-      QStringList inits = f.initializers();
-      if ( classObject.useDPointer() && !classObject.memberVariables().isEmpty() &&
-           f.name() == classObject.name() ) {
-          inits.append( classObject.dPointerName() + "(new PrivateDPtr)" );
-      }
       code += ": " + inits.join( ", " );
       code.unindent();
     }
