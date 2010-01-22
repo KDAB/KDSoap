@@ -185,8 +185,6 @@ SimpleType::FacetType SimpleType::parseFacetId( const QString &facet ) const
 
 void SimpleType::setFacetValue( FacetType ft, const QString &value )
 {
-  qDebug() << "setFacetValue" << ft << value;
-
   d->mFacetId |= ft;
 
   if ( ft == ENUM ) {
