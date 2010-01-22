@@ -33,9 +33,6 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
   newClass.setUseSharedData( true, "d_ptr" /*avoid clash with possible d() method */ );
   //qDebug() << typeName;
 
-  KODE::Code ctorBody;
-  KODE::Code dtorBody;
-
   // subclass handling
   if ( !type->baseTypeName().isEmpty() ) { // this class extends something
     /**
@@ -55,8 +52,6 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
       newClass.addMemberVariable( variable );
 
       const QString variableName = "d_ptr->" + variable.name();
-
-      //ctorBody += variableName + " = 0;";
 
       // setter method
       KODE::Function setter( "setValue", "void" );
@@ -123,13 +118,6 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
 
     const QString variableName = "d_ptr->" + variable.name();
 
-    //ctorBody += variableName + " = 0;";
-    //if ( (*elemIt).maxOccurs() > 1 ) {
-      //dtorBody += "qDeleteAll( *" + variableName + " );";
-      //dtorBody += variableName + ".clear();";
-    //}
-    //dtorBody += "delete " + variableName + "; " + variableName + " = 0;";
-
     const QString upperName = upperlize( (*elemIt).name() );
     const QString lowerName = lowerlize( (*elemIt).name() );
 
@@ -170,13 +158,6 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
     newClass.addMemberVariable( variable );
     const QString variableName = "d_ptr->" + variable.name();
 
-    //ctorBody += variableName + " = 0;";
-    //if ( isArray ) {
-    //  dtorBody += "qDeleteAll( *" + variableName + " );";
-    //  dtorBody += variableName + "->clear();";
-    //}
-    //dtorBody += "delete " + variableName + "; " + variableName + " = 0;";
-
     QString upperName = upperlize( (*attrIt).name() );
     QString lowerName = lowerlize( (*attrIt).name() );
 
@@ -203,11 +184,9 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
   createComplexTypeSerializer( newClass, type );
 
   KODE::Function ctor( upperlize( newClass.name() ) );
-  ctor.setBody( ctorBody );
   newClass.addFunction( ctor );
 
   KODE::Function dtor( '~' + upperlize( newClass.name() ) );
-  dtor.setBody( dtorBody );
   newClass.addFunction( dtor );
 
   mClasses.append( newClass );

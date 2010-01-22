@@ -39,30 +39,36 @@ QVariant KDSoapPendingCall::returnValue() const
 
 void KDSoapPendingCall::parseReply()
 {
-    const QByteArray data = d->reply->readAll();
-    qDebug() << data;
-    QXmlStreamReader reader(data);
-    const QString soapNS = QString::fromLatin1("http://schemas.xmlsoap.org/soap/envelope/");
-    //const QString xmlSchemaNS = QString::fromLatin1("http://www.w3.org/1999/XMLSchema");
-    //const QString xmlSchemaInstanceNS = QString::fromLatin1("http://www.w3.org/1999/XMLSchema-instance");
-    if (reader.readNextStartElement() && reader.name() == "Envelope" && reader.namespaceUri() == soapNS) {
-        if (reader.readNextStartElement() && reader.name() == "Body" && reader.namespaceUri() == soapNS) {
-
-            if (reader.readNextStartElement()) { // the method: Response or Fault
-                if (reader.name() == "Fault")
-                    d->replyMessage.setFault(true);
-
-                while (reader.readNextStartElement()) { // Result
-                    qDebug() << "got item" << reader.name().toString();
-                    d->replyMessage.addArgument(reader.name().toString(), reader.readElementText());
-                    //reader.skipCurrentElement();
-                }
-            }
-
-        } else {
-            reader.raiseError(QObject::tr("Invalid SOAP Response, Body expected"));
-        }
+    if (d->reply->error()) {
+        d->replyMessage.setFault(true);
+        d->replyMessage.addArgument(QString::fromLatin1("faultcode"), QString::number(d->reply->error()));
+        d->replyMessage.addArgument(QString::fromLatin1("faultstring"), d->reply->errorString());
     } else {
-        reader.raiseError(QObject::tr("Invalid SOAP Response, Envelope expected"));
+        const QByteArray data = d->reply->readAll();
+        qDebug() << data;
+        QXmlStreamReader reader(data);
+        const QString soapNS = QString::fromLatin1("http://schemas.xmlsoap.org/soap/envelope/");
+        //const QString xmlSchemaNS = QString::fromLatin1("http://www.w3.org/1999/XMLSchema");
+        //const QString xmlSchemaInstanceNS = QString::fromLatin1("http://www.w3.org/1999/XMLSchema-instance");
+        if (reader.readNextStartElement() && reader.name() == "Envelope" && reader.namespaceUri() == soapNS) {
+            if (reader.readNextStartElement() && reader.name() == "Body" && reader.namespaceUri() == soapNS) {
+
+                if (reader.readNextStartElement()) { // the method: Response or Fault
+                    if (reader.name() == "Fault")
+                        d->replyMessage.setFault(true);
+
+                    while (reader.readNextStartElement()) { // Result
+                        qDebug() << "got item" << reader.name().toString();
+                        d->replyMessage.addArgument(reader.name().toString(), reader.readElementText());
+                        //reader.skipCurrentElement();
+                    }
+                }
+
+            } else {
+                reader.raiseError(QObject::tr("Invalid SOAP Response, Body expected"));
+            }
+        } else {
+            reader.raiseError(QObject::tr("Invalid SOAP Response, Envelope expected"));
+        }
     }
 }

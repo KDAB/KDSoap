@@ -23,6 +23,7 @@ private Q_SLOTS:
         employeeType.setOtherRoles(QList<KDAB__EmployeeTypeEnum>() << KDAB__EmployeeTypeEnum::TeamLeader);
         employeeType.setTeam(QString::fromLatin1("Minitel"));
         service.addEmployee(employeeType, KDAB__EmployeeName(QString::fromLatin1("David")), QString::fromLatin1("France"));
+        qDebug() << service.lastError();
     }
 };
 
