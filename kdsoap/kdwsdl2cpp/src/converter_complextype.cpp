@@ -33,8 +33,6 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
   newClass.setUseSharedData( true, "d_ptr" /*avoid clash with possible d() method */ );
   //qDebug() << typeName;
 
-  newClass.addInclude( QString(), "KDSoapValueList" );
-
   KODE::Code ctorBody;
   KODE::Code dtorBody;
 
