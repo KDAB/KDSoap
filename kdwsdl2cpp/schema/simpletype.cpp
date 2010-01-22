@@ -21,6 +21,7 @@
  */
 
 #include "simpletype.h"
+#include <QDebug>
 
 namespace XSD {
 
@@ -41,11 +42,15 @@ public:
 
     QName mListTypeName;
 
-    typedef struct
+    struct FacetValueType
     {
+      FacetValueType()
+          : length(0), tot(0), frac(0)
+      {}
       int length;
-      struct
+      struct LenRange
       {
+        LenRange() : minlen(-1), maxlen(-1) {}
         int minlen, maxlen;
       } lenRange;
       WhiteSpaceType wsp;
@@ -56,7 +61,7 @@ public:
       int tot;
       int frac;
       QString pattern;
-    } FacetValueType;
+    };
 
     FacetValueType mFacetValue;
 };
@@ -142,54 +147,53 @@ bool SimpleType::isAnonymous() const
   return d->mAnonymous;
 }
 
-bool SimpleType::isValidFacet( const QString &facet )
+SimpleType::FacetType SimpleType::parseFacetId( const QString &facet ) const
 {
   if ( d->mBaseTypeName.isEmpty() ) {
     qDebug( "isValidFacet:Unknown base type" );
-    return false;
+    return NONE;
   }
 
   if ( facet == "length" )
-    d->mFacetId |= LENGTH;
+    return LENGTH;
   else if ( facet == "minLength" )
-    d->mFacetId |= MINLEN;
+    return MINLEN;
   else if ( facet == "maxLength" )
-    d->mFacetId |= MAXLEN;
+    return MAXLEN;
   else if ( facet == "enumeration" )
-    d->mFacetId |= ENUM;
+    return ENUM;
   else if ( facet == "whiteSpace" )
-    d->mFacetId |= WSP;
+    return WSP;
   else if ( facet == "pattern" )
-    d->mFacetId |= PATTERN;
+    return PATTERN;
   else if ( facet == "maxInclusive" )
-    d->mFacetId |= MAXINC;
+    return MAXINC;
   else if ( facet == "maxExclusive" )
-    d->mFacetId |= MAXEX;
+    return MAXEX;
   else if ( facet == "minInclusive" )
-    d->mFacetId |= MININC;
+    return MININC;
   else if ( facet == "minExclusive" )
-    d->mFacetId |= MINEX;
+    return MINEX;
   else if ( facet == "totalDigits" )
-    d->mFacetId |= TOT;
+    return TOT;
   else if ( facet == "fractionDigits" )
-    d->mFacetId |= FRAC;
+    return FRAC;
   else {
-    d->mFacetId = NONE;
-    return false;
+    return NONE;
   }
-
-  return true;
 }
 
-void SimpleType::setFacetValue( const QString &value )
+void SimpleType::setFacetValue( FacetType ft, const QString &value )
 {
-  int number = -1;
+  qDebug() << "setFacetValue" << ft << value;
 
-  if ( d->mFacetId & ENUM ) {
+  d->mFacetId |= ft;
+
+  if ( ft == ENUM ) {
     d->mEnums.append( value );
-  } else if ( d->mFacetId & PATTERN ) {
+  } else if ( ft == PATTERN ) {
     d->mFacetValue.pattern = value;
-  } else if ( d->mFacetId & WSP ) {
+  } else if ( ft == WSP ) {
     if ( value == "preserve" )
       d->mFacetValue.wsp = PRESERVE;
     else if ( value == "collapse" )
@@ -201,29 +205,29 @@ void SimpleType::setFacetValue( const QString &value )
       return;
     }
   } else {
-    number = value.toInt();
-  }
+    const int number = value.toInt();
 
-  if ( d->mFacetId & MAXEX ) {
-    d->mFacetValue.valRange.maxex = number;
-  } else if ( d->mFacetId & MAXINC ) {
-    d->mFacetValue.valRange.maxinc = number;
-  } else if ( d->mFacetId & MININC ) {
-    d->mFacetValue.valRange.mininc = number;
-  } else if ( d->mFacetId & MINEX ) {
-    d->mFacetValue.valRange.minex = number;
-  } else if ( d->mFacetId & MAXEX ) {
-    d->mFacetValue.valRange.maxex = number;
-  } else if ( d->mFacetId & LENGTH ) {
-    d->mFacetValue.length = number;
-  } else if ( d->mFacetId & MINLEN ) {
-    d->mFacetValue.lenRange.minlen = number;
-  } else if ( d->mFacetId & MAXLEN ) {
-    d->mFacetValue.lenRange.maxlen = number;
-  } else if ( d->mFacetId & TOT ) {
-    d->mFacetValue.tot = number;
-  } else if ( d->mFacetId & FRAC ) {
-    d->mFacetValue.frac = number;
+    if ( ft == MAXEX ) {
+        d->mFacetValue.valRange.maxex = number;
+    } else if ( ft == MAXINC ) {
+        d->mFacetValue.valRange.maxinc = number;
+    } else if ( ft == MININC ) {
+        d->mFacetValue.valRange.mininc = number;
+    } else if ( ft == MINEX ) {
+        d->mFacetValue.valRange.minex = number;
+    } else if ( ft == MAXEX ) {
+        d->mFacetValue.valRange.maxex = number;
+    } else if ( ft == LENGTH ) {
+        d->mFacetValue.length = number;
+    } else if ( ft == MINLEN ) {
+        d->mFacetValue.lenRange.minlen = number;
+    } else if ( ft == MAXLEN ) {
+        d->mFacetValue.lenRange.maxlen = number;
+    } else if ( ft == TOT ) {
+        d->mFacetValue.tot = number;
+    } else if ( ft == FRAC ) {
+        d->mFacetValue.frac = number;
+    }
   }
 }
 

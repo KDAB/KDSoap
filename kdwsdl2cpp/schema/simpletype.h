@@ -91,8 +91,8 @@ class SCHEMA_EXPORT SimpleType : public XSDType
     void setAnonymous( bool anonymous );
     bool isAnonymous() const;
 
-    bool isValidFacet( const QString &facet );
-    void setFacetValue( const QString &value );
+    FacetType parseFacetId( const QString &facet ) const;
+    void setFacetValue( FacetType ft, const QString &value );
 
     int facetType() const;
 

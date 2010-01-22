@@ -587,13 +587,14 @@ void Parser::parseRestriction( ParserContext*, const QDomElement &element, Simpl
 
   while ( !childElement.isNull() ) {
     QName tagName = childElement.tagName();
-    if ( !st.isValidFacet( tagName.localName() ) ) {
+    SimpleType::FacetType ft = st.parseFacetId( tagName.localName() );
+    if ( ft == SimpleType::NONE ) {
       qDebug( "<restriction>: %s is not a valid facet for the simple type", qPrintable( childElement.tagName() ) );
       childElement = childElement.nextSiblingElement();
       continue;
     }
 
-    st.setFacetValue( childElement.attribute( "value" ) );
+    st.setFacetValue( ft, childElement.attribute( "value" ) );
 
     childElement = childElement.nextSiblingElement();
   }
