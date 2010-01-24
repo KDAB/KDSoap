@@ -12,7 +12,6 @@ public:
     explicit KDSoapClientInterface(const QString& endPoint, const QString& messageNamespace);
     ~KDSoapClientInterface();
 
-    // TODO lastError like in QDBusAbstractInterface
     KDSoapPendingCall asyncCall(const QString& method, const KDSoapMessage &message, const QString& soapAction = QString());
     KDSoapMessage call(const QString& method, const KDSoapMessage &message, const QString& soapAction = QString());
     // TODO void callNoReply(const KDSoapMessage &message);

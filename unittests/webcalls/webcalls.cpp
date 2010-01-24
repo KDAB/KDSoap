@@ -69,6 +69,19 @@ private slots:
         QCOMPARE(m_returnMessage.arguments().first().value(), QVariant(QString::fromLatin1("2009-02-14T00:00:00.0000000-05:00")));
     }
 
+    void testConnectionError()
+    {
+        const QString endPoint = QString::fromLatin1("http://127.0.0.1:19582");
+        const QString messageNamespace = QString::fromLatin1("incorrect, just for testing");
+        KDSoapClientInterface client(endPoint, messageNamespace);
+        KDSoapMessage message;
+        message.addArgument(QLatin1String("bstrParam1"), QLatin1String("abc"));
+        message.addArgument(QLatin1String("bstrParam2"), QLatin1String("def"));
+        KDSoapMessage ret = client.call(QLatin1String("Method1"), message);
+        QVERIFY(ret.isFault());
+        QCOMPARE(ret.faultAsString(), QString::fromLatin1("Fault code: 1\nFault description: Connection refused ()"));
+    }
+
     void testFault()
     {
         const QString endPoint = QString::fromLatin1("http://soapclient.com/xml/doesnotexist");
@@ -78,9 +91,18 @@ private slots:
         message.addArgument(QLatin1String("bstrParam1"), QLatin1String("abc"));
         message.addArgument(QLatin1String("bstrParam2"), QLatin1String("def"));
         KDSoapMessage ret = client.call(QLatin1String("Method1"), message);
-        qDebug() << ret;
+        //qDebug() << ret;
         QVERIFY(ret.isFault());
-        QCOMPARE(ret.faultAsString(), QString::fromLatin1("Fault code: SOAP-ENV:Server\nFault description: The parameter is incorrect. (/xml/doesnotexist)"));
+        QStringList possibleErrors;
+        // The error changed at some point...
+        possibleErrors << QString::fromLatin1("Fault code: SOAP-ENV:Server\n"
+                                              "Fault description: The parameter is incorrect. (/xml/doesnotexist)");
+        possibleErrors << QString::fromLatin1("Fault code: 299\n"
+                                              "Fault description: Error downloading http://soapclient.com/xml/doesnotexist - server replied: Internal Server Error ()");
+        if (!possibleErrors.contains(ret.faultAsString())) {
+            qDebug() << ret.faultAsString();
+            QVERIFY(possibleErrors.contains(ret.faultAsString()));
+        }
     }
 
     // http://www.service-repository.com/service/wsdl?id=163859
