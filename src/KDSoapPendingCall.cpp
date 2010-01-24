@@ -39,13 +39,17 @@ QVariant KDSoapPendingCall::returnValue() const
 
 void KDSoapPendingCall::parseReply()
 {
+    const bool doDebug = qgetenv("KDSOAP_DEBUG").toInt();
     if (d->reply->error()) {
         d->replyMessage.setFault(true);
         d->replyMessage.addArgument(QString::fromLatin1("faultcode"), QString::number(d->reply->error()));
         d->replyMessage.addArgument(QString::fromLatin1("faultstring"), d->reply->errorString());
+        if (doDebug)
+            qDebug() << d->reply->errorString();
     } else {
         const QByteArray data = d->reply->readAll();
-        qDebug() << data;
+        if (doDebug)
+            qDebug() << data;
         QXmlStreamReader reader(data);
         const QString soapNS = QString::fromLatin1("http://schemas.xmlsoap.org/soap/envelope/");
         //const QString xmlSchemaNS = QString::fromLatin1("http://www.w3.org/1999/XMLSchema");
@@ -58,7 +62,8 @@ void KDSoapPendingCall::parseReply()
                         d->replyMessage.setFault(true);
 
                     while (reader.readNextStartElement()) { // Result
-                        qDebug() << "got item" << reader.name().toString();
+                        if (doDebug)
+                            qDebug() << "got item" << reader.name().toString();
                         d->replyMessage.addArgument(reader.name().toString(), reader.readElementText());
                         //reader.skipCurrentElement();
                     }
