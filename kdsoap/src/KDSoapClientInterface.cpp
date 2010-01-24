@@ -118,7 +118,7 @@ QNetworkRequest KDSoapClientInterface::Private::prepareRequest(const QString &me
         // Does the namespace always end with a '/'?
         soapAction = this->messageNamespace + /*QChar::fromLatin1('/') +*/ method;
     }
-    qDebug() << "soapAction=" << soapAction;
+    //qDebug() << "soapAction=" << soapAction;
     request.setRawHeader("SoapAction", soapAction.toUtf8());
 
     return request;
@@ -155,7 +155,9 @@ QBuffer* KDSoapClientInterface::Private::prepareRequestBuffer(const QString& met
     writer.writeEndElement(); // Envelope
     writer.writeEndDocument();
 
-    qDebug() << data;
+    if (qgetenv("KDSOAP_DEBUG").toInt()) {
+        qDebug() << data;
+    }
 
     QBuffer* buffer = new QBuffer;
     buffer->setData(data);

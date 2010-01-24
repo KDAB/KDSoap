@@ -51,6 +51,9 @@ void Converter::convertClientService()
   KODE::MemberVariable lastReply("m_lastReply", "KDSoapMessage");
   newClass.addMemberVariable(lastReply);
 
+  KODE::MemberVariable endPoint("m_endPoint", "QString");
+  newClass.addMemberVariable(endPoint);
+
   // Ctor and dtor
   {
       KODE::Function ctor( service.name() );
@@ -66,6 +69,16 @@ void Converter::convertClientService()
 
       dtor.setBody( dtorCode );
       newClass.addFunction( dtor );
+  }
+  // setEndPoint() method
+  {
+      KODE::Function setEndPoint("setEndPoint", "void");
+      setEndPoint.addArgument( "const QString& endPoint" );
+      KODE::Code code;
+      code += "d_ptr->m_endPoint = endPoint;";
+      setEndPoint.setBody(code);
+      setEndPoint.setDocs("Overwrite the end point defined in the .wsdl file, with another http/https URL.");
+      newClass.addFunction(setEndPoint);
   }
   // lastError() method
   {
@@ -106,7 +119,7 @@ void Converter::convertClientService()
         KODE::Code code;
         code += "if (!d_ptr->m_clientInterface) {";
         code.indent();
-        code += "const QString endPoint = QString::fromLatin1(\"" + QLatin1String(webserviceLocation.toEncoded()) + "\");";
+        code += "const QString endPoint = !d_ptr->m_endPoint.isEmpty() ? d_ptr->m_endPoint : QString::fromLatin1(\"" + QLatin1String(webserviceLocation.toEncoded()) + "\");";
         code += "const QString messageNamespace = QString::fromLatin1(\"" + mWSDL.definitions().targetNamespace() + "\");";
         code += "d_ptr->m_clientInterface = new KDSoapClientInterface(endPoint, messageNamespace);";
         code.unindent();
