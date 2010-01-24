@@ -15,6 +15,18 @@
 #include <QEventLoop>
 #include <QDebug>
 
+static void httpGet(const QUrl& url)
+{
+    QNetworkRequest request(url);
+    QNetworkAccessManager manager;
+    QNetworkReply* reply = manager.get(request);
+    //reply->ignoreSslErrors();
+
+    QObject::connect(reply, SIGNAL(finished()), &QTestEventLoop::instance(), SLOT(exitLoop()));
+    QTestEventLoop::instance().enterLoop(11);
+    delete reply;
+}
+
 #ifndef QT_NO_OPENSSL
 static void setupSslServer(QSslSocket* serverSocket)
 {
@@ -24,7 +36,6 @@ static void setupSslServer(QSslSocket* serverSocket)
     //serverSocket->setPrivateKey (SRCDIR  "/certs/server.key");
 }
 #endif
-
 
 // A blocking http server (must be used in a thread) which supports SSL.
 class BlockingHttpServer : public QTcpServer
@@ -76,7 +87,7 @@ class HttpServerThread : public QThread
     Q_OBJECT
 public:
     HttpServerThread(const QByteArray& dataToSend, bool ssl)
-        : m_dataToSend(dataToSend), m_ssl(ssl), m_finish(false)
+        : m_dataToSend(dataToSend), m_ssl(ssl)
     {
         start();
         m_ready.acquire();
@@ -84,9 +95,22 @@ public:
     }
 
     inline int serverPort() const { return m_port; }
-    inline void finish() { m_finish = true; }
+    QString endPoint() const {
+        return QString::fromLatin1("%1://127.0.0.1:%2/path")
+                           .arg(QString::fromLatin1(m_ssl?"https":"http"))
+                           .arg(serverPort());
+    }
+
+    inline void finish() {
+        httpGet(endPoint() + QLatin1String("/terminateThread"));
+    }
+
     QByteArray receivedData() const { return m_receivedData; }
     QByteArray receivedHeaders() const { return m_receivedHeaders; }
+    void resetReceivedBuffers() {
+        m_receivedData.clear();
+        m_receivedHeaders.clear();
+    }
 
 protected:
     /* \reimp */ void run()
@@ -99,17 +123,15 @@ protected:
         //qDebug() << "HttpServerThread listening on port" << m_port;
 
         QTcpSocket *clientSocket = server.waitForNextConnectionSocket();
-        while (!m_finish) {
+        Q_FOREVER {
             // get the "request" packet
             if (!clientSocket->waitForReadyRead(2000)) {
-                if (m_finish)
-                    break;
                 if (clientSocket->state() == QAbstractSocket::UnconnectedState) {
                     delete clientSocket;
                     //qDebug() << "Waiting for next connection...";
                     clientSocket = server.waitForNextConnectionSocket();
                     Q_ASSERT(clientSocket);
-                    continue;
+                    continue; // go to "waitForReadyRead"
                 } else {
                     qDebug() << "HttpServerThread:" << clientSocket->error() << "waiting for \"request\" packet";
                     break;
@@ -123,7 +145,7 @@ protected:
             m_receivedHeaders = request.left(sep);
             QMap<QByteArray, QByteArray> headers = parseHeaders(m_receivedHeaders);
             if (headers.value("_path").endsWith("terminateThread")) // we're asked to exit
-                break;
+                break; // normal exit
             if (headers.value("SoapAction").isEmpty()) {
                 qDebug() << "ERROR: no SoapAction set";
                 break;
@@ -185,7 +207,6 @@ private:
     QByteArray m_receivedHeaders;
     int m_port;
     bool m_ssl;
-    bool m_finish;
 };
 
 // Helper for xmlBufferCompare
@@ -217,20 +238,28 @@ static bool xmlBufferCompare(const QByteArray& source, const QByteArray& dest)
 {
     QBuffer sourceFile;
     sourceFile.setData(source);
-    if (!sourceFile.open(QIODevice::ReadOnly))
+    if (!sourceFile.open(QIODevice::ReadOnly)) {
+        qDebug() << "ERROR opening QIODevice";
         return false;
+    }
     QBuffer destFile;
     destFile.setData(dest);
-    if (!destFile.open(QIODevice::ReadOnly))
+    if (!destFile.open(QIODevice::ReadOnly)) {
+        qDebug() << "ERROR opening QIODevice";
         return false;
+    }
 
     // Use QDomDocument to reformat the XML with newlines
     QDomDocument sourceDoc;
-    if (!sourceDoc.setContent(&sourceFile))
+    if (!sourceDoc.setContent(&sourceFile)) {
+        qDebug() << "ERROR parsing XML:" << source;
         return false;
+    }
     QDomDocument destDoc;
-    if (!destDoc.setContent(&destFile))
+    if (!destDoc.setContent(&destFile)) {
+        qDebug() << "ERROR parsing XML:" << dest;
         return false;
+    }
 
     const QByteArray sourceXml = sourceDoc.toByteArray();
     const QByteArray destXml = destDoc.toByteArray();
@@ -245,8 +274,14 @@ static bool xmlBufferCompare(const QByteArray& source, const QByteArray& dest)
     destBuffer.open(QIODevice::ReadOnly);
 
     return textBufferCompare(source, dest, sourceBuffer, destBuffer);
-  }
+}
 
+static const char* xmlEnvBegin =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+        "<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsd=\"http://www.w3.org/1999/XMLSchema\""
+        " xmlns:xsi=\"http://www.w3.org/1999/XMLSchema-instance\""
+        " soap:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\">";
+static const char* xmlEnvEnd = "</soap:Envelope>";
 
 class BuiltinHttpTest : public QObject
 {
@@ -256,35 +291,20 @@ public:
 private Q_SLOTS:
     void testMyWsdl()
     {
-        const QByteArray xmlEnvBegin =
-                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-                "<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsd=\"http://www.w3.org/1999/XMLSchema\""
-                " xmlns:xsi=\"http://www.w3.org/1999/XMLSchema-instance\""
-                " soap:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\">";
-        const QByteArray xmlEnvEnd = "</soap:Envelope>";
-
         // Prepare response
-        QByteArray responseData = xmlEnvBegin + "<soap:Body>"
+        QByteArray responseData = QByteArray(xmlEnvBegin) + "<soap:Body>"
                 "<kdab:addEmployeeResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl.wsdl\"><kdab:bStrReturn>Foo</kdab:bStrReturn></kdab:addEmployeeResponse>"
                 " </soap:Body>" + xmlEnvEnd;
-        QByteArray httpResponse("HTTP/1.0 200 OK\r\nContent-Type: text/xml\r\nContent-Length: ");
-        httpResponse += QByteArray::number(responseData.size());
-        httpResponse += "\r\n\r\n";
-        httpResponse += responseData;
-        HttpServerThread server(httpResponse, false /*TODO ssl test*/);
-
-        const QString endPoint = QString::fromLatin1("%1://127.0.0.1:%2/path")
-                           .arg(QString::fromLatin1(false/*TODO*/?"https":"http"))
-                           .arg(server.serverPort());
+        HttpServerThread server(makeHttpResponse(responseData), false /*TODO ssl test*/);
 
         // For testing the http server with telnet or wget:
-        //httpGet(endPoint);
+        //httpGet(server.endPoint());
         //QEventLoop testLoop;
         //testLoop.exec();
 
 #if 1
         MyWsdl service;
-        service.setEndPoint(endPoint);
+        service.setEndPoint(server.endPoint());
         KDAB__EmployeeType employeeType;
         employeeType.setType(KDAB__EmployeeTypeEnum::Developer);
         employeeType.setOtherRoles(QList<KDAB__EmployeeTypeEnum>() << KDAB__EmployeeTypeEnum::TeamLeader);
@@ -297,7 +317,7 @@ private Q_SLOTS:
         QVERIFY(service.lastError().isEmpty());
         QCOMPARE(ret, QString::fromLatin1("Foo"));
         // Check what we sent
-        QByteArray expectedRequestXml = xmlEnvBegin +
+        QByteArray expectedRequestXml = QByteArray(xmlEnvBegin) +
                 "<soap:Body>"
                 "<n1:addEmployee xmlns:n1=\"http://www.kdab.com/xml/MyWsdl.wsdl\">"
                 "<n1:employeeType>"
@@ -315,6 +335,7 @@ private Q_SLOTS:
         QVERIFY(server.receivedHeaders().contains("SoapAction: http://www.kdab.com/AddEmployee"));
 
         // Test utf8
+        server.resetReceivedBuffers();
         expectedRequestXml.replace("David Faure", "Hervé");
         expectedRequestXml.replace("France", "фгн7");
         ret = service.addEmployee(employeeType,
@@ -325,22 +346,61 @@ private Q_SLOTS:
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
 #endif
 
-        httpGet(endPoint + QLatin1String("/terminateThread"));
+        server.finish();
+        server.wait();
+    }
+
+    void testCallNoReply()
+    {
+        // Prepare response
+        QByteArray responseData = QByteArray(xmlEnvBegin) + "<soap:Body>"
+                "<kdab:getEmployeeCountryResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl.wsdl\"><kdab:employeeCountry>France</kdab:employeeCountry></kdab:getEmployeeCountryResponse>"
+                " </soap:Body>" + xmlEnvEnd;
+        HttpServerThread server(makeHttpResponse(responseData), false /*no ssl*/);
+
+        // First, make the proper call
+        const QString messageNamespace = QString::fromLatin1("http://www.kdab.com/xml/MyWsdl.wsdl");
+        KDSoapClientInterface client(server.endPoint(), messageNamespace);
+        KDSoapMessage message;
+        message.addArgument(QLatin1String("employeeName"), QLatin1String("David Faure"));
+        KDSoapMessage ret = client.call(QLatin1String("getEmployeeCountry"), message);
+        // Check what we sent
+        QByteArray expectedRequestXml = QByteArray(xmlEnvBegin) +
+                "<soap:Body>"
+                "<n1:getEmployeeCountry xmlns:n1=\"http://www.kdab.com/xml/MyWsdl.wsdl\">"
+                "<n1:employeeName xsi:type=\"xsd:string\">David Faure</n1:employeeName>"
+                "</n1:getEmployeeCountry>"
+                "</soap:Body>" + xmlEnvEnd;
+        QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
+        QVERIFY(!ret.isFault());
+        QCOMPARE(ret.arguments().value(QLatin1String("employeeCountry")).toString(), QString::fromLatin1("France"));
+
+        // Now make the call again, but async, and don't wait for response.
+        server.resetReceivedBuffers();
+        client.callNoReply(QLatin1String("getEmployeeCountry"), message);
+        QTest::qWait(200);
+        QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
+
+        // What happens if we use asyncCall and discard the result?
+        server.resetReceivedBuffers();
+        {
+            client.asyncCall(QLatin1String("getEmployeeCountry"), message);
+            QTest::qWait(200);
+        }
+        QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
 
         server.finish();
         server.wait();
     }
-private:
-    void httpGet(const QUrl& url)
-    {
-        QNetworkRequest request(url);
-        QNetworkAccessManager manager;
-        QNetworkReply* reply = manager.get(request);
-        //reply->ignoreSslErrors();
 
-        connect(reply, SIGNAL(finished()), &QTestEventLoop::instance(), SLOT(exitLoop()));
-        QTestEventLoop::instance().enterLoop(11);
-        delete reply;
+private:
+    static QByteArray makeHttpResponse(const QByteArray& responseData)
+    {
+        QByteArray httpResponse("HTTP/1.0 200 OK\r\nContent-Type: text/xml\r\nContent-Length: ");
+        httpResponse += QByteArray::number(responseData.size());
+        httpResponse += "\r\n\r\n";
+        httpResponse += responseData;
+        return httpResponse;
     }
 };
 

@@ -188,20 +188,20 @@ void KDSoapClientInterface::Private::writeArguments(QXmlStreamWriter& writer, co
     }
 }
 
-KDSoapPendingCall KDSoapClientInterface::asyncCall(const QString &method, const KDSoapMessage &message, const QString& action)
+KDSoapPendingCall KDSoapClientInterface::asyncCall(const QString &method, const KDSoapMessage &message, const QString& soapAction)
 {
     QBuffer* buffer = d->prepareRequestBuffer(method, message);
-    QNetworkRequest request = d->prepareRequest(method, action);
+    QNetworkRequest request = d->prepareRequest(method, soapAction);
     QNetworkReply* reply = d->accessManager.post(request, buffer);
     return KDSoapPendingCall(reply, buffer);
 }
 
-KDSoapMessage KDSoapClientInterface::call(const QString& method, const KDSoapMessage &message, const QString& action)
+KDSoapMessage KDSoapClientInterface::call(const QString& method, const KDSoapMessage &message, const QString& soapAction)
 {
     // Problem is: I don't want a nested event loop here. Too dangerous for GUI programs.
     // I wanted a socket->waitFor... but we don't have access to the actual socket in QNetworkAccess.
     // So the only option that remains is a thread and acquiring a semaphore...
-    KDSoapThreadTaskData* task = new KDSoapThreadTaskData(this, method, message, action);
+    KDSoapThreadTaskData* task = new KDSoapThreadTaskData(this, method, message, soapAction);
     d->thread.enqueue(task);
     if (!d->thread.isRunning())
         d->thread.start();
@@ -209,4 +209,12 @@ KDSoapMessage KDSoapClientInterface::call(const QString& method, const KDSoapMes
     KDSoapMessage ret = task->returnArguments();
     delete task;
     return ret;
+}
+
+void KDSoapClientInterface::callNoReply(const QString &method, const KDSoapMessage &message, const QString &soapAction)
+{
+    QBuffer* buffer = d->prepareRequestBuffer(method, message);
+    QNetworkRequest request = d->prepareRequest(method, soapAction);
+    QNetworkReply* reply = d->accessManager.post(request, buffer);
+    QObject::connect(reply, SIGNAL(finished()), reply, SLOT(deleteLater()));
 }
