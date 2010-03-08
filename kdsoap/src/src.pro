@@ -12,7 +12,7 @@ INSTALLHEADERS = KDSoapMessage.h \
     KDSoapPendingCall.h \
     KDSoapPendingCallWatcher.h \
     KDSoapValue.h
-EXTENSIONLESSHEADERS = 
+EXTENSIONLESSHEADERS = KDSoap
 PRIVATEHEADERS = KDSoapPendingCall_p.h \
     KDSoapPendingCallWatcher_p.h \
     KDSoapMessage_p.h \
