@@ -41,6 +41,7 @@ static QString adaptLocalTypeName( const QString &str )
 TypeMap::TypeMap()
   : mNSManager( 0 )
 {
+  // see http://www.w3.org/TR/xmlschema-2
   addBuiltinType("any", "QString");
   addBuiltinType("anyURI", "QString");
   addBuiltinType("base64Binary", "QByteArray");
@@ -54,6 +55,7 @@ TypeMap::TypeMap()
   // TODO: add duration class
   addBuiltinType("duration", "QString");
   addBuiltinType("float", "float");
+  addBuiltinType("hexBinary", "QByteArray");
   addBuiltinType("integer", "int");
   addBuiltinType("int", "int");
   addBuiltinType("nonPositiveInteger", "int");
