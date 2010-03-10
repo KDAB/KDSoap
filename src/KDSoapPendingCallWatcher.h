@@ -12,7 +12,6 @@ public:
     ~KDSoapPendingCallWatcher();
 
 #if 0
-    bool isFinished() const;
     void waitForFinished();
 #endif
 

@@ -8,7 +8,7 @@ KDSoapPendingCallWatcher::KDSoapPendingCallWatcher(const KDSoapPendingCall &call
     : QObject(parent), KDSoapPendingCall(call),
     d(new Private(this))
 {
-    connect(call.d->reply, SIGNAL(finished()), this, SLOT(_kd_slotReplyFinished()));
+    connect(call.d->reply.data(), SIGNAL(finished()), this, SLOT(_kd_slotReplyFinished()));
 }
 
 KDSoapPendingCallWatcher::~KDSoapPendingCallWatcher()
@@ -17,21 +17,15 @@ KDSoapPendingCallWatcher::~KDSoapPendingCallWatcher()
 }
 
 #if 0
-bool KDSoapPendingCallWatcher::isFinished() const
-{
-    // TODO
-    return false;
-}
-
 void KDSoapPendingCallWatcher::waitForFinished()
 {
-    // TODO
+    // TODO?
 }
 #endif
 
 void KDSoapPendingCallWatcher::Private::_kd_slotReplyFinished()
 {
-    q->parseReply();
+    //q->parseReply(); // done on demand
     emit q->finished(q);
 }
 

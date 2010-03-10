@@ -3,6 +3,7 @@
 //#include "KDSoapValue.h"
 #include "wsdl_soapresponder.h"
 #include "wsdl_thomas-bayer.h"
+#include "wsdl_holidays.h"
 #include <QtTest/QtTest>
 #include <QEventLoop>
 #include <QDebug>
@@ -37,10 +38,24 @@ private slots:
 
     // Soap in Document mode.
 
-    void testAddIntegers_wsdl()
+    void testHolidays_wsdl()
+    {
+        const int year = 2009;
+        USHolidayDates holidays;
+        TNS__GetValentinesDay parameters;
+        parameters.setYear(year);
+        TNS__GetValentinesDayResponse response = holidays.getValentinesDay(parameters);
+        QCOMPARE(response.getValentinesDayResult().date().toString(Qt::ISODate),
+                 QString::fromLatin1("2009-02-14"));
+    }
+
+    // http://www.service-repository.com/service/wsdl?id=163859
+    void testServiceRepositoryCom_wsdl()
     {
         NamesServiceService serv;
-        qDebug() << serv.getCountries().country(); // TODO countryList()?
+        QStringList countries = serv.getCountries().country(); // TODO countryList()?
+        QCOMPARE(countries[0], QString::fromLatin1("Great Britain"));
+        QCOMPARE(countries[1], QString::fromLatin1("Ireland"));
     }
 
     // TODO: a great example for complex returned structures:

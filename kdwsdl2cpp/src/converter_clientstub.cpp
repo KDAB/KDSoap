@@ -234,9 +234,16 @@ bool Converter::clientAddAction( KODE::Code& code, const Binding &binding, const
     return hasAction;
 }
 
-void Converter::clientGenerateMessage( KODE::Code& code, const Message& message )
+void Converter::clientGenerateMessage( KODE::Code& code, const Binding& binding, const Message& message )
 {
     code += "KDSoapMessage message;";
+
+    SoapBinding::Style soapStyle = SoapBinding::RPCStyle;
+    if ( binding.type() == Binding::SOAPBinding ) {
+        const SoapBinding soapBinding = binding.soapBinding();
+        soapStyle = soapBinding.binding().style();
+    }
+
     const Part::List parts = message.parts();
     Q_FOREACH( const Part& part, parts ) {
         const QString lowerName = lowerlize( part.name() );
@@ -247,11 +254,19 @@ void Converter::clientGenerateMessage( KODE::Code& code, const Message& message 
             isBuiltin = mTypeMap.isBuiltinType( type );
         }
         if ( argType != "void" ) {
-            const QString partNameStr = "QLatin1String(\"" + part.name() + "\")";
-            if ( isBuiltin ) {
-                code += "message.addArgument(" + partNameStr + ", " + lowerName + ");";
+            if (soapStyle == SoapBinding::DocumentStyle) {
+                // In document style, the "part" is directly added as arguments
+                // See http://www.ibm.com/developerworks/webservices/library/ws-whichwsdl/
+                if ( isBuiltin )
+                    qWarning("Got a builtin type in document style? Didn't think this could happen.");
+                code += "message.arguments() = " + lowerName + ".serialize().value<KDSoapValueList>();";
             } else {
-                code += "message.addArgument(" + partNameStr + ", " + lowerName + ".serialize());";
+                const QString partNameStr = "QLatin1String(\"" + part.name() + "\")";
+                if ( isBuiltin ) {
+                    code += "message.addArgument(" + partNameStr + ", " + lowerName + ");";
+                } else {
+                    code += "message.addArgument(" + partNameStr + ", " + lowerName + ".serialize());";
+                }
             }
         }
     }
@@ -267,7 +282,7 @@ void Converter::convertClientCall( const Operation &operation, const Binding &bi
   clientAddArguments( callFunc, inputMessage );
   KODE::Code code;
   const bool hasAction = clientAddAction( code, binding, operation.name() );
-  clientGenerateMessage( code, inputMessage );
+  clientGenerateMessage( code, binding, inputMessage );
   QString callLine = "d_ptr->m_lastReply = clientInterface()->call(QLatin1String(\"" + operation.name() + "\"), message";
   if (hasAction) {
       callLine += ", action";
@@ -332,7 +347,7 @@ void Converter::convertClientInputMessage( const Operation &operation, const Par
   clientAddArguments( asyncFunc, message );
   KODE::Code code;
   const bool hasAction = clientAddAction( code, binding, operation.name() );
-  clientGenerateMessage( code, message );
+  clientGenerateMessage( code, binding, message );
 
 #ifdef KDAB_TEMP
   const QStringList prefixes = mNSManager.prefixes();
