@@ -118,9 +118,10 @@ private slots:
         connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher*)),
                 this, SLOT(slotFinished(KDSoapPendingCallWatcher*)));
         m_eventLoop.exec();
-        qDebug() << m_returnMessage;
+        //qDebug() << m_returnMessage;
 
-        // TODO QCOMPARE(m_returnArguments[0], QString::fromLatin1("Great Britain"));
+        QCOMPARE(m_returnMessage.arguments()[0].value().toString(), QString::fromLatin1("Great Britain"));
+        QCOMPARE(m_returnMessage.arguments()[1].value().toString(), QString::fromLatin1("Ireland"));
     }
 
     // TODO: a great example for complex returned structures:

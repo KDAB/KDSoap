@@ -286,15 +286,16 @@ static const char* xmlEnvEnd = "</soap:Envelope>";
 class BuiltinHttpTest : public QObject
 {
     Q_OBJECT
-public:
 
 private Q_SLOTS:
+    // Using wsdl-generated code, make a call, and check the xml that was sent,
+    // and check that the server's response was correctly parsed.
     void testMyWsdl()
     {
         // Prepare response
         QByteArray responseData = QByteArray(xmlEnvBegin) + "<soap:Body>"
-                "<kdab:addEmployeeResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl.wsdl\"><kdab:bStrReturn>Foo</kdab:bStrReturn></kdab:addEmployeeResponse>"
-                " </soap:Body>" + xmlEnvEnd;
+                                  "<kdab:addEmployeeResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl.wsdl\"><kdab:bStrReturn>Foo</kdab:bStrReturn></kdab:addEmployeeResponse>"
+                                  " </soap:Body>" + xmlEnvEnd;
         HttpServerThread server(makeHttpResponse(responseData), false /*TODO ssl test*/);
 
         // For testing the http server with telnet or wget:
@@ -317,19 +318,20 @@ private Q_SLOTS:
         QVERIFY(service.lastError().isEmpty());
         QCOMPARE(ret, QString::fromLatin1("Foo"));
         // Check what we sent
-        QByteArray expectedRequestXml = QByteArray(xmlEnvBegin) +
-                "<soap:Body>"
-                "<n1:addEmployee xmlns:n1=\"http://www.kdab.com/xml/MyWsdl.wsdl\">"
-                "<n1:employeeType>"
-                "<n1:team xsi:type=\"xsd:string\">Minitel</n1:team>"
-                "<n1:type xsi:type=\"xsd:string\">Developer</n1:type>"
-                "<n1:otherRoles xsi:type=\"xsd:string\">TeamLeader</n1:otherRoles>"
-                "</n1:employeeType>"
-                "<n1:employeeName xsi:type=\"xsd:string\">David Faure</n1:employeeName>"
-                "<n1:employeeCountry xsi:type=\"xsd:string\">France</n1:employeeCountry>"
-                "</n1:addEmployee>"
-                "</soap:Body>" + xmlEnvEnd
-                + '\n'; // added by QXmlStreamWriter::writeEndDocument
+        QByteArray expectedRequestXml =
+            QByteArray(xmlEnvBegin) +
+            "<soap:Body>"
+            "<n1:addEmployee xmlns:n1=\"http://www.kdab.com/xml/MyWsdl.wsdl\">"
+            "<n1:employeeType>"
+            "<n1:team xsi:type=\"xsd:string\">Minitel</n1:team>"
+            "<n1:type xsi:type=\"xsd:string\">Developer</n1:type>"
+            "<n1:otherRoles xsi:type=\"xsd:string\">TeamLeader</n1:otherRoles>"
+            "</n1:employeeType>"
+            "<n1:employeeName xsi:type=\"xsd:string\">David Faure</n1:employeeName>"
+            "<n1:employeeCountry xsi:type=\"xsd:string\">France</n1:employeeCountry>"
+            "</n1:addEmployee>"
+            "</soap:Body>" + xmlEnvEnd
+            + '\n'; // added by QXmlStreamWriter::writeEndDocument
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
         QCOMPARE(QString::fromUtf8(server.receivedData()), QString::fromUtf8(expectedRequestXml));
         QVERIFY(server.receivedHeaders().contains("SoapAction: http://www.kdab.com/AddEmployee"));
@@ -350,12 +352,14 @@ private Q_SLOTS:
         server.wait();
     }
 
+    // Using direct call(), check the xml we send, the response parsing.
+    // Then test callNoReply, then various ways to use asyncCall.
     void testCallNoReply()
     {
         // Prepare response
         QByteArray responseData = QByteArray(xmlEnvBegin) + "<soap:Body>"
-                "<kdab:getEmployeeCountryResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl.wsdl\"><kdab:employeeCountry>France</kdab:employeeCountry></kdab:getEmployeeCountryResponse>"
-                " </soap:Body>" + xmlEnvEnd;
+                                  "<kdab:getEmployeeCountryResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl.wsdl\"><kdab:employeeCountry>France</kdab:employeeCountry></kdab:getEmployeeCountryResponse>"
+                                  " </soap:Body>" + xmlEnvEnd;
         HttpServerThread server(makeHttpResponse(responseData), false /*no ssl*/);
 
         // First, make the proper call
@@ -363,17 +367,19 @@ private Q_SLOTS:
         KDSoapClientInterface client(server.endPoint(), messageNamespace);
         KDSoapMessage message;
         message.addArgument(QLatin1String("employeeName"), QLatin1String("David Faure"));
-        KDSoapMessage ret = client.call(QLatin1String("getEmployeeCountry"), message);
-        // Check what we sent
         QByteArray expectedRequestXml = QByteArray(xmlEnvBegin) +
-                "<soap:Body>"
-                "<n1:getEmployeeCountry xmlns:n1=\"http://www.kdab.com/xml/MyWsdl.wsdl\">"
-                "<n1:employeeName xsi:type=\"xsd:string\">David Faure</n1:employeeName>"
-                "</n1:getEmployeeCountry>"
-                "</soap:Body>" + xmlEnvEnd;
-        QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
-        QVERIFY(!ret.isFault());
-        QCOMPARE(ret.arguments().value(QLatin1String("employeeCountry")).toString(), QString::fromLatin1("France"));
+                                        "<soap:Body>"
+                                        "<n1:getEmployeeCountry xmlns:n1=\"http://www.kdab.com/xml/MyWsdl.wsdl\">"
+                                        "<n1:employeeName xsi:type=\"xsd:string\">David Faure</n1:employeeName>"
+                                        "</n1:getEmployeeCountry>"
+                                        "</soap:Body>" + xmlEnvEnd;
+        {
+            KDSoapMessage ret = client.call(QLatin1String("getEmployeeCountry"), message);
+            // Check what we sent
+            QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
+            QVERIFY(!ret.isFault());
+            QCOMPARE(ret.arguments().value(QLatin1String("employeeCountry")).toString(), QString::fromLatin1("France"));
+        }
 
         // Now make the call again, but async, and don't wait for response.
         server.resetReceivedBuffers();
@@ -382,12 +388,26 @@ private Q_SLOTS:
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
 
         // What happens if we use asyncCall and discard the result?
+        // The KDSoapPendingCall goes out of scope, and the network request is aborted.
+        //
+        // The whole reason KDSoapPendingCall is a value, is so that people don't forget
+        // to delete it. But of course if they even forget to store it, nothing happens.
         server.resetReceivedBuffers();
         {
             client.asyncCall(QLatin1String("getEmployeeCountry"), message);
             QTest::qWait(200);
         }
-        QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
+        QVERIFY(server.receivedData().isEmpty());
+
+        // And if we do asyncCall without using a watcher?
+        {
+            KDSoapPendingCall call = client.asyncCall(QLatin1String("getEmployeeCountry"), message);
+            QVERIFY(!call.isFinished());
+            QTest::qWait(200);
+            QVERIFY(call.isFinished());
+            QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
+            QCOMPARE(call.returnMessage().arguments().value(QLatin1String("employeeCountry")).toString(), QString::fromLatin1("France"));
+        }
 
         server.finish();
         server.wait();

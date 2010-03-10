@@ -66,7 +66,7 @@ class Converter
     void convertClientOutputMessage( const Operation&, const Param&, const Binding&, KODE::Class& );
     void clientAddArguments( KODE::Function& callFunc, const Message& message );
     bool clientAddAction( KODE::Code& code, const Binding &binding, const QString& operationName );
-    void clientGenerateMessage( KODE::Code& code, const Message& message );
+    void clientGenerateMessage( KODE::Code& code, const Binding& binding, const Message& message );
 
     // Server Stub
     void convertServerService();
