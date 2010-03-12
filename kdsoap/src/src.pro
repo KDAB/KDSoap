@@ -3,6 +3,9 @@ TARGET = kdsoap
 CONFIG(debug, debug|release):!unix:TARGET = $${TARGET}d
 QT -= gui
 
+# TEMPORARY? Just for QDomDocument in httpserver_p.cpp
+QT += xml
+
 # Workaround for visual studio integration
 DESTDIR = ../lib
 win32:DLLDESTDIR = ../bin
@@ -19,13 +22,15 @@ PRIVATEHEADERS = KDSoapPendingCall_p.h \
     KDSoapClientInterface_p.h \
     KDSoapClientThread_p.h
 HEADERS = $$INSTALLHEADERS \
-    $$PRIVATEHEADERS
+    $$PRIVATEHEADERS \
+    httpserver_p.h
 SOURCES = KDSoapMessage.cpp \
     KDSoapClientInterface.cpp \
     KDSoapPendingCall.cpp \
     KDSoapPendingCallWatcher.cpp \
     KDSoapClientThread.cpp \
-    KDSoapValue.cpp
+    KDSoapValue.cpp \
+    httpserver_p.cpp
 DEFINES += KDSOAP_BUILD_KDSOAP_LIB
 
 # installation targets:
