@@ -6,6 +6,8 @@
 #include "KDSoapMessage.h"
 #include "KDSoapPendingCall.h"
 
+class KDSoapAuthentication;
+
 /**
  * KDSoapClientInterface is a generic accessor class that is used to place
  * calls to remote SOAP objects.
@@ -67,6 +69,11 @@ public:
      * The method returns immediately, the call is performed later. No error handling is possible.
      */
     void callNoReply(const QString& method, const KDSoapMessage &message, const QString& soapAction = QString());
+
+    /**
+     * Provide the necessary authentication for this service.
+     */
+    void setAuthentication(const KDSoapAuthentication& authentication);
 
 private:
     friend class KDSoapThreadTask;

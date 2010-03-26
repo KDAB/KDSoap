@@ -15,7 +15,7 @@ class KDSoapPendingCallWatcher;
  * KDSoapPendingCall is an opaque type, meant to be used as a handle for a pending reply.
  *
  * The KDSoapPendingCallWatcher class allows one to connect to a signal that will
- * indicate when the reply has arrived or if an error occured.
+ * indicate when the reply has arrived or if an error occurred.
  *
  * Note: If you create a copy of a KDSoapPendingCall object, all information will
  * be shared among the many copies. Therefore, KDSoapPendingCall is an
