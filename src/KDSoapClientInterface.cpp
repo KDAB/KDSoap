@@ -3,6 +3,7 @@
 #include "KDSoapMessage_p.h"
 #include <QNetworkRequest>
 #include <QNetworkReply>
+#include <QAuthenticator>
 #include <QDebug>
 #include <QBuffer>
 #include <QXmlStreamWriter>
@@ -13,14 +14,14 @@ static const char* xmlSchemaInstanceNS = "http://www.w3.org/1999/XMLSchema-insta
 KDSoapClientInterface::KDSoapClientInterface(const QString& endPoint, const QString& messageNamespace)
     : d(new Private)
 {
-    d->endPoint = endPoint;
-    d->messageNamespace = messageNamespace;
+    d->m_endPoint = endPoint;
+    d->m_messageNamespace = messageNamespace;
 }
 
 KDSoapClientInterface::~KDSoapClientInterface()
 {
-    d->thread.stop();
-    d->thread.wait();
+    d->m_thread.stop();
+    d->m_thread.wait();
     delete d;
 }
 
@@ -106,9 +107,16 @@ static QString variantToXMLType(const QVariant& value)
     }
 }
 
+KDSoapClientInterface::Private::Private()
+    : m_authentication()
+{
+    connect(&m_accessManager, SIGNAL(authenticationRequired(QNetworkReply*,QAuthenticator*)),
+            this, SLOT(_kd_slotAuthenticationRequired(QNetworkReply*,QAuthenticator*)));
+}
+
 QNetworkRequest KDSoapClientInterface::Private::prepareRequest(const QString &method, const QString& action)
 {
-    QNetworkRequest request(QUrl(this->endPoint));
+    QNetworkRequest request(QUrl(this->m_endPoint));
     // Seems SOAP-1.2 uses application/soap+xml instead of text/xml.
     request.setHeader(QNetworkRequest::ContentTypeHeader, QLatin1String("text/xml"));
     // The soap action seems to be namespace + method in most cases, but not always
@@ -116,7 +124,7 @@ QNetworkRequest KDSoapClientInterface::Private::prepareRequest(const QString &me
     QString soapAction = action;
     if (soapAction.isEmpty()) {
         // Does the namespace always end with a '/'?
-        soapAction = this->messageNamespace + /*QChar::fromLatin1('/') +*/ method;
+        soapAction = this->m_messageNamespace + /*QChar::fromLatin1('/') +*/ method;
     }
     //qDebug() << "soapAction=" << soapAction;
     request.setRawHeader("SoapAction", soapAction.toUtf8());
@@ -144,7 +152,7 @@ QBuffer* KDSoapClientInterface::Private::prepareRequestBuffer(const QString& met
     // see commented out code in Converter::convertClientInputMessage
 
     writer.writeStartElement(soapNS, QLatin1String("Body"));
-    writer.writeStartElement(this->messageNamespace, method);
+    writer.writeStartElement(this->m_messageNamespace, method);
 
     // Arguments
     const KDSoapValueList args = message.d->args;
@@ -172,14 +180,14 @@ void KDSoapClientInterface::Private::writeArguments(QXmlStreamWriter& writer, co
         const KDSoapValue& argument = it.next();
         const QVariant value = argument.value();
         if ( value.canConvert<KDSoapValueList>() ) {
-            writer.writeStartElement(this->messageNamespace, argument.name());
+            writer.writeStartElement(this->m_messageNamespace, argument.name());
             const KDSoapValueList children = value.value<KDSoapValueList>();
             writeArguments( writer, children );
             writer.writeEndElement();
         } else {
             const QString type = variantToXMLType(value);
             if (!type.isEmpty()) {
-                writer.writeStartElement(this->messageNamespace, argument.name());
+                writer.writeStartElement(this->m_messageNamespace, argument.name());
                 writer.writeAttribute(QLatin1String(xmlSchemaInstanceNS), QLatin1String("type"), type);
                 writer.writeCharacters(variantToTextValue(value));
                 writer.writeEndElement();
@@ -192,7 +200,7 @@ KDSoapPendingCall KDSoapClientInterface::asyncCall(const QString &method, const 
 {
     QBuffer* buffer = d->prepareRequestBuffer(method, message);
     QNetworkRequest request = d->prepareRequest(method, soapAction);
-    QNetworkReply* reply = d->accessManager.post(request, buffer);
+    QNetworkReply* reply = d->m_accessManager.post(request, buffer);
     return KDSoapPendingCall(reply, buffer);
 }
 
@@ -202,9 +210,10 @@ KDSoapMessage KDSoapClientInterface::call(const QString& method, const KDSoapMes
     // I wanted a socket->waitFor... but we don't have access to the actual socket in QNetworkAccess.
     // So the only option that remains is a thread and acquiring a semaphore...
     KDSoapThreadTaskData* task = new KDSoapThreadTaskData(this, method, message, soapAction);
-    d->thread.enqueue(task);
-    if (!d->thread.isRunning())
-        d->thread.start();
+    task->m_authentication = d->m_authentication;
+    d->m_thread.enqueue(task);
+    if (!d->m_thread.isRunning())
+        d->m_thread.start();
     task->waitForCompletion();
     KDSoapMessage ret = task->returnArguments();
     delete task;
@@ -215,6 +224,18 @@ void KDSoapClientInterface::callNoReply(const QString &method, const KDSoapMessa
 {
     QBuffer* buffer = d->prepareRequestBuffer(method, message);
     QNetworkRequest request = d->prepareRequest(method, soapAction);
-    QNetworkReply* reply = d->accessManager.post(request, buffer);
+    QNetworkReply* reply = d->m_accessManager.post(request, buffer);
     QObject::connect(reply, SIGNAL(finished()), reply, SLOT(deleteLater()));
 }
+
+void KDSoapClientInterface::Private::_kd_slotAuthenticationRequired(QNetworkReply* reply, QAuthenticator* authenticator)
+{
+    m_authentication.handleAuthenticationRequired(reply, authenticator);
+}
+
+void KDSoapClientInterface::setAuthentication(const KDSoapAuthentication &authentication)
+{
+    d->m_authentication = authentication;
+}
+
+#include "moc_KDSoapClientInterface_p.cpp"

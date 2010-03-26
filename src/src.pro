@@ -14,7 +14,8 @@ INSTALLHEADERS = KDSoapMessage.h \
     KDSoapClientInterface.h \
     KDSoapPendingCall.h \
     KDSoapPendingCallWatcher.h \
-    KDSoapValue.h
+    KDSoapValue.h \
+    KDSoapAuthentication.h
 EXTENSIONLESSHEADERS = KDSoap
 PRIVATEHEADERS = KDSoapPendingCall_p.h \
     KDSoapPendingCallWatcher_p.h \
@@ -30,6 +31,7 @@ SOURCES = KDSoapMessage.cpp \
     KDSoapPendingCallWatcher.cpp \
     KDSoapClientThread.cpp \
     KDSoapValue.cpp \
+    KDSoapAuthentication.cpp \
     httpserver_p.cpp
 DEFINES += KDSOAP_BUILD_KDSOAP_LIB
 

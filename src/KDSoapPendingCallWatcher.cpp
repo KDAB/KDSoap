@@ -25,7 +25,6 @@ void KDSoapPendingCallWatcher::waitForFinished()
 
 void KDSoapPendingCallWatcher::Private::_kd_slotReplyFinished()
 {
-    //q->parseReply(); // done on demand
     emit q->finished(q);
 }
 

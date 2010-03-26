@@ -8,7 +8,7 @@ class Q_DECL_EXPORT KDSoapPendingCallWatcher : public QObject, public KDSoapPend
 {
     Q_OBJECT
 public:
-    KDSoapPendingCallWatcher(const KDSoapPendingCall &call, QObject *parent=0);
+    explicit KDSoapPendingCallWatcher(const KDSoapPendingCall &call, QObject *parent=0);
     ~KDSoapPendingCallWatcher();
 
 #if 0

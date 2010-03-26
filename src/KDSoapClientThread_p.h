@@ -2,6 +2,7 @@
 #define KDSOAPCLIENTTHREAD_P_H
 
 #include "KDSoapMessage.h"
+#include "KDSoapAuthentication.h"
 #include <QWaitCondition>
 #include <QQueue>
 #include <QThread>
@@ -23,6 +24,7 @@ public:
     KDSoapMessage returnArguments() const { return m_returnArguments; }
 
     KDSoapClientInterface* m_iface; // used by KDSoapThreadTask::process()
+    KDSoapAuthentication m_authentication;
     QString m_method;
     KDSoapMessage m_message;
     QString m_action;
@@ -32,7 +34,7 @@ public:
 
 class KDSoapThreadTask : public QObject
 {
-    Q_OBJECT    
+    Q_OBJECT
 public:
     KDSoapThreadTask(KDSoapThreadTaskData* data)
         : m_data(data) {}
@@ -44,7 +46,8 @@ signals:
 
 private Q_SLOTS:
     void slotFinished(KDSoapPendingCallWatcher* watcher);
-        
+    void slotAuthenticationRequired(QNetworkReply* reply, QAuthenticator* authenticator);
+
 private:
     KDSoapThreadTaskData* m_data;
 };
@@ -61,7 +64,7 @@ public:
 
 protected:
     virtual void run();
-    
+
 private:
     QMutex m_mutex;
     QQueue<KDSoapThreadTaskData*> m_queue;

@@ -89,11 +89,4 @@ void KDSoapUnitTestHelpers::httpGet(const QUrl& url)
     delete reply;
 }
 
-QByteArray KDSoapUnitTestHelpers::makeHttpResponse(const QByteArray& responseData)
-{
-    QByteArray httpResponse("HTTP/1.0 200 OK\r\nContent-Type: text/xml\r\nContent-Length: ");
-    httpResponse += QByteArray::number(responseData.size());
-    httpResponse += "\r\n\r\n";
-    httpResponse += responseData;
-    return httpResponse;
-}
+#include "moc_httpserver_p.cpp"

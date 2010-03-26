@@ -2,6 +2,7 @@
 #include "KDSoapMessage.h"
 #include "KDSoapValue.h"
 #include "KDSoapPendingCallWatcher.h"
+#include "KDSoapAuthentication.h"
 #include "wsdl_mywsdl.h"
 #include "httpserver_p.h"
 #include <QtTest/QtTest>
@@ -22,6 +23,109 @@ class BuiltinHttpTest : public QObject
     Q_OBJECT
 
 private Q_SLOTS:
+
+    // Test that we can use asyncCall without using a watcher, just waiting and checking isFinished.
+    void testAsyncCall()
+    {
+        HttpServerThread server(countryResponse(), HttpServerThread::Public);
+        KDSoapClientInterface client(server.endPoint(), countryMessageNamespace());
+        KDSoapPendingCall call = client.asyncCall(QLatin1String("getEmployeeCountry"), countryMessage());
+        QVERIFY(!call.isFinished());
+        QTest::qWait(1000);
+        QVERIFY(xmlBufferCompare(server.receivedData(), expectedCountryRequest()));
+        QVERIFY(call.isFinished());
+        QCOMPARE(call.returnMessage().arguments().value(QLatin1String("employeeCountry")).toString(), QString::fromLatin1("France"));
+    }
+
+    // Test for basic auth, with async call
+    void testAsyncCallWithAuth()
+    {
+        HttpServerThread server(countryResponse(), HttpServerThread::BasicAuth);
+        KDSoapClientInterface client(server.endPoint(), countryMessageNamespace());
+        KDSoapAuthentication auth;
+        auth.setUser(QLatin1String("kdab"));
+        auth.setPassword(QLatin1String("testpass"));
+        client.setAuthentication(auth);
+        KDSoapPendingCall call = client.asyncCall(QLatin1String("getEmployeeCountry"), countryMessage());
+        QVERIFY(!call.isFinished());
+        waitForCallFinished(call);
+        QVERIFY(xmlBufferCompare(server.receivedData(), expectedCountryRequest()));
+        QVERIFY(call.isFinished());
+        QCOMPARE(call.returnMessage().arguments().value(QLatin1String("employeeCountry")).toString(), QString::fromLatin1("France"));
+    }
+
+    // Test for refused auth, with async call
+    void testAsyncCallRefusedAuth()
+    {
+        HttpServerThread server(countryResponse(), HttpServerThread::BasicAuth);
+        KDSoapClientInterface client(server.endPoint(), countryMessageNamespace());
+        KDSoapAuthentication auth;
+        auth.setUser(QLatin1String("kdab"));
+        auth.setPassword(QLatin1String("invalid"));
+        client.setAuthentication(auth);
+        KDSoapPendingCall call = client.asyncCall(QLatin1String("getEmployeeCountry"), countryMessage());
+        QVERIFY(!call.isFinished());
+        waitForCallFinished(call);
+        QVERIFY(xmlBufferCompare(server.receivedData(), expectedCountryRequest()));
+        QVERIFY(call.isFinished());
+        QVERIFY(call.returnMessage().isFault());
+    }
+
+    // Test for refused auth, with sync call (i.e. in thread)
+    void testCallRefusedAuth()
+    {
+        HttpServerThread server(countryResponse(), HttpServerThread::BasicAuth);
+        KDSoapClientInterface client(server.endPoint(), countryMessageNamespace());
+        KDSoapAuthentication auth;
+        auth.setUser(QLatin1String("kdab"));
+        auth.setPassword(QLatin1String("invalid"));
+        client.setAuthentication(auth);
+        KDSoapMessage reply = client.call(QLatin1String("getEmployeeCountry"), countryMessage());
+        QVERIFY(reply.isFault());
+    }
+
+    // Using direct call(), check the xml we send, the response parsing.
+    // Then test callNoReply, then various ways to use asyncCall.
+    void testCallNoReply()
+    {
+        HttpServerThread server(countryResponse(), HttpServerThread::Public);
+
+        // First, make the proper call
+        KDSoapClientInterface client(server.endPoint(), countryMessageNamespace());
+        KDSoapAuthentication auth;
+        auth.setUser(QLatin1String("kdab"));
+        auth.setPassword(QLatin1String("unused"));
+        client.setAuthentication(auth); // unused...
+        QByteArray expectedRequestXml = expectedCountryRequest();
+
+        {
+            KDSoapMessage ret = client.call(QLatin1String("getEmployeeCountry"), countryMessage());
+            // Check what we sent
+            QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
+            QVERIFY(!ret.isFault());
+            QCOMPARE(ret.arguments().value(QLatin1String("employeeCountry")).toString(), QString::fromLatin1("France"));
+        }
+
+        // Now make the call again, but async, and don't wait for response.
+        server.resetReceivedBuffers();
+        //qDebug() << "== now calling callNoReply ==";
+        client.callNoReply(QLatin1String("getEmployeeCountry"), countryMessage());
+        QTest::qWait(200);
+        QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
+
+        // What happens if we use asyncCall and discard the result?
+        // The KDSoapPendingCall goes out of scope, and the network request is aborted.
+        //
+        // The whole reason KDSoapPendingCall is a value, is so that people don't forget
+        // to delete it. But of course if they even forget to store it, nothing happens.
+        server.resetReceivedBuffers();
+        {
+            client.asyncCall(QLatin1String("getEmployeeCountry"), countryMessage());
+            QTest::qWait(200);
+        }
+        QVERIFY(server.receivedData().isEmpty());
+    }
+
     // Using wsdl-generated code, make a call, and check the xml that was sent,
     // and check that the server's response was correctly parsed.
     void testMyWsdl()
@@ -30,14 +134,13 @@ private Q_SLOTS:
         QByteArray responseData = QByteArray(xmlEnvBegin) + "<soap:Body>"
                                   "<kdab:addEmployeeResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl.wsdl\"><kdab:bStrReturn>Foo</kdab:bStrReturn></kdab:addEmployeeResponse>"
                                   " </soap:Body>" + xmlEnvEnd;
-        HttpServerThread server(makeHttpResponse(responseData), false /*TODO ssl test*/);
+        HttpServerThread server(responseData, HttpServerThread::Public /*TODO ssl test*/);
 
         // For testing the http server with telnet or wget:
         //httpGet(server.endPoint());
         //QEventLoop testLoop;
         //testLoop.exec();
 
-#if 1
         MyWsdl service;
         service.setEndPoint(server.endPoint());
         KDAB__EmployeeType employeeType;
@@ -80,65 +183,38 @@ private Q_SLOTS:
         QVERIFY(service.lastError().isEmpty());
         QCOMPARE(ret, QString::fromLatin1("Foo"));
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
-#endif
     }
 
-    // Using direct call(), check the xml we send, the response parsing.
-    // Then test callNoReply, then various ways to use asyncCall.
-    void testCallNoReply()
-    {
-        // Prepare response
-        QByteArray responseData = QByteArray(xmlEnvBegin) + "<soap:Body>"
-                                  "<kdab:getEmployeeCountryResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl.wsdl\"><kdab:employeeCountry>France</kdab:employeeCountry></kdab:getEmployeeCountryResponse>"
-                                  " </soap:Body>" + xmlEnvEnd;
-        HttpServerThread server(makeHttpResponse(responseData), false /*no ssl*/);
-
-        // First, make the proper call
-        const QString messageNamespace = QString::fromLatin1("http://www.kdab.com/xml/MyWsdl.wsdl");
-        KDSoapClientInterface client(server.endPoint(), messageNamespace);
+private:
+    static QByteArray countryResponse() {
+        return QByteArray(xmlEnvBegin) + "<soap:Body>"
+                "<kdab:getEmployeeCountryResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl.wsdl\"><kdab:employeeCountry>France</kdab:employeeCountry></kdab:getEmployeeCountryResponse>"
+                " </soap:Body>" + xmlEnvEnd;
+    }
+    static QByteArray expectedCountryRequest() {
+        return QByteArray(xmlEnvBegin) +
+                "<soap:Body>"
+                "<n1:getEmployeeCountry xmlns:n1=\"http://www.kdab.com/xml/MyWsdl.wsdl\">"
+                "<n1:employeeName xsi:type=\"xsd:string\">David Faure</n1:employeeName>"
+                "</n1:getEmployeeCountry>"
+                "</soap:Body>" + xmlEnvEnd;
+    }
+    static QString countryMessageNamespace() {
+        return QString::fromLatin1("http://www.kdab.com/xml/MyWsdl.wsdl");
+    }
+    static KDSoapMessage countryMessage() {
         KDSoapMessage message;
         message.addArgument(QLatin1String("employeeName"), QLatin1String("David Faure"));
-        QByteArray expectedRequestXml = QByteArray(xmlEnvBegin) +
-                                        "<soap:Body>"
-                                        "<n1:getEmployeeCountry xmlns:n1=\"http://www.kdab.com/xml/MyWsdl.wsdl\">"
-                                        "<n1:employeeName xsi:type=\"xsd:string\">David Faure</n1:employeeName>"
-                                        "</n1:getEmployeeCountry>"
-                                        "</soap:Body>" + xmlEnvEnd;
-        {
-            KDSoapMessage ret = client.call(QLatin1String("getEmployeeCountry"), message);
-            // Check what we sent
-            QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
-            QVERIFY(!ret.isFault());
-            QCOMPARE(ret.arguments().value(QLatin1String("employeeCountry")).toString(), QString::fromLatin1("France"));
-        }
+        return message;
+    }
+    void waitForCallFinished(KDSoapPendingCall& pendingCall)
+    {
+        KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);
+        QEventLoop loop;
+        connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher*)),
+                &loop, SLOT(quit()));
+        loop.exec();
 
-        // Now make the call again, but async, and don't wait for response.
-        server.resetReceivedBuffers();
-        client.callNoReply(QLatin1String("getEmployeeCountry"), message);
-        QTest::qWait(200);
-        QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
-
-        // What happens if we use asyncCall and discard the result?
-        // The KDSoapPendingCall goes out of scope, and the network request is aborted.
-        //
-        // The whole reason KDSoapPendingCall is a value, is so that people don't forget
-        // to delete it. But of course if they even forget to store it, nothing happens.
-        server.resetReceivedBuffers();
-        {
-            client.asyncCall(QLatin1String("getEmployeeCountry"), message);
-            QTest::qWait(200);
-        }
-        QVERIFY(server.receivedData().isEmpty());
-
-        // And if we do asyncCall without using a watcher?
-        {
-            KDSoapPendingCall call = client.asyncCall(QLatin1String("getEmployeeCountry"), message);
-            QVERIFY(!call.isFinished());
-            QTest::qWait(200);
-            QVERIFY(call.isFinished());
-            QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
-            QCOMPARE(call.returnMessage().arguments().value(QLatin1String("employeeCountry")).toString(), QString::fromLatin1("France"));
-        }
     }
 };
 

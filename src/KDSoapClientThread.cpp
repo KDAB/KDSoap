@@ -1,4 +1,5 @@
 #include "KDSoapClientThread_p.h"
+#include <QDebug>
 #include "KDSoapPendingCallWatcher.h"
 #include "KDSoapClientInterface.h"
 #include "KDSoapClientInterface_p.h"
@@ -6,6 +7,7 @@
 #include <QNetworkRequest>
 #include <QBuffer>
 #include <QEventLoop>
+#include <QAuthenticator>
 
 KDSoapClientThread::KDSoapClientThread(QObject *parent) :
     QThread(parent), m_stopThread(false)
@@ -16,7 +18,7 @@ void KDSoapClientThread::enqueue(KDSoapThreadTaskData* taskData)
 {
     QMutexLocker locker(&m_mutex);
     m_queue.append(taskData);
-    m_queueNotEmpty.wakeAll();
+    m_queueNotEmpty.wakeOne();
 }
 
 void KDSoapClientThread::run()
@@ -38,6 +40,8 @@ void KDSoapClientThread::run()
 
         KDSoapThreadTask task(taskData); // must be created here, so that it's in the right thread
         connect(&task, SIGNAL(taskDone()), &eventLoop, SLOT(quit()));
+        connect(&accessManager, SIGNAL(authenticationRequired(QNetworkReply*,QAuthenticator*)),
+                &task, SLOT(slotAuthenticationRequired(QNetworkReply*,QAuthenticator*)));
         task.process(accessManager);
 
         // Process events until the task tells us the handling of that task is finished
@@ -74,4 +78,9 @@ void KDSoapClientThread::stop()
     QMutexLocker locker(&m_mutex);
     m_stopThread = true;
     m_queueNotEmpty.wakeAll();
+}
+
+void KDSoapThreadTask::slotAuthenticationRequired(QNetworkReply* reply, QAuthenticator* authenticator)
+{
+    m_data->m_authentication.handleAuthenticationRequired(reply, authenticator);
 }
