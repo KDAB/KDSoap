@@ -5,6 +5,10 @@
 #include <QVariant>
 #include <QList>
 
+/**
+ * KDSoapValue represents a value in a SOAP argument list.
+ * It is composed of the argument name, and actual value as a QVariant.
+ */
 class KDSoapValue
 {
 public:
@@ -21,16 +25,25 @@ private:
     QVariant m_value;
 };
 
+/**
+ * KDSoapValueList represents a list of arguments passed to a SOAP message.
+ */
 class KDSoapValueList : public QList<KDSoapValue>
 {
 public:
-
+    /**
+     * Convenience method for adding an argument (name and value) to the list.
+     */
     void addArgument(const QString& argumentName, const QVariant& argumentValue)
     {
         append(KDSoapValue(argumentName, argumentValue));
     }
 
-    // for the case where the name is unique
+    /**
+     * Convenience method for extracting the value of an argument by @p name.
+     * If multiple arguments have the same name, the first match is returned.
+     * This method mostly makes sense for the case where only one argument uses @p name.
+     */
     QVariant value(const QString& name) const;
 };
 

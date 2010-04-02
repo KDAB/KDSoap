@@ -8,13 +8,28 @@ class QString;
 class KDSoapMessageData;
 class QXmlStreamWriter;
 
+/**
+ * The KDSoapMessage class represents one message sent or received via SOAP.
+ */
 class KDSoapMessage
 {
 public:
+    /**
+     * Constructs an empty KDSoapMessage object.
+     */
     KDSoapMessage();
+    /**
+     * Destructs the KDSoapMessage object.
+     */
     ~KDSoapMessage();
 
+    /**
+     * Constructs a copy of the object given by @p other.
+     */
     KDSoapMessage(const KDSoapMessage& other);
+    /**
+     * Copies the contents of the object given by @p other.
+     */
     KDSoapMessage &operator=(const KDSoapMessage &other);
 
     /**
@@ -36,7 +51,14 @@ public:
      */
     const KDSoapValueList& arguments() const;
 
+    /**
+     * @return true if this message is a "fault" message.
+     * A fault message is the message returned by a SOAP server when an error occurred.
+     */
     bool isFault() const;
+    /**
+     * @return the fault message as a string that can be shown to the user.
+     */
     QString faultAsString() const;
 
 private:
@@ -48,6 +70,9 @@ private:
     QSharedDataPointer<KDSoapMessageData> d;
 };
 
+/**
+ * Support for debugging KDSoapMessage objects via qDebug() << msg;
+ */
 QDebug operator<<(QDebug dbg, const KDSoapMessage &msg);
 
 #endif // KDSOAPMESSAGE_H
