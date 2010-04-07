@@ -147,11 +147,15 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
   for ( attrIt = attributes.constBegin(); attrIt != attributes.constEnd(); ++attrIt ) {
     QString typeName;
 
-    bool isArray = !(*attrIt).arrayType().isEmpty();
-    if ( isArray )
-      typeName = "QList<" + mTypeMap.localType( (*attrIt).arrayType() ) + ">";
-    else
+    const bool isArray = !(*attrIt).arrayType().isEmpty();
+    if ( isArray ) {
+      const QString arrayTypeName = mTypeMap.localType( (*attrIt).arrayType() );
+      //qDebug() << "array of" << (*attrIt).arrayType() << "->" << arrayTypeName;
+      typeName = "QList<" + arrayTypeName + ">";
+      newClass.addInclude(QString(), arrayTypeName); // add forward declaration
+    } else {
       typeName = mTypeMap.localType( (*attrIt).type() );
+    }
 
     // member variables
     KODE::MemberVariable variable( (*attrIt).name(), typeName );

@@ -207,7 +207,7 @@ void Converter::convertClientService()
 }
 #endif
 
-void Converter::clientAddArguments( KODE::Function& callFunc, const Message& message )
+void Converter::clientAddArguments( KODE::Function& callFunc, const Message& message, KODE::Class &newClass )
 {
     const Part::List parts = message.parts();
     Q_FOREACH( const Part& part, parts ) {
@@ -216,6 +216,7 @@ void Converter::clientAddArguments( KODE::Function& callFunc, const Message& mes
         if ( argType != "void" ) {
             callFunc.addArgument( argType + ' ' + mNameMapper.escape( lowerName ) );
         }
+        newClass.addHeaderIncludes( mTypeMap.headerIncludes( part.type() ) );
     }
 }
 
@@ -279,7 +280,7 @@ void Converter::convertClientCall( const Operation &operation, const Binding &bi
   callFunc.setDocs(QString("Blocking call to %1.\nNot recommended in a GUI thread.").arg(operation.name()));
   const Message inputMessage = mWSDL.findMessage( operation.input().message() );
   const Message outputMessage = mWSDL.findMessage( operation.output().message() );
-  clientAddArguments( callFunc, inputMessage );
+  clientAddArguments( callFunc, inputMessage, newClass );
   KODE::Code code;
   const bool hasAction = clientAddAction( code, binding, operation.name() );
   clientGenerateMessage( code, binding, inputMessage );
@@ -344,7 +345,7 @@ void Converter::convertClientInputMessage( const Operation &operation, const Par
                     .arg(lowerlize(operationName) + "Done")
                     .arg(lowerlize(operationName) + "Error"));
   const Message message = mWSDL.findMessage( param.message() );
-  clientAddArguments( asyncFunc, message );
+  clientAddArguments( asyncFunc, message, newClass );
   KODE::Code code;
   const bool hasAction = clientAddAction( code, binding, operation.name() );
   clientGenerateMessage( code, binding, message );
