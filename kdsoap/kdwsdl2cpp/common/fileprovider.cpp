@@ -40,14 +40,17 @@ FileProvider::FileProvider()
 
 void FileProvider::cleanUp()
 {
-  ::unlink( QFile::encodeName( mFileName ) );
-  mFileName = QString();
+  if (!mFileName.isEmpty()) {
+    QFile::remove( mFileName );
+    mFileName = QString();
+  }
 }
 
 bool FileProvider::get( const QUrl &url, QString &target )
 {
-  if ( !mFileName.isEmpty() )
+  if ( !mFileName.isEmpty() ) {
     cleanUp();
+  }
 
   if (url.scheme() == QLatin1String("file")) {
       target = url.toLocalFile();
@@ -88,6 +91,7 @@ bool FileProvider::get( const QUrl &url, QString &target )
   qDebug( "Download successful" );
   file.write( data );
   file.close();
+
   return true;
 }
 
