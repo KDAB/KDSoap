@@ -145,7 +145,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
   XSD::Attribute::List attributes = type->attributes();
   XSD::Attribute::List::ConstIterator attrIt;
   for ( attrIt = attributes.constBegin(); attrIt != attributes.constEnd(); ++attrIt ) {
-    QString typeName;
+    QString typeName, inputTypeName;
 
     const bool isArray = !(*attrIt).arrayType().isEmpty();
     if ( isArray ) {
@@ -153,8 +153,10 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
       //qDebug() << "array of" << (*attrIt).arrayType() << "->" << arrayTypeName;
       typeName = "QList<" + arrayTypeName + ">";
       newClass.addInclude(QString(), arrayTypeName); // add forward declaration
+      inputTypeName = "const " + typeName + '&';
     } else {
       typeName = mTypeMap.localType( (*attrIt).type() );
+      inputTypeName = mTypeMap.localInputType( (*attrIt).type(), QName() );
     }
 
     // member variables
@@ -167,7 +169,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
 
     // setter method
     KODE::Function setter( "set" + upperName, "void" );
-    setter.addArgument( typeName + mNameMapper.escape( lowerName ) );
+    setter.addArgument( inputTypeName + ' ' + mNameMapper.escape( lowerName ) );
     setter.setBody( variableName + " = " + mNameMapper.escape( lowerName ) + ';' );
 
     // getter method
@@ -182,7 +184,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
     newClass.addIncludes( QStringList(), mTypeMap.forwardDeclarations( (*attrIt).type() ) );
     newClass.addHeaderIncludes( mTypeMap.headerIncludes( (*attrIt).type() ) );
     if ( isArray )
-      newClass.addHeaderIncludes( QStringList( "QList" ) );
+      newClass.addHeaderIncludes( QStringList() << "QList" );
   }
 
   createComplexTypeSerializer( newClass, type );
