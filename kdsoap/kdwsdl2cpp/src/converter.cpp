@@ -136,7 +136,7 @@ void Converter::cleanupUnusedTypes()
     QSet<QName> usedElementNames;
     Message::List newMessages;
     Q_FOREACH(const QName& messageName, usedMessageNames.toList() /*slow!*/) {
-        //qDebug() << messageName;
+        //qDebug() << "used message:" << messageName;
         Message message = mWSDL.findMessage(messageName);
         newMessages.append(message);
         Q_FOREACH(const Part& part, message.parts()) {
@@ -166,7 +166,7 @@ void Converter::cleanupUnusedTypes()
                 continue;
             if (mTypeMap.isBuiltinType(typeName))
                 continue;
-            //qDebug() << typeName;
+            //qDebug() << "used type:" << typeName;
             XSD::ComplexType complexType = types.complexType(typeName);
             if (!complexType.name().isEmpty()) { // found it as a complex type
                 usedComplexTypes.append(complexType);
@@ -175,6 +175,16 @@ void Converter::cleanupUnusedTypes()
                     if (!allUsedTypes.contains(element.type()) && !alsoUsedTypes.contains(element.type())) {
                         alsoUsedTypes.insert(element.type());
                         allUsedTypes.insert(element.type());
+                    }
+                }
+                Q_FOREACH(const XSD::Attribute& attribute, complexType.attributes()) {
+                    const QName arrayType = attribute.arrayType();
+                    //qDebug() << "attribute arrayType" << arrayType.qname();
+                    if (!arrayType.isEmpty()) {
+                        if (!allUsedTypes.contains(arrayType) && !alsoUsedTypes.contains(arrayType)) {
+                            alsoUsedTypes.insert(arrayType);
+                            allUsedTypes.insert(arrayType);
+                        }
                     }
                 }
 

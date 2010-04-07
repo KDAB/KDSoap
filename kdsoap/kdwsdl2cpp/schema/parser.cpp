@@ -157,6 +157,8 @@ bool Parser::parseSchemaTag( ParserContext *context, const QDomElement &root )
     }
   }
 
+  // This method can call itself recursively, so save/restore the member attribute.
+  QString oldNamespace = d->mNameSpace;
   if ( root.hasAttribute( QLatin1String("targetNamespace") ) )
     d->mNameSpace = root.attribute( QLatin1String("targetNamespace") );
 
@@ -194,6 +196,8 @@ bool Parser::parseSchemaTag( ParserContext *context, const QDomElement &root )
   d->mNamespaces = joinNamespaces( d->mNamespaces, QStringList( d->mNameSpace ) );
 
   resolveForwardDeclarations();
+
+  d->mNameSpace = oldNamespace;
 
   return true;
 }
@@ -258,6 +262,8 @@ ComplexType Parser::parseComplexType( ParserContext *context, const QDomElement 
   ComplexType newType( d->mNameSpace );
 
   newType.setName( element.attribute( "name" ) );
+
+  //qDebug() << "complexType:" << d->mNameSpace << newType.name();
 
   if ( element.hasAttribute( "mixed" ) )
     newType.setContentModel( XSDType::MIXED );
@@ -398,8 +404,7 @@ Element Parser::parseElement( ParserContext *context,
   if ( element.hasAttribute( "nillable" ) )
     nill = true;
 
-  QName anyType( "http://www.w3.org/2001/XMLSchema", "any" );
-
+  //QName anyType( "http://www.w3.org/2001/XMLSchema", "any" );
 
   if ( element.hasAttribute( "type" ) ) {
     QName typeName = element.attribute( "type" );
@@ -410,6 +415,7 @@ Element Parser::parseElement( ParserContext *context,
 
     while ( !childElement.isNull() ) {
       QName childName = childElement.tagName();
+      //qDebug() << "Element" << childName.localName();
       if ( childName.localName() == "complexType" ) {
         ComplexType ct = parseComplexType( context, childElement );
 
@@ -581,7 +587,7 @@ SimpleType Parser::parseSimpleType( ParserContext *context, const QDomElement &e
 void Parser::parseRestriction( ParserContext*, const QDomElement &element, SimpleType &st )
 {
   if ( st.baseTypeName().isEmpty() )
-    qDebug( "<restriction>:unknown BaseType" );
+    qDebug( "<restriction>: unknown BaseType" );
 
   QDomElement childElement = element.firstChildElement();
 
@@ -642,6 +648,8 @@ void Parser::parseComplexContent( ParserContext *context, const QDomElement &ele
           attr.setName( "items" );
           attr.setType( QName( "arrayType" ) );
           attr.setArrayType( arrayType );
+
+          //qDebug() << complexType.name() << "is array of" << arrayType;
 
           complexType.addAttribute( attr );
         }
