@@ -127,7 +127,7 @@ void SoapBinding::Operation::loadXML( ParserContext *context, const QDomElement 
 {
   mSoapAction = element.attribute( "soapAction" );
 
-  qDebug() << "style=" << element.attribute("style");
+  //qDebug() << "style=" << element.attribute("style");
 
   if ( element.hasAttribute( "style" ) ) {
     if ( element.attribute( "style" ) == "rpc" )

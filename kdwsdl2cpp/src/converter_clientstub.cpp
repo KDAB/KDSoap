@@ -19,6 +19,7 @@
 */
 
 #include "converter.h"
+#include <libkode/style.h>
 #include <QDebug>
 
 using namespace KWSDL;
@@ -26,10 +27,9 @@ using namespace KWSDL;
 void Converter::convertClientService()
 {
   const Service service = mWSDL.definitions().service();
-
   Q_ASSERT(!service.name().isEmpty());
 
-  KODE::Class newClass( service.name() );
+  KODE::Class newClass( KODE::Style::upperFirst(service.name()) );
   newClass.setUseDPointer( true, "d_ptr" /*avoid clash with possible d() method*/ );
   newClass.addBaseClass( mQObject );
   newClass.setDocs(service.documentation());
@@ -56,10 +56,10 @@ void Converter::convertClientService()
 
   // Ctor and dtor
   {
-      KODE::Function ctor( service.name() );
+      KODE::Function ctor( newClass.name() );
       ctor.addArgument("QObject* parent", "0");
       ctor.addInitializer("QObject(parent)");
-      KODE::Function dtor( '~' + service.name() );
+      KODE::Function dtor( '~' + newClass.name() );
       KODE::Code ctorCode, dtorCode;
 
       ctor.setBody( ctorCode );
