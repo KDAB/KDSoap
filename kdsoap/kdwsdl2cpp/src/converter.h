@@ -64,7 +64,7 @@ class Converter
     void convertClientCall( const Operation&, const Binding&, KODE::Class& );
     void convertClientInputMessage( const Operation&, const Param&, const Binding&, KODE::Class& );
     void convertClientOutputMessage( const Operation&, const Param&, const Binding&, KODE::Class& );
-    void clientAddArguments( KODE::Function& callFunc, const Message& message );
+    void clientAddArguments( KODE::Function& callFunc, const Message& message, KODE::Class &newClass );
     bool clientAddAction( KODE::Code& code, const Binding &binding, const QString& operationName );
     void clientGenerateMessage( KODE::Code& code, const Binding& binding, const Message& message );
 
