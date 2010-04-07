@@ -98,7 +98,7 @@ QString Printer::Private::classHeader( const Class &classObject, bool publicMemb
     code += " */";
   }
 
-  QString txt = "class " + mStyle.className( classObject.name() );
+  QString txt = "class " + classObject.name();
 
   Class::List baseClasses = classObject.baseClasses();
   if ( !baseClasses.isEmpty() ) {
@@ -531,14 +531,9 @@ QString Printer::functionSignature( const Function &function,
   }
 
   if ( forImplementation )
-    s += d->mStyle.className( className ) + "::";
+    s += className + "::";
 
-  if ( className == function.name() ) {
-    // Constructor
-    s += d->mStyle.className( function.name() );
-  } else {
-    s += function.name();
-  }
+  s += function.name();
 
   s += '(';
   if ( function.hasArguments() )
