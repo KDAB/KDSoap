@@ -150,7 +150,7 @@ bool SimpleType::isAnonymous() const
 SimpleType::FacetType SimpleType::parseFacetId( const QString &facet ) const
 {
   if ( d->mBaseTypeName.isEmpty() ) {
-    qDebug( "isValidFacet:Unknown base type" );
+    qDebug( "parseFacetId: Unknown base type" );
     return NONE;
   }
 
@@ -179,6 +179,7 @@ SimpleType::FacetType SimpleType::parseFacetId( const QString &facet ) const
   else if ( facet == "fractionDigits" )
     return FRAC;
   else {
+    qDebug("Unknown facet: %s", qPrintable(facet));
     return NONE;
   }
 }
