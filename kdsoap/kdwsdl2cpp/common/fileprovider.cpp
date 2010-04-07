@@ -26,12 +26,22 @@
 #include <QFile>
 #include <QUrl>
 #include <QDebug>
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
+#include <QNetworkReply>
+#include <QTemporaryFile>
 
 #include "fileprovider.h"
 
 FileProvider::FileProvider()
-  : QObject( 0 ), mBlocked( false )
+  : QObject( 0 )
 {
+}
+
+void FileProvider::cleanUp()
+{
+  ::unlink( QFile::encodeName( mFileName ) );
+  mFileName = QString();
 }
 
 bool FileProvider::get( const QUrl &url, QString &target )
@@ -45,73 +55,40 @@ bool FileProvider::get( const QUrl &url, QString &target )
   }
 
   if ( target.isEmpty() ) {
-#ifdef KDAB_TEMP
     QTemporaryFile tmpFile;
     tmpFile.setAutoRemove(false);
     tmpFile.open();
     target = tmpFile.fileName();
     mFileName = target;
-#endif
   }
 
-  mData.truncate( 0 );
+  qDebug("Downloading external schema '%s'", url.toEncoded().constData());
 
-  qDebug("NOT IMPLEMENTED: downloading external schema '%s'", url.toEncoded().constData());
-#ifdef KDAB_TEMP
+  QNetworkAccessManager manager;
+  QNetworkRequest request(url);
+  QNetworkReply* job = manager.get(request);
 
-  KIO::TransferJob* job = KIO::get( KUrl( url ), KIO::NoReload, KIO::HideProgressInfo );
-  connect( job, SIGNAL( data( KIO::Job*, const QByteArray& ) ),
-           this, SLOT( slotData( KIO::Job*, const QByteArray& ) ) );
-  connect( job, SIGNAL( result( KJob* ) ),
-           this, SLOT( slotResult( KJob* ) ) );
+  QEventLoop loop;
+  connect(job, SIGNAL(finished()),
+          &loop, SLOT(quit()));
+  loop.exec();
 
-  mBlocked = true;
-  while ( mBlocked ) {
-    QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents );
-    usleep( 500 );
-  }
-#endif
-
-  return true;
-}
-
-void FileProvider::cleanUp()
-{
-  ::unlink( QFile::encodeName( mFileName ) );
-  mFileName = QString();
-}
-
-#ifdef KDAB_TEMP
-void FileProvider::slotData( KIO::Job*, const QByteArray &data )
-{
-  unsigned int oldSize = mData.size();
-  mData.resize( oldSize + data.size() );
-  memcpy( mData.data() + oldSize, data.data(), data.size() );
-}
-
-void FileProvider::slotResult( KJob *job )
-{
-  if ( job->error() ) {
-    qDebug( "%s", qPrintable( job->errorText() ) );
-    mBlocked = false;
-    return;
+  if (job->error()) {
+      qWarning("Error downloading '%s': %s", url.toEncoded().constData(), qPrintable(job->errorString()));
+      return false;
   }
 
+  const QByteArray data = job->readAll();
   QFile file( mFileName );
   if ( !file.open( QIODevice::WriteOnly ) ) {
-    qDebug( "Unable to create temporary file" );
-    mBlocked = false;
-    return;
+      qDebug( "Unable to create temporary file" );
+      return false;
   }
 
   qDebug( "Download successful" );
-  file.write( mData );
+  file.write( data );
   file.close();
-
-  mData.truncate( 0 );
-
-  mBlocked = false;
+  return true;
 }
-#endif
 
 #include "moc_fileprovider.cpp"

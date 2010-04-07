@@ -26,12 +26,6 @@
 
 #include <kode_export.h>
 
-#ifdef KDAB_TEMP
-namespace KIO {
-class Job;
-}
-class KJob;
-#endif
 class QUrl;
 
 class KXMLCOMMON_EXPORT FileProvider : QObject
@@ -44,16 +38,8 @@ class KXMLCOMMON_EXPORT FileProvider : QObject
     bool get( const QUrl &url, QString &target );
     void cleanUp();
 
-#ifdef KDAB_TEMP
-  private slots:
-    void slotData( KIO::Job*, const QByteArray& );
-    void slotResult( KJob* );
-#endif
-
   private:
     QString mFileName;
-    QByteArray mData;
-    bool mBlocked;
 };
 
 #endif
