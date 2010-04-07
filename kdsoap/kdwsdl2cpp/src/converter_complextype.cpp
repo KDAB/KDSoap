@@ -141,7 +141,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
       newClass.addHeaderIncludes( QStringList( "QList" ) );
   }
 
-  // attributes - TODO test and port
+  // attributes
   XSD::Attribute::List attributes = type->attributes();
   XSD::Attribute::List::ConstIterator attrIt;
   for ( attrIt = attributes.constBegin(); attrIt != attributes.constEnd(); ++attrIt ) {
@@ -284,8 +284,13 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
         demarshalCode += "}";
     } // end: for each element
 
-    if ( !type->attributes().isEmpty() ) {
+    const XSD::Attribute::List attributes = type->attributes();
+    if ( !attributes.isEmpty() ) {
         qDebug() << "TODO: handling marshalling of attributes";
+        Q_FOREACH( const XSD::Attribute& attribute, attributes ) {
+            qDebug() << attribute.name();
+        }
+        demarshalCode += "Q_UNUSED(value); // TODO";
     }
 
     marshalCode += "return QVariant::fromValue(args);";
