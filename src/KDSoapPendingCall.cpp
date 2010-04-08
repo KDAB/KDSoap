@@ -3,7 +3,6 @@
 #include "KDSoapMessage_p.h"
 #include <QNetworkReply>
 #include <QDebug>
-#include <QXmlStreamReader>
 
 KDSoapPendingCall::Private::~Private()
 {
@@ -51,6 +50,28 @@ QVariant KDSoapPendingCall::returnValue() const
     return QVariant();
 }
 
+QVariant KDSoapPendingCall::Private::parseReplyElement(QXmlStreamReader& reader)
+{
+    //qDebug() << "parsing" << reader.name();
+    KDSoapValueList lst;
+    QString text;
+    while (reader.readNext()) {
+        if (reader.isEndElement())
+            break;
+        if (reader.isCharacters()) {
+            text = reader.text().toString();
+            //qDebug() << "text=" << text;
+        } else if (reader.isStartElement()) {
+            const QVariant subVal = parseReplyElement(reader);
+            const QString name = reader.name().toString();
+            lst.append(KDSoapValue(name, subVal));
+        }
+    }
+    if (!lst.isEmpty())
+        return QVariant::fromValue(lst);
+    return text;
+}
+
 void KDSoapPendingCall::Private::parseReply()
 {
     if (parsed)
@@ -79,14 +100,16 @@ void KDSoapPendingCall::Private::parseReply()
             if (reader.readNextStartElement() && reader.name() == "Body" && reader.namespaceUri() == soapNS) {
 
                 if (reader.readNextStartElement()) { // the method: Response or Fault
+                    //qDebug() << "toplevel element:" << reader.name();
                     if (reader.name() == "Fault")
                         replyMessage.setFault(true);
 
                     while (reader.readNextStartElement()) { // Result
+                        const QString name = reader.name().toString();
+                        const QVariant val = parseReplyElement(reader);
+                        replyMessage.addArgument(name, val);
                         if (doDebug)
-                            qDebug() << "got item" << reader.name().toString();
-                        replyMessage.addArgument(reader.name().toString(), reader.readElementText());
-                        //reader.skipCurrentElement();
+                            qDebug() << "got item" << name << "val=" << val;
                     }
                 }
 

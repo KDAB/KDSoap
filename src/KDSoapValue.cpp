@@ -1,4 +1,5 @@
 #include "KDSoapValue.h"
+#include <QDebug>
 
 QVariant KDSoapValueList::value(const QString &name) const
 {
@@ -10,4 +11,10 @@ QVariant KDSoapValueList::value(const QString &name) const
             return val.value();
     }
     return QVariant();
+}
+
+QDebug operator <<(QDebug dbg, const KDSoapValue &value)
+{
+    dbg << value.name() << value.value();
+    return dbg;
 }

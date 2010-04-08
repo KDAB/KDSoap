@@ -185,6 +185,35 @@ private Q_SLOTS:
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
     }
 
+    // Test parsing of complex replies, like with SugarCRM
+    void testParseComplexReply()
+    {
+        HttpServerThread server(complexTypeResponse(), HttpServerThread::Public);
+        KDSoapClientInterface client(server.endPoint(), countryMessageNamespace());
+        const KDSoapMessage reply = client.call(QLatin1String("getEmployeeCountry"), countryMessage());
+        QVERIFY(!reply.isFault());
+        QCOMPARE(reply.arguments().count(), 1);
+        const KDSoapValueList lst = qVariantValue<KDSoapValueList>(reply.arguments().first().value());
+        QCOMPARE(lst.count(), 2);
+        const KDSoapValue id = lst.first();
+        QCOMPARE(id.name(), QString::fromLatin1("id"));
+        QCOMPARE(id.value().toString(), QString::fromLatin1("12345"));
+        const KDSoapValue error = lst.at(1);
+        QCOMPARE(error.name(), QString::fromLatin1("error"));
+        const KDSoapValueList errorList = qVariantValue<KDSoapValueList>(error.value());
+        QCOMPARE(errorList.count(), 3);
+        const KDSoapValue number = errorList.at(0);
+        QCOMPARE(number.name(), QString::fromLatin1("number"));
+        QCOMPARE(number.value().toString(), QString::fromLatin1("0"));
+        const KDSoapValue name = errorList.at(1);
+        QCOMPARE(name.name(), QString::fromLatin1("name"));
+        QCOMPARE(name.value().toString(), QString::fromLatin1("No Error"));
+        const KDSoapValue description = errorList.at(2);
+        QCOMPARE(description.name(), QString::fromLatin1("description"));
+        QCOMPARE(description.value().toString(), QString::fromLatin1("No Error"));
+        //qDebug() << lst;
+    }
+
 private:
     static QByteArray countryResponse() {
         return QByteArray(xmlEnvBegin) + "<soap:Body>"
@@ -215,6 +244,21 @@ private:
                 &loop, SLOT(quit()));
         loop.exec();
 
+    }
+
+    static QByteArray complexTypeResponse() {
+        return QByteArray(xmlEnvBegin) + "<soap:Body xmlns:tns=\"http://www.sugarcrm.com/sugarcrm\">"
+                "<ns1:loginResponse xmlns:ns1=\"http://www.sugarcrm.com/sugarcrm\">"
+                "  <return xsi:type=\"tns:set_entry_result\">"
+                "    <id xsi:type=\"xsd:string\">12345</id>"
+                "    <error xsi:type=\"tns:error_value\">"
+                "       <number xsi:type=\"xsd:string\">0</number>"
+                "       <name xsi:type=\"xsd:string\">No Error</name>"
+                "       <description xsi:type=\"xsd:string\">No Error</description>"
+                "    </error>"
+                "  </return>"
+                "</ns1:loginResponse>"
+                "</soap:Body>" + xmlEnvEnd;
     }
 };
 
