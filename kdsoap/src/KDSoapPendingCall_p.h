@@ -3,6 +3,7 @@
 
 #include <QSharedData>
 #include <QBuffer>
+#include <QXmlStreamReader>
 #include "KDSoapMessage.h"
 #if QT_VERSION >= 0x040600
 #include <QWeakPointer>
@@ -22,7 +23,7 @@ public:
     ~Private();
 
     void parseReply();
-
+    QVariant parseReplyElement(QXmlStreamReader& reader);
 
     // Can be deleted under us if the KDSoapClientInterface (and its QNetworkAccessManager)
     // are deleted before the KDSoapPendingCall.

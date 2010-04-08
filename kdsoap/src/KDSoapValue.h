@@ -25,6 +25,9 @@ private:
     QVariant m_value;
 };
 
+QDebug operator <<(QDebug dbg, const KDSoapValue &value);
+
+
 /**
  * KDSoapValueList represents a list of arguments passed to a SOAP message.
  */
