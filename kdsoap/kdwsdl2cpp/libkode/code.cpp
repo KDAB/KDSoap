@@ -213,10 +213,16 @@ Code &Code::operator+=( const QString &str )
   return *this;
 }
 
-Code &Code::operator+=( const char *str )
+Code &Code::operator+=( const QByteArray& str )
 {
   addLine( QString::fromLocal8Bit( str ) );
   return *this;
+}
+
+Code &Code::operator+=( const char *str )
+{
+    addLine( QString::fromLocal8Bit( str ) );
+    return *this;
 }
 
 Code &Code::operator+=( const char c )

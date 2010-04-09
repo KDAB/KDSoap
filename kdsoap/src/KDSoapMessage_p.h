@@ -2,6 +2,7 @@
 #define KDSOAPMESSAGE_P_H
 
 #include "KDSoapValue.h"
+#include "KDSoapMessage.h"
 
 // TODO: can be moved back to KDSoapMessage.cpp
 
@@ -13,6 +14,7 @@ public:
     {}
 
     KDSoapValueList args;
+    KDSoapMessage::Use use;
     bool isFault;
 };
 

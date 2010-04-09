@@ -9,6 +9,7 @@
 #include "KDSoapAuthentication.h"
 class QBuffer;
 class KDSoapMessage;
+class KDSoapNamespacePrefixes;
 
 class KDSoapClientInterface::Private : public QObject
 {
@@ -26,7 +27,7 @@ public:
 
     QNetworkRequest prepareRequest(const QString &method, const QString& action);
     QBuffer* prepareRequestBuffer(const QString& method, const KDSoapMessage& message);
-    void writeArguments(QXmlStreamWriter& writer, const KDSoapValueList& args);
+    void writeArguments(KDSoapNamespacePrefixes& namespacePrefixes, QXmlStreamWriter& writer, const KDSoapValueList& args, KDSoapMessage::Use use);
 
 private Q_SLOTS:
     void _kd_slotAuthenticationRequired(QNetworkReply* reply, QAuthenticator* authenticator);

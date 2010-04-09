@@ -1,12 +1,13 @@
 <?xml version='1.0' encoding='UTF-8' ?> 
-<definitions  name ='MyWsdl'   targetNamespace = 'http://www.kdab.com/xml/MyWsdl.wsdl'
-	 xmlns:kwsdl='http://www.kdab.com/xml/MyWsdl.wsdl' 
-	 xmlns:kdab='http://www.kdab.com/xml/MyWsdl.xsd' 
+<definitions  name ='MyWsdl'   targetNamespace = 'http://www.kdab.com/xml/MyWsdl/'
+  xmlns:kdab='http://www.kdab.com/xml/MyWsdl/' 
 	 xmlns:xsd='http://www.w3.org/2001/XMLSchema' 
 	 xmlns:soap='http://schemas.xmlsoap.org/wsdl/soap/' 
+	 xmlns:soap-enc='http://schemas.xmlsoap.org/wsdl/soap/encoding' 
 	 xmlns='http://schemas.xmlsoap.org/wsdl/'>
   <types>
-    <xsd:schema targetNamespace='http://www.kdab.com/xml/MyWsdl.xsd' xmlns='http://www.w3.org/2001/XMLSchema'>
+    <!-- Note: kdsoap doesn't support the case where the namespace for elements is different from the namespace for definitions, yet. -->
+    <xsd:schema targetNamespace='http://www.kdab.com/xml/MyWsdl/' xmlns='http://www.w3.org/2001/XMLSchema'>
       <element name="HelloWorld">
         <complexType>
           <sequence>
@@ -48,12 +49,26 @@
           </sequence>
         </complexType>
       </element>
+      <complexType name="EmployeeAchievement">
+        <all>
+         <element name="type" type="xsd:string"/>
+         <element name="label" type="xsd:string"/>
+        </all>
+      </complexType>
+      <complexType name="EmployeeAchievements">
+        <complexContent>
+          <restriction base="soapenc:Array">
+            <attribute ref="soapenc:arrayType" arrayType="kdab:EmployeeAchievement[]"/>
+          </restriction>
+        </complexContent>
+      </complexType>
     </xsd:schema>
   </types>
   <message name='addEmployee'>
     <part name='employeeType' type='kdab:EmployeeType'/>
     <part name='employeeName' type='kdab:EmployeeName'/>
     <part name='employeeCountry' type='kdab:LimitedString'/>
+    <part name='employeeAchievements' type='kdab:EmployeeAchievements'/>
   </message>
   <message name='addEmployeeResponse'>
     <part name='bstrReturn' type='xsd:string'/>
@@ -68,23 +83,23 @@
 
   <portType name='MyWsdlPortType'>
     <operation name='addEmployee'>
-      <input message='kwsdl:addEmployee' />
-      <output message='kwsdl:addEmployeeResponse' />
+      <input message='kdab:addEmployee' />
+      <output message='kdab:addEmployeeResponse' />
     </operation>
     <operation name='getEmployeeCountry'>
-      <input message='kwsdl:getEmployeeCountry' />
-      <output message='kwsdl:getEmployeeCountryResponse' />
+      <input message='kdab:getEmployeeCountry' />
+      <output message='kdab:getEmployeeCountryResponse' />
     </operation>
   </portType>
-  <binding name='MyWsdlBinding' type='kwsdl:MyWsdlPortType' >
+  <binding name='MyWsdlBinding' type='kdab:MyWsdlPortType' >
     <soap:binding style='rpc' transport='http://schemas.xmlsoap.org/soap/http' />
     <operation name='addEmployee' >
       <soap:operation soapAction='http://www.kdab.com/AddEmployee' />
       <input>
-        <soap:body use='literal'/>
+        <soap:body use='encoded'/>
       </input>
       <output>
-        <soap:body use='literal'/>
+        <soap:body use='encoded'/>
       </output>
     </operation>
     <operation name='getEmployeeCountry'>
@@ -97,7 +112,7 @@
     </operation>
   </binding>
   <service name='MyWsdl' >
-    <port name='MyWsdlPortType' binding='kwsdl:MyWsdlBinding' >
+    <port name='MyWsdlPortType' binding='kdab:MyWsdlBinding' >
       <soap:address location='http://127.0.0.1:4242/xml/mywsdl.wsdl' />
     </port>
   </service>

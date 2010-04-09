@@ -100,8 +100,8 @@ void Converter::convertClientService()
   for ( it = servicePorts.begin(); it != servicePorts.end(); ++it ) {
     Binding binding = mWSDL.findBinding( (*it).bindingName() );
 
-    // TODO: more flexible binding handling
     QUrl webserviceLocation;
+
     if ( binding.type() == Binding::SOAPBinding ) {
       const SoapBinding soapBinding( binding.soapBinding() );
       const SoapBinding::Address address = soapBinding.address();
@@ -225,8 +225,7 @@ bool Converter::clientAddAction( KODE::Code& code, const Binding &binding, const
     bool hasAction = false;
     if ( binding.type() == Binding::SOAPBinding ) {
         const SoapBinding soapBinding( binding.soapBinding() );
-        const SoapBinding::Operation::Map map = soapBinding.operations();
-        const SoapBinding::Operation op = map[ operationName ];
+        const SoapBinding::Operation op = soapBinding.operations().value( operationName );
         if (!op.action().isEmpty()) {
             code += "const QString action = QString::fromLatin1(\"" + op.action() + "\");";
             hasAction = true;
@@ -235,7 +234,7 @@ bool Converter::clientAddAction( KODE::Code& code, const Binding &binding, const
     return hasAction;
 }
 
-void Converter::clientGenerateMessage( KODE::Code& code, const Binding& binding, const Message& message )
+void Converter::clientGenerateMessage( KODE::Code& code, const Binding& binding, const Message& message, const Operation& operation )
 {
     code += "KDSoapMessage message;";
 
@@ -243,6 +242,11 @@ void Converter::clientGenerateMessage( KODE::Code& code, const Binding& binding,
     if ( binding.type() == Binding::SOAPBinding ) {
         const SoapBinding soapBinding = binding.soapBinding();
         soapStyle = soapBinding.binding().style();
+        const SoapBinding::Operation op = soapBinding.operations().value( operation.name() );
+        if ( op.input().use() == SoapBinding::EncodedUse )
+            code += "message.setUse(KDSoapMessage::EncodedUse);";
+        else
+            code += "message.setUse(KDSoapMessage::LiteralUse);";
     }
 
     const Part::List parts = message.parts();
@@ -283,7 +287,7 @@ void Converter::convertClientCall( const Operation &operation, const Binding &bi
   clientAddArguments( callFunc, inputMessage, newClass );
   KODE::Code code;
   const bool hasAction = clientAddAction( code, binding, operation.name() );
-  clientGenerateMessage( code, binding, inputMessage );
+  clientGenerateMessage( code, binding, inputMessage, operation );
   QString callLine = "d_ptr->m_lastReply = clientInterface()->call(QLatin1String(\"" + operation.name() + "\"), message";
   if (hasAction) {
       callLine += ", action";
@@ -348,7 +352,7 @@ void Converter::convertClientInputMessage( const Operation &operation, const Par
   clientAddArguments( asyncFunc, message, newClass );
   KODE::Code code;
   const bool hasAction = clientAddAction( code, binding, operation.name() );
-  clientGenerateMessage( code, binding, message );
+  clientGenerateMessage( code, binding, message, operation );
 
 #ifdef KDAB_TEMP
   const QStringList prefixes = mNSManager.prefixes();
