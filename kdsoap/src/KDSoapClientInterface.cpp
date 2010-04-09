@@ -10,6 +10,7 @@
 #include <QDateTime>
 
 static const char* xmlSchemaInstanceNS = "http://www.w3.org/1999/XMLSchema-instance";
+static const char* soapEncodingNS = "http://schemas.xmlsoap.org/soap/encoding/";
 
 KDSoapClientInterface::KDSoapClientInterface(const QString& endPoint, const QString& messageNamespace)
     : d(new Private)
@@ -156,13 +157,12 @@ QBuffer* KDSoapClientInterface::Private::prepareRequestBuffer(const QString& met
     writer.writeStartDocument();
 
     const QString soapNS = QString::fromLatin1("http://schemas.xmlsoap.org/soap/envelope/");
-    const QString soapEncodingNS = QString::fromLatin1("http://schemas.xmlsoap.org/soap/encoding/");
     const QString xmlSchemaNS = QString::fromLatin1("http://www.w3.org/1999/XMLSchema");
 
     KDSoapNamespacePrefixes namespacePrefixes;
 
     namespacePrefixes.writeNamespace(writer, soapNS, QLatin1String("soap"));
-    namespacePrefixes.writeNamespace(writer, soapEncodingNS, QLatin1String("soap-enc"));
+    namespacePrefixes.writeNamespace(writer, QLatin1String(soapEncodingNS), QLatin1String("soap-enc"));
     namespacePrefixes.writeNamespace(writer, xmlSchemaNS, QLatin1String("xsd"));
     namespacePrefixes.writeNamespace(writer, QLatin1String(xmlSchemaInstanceNS), QLatin1String("xsi"));
 
@@ -215,7 +215,7 @@ void KDSoapClientInterface::Private::writeArguments(KDSoapNamespacePrefixes& nam
                 writer.writeAttribute(QLatin1String(xmlSchemaInstanceNS), QLatin1String("type"), namespacePrefixes.resolve(list.typeNs(), list.type()));
                 const bool isArray = !list.arrayType().isEmpty();
                 if (isArray) {
-                    writer.writeAttribute(QLatin1String(xmlSchemaInstanceNS), QLatin1String("arrayType"), namespacePrefixes.resolve(list.arrayTypeNs(), list.arrayType()) + QLatin1Char('[') + QString::number(list.count()) + QLatin1Char(']'));
+                    writer.writeAttribute(QLatin1String(soapEncodingNS), QLatin1String("arrayType"), namespacePrefixes.resolve(list.arrayTypeNs(), list.arrayType()) + QLatin1Char('[') + QString::number(list.count()) + QLatin1Char(']'));
                 }
             }
             writeArguments(namespacePrefixes, writer, list, use); // recursive call
