@@ -181,7 +181,7 @@ private Q_SLOTS:
             "</n1:employeeType>"
             "<n1:employeeName xsi:type=\"xsd:string\">David Faure</n1:employeeName>"
             "<n1:employeeCountry xsi:type=\"xsd:string\">France</n1:employeeCountry>"
-            "<n1:employeeAchievements xsi:type=\"soap-enc:Array\" xsi:arrayType=\"n1:EmployeeAchievement[2]\">"
+            "<n1:employeeAchievements xsi:type=\"soap-enc:Array\" soap-enc:arrayType=\"n1:EmployeeAchievement[2]\">"
             "<n1:item xsi:type=\"n1:EmployeeAchievement\">"
               "<n1:type xsi:type=\"xsd:string\">Project</n1:type>"
               "<n1:label xsi:type=\"xsd:string\">Management</n1:label>"
