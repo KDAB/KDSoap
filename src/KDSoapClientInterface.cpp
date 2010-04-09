@@ -132,6 +132,23 @@ QNetworkRequest KDSoapClientInterface::Private::prepareRequest(const QString &me
     return request;
 }
 
+class KDSoapNamespacePrefixes : public QMap<QString /*ns*/, QString /*prefix*/>
+{
+public:
+    void writeNamespace(QXmlStreamWriter& writer, const QString& ns, const QString& prefix) {
+        //qDebug() << "writeNamespace" << ns << prefix;
+        insert(ns, prefix);
+        writer.writeNamespace(ns, prefix);
+    }
+    QString resolve(const QString& ns, const QString& localName) const {
+        const QString prefix = value(ns);
+        if (prefix.isEmpty()) {
+            qWarning("ERROR: Namespace not found: %s (for localName %s)", qPrintable(ns), qPrintable(localName));
+        }
+        return prefix + QLatin1Char(':') + localName;
+    }
+};
+
 QBuffer* KDSoapClientInterface::Private::prepareRequestBuffer(const QString& method, const KDSoapMessage& message)
 {
     QByteArray data;
@@ -139,11 +156,15 @@ QBuffer* KDSoapClientInterface::Private::prepareRequestBuffer(const QString& met
     writer.writeStartDocument();
 
     const QString soapNS = QString::fromLatin1("http://schemas.xmlsoap.org/soap/envelope/");
+    const QString soapEncodingNS = QString::fromLatin1("http://schemas.xmlsoap.org/soap/encoding/");
     const QString xmlSchemaNS = QString::fromLatin1("http://www.w3.org/1999/XMLSchema");
 
-    writer.writeNamespace(soapNS, QLatin1String("soap"));
-    writer.writeNamespace(xmlSchemaNS, QLatin1String("xsd"));
-    writer.writeNamespace(QLatin1String(xmlSchemaInstanceNS), QLatin1String("xsi"));
+    KDSoapNamespacePrefixes namespacePrefixes;
+
+    namespacePrefixes.writeNamespace(writer, soapNS, QLatin1String("soap"));
+    namespacePrefixes.writeNamespace(writer, soapEncodingNS, QLatin1String("soap-enc"));
+    namespacePrefixes.writeNamespace(writer, xmlSchemaNS, QLatin1String("xsd"));
+    namespacePrefixes.writeNamespace(writer, QLatin1String(xmlSchemaInstanceNS), QLatin1String("xsi"));
 
     writer.writeStartElement(soapNS, QLatin1String("Envelope"));
     writer.writeAttribute(soapNS, QLatin1String("encodingStyle"), QLatin1String("http://schemas.xmlsoap.org/soap/encoding/"));
@@ -152,11 +173,18 @@ QBuffer* KDSoapClientInterface::Private::prepareRequestBuffer(const QString& met
     // see commented out code in Converter::convertClientInputMessage
 
     writer.writeStartElement(soapNS, QLatin1String("Body"));
+
+    // This would add it to <Body>, which looks ugly and unusual (and breaks all unittests)
+    //namespacePrefixes.writeNamespace(writer, this->m_messageNamespace, QLatin1String("n1") /*make configurable?*/);
+    // So we just rely on Qt calling it n1 and insert it into the map.
+    // Calling this after the writeStartElement below leads to a double-definition of n1.
+    namespacePrefixes.insert(this->m_messageNamespace, QString::fromLatin1("n1"));
+
     writer.writeStartElement(this->m_messageNamespace, method);
 
     // Arguments
     const KDSoapValueList args = message.d->args;
-    writeArguments( writer, args );
+    writeArguments(namespacePrefixes, writer, args, message.use());
 
     writer.writeEndElement(); // <method>
     writer.writeEndElement(); // Body
@@ -173,16 +201,24 @@ QBuffer* KDSoapClientInterface::Private::prepareRequestBuffer(const QString& met
     return buffer;
 }
 
-void KDSoapClientInterface::Private::writeArguments(QXmlStreamWriter& writer, const KDSoapValueList& args)
+void KDSoapClientInterface::Private::writeArguments(KDSoapNamespacePrefixes& namespacePrefixes, QXmlStreamWriter& writer, const KDSoapValueList& args, KDSoapMessage::Use use)
 {
     KDSoapValueListIterator it(args);
     while (it.hasNext()) {
         const KDSoapValue& argument = it.next();
         const QVariant value = argument.value();
-        if ( value.canConvert<KDSoapValueList>() ) {
+        if (value.canConvert<KDSoapValueList>()) {
             writer.writeStartElement(this->m_messageNamespace, argument.name());
-            const KDSoapValueList children = value.value<KDSoapValueList>();
-            writeArguments( writer, children );
+            const KDSoapValueList list = value.value<KDSoapValueList>();
+            if (use == KDSoapMessage::EncodedUse) {
+                // use=encoded means writing out xsi:type attributes. http://www.eherenow.com/soapfight.htm taught me that.
+                writer.writeAttribute(QLatin1String(xmlSchemaInstanceNS), QLatin1String("type"), namespacePrefixes.resolve(list.typeNs(), list.type()));
+                const bool isArray = !list.arrayType().isEmpty();
+                if (isArray) {
+                    writer.writeAttribute(QLatin1String(xmlSchemaInstanceNS), QLatin1String("arrayType"), namespacePrefixes.resolve(list.arrayTypeNs(), list.arrayType()) + QLatin1Char('[') + QString::number(list.count()) + QLatin1Char(']'));
+                }
+            }
+            writeArguments(namespacePrefixes, writer, list, use); // recursive call
             writer.writeEndElement();
         } else {
             const QString type = variantToXMLType(value);

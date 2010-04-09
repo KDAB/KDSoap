@@ -240,6 +240,14 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
     }
 
     marshalCode += "KDSoapValueList args;";
+    if (!type->name().isEmpty()) {
+        if (type->isArray()) {
+            static const char* soapEncNs = "http://schemas.xmlsoap.org/soap/encoding/";
+            marshalCode += QByteArray("args.setType(QString::fromLatin1(\"") + soapEncNs + "\"), QString::fromLatin1(\"Array\"));";
+        } else {
+            marshalCode += QByteArray("args.setType(QString::fromLatin1(\"") + type->nameSpace() + "\"), QString::fromLatin1(\"" + type->name() + "\"));";
+        }
+    }
 
     // elements
     const XSD::Element::List elements = type->elements();
@@ -299,6 +307,7 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
                 KODE::MemberVariable variable( attrName, typeName ); // was already added; this is just for the naming
                 const QString variableName = "d_ptr->" + variable.name();
 
+                marshalCode += "args.setArrayType(QString::fromLatin1(\"" + attribute.arrayType().nameSpace() + "\"), QString::fromLatin1(\"" + attribute.arrayType().localName() + "\"));";
                 marshalCode += "for (int i = 0; i < " + variableName + ".count(); ++i) {";
                 marshalCode.indent();
                 marshalCode.addBlock( appendElementArg( mTypeMap, attribute.arrayType(), "item", variableName + ".at(i)" ) );

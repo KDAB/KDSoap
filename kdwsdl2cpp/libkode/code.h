@@ -143,6 +143,12 @@ class KODE_EXPORT Code
      * Adds the given @param line to the code block
      * and appends a '\r\n' automatically.
      */
+    Code &operator+=( const QByteArray& line );
+
+    /**
+     * Adds the given @param line to the code block
+     * and appends a '\r\n' automatically.
+     */
     Code &operator+=( const char *line );
 
     /**

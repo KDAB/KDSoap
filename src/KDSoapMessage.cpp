@@ -65,3 +65,13 @@ void KDSoapMessage::setFault(bool fault)
 {
     d->isFault = fault;
 }
+
+KDSoapMessage::Use KDSoapMessage::use() const
+{
+    return d->use;
+}
+
+void KDSoapMessage::setUse(Use use)
+{
+    d->use = use;
+}

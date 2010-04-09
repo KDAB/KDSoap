@@ -13,7 +13,10 @@ using namespace KDSoapUnitTestHelpers;
 
 static const char* xmlEnvBegin =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-        "<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsd=\"http://www.w3.org/1999/XMLSchema\""
+        "<soap:Envelope"
+        " xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\""
+        " xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\""
+        " xmlns:xsd=\"http://www.w3.org/1999/XMLSchema\""
         " xmlns:xsi=\"http://www.w3.org/1999/XMLSchema-instance\""
         " soap:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\">";
 static const char* xmlEnvEnd = "</soap:Envelope>";
@@ -132,7 +135,7 @@ private Q_SLOTS:
     {
         // Prepare response
         QByteArray responseData = QByteArray(xmlEnvBegin) + "<soap:Body>"
-                                  "<kdab:addEmployeeResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl.wsdl\"><kdab:bStrReturn>Foo</kdab:bStrReturn></kdab:addEmployeeResponse>"
+                                  "<kdab:addEmployeeResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl/\"><kdab:bStrReturn>Foo</kdab:bStrReturn></kdab:addEmployeeResponse>"
                                   " </soap:Body>" + xmlEnvEnd;
         HttpServerThread server(responseData, HttpServerThread::Public /*TODO ssl test*/);
 
@@ -143,13 +146,25 @@ private Q_SLOTS:
 
         MyWsdl service;
         service.setEndPoint(server.endPoint());
+        KDAB__EmployeeAchievements achievements;
+        QList<KDAB__EmployeeAchievement> lst;
+        KDAB__EmployeeAchievement achievement1;
+        achievement1.setType(QString::fromLatin1("Project"));
+        achievement1.setLabel(QString::fromLatin1("Management"));
+        lst.append(achievement1);
+        KDAB__EmployeeAchievement achievement2;
+        achievement2.setType(QString::fromLatin1("Development"));
+        achievement2.setLabel(QString::fromLatin1("C++"));
+        lst.append(achievement2);
+        achievements.setItems(lst);
         KDAB__EmployeeType employeeType;
         employeeType.setType(KDAB__EmployeeTypeEnum::Developer);
         employeeType.setOtherRoles(QList<KDAB__EmployeeTypeEnum>() << KDAB__EmployeeTypeEnum::TeamLeader);
         employeeType.setTeam(QString::fromLatin1("Minitel"));
         QString ret = service.addEmployee(employeeType,
                                           QString::fromLatin1("David Faure"),
-                                          QString::fromLatin1("France"));
+                                          QString::fromLatin1("France"),
+                                          achievements);
         if (!service.lastError().isEmpty())
             qDebug() << service.lastError();
         QVERIFY(service.lastError().isEmpty());
@@ -158,14 +173,24 @@ private Q_SLOTS:
         QByteArray expectedRequestXml =
             QByteArray(xmlEnvBegin) +
             "<soap:Body>"
-            "<n1:addEmployee xmlns:n1=\"http://www.kdab.com/xml/MyWsdl.wsdl\">"
-            "<n1:employeeType>"
+            "<n1:addEmployee xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
+            "<n1:employeeType xsi:type=\"n1:EmployeeType\">"
             "<n1:team xsi:type=\"xsd:string\">Minitel</n1:team>"
             "<n1:type xsi:type=\"xsd:string\">Developer</n1:type>"
             "<n1:otherRoles xsi:type=\"xsd:string\">TeamLeader</n1:otherRoles>"
             "</n1:employeeType>"
             "<n1:employeeName xsi:type=\"xsd:string\">David Faure</n1:employeeName>"
             "<n1:employeeCountry xsi:type=\"xsd:string\">France</n1:employeeCountry>"
+            "<n1:employeeAchievements xsi:type=\"soap-enc:Array\" xsi:arrayType=\"n1:EmployeeAchievement[2]\">"
+            "<n1:item xsi:type=\"n1:EmployeeAchievement\">"
+              "<n1:type xsi:type=\"xsd:string\">Project</n1:type>"
+              "<n1:label xsi:type=\"xsd:string\">Management</n1:label>"
+            "</n1:item>"
+            "<n1:item xsi:type=\"n1:EmployeeAchievement\">"
+              "<n1:type xsi:type=\"xsd:string\">Development</n1:type>"
+              "<n1:label xsi:type=\"xsd:string\">C++</n1:label>"
+            "</n1:item>"
+            "</n1:employeeAchievements>"
             "</n1:addEmployee>"
             "</soap:Body>" + xmlEnvEnd
             + '\n'; // added by QXmlStreamWriter::writeEndDocument
@@ -179,7 +204,8 @@ private Q_SLOTS:
         expectedRequestXml.replace("France", "фгн7");
         ret = service.addEmployee(employeeType,
                                   QString::fromUtf8("Hervé"),
-                                  QString::fromUtf8("фгн7")); // random russian letters
+                                  QString::fromUtf8("фгн7"), // random russian letters
+                                  achievements);
         QVERIFY(service.lastError().isEmpty());
         QCOMPARE(ret, QString::fromLatin1("Foo"));
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
@@ -217,19 +243,19 @@ private Q_SLOTS:
 private:
     static QByteArray countryResponse() {
         return QByteArray(xmlEnvBegin) + "<soap:Body>"
-                "<kdab:getEmployeeCountryResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl.wsdl\"><kdab:employeeCountry>France</kdab:employeeCountry></kdab:getEmployeeCountryResponse>"
+                "<kdab:getEmployeeCountryResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl/\"><kdab:employeeCountry>France</kdab:employeeCountry></kdab:getEmployeeCountryResponse>"
                 " </soap:Body>" + xmlEnvEnd;
     }
     static QByteArray expectedCountryRequest() {
         return QByteArray(xmlEnvBegin) +
                 "<soap:Body>"
-                "<n1:getEmployeeCountry xmlns:n1=\"http://www.kdab.com/xml/MyWsdl.wsdl\">"
+                "<n1:getEmployeeCountry xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
                 "<n1:employeeName xsi:type=\"xsd:string\">David Faure</n1:employeeName>"
                 "</n1:getEmployeeCountry>"
                 "</soap:Body>" + xmlEnvEnd;
     }
     static QString countryMessageNamespace() {
-        return QString::fromLatin1("http://www.kdab.com/xml/MyWsdl.wsdl");
+        return QString::fromLatin1("http://www.kdab.com/xml/MyWsdl/");
     }
     static KDSoapMessage countryMessage() {
         KDSoapMessage message;

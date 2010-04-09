@@ -35,7 +35,11 @@ class KXMLCOMMON_EXPORT QName
     typedef QList<QName> List;
 
     QName();
+
+    // Create a QName with prefix+localname
     QName( const QString &name ); // TODO explicit?
+
+    // Create a QName with namespace+localname
     QName( const QString &nameSpace, const QString &localName );
 
     void operator=( const QString &name );

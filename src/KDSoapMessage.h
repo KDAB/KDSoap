@@ -32,6 +32,18 @@ public:
      */
     KDSoapMessage &operator=(const KDSoapMessage &other);
 
+    enum Use
+    {
+      LiteralUse, ///< data is serialized according to a given schema, no xsi:type attributes are written out
+      EncodedUse  ///< each message part references an abstract type using the xsi:type attribute
+    };
+
+    /**
+     * Define the way the message should be serialized
+     */
+    void setUse(Use use);
+    Use use() const;
+
     /**
      * Adds an argument to the message.
      *
