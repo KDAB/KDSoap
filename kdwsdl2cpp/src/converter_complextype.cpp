@@ -68,16 +68,6 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
       conctor.addArgument( typeName + " value" );
       conctor.setBody( variableName + " = value;" );
 
-#if 0
-      if ( typeName == "QString" ) {
-        KODE::Function charctor( upperlize( newClass.name() ) );
-        charctor.addArgument( "const char *charValue" );
-        charctor.setBody( variableName + " = QString( charValue );" );
-
-        newClass.addFunction( charctor );
-      }
-#endif
-
       // type operator
       KODE::Function op( "operator const " + typeName );
       op.setBody( "return " + variableName + ';' );
@@ -338,7 +328,6 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
     deserializeFunc.setBody( demarshalCode );
     newClass.addFunction( deserializeFunc );
 
-    Q_UNUSED(type);
 #ifdef KDAB_DELETED
   const QString typeName = mTypeMap.localType( type->qualifiedName() );
   const QString baseType = mTypeMap.localType( type->baseTypeName() );
