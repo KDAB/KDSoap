@@ -212,6 +212,31 @@ private Q_SLOTS:
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
     }
 
+    void testComplexRequest() // this tests the serialization of KDSoapValue[List] in KDSoapClientInterface
+    {
+        HttpServerThread server(complexTypeResponse(), HttpServerThread::Public);
+        KDSoapClientInterface client(server.endPoint(), countryMessageNamespace());
+        KDSoapMessage message;
+        message.setUse(KDSoapMessage::EncodedUse); // write out types explicitely
+        message.addArgument(QString::fromLatin1("testString"), QString::fromLatin1("Hello"));
+        KDSoapValueList array;
+        array.setType(QString::fromLatin1("http://schemas.xmlsoap.org/soap/encoding/"), QString::fromLatin1("Array"));
+        array.setArrayType(QString::fromLatin1("http://www.w3.org/2001/XMLSchema"), QString::fromLatin1("string"));
+        message.addArgument(QString::fromLatin1("testArray"), QVariant::fromValue(array));
+        client.call(QLatin1String("test"), message);
+        // Check what we sent
+        QByteArray expectedRequestXml =
+            QByteArray(xmlEnvBegin) +
+            "<soap:Body>"
+            "<n1:test xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
+            "<n1:testString xsi:type=\"xsd:string\">Hello</n1:testString>"
+            "<n1:testArray xsi:type=\"soap-enc:Array\" soap-enc:arrayType=\"xsd:string[0]\"/>"
+            "</n1:test>"
+            "</soap:Body>" + xmlEnvEnd
+            + '\n'; // added by QXmlStreamWriter::writeEndDocument
+        QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
+    }
+
     // Test parsing of complex replies, like with SugarCRM
     void testParseComplexReply()
     {
@@ -221,7 +246,7 @@ private Q_SLOTS:
         QVERIFY(!reply.isFault());
         QCOMPARE(reply.arguments().count(), 1);
         const KDSoapValueList lst = qVariantValue<KDSoapValueList>(reply.arguments().first().value());
-        QCOMPARE(lst.count(), 2);
+        QCOMPARE(lst.count(), 3);
         const KDSoapValue id = lst.first();
         QCOMPARE(id.name(), QString::fromLatin1("id"));
         QCOMPARE(id.value().toString(), QString::fromLatin1("12345"));
@@ -314,6 +339,8 @@ private:
                 "       <name xsi:type=\"xsd:string\">No Error</name>"
                 "       <description xsi:type=\"xsd:string\">No Error</description>"
                 "    </error>"
+                "    <testArray xsi:type=\"soap-enc:Array\" soap-enc:arrayType=\"xsi:string\">"  // not in a real Sugar response; just testing
+                "    </testArray>"
                 "  </return>"
                 "</ns1:loginResponse>"
                 "</soap:Body>" + xmlEnvEnd;
