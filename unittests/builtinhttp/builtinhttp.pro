@@ -7,4 +7,4 @@ test.commands = ./$(TARGET)
 test.depends = $(TARGET)
 QMAKE_EXTRA_TARGETS += test
 
-KDWSDL = mywsdl.wsdl
+KDWSDL = mywsdl.wsdl sugarcrm.wsdl

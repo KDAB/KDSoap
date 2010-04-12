@@ -279,6 +279,12 @@ void Converter::clientGenerateMessage( KODE::Code& code, const Binding& binding,
 
 void Converter::convertClientCall( const Operation &operation, const Binding &binding, KODE::Class &newClass )
 {
+  SoapBinding::Style soapStyle = SoapBinding::RPCStyle;
+  if ( binding.type() == Binding::SOAPBinding ) {
+    const SoapBinding soapBinding = binding.soapBinding();
+    soapStyle = soapBinding.binding().style();
+  }
+
   const QString methodName = lowerlize( operation.name() );
   KODE::Function callFunc( mNameMapper.escape( methodName ), "void", KODE::Function::Public );
   callFunc.setDocs(QString("Blocking call to %1.\nNot recommended in a GUI thread.").arg(operation.name()));
@@ -319,7 +325,7 @@ void Converter::convertClientCall( const Operation &operation, const Binding &bi
   code += "return " + retType + "();"; // default-constructed value
   code.unindent();
 
-  if ( isComplex ) {
+  if ( isComplex && soapStyle == SoapBinding::DocumentStyle /*RPC style adds a wrapper, so we need first() */ ) {
       code += retType + " ret;"; // local var
       code += "ret.deserialize(QVariant::fromValue(d_ptr->m_lastReply.arguments()));";
       code += "return ret;";

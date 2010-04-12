@@ -4,6 +4,7 @@
 #include "KDSoapPendingCallWatcher.h"
 #include "KDSoapAuthentication.h"
 #include "wsdl_mywsdl.h"
+#include "wsdl_sugarcrm.h"
 #include "httpserver_p.h"
 #include <QtTest/QtTest>
 #include <QEventLoop>
@@ -238,6 +239,37 @@ private Q_SLOTS:
         QCOMPARE(description.name(), QString::fromLatin1("description"));
         QCOMPARE(description.value().toString(), QString::fromLatin1("No Error"));
         //qDebug() << lst;
+    }
+
+    void testParseComplexReplyWsdl()
+    {
+        HttpServerThread server(complexTypeResponse(), HttpServerThread::Public);
+        Sugarsoap sugar(this);
+        sugar.setEndPoint(server.endPoint());
+        TNS__User_auth user_auth;
+        user_auth.setUser_name(QString::fromLatin1("user"));
+        user_auth.setPassword(QString::fromLatin1("pass"));
+        TNS__Set_entry_result result = sugar.login(user_auth, QString::fromLatin1("application"));
+        QCOMPARE(result.id(), QString::fromLatin1("12345"));
+        QCOMPARE(result.error().number(), QString::fromLatin1("0"));
+        QCOMPARE(result.error().name(), QString::fromLatin1("No Error"));
+        QCOMPARE(result.error().description(), QString::fromLatin1("No Error"));
+
+        // Check what we sent
+        QByteArray expectedRequestXml =
+            QByteArray(xmlEnvBegin) +
+            "<soap:Body>"
+            "<n1:login xmlns:n1=\"http://www.sugarcrm.com/sugarcrm\">"
+              "<n1:user_auth xsi:type=\"n1:user_auth\">"
+                "<n1:user_name xsi:type=\"xsd:string\">user</n1:user_name>"
+                "<n1:password xsi:type=\"xsd:string\">pass</n1:password>"
+                "<n1:version xsi:type=\"xsd:string\"></n1:version>"
+              "</n1:user_auth>"
+              "<n1:application_name xsi:type=\"xsd:string\">application</n1:application_name>"
+            "</n1:login>"
+            "</soap:Body>" + xmlEnvEnd
+            + '\n'; // added by QXmlStreamWriter::writeEndDocument
+        QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
     }
 
 private:
