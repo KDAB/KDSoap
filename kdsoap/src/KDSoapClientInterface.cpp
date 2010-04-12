@@ -180,6 +180,10 @@ QBuffer* KDSoapClientInterface::Private::prepareRequestBuffer(const QString& met
     // Calling this after the writeStartElement below leads to a double-definition of n1.
     namespacePrefixes.insert(this->m_messageNamespace, QString::fromLatin1("n1"));
 
+    // Also insert known variants
+    namespacePrefixes.insert(QString::fromLatin1("http://www.w3.org/2001/XMLSchema"), QString::fromLatin1("xsd"));
+    namespacePrefixes.insert(QString::fromLatin1("http://www.w3.org/2001/XMLSchema-instance"), QString::fromLatin1("xsi"));
+
     writer.writeStartElement(this->m_messageNamespace, method);
 
     // Arguments
