@@ -37,7 +37,7 @@ DEFINES += KDSOAP_BUILD_KDSOAP_LIB
 
 # installation targets:
 headers.files = $$INSTALLHEADERS \
-    $$EXTENSIONLESS_HEADERS
+    $$EXTENSIONLESSHEADERS
 headers.path = $$INSTALL_PREFIX/include
 INSTALLS += headers
 
@@ -50,7 +50,7 @@ INSTALLS += lib
 macx:lib_bundle: { 
     FRAMEWORK_HEADERS.version = Versions
     FRAMEWORK_HEADERS.files = $$INSTALLHEADERS \
-        $$EXTENSIONLESS_HEADERS
+        $$EXTENSIONLESSHEADERS
     FRAMEWORK_HEADERS.path = Headers
     QMAKE_BUNDLE_DATA += FRAMEWORK_HEADERS
 }
