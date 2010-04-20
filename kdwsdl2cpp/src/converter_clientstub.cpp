@@ -303,8 +303,10 @@ void Converter::convertClientCall( const Operation &operation, const Binding &bi
 
   // Return value(s) :
   const Part::List outParts = outputMessage.parts();
-  if (outParts.count() > 1)
+  if (outParts.count() > 1) {
       qWarning().nospace() << "ERROR: " << methodName << ": complex return types are not implemented yet";
+      // TODO compare with the async code (convertClientOutputMessage), which actually supports it (if it works)
+  }
   QString retType;
   bool isBuiltin = false;
   bool isComplex = false;
@@ -325,11 +327,13 @@ void Converter::convertClientCall( const Operation &operation, const Binding &bi
   code += "return " + retType + "();"; // default-constructed value
   code.unindent();
 
+  // WARNING: if you change the logic below, also adapt the result parsing for async calls
+
   if ( isComplex && soapStyle == SoapBinding::DocumentStyle /*RPC style adds a wrapper, so we need first() */ ) {
       code += retType + " ret;"; // local var
       code += "ret.deserialize(QVariant::fromValue(d_ptr->m_lastReply.arguments()));";
       code += "return ret;";
-  } else {
+  } else { // RPC, or simple value
       if ( isBuiltin ) {
           code += QString("return d_ptr->m_lastReply.arguments().first().value().value<%1>();").arg(retType);
       } else {
@@ -451,12 +455,12 @@ void Converter::convertClientOutputMessage( const Operation &operation, const Pa
         doneSignal.addArgument( mTypeMap.localInputType( part.type(), part.element() ) + ' ' + lowerName );
     }
 
-    if ( isComplex ) {
+    if ( isComplex && soapStyle == SoapBinding::DocumentStyle /*RPC style adds a wrapper, so we need first() */ ) {
         slotCode += partType + " ret;"; // local var
         slotCode += "ret.deserialize(QVariant::fromValue(args));";
         partNames << "ret";
     } else {
-        const QString value = "args.value(QLatin1String(\"" + lowerName + "\"))";
+        const QString value = "args.value(QLatin1String(\"" + part.name() + "\"))";
         if ( isBuiltin ) {
             partNames << value + ".value<" + partType + ">()";
         } else {

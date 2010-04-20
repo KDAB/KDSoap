@@ -10,6 +10,8 @@
 #include <QEventLoop>
 #include <QDebug>
 
+Q_DECLARE_METATYPE(TNS__Set_entry_result)
+
 using namespace KDSoapUnitTestHelpers;
 
 static const char* xmlEnvBegin =
@@ -295,6 +297,27 @@ private Q_SLOTS:
             "</soap:Body>" + xmlEnvEnd
             + '\n'; // added by QXmlStreamWriter::writeEndDocument
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
+    }
+
+    void testParseComplexReplyWsdlAsync()
+    {
+        HttpServerThread server(complexTypeResponse(), HttpServerThread::Public);
+        Sugarsoap sugar(this);
+        sugar.setEndPoint(server.endPoint());
+        TNS__User_auth user_auth;
+        user_auth.setUser_name(QString::fromLatin1("user"));
+        user_auth.setPassword(QString::fromLatin1("pass"));
+        qRegisterMetaType<TNS__Set_entry_result>("TNS__Set_entry_result");
+        QSignalSpy loginDoneSpy(&sugar, SIGNAL(loginDone(TNS__Set_entry_result)));
+        sugar.asyncLogin(user_auth, QString::fromLatin1("application"));
+        QEventLoop loop;
+        connect(&sugar, SIGNAL(loginDone(TNS__Set_entry_result)), &loop, SLOT(quit()));
+        loop.exec();
+        const TNS__Set_entry_result result = loginDoneSpy[0][0].value<TNS__Set_entry_result>();
+        QCOMPARE(result.id(), QString::fromLatin1("12345"));
+        QCOMPARE(result.error().number(), QString::fromLatin1("0"));
+        QCOMPARE(result.error().name(), QString::fromLatin1("No Error"));
+        QCOMPARE(result.error().description(), QString::fromLatin1("No Error"));
     }
 
 private:
