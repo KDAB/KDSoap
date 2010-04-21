@@ -76,7 +76,7 @@ private:
 class HttpServerThread : public QThread
 {
     Q_OBJECT
-public:    
+public:
     enum Feature {
         Public = 0,    // HTTP with no ssl and no authentication needed
         Ssl = 1,       // HTTPS
@@ -158,6 +158,7 @@ protected:
             // Split headers and request xml
             const bool splitOK = splitHeadersAndData(request, m_receivedHeaders, m_receivedData);
             Q_ASSERT(splitOK);
+            Q_UNUSED(splitOK); // To avoid a warning if Q_ASSERT doesn't expand to anything.
             QMap<QByteArray, QByteArray> headers = parseHeaders(m_receivedHeaders);
 
             if (headers.value("_path").endsWith("terminateThread")) // we're asked to exit
