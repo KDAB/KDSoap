@@ -304,8 +304,8 @@ void Converter::convertClientCall( const Operation &operation, const Binding &bi
   // Return value(s) :
   const Part::List outParts = outputMessage.parts();
   if (outParts.count() > 1) {
-      qWarning().nospace() << "ERROR: " << methodName << ": complex return types are not implemented yet";
-      // TODO compare with the async code (convertClientOutputMessage), which actually supports it (if it works)
+      qWarning().nospace() << "ERROR: " << methodName << ": complex return types are not implemented yet in sync calls; use an async call";
+      // the async code (convertClientOutputMessage) actually supports it, since it can emit multiple values in the signal
   }
   QString retType;
   bool isBuiltin = false;
@@ -329,11 +329,11 @@ void Converter::convertClientCall( const Operation &operation, const Binding &bi
 
   // WARNING: if you change the logic below, also adapt the result parsing for async calls
 
-  if ( isComplex && soapStyle == SoapBinding::DocumentStyle /*RPC style adds a wrapper, so we need first() */ ) {
+  if ( isComplex && soapStyle == SoapBinding::DocumentStyle /*no wrapper*/ ) {
       code += retType + " ret;"; // local var
       code += "ret.deserialize(QVariant::fromValue(d_ptr->m_lastReply.arguments()));";
       code += "return ret;";
-  } else { // RPC, or simple value
+  } else { // RPC style (adds a wrapper), or simple value
       if ( isBuiltin ) {
           code += QString("return d_ptr->m_lastReply.arguments().first().value().value<%1>();").arg(retType);
       } else {
@@ -455,11 +455,11 @@ void Converter::convertClientOutputMessage( const Operation &operation, const Pa
         doneSignal.addArgument( mTypeMap.localInputType( part.type(), part.element() ) + ' ' + lowerName );
     }
 
-    if ( isComplex && soapStyle == SoapBinding::DocumentStyle /*RPC style adds a wrapper, so we need first() */ ) {
+    if ( isComplex && soapStyle == SoapBinding::DocumentStyle /*no wrapper*/ ) {
         slotCode += partType + " ret;"; // local var
         slotCode += "ret.deserialize(QVariant::fromValue(args));";
         partNames << "ret";
-    } else {
+    } else { // RPC style (adds a wrapper) or simple value
         const QString value = "args.value(QLatin1String(\"" + part.name() + "\"))";
         if ( isBuiltin ) {
             partNames << value + ".value<" + partType + ">()";
