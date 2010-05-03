@@ -7,7 +7,7 @@ from AutobuildCore.helpers.exceptdefs import AutobuildException
 from AutobuildCore import autobuildRoot
 
 # some variables:
-scmPath = 'svn+ssh://svn.kdab.net/home/SVN-klaralv/projects/Siemens/Soap/kdsoap'
+scmPath = 'svn+ssh://svn.kdab.net/home/SVN-klaralv/products/kdsoap'
 buildSequenceSwitches = 'enable-conf-create-installer'
 noDebug = ''
 noRelease = ''
