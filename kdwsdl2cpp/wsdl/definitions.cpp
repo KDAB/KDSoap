@@ -69,6 +69,7 @@ Binding::List Definitions::bindings() const
   return mBindings;
 }
 
+#if 0
 void Definitions::setImports( const Import::List &imports )
 {
   mImports = imports;
@@ -78,6 +79,7 @@ Import::List Definitions::imports() const
 {
   return mImports;
 }
+#endif
 
 void Definitions::setMessages( const Message::List &messages )
 {
@@ -124,15 +126,7 @@ bool Definitions::loadXML( ParserContext *context, const QDomElement &element )
   setTargetNamespace( element.attribute( "targetNamespace" ) );
   mName = element.attribute( "name" );
 
-  QDomNamedNodeMap attributes = element.attributes();
-  for ( int i = 0; i < attributes.count(); ++i ) {
-    QDomAttr attribute = attributes.item( i ).toAttr();
-    if ( attribute.name().startsWith( "xmlns:" ) ) {
-      QString prefix = attribute.name().mid( 6 );
-      //qDebug() << "Setting prefix" << prefix << "for ns" << attribute.value();
-      context->namespaceManager()->setPrefix( prefix, attribute.value() );
-    }
-  }
+  context->namespaceManager()->enterChild( element );
 
   bool foundService = false;
   QDomElement child = element.firstChildElement();
@@ -141,7 +135,7 @@ bool Definitions::loadXML( ParserContext *context, const QDomElement &element )
     if ( tagName.localName() == "import" ) {
       Import import( mTargetNamespace );
       import.loadXML( context, child );
-      mImports.append( import );
+      //mImports.append( import );
     } else if ( tagName.localName() == "types" ) {
       mType.loadXML( context, child );
     } else if ( tagName.localName() == "message" ) {
@@ -185,6 +179,7 @@ bool Definitions::loadXML( ParserContext *context, const QDomElement &element )
   return true;
 }
 
+#if 0
 void Definitions::saveXML( ParserContext *context, QDomDocument &document ) const
 {
   QDomElement element = document.createElement( "definitions" );
@@ -227,6 +222,7 @@ void Definitions::saveXML( ParserContext *context, QDomDocument &document ) cons
 
   mService.saveXML( context, &mBindings, document, element );
 }
+#endif
 
 void Definitions::setWantedService(const QString &name)
 {

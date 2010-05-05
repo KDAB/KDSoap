@@ -25,6 +25,8 @@
 
 #include <schema/parser.h>
 
+#include <QDebug>
+
 #include "type.h"
 
 using namespace KWSDL;
@@ -54,16 +56,21 @@ XSD::Types Type::types() const
 
 void Type::loadXML( ParserContext *context, const QDomElement &element )
 {
+  NSManager* nsManager = context->namespaceManager();
   QDomElement child = element.firstChildElement();
   while ( !child.isNull() ) {
-    QString tagName = context->namespaceManager()->fullName( XSD::Parser::schemaUri(), "schema" );
-    if ( child.tagName() == tagName ) {
+    nsManager->enterChild( child );
+    //qDebug() << nsManager->nameSpace( child ) << nsManager->localName( child );
+    if ( nsManager->nameSpace( child ) == XSD::Parser::schemaUri() &&
+         nsManager->localName( child ) == "schema" ) {
+      //qDebug() << "Loading schema" << nameSpace();
       XSD::Parser parser( nameSpace() );
       parser.parseSchemaTag( context, child );
 
-      mTypes = parser.types();
+      mTypes += parser.types();
     }
 
+    nsManager->exitChild( child );
     child = child.nextSiblingElement();
   }
 }

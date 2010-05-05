@@ -29,7 +29,7 @@ void Converter::convertClientService()
   const Service service = mWSDL.definitions().service();
   Q_ASSERT(!service.name().isEmpty());
 
-  KODE::Class newClass( KODE::Style::upperFirst(service.name()) );
+  KODE::Class newClass( KODE::Style::className(service.name()) );
   newClass.setUseDPointer( true, "d_ptr" /*avoid clash with possible d() method*/ );
   newClass.addBaseClass( mQObject );
   newClass.setDocs(service.documentation());
@@ -329,6 +329,9 @@ void Converter::convertClientCall( const Operation &operation, const Binding &bi
 
   // WARNING: if you change the logic below, also adapt the result parsing for async calls
 
+  if ( retType == "void" )
+      return;
+
   if ( isComplex && soapStyle == SoapBinding::DocumentStyle /*no wrapper*/ ) {
       code += retType + " ret;"; // local var
       code += "ret.deserialize(QVariant::fromValue(d_ptr->m_lastReply.arguments()));";
@@ -449,11 +452,11 @@ void Converter::convertClientOutputMessage( const Operation &operation, const Pa
     const bool isBuiltin = mTypeMap.isBuiltinType( part.type() );
     const bool isComplex = mTypeMap.isComplexType( part.type(), part.element() );
 
-    QString lowerName = mNameMapper.escape( lowerlize( part.name() ) );
+    if ( partType == "void" )
+        continue;
 
-    if ( partType != "void" ) {
-        doneSignal.addArgument( mTypeMap.localInputType( part.type(), part.element() ) + ' ' + lowerName );
-    }
+    QString lowerName = mNameMapper.escape( lowerlize( part.name() ) );
+    doneSignal.addArgument( mTypeMap.localInputType( part.type(), part.element() ) + ' ' + lowerName );
 
     if ( isComplex && soapStyle == SoapBinding::DocumentStyle /*no wrapper*/ ) {
         slotCode += partType + " ret;"; // local var

@@ -62,6 +62,21 @@ Types &Types::operator=( const Types &other )
   return *this;
 }
 
+Types &Types::operator +=(const Types &other)
+{
+    if ( this == &other )
+      return *this;
+
+    d->mSimpleTypes += other.d->mSimpleTypes;
+    d->mComplexTypes += other.d->mComplexTypes;
+    d->mElements += other.d->mElements;
+    d->mAttributes += other.d->mAttributes;
+    d->mAttributeGroups += other.d->mAttributeGroups;
+    d->mNamespaces += other.d->mNamespaces;
+
+    return *this;
+}
+
 void Types::setSimpleTypes( const SimpleType::List &simpleTypes )
 {
   d->mSimpleTypes = simpleTypes;

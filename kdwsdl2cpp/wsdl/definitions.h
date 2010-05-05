@@ -56,8 +56,8 @@ class KWSDL_EXPORT Definitions
     void setBindings( const Binding::List &bindings );
     Binding::List bindings() const;
 
-    void setImports( const Import::List &imports );
-    Import::List imports() const;
+    //void setImports( const Import::List &imports );
+    //Import::List imports() const;
 
     void setMessages( const Message::List &messages );
     Message::List messages() const;
@@ -72,11 +72,11 @@ class KWSDL_EXPORT Definitions
     Type type() const;
 
     bool loadXML( ParserContext *context, const QDomElement &element );
-    void saveXML( ParserContext *context, QDomDocument &document ) const;
+    //void saveXML( ParserContext *context, QDomDocument &document ) const;
 
   private:
     Binding::List mBindings;
-    Import::List mImports;
+    //Import::List mImports;
     Message::List mMessages;
     PortType::List mPortTypes;
     Service mService;

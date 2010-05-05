@@ -27,20 +27,26 @@
 
 #include <common/qname.h>
 #include <kode_export.h>
+class QDomElement;
 
 class KXMLCOMMON_EXPORT NSManager
 {
   public:
     NSManager();
 
+    void setCurrentNamespace( const QString& uri );
     void setPrefix( const QString &prefix, const QString &uri );
 
     QString prefix( const QString &uri ) const;
     QString uri( const QString &prefix ) const;
 
-    void splitName( const QString &qname, QString &prefix, QString &localname ) const;
     QString fullName( const QString &nameSpace, const QString &localname ) const;
     QString fullName( const QName &name ) const;
+
+    void enterChild( const QDomElement& element );
+    void exitChild( const QDomElement& element );
+    QString nameSpace( const QDomElement& element ) const;
+    QString localName( const QDomElement& element ) const;
 
     QStringList prefixes() const;
     QStringList uris() const;
@@ -54,7 +60,10 @@ class KXMLCOMMON_EXPORT NSManager
     void dump() const;
 
   private:
+    void splitName( const QString &qname, QString &prefix, QString &localname ) const;
+
     QMultiMap<QString, QString> mMap;
+    QString mCurrentNamespace;
 };
 
 #endif

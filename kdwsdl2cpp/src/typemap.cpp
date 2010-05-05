@@ -263,6 +263,9 @@ void TypeMap::addSchemaTypes( const XSD::Types &types )
     entry.complexType = true;
     entry.nameSpace = (*complexIt).nameSpace();
     entry.typeName = (*complexIt).name();
+
+    //qDebug() << "TypeMap: adding complex type" << entry.nameSpace << entry.typeName;
+
     if ( (*complexIt).isEmpty() )
         entry.localType = "void";
     else {
@@ -289,23 +292,29 @@ void TypeMap::addSchemaTypes( const XSD::Types &types )
     mAttributeMap.append( entry );
   }
 
-  XSD::Element::List elements = types.elements();
-  XSD::Element::List::ConstIterator elemIt;
-  for ( elemIt = elements.constBegin(); elemIt != elements.constEnd(); ++elemIt ) {
+  const XSD::Element::List elements = types.elements();
+  Q_FOREACH( const XSD::Element& elemIt, elements ) {
     Entry entry;
     entry.basicType = false;
     entry.builtinType = false;
-    entry.nameSpace = (*elemIt).nameSpace();
-    entry.typeName = (*elemIt).name();
+    entry.nameSpace = elemIt.nameSpace();
+    entry.typeName = elemIt.name();
 
-    QString resolvedType = localType( (*elemIt).type() );
+    QName type = elemIt.type();
+    if ( type.isEmpty() ) {
+        //if (entry.typeName == "anyType") // hack for http://schemas.xmlsoap.org/soap/encoding/
+        //    type = QName(XMLSchemaURI, "any");
+        //else
+            qDebug() << "ERROR: element without type" << elemIt.nameSpace() << elemIt.name();
+    }
+    QString resolvedType = localType( type );
     Q_ASSERT( !resolvedType.isEmpty() );
     entry.localType = resolvedType;
 
     // The "FooElement" type isn't necessary, we just point to the resolved type
     // directly, this is much simpler.
     /*} else {
-      entry.localType = mNSManager->prefix( entry.nameSpace ).toUpper() + "__" + adaptLocalTypeName( (*elemIt).name() + "Element" );
+      entry.localType = mNSManager->prefix( entry.nameSpace ).toUpper() + "__" + adaptLocalTypeName( elemIt.name() + "Element" );
     }*/
     //qDebug() << "Adding TypeMap entry for element" << entry.typeName << resolvedType;
     mElementMap.append( entry );

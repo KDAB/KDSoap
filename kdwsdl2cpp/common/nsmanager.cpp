@@ -22,11 +22,17 @@
 #include "nsmanager.h"
 
 #include <QDebug>
+#include <QDomElement>
 
 // maybe port to QXmlNamespaceSupport?
 
 NSManager::NSManager()
 {
+}
+
+void NSManager::setCurrentNamespace( const QString& uri )
+{
+    mCurrentNamespace = uri;
 }
 
 void NSManager::setPrefix( const QString &prefix, const QString &uri )
@@ -45,7 +51,9 @@ QString NSManager::prefix( const QString &uri ) const
 
 QString NSManager::uri( const QString &prefix ) const
 {
-  return mMap.key( prefix ); // linear search
+    if (prefix.isEmpty())
+        return mCurrentNamespace;
+    return mMap.key( prefix ); // linear search
 }
 
 void NSManager::splitName( const QString &qname, QString &prefix, QString &localname ) const
@@ -109,4 +117,44 @@ void NSManager::dump() const
   for ( it = mMap.begin(); it != mMap.end(); ++it ) {
     qDebug( "%s\t%s", qPrintable( it.value() ), qPrintable( it.key() ) );
   }
+}
+
+QString NSManager::nameSpace(const QDomElement &element) const
+{
+    if (!element.namespaceURI().isEmpty()) // namespace support was enabled in QDom: easy
+        return element.namespaceURI();
+
+    QString prefix, localname;
+    splitName( element.tagName(), prefix, localname );
+    return uri( prefix );
+}
+
+QString NSManager::localName(const QDomElement &element) const
+{
+    if (!element.namespaceURI().isEmpty()) // namespace support was enabled in QDom: easy
+        return element.localName();
+
+    QString prefix, localname;
+    splitName( element.tagName(), prefix, localname );
+    return localname;
+}
+
+void NSManager::enterChild(const QDomElement &element)
+{
+    const QDomNamedNodeMap attributes = element.attributes();
+    for ( int i = 0; i < attributes.count(); ++i ) {
+      QDomAttr attribute = attributes.item( i ).toAttr();
+      if ( attribute.name().startsWith( QLatin1String("xmlns:") ) ) {
+        QString prefix = attribute.name().mid( 6 );
+        setPrefix( prefix, attribute.value() );
+      } else if ( attribute.name() == "xmlns" ) {
+        setCurrentNamespace( attribute.value() );
+      }
+    }
+}
+
+void NSManager::exitChild(const QDomElement &)
+{
+    // TODO: pop everything that enterChild did when entering that element.
+    // We need a stack somehow...
 }
