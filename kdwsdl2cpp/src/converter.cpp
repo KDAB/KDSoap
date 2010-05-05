@@ -113,7 +113,7 @@ void Converter::cleanupUnusedTypes()
         const Operation::List operations = portType.operations();
         //qDebug() << "portType" << portType.name() << operations.count() << "operations";
         Q_FOREACH( const Operation& operation, operations ) {
-            //qDebug() << "  operation" << operation.operationType();
+            //qDebug() << "  operation" << operation.operationType() << operation.name();
             switch(operation.operationType()) {
             case Operation::OneWayOperation:
                 usedMessageNames.insert(operation.input().message());

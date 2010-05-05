@@ -277,6 +277,7 @@ void Converter::clientGenerateMessage( KODE::Code& code, const Binding& binding,
     }
 }
 
+// Generate synchronous call
 void Converter::convertClientCall( const Operation &operation, const Binding &binding, KODE::Class &newClass )
 {
   SoapBinding::Style soapStyle = SoapBinding::RPCStyle;
@@ -329,21 +330,23 @@ void Converter::convertClientCall( const Operation &operation, const Binding &bi
 
   // WARNING: if you change the logic below, also adapt the result parsing for async calls
 
-  if ( retType == "void" )
-      return;
+  if ( retType != "void" )
+  {
 
-  if ( isComplex && soapStyle == SoapBinding::DocumentStyle /*no wrapper*/ ) {
-      code += retType + " ret;"; // local var
-      code += "ret.deserialize(QVariant::fromValue(d_ptr->m_lastReply.arguments()));";
-      code += "return ret;";
-  } else { // RPC style (adds a wrapper), or simple value
-      if ( isBuiltin ) {
-          code += QString("return d_ptr->m_lastReply.arguments().first().value().value<%1>();").arg(retType);
-      } else {
+      if ( isComplex && soapStyle == SoapBinding::DocumentStyle /*no wrapper*/ ) {
           code += retType + " ret;"; // local var
-          code += "ret.deserialize(d_ptr->m_lastReply.arguments().first().value());";
+          code += "ret.deserialize(QVariant::fromValue(d_ptr->m_lastReply.arguments()));";
           code += "return ret;";
+      } else { // RPC style (adds a wrapper), or simple value
+          if ( isBuiltin ) {
+              code += QString("return d_ptr->m_lastReply.arguments().first().value().value<%1>();").arg(retType);
+          } else {
+              code += retType + " ret;"; // local var
+              code += "ret.deserialize(d_ptr->m_lastReply.arguments().first().value());";
+              code += "return ret;";
+          }
       }
+
   }
 
   callFunc.setBody( code );
@@ -351,6 +354,7 @@ void Converter::convertClientCall( const Operation &operation, const Binding &bi
   newClass.addFunction( callFunc );
 }
 
+// Generate async call method
 void Converter::convertClientInputMessage( const Operation &operation, const Param &param,
                                            const Binding &binding, KODE::Class &newClass )
 {
@@ -402,6 +406,7 @@ void Converter::convertClientInputMessage( const Operation &operation, const Par
   }
 }
 
+// Generate signals and the result slot, for async calls
 void Converter::convertClientOutputMessage( const Operation &operation, const Param &param,
                                             const Binding &binding, KODE::Class &newClass )
 {
