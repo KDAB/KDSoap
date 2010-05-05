@@ -819,6 +819,9 @@ void Parser::importSchema( ParserContext *context, const QString &location )
     if (location == QLatin1String("http://schemas.xmlsoap.org/wsdl/"))
         return;
 
+    if (location.startsWith("urn:")) // Can't download that :-)
+        return;
+
   FileProvider provider;
   QString fileName;
   qDebug() << "importSchema" << location;
