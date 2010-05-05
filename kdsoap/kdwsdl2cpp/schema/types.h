@@ -37,6 +37,7 @@ class SCHEMA_EXPORT Types
     ~Types();
 
     Types &operator=( const Types &other );
+    Types &operator+=( const Types &other );
 
     void setSimpleTypes( const SimpleType::List &simpleTypes );
     SimpleType::List simpleTypes() const;

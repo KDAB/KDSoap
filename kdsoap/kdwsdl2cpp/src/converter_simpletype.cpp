@@ -503,8 +503,9 @@ void Converter::createSimpleTypeSerializer( KODE::Class& newClass, const XSD::Si
 static QString escapeEnum( const QString &str )
 {
   QString enumStr = upperlize( str );
-
-  return enumStr.replace( "-", "_" );
+  enumStr.replace( "-", "_" );
+  enumStr.replace( ":", "_" ); // xsd:int -> xsd_int  (testcase: salesforce-partner.wsdl)
+  return enumStr;
 }
 
 static KODE::Code createRangeCheckCode( const XSD::SimpleType *type, const QString &variableName, KODE::Class &parentClass )
@@ -536,7 +537,7 @@ static KODE::Code createRangeCheckCode( const XSD::SimpleType *type, const QStri
   if ( type->facetType() & XSD::SimpleType::MAXLEN )
     code += "rangeOk = rangeOk && (" + variableName + ".length() <= " + QString::number( type->facetMaximumLength() ) + ");";
   if ( type->facetType() & XSD::SimpleType::PATTERN ) {
-    code += "QRegExp exp( \"" + type->facetPattern() + "\" );";
+      code += "QRegExp exp( QString::fromLatin1(\"" + type->facetPattern() + "\") );";
     code += "rangeOk = rangeOk && exp.exactMatch( " + variableName + " );";
 
     parentClass.addInclude( "QRegExp" );

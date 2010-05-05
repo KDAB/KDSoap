@@ -62,7 +62,7 @@ class KODE_EXPORT Style
      * The default implementation upper cases the first
      * character of the name.
      */
-    virtual QString className( const QString &str );
+    /*virtual*/ static QString className( const QString &str );
 
     /**
      * Returns a new version of @param str with the first

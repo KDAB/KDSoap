@@ -56,6 +56,8 @@ Variable::Variable( const QString &name, const QString &type, bool isStatic )
   d->mType = type;
   d->mIsStatic = isStatic;
 
+  Q_ASSERT(!name.isEmpty());
+
   if ( name.isEmpty() ) {
     d->mName = "mUndefined";
   } else {

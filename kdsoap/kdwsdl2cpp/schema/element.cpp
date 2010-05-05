@@ -21,6 +21,7 @@
  */
 
 #include "element.h"
+#include <QDebug>
 
 namespace XSD {
 
@@ -78,6 +79,7 @@ Element &Element::operator=( const Element &other )
 
 void Element::setType( const QName &type )
 {
+  Q_ASSERT(!type.isEmpty());
   d->mType = type;
 }
 
@@ -189,6 +191,13 @@ void Element::setCompositor( const Compositor &c )
 Compositor Element::compositor() const
 {
   return d->mCompositor;
+}
+
+void Element::List::dump()
+{
+    Q_FOREACH(const Element& element, *this) {
+        qDebug() << element.nameSpace() << element.name();
+    }
 }
 
 }

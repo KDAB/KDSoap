@@ -146,9 +146,15 @@ void Converter::cleanupUnusedTypes()
             } else {
                 const QName elemName = part.element();
                 XSD::Element element = mWSDL.findElement(elemName);
-                usedElementNames.insert(element.qualifiedName());
-                usedTypes.insert(element.type());
-                usedTypesStrings.insert(element.type().qname());
+                if (element.qualifiedName().isEmpty()) {
+                    qDebug() << "in message" << messageName << ": element not found:" << elemName.qname();
+                } else if (element.type().isEmpty()) {
+                    qDebug() << "in message" << messageName << ": element without type:" << elemName.qname();
+                } else {
+                    usedElementNames.insert(element.qualifiedName());
+                    usedTypes.insert(element.type());
+                    usedTypesStrings.insert(element.type().qname());
+                }
             }
         }
     }
@@ -208,7 +214,7 @@ void Converter::cleanupUnusedTypes()
         const QName name = elemIt.next();
         XSD::Element element = mWSDL.findElement(name);
         if (element.name().isEmpty())
-            qDebug() << name << "not found";
+            qDebug() << "cleanupUnusedTypes: element" << name << "not found";
         else
             usedElements.append(element);
     }

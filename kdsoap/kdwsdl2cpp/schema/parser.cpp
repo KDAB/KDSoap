@@ -136,8 +136,10 @@ bool Parser::parse( ParserContext *context, QXmlInputSource *source )
 bool Parser::parseSchemaTag( ParserContext *context, const QDomElement &root )
 {
   QName name = root.tagName();
-  if ( name.localName() != QLatin1String("schema") )
+  if ( name.localName() != QLatin1String("schema") ) {
+    qDebug() << "ERROR localName=" << name.localName();
     return false;
+  }
 
   NSManager *parentManager = context->namespaceManager();
   NSManager namespaceManager;
@@ -148,14 +150,7 @@ bool Parser::parseSchemaTag( ParserContext *context, const QDomElement &root )
 
   context->setNamespaceManager( &namespaceManager );
 
-  QDomNamedNodeMap attributes = root.attributes();
-  for ( int i = 0; i < attributes.count(); ++i ) {
-    QDomAttr attribute = attributes.item( i ).toAttr();
-    if ( attribute.name().startsWith( QLatin1String("xmlns:") ) ) {
-      QString prefix = attribute.name().mid( 6 );
-      context->namespaceManager()->setPrefix( prefix, attribute.value() );
-    }
-  }
+  context->namespaceManager()->enterChild(root);
 
   // This method can call itself recursively, so save/restore the member attribute.
   QString oldNamespace = d->mNameSpace;
@@ -167,7 +162,7 @@ bool Parser::parseSchemaTag( ParserContext *context, const QDomElement &root )
   QDomElement element = root.firstChildElement();
   while ( !element.isNull() ) {
     QName name = element.tagName();
-    //qDebug() << "Parsing" << name.localName();
+    //qDebug() << "Schema: parsing" << name.localName();
     if ( name.localName() == QLatin1String("import") ) {
       parseImport( context, element );
     } else if ( name.localName() == QLatin1String("element") ) {
@@ -378,6 +373,7 @@ Element Parser::parseElement( ParserContext *context,
   Element newElement( nameSpace );
 
   newElement.setName( element.attribute( "name" ) );
+  //qDebug() << "newElement namespace=" << nameSpace << "name=" << newElement.name();
 
   if ( element.hasAttribute( "form" ) ) {
     if ( element.attribute( "form" ) == "qualified" )
@@ -409,19 +405,21 @@ Element Parser::parseElement( ParserContext *context,
   if ( element.hasAttribute( "type" ) ) {
     QName typeName = element.attribute( "type" );
     typeName.setNameSpace( context->namespaceManager()->uri( typeName.prefix() ) );
+    //qDebug() << "typeName=" << typeName.qname() << "namespace=" << context->namespaceManager()->uri( typeName.prefix() );
     newElement.setType( typeName );
   } else {
     QDomElement childElement = element.firstChildElement();
 
     while ( !childElement.isNull() ) {
       QName childName = childElement.tagName();
-      //qDebug() << "Element" << childName.localName();
+      //qDebug() << "childName:" << childName.localName();
       if ( childName.localName() == "complexType" ) {
         ComplexType ct = parseComplexType( context, childElement );
 
         ct.setName( newElement.name() );
         d->mComplexTypes.append( ct );
 
+        //qDebug() << "  name is now" << ct.name() << "newElement.setType" << ct.qualifiedName();
         newElement.setType( ct.qualifiedName() );
       } else if ( childName.localName() == "simpleType" ) {
         SimpleType st = parseSimpleType( context, childElement );
@@ -440,13 +438,20 @@ Element Parser::parseElement( ParserContext *context,
     }
   }
 
+  if (newElement.type().isEmpty()) {
+    qDebug() << "ERROR: Element without type:" << newElement.qualifiedName() << newElement.nameSpace() << newElement.name();
+    Q_ASSERT(!newElement.type().isEmpty());
+  }
   return newElement;
 }
 
+// Testcase: salesforce-partner.wsdl has <any namespace="##targetNamespace" [...]/>
 void Parser::addAny( ParserContext*, const QDomElement &element, ComplexType &complexType )
 {
   Element newElement( complexType.nameSpace() );
   newElement.setName( "any" );
+  QName anyType( "http://www.w3.org/2001/XMLSchema", "any" );
+  newElement.setType( anyType );
   setOccurrenceAttributes( newElement, element );
 
   complexType.addElement( newElement );
@@ -723,7 +728,9 @@ void Parser::parseSimpleContent( ParserContext *context, const QDomElement &elem
 
 void Parser::addGlobalElement( const Element &newElement )
 {
-  // don't add elements twice
+    //qDebug() << "Adding global element" << newElement.qualifiedName();
+
+    // don't add elements twice
   bool found = false;
   for ( int i = 0; i < d->mElements.count(); ++i ) {
     if ( d->mElements[ i ].qualifiedName() == newElement.qualifiedName() ) {
@@ -805,8 +812,16 @@ static QUrl urlForLocation(ParserContext *context, const QString& location)
 
 void Parser::importSchema( ParserContext *context, const QString &location )
 {
+    // Ignore this one, we have it built into the typemap
+    if (location == QLatin1String("http://schemas.xmlsoap.org/soap/encoding/"))
+        return;
+    // Ignore this one, we don't need it, and it relies on soap/encoding
+    if (location == QLatin1String("http://schemas.xmlsoap.org/wsdl/"))
+        return;
+
   FileProvider provider;
   QString fileName;
+  qDebug() << "importSchema" << location;
   const QUrl schemaLocation = urlForLocation(context, location);
   qDebug("importing schema at %s", schemaLocation.toEncoded().constData());
   if ( provider.get( schemaLocation, fileName ) ) {
@@ -1003,6 +1018,8 @@ Types Parser::types() const
 
   types.setSimpleTypes( d->mSimpleTypes );
   types.setComplexTypes( d->mComplexTypes );
+  //qDebug() << "Parser::types";
+  //d->mElements.dump();
   types.setElements( d->mElements );
   types.setAttributes( d->mAttributes );
   types.setAttributeGroups( d->mAttributeGroups );

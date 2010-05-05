@@ -91,43 +91,55 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
     newClass.setDocs( type->documentation().simplified() );
 
   // elements
-  XSD::Element::List elements = type->elements();
-  XSD::Element::List::ConstIterator elemIt;
-  for ( elemIt = elements.constBegin(); elemIt != elements.constEnd(); ++elemIt ) {
-    QString typeName = mTypeMap.localType( (*elemIt).type() );
-    QString inputTypeName = mTypeMap.localInputType( (*elemIt).type(), QName() );
+  const XSD::Element::List elements = type->elements();
+  Q_FOREACH( const XSD::Element &elemIt, elements ) {
 
-    if ( (*elemIt).maxOccurs() > 1 ) {
-      typeName = "QList<" + typeName + ">";
-      inputTypeName = "const " + typeName + "&";
+      //qDebug() << elemIt.name() << elemIt.qualifiedName() << elemIt.type();
+      if (elemIt.type().isEmpty()) {
+          qDebug() << "ERROR: Element with no type:" << elemIt.name() << "(skipping)";
+          Q_ASSERT(false);
+          continue;
+      }
+
+    QString typeName = mTypeMap.localType( elemIt.type() );
+
+    if (typeName != "void") // void means empty element, probably just here for later extensions (testcase: SetPasswordResult in salesforce)
+    {
+
+        QString inputTypeName = mTypeMap.localInputType( elemIt.type(), QName() );
+
+        if ( elemIt.maxOccurs() > 1 ) {
+            typeName = "QList<" + typeName + ">";
+            inputTypeName = "const " + typeName + "&";
+        }
+
+        // member variables
+        KODE::MemberVariable variable( elemIt.name(), typeName );
+        newClass.addMemberVariable( variable );
+
+        const QString variableName = "d_ptr->" + variable.name();
+
+        const QString upperName = upperlize( elemIt.name() );
+        const QString lowerName = lowerlize( elemIt.name() );
+
+        // setter method
+        KODE::Function setter( "set" + upperName, "void" );
+        setter.addArgument( inputTypeName + ' ' + mNameMapper.escape( lowerName ) );
+        setter.setBody( variableName + " = " + mNameMapper.escape( lowerName ) + ';' );
+
+        // getter method
+        KODE::Function getter( mNameMapper.escape( lowerName ), typeName );
+        getter.setBody( "return " + variableName + ';' );
+        getter.setConst( true );
+
+        newClass.addFunction( setter );
+        newClass.addFunction( getter );
     }
 
-    // member variables
-    KODE::MemberVariable variable( (*elemIt).name(), typeName );
-    newClass.addMemberVariable( variable );
-
-    const QString variableName = "d_ptr->" + variable.name();
-
-    const QString upperName = upperlize( (*elemIt).name() );
-    const QString lowerName = lowerlize( (*elemIt).name() );
-
-    // setter method
-    KODE::Function setter( "set" + upperName, "void" );
-    setter.addArgument( inputTypeName + ' ' + mNameMapper.escape( lowerName ) );
-    setter.setBody( variableName + " = " + mNameMapper.escape( lowerName ) + ';' );
-
-    // getter method
-    KODE::Function getter( mNameMapper.escape( lowerName ), typeName );
-    getter.setBody( "return " + variableName + ';' );
-    getter.setConst( true );
-
-    newClass.addFunction( setter );
-    newClass.addFunction( getter );
-
     // include header
-    newClass.addIncludes( QStringList(), mTypeMap.forwardDeclarations( (*elemIt).type() ) );
-    newClass.addHeaderIncludes( mTypeMap.headerIncludes( (*elemIt).type() ) );
-    if ( (*elemIt).maxOccurs() > 1 )
+    newClass.addIncludes( QStringList(), mTypeMap.forwardDeclarations( elemIt.type() ) );
+    newClass.addHeaderIncludes( mTypeMap.headerIncludes( elemIt.type() ) );
+    if ( elemIt.maxOccurs() > 1 )
       newClass.addHeaderIncludes( QStringList( "QList" ) );
   }
 
@@ -257,6 +269,12 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
 
         const QString elemName = elem.name();
         const QString typeName = mTypeMap.localType( elem.type() );
+
+        Q_ASSERT(!typeName.isEmpty());
+
+        if ( typeName == "void" )
+            continue;
+
         KODE::MemberVariable variable( elemName, typeName ); // was already added; this is just for the naming
         const QString variableName = "d_ptr->" + variable.name();
 
