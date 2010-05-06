@@ -129,6 +129,14 @@ QNetworkRequest KDSoapClientInterface::Private::prepareRequest(const QString &me
     }
     //qDebug() << "soapAction=" << soapAction;
     request.setRawHeader("SoapAction", soapAction.toUtf8());
+    
+    // FIXME need to find out which version of Qt this is no longer necessary
+    // without that the server might respond with gzip compressed data and
+    // Qt 4.6.2 fails to decode that properly
+    //
+    // happens with retrieval calls in against SugarCRM 5.5.1 running on Apache 2.2.15
+    // when the response seems to reach a certain size threshold
+    request.setRawHeader( "Accept-Encoding", "compress" );
 
     return request;
 }
