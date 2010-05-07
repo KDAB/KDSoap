@@ -47,7 +47,9 @@ public:
      * for the whole duration of the call. If you do not want to wait for a response,
      * use callNoReply instead.
      */ // TODO code example
-    KDSoapPendingCall asyncCall(const QString& method, const KDSoapMessage &message, const QString& soapAction = QString());
+    KDSoapPendingCall asyncCall(const QString& method, const KDSoapMessage &message,
+                                const QString& soapAction = QString(),
+                                const QList<KDSoapMessage>& headers = QList<KDSoapMessage>());
 
     /**
      * Calls the method @p method on this interface and passes the parameters specified in @p message
@@ -58,7 +60,9 @@ public:
      * graphical applications, since it will block the event loop for the duration of the call.
      * Use this only in threads, or in non-GUI programs.
      */
-    KDSoapMessage call(const QString& method, const KDSoapMessage &message, const QString& soapAction = QString());
+    KDSoapMessage call(const QString& method, const KDSoapMessage &message,
+                       const QString& soapAction = QString(),
+                       const QList<KDSoapMessage>& headers = QList<KDSoapMessage>());
 
     /**
      * Calls the method @p method on this interface and passes the parameters specified in @p message
@@ -68,7 +72,9 @@ public:
      * This is an asynchronous call, where the caller does not want to wait for a response.
      * The method returns immediately, the call is performed later. No error handling is possible.
      */
-    void callNoReply(const QString& method, const KDSoapMessage &message, const QString& soapAction = QString());
+    void callNoReply(const QString& method, const KDSoapMessage &message,
+                     const QString& soapAction = QString(),
+                     const QList<KDSoapMessage>& headers = QList<KDSoapMessage>());
 
     /**
      * Provide the necessary authentication for this service.
