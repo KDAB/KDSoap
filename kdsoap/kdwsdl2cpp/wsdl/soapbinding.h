@@ -194,6 +194,15 @@ class KWSDL_EXPORT SoapBinding : public AbstractBinding
         QString mNameSpace;
     };
 
+    class Headers : public QList<Header>
+    {
+    };
+
+    /**
+     * <operation> as defined in a soap <binding>.
+     * Contains some flags for input and output (e.g. <output><soap:body use="literal"/></output>
+     * but also the full definition of <soap:headers> for <input>.
+     */
     class KWSDL_EXPORT Operation
     {
       public:
@@ -222,11 +231,11 @@ class KWSDL_EXPORT SoapBinding : public AbstractBinding
         void setOutput( const Body &output );
         Body output() const;
 
-        void setInputHeader( const Header &inputHeader );
-        Header inputHeader() const;
+        void addInputHeader( const Header &inputHeader );
+        Headers inputHeaders() const;
 
-        void setOutputHeader( const Header &outputHeader );
-        Header outputHeader() const;
+        void addOutputHeader( const Header &outputHeader );
+        Headers outputHeaders() const;
 
         void setFault( const Fault &fault );
         Fault fault() const;
@@ -236,9 +245,9 @@ class KWSDL_EXPORT SoapBinding : public AbstractBinding
         QString mSoapAction;
         Style mStyle;
         Body mInputBody;
-        Header mInputHeader;
+        Headers mInputHeaders;
         Body mOutputBody;
-        Header mOutputHeader;
+        Headers mOutputHeaders;
         Fault mFault;
     };
 

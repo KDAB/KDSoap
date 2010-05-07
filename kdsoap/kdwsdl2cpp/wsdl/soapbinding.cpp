@@ -205,24 +205,24 @@ SoapBinding::Body SoapBinding::Operation::output() const
   return mOutputBody;
 }
 
-void SoapBinding::Operation::setInputHeader( const Header &inputHeader )
+void SoapBinding::Operation::addInputHeader( const Header &inputHeader )
 {
-  mInputHeader = inputHeader;
+  mInputHeaders << inputHeader;
 }
 
-SoapBinding::Header SoapBinding::Operation::inputHeader() const
+SoapBinding::Headers SoapBinding::Operation::inputHeaders() const
 {
-  return mInputHeader;
+  return mInputHeaders;
 }
 
-void SoapBinding::Operation::setOutputHeader( const Header &outputHeader )
+void SoapBinding::Operation::addOutputHeader( const Header &outputHeader )
 {
-  mOutputHeader = outputHeader;
+  mOutputHeaders << outputHeader;
 }
 
-SoapBinding::Header SoapBinding::Operation::outputHeader() const
+SoapBinding::Headers SoapBinding::Operation::outputHeaders() const
 {
-  return mOutputHeader;
+  return mOutputHeaders;
 }
 
 void SoapBinding::Operation::setFault( const Fault &fault )
@@ -744,6 +744,7 @@ void SoapBinding::parseOperation( ParserContext *context, const QString &name, c
   }
 }
 
+// Parse <operation><input>
 void SoapBinding::parseOperationInput( ParserContext *context, const QString &name, const QDomElement &parent )
 {
   QDomElement child = parent.firstChildElement();
@@ -757,13 +758,14 @@ void SoapBinding::parseOperationInput( ParserContext *context, const QString &na
       Operation &op = mOperations[ name ];
       Header inputHeader;
       inputHeader.loadXML( context, child );
-      op.setInputHeader( inputHeader );
+      op.addInputHeader( inputHeader );
     }
 
     child = child.nextSiblingElement();
   }
 }
 
+// Parse <operation><output>
 void SoapBinding::parseOperationOutput( ParserContext *context, const QString &name, const QDomElement &parent )
 {
   QDomElement child = parent.firstChildElement();
@@ -777,7 +779,7 @@ void SoapBinding::parseOperationOutput( ParserContext *context, const QString &n
       Operation &op = mOperations[ name ];
       Header outputHeader;
       outputHeader.loadXML( context, child );
-      op.setOutputHeader( outputHeader );
+      op.addOutputHeader( outputHeader );
     }
 
     child = child.nextSiblingElement();
@@ -826,14 +828,18 @@ void SoapBinding::synthesizeOperationInput( ParserContext *context, const QStrin
 {
   const Operation &op = mOperations[ name ];
   op.input().saveXML( context, document, parent );
-  op.inputHeader().saveXML( context, document, parent );
+  Q_FOREACH(const Header& header, op.inputHeaders()) {
+      header.saveXML( context, document, parent );
+  }
 }
 
 void SoapBinding::synthesizeOperationOutput( ParserContext *context, const QString &name, QDomDocument &document, QDomElement &parent ) const
 {
   const Operation &op = mOperations[ name ];
   op.output().saveXML( context, document, parent );
-  op.outputHeader().saveXML( context, document, parent );
+  Q_FOREACH(const Header& header, op.outputHeaders()) {
+      header.saveXML( context, document, parent );
+  }
 }
 
 void SoapBinding::synthesizeOperationFault( ParserContext *context, const QString &name, QDomDocument &document, QDomElement &parent ) const

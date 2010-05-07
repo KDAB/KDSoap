@@ -35,6 +35,10 @@ class ParserContext;
 
 namespace KWSDL {
 
+/**
+ * <operation> as defined inside <portType>.
+ * Contains input message, output message, and faults.
+ */
 class KWSDL_EXPORT Operation : public Element
 {
   public:
