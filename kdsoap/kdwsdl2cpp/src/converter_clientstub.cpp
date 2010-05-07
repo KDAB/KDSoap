@@ -137,23 +137,23 @@ void Converter::convertClientService()
         Operation::OperationType opType = (*opIt).operationType();
         switch(opType) {
         case Operation::OneWayOperation:
-            convertClientInputMessage( *opIt, (*opIt).input(), binding, newClass );
+            convertClientInputMessage( *opIt, binding, newClass );
             break;
         case Operation::RequestResponseOperation: // the standard case
             // sync method
             convertClientCall( *opIt, binding, newClass );
             // async method
-            convertClientInputMessage( *opIt, (*opIt).input(), binding, newClass );
-            convertClientOutputMessage( *opIt, (*opIt).output(), binding, newClass );
+            convertClientInputMessage( *opIt, binding, newClass );
+            convertClientOutputMessage( *opIt, binding, newClass );
             // TODO fault
             break;
         case Operation::SolicitResponseOperation:
-            convertClientOutputMessage( *opIt, (*opIt).output(), binding, newClass );
-            convertClientInputMessage( *opIt, (*opIt).input(), binding, newClass );
+            convertClientOutputMessage( *opIt, binding, newClass );
+            convertClientInputMessage( *opIt, binding, newClass );
             // TODO fault
             break;
         case Operation::NotificationOperation:
-            convertClientOutputMessage( *opIt, (*opIt).output(), binding, newClass );
+            convertClientOutputMessage( *opIt, binding, newClass );
             break;
         }
     }
@@ -342,7 +342,7 @@ void Converter::convertClientCall( const Operation &operation, const Binding &bi
 }
 
 // Generate async call method
-void Converter::convertClientInputMessage( const Operation &operation, const Param &param,
+void Converter::convertClientInputMessage( const Operation &operation,
                                            const Binding &binding, KODE::Class &newClass )
 {
   QString operationName = operation.name();
@@ -352,7 +352,7 @@ void Converter::convertClientInputMessage( const Operation &operation, const Par
                     .arg(operation.name())
                     .arg(lowerlize(operationName) + "Done")
                     .arg(lowerlize(operationName) + "Error"));
-  const Message message = mWSDL.findMessage( param.message() );
+  const Message message = mWSDL.findMessage( operation.input().message() );
   clientAddArguments( asyncFunc, message, newClass );
   KODE::Code code;
   const bool hasAction = clientAddAction( code, binding, operation.name() );
@@ -377,7 +377,7 @@ void Converter::convertClientInputMessage( const Operation &operation, const Par
 }
 
 // Generate signals and the result slot, for async calls
-void Converter::convertClientOutputMessage( const Operation &operation, const Param &param,
+void Converter::convertClientOutputMessage( const Operation &operation,
                                             const Binding &binding, KODE::Class &newClass )
 {
   SoapBinding::Style soapStyle = SoapBinding::RPCStyle;
@@ -417,7 +417,7 @@ void Converter::convertClientOutputMessage( const Operation &operation, const Pa
   slotCode.indent();
   slotCode += "const KDSoapValueList args = reply.arguments();";
 
-  const Message message = mWSDL.findMessage( param.message() );
+  const Message message = mWSDL.findMessage( operation.output().message() );
 
   QStringList partNames;
   const Part::List parts = message.parts();
