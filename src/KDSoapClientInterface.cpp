@@ -158,7 +158,7 @@ public:
     }
 };
 
-QBuffer* KDSoapClientInterface::Private::prepareRequestBuffer(const QString& method, const KDSoapMessage& message)
+QBuffer* KDSoapClientInterface::Private::prepareRequestBuffer(const QString& method, const KDSoapMessage& message, const QList<KDSoapMessage>& headers)
 {
     QByteArray data;
     QXmlStreamWriter writer(&data);
@@ -177,12 +177,7 @@ QBuffer* KDSoapClientInterface::Private::prepareRequestBuffer(const QString& met
     writer.writeStartElement(soapNS, QLatin1String("Envelope"));
     writer.writeAttribute(soapNS, QLatin1String("encodingStyle"), QLatin1String("http://schemas.xmlsoap.org/soap/encoding/"));
 
-    // TODO writer.writeStartElement(soapNS, QLatin1String("Header"));
-    // see commented out code in Converter::convertClientInputMessage
-
-    writer.writeStartElement(soapNS, QLatin1String("Body"));
-
-    // This would add it to <Body>, which looks ugly and unusual (and breaks all unittests)
+    // This would add it to <Body> (or even <Envelope> now), which looks ugly and unusual (and breaks all unittests)
     //namespacePrefixes.writeNamespace(writer, this->m_messageNamespace, QLatin1String("n1") /*make configurable?*/);
     // So we just rely on Qt calling it n1 and insert it into the map.
     // Calling this after the writeStartElement below leads to a double-definition of n1.
@@ -192,6 +187,15 @@ QBuffer* KDSoapClientInterface::Private::prepareRequestBuffer(const QString& met
     namespacePrefixes.insert(QString::fromLatin1("http://www.w3.org/2001/XMLSchema"), QString::fromLatin1("xsd"));
     namespacePrefixes.insert(QString::fromLatin1("http://www.w3.org/2001/XMLSchema-instance"), QString::fromLatin1("xsi"));
 
+    if (!headers.isEmpty()) {
+        writer.writeStartElement(soapNS, QLatin1String("Header"));
+        Q_FOREACH(const KDSoapMessage& header, headers) {
+            writeArguments(namespacePrefixes, writer, header.d->args, header.use());
+        }
+        writer.writeEndElement(); // Header
+    }
+
+    writer.writeStartElement(soapNS, QLatin1String("Body"));
     writer.writeStartElement(this->m_messageNamespace, method);
 
     // Arguments
@@ -244,20 +248,20 @@ void KDSoapClientInterface::Private::writeArguments(KDSoapNamespacePrefixes& nam
     }
 }
 
-KDSoapPendingCall KDSoapClientInterface::asyncCall(const QString &method, const KDSoapMessage &message, const QString& soapAction)
+KDSoapPendingCall KDSoapClientInterface::asyncCall(const QString &method, const KDSoapMessage &message, const QString& soapAction, const QList<KDSoapMessage>& headers)
 {
-    QBuffer* buffer = d->prepareRequestBuffer(method, message);
+    QBuffer* buffer = d->prepareRequestBuffer(method, message, headers);
     QNetworkRequest request = d->prepareRequest(method, soapAction);
     QNetworkReply* reply = d->m_accessManager.post(request, buffer);
     return KDSoapPendingCall(reply, buffer);
 }
 
-KDSoapMessage KDSoapClientInterface::call(const QString& method, const KDSoapMessage &message, const QString& soapAction)
+KDSoapMessage KDSoapClientInterface::call(const QString& method, const KDSoapMessage &message, const QString& soapAction, const QList<KDSoapMessage>& headers)
 {
     // Problem is: I don't want a nested event loop here. Too dangerous for GUI programs.
     // I wanted a socket->waitFor... but we don't have access to the actual socket in QNetworkAccess.
     // So the only option that remains is a thread and acquiring a semaphore...
-    KDSoapThreadTaskData* task = new KDSoapThreadTaskData(this, method, message, soapAction);
+    KDSoapThreadTaskData* task = new KDSoapThreadTaskData(this, method, message, soapAction, headers);
     task->m_authentication = d->m_authentication;
     d->m_thread.enqueue(task);
     if (!d->m_thread.isRunning())
@@ -268,9 +272,9 @@ KDSoapMessage KDSoapClientInterface::call(const QString& method, const KDSoapMes
     return ret;
 }
 
-void KDSoapClientInterface::callNoReply(const QString &method, const KDSoapMessage &message, const QString &soapAction)
+void KDSoapClientInterface::callNoReply(const QString &method, const KDSoapMessage &message, const QString &soapAction, const QList<KDSoapMessage>& headers)
 {
-    QBuffer* buffer = d->prepareRequestBuffer(method, message);
+    QBuffer* buffer = d->prepareRequestBuffer(method, message, headers);
     QNetworkRequest request = d->prepareRequest(method, soapAction);
     QNetworkReply* reply = d->m_accessManager.post(request, buffer);
     QObject::connect(reply, SIGNAL(finished()), reply, SLOT(deleteLater()));

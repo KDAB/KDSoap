@@ -17,8 +17,8 @@ class QEventLoop;
 class KDSoapThreadTaskData
 {
 public:
-    KDSoapThreadTaskData(KDSoapClientInterface* iface, const QString& method, const KDSoapMessage &message, const QString& action)
-        : m_iface(iface), m_method(method), m_message(message), m_action(action) {}
+    KDSoapThreadTaskData(KDSoapClientInterface* iface, const QString& method, const KDSoapMessage &message, const QString& action, const QList<KDSoapMessage>& headers)
+        : m_iface(iface), m_method(method), m_message(message), m_action(action), m_headers(headers) {}
 
     void waitForCompletion() { m_semaphore.acquire(); }
     KDSoapMessage returnArguments() const { return m_returnArguments; }
@@ -30,6 +30,7 @@ public:
     QString m_action;
     QSemaphore m_semaphore;
     KDSoapMessage m_returnArguments;
+    QList<KDSoapMessage> m_headers;
 };
 
 class KDSoapThreadTask : public QObject
