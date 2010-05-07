@@ -166,47 +166,6 @@ void Converter::convertClientService()
   mClasses.append(newClass);
 }
 
-// This code was in convertClientInputMessage
-#ifdef KDAB_TEMP
-{
-  // handle soap header
-  QString soapHeaderType;
-  QString soapHeaderName;
-  SoapBinding::Style soapStyle = SoapBinding::RPCStyle;
-  SoapBinding::Body soapBody;
-
-  if ( binding.type() == Binding::SOAPBinding ) {
-    const SoapBinding soapBinding = binding.soapBinding();
-    soapStyle = soapBinding.binding().style();
-    const SoapBinding::Operation::Map operations = soapBinding.operations();
-    const SoapBinding::Operation soapOperation = operations[ operation.name() ];
-    soapBody = soapOperation.input();
-    const SoapBinding::Header header = soapOperation.inputHeader();
-
-    if ( !header.message().isEmpty() ) {
-      const Message message = mWSDL.findMessage( header.message() );
-      const Part::List parts = message.parts();
-      for ( int i = 0; i < parts.count(); ++i ) {
-        if ( parts[ i ].name() == header.part() ) {
-          QName type = parts[ i ].type();
-          if ( !type.isEmpty() ) {
-            soapHeaderType = mTypeMap.localType( type );
-            soapHeaderName = mNSManager.fullName( type.nameSpace(), type.localName() );
-          } else {
-            QName element = parts[ i ].element();
-            soapHeaderType = mTypeMap.localTypeForElement( element );
-            soapHeaderName = mNSManager.fullName( element.nameSpace(), element.localName() );
-          }
-
-          callFunc.addArgument( soapHeaderType + " *_header" );
-          break;
-        }
-      }
-    }
-  }
-}
-#endif
-
 void Converter::clientAddArguments( KODE::Function& callFunc, const Message& message, KODE::Class &newClass )
 {
     const Part::List parts = message.parts();
@@ -247,6 +206,7 @@ void Converter::clientGenerateMessage( KODE::Code& code, const Binding& binding,
             code += "message.setUse(KDSoapMessage::EncodedUse);";
         else
             code += "message.setUse(KDSoapMessage::LiteralUse);";
+        //qDebug() << "input headers:" << op.inputHeaders().count();
     }
 
     const Part::List parts = message.parts();
@@ -275,6 +235,33 @@ void Converter::clientGenerateMessage( KODE::Code& code, const Binding& binding,
             }
         }
     }
+
+    // This code was in convertClientInputMessage
+    #ifdef KDAB_TEMP
+    {
+      // handle soap header
+
+        if ( !header.message().isEmpty() ) {
+          const Message message = mWSDL.findMessage( header.message() );
+          const Part::List parts = message.parts();
+          for ( int i = 0; i < parts.count(); ++i ) {
+            if ( parts[ i ].name() == header.part() ) {
+              QName type = parts[ i ].type();
+              if ( !type.isEmpty() ) {
+                soapHeaderType = mTypeMap.localType( type );
+                soapHeaderName = mNSManager.fullName( type.nameSpace(), type.localName() );
+              } else {
+                QName element = parts[ i ].element();
+                soapHeaderType = mTypeMap.localTypeForElement( element );
+                soapHeaderName = mNSManager.fullName( element.nameSpace(), element.localName() );
+              }
+
+              callFunc.addArgument( soapHeaderType + " *_header" );
+              break;
+            }
+    }
+    #endif
+
 }
 
 // Generate synchronous call
@@ -370,23 +357,6 @@ void Converter::convertClientInputMessage( const Operation &operation, const Par
   KODE::Code code;
   const bool hasAction = clientAddAction( code, binding, operation.name() );
   clientGenerateMessage( code, binding, message, operation );
-
-#ifdef KDAB_TEMP
-  const QStringList prefixes = mNSManager.prefixes();
-  for ( int i = 0; i < prefixes.count(); ++i )
-    code += "env.setAttribute( \"xmlns:" + prefixes[ i ] + "\", \"" + mNSManager.uri( prefixes[ i ] ) + "\" );";
-
-  // if SOAP style is RPC, we have to add an extra wrapper element
-  if ( soapStyle == SoapBinding::RPCStyle ) {
-    code += "QDomElement wrapper = doc.createElement( \"" + mNSManager.fullName( soapBody.nameSpace(), operation.name() ) + "\" );";
-    // encodingStyle can be empty or not existent, we have to differ here
-    if ( !soapBody.encodingStyle().isNull() )
-      code += "wrapper.setAttribute( \"SOAP-ENV:encodingStyle\", \"" + soapBody.encodingStyle() + "\" );";
-    code += "body.appendChild( wrapper );";
-
-    parentNode = "wrapper";
-  }
-#endif
 
   QString callLine = "KDSoapPendingCall pendingCall = clientInterface()->asyncCall(QLatin1String(\"" + operationName + "\"), message";
   if (hasAction) {
