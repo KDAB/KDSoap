@@ -49,7 +49,7 @@ public:
      */ // TODO code example
     KDSoapPendingCall asyncCall(const QString& method, const KDSoapMessage &message,
                                 const QString& soapAction = QString(),
-                                const QList<KDSoapMessage>& headers = QList<KDSoapMessage>());
+                                const KDSoapHeaders& headers = KDSoapHeaders());
 
     /**
      * Calls the method @p method on this interface and passes the parameters specified in @p message
@@ -62,7 +62,7 @@ public:
      */
     KDSoapMessage call(const QString& method, const KDSoapMessage &message,
                        const QString& soapAction = QString(),
-                       const QList<KDSoapMessage>& headers = QList<KDSoapMessage>());
+                       const KDSoapHeaders& headers = KDSoapHeaders());
 
     /**
      * Calls the method @p method on this interface and passes the parameters specified in @p message
@@ -74,7 +74,7 @@ public:
      */
     void callNoReply(const QString& method, const KDSoapMessage &message,
                      const QString& soapAction = QString(),
-                     const QList<KDSoapMessage>& headers = QList<KDSoapMessage>());
+                     const KDSoapHeaders& headers = KDSoapHeaders());
 
     /**
      * Provide the necessary authentication for this service.

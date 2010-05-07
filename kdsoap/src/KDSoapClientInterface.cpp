@@ -158,7 +158,7 @@ public:
     }
 };
 
-QBuffer* KDSoapClientInterface::Private::prepareRequestBuffer(const QString& method, const KDSoapMessage& message, const QList<KDSoapMessage>& headers)
+QBuffer* KDSoapClientInterface::Private::prepareRequestBuffer(const QString& method, const KDSoapMessage& message, const KDSoapHeaders& headers)
 {
     QByteArray data;
     QXmlStreamWriter writer(&data);
@@ -174,18 +174,23 @@ QBuffer* KDSoapClientInterface::Private::prepareRequestBuffer(const QString& met
     namespacePrefixes.writeNamespace(writer, xmlSchemaNS, QLatin1String("xsd"));
     namespacePrefixes.writeNamespace(writer, QLatin1String(xmlSchemaInstanceNS), QLatin1String("xsi"));
 
-    writer.writeStartElement(soapNS, QLatin1String("Envelope"));
-    writer.writeAttribute(soapNS, QLatin1String("encodingStyle"), QLatin1String("http://schemas.xmlsoap.org/soap/encoding/"));
-
-    // This would add it to <Body> (or even <Envelope> now), which looks ugly and unusual (and breaks all unittests)
-    //namespacePrefixes.writeNamespace(writer, this->m_messageNamespace, QLatin1String("n1") /*make configurable?*/);
-    // So we just rely on Qt calling it n1 and insert it into the map.
-    // Calling this after the writeStartElement below leads to a double-definition of n1.
-    namespacePrefixes.insert(this->m_messageNamespace, QString::fromLatin1("n1"));
-
     // Also insert known variants
     namespacePrefixes.insert(QString::fromLatin1("http://www.w3.org/2001/XMLSchema"), QString::fromLatin1("xsd"));
     namespacePrefixes.insert(QString::fromLatin1("http://www.w3.org/2001/XMLSchema-instance"), QString::fromLatin1("xsi"));
+
+    writer.writeStartElement(soapNS, QLatin1String("Envelope"));
+    writer.writeAttribute(soapNS, QLatin1String("encodingStyle"), QLatin1String("http://schemas.xmlsoap.org/soap/encoding/"));
+
+    // This lines adds the xmlns:n1 to <Envelope>, which looks ugly and unusual (and breaks all unittests)
+    // However it's the best solution in case of headers, otherwise we get n1 in the header and n2 in the body,
+    // and xsi:type attributes that refer to n1, which isn't defined in the body...
+    if (!headers.isEmpty()) {
+        namespacePrefixes.writeNamespace(writer, this->m_messageNamespace, QLatin1String("n1") /*make configurable?*/);
+    } else {
+        // So in the standard case (no headers) we just rely on Qt calling it n1 and insert it into the map.
+        // Calling this after the writeStartElement(method) below leads to a double-definition of n1.
+        namespacePrefixes.insert(this->m_messageNamespace, QString::fromLatin1("n1"));
+    }
 
     if (!headers.isEmpty()) {
         writer.writeStartElement(soapNS, QLatin1String("Header"));
@@ -248,7 +253,7 @@ void KDSoapClientInterface::Private::writeArguments(KDSoapNamespacePrefixes& nam
     }
 }
 
-KDSoapPendingCall KDSoapClientInterface::asyncCall(const QString &method, const KDSoapMessage &message, const QString& soapAction, const QList<KDSoapMessage>& headers)
+KDSoapPendingCall KDSoapClientInterface::asyncCall(const QString &method, const KDSoapMessage &message, const QString& soapAction, const KDSoapHeaders& headers)
 {
     QBuffer* buffer = d->prepareRequestBuffer(method, message, headers);
     QNetworkRequest request = d->prepareRequest(method, soapAction);
@@ -256,7 +261,7 @@ KDSoapPendingCall KDSoapClientInterface::asyncCall(const QString &method, const 
     return KDSoapPendingCall(reply, buffer);
 }
 
-KDSoapMessage KDSoapClientInterface::call(const QString& method, const KDSoapMessage &message, const QString& soapAction, const QList<KDSoapMessage>& headers)
+KDSoapMessage KDSoapClientInterface::call(const QString& method, const KDSoapMessage &message, const QString& soapAction, const KDSoapHeaders& headers)
 {
     // Problem is: I don't want a nested event loop here. Too dangerous for GUI programs.
     // I wanted a socket->waitFor... but we don't have access to the actual socket in QNetworkAccess.
@@ -272,7 +277,7 @@ KDSoapMessage KDSoapClientInterface::call(const QString& method, const KDSoapMes
     return ret;
 }
 
-void KDSoapClientInterface::callNoReply(const QString &method, const KDSoapMessage &message, const QString &soapAction, const QList<KDSoapMessage>& headers)
+void KDSoapClientInterface::callNoReply(const QString &method, const KDSoapMessage &message, const QString &soapAction, const KDSoapHeaders& headers)
 {
     QBuffer* buffer = d->prepareRequestBuffer(method, message, headers);
     QNetworkRequest request = d->prepareRequest(method, soapAction);
