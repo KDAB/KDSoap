@@ -83,6 +83,14 @@ private:
 };
 
 /**
+ * Set of headers that can be provided when making a SOAP call.
+ * @see KDSoapClientInterface
+ */
+class KDSoapHeaders : public QList<KDSoapMessage>
+{
+};
+
+/**
  * Support for debugging KDSoapMessage objects via qDebug() << msg;
  */
 QDebug operator<<(QDebug dbg, const KDSoapMessage &msg);

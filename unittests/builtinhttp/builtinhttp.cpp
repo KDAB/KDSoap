@@ -21,7 +21,7 @@ static const char* xmlEnvBegin =
         " xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\""
         " xmlns:xsd=\"http://www.w3.org/1999/XMLSchema\""
         " xmlns:xsi=\"http://www.w3.org/1999/XMLSchema-instance\""
-        " soap:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\">";
+        " soap:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\"";
 static const char* xmlEnvEnd = "</soap:Envelope>";
 
 class BuiltinHttpTest : public QObject
@@ -137,7 +137,7 @@ private Q_SLOTS:
     void testMyWsdl()
     {
         // Prepare response
-        QByteArray responseData = QByteArray(xmlEnvBegin) + "<soap:Body>"
+        QByteArray responseData = QByteArray(xmlEnvBegin) + "><soap:Body>"
                                   "<kdab:addEmployeeResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl/\"><kdab:bStrReturn>Foo</kdab:bStrReturn></kdab:addEmployeeResponse>"
                                   " </soap:Body>" + xmlEnvEnd;
         HttpServerThread server(responseData, HttpServerThread::Public /*TODO ssl test*/);
@@ -175,7 +175,7 @@ private Q_SLOTS:
         // Check what we sent
         QByteArray expectedRequestXml =
             QByteArray(xmlEnvBegin) +
-            "<soap:Body>"
+            "><soap:Body>"
             "<n1:addEmployee xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
             "<n1:employeeType xsi:type=\"n1:EmployeeType\">"
             "<n1:team xsi:type=\"xsd:string\">Minitel</n1:team>"
@@ -225,12 +225,24 @@ private Q_SLOTS:
         array.setType(QString::fromLatin1("http://schemas.xmlsoap.org/soap/encoding/"), QString::fromLatin1("Array"));
         array.setArrayType(QString::fromLatin1("http://www.w3.org/2001/XMLSchema"), QString::fromLatin1("string"));
         message.addArgument(QString::fromLatin1("testArray"), QVariant::fromValue(array));
-        client.call(QLatin1String("test"), message);
+
+        // Add a header
+        KDSoapMessage header1;
+        header1.setUse(KDSoapMessage::EncodedUse);
+        header1.addArgument(QString::fromLatin1("header1"), QString::fromLatin1("headerValue"));
+        KDSoapHeaders headers;
+        headers << header1;
+
+        client.call(QLatin1String("test"), message, QString::fromLatin1("MySoapAction"), headers);
         // Check what we sent
         QByteArray expectedRequestXml =
             QByteArray(xmlEnvBegin) +
+            " xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\""
+            "><soap:Header>"
+            "<n1:header1 xsi:type=\"xsd:string\">headerValue</n1:header1>"
+            "</soap:Header>"
             "<soap:Body>"
-            "<n1:test xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
+            "<n1:test>"
             "<n1:testString xsi:type=\"xsd:string\">Hello</n1:testString>"
             "<n1:testArray xsi:type=\"soap-enc:Array\" soap-enc:arrayType=\"xsd:string[0]\"/>"
             "</n1:test>"
@@ -285,7 +297,7 @@ private Q_SLOTS:
         // Check what we sent
         QByteArray expectedRequestXml =
             QByteArray(xmlEnvBegin) +
-            "<soap:Body>"
+            "><soap:Body>"
             "<n1:login xmlns:n1=\"http://www.sugarcrm.com/sugarcrm\">"
               "<n1:user_auth xsi:type=\"n1:user_auth\">"
                 "<n1:user_name xsi:type=\"xsd:string\">user</n1:user_name>"
@@ -322,13 +334,13 @@ private Q_SLOTS:
 
 private:
     static QByteArray countryResponse() {
-        return QByteArray(xmlEnvBegin) + "<soap:Body>"
+        return QByteArray(xmlEnvBegin) + "><soap:Body>"
                 "<kdab:getEmployeeCountryResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl/\"><kdab:employeeCountry>France</kdab:employeeCountry></kdab:getEmployeeCountryResponse>"
                 " </soap:Body>" + xmlEnvEnd;
     }
     static QByteArray expectedCountryRequest() {
         return QByteArray(xmlEnvBegin) +
-                "<soap:Body>"
+                "><soap:Body>"
                 "<n1:getEmployeeCountry xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
                 "<n1:employeeName xsi:type=\"xsd:string\">David Faure</n1:employeeName>"
                 "</n1:getEmployeeCountry>"
@@ -353,7 +365,7 @@ private:
     }
 
     static QByteArray complexTypeResponse() {
-        return QByteArray(xmlEnvBegin) + "<soap:Body xmlns:tns=\"http://www.sugarcrm.com/sugarcrm\">"
+        return QByteArray(xmlEnvBegin) + "><soap:Body xmlns:tns=\"http://www.sugarcrm.com/sugarcrm\">"
                 "<ns1:loginResponse xmlns:ns1=\"http://www.sugarcrm.com/sugarcrm\">"
                 "  <return xsi:type=\"tns:set_entry_result\">"
                 "    <id xsi:type=\"xsd:string\">12345</id>"

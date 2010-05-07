@@ -26,7 +26,7 @@ public:
     KDSoapAuthentication m_authentication;
 
     QNetworkRequest prepareRequest(const QString &method, const QString& action);
-    QBuffer* prepareRequestBuffer(const QString& method, const KDSoapMessage& message, const QList<KDSoapMessage>& headers);
+    QBuffer* prepareRequestBuffer(const QString& method, const KDSoapMessage& message, const KDSoapHeaders& headers);
     void writeArguments(KDSoapNamespacePrefixes& namespacePrefixes, QXmlStreamWriter& writer, const KDSoapValueList& args, KDSoapMessage::Use use);
 
 private Q_SLOTS:
