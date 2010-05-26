@@ -1,5 +1,5 @@
 TEMPLATE = subdirs
-SUBDIRS = webcalls builtinhttp webcalls_wsdl wsdl_document #wsdl_rpc
+SUBDIRS = webcalls builtinhttp webcalls_wsdl wsdl_document wsdl_rpc
 
 WIN_BINDIR=release
 CONFIG(debug, debug|release) {
