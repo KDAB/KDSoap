@@ -496,28 +496,38 @@ void Converter::createHeader( const SoapBinding::Header& header, const Binding &
 {
     const QName messageName = header.message();
     const QString partName = header.part();
-    QString methodName = "set" + upperlize( partName );
-    if (!methodName.endsWith("Header"))
-        methodName += "Header";
-    KODE::Function headerSetter( methodName, "void", KODE::Function::Public );
-    headerSetter.setDocs(QString("Sets the header '%1', for all subsequent method calls.\n").arg(partName));
-
     const Message message = mWSDL.findMessage( messageName );
     const Part part = message.partByName( partName );
-    clientAddOneArgument( headerSetter, part, newClass );
 
-    KODE::Code code;
-    code += "KDSoapMessage message;";
-    if ( header.use() == SoapBinding::EncodedUse )
-        code += "message.setUse(KDSoapMessage::EncodedUse);";
-    else
-        code += "message.setUse(KDSoapMessage::LiteralUse);";
+    {
+        QString methodName = "set" + upperlize( partName );
+        if (!methodName.endsWith("Header"))
+            methodName += "Header";
+        KODE::Function headerSetter( methodName, "void", KODE::Function::Public );
+        headerSetter.setDocs(QString("Sets the header '%1', for all subsequent method calls.\n").arg(partName));
+        clientAddOneArgument( headerSetter, part, newClass );
+        KODE::Code code;
+        code += "KDSoapMessage message;";
+        if ( header.use() == SoapBinding::EncodedUse )
+            code += "message.setUse(KDSoapMessage::EncodedUse);";
+        else
+            code += "message.setUse(KDSoapMessage::LiteralUse);";
+        clientAddMessageArgument( code, binding, part );
+        code += "clientInterface()->setHeader( QLatin1String(\"" + partName + "\"), message );";
+        headerSetter.setBody(code);
+        newClass.addFunction(headerSetter);
+    }
 
-    clientAddMessageArgument( code, binding, part );
-
-    code += "clientInterface()->setHeader( QLatin1String(\"" + partName + "\"), message );";
-
-    headerSetter.setBody(code);
-
-    newClass.addFunction(headerSetter);
+    // Let's also generate a clear method
+    {
+        QString methodName = "clear" + upperlize( partName );
+        if (!methodName.endsWith("Header"))
+            methodName += "Header";
+        KODE::Function headerClearer( methodName, "void", KODE::Function::Public );
+        headerClearer.setDocs(QString("Removes the header '%1', for all subsequent method calls.\n").arg(partName));
+        KODE::Code code;
+        code += "clientInterface()->setHeader( QLatin1String(\"" + partName + "\"), KDSoapMessage() );";
+        headerClearer.setBody(code);
+        newClass.addFunction(headerClearer);
+    }
 }
