@@ -181,23 +181,23 @@ QBuffer* KDSoapClientInterface::Private::prepareRequestBuffer(const QString& met
     writer.writeStartElement(soapNS, QLatin1String("Envelope"));
     writer.writeAttribute(soapNS, QLatin1String("encodingStyle"), QLatin1String("http://schemas.xmlsoap.org/soap/encoding/"));
 
-    // This lines adds the xmlns:n1 to <Envelope>, which looks ugly and unusual (and breaks all unittests)
-    // However it's the best solution in case of headers, otherwise we get n1 in the header and n2 in the body,
-    // and xsi:type attributes that refer to n1, which isn't defined in the body...
-    if (!headers.isEmpty()) {
+    if (!headers.isEmpty() || !m_persistentHeaders.isEmpty()) {
+        // This writeNamespace line adds the xmlns:n1 to <Envelope>, which looks ugly and unusual (and breaks all unittests)
+        // However it's the best solution in case of headers, otherwise we get n1 in the header and n2 in the body,
+        // and xsi:type attributes that refer to n1, which isn't defined in the body...
         namespacePrefixes.writeNamespace(writer, this->m_messageNamespace, QLatin1String("n1") /*make configurable?*/);
-    } else {
-        // So in the standard case (no headers) we just rely on Qt calling it n1 and insert it into the map.
-        // Calling this after the writeStartElement(method) below leads to a double-definition of n1.
-        namespacePrefixes.insert(this->m_messageNamespace, QString::fromLatin1("n1"));
-    }
-
-    if (!headers.isEmpty()) {
         writer.writeStartElement(soapNS, QLatin1String("Header"));
+        Q_FOREACH(const KDSoapMessage& header, m_persistentHeaders) {
+            writeArguments(namespacePrefixes, writer, header.d->args, header.use());
+        }
         Q_FOREACH(const KDSoapMessage& header, headers) {
             writeArguments(namespacePrefixes, writer, header.d->args, header.use());
         }
         writer.writeEndElement(); // Header
+    } else {
+        // So in the standard case (no headers) we just rely on Qt calling it n1 and insert it into the map.
+        // Calling this after the writeStartElement(method) below leads to a double-definition of n1.
+        namespacePrefixes.insert(this->m_messageNamespace, QString::fromLatin1("n1"));
     }
 
     writer.writeStartElement(soapNS, QLatin1String("Body"));
@@ -293,6 +293,11 @@ void KDSoapClientInterface::Private::_kd_slotAuthenticationRequired(QNetworkRepl
 void KDSoapClientInterface::setAuthentication(const KDSoapAuthentication &authentication)
 {
     d->m_authentication = authentication;
+}
+
+void KDSoapClientInterface::setHeader(const QString& name, const KDSoapMessage &header)
+{
+    d->m_persistentHeaders[name] = header;
 }
 
 #include "moc_KDSoapClientInterface_p.cpp"

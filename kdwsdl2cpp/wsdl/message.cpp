@@ -21,6 +21,7 @@
 
 #include <common/messagehandler.h>
 #include <common/parsercontext.h>
+#include <QDebug>
 
 #include "message.h"
 
@@ -57,6 +58,16 @@ void Message::setParts( const Part::List &parts )
 Part::List Message::parts() const
 {
   return mParts;
+}
+
+Part Message::partByName(const QString &name) const
+{
+    Q_FOREACH(const Part& part, mParts) {
+        if (part.name() == name) // # namespace comparison needed too?
+            return part;
+    }
+    qDebug() << "Part not found" << name << "in message" << mName;
+    return Part();
 }
 
 void Message::loadXML( ParserContext *context, const QDomElement &element )

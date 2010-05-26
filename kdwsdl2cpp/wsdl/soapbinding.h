@@ -158,6 +158,8 @@ class KWSDL_EXPORT SoapBinding : public AbstractBinding
         QString mNameSpace;
     };
 
+    class Headers;
+
     class KWSDL_EXPORT Header
     {
       public:
@@ -186,6 +188,7 @@ class KWSDL_EXPORT SoapBinding : public AbstractBinding
         QString nameSpace() const;
 
       private:
+        friend class Headers;
         HeaderFault mHeaderFault;
         QName mMessage;
         QString mPart;
@@ -196,6 +199,8 @@ class KWSDL_EXPORT SoapBinding : public AbstractBinding
 
     class Headers : public QList<Header>
     {
+    public:
+        bool contains(const Header& header) const;
     };
 
     /**

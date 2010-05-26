@@ -81,6 +81,13 @@ public:
      */
     void setAuthentication(const KDSoapAuthentication& authentication);
 
+    /**
+     * Sets a persistent header, which will be sent with any subsequent soap call.
+     * @param name internal name, used to replace any existing header previously set with this name
+     * @param header the actual message to be sent
+     */
+    void setHeader(const QString& name, const KDSoapMessage& header);
+
 private:
     friend class KDSoapThreadTask;
 
