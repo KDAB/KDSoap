@@ -182,18 +182,20 @@ private Q_SLOTS:
             qDebug() << service.lastError();
         QVERIFY(service.lastError().isEmpty());
         QCOMPARE(ret, QString::fromLatin1("Foo"));
+        const QByteArray expectedHeader =
+                "<soap:Header>"
+                "<n1:LoginHeader>"
+                "<n1:user xsi:type=\"xsd:string\">foo</n1:user>"
+                "<n1:pass xsi:type=\"xsd:string\">bar</n1:pass>"
+                "</n1:LoginHeader>"
+                "<n1:SessionHeader>"
+                "<n1:sessionId xsi:type=\"xsd:string\">id</n1:sessionId>"
+                "</n1:SessionHeader>"
+                "</soap:Header>";
         // Check what we sent
-        QByteArray expectedRequestXml =
+        QByteArray requestXmlTemplate =
             QByteArray(xmlEnvBegin) +
-            " xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\"><soap:Header>"
-             "<n1:LoginHeader>"
-              "<n1:user xsi:type=\"xsd:string\">foo</n1:user>"
-              "<n1:pass xsi:type=\"xsd:string\">bar</n1:pass>"
-             "</n1:LoginHeader>"
-             "<n1:SessionHeader>"
-              "<n1:sessionId xsi:type=\"xsd:string\">id</n1:sessionId>"
-             "</n1:SessionHeader>"
-            "</soap:Header>"
+            " xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">%1"
             "<soap:Body>"
             "<n1:addEmployee>"
             "<n1:employeeType xsi:type=\"n1:EmployeeType\">"
@@ -216,22 +218,44 @@ private Q_SLOTS:
             "</n1:addEmployee>"
             "</soap:Body>" + xmlEnvEnd
             + '\n'; // added by QXmlStreamWriter::writeEndDocument
-        QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
-        QCOMPARE(QString::fromUtf8(server.receivedData()), QString::fromUtf8(expectedRequestXml));
-        QVERIFY(server.receivedHeaders().contains("SoapAction: http://www.kdab.com/AddEmployee"));
+        {
+            QByteArray expectedRequestXml = requestXmlTemplate;
+            expectedRequestXml.replace("%1", expectedHeader);
+            QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
+            QCOMPARE(QString::fromUtf8(server.receivedData()), QString::fromUtf8(expectedRequestXml));
+            QVERIFY(server.receivedHeaders().contains("SoapAction: http://www.kdab.com/AddEmployee"));
+        }
 
         // Test utf8
-        // This second call also tests that persistent headers are indeed persistent.
-        server.resetReceivedBuffers();
-        expectedRequestXml.replace("David Faure", "Hervé");
-        expectedRequestXml.replace("France", "фгн7");
-        ret = service.addEmployee(employeeType,
-                                  QString::fromUtf8("Hervé"),
-                                  QString::fromUtf8("фгн7"), // random russian letters
-                                  achievements);
-        QVERIFY(service.lastError().isEmpty());
-        QCOMPARE(ret, QString::fromLatin1("Foo"));
-        QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
+        {
+            // This second call also tests that persistent headers are indeed persistent.
+            server.resetReceivedBuffers();
+            requestXmlTemplate.replace("David Faure", "Hervé");
+            requestXmlTemplate.replace("France", "фгн7");
+            QByteArray expectedRequestXml = requestXmlTemplate;
+            expectedRequestXml.replace("%1", expectedHeader);
+            ret = service.addEmployee(employeeType,
+                                      QString::fromUtf8("Hervé"),
+                                      QString::fromUtf8("фгн7"), // random russian letters
+                                      achievements);
+            QVERIFY(service.lastError().isEmpty());
+            QCOMPARE(ret, QString::fromLatin1("Foo"));
+            QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
+        }
+
+        // Test removing headers
+        {
+            server.resetReceivedBuffers();
+            service.clearLoginHeader();
+            service.clearSessionHeader();
+            ret = service.addEmployee(employeeType,
+                                      QString::fromUtf8("Hervé"),
+                                      QString::fromUtf8("фгн7"), // random russian letters
+                                      achievements);
+            QByteArray expectedRequestXml = requestXmlTemplate;
+            expectedRequestXml.replace("%1", "<soap:Header/>");
+            QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
+        }
     }
 
     void testComplexRequest() // this tests the serialization of KDSoapValue[List] in KDSoapClientInterface
@@ -260,15 +284,32 @@ private Q_SLOTS:
             " xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\""
             "><soap:Header>"
             "<n1:header1 xsi:type=\"xsd:string\">headerValue</n1:header1>"
-            "</soap:Header>"
-            "<soap:Body>"
+            "</soap:Header>";
+        const QByteArray expectedRequestBody =
+            QByteArray("<soap:Body>"
             "<n1:test>"
             "<n1:testString xsi:type=\"xsd:string\">Hello</n1:testString>"
             "<n1:testArray xsi:type=\"soap-enc:Array\" soap-enc:arrayType=\"xsd:string[0]\"/>"
             "</n1:test>"
-            "</soap:Body>" + xmlEnvEnd
+            "</soap:Body>") + xmlEnvEnd
             + '\n'; // added by QXmlStreamWriter::writeEndDocument
-        QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
+        QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml + expectedRequestBody));
+
+        // Now using persistent headers
+        server.resetReceivedBuffers();
+        client.setHeader(QLatin1String("header1"), header1);
+        client.call(QLatin1String("test"), message, QString::fromLatin1("MySoapAction"));
+        QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml + expectedRequestBody));
+
+        // Now remove the persistent header (using setHeader + empty message)
+        server.resetReceivedBuffers();
+        client.setHeader(QLatin1String("header1"), KDSoapMessage());
+        client.call(QLatin1String("test"), message, QString::fromLatin1("MySoapAction"));
+        const QByteArray expectedRequestXmlNoHeader =
+            QByteArray(xmlEnvBegin) +
+            " xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\""
+            "><soap:Header/>"; // the empty element does not matter
+        QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXmlNoHeader + expectedRequestBody));
     }
 
     // Test parsing of complex replies, like with SugarCRM
