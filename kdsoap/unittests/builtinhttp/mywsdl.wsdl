@@ -62,6 +62,22 @@
           </restriction>
         </complexContent>
       </complexType>
+
+      <element name="LoginElement">
+        <complexType>
+          <sequence>
+          <element name="user" type="xsd:string"/>
+          <element name="pass" type="xsd:string"/>
+          </sequence>
+        </complexType>
+      </element>
+      <element name="SessionElement">
+        <complexType>
+          <sequence>
+          <element name="sessionId" type="xsd:string"/>
+          </sequence>
+        </complexType>
+      </element>
     </xsd:schema>
   </types>
   <message name='addEmployee'>
@@ -81,6 +97,11 @@
      <part name='employeeCountry' type='kdab:LimitedString'/>
   </message>
 
+  <message name="Header">
+    <part element="kdab:LoginElement" name="LoginHeader"/>
+    <part element="kdab:SessionElement" name="SessionHeader"/>
+  </message>
+
   <portType name='MyWsdlPortType'>
     <operation name='addEmployee'>
       <input message='kdab:addEmployee' />
@@ -96,6 +117,8 @@
     <operation name='addEmployee' >
       <soap:operation soapAction='http://www.kdab.com/AddEmployee' />
       <input>
+        <soap:header use="literal" message="kdab:Header" part="LoginHeader"/>
+        <soap:header use="literal" message="kdab:Header" part="SessionHeader"/>
         <soap:body use='encoded'/>
       </input>
       <output>

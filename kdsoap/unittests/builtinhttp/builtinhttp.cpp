@@ -164,6 +164,16 @@ private Q_SLOTS:
         employeeType.setType(KDAB__EmployeeTypeEnum::Developer);
         employeeType.setOtherRoles(QList<KDAB__EmployeeTypeEnum>() << KDAB__EmployeeTypeEnum::TeamLeader);
         employeeType.setTeam(QString::fromLatin1("Minitel"));
+
+        KDAB__LoginElement login;
+        login.setUser(QLatin1String("foo"));
+        login.setPass(QLatin1String("bar"));
+        KDAB__SessionElement session;
+        session.setSessionId(QLatin1String("id"));
+
+        service.setLoginHeader(login);
+        service.setSessionHeader(session);
+
         QString ret = service.addEmployee(employeeType,
                                           QString::fromLatin1("David Faure"),
                                           QString::fromLatin1("France"),
@@ -175,8 +185,17 @@ private Q_SLOTS:
         // Check what we sent
         QByteArray expectedRequestXml =
             QByteArray(xmlEnvBegin) +
-            "><soap:Body>"
-            "<n1:addEmployee xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
+            " xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\"><soap:Header>"
+             "<n1:LoginHeader>"
+              "<n1:user xsi:type=\"xsd:string\">foo</n1:user>"
+              "<n1:pass xsi:type=\"xsd:string\">bar</n1:pass>"
+             "</n1:LoginHeader>"
+             "<n1:SessionHeader>"
+              "<n1:sessionId xsi:type=\"xsd:string\">id</n1:sessionId>"
+             "</n1:SessionHeader>"
+            "</soap:Header>"
+            "<soap:Body>"
+            "<n1:addEmployee>"
             "<n1:employeeType xsi:type=\"n1:EmployeeType\">"
             "<n1:team xsi:type=\"xsd:string\">Minitel</n1:team>"
             "<n1:type xsi:type=\"xsd:string\">Developer</n1:type>"
@@ -202,6 +221,7 @@ private Q_SLOTS:
         QVERIFY(server.receivedHeaders().contains("SoapAction: http://www.kdab.com/AddEmployee"));
 
         // Test utf8
+        // This second call also tests that persistent headers are indeed persistent.
         server.resetReceivedBuffers();
         expectedRequestXml.replace("David Faure", "Hervé");
         expectedRequestXml.replace("France", "фгн7");

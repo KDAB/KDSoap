@@ -127,6 +127,14 @@ void Converter::cleanupUnusedTypes()
                 usedMessageNames.insert(operation.output().message());
                 break;
             };
+            if ( binding.type() == Binding::SOAPBinding ) {
+              const SoapBinding soapBinding( binding.soapBinding() );
+              const SoapBinding::Operation op = soapBinding.operations().value( operation.name() );
+              Q_FOREACH(const SoapBinding::Header& header, op.inputHeaders()) {
+                  usedMessageNames.insert(header.message());
+              }
+            }
+
         }
     }
 

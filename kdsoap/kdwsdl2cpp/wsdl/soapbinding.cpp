@@ -852,3 +852,16 @@ void SoapBinding::synthesizePort( ParserContext *context, QDomDocument &document
 {
   mAddress.saveXML( context, document, parent );
 }
+
+bool SoapBinding::Headers::contains(const Header &other) const
+{
+    Q_FOREACH(const Header& header, *this) {
+        if (header.mMessage == other.mMessage &&
+            header.mPart == other.mPart &&
+            header.mUse == other.mUse &&
+            header.mEncodingStyle == other.mEncodingStyle &&
+            header.mNameSpace == other.mNameSpace)
+            return true;
+    }
+    return false;
+}

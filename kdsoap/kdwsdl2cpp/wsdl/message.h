@@ -48,6 +48,7 @@ class KWSDL_EXPORT Message : public Element
 
     void setParts( const Part::List &parts );
     Part::List parts() const;
+    Part partByName(const QString& name) const;
 
     void loadXML( ParserContext *context, const QDomElement &element );
     void saveXML( ParserContext *context, QDomDocument &document, QDomElement &parent ) const;
