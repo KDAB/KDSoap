@@ -68,7 +68,7 @@ class Converter
     void clientAddArguments( KODE::Function& callFunc, const Message& message, KODE::Class &newClass );
     bool clientAddAction( KODE::Code& code, const Binding &binding, const QString& operationName );
     void clientGenerateMessage( KODE::Code& code, const Binding& binding, const Message& message, const Operation& operatoin );
-    void clientAddMessageArgument( KODE::Code& code, const Binding& binding, const Part& part );
+    void clientAddMessageArgument( KODE::Code& code, const SoapBinding::Style& bindingStyle, const Part& part );
     void createHeader( const SoapBinding::Header& header, const Binding& binding, KODE::Class& newClass );
 
     // Server Stub

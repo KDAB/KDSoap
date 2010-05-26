@@ -230,7 +230,7 @@ bool Converter::clientAddAction( KODE::Code& code, const Binding &binding, const
     return hasAction;
 }
 
-void Converter::clientAddMessageArgument( KODE::Code& code, const Binding& binding, const Part& part )
+void Converter::clientAddMessageArgument( KODE::Code& code, const SoapBinding::Style& bindingStyle, const Part& part )
 {
     const QString lowerName = lowerlize( part.name() );
     QString argType = mTypeMap.localType( part.type(), part.element() );
@@ -240,12 +240,12 @@ void Converter::clientAddMessageArgument( KODE::Code& code, const Binding& bindi
         isBuiltin = mTypeMap.isBuiltinType( type );
     }
     if ( argType != "void" ) {
-        if ( soapStyle(binding) == SoapBinding::DocumentStyle ) {
+        if ( bindingStyle == SoapBinding::DocumentStyle ) {
             // In document style, the "part" is directly added as arguments
             // See http://www.ibm.com/developerworks/webservices/library/ws-whichwsdl/
             if ( isBuiltin )
                 qWarning("Got a builtin type in document style? Didn't think this could happen.");
-            code += "message.arguments() = " + lowerName + ".serialize().value<KDSoapValueList>();";
+            code += "message.arguments() += " + lowerName + ".serialize().value<KDSoapValueList>();";
         } else {
             const QString partNameStr = "QLatin1String(\"" + part.name() + "\")";
             if ( isBuiltin ) {
@@ -273,7 +273,7 @@ void Converter::clientGenerateMessage( KODE::Code& code, const Binding& binding,
 
     const Part::List parts = message.parts();
     Q_FOREACH( const Part& part, parts ) {
-        clientAddMessageArgument( code, binding, part );
+        clientAddMessageArgument( code, soapStyle(binding), part );
     }
 
     // This code was in convertClientInputMessage
@@ -494,6 +494,7 @@ void Converter::convertClientOutputMessage( const Operation &operation,
 
 void Converter::createHeader( const SoapBinding::Header& header, const Binding &binding, KODE::Class &newClass )
 {
+    Q_UNUSED(binding); // TODO remove
     const QName messageName = header.message();
     const QString partName = header.part();
     const Message message = mWSDL.findMessage( messageName );
@@ -504,7 +505,7 @@ void Converter::createHeader( const SoapBinding::Header& header, const Binding &
         if (!methodName.endsWith("Header"))
             methodName += "Header";
         KODE::Function headerSetter( methodName, "void", KODE::Function::Public );
-        headerSetter.setDocs(QString("Sets the header '%1', for all subsequent method calls.\n").arg(partName));
+        headerSetter.setDocs(QString("Sets the header '%1', for all subsequent method calls.").arg(partName));
         clientAddOneArgument( headerSetter, part, newClass );
         KODE::Code code;
         code += "KDSoapMessage message;";
@@ -512,7 +513,7 @@ void Converter::createHeader( const SoapBinding::Header& header, const Binding &
             code += "message.setUse(KDSoapMessage::EncodedUse);";
         else
             code += "message.setUse(KDSoapMessage::LiteralUse);";
-        clientAddMessageArgument( code, binding, part );
+        clientAddMessageArgument( code, SoapBinding::RPCStyle, part );
         code += "clientInterface()->setHeader( QLatin1String(\"" + partName + "\"), message );";
         headerSetter.setBody(code);
         newClass.addFunction(headerSetter);
@@ -524,7 +525,7 @@ void Converter::createHeader( const SoapBinding::Header& header, const Binding &
         if (!methodName.endsWith("Header"))
             methodName += "Header";
         KODE::Function headerClearer( methodName, "void", KODE::Function::Public );
-        headerClearer.setDocs(QString("Removes the header '%1', for all subsequent method calls.\n").arg(partName));
+        headerClearer.setDocs(QString("Removes the header '%1', for all subsequent method calls.").arg(partName));
         KODE::Code code;
         code += "clientInterface()->setHeader( QLatin1String(\"" + partName + "\"), KDSoapMessage() );";
         headerClearer.setBody(code);
