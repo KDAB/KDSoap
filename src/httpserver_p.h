@@ -126,7 +126,8 @@ protected:
 
         const bool doDebug = qgetenv("KDSOAP_DEBUG").toInt();
 
-        //qDebug() << "HttpServerThread listening on port" << m_port;
+        if (doDebug)
+            qDebug() << "HttpServerThread listening on port" << m_port;
 
         // Wait for first connection (we'll wait for further ones inside the loop)
         QTcpSocket *clientSocket = server.waitForNextConnectionSocket();
