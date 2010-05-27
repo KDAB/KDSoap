@@ -56,6 +56,11 @@ class TypeMap
      */
     bool isBuiltinType( const QName &typeName ) const;
 
+    /**
+     * Returns true if @p typeName is the special type "any".
+     */
+    bool isTypeAny( const QName &typeName ) const;
+
     QString localType( const QName &typeName ) const;
     QString baseType( const QName &typeName ) const;
     QStringList headers( const QName &typeName ) const;

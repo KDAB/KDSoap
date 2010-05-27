@@ -206,12 +206,16 @@ static KODE::Code appendElementArg( const TypeMap& typeMap, const QName& type, c
     KODE::Code block;
     QString value;
     //qDebug() << "appendElementArg: type=" << type << "isBuiltin=" << typeMap.isBuiltinType(type);
-    if ( typeMap.isBuiltinType( type ) ) {
-        value = localVariableName;
+    if ( typeMap.isTypeAny( type ) ) {
+        block += "args.append(" + localVariableName + ");";
     } else {
-        value = "QVariant::fromValue(" + localVariableName + ".serialize())";
+        if ( typeMap.isBuiltinType( type ) ) {
+            value = localVariableName;
+        } else {
+            value = "QVariant::fromValue(" + localVariableName + ".serialize())";
+        }
+        block += "args.append(KDSoapValue(QString::fromLatin1(\"" + name + "\"), " + value + "));";
     }
-    block += "args.append(KDSoapValue(QString::fromLatin1(\"" + name + "\"), " + value + "));";
     return block;
 }
 
@@ -219,10 +223,33 @@ static KODE::Code appendElementArg( const TypeMap& typeMap, const QName& type, c
 static KODE::Code demarshalVar( TypeMap& typeMap, const QName& type, const QString& variableName, const QString& typeName )
 {
     KODE::Code code;
-    if ( typeMap.isBuiltinType( type ) ) {
+    if ( typeMap.isTypeAny( type ) ) {
+        Q_ASSERT(false);
+        code += variableName + " = value;";
+    } else if ( typeMap.isBuiltinType( type ) ) {
         code += variableName + " = value.value<" + typeName + ">();";
     } else {
         code += variableName + ".deserialize(value);";
+    }
+    return code;
+}
+
+static KODE::Code demarshalArrayVar( TypeMap& typeMap, const QName& type, const QString& variableName, const QString& typeName )
+{
+    KODE::Code code;
+    if ( typeMap.isTypeAny( type ) ) { // KDSoapValue doesn't support temp vars. This special-casing is ugly though.
+        code += variableName + ".append(val);";
+    } else {
+        // we need a temp var in case of deserialize()
+        // [TODO: we could merge demarshalVar into this code, to avoid the temp var in other cases]
+        QString tempVar;
+        if (variableName.startsWith("d_ptr->"))
+            tempVar = variableName.mid(7) + "Temp";
+        else
+            tempVar = variableName + "Temp";
+        code += typeName + " " + tempVar + ";";
+        code.addBlock( demarshalVar( typeMap, type, tempVar, typeName ) );
+        code += variableName + ".append(" + tempVar + ");";
     }
     return code;
 }
@@ -278,7 +305,11 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
         KODE::MemberVariable variable( elemName, typeName ); // was already added; this is just for the naming
         const QString variableName = "d_ptr->" + variable.name();
 
-        demarshalCode += QString::fromLatin1(firstElement ? "" : "else ") + "if (name == QLatin1String(\"" + elemName + "\")) {";
+        if ( mTypeMap.isTypeAny(elem.type()) ) {
+            demarshalCode += QString::fromLatin1(firstElement ? "" : "else ") + '{';
+        } else {
+            demarshalCode += QString::fromLatin1(firstElement ? "" : "else ") + "if (name == QLatin1String(\"" + elemName + "\")) {";
+        }
         demarshalCode.indent();
         firstElement = false;
 
@@ -291,10 +322,7 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
             marshalCode.unindent();
             marshalCode += '}';
 
-            const QString tempVar = variable.name() + "Temp"; // we need a temp var in case of deserialize()
-            demarshalCode += typeName + " " + tempVar + ";";
-            demarshalCode.addBlock( demarshalVar( mTypeMap, elem.type(), tempVar, typeName ) );
-            demarshalCode += variableName + ".append(" + tempVar + ");";
+            demarshalCode.addBlock( demarshalArrayVar( mTypeMap, elem.type(), variableName, typeName ) );
         } else {
             marshalCode.addBlock( appendElementArg( mTypeMap, elem.type(), elem.name(), variableName ) );
             demarshalCode.addBlock( demarshalVar( mTypeMap, elem.type(), variableName, typeName ) );
@@ -322,13 +350,10 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
                 marshalCode.unindent();
                 marshalCode += '}';
 
-                const QString tempVar = "tmp"; // we need a temp var in case of deserialize()
-                demarshalCode += typeName + " " + tempVar + ";";
-                demarshalCode.addBlock( demarshalVar( mTypeMap, attribute.arrayType(), tempVar, typeName ) );
-                demarshalCode += variableName + ".append(" + tempVar + ");";
-
+                demarshalCode.addBlock( demarshalArrayVar( mTypeMap, attribute.arrayType(), variableName, typeName ) );
             } else {
                 qWarning("TODO serialize/deserialize non-array attributes");
+                marshalCode += "// TODO serialize non-array attributes";
             }
         }
     }
