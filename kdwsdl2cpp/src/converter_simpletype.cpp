@@ -254,48 +254,72 @@ void Converter::createSimpleTypeSerializer( KODE::Class& newClass, const XSD::Si
 
             KODE::MemberVariable variable( "type", "Type" ); // just for the naming
 
-            KODE::Code code;
-            code += "switch ( " + variable.name() + " ) {";
-            code.indent();
-            for ( int i = 0; i < enums.count(); ++i ) {
-                code += "case " + typeName + "::" + escapedEnums[ i ] + ':';
+            {
+                KODE::Code code;
+                code += "switch ( " + variable.name() + " ) {";
                 code.indent();
-                code += "return QString::fromLatin1(\"" + enums[ i ] + "\");";
+                for ( int i = 0; i < enums.count(); ++i ) {
+                    code += "case " + typeName + "::" + escapedEnums[ i ] + ':';
+                    code.indent();
+                    code += "return QString::fromLatin1(\"" + enums[ i ] + "\");";
+                    code.unindent();
+                }
+                code += "default:";
+                code.indent();
+                code += "qDebug(\"Unknown enum %d passed.\", " + variable.name() + ");";
+                code += "break;";
                 code.unindent();
+                code.unindent();
+                code += '}';
+                code.newLine();
+                code += "return QVariant();";
+                serializeFunc.setBody( code );
             }
-            code += "default:";
-            code.indent();
-            code += "qDebug(\"Unknown enum %d passed.\", " + variable.name() + ");";
-            code += "break;";
-            code.unindent();
-            code.unindent();
-            code += '}';
-            code.newLine();
-            code += "return QVariant();";
-            serializeFunc.setBody( code );
+            {
+                KODE::Code code;
+                code += "const QString str = value.toString();";
+                for ( int i = 0; i < enums.count(); ++i ) {
+                    code += QString(i > 0 ? "else " : "") + "if (str == QLatin1String(\"" + enums[ i ] + "\"))";
+                    code.indent();
+                    code += variable.name() + " = " + typeName + "::" + escapedEnums[ i ] + ';';
+                    code.unindent();
+                }
+                code += "else {";
+                code.indent();
+                code += "qDebug(\"Unknown enum value '%s' passed to '" + newClass.name() + "'.\", qPrintable(str) );";
+                code.unindent();
+                code += "}";
+                deserializeFunc.setBody( code );
+            }
+
         }
         if ( type->baseTypeName() != XmlAnyType
             && !type->baseTypeName().isEmpty()
             && !(type->facetType() & XSD::SimpleType::ENUM) ) {
             // 'inherits' a basic type or another simple type -> using value.
 
-            KODE::MemberVariable variable( "value", typeName ); // just for the naming
+            const QName baseName = type->baseTypeName();
+            const QString baseTypeName = mTypeMap.localType( baseName );
+            Q_ASSERT(!baseTypeName.isEmpty());
+            KODE::MemberVariable variable( "value", baseTypeName ); // just for the naming
             const QName baseType = type->baseTypeName();
             Q_UNUSED(simpleTypeList);
             //const QName mostBasicTypeName = simpleTypeList.mostBasicType( baseType );
             //Q_UNUSED(mostBasicTypeName);
-            if ( mTypeMap.isBuiltinType( baseType ) ) // serialize from QString, int, etc.
+            if ( mTypeMap.isBuiltinType( baseType ) ) { // serialize from QString, int, etc.
                 serializeFunc.addBodyLine( "return QVariant::fromValue(" + variable.name() + ");" );
-            else { // inherits another simple type, need to call its serialize method
+                deserializeFunc.addBodyLine( variable.name() + " = value.value<" + baseTypeName + ">();" );
+            } else { // inherits another simple type, need to call its serialize method
                 serializeFunc.addBodyLine( "return " + variable.name() + ".serialize();" );
+                deserializeFunc.addBodyLine( variable.name() + ".deserialize( value );" );
             }
+
         }
     } else {
         // TODO lists
-        serializeFunc.addBodyLine( "return QVariant(); // TODO: lists" );
+        serializeFunc.addBodyLine( "return QVariant(); // TODO (createSimpleTypeSerializer for lists)" );
+        deserializeFunc.addBodyLine( "Q_UNUSED(value); // TODO (createSimpleTypeSerializer for lists)" );
     }
-
-    deserializeFunc.addBodyLine( "Q_UNUSED(value);/*TODO*/" );
 
     newClass.addFunction( serializeFunc );
     newClass.addFunction( deserializeFunc );

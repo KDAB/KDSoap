@@ -53,9 +53,9 @@ private Q_SLOTS:
         QCOMPARE(result.size(), 3);
         QCOMPARE(result.records().size(), 3);
         const ENS__SObject obj1 = result.records()[0];
-#if 0 // TODO
         QCOMPARE(obj1.id().value(), QLatin1String("01"));
-        QCOMPARE(obj1.type(), QLatin1String("sf:sObject"));
+        QCOMPARE(obj1.type(), QLatin1String("Contact"));
+#if 0 // TODO
         QCOMPARE(obj1.any()[0], QLatin1String("Kalle")); // TODO KDSoapMessage
 #endif
         // TODO finish
