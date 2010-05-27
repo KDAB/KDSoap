@@ -52,13 +52,28 @@ private Q_SLOTS:
         QVERIFY(result.done());
         QCOMPARE(result.size(), 3);
         QCOMPARE(result.records().size(), 3);
-        const ENS__SObject obj1 = result.records()[0];
-        QCOMPARE(obj1.id().value(), QLatin1String("01"));
-        QCOMPARE(obj1.type(), QLatin1String("Contact"));
-#if 0 // TODO
-        QCOMPARE(obj1.any()[0], QLatin1String("Kalle")); // TODO KDSoapMessage
-#endif
-        // TODO finish
+        {
+            const ENS__SObject obj = result.records()[0];
+            QCOMPARE(obj.id().value(), QLatin1String("01"));
+            QCOMPARE(obj.type(), QLatin1String("Contact"));
+            const QList<KDSoapValue> anys = obj.any();
+            QCOMPARE(anys.size(), 2);
+            QCOMPARE(anys[0].name(), QLatin1String("FirstName"));
+            QCOMPARE(anys[0].value().toString(), QLatin1String("Kalle"));
+            QCOMPARE(anys[1].name(), QLatin1String("LastName"));
+            QCOMPARE(anys[1].value().toString(), QLatin1String("Dalheimer"));
+        }
+        {
+            const ENS__SObject obj = result.records()[1];
+            QCOMPARE(obj.id().value(), QLatin1String("02"));
+            QCOMPARE(obj.type(), QLatin1String("Contact"));
+            const QList<KDSoapValue> anys = obj.any();
+            QCOMPARE(anys.size(), 2);
+            QCOMPARE(anys[0].name(), QLatin1String("FirstName"));
+            QCOMPARE(anys[0].value().toString(), QLatin1String("David"));
+            QCOMPARE(anys[1].name(), QLatin1String("LastName"));
+            QCOMPARE(anys[1].value().toString(), QLatin1String("Faure"));
+        }
 
 #if 0
         // Check what we sent

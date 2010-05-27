@@ -42,7 +42,7 @@ TypeMap::TypeMap()
   : mNSManager( 0 )
 {
   // see http://www.w3.org/TR/xmlschema-2
-  addBuiltinType("any", "QString");
+  addBuiltinType("any", "KDSoapValue");
   addBuiltinType("anyURI", "QString");
   addBuiltinType("base64Binary", "QByteArray");
   addBuiltinType("binary", "QByteArray");
@@ -82,10 +82,13 @@ void TypeMap::addBuiltinType(const char *typeName, const char *localType)
     entry.nameSpace = XMLSchemaURI;
     entry.typeName = typeName;
     entry.localType = localType;
-    entry.basicType = !entry.localType.startsWith('Q');
+    entry.basicType = !entry.localType.startsWith('Q') && !entry.localType.startsWith('K');
     if ( !entry.basicType ) {
-        entry.headers << entry.localType;
-        entry.headerIncludes << entry.localType;
+        QString header = entry.localType;
+        if (entry.localType.startsWith("KD"))
+            header += ".h";
+        entry.headers << header;
+        entry.headerIncludes << header;
     }
     mTypeMap.append( entry );
 }
@@ -388,4 +391,9 @@ QString TypeMap::localInputType( const QName &typeName, const QName& elementName
             argType = "const " + argType + '&';
         return argType;
     }
+}
+
+bool KWSDL::TypeMap::isTypeAny(const QName &typeName) const
+{
+    return (typeName.nameSpace() == XMLSchemaURI && typeName.localName() == "any");
 }
