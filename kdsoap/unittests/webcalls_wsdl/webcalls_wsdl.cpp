@@ -4,7 +4,6 @@
 #include "wsdl_soapresponder.h"
 #include "wsdl_thomas-bayer.h"
 #include "wsdl_holidays.h"
-#include "wsdl_salesforce-partner.h"
 #include <QtTest/QtTest>
 #include <QEventLoop>
 #include <QDebug>
@@ -57,15 +56,6 @@ private slots:
         QStringList countries = serv.getCountries().country(); // TODO countryList()?
         QCOMPARE(countries[0], QString::fromLatin1("Great Britain"));
         QCOMPARE(countries[1], QString::fromLatin1("Ireland"));
-    }
-
-    void testSalesForce()
-    {
-        // No runtime test yet, just checking that the methods got generated
-        SforceService sforce;
-        TNS__Login loginParams;
-        sforce.login(loginParams);
-        sforce.logout();
     }
 
     // TODO: a great example for complex returned structures:

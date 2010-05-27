@@ -96,28 +96,35 @@ void KDSoapPendingCall::Private::parseReply()
         const QString soapNS = QString::fromLatin1("http://schemas.xmlsoap.org/soap/envelope/");
         //const QString xmlSchemaNS = QString::fromLatin1("http://www.w3.org/1999/XMLSchema");
         //const QString xmlSchemaInstanceNS = QString::fromLatin1("http://www.w3.org/1999/XMLSchema-instance");
-        if (reader.readNextStartElement() && reader.name() == "Envelope" && reader.namespaceUri() == soapNS) {
-            if (reader.readNextStartElement() && reader.name() == "Body" && reader.namespaceUri() == soapNS) {
+        if (reader.readNextStartElement()) {
+            if (reader.name() == "Envelope" && reader.namespaceUri() == soapNS) {
+                if (reader.readNextStartElement() && reader.name() == "Body" && reader.namespaceUri() == soapNS) {
 
-                if (reader.readNextStartElement()) { // the method: Response or Fault
-                    //qDebug() << "toplevel element:" << reader.name();
-                    if (reader.name() == "Fault")
-                        replyMessage.setFault(true);
+                    if (reader.readNextStartElement()) { // the method: Response or Fault
+                        //qDebug() << "toplevel element:" << reader.name();
+                        if (reader.name() == "Fault")
+                            replyMessage.setFault(true);
 
-                    while (reader.readNextStartElement()) { // Result
-                        const QString name = reader.name().toString();
-                        const QVariant val = parseReplyElement(reader);
-                        replyMessage.addArgument(name, val);
-                        if (doDebug)
-                            qDebug() << "got item" << name << "val=" << val;
+                        while (reader.readNextStartElement()) { // Result
+                            const QString name = reader.name().toString();
+                            const QVariant val = parseReplyElement(reader);
+                            replyMessage.addArgument(name, val);
+                            if (doDebug)
+                                qDebug() << "got item" << name << "val=" << val;
+                        }
                     }
-                }
 
+                } else {
+                    reader.raiseError(QObject::tr("Invalid SOAP Response, Body expected"));
+                }
             } else {
-                reader.raiseError(QObject::tr("Invalid SOAP Response, Body expected"));
+                reader.raiseError(QObject::tr("Invalid SOAP Response, Envelope expected"));
             }
-        } else {
-            reader.raiseError(QObject::tr("Invalid SOAP Response, Envelope expected"));
+        }
+        if (reader.hasError()) {
+            replyMessage.setFault(true);
+            replyMessage.addArgument(QString::fromLatin1("faultcode"), QString::number(reader.error()));
+            replyMessage.addArgument(QString::fromLatin1("faultstring"), QString::fromLatin1("XML error line %1: %2").arg(reader.lineNumber()).arg(reader.errorString()));
         }
     }
 }
