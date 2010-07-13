@@ -1,5 +1,5 @@
 TEMPLATE = lib
-CONFIG += static
+CONFIG += staticlib
 TARGET = kode
 SOURCES += \
    code.cpp \

@@ -1,6 +1,6 @@
 TEMPLATE = lib
 TARGET = xmlcommon
-CONFIG += static
+CONFIG += staticlib
 SOURCES = \
    fileprovider.cpp \
    messagehandler.cpp \
