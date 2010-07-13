@@ -22,7 +22,7 @@ class KDSoapPendingCallWatcher;
  * explicitly-shared object and does not provide a method of detaching the copies
  * (since they refer to the same pending call)
  */
-class KDSoapPendingCall
+class Q_DECL_EXPORT KDSoapPendingCall
 {
 public:
     /**
