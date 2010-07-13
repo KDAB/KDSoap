@@ -1,6 +1,7 @@
 #ifndef KDSOAPAUTHENTICATION_H
 #define KDSOAPAUTHENTICATION_H
 
+#include "KDSoapGlobal.h"
 #include <QUrl>
 class QAuthenticator;
 class QNetworkReply;
@@ -10,7 +11,7 @@ class QNetworkReply;
  * Currently it only supports authentication based on user/password,
  * but its design makes it extensible to other forms of authentication.
  */
-class Q_DECL_EXPORT KDSoapAuthentication
+class KDSOAP_EXPORT KDSoapAuthentication
 {
 public:
     /**

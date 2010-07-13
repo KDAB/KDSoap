@@ -15,6 +15,7 @@ INSTALLHEADERS = KDSoapMessage.h \
     KDSoapPendingCall.h \
     KDSoapPendingCallWatcher.h \
     KDSoapValue.h \
+    KDSoapGlobal.h \
     KDSoapAuthentication.h
 EXTENSIONLESSHEADERS = KDSoap
 PRIVATEHEADERS = KDSoapPendingCall_p.h \
