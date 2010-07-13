@@ -5,12 +5,13 @@
 #include <QVariant>
 #include <QList>
 #include <QPair>
+#include "KDSoapGlobal.h"
 
 /**
  * KDSoapValue represents a value in a SOAP argument list.
  * It is composed of the argument name, and actual value as a QVariant.
  */
-class Q_DECL_EXPORT KDSoapValue
+class KDSOAP_EXPORT KDSoapValue
 {
 public:
     KDSoapValue(const QString& n, const QVariant& v)

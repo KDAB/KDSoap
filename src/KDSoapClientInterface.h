@@ -14,7 +14,7 @@ class KDSoapAuthentication;
  * This class is useful for dynamic access to remote objects: that is, when
  * you do not have a generated code that represents the remote interface.
  */ // TODO code example
-class Q_DECL_EXPORT KDSoapClientInterface
+class KDSOAP_EXPORT KDSoapClientInterface
 {
 public:
     /**

@@ -11,7 +11,7 @@ class QXmlStreamWriter;
 /**
  * The KDSoapMessage class represents one message sent or received via SOAP.
  */
-class Q_DECL_EXPORT KDSoapMessage
+class KDSOAP_EXPORT KDSoapMessage
 {
 public:
     /**
