@@ -19,7 +19,7 @@
     Boston, MA 02110-1301, USA.
  */
 
-#include <unistd.h>
+#include "fileprovider.h"
 
 #include <QCoreApplication>
 #include <QEventLoop>
@@ -31,7 +31,9 @@
 #include <QNetworkReply>
 #include <QTemporaryFile>
 
-#include "fileprovider.h"
+#ifndef Q_OS_WIN
+#include <unistd.h>
+#endif
 
 FileProvider::FileProvider()
   : QObject( 0 )
