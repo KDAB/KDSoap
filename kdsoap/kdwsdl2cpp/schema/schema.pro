@@ -1,6 +1,6 @@
 TEMPLATE = lib
 TARGET = xmlschema
-CONFIG += static
+CONFIG += staticlib
 
 SOURCES = \
    annotation.cpp \

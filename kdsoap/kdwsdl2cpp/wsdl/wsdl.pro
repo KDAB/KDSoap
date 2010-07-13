@@ -1,6 +1,6 @@
 TEMPLATE = lib
 TARGET = wsdl
-CONFIG += static
+CONFIG += staticlib
 
 SOURCES = \
    binding.cpp \
