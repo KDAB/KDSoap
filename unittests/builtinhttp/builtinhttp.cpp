@@ -277,7 +277,7 @@ private:
         return QByteArray(xmlEnvBegin) +
                 "><soap:Body>"
                 "<n1:getEmployeeCountry xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
-                "<n1:employeeName xsi:type=\"xsd:string\">David Faure</n1:employeeName>"
+                "<n1:employeeName xsi:type=\"xsd:string\">David Ä Faure</n1:employeeName>"
                 "</n1:getEmployeeCountry>"
                 "</soap:Body>" + xmlEnvEnd;
     }
@@ -286,7 +286,7 @@ private:
     }
     static KDSoapMessage countryMessage() {
         KDSoapMessage message;
-        message.addArgument(QLatin1String("employeeName"), QLatin1String("David Faure"));
+        message.addArgument(QLatin1String("employeeName"), QString::fromUtf8("David Ä Faure"));
         return message;
     }
     void waitForCallFinished(KDSoapPendingCall& pendingCall)
