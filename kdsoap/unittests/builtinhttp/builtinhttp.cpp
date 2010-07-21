@@ -3,7 +3,6 @@
 #include "KDSoapValue.h"
 #include "KDSoapPendingCallWatcher.h"
 #include "KDSoapAuthentication.h"
-#include "wsdl_mywsdl.h"
 #include "wsdl_sugarcrm.h"
 #include "httpserver_p.h"
 #include <QtTest/QtTest>
@@ -138,7 +137,7 @@ private Q_SLOTS:
         KDSoapClientInterface client(server.endPoint(), countryMessageNamespace());
         KDSoapMessage message;
         message.setUse(KDSoapMessage::EncodedUse); // write out types explicitely
-        message.addArgument(QString::fromLatin1("testString"), QString::fromLatin1("Hello"));
+        message.addArgument(QString::fromLatin1("testString"), QString::fromUtf8("Hello Klarälvdalens"));
         KDSoapValueList array;
         array.setType(QString::fromLatin1("http://schemas.xmlsoap.org/soap/encoding/"), QString::fromLatin1("Array"));
         array.setArrayType(QString::fromLatin1("http://www.w3.org/2001/XMLSchema"), QString::fromLatin1("string"));
@@ -162,7 +161,7 @@ private Q_SLOTS:
         const QByteArray expectedRequestBody =
             QByteArray("<soap:Body>"
             "<n1:test>"
-            "<n1:testString xsi:type=\"xsd:string\">Hello</n1:testString>"
+            "<n1:testString xsi:type=\"xsd:string\">Hello Klarälvdalens</n1:testString>"
             "<n1:testArray xsi:type=\"soap-enc:Array\" soap-enc:arrayType=\"xsd:string[0]\"/>"
             "</n1:test>"
             "</soap:Body>") + xmlEnvEnd
@@ -221,7 +220,7 @@ private Q_SLOTS:
         Sugarsoap sugar(this);
         sugar.setEndPoint(server.endPoint());
         TNS__User_auth user_auth;
-        user_auth.setUser_name(QString::fromLatin1("user"));
+        user_auth.setUser_name(QString::fromUtf8("user å"));
         user_auth.setPassword(QString::fromLatin1("pass"));
         TNS__Set_entry_result result = sugar.login(user_auth, QString::fromLatin1("application"));
         QCOMPARE(result.id(), QString::fromLatin1("12345"));
@@ -235,7 +234,7 @@ private Q_SLOTS:
             "><soap:Body>"
             "<n1:login xmlns:n1=\"http://www.sugarcrm.com/sugarcrm\">"
               "<n1:user_auth xsi:type=\"n1:user_auth\">"
-                "<n1:user_name xsi:type=\"xsd:string\">user</n1:user_name>"
+                "<n1:user_name xsi:type=\"xsd:string\">user å</n1:user_name>"
                 "<n1:password xsi:type=\"xsd:string\">pass</n1:password>"
                 "<n1:version xsi:type=\"xsd:string\"></n1:version>"
               "</n1:user_auth>"
