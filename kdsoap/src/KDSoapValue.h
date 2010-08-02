@@ -5,6 +5,8 @@
 #include <QVariant>
 #include <QList>
 #include <QPair>
+#include <QSet>
+#include <QVector>
 #include "KDSoapGlobal.h"
 
 /**
@@ -14,6 +16,8 @@
 class KDSOAP_EXPORT KDSoapValue
 {
 public:
+	KDSoapValue() {}
+
     KDSoapValue(const QString& n, const QVariant& v)
         : m_name(n), m_value(v) {}
 
@@ -22,6 +26,11 @@ public:
     // Can be any basic type, or a KDSoapValueList
     QVariant value() const { return m_value; }
 
+	bool operator==(const KDSoapValue& other) const
+	{
+		return m_name == other.m_name && m_value == other.m_value;
+	}
+
 private:
     QString m_name;
     QVariant m_value;
@@ -29,6 +38,7 @@ private:
 
 QDebug operator <<(QDebug dbg, const KDSoapValue &value);
 
+uint qHash( const KDSoapValue& value );
 
 /**
  * KDSoapValueList represents a list of arguments passed to a SOAP message.
@@ -37,7 +47,7 @@ QDebug operator <<(QDebug dbg, const KDSoapValue &value);
  * which gives type information at runtime).
  * For arrays, the type should be set to soap-enc:array and the arraytype should be set as well.
  */
-class KDSoapValueList : public QList<KDSoapValue>
+class KDSOAP_EXPORT KDSoapValueList : public QList<KDSoapValue>
 {
 public:
     /**
