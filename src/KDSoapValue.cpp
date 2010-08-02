@@ -1,6 +1,8 @@
 #include "KDSoapValue.h"
 #include <QDebug>
 
+uint qHash( const KDSoapValue& value ) { return qHash( value.name() ); }
+
 QVariant KDSoapValueList::value(const QString &name) const
 {
     const_iterator it = begin();
