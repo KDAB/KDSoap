@@ -20,6 +20,8 @@ INCLUDEPATH += ..
 QT -= gui
 QT += xml
 
+macx:CONFIG -= app_bundle
+
 # Relink when a static lib changed
 unix:PRE_TARGETDEPS += ../../lib/libkode.a \
     ../../lib/libwsdl.a \
