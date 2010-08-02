@@ -1,6 +1,7 @@
 #ifndef HTTPSERVER_P_H
 #define HTTPSERVER_P_H
 
+#include "KDSoapGlobal.h"
 #include <QBuffer>
 #include <QThread>
 #include <QSemaphore>
@@ -12,9 +13,9 @@
 
 namespace KDSoapUnitTestHelpers
 {
-    bool xmlBufferCompare(const QByteArray& source, const QByteArray& dest);
-    QByteArray makeHttpResponse(const QByteArray& responseData);
-    void httpGet(const QUrl& url);
+    KDSOAP_EXPORT bool xmlBufferCompare(const QByteArray& source, const QByteArray& dest);
+    KDSOAP_EXPORT QByteArray makeHttpResponse(const QByteArray& responseData);
+    KDSOAP_EXPORT void httpGet(const QUrl& url);
 }
 
 #ifndef QT_NO_OPENSSL
@@ -73,7 +74,7 @@ private:
     QTcpSocket* sslSocket;
 };
 
-class HttpServerThread : public QThread
+class KDSOAP_EXPORT HttpServerThread : public QThread
 {
     Q_OBJECT
 public:
