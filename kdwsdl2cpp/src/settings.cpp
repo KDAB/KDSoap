@@ -56,7 +56,7 @@ Settings* Settings::self()
 
 void Settings::setWsdlFile(const QString &wsdlFile)
 {
-    mWsdlFile = wsdlFile;
+    mWsdlFile = QDir::fromNativeSeparators(wsdlFile);
 
     if (QDir::isRelativePath(wsdlFile))
         mWsdlFile = QDir::current().path() + '/' + mWsdlFile;
