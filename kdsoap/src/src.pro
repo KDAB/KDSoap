@@ -3,6 +3,8 @@ TARGET = kdsoap
 CONFIG(debug, debug|release):!unix:TARGET = $${TARGET}d
 QT -= gui
 
+QT += network
+
 # TEMPORARY? Just for QDomDocument in httpserver_p.cpp
 QT += xml
 
