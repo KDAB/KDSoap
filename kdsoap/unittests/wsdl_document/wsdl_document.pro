@@ -8,4 +8,4 @@ test.commands = ./$(TARGET)
 test.depends = $(TARGET)
 QMAKE_EXTRA_TARGETS += test
 
-KDWSDL = mywsdl_document.wsdl
+KDWSDL = mywsdl_document.wsdl thomas-bayer.wsdl
