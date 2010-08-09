@@ -1,4 +1,5 @@
 #include "wsdl_mywsdl_document.h"
+#include "wsdl_thomas-bayer.h"
 #include "httpserver_p.h"
 #include <QtTest/QtTest>
 #include <QEventLoop>
@@ -146,6 +147,23 @@ private Q_SLOTS:
             expectedRequestXml.replace("%1", "<soap:Header/>");
             QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
         }
+    }
+
+    // Was http://www.service-repository.com/service/wsdl?id=163859, but it disappeared.
+    void testSequenceInResponse()
+    {
+        // Prepare response
+        QByteArray responseData = QByteArray(xmlEnvBegin) + "><soap:Body>"
+                                  "<tb:getCountriesResponse xmlns:tb=\"http://namesservice.thomas_bayer.com/\"><tb:country>Great Britain</tb:country><tb:country>Ireland</tb:country></tb:getCountriesResponse>"
+                                  " </soap:Body>" + xmlEnvEnd;
+        HttpServerThread server(responseData, HttpServerThread::Public /*TODO ssl test*/);
+
+        NamesServiceService serv;
+        serv.setEndPoint(server.endPoint());
+        const QStringList countries = serv.getCountries().country(); // TODO countryList()?
+        QCOMPARE(countries.count(), 2);
+        QCOMPARE(countries[0], QString::fromLatin1("Great Britain"));
+        QCOMPARE(countries[1], QString::fromLatin1("Ireland"));
     }
 
 };
