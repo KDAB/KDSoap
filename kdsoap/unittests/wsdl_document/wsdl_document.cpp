@@ -4,6 +4,9 @@
 #include <QtTest/QtTest>
 #include <QEventLoop>
 #include <QDebug>
+#include <KDSoapClientInterface.h>
+#include <KDSoapMessage.h>
+#include <KDSoapPendingCallWatcher.h>
 
 using namespace KDSoapUnitTestHelpers;
 
@@ -164,8 +167,34 @@ private Q_SLOTS:
         QCOMPARE(countries.count(), 2);
         QCOMPARE(countries[0], QString::fromLatin1("Great Britain"));
         QCOMPARE(countries[1], QString::fromLatin1("Ireland"));
+
+        // Same test without using generated code
+        {
+            const QString messageNamespace = QString::fromLatin1("http://namesservice.thomas_bayer.com/");
+            KDSoapClientInterface client(server.endPoint(), messageNamespace);
+            KDSoapMessage message;
+            KDSoapPendingCall pendingCall = client.asyncCall(QLatin1String("getCountries"), message);
+            KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);
+            connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher*)),
+                    this, SLOT(slotFinished(KDSoapPendingCallWatcher*)));
+            m_eventLoop.exec();
+            //qDebug() << m_returnMessage;
+
+            QCOMPARE(m_returnMessage.arguments()[0].value().toString(), QString::fromLatin1("Great Britain"));
+            QCOMPARE(m_returnMessage.arguments()[1].value().toString(), QString::fromLatin1("Ireland"));
+        }
     }
 
+public slots:
+    void slotFinished(KDSoapPendingCallWatcher* watcher)
+    {
+        m_returnMessage = watcher->returnMessage();
+        m_eventLoop.quit();
+    }
+
+private:
+    QEventLoop m_eventLoop;
+    KDSoapMessage m_returnMessage;
 };
 
 
