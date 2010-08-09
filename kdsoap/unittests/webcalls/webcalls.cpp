@@ -105,6 +105,7 @@ private slots:
         }
     }
 
+#if 0 // now unavailable. TODO: replicate multiple-results case with builtin-http-server
     // http://www.service-repository.com/service/wsdl?id=163859
     void testServiceRepositoryCom()
     {
@@ -118,10 +119,30 @@ private slots:
         connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher*)),
                 this, SLOT(slotFinished(KDSoapPendingCallWatcher*)));
         m_eventLoop.exec();
-        //qDebug() << m_returnMessage;
+        qDebug() << m_returnMessage;
 
         QCOMPARE(m_returnMessage.arguments()[0].value().toString(), QString::fromLatin1("Great Britain"));
         QCOMPARE(m_returnMessage.arguments()[1].value().toString(), QString::fromLatin1("Ireland"));
+    }
+#endif
+
+    void testOrteLookup()
+    {
+        const QString endPoint = QString::fromLatin1("http://mathertel.de/AJAXEngine/S02_AJAXCoreSamples/OrteLookup.asmx?WSDL");
+        const QString messageNamespace = QString::fromLatin1("http://www.mathertel.de/OrteLookup/");
+        const QString action = QString::fromLatin1("");
+        KDSoapClientInterface client(endPoint, messageNamespace);
+        KDSoapMessage message;
+        message.addArgument(QLatin1String("prefix"), QLatin1String("Berl"));
+        KDSoapPendingCall pendingCall = client.asyncCall(QLatin1String("OrteStartWith"), message, action);
+        KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);
+        connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher*)),
+                this, SLOT(slotFinished(KDSoapPendingCallWatcher*)));
+        m_eventLoop.exec();
+        //qDebug() << m_returnMessage;
+
+        const QString retVal = m_returnMessage.arguments()[0].value().toString();
+        QCOMPARE(retVal, QString::fromLatin1("Berlin;Berlstedt"));
     }
 
     // TODO: a great example for complex returned structures:
