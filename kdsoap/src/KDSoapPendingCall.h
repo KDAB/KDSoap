@@ -69,6 +69,9 @@ public:
      *
      * You generally do not need to use this: use KDSoapPendingCallWatcher to be notified
      * of the call completion.
+     *
+     * WARNING: This method requires Qt 4.6 to work properly. Do not call isFinished when
+     * KDSoap was compiled against 4.4 or 4.5, it will always return false.
      */
     bool isFinished() const;
 
