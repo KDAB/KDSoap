@@ -1,11 +1,6 @@
 # This file is included by all of the examples' *.pro files.
 
-KDSOAPLIB = kdsoap
-win32* {
-    CONFIG(debug, debug|release) {
-        KDSOAPLIB = $${KDSOAPLIB}d
-    }
-}
+# KDSOAPLIB is defined by the toplevel kdsoap.pro and stored into .qmake.cache
 
 # Adjust the paths and LIBS according to KDSOAP_PATH.
 #    Note: KDSOAP_PATH is set in the calling .pro file,
