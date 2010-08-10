@@ -263,6 +263,17 @@ void Converter::createSimpleTypeSerializer( KODE::Class& newClass, const XSD::Si
                     code.indent();
                     code += "return QString::fromLatin1(\"" + enums[ i ] + "\");";
                     code.unindent();
+                    /* add a hack for msvc because that one cannot parse switch statements
+                       longer than a certain length, so start a new switch statement */
+                    if(i % 64 == 63) {
+                        code += "default:"; // silence gcc
+                        code += "break;";
+                        code.unindent();
+                        code += '}';
+                        code.newLine();
+                        code += "switch ( " + variable.name() + " ) {";
+                        code.indent();
+                    }
                 }
                 code += "default:";
                 code.indent();
