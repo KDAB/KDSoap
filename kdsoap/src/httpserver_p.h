@@ -6,6 +6,7 @@
 #include <QThread>
 #include <QSemaphore>
 #include <QTcpServer>
+#include <QTcpSocket>
 #ifndef QT_NO_OPENSSL
 #include <QSslSocket>
 #endif
