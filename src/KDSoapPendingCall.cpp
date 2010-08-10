@@ -33,7 +33,11 @@ KDSoapPendingCall &KDSoapPendingCall::operator=(const KDSoapPendingCall &other)
 
 bool KDSoapPendingCall::isFinished() const
 {
+#if QT_VERSION >= 0x040600
     return d->reply.data()->isFinished();
+#else
+    return false;
+#endif
 }
 
 KDSoapMessage KDSoapPendingCall::returnMessage() const
@@ -79,9 +83,11 @@ void KDSoapPendingCall::Private::parseReply()
     parsed = true;
     const bool doDebug = qgetenv("KDSOAP_DEBUG").toInt();
     QNetworkReply* reply = this->reply.data();
+#if QT_VERSION >= 0x040600
     if (!reply->isFinished()) {
         qWarning("KDSoap: Parsing reply before it finished!");
     }
+#endif
     if (reply->error()) {
         replyMessage.setFault(true);
         replyMessage.addArgument(QString::fromLatin1("faultcode"), QString::number(reply->error()));

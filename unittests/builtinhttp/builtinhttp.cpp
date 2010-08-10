@@ -38,7 +38,9 @@ private Q_SLOTS:
         QVERIFY(!call.isFinished());
         QTest::qWait(1000);
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedCountryRequest()));
+#if QT_VERSION >= 0x040600
         QVERIFY(call.isFinished());
+#endif
         QCOMPARE(call.returnMessage().arguments().value(QLatin1String("employeeCountry")).toString(), QString::fromLatin1("France"));
     }
 
@@ -55,7 +57,9 @@ private Q_SLOTS:
         QVERIFY(!call.isFinished());
         waitForCallFinished(call);
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedCountryRequest()));
+#if QT_VERSION >= 0x040600
         QVERIFY(call.isFinished());
+#endif
         QCOMPARE(call.returnMessage().arguments().value(QLatin1String("employeeCountry")).toString(), QString::fromLatin1("France"));
     }
 
@@ -72,7 +76,9 @@ private Q_SLOTS:
         QVERIFY(!call.isFinished());
         waitForCallFinished(call);
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedCountryRequest()));
+#if QT_VERSION >= 0x040600
         QVERIFY(call.isFinished());
+#endif
         QVERIFY(call.returnMessage().isFault());
     }
 
