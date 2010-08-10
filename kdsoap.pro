@@ -1,7 +1,7 @@
 TEMPLATE = subdirs
 SUBDIRS  = src kdwsdl2cpp examples unittests
 CONFIG   += ordered
-VERSION  = 1.2.0
+VERSION  = 1.0
 
 unix:DEFAULT_INSTALL_PREFIX = /usr/local/KDAB/KDSoap-$$VERSION
 win32:DEFAULT_INSTALL_PREFIX = "C:\KDAB\KDSoap"-$$VERSION
