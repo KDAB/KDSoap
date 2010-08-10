@@ -38,10 +38,6 @@ int main(int argc, char **argv)
 
     qDebug("Looking up the date of easter in %i...", year);
 
-    //KDSoapMessage /*KDSoapResponse?*/ response = client.call("GetValentinesDay", message /*, action*/);
-
-    //qDebug() << response;
-
     KDSoapPendingCall pendingCall = client.asyncCall(QLatin1String("GetValentinesDay"), message);
     TestObject test;
     KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, &test);
