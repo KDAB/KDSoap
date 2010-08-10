@@ -152,6 +152,32 @@ private Q_SLOTS:
         }
     }
 
+    // Test enum deserialization
+    void testEnums()
+    {
+        // Prepare response
+        QByteArray responseData = QByteArray(xmlEnvBegin) + "><soap:Body>"
+                                  "<kdab:getEmployeeTypeResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl/\">"
+                                    "<kdab:team xsi:type=\"xsd:string\">Minitel</kdab:team>"
+                                    "<kdab:type xsi:type=\"xsd:string\">Developer</kdab:type>"
+                                    "<kdab:otherRoles xsi:type=\"xsd:string\">TeamLeader</kdab:otherRoles>"
+                                  "</kdab:getEmployeeTypeResponse>"
+                                  "</soap:Body>" + xmlEnvEnd;
+        HttpServerThread server(responseData, HttpServerThread::Public);
+        MyWsdlDocument service;
+        service.setEndPoint(server.endPoint());
+
+        KDAB__EmployeeType employeeType = service.getEmployeeType(KDAB__EmployeeName(QLatin1String("Joe")));
+        if (!service.lastError().isEmpty())
+            qDebug() << service.lastError();
+        QVERIFY(service.lastError().isEmpty());
+        QCOMPARE(employeeType.team().value().value(), QLatin1String("Minitel"));
+        QCOMPARE(employeeType.otherRoles().count(), 1);
+        QCOMPARE(employeeType.otherRoles().at(0).type(), KDAB__EmployeeTypeEnum::TeamLeader);
+        QCOMPARE((int)employeeType.type().type(), (int)KDAB__EmployeeTypeEnum::Developer);
+    }
+
+
     // Was http://www.service-repository.com/service/wsdl?id=163859, but it disappeared.
     void testSequenceInResponse()
     {

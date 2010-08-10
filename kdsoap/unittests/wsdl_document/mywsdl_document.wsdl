@@ -104,6 +104,13 @@
      <part name='employeeCountry' type='kdab:LimitedString'/>
   </message>
 
+  <message name='getEmployeeType'>
+     <part name='employeeName' type='kdab:EmployeeName'/>
+  </message>
+  <message name='getEmployeeTypeResponse'>
+     <part name='employeeType' type='kdab:EmployeeType'/>
+  </message>
+
   <message name="Header">
     <part element="kdab:LoginElement" name="LoginHeader"/>
     <part element="kdab:SessionElement" name="SessionHeader"/>
@@ -117,6 +124,10 @@
     <operation name='getEmployeeCountry'>
       <input message='kdab:getEmployeeCountry' />
       <output message='kdab:getEmployeeCountryResponse' />
+    </operation>
+    <operation name='getEmployeeType'>
+      <input message='kdab:getEmployeeType' />
+      <output message='kdab:getEmployeeTypeResponse' />
     </operation>
   </portType>
   <binding name='MyWsdlBinding' type='kdab:MyWsdlPortType' >
@@ -133,6 +144,14 @@
       </output>
     </operation>
     <operation name='getEmployeeCountry'>
+      <input>
+        <soap:body use='literal'/>
+      </input>
+      <output>
+        <soap:body use='literal'/>
+      </output>
+    </operation>
+    <operation name='getEmployeeType'>
       <input>
         <soap:body use='literal'/>
       </input>
