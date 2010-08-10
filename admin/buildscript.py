@@ -62,7 +62,7 @@ def preBuildJobHook( buildJob ):
                 DebugN( 2, 'kdsoap build script: added command to copy docs and licenses into target folder' )
 
 SharedDebug = Configuration( product, 'Debug' )
-SharedDebug.setPackageDependencies( ['Qt-4.[3-9].?-Shared-Debug'])
+SharedDebug.setPackageDependencies( ['Qt-4.[4-9].?-Shared-Debug'])
 SharedDebug.setBuildMode( 'inSource' )
 SharedDebug.setPlatFormWhiteList( ['win32-msvc2005', 'macx-g++','linux-g++','linux-g++-64'] )
 SharedDebug.setOptions( 'CONFIG+=debug' + noRelease )
@@ -71,18 +71,18 @@ SharedDebug.setBuildTypes( 'MCDF' )# debug is not built for snapshots
 
 comSharedRelease = copy.copy( SharedDebug ) # use comDebug as the base configuration
 comSharedRelease.setConfigName( 'Commercial Release' )
-comSharedRelease.setPackageDependencies( ['Qt-4.[3-9].?-Shared-Release'])
+comSharedRelease.setPackageDependencies( ['Qt-4.[4-9].?-Shared-Release'])
 comSharedRelease.setOptions( 'CONFIG+=release' + noDebug )
 comSharedRelease.setBuildTypes( 'MCDSF' )# snapshots are release builds
 
 SharedDebugKDChartSupport = copy.copy( SharedDebug)
 SharedDebugKDChartSupport.setConfigName('Debug KDchart Support')
-SharedDebugKDChartSupport.setPackageDependencies( ['Qt-4.[3-9].?-Shared-Debug','KDChart-2.*'])
+SharedDebugKDChartSupport.setPackageDependencies( ['Qt-4.[4-9].?-Shared-Debug','KDChart-2.*'])
 SharedDebugKDChartSupport.setBuildTypes( 'MCDF' )# debug is not built for snapshots
 
 SharedReleaseKDChartSupport = copy.copy( comSharedRelease ) # use comDebug as the base configuration
 SharedReleaseKDChartSupport.setConfigName( 'Release KDChart Support' )
-SharedReleaseKDChartSupport.setPackageDependencies( ['Qt-4.[3-9].?-Shared-Release','KDChart-2.*'] )
+SharedReleaseKDChartSupport.setPackageDependencies( ['Qt-4.[4-9].?-Shared-Release','KDChart-2.*'] )
 SharedReleaseKDChartSupport.setOptions( 'CONFIG+=release' + noDebug )
 
 comSharedReleaseUS = copy.copy( comSharedRelease ) # use comRelease as the base configuration
