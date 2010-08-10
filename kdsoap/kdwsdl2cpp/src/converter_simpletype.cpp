@@ -277,18 +277,23 @@ void Converter::createSimpleTypeSerializer( KODE::Class& newClass, const XSD::Si
             }
             {
                 KODE::Code code;
-                code += "const QString str = value.toString();";
+                code += "static const struct { const char* name; Type value; } s_values[" + QString::number(enums.count()) + "] = {";
                 for ( int i = 0; i < enums.count(); ++i ) {
-                    code += QString(i > 0 ? "else " : "") + "if (str == QLatin1String(\"" + enums[ i ] + "\"))";
-                    code.indent();
-                    code += variable.name() + " = " + typeName + "::" + escapedEnums[ i ] + ';';
-                    code.unindent();
+                    code += "{ \"" + enums[ i ] + "\", " + typeName + "::" + escapedEnums[ i ] + " }" + (i < enums.count()-1 ? "," : "");
                 }
-                code += "else {";
+                code += "};";
+                code += "const QString str = value.toString();";
+                code += "for ( int i = 0; i < " + QString::number(enums.count()) + "; ++i ) {";
                 code.indent();
-                code += "qDebug(\"Unknown enum value '%s' passed to '" + newClass.name() + "'.\", qPrintable(str) );";
+                code += "if (str == QLatin1String(s_values[i].name)) {";
+                code.indent();
+                code += variable.name() + " = s_values[i].value;";
+                code += "return;";
                 code.unindent();
                 code += "}";
+                code.unindent();
+                code += "}";
+                code += "qDebug(\"Unknown enum value '%s' passed to '" + newClass.name() + "'.\", qPrintable(str) );";
                 deserializeFunc.setBody( code );
             }
 
