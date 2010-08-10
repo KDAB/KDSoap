@@ -76,6 +76,22 @@ QVariant KDSoapPendingCall::Private::parseReplyElement(QXmlStreamReader& reader)
     return text;
 }
 
+// Wrapper for compatibility with Qt < 4.6.
+static bool readNextStartElement(QXmlStreamReader& reader)
+{
+#if QT_VERSION >= 0x040600
+    return reader.readNextStartElement();
+#else
+    while (reader.readNext() != QXmlStreamReader::Invalid) {
+        if (reader.isEndElement())
+            return false;
+        else if (reader.isStartElement())
+            return true;
+    }
+    return false;
+#endif
+}
+
 void KDSoapPendingCall::Private::parseReply()
 {
     if (parsed)
@@ -102,16 +118,16 @@ void KDSoapPendingCall::Private::parseReply()
         const QString soapNS = QString::fromLatin1("http://schemas.xmlsoap.org/soap/envelope/");
         //const QString xmlSchemaNS = QString::fromLatin1("http://www.w3.org/1999/XMLSchema");
         //const QString xmlSchemaInstanceNS = QString::fromLatin1("http://www.w3.org/1999/XMLSchema-instance");
-        if (reader.readNextStartElement()) {
+        if (readNextStartElement(reader)) {
             if (reader.name() == "Envelope" && reader.namespaceUri() == soapNS) {
-                if (reader.readNextStartElement() && reader.name() == "Body" && reader.namespaceUri() == soapNS) {
+                if (readNextStartElement(reader) && reader.name() == "Body" && reader.namespaceUri() == soapNS) {
 
-                    if (reader.readNextStartElement()) { // the method: Response or Fault
+                    if (readNextStartElement(reader)) { // the method: Response or Fault
                         //qDebug() << "toplevel element:" << reader.name();
                         if (reader.name() == "Fault")
                             replyMessage.setFault(true);
 
-                        while (reader.readNextStartElement()) { // Result
+                        while (readNextStartElement(reader)) { // Result
                             const QString name = reader.name().toString();
                             const QVariant val = parseReplyElement(reader);
                             replyMessage.addArgument(name, val);
