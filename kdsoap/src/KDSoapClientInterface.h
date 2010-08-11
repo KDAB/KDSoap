@@ -35,9 +35,12 @@ public:
     ~KDSoapClientInterface();
 
     /**
-     * Calls the method @p method on this interface and passes the parameters specified in @p message
+     * Calls the method @p method on this interface and passes the arguments specified in @p message
      * to the method.
+     * @param method method name, without arguments. For instance "addContact".
+     * @param message arguments for the method call
      * @param soapAction optional "SoapAction" header, see the specification of the SOAP service.
+     * @param headers optional arguments which will be passed as <soap:Header>.
      *
      * This is an asynchronous call, so this function returns immediately.
      * The returned KDSoapPendingCall object can be used to find out information about the reply.
@@ -54,7 +57,10 @@ public:
     /**
      * Calls the method @p method on this interface and passes the parameters specified in @p message
      * to the method.
+     * @param method method name, without arguments. For instance "addContact".
+     * @param message arguments for the method call
      * @param soapAction optional "SoapAction" header, see the specification of the SOAP service.
+     * @param headers optional arguments which will be passed as <soap:Header>.
      *
      * This is a blocking call. It is NOT recommended to use this in the main thread of
      * graphical applications, since it will block the event loop for the duration of the call.
@@ -67,7 +73,10 @@ public:
     /**
      * Calls the method @p method on this interface and passes the parameters specified in @p message
      * to the method.
+     * @param method method name, without arguments. For instance "addContact".
+     * @param message arguments for the method call
      * @param soapAction optional "SoapAction" header, see the specification of the SOAP service.
+     * @param headers optional arguments which will be passed as <soap:Header>.
      *
      * This is an asynchronous call, where the caller does not want to wait for a response.
      * The method returns immediately, the call is performed later. No error handling is possible.

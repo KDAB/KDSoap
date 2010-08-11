@@ -4,13 +4,13 @@
 #include "KDSoapValue.h"
 #include "KDSoapMessage.h"
 
-// TODO: can be moved back to KDSoapMessage.cpp
+// This is in a separate _p.h file so that KDSoapClientInterface can use this.
 
 class KDSoapMessageData : public QSharedData
 {
 public:
     KDSoapMessageData()
-        : isFault(false)
+        : args(), use(KDSoapMessage::LiteralUse), isFault(false)
     {}
 
     KDSoapValueList args;
