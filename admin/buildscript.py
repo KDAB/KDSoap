@@ -13,14 +13,6 @@ if 'Windows' in platform.platform():
 	buildSequenceSwitches += ',disable-conf-bin-package'
 	hiddenFileIdent = '_'
 
-scmPath = 'svn+ssh://svn.kdab.net/home/SVN-klaralv/products/kdsoap'
-product = Project( 'KD Soap' )
-
-product.setScmUrl( scmPath + '/trunk' )
-product.setPackageLocation( 'svn.kdab.com:/home/build/autobuild/packages/kdsoap' )
-product.setBuildSequenceSwitches( 's', buildSequenceSwitches )
-product.setBuildSequenceSwitches( 'f', buildSequenceSwitches )
-
 # pre-build hook functions that copy the documentation and the license into the
 # target folder, if they are checked into internal/extra/<configname>:
 def preBuildJobHook( buildJob ):
@@ -58,6 +50,7 @@ def preBuildJobHook( buildJob ):
 	stepExportSrc.addPostCommand(cmd3, buildDir)
 	DebugN(2, 'kdsoap build script: added command to copy license into build folder')
 
+scmPath = 'svn+ssh://svn.kdab.net/home/SVN-klaralv/products/kdsoap'
 product = Project( 'KD Soap' )
 product.setScmUrl( scmPath + '/trunk' )
 product.setPackageLocation( 'svn.kdab.com:/home/build/autobuild/packages/kdsoap' )
@@ -67,6 +60,7 @@ product.setBuildSequenceSwitches( 'f', buildSequenceSwitches )
 SharedDebug = Configuration( product, 'Shared-Debug' )
 SharedDebug.setPreBuildHook( preBuildJobHook )
 SharedDebug.setBuilder('autotools')
+
 SharedDebug.setPackageDependencies( [ 'Qt-4.[4-9].?-Shared-Debug' ] )
 SharedDebug.setBuildMode( 'inSource' )
 #SharedDebug.setPlatFormWhiteList( ['win32-msvc2005', 'macx-g++','linux-g++','linux-g++-64'] )
