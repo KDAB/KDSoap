@@ -65,9 +65,10 @@ SharedDebug = Configuration( product, 'Debug' )
 SharedDebug.setPackageDependencies( ['Qt-4.[4-9].?-Shared-Debug'])
 SharedDebug.setBuildMode( 'inSource' )
 SharedDebug.setPlatFormWhiteList( ['win32-msvc2005', 'macx-g++','linux-g++','linux-g++-64'] )
-SharedDebug.setOptions( 'CONFIG+=debug' + noRelease )
+SharedDebug.setOptions( 'CONFIG+=unittests CONFIG+=debug' + noRelease )
 SharedDebug.setPreBuildHook( preBuildJobHook )
 SharedDebug.setBuildTypes( 'MCDF' )# debug is not built for snapshots
+# TODO this should be ported to the autotools builder, so that it actually calls configure.sh/configure.bat!
 
 comSharedRelease = copy.copy( SharedDebug ) # use comDebug as the base configuration
 comSharedRelease.setConfigName( 'Commercial Release' )
