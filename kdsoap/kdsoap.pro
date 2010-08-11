@@ -1,5 +1,6 @@
 TEMPLATE = subdirs
-SUBDIRS  = src kdwsdl2cpp examples unittests
+SUBDIRS  = src kdwsdl2cpp examples
+unittests: SUBDIRS += unittests
 CONFIG   += ordered
 VERSION  = 1.0
 MAJOR_VERSION = 1
