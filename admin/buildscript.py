@@ -32,7 +32,7 @@ def preBuildJobHook( buildJob ):
 		cmd = 'python ' + exportTool + ' -f -s ' + extrasPath + ' -t ' + targetDir 
 		step.addPostCommand( cmd, targetDir )
 		# copy source code into install folder for commercial builds:
-		excludedFiles = ' -d lib,manual,Licenses,config -x g++.pri,kdsoap.dox,.qmake-cache'
+		excludedFiles = ' -d lib,manual,Licenses,config -x g++.pri,Doxyfile,.qmake-cache'
 		cmd = 'python ' + exportTool + ' -f -s ' + buildJob.configuration().project().srcDir() + excludedFiles
 		cmd += ' -t ' + targetDir
 		step.addPostCommand( cmd, buildJob.configuration().project().srcDir() )
@@ -60,7 +60,6 @@ product.setBuildSequenceSwitches( 'f', buildSequenceSwitches )
 SharedDebug = Configuration( product, 'Shared-Debug' )
 SharedDebug.setPreBuildHook( preBuildJobHook )
 SharedDebug.setBuilder('autotools')
-
 SharedDebug.setPackageDependencies( [ 'Qt-4.[4-9].?-Shared-Debug' ] )
 SharedDebug.setBuildMode( 'inSource' )
 #SharedDebug.setPlatFormWhiteList( ['win32-msvc2005', 'macx-g++','linux-g++','linux-g++-64'] )
