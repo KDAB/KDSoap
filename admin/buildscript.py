@@ -66,6 +66,7 @@ product.setBuildSequenceSwitches( 'f', buildSequenceSwitches )
 
 SharedDebug = Configuration( product, 'Shared-Debug' )
 SharedDebug.setPreBuildHook( preBuildJobHook )
+SharedDebug.setBuilder('autotools')
 SharedDebug.setPackageDependencies( [ 'Qt-4.[4-9].?-Shared-Debug' ] )
 SharedDebug.setBuildMode( 'inSource' )
 #SharedDebug.setPlatFormWhiteList( ['win32-msvc2005', 'macx-g++','linux-g++','linux-g++-64'] )
