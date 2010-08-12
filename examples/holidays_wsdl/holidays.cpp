@@ -12,7 +12,7 @@ int main(int argc, char **argv)
     QCoreApplication app(argc, argv);
 
     const int year = 2009;
-    qDebug("Looking up the date of the valentine day in %i...", year);
+    qDebug("Looking up the date of Valentine's Day in %i...", year);
 
     USHolidayDates holidays;
     TNS__GetValentinesDay parameters;
