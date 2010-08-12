@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+"/usr/share/xml/docbook/schema/dtd/4.2/docbookx.dtd" [
+<!ENTITY auml "&#228;">
+<!ENTITY mdash "&#8212;">
+<!ENTITY nbsp "&#160;">
+<!ENTITY kdsoap "KD&#160;SOAP">
+<!ENTITY kdsoap1 "KD&#160;SOAP&#160;1">
+<!ENTITY kdsoap1_0 "KD&#160;SOAP&#160;1.0">
+<!ENTITY kdsoap_cur_version "1.2.0">
+<!ENTITY kdwsdl2cpp "kdwsdl2cpp code generator">
+]>
+<book>
+  <bookinfo>
+    <title>&kdsoap; Programmer's Manual</title>
+
+    <corpauthor>The &kdsoap; Team</corpauthor>
+
+    <corpname>Klarälvdalens Datakonsult AB</corpname>
+
+    <releaseinfo>Version &kdsoap_cur_version;</releaseinfo>
+
+    <legalnotice>
+      <para>The contents of this manual and the associated &kdsoap; software
+      are the property of Klarälvdalens Datakonsult AB and are copyrighted.
+      &kdsoap; is available under two different licenses, depending on the
+      intended use of this product:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Commercial users (i.e. people intending to develop a
+          commercial product using &kdsoap;) need to order a commercial
+          license from Klarälvdalens Datakonsult AB.</para>
+        </listitem>
+
+        <listitem>
+          <para>&kdsoap; is also available for creating non-commercial,
+          open-source software under the GNU General Public License, version
+          ...</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>It is your responsibility to decide which license type is
+      appropriate for your intended use of &kdsoap;. Any reproduction of this
+      manual and the associated &kdsoap; software in whole or in part that is
+      not allowed by the applicable license is strictly prohibited without
+      prior written permission by Klarälvdalens Datakonsult AB.</para>
+
+      <para>&kdsoap; and the &kdsoap; logo are trademarks or registered
+      trademarks of Klarälvdalens Datakonsult AB in the European Union, the
+      United States, and/or other countries. Other product and company names
+      and logos may be trademarks or registered trademarks of their respective
+      companies.</para>
+    </legalnotice>
+
+    <copyright>
+      <year>2009-2010</year>
+
+      <holder>Klarälvdalens Datakonsult AB</holder>
+    </copyright>
+  </bookinfo>
+
+  <!-- =====================Introduction============================== -->
+
+  <chapter id="chapter_introduction">
+    <title id="chtxt_introduction">Introduction</title>
+
+    <titleabbrev id="chnum_introduction">Chapter 1</titleabbrev>
+
+    <para>Welcome to the &kdsoap; Programmer's Manual. &kdsoap; is
+    Klarälvdalens Datakonsult AB's web service access package for Qt applications. This
+    manual will get you started creating your own web service clients. It covers the
+    fundamentals of coding with &kdsoap; and provides plenty of tips for
+    advanced programmers.</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>Depending on your version of &kdsoap;, you will find a unique
+        <filename>INSTALL</filename> file cantaining instructions on how to
+        install &kdsoap; on your platform. Each instruction set also includes
+        step-by-step description of how to build &kdsoap; directly from the
+        source code.</para>
+      </listitem>
+
+      <listitem>
+        <para>&kdsoap; also comes with an extensive "API Reference" Manual
+        (generated from the source code itself). It is available both as a PDF
+        file and as browsable HTML pages.</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>The "API Reference" is an excellent resource for topics not covered
+    in the Programmer's Manual. Both the Programmer's Manual and API Reference
+    are designed to be used in conjunction with each other. If you have a
+    question not covered in the following chapters, check the API reference
+    for a solution (or in <xref linkend="txt_appendix_qanda" /> at the end of
+    this manual).</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>What is &kdsoap;?</para>
+
+        <para>&kdsoap; is a tool for creating client applications for web services which export their service API as SOAP objects. A web service is a program that provides a machine accessible interface to its functionality via HTTP. One way of handling this kind of remote method calls is the SOAP standard, which describes method calls, their parameters and return values as XML documents.</para>
+
+        <para>The library provides an abstraction layer for both the actual transport as well as the construction of data objects and method calls. The latter relieves application developers from manually writing XML marshalling and demarshalling code, allowing them to build arbitrary complex data structures using simple C++ classes. The transport abstraction provides both synchronous as well as Qt signal/slot based asynchronous remote method call and response handling.</para>
+
+        <para>The &kdwsdl2cpp; delivered along side the library provides additional means for increasing developer productivity by generating proxy API for a target web service based on its formal WSDL service description. Using classes generated by this approach adds build time type checking and in-process like object behavior, i.e. using C++ data types as parameters and return values of each of the web service's methods.</para>
+      </listitem>
+
+      <listitem>
+        <para>What can you use &kdsoap; for?</para>
+
+        <para>&kdsoap; is used by a variety of programs for a variety of
+        different purposes. For example, one application uses &kdsoap; to
+        access data from a CRM system such as SugarCRM or Salesforce.
+        For other examples, visit our web site at <ulink
+        url="http://www.kdab.com/kdsoap"><filename>http://www.kdab.com/kdsoap/&kdsoap_cur_version;/</filename></ulink></para>
+      </listitem>
+    </itemizedlist>
+
+    <sect1>
+      <title id="prerequisites">What You Should Know</title>
+
+      <para>You should be familiar with writing Qt applications, and have a
+      working knowledge of C++. When you are in doubt about how a Qt class
+      mentioned in this Programmer's Manual works, please check the Qt
+      reference documentation or a good book about Qt. A more in-depth
+      introduction to the API can be found in the file
+      <filename>doc/KDSoap-1.0-API-Introduction</filename>. Also to browse
+      &kdsoap; API Reference start with the file
+      <filename>doc/refman/index.html</filename> or <ulink url="http://www.kdab.com/kdsoap"><filename>http://docs.kdab.com/kdsoap/</filename></ulink>.</para>
+    </sect1>
+
+    <sect1>
+      <title id="structure">The Structure of This Manual</title>
+
+      <para>Where do we start?</para>
+
+      <para>This manual begins with an introduction to the &kdsoap1; API then
+      goes through the basic steps and methods for the user to create her own
+      SOAP client.</para>
+
+      <para>We provide you with many more example programs than shown in this
+      manual. We recommend that our readers try them out and run them. Have a
+      look at the code and experiment with the various settings, both by
+      adjusting them via the user interface, and by trying out your own code
+      modifications.</para>
+    </sect1>
+
+    <sect1>
+      <title>What's next</title>
+
+      <para>In the next chapter we introduce the &kdsoap1; API.</para>
+    </sect1>
+  </chapter>
+
+  <!-- ============ Kd Soap 1.2 Api Introduction ============= -->
+
+  <chapter id="chapter_api">
+    <title id="chtxt_api">&kdsoap1; API Introduction</title>
+
+    <titleabbrev id="chnum_api">Chapter 2</titleabbrev>
+
+    <para>&kdsoap; builds on technologies introduced with Qt 4, most importantly <classname>QNetworkAccessManager</classname>.
+    This ensures that HTTP requests done by &kdsoap; will follow the operating system's proxy settings and be able to correctly process cookies.</para>
+
+    <sect1>
+      <title id="apioverview">Overview</title>
+
+      <sect2>
+        <title id="apisample" xreflabel="codesample">Code Sample</title>
+
+        <programlisting>
+const QString endPoint = QLatin1String("http://www.27seconds.com/Holidays/US/Dates/USHolidayDates.asmx");
+const QString messageNamespace = QLatin1String("http://www.27seconds.com/Holidays/US/Dates/");
+
+KDSoapClientInterface client(endPoint, messageNamespace);
+
+KDSoapMessage message;
+message.addArgument(QLatin1String("year"), 2010);
+
+KDSoapMessage response = client.call(QLatin1String("GetValentinesDay"), message);
+        </programlisting>
+
+        <para>The code example the three basic steps for calling a web service method.</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Setup of the proxy object used for interfacing with the web service.</para>
+          </listitem>
+          <listitem>
+            <para>Construction of the method call's parameters.</para>
+          </listitem>
+          <listitem>
+            <para>Performing the remote call.</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>The reponse, i.e. either the call's return value or an error structure, is delivered in the same abstract form the call parameters where constructed in. Therefore simple use cases like this sample only require use of two classes: <classname>KDSoapClientInterface</classname> and <classname>KDSoapMessage</classname></para>
+      </sect2>
+
+      <sect2>
+        <title id="apiconcepts">Concepts</title>
+
+        <para>For now, to get an overview about the &kdsoap1; API and its
+        features, you need to understand the following basic concepts:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>All interactions with web services happens through instance of <classname>KDSoapClientInterface</classname>. One such instance is needed for each web service an applications wants to interact with, i.e. it is not possible to switch an instance to a different service at runtime.</para>
+            <para><classname>KDSoapClientInterface</classname> provides functionality to make synchronous and asynchronous method calls. The first can be convenient in non-interactive applications or when used in threads, the latter is also suitable for use in a GUI application's main thread.</para>
+          </listitem>
+
+          <listitem>
+            <para>Web service method calls require the name of the method and a single parameter object of type <classname>KDSoapMessage</classname>. Optional data such as SOAP request headers, e.g. for passing a session identifier alongside the request, can pass with each method call or set permanently on the client interface instance.</para>
+            <para>The single parameter object can contain an arbitrary number of named parameter values, each potentially again being a list. Simple types such as numbers or strings are representable by a single parameter value, complex types, e.g. a structure with multiple members, can be represented as a list of said members.</para>
+            <programlisting>
+KDSoapMessage message;
+
+// add a simple type argument
+message.addArgument(QLatin1String("text"), "some text");
+
+// add a structured type argument
+QRect rect( 0, 0, 100, 200 );
+KDSoapValueList rectArgument;
+rectArgument.addArgument(QLatin1String("x"), rect.x());
+rectArgument.addArgument(QLatin1String("y"), rect.y());
+rectArgument.addArgument(QLatin1String("width"), rect.width());
+rectArgument.addArgument(QLatin1String("height"), rect.height());
+
+message.addArgument(QLatin1String("rect"), rectArgument);
+            </programlisting>
+          </listitem>
+
+          <listitem>
+            <para>The call result is also of type <classname>KDSoapMessage</classname>, allowing structured data to be returned, similar to how a C++ method can return a class type.</para>
+            <para>SOAP calls can result in an error being returned rather than a method return value, e.g. the web service might not be reachable due to network problems, the method might be unknown to the web service, etc. In such cases the returned <classname>KDSoapMessage</classname> is marked as a fault message, see <methodname>KDSoapMessage::isFault()</methodname>.</para>
+          </listitem>
+        </itemizedlist>
+      </sect2>
+    </sect1>
+  </chapter>
+
+  <appendix id="appendix_qanda">
+    <title id="txt_appendix_qanda">Q&amp;A section</title>
+
+    <titleabbrev>Appendix A</titleabbrev>
+
+    <qandaset defaultlabel="number">
+      <qandadiv>
+        <title>Building and installing &kdsoap;</title>
+
+        <qandaentry id="qa_install1">
+          <question>
+            <para>How can I build and install &kdsoap; from source?</para>
+          </question>
+
+          <answer>
+            <para>Procedure to follow for building and installing &kdsoap; is
+            described in file <filename>Install.src</filename>, please refer
+            to that file for details.</para>
+          </answer>
+        </qandaentry>
+      </qandadiv>
+    </qandaset>
+  </appendix>
+</book>
+
