@@ -7,7 +7,7 @@
 <!ENTITY kdsoap "KD&#160;SOAP">
 <!ENTITY kdsoap1 "KD&#160;SOAP&#160;1">
 <!ENTITY kdsoap1_0 "KD&#160;SOAP&#160;1.0">
-<!ENTITY kdsoap_cur_version "1.2.0">
+<!ENTITY kdsoap_cur_version "1.0">
 <!ENTITY kdwsdl2cpp "kdwsdl2cpp code generator">
 ]>
 <book>
@@ -126,7 +126,7 @@
       mentioned in this Programmer's Manual works, please check the Qt
       reference documentation or a good book about Qt. A more in-depth
       introduction to the API can be found in the file
-      <filename>doc/KDSoap-1.2-API-Introduction</filename>. Also to browse
+      <filename>doc/KDSoap-1.0-API-Introduction</filename>. Also to browse
       &kdsoap; API Reference start with the file
       <filename>doc/refman/index.html</filename> or <ulink url="http://www.kdab.com/kdsoap"><filename>http://docs.kdab.com/kdsoap/</filename></ulink>.</para>
     </sect1>
@@ -154,7 +154,7 @@
     </sect1>
   </chapter>
 
-  <!-- ============ Kd Soap 1.2 Api Introduction ============= -->
+  <!-- ============ Kd Soap 1.0 Api Introduction ============= -->
 
   <chapter id="chapter_api">
     <title id="chtxt_api">&kdsoap1; API Introduction</title>
