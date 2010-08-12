@@ -126,7 +126,7 @@
       mentioned in this Programmer's Manual works, please check the Qt
       reference documentation or a good book about Qt. A more in-depth
       introduction to the API can be found in the file
-      <filename>doc/KDSoap-1.0-API-Introduction</filename>. Also to browse
+      <filename>doc/KDSoap-1.2-API-Introduction</filename>. Also to browse
       &kdsoap; API Reference start with the file
       <filename>doc/refman/index.html</filename> or <ulink url="http://www.kdab.com/kdsoap"><filename>http://docs.kdab.com/kdsoap/</filename></ulink>.</para>
     </sect1>
@@ -241,6 +241,76 @@ message.addArgument(QLatin1String("rect"), rectArgument);
     </sect1>
   </chapter>
 
+  <chapter id="chapter_calls">
+    <title id="chtxt_calls">Synchronous vs. Asynchronous Calls</title>
+
+    <titleabbrev id="chnum_calls">Chapter 3</titleabbrev>
+
+      <para>As shown in <xref linkend="apisample" />, calling a web service method is mapped by &kdsoap; to calling a method on a <classname>KDSoapClientInterface</classname> instance. This kind of abstraction makes day-to-day work with web services convenient, however, it is important to consider the involved processing steps when deciding where and how the application makes use of this simplification layer.</para>
+      <para>The involved steps in the client to web service direction are:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Creation of an XML document for describing the method to call and its parameters.</para>
+        </listitem>
+        <listitem>
+          <para>Sending of the XML document via a network connection using HTTP.</para>
+        </listitem>
+        <listitem>
+          <para>Processing of the XML document on the web service's host.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>The same applies for the reverse direction with the only difference being the semantics of the document content (method return value or error instead of method call).</para>
+      <para>While the first and last step require some time for XML processing they are, depending on complexity of the involved parameter or return value data types, negligible compared to the middle one, due to it being subject to network latency and bandwidth limitations which in turn are often unpredictable.</para>
+
+    <sect1>
+      <title id="synchronouscalls">Synchronous Calls</title>
+
+      <para>Calls performed by invoking the <classname>KDSoapClientInterface</classname>'s <methodname>call()</methodname> method are synchronous calls. Synchronous means that the calling thread will not return from the method before it has completed the full roundtrip processing. Due to its similarity with an in-process method call it is the easier to deploy variant supported by &kdsoap;. However, it should only be used when its blocking nature is of little concern, e.g. use in a worker thread or used in a non-interactive application like a command line tool.</para>
+    </sect1>
+
+    <sect1>
+      <title id="asynchronouscalls">Asynchronous Calls</title>
+
+      <para>Calls performed by invoking the <methodname>KDSoapClientInterface::asyncCall()</methodname> method are asynchronous calls. Asynchronous means that the calling thread will only process step one (XML generation) and create an HTTP transfer request. It will neither wait for the transfer's execution nor any response, but instead will return an instance of <classname>KDSoapPendingCall</classname>. This object then serves as a handle to determine at any later point whether the whole processing chain has been completed and what the resulting return value is.</para>
+
+     <para>Performing the call from <xref linkend="apisample" /> in an asynchronous way:</para>
+     <programlisting>
+...
+// mPendingCall is a member variable so it lives beyond
+// the scope of the method creating it and so it mClient
+mPendingCall = mClient-&gt;asynCall(QLatin1String("GetValentinesDay"), message);
+
+...
+
+if ( mPendingCall.isFinished() ) {
+  KDSoapMessage response = mPendingCall.returnMessage();
+}
+     </programlisting>
+
+     <para>Of course, checking for completion at some arbitrary time might not very be useful, instead the application will most likely want to be notified about the call's completion. This is supported by <classname>KDSoapPendingCallWatcher</classname>.</para>
+     <programlisting>
+...
+
+KDSoapPendingCall pendingCall = mClient-&gt;asyncCall(QLatin1String("GetValentinesDay"), message);
+
+// create a watcher object that will signal the call's completion
+KDSoapPendingCallWatcher* watcher = new KDSoapPendingCallWatcher(pendingCall, this);
+connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher*)),
+        this, SLOT(pendingCallFinished(KDSoapPendingCallWatcher*)));
+...
+
+void MyClass::pendingCallFinished(KDSoapPendingCallWatcher* pendingCall)
+{
+  KDSoapMessage response = pendingCall->returnMessage();
+}
+     </programlisting>
+
+     <para>Sometimes it might not be necessary at all to know whether a call succeeded or what its result was. In such cases use <methodname>KDSoapClientInterface::callNoReply()</methodname> instead.</para>
+    </sect1>
+  </chapter>
+
   <appendix id="appendix_qanda">
     <title id="txt_appendix_qanda">Q&amp;A section</title>
 
@@ -265,4 +335,3 @@ message.addArgument(QLatin1String("rect"), rectArgument);
     </qandaset>
   </appendix>
 </book>
-
