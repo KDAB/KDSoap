@@ -119,6 +119,7 @@ QNetworkRequest KDSoapClientInterface::Private::prepareRequest(const QString &me
 {
     QNetworkRequest request(QUrl(this->m_endPoint));
     // Seems SOAP-1.2 uses application/soap+xml instead of text/xml.
+    // TODO: SOAP-1.2 support: "application/soap+xml;charset=utf-8;action=" + soapAction.toUtf8()
     request.setHeader(QNetworkRequest::ContentTypeHeader, QLatin1String("text/xml;charset=utf-8"));
     // The soap action seems to be namespace + method in most cases, but not always
     // (e.g. urn:GoogleSearchAction for google).
