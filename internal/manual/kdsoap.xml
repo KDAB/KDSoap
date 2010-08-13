@@ -307,6 +307,8 @@ void MyClass::pendingCallFinished(KDSoapPendingCallWatcher* pendingCall)
 }
      </programlisting>
 
+     <para>Both variant support having more than one call pending, i.e. calling another web service method while a previous call is still being processed. However, there might be restrictions on the web service's side, e.g. not allowing more than one call per client at any given time to limit resource usage. In general it is also undetermined whether the results arrive in the same or a different order than the one the requests were sent in.</para>
+
      <para>Sometimes it might not be necessary at all to know whether a call succeeded or what its result was. In such cases use <methodname>KDSoapClientInterface::callNoReply()</methodname> instead.</para>
     </sect1>
   </chapter>
