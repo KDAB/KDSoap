@@ -44,6 +44,18 @@ private Q_SLOTS:
         QCOMPARE(call.returnMessage().arguments().value(QLatin1String("employeeCountry")).toString(), QString::fromLatin1("France"));
     }
 
+    void testFault()
+    {
+        HttpServerThread server(QByteArray(), HttpServerThread::Public | HttpServerThread::Error404);
+        KDSoapClientInterface client(server.endPoint(), QString::fromLatin1("urn:msg"));
+        KDSoapMessage message;
+        KDSoapMessage ret = client.call(QLatin1String("Method1"), message);
+        QVERIFY(ret.isFault());
+        QCOMPARE(ret.faultAsString(), QString::fromLatin1(
+                     "Fault code: 203\n"
+                     "Fault description: Error downloading %1 - server replied: Not Found ()").arg(server.endPoint()));
+    }
+
     // Test for basic auth, with async call
     void testAsyncCallWithAuth()
     {

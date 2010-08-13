@@ -15,7 +15,6 @@
 namespace KDSoapUnitTestHelpers
 {
     KDSOAP_EXPORT bool xmlBufferCompare(const QByteArray& source, const QByteArray& dest);
-    KDSOAP_EXPORT QByteArray makeHttpResponse(const QByteArray& responseData);
     KDSOAP_EXPORT void httpGet(const QUrl& url);
 }
 
@@ -82,8 +81,9 @@ public:
     enum Feature {
         Public = 0,    // HTTP with no ssl and no authentication needed
         Ssl = 1,       // HTTPS
-        BasicAuth = 2  // Requires authentication
-        // bitfield, next item is 4!
+        BasicAuth = 2,  // Requires authentication
+        Error404 = 4   // Return "404 not found"
+        // bitfield, next item is 8
     };
     Q_DECLARE_FLAGS(Features, Feature)
 
@@ -296,9 +296,14 @@ private:
         }
     }
 
-    static QByteArray makeHttpResponse(const QByteArray& responseData)
+    QByteArray makeHttpResponse(const QByteArray& responseData)
     {
-        QByteArray httpResponse("HTTP/1.1 200 OK\r\nContent-Type: text/xml\r\nContent-Length: ");
+        QByteArray httpResponse;
+        if (m_features & Error404)
+            httpResponse += "HTTP/1.1 404 Not Found\r\n";
+        else
+            httpResponse += "HTTP/1.1 200 OK\r\n";
+        httpResponse += "Content-Type: text/xml\r\nContent-Length: ";
         httpResponse += QByteArray::number(responseData.size());
         httpResponse += "\r\n";
 

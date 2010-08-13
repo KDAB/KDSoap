@@ -82,29 +82,6 @@ private slots:
         QCOMPARE(ret.faultAsString(), QString::fromLatin1("Fault code: 1\nFault description: Connection refused ()"));
     }
 
-    void testFault()
-    {
-        const QString endPoint = QString::fromLatin1("http://soapclient.com/xml/doesnotexist");
-        const QString messageNamespace = QString::fromLatin1("incorrect, just for testing");
-        KDSoapClientInterface client(endPoint, messageNamespace);
-        KDSoapMessage message;
-        message.addArgument(QLatin1String("bstrParam1"), QLatin1String("abc"));
-        message.addArgument(QLatin1String("bstrParam2"), QLatin1String("def"));
-        KDSoapMessage ret = client.call(QLatin1String("Method1"), message);
-        //qDebug() << ret;
-        QVERIFY(ret.isFault());
-        QStringList possibleErrors;
-        // The error changed at some point...
-        possibleErrors << QString::fromLatin1("Fault code: SOAP-ENV:Server\n"
-                                              "Fault description: The parameter is incorrect. (/xml/doesnotexist)");
-        possibleErrors << QString::fromLatin1("Fault code: 299\n"
-                                              "Fault description: Error downloading http://soapclient.com/xml/doesnotexist - server replied: Internal Server Error ()");
-        if (!possibleErrors.contains(ret.faultAsString())) {
-            qDebug() << ret.faultAsString();
-            QVERIFY(possibleErrors.contains(ret.faultAsString()));
-        }
-    }
-
     void testOrteLookup()
     {
         const QString endPoint = QString::fromLatin1("http://mathertel.de/AJAXEngine/S02_AJAXCoreSamples/OrteLookup.asmx?WSDL");

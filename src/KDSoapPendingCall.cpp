@@ -108,8 +108,10 @@ void KDSoapPendingCall::Private::parseReply()
         replyMessage.setFault(true);
         replyMessage.addArgument(QString::fromLatin1("faultcode"), QString::number(reply->error()));
         replyMessage.addArgument(QString::fromLatin1("faultstring"), reply->errorString());
-        if (doDebug)
+        if (doDebug) {
+            //qDebug() << reply->readAll();
             qDebug() << reply->errorString();
+        }
     } else {
         const QByteArray data = reply->readAll();
         if (doDebug)
