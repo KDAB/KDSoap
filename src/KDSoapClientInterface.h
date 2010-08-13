@@ -13,7 +13,23 @@ class KDSoapAuthentication;
  * calls to remote SOAP objects.
  * This class is useful for dynamic access to remote objects: that is, when
  * you do not have a generated code that represents the remote interface.
- */ // TODO code example
+ * @code
+ *  const int year = 2009;
+ *
+ *  const QString endPoint = QLatin1String("http://www.27seconds.com/Holidays/US/Dates/USHolidayDates.asmx");
+ *  const QString messageNamespace = QLatin1String("http://www.27seconds.com/Holidays/US/Dates/");
+ *  KDSoapClientInterface client(endPoint, messageNamespace);
+ *
+ *  KDSoapMessage message;
+ *  message.addArgument(QLatin1String("year"), year);
+ *
+ *  qDebug("Looking up the date of Valentine's Day in %i...", year);
+ *
+ *  KDSoapMessage response = client.call(QLatin1String("GetValentinesDay"), message);
+ *
+ *  qDebug("%s", qPrintable(response.arguments()[0].value().toString()));
+ * @endcode
+ */
 class KDSOAP_EXPORT KDSoapClientInterface
 {
 public:
@@ -49,7 +65,33 @@ public:
      * Note that the returned KDSoapPendingCall object (or a copy of it) must stay alive
      * for the whole duration of the call. If you do not want to wait for a response,
      * use callNoReply instead.
-     */ // TODO code example
+     *
+     * @code
+     *  const int year = 2009;
+     *
+     *  const QString endPoint = QLatin1String("http://www.27seconds.com/Holidays/US/Dates/USHolidayDates.asmx");
+     *  const QString messageNamespace = QLatin1String("http://www.27seconds.com/Holidays/US/Dates/");
+     *  KDSoapClientInterface* client= new KDSoapClientInterface(endPoint, messageNamespace);
+     *
+     *  KDSoapMessage message;
+     *  message.addArgument(QLatin1String("year"), year);
+     *
+     *  qDebug("Looking up the date of Valentine's Day in %i...", year);
+     *
+     * KDSoapPendingCall pendingCall = client->asyncCall(QLatin1String("GetValentinesDay"), message);
+     *
+     *  // create a watcher object that will signal the call's completion
+     *  KDSoapPendingCallWatcher* watcher = new KDSoapPendingCallWatcher(pendingCall, this);
+     *  connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher*)),
+     *          this, SLOT(pendingCallFinished(KDSoapPendingCallWatcher*)));
+     *
+     *  void MyClass::pendingCallFinished(KDSoapPendingCallWatcher* pendingCall)
+     *  {
+     *      KDSoapMessage response = pendingCall->returnMessage();
+     *      qDebug("%s", qPrintable(response.arguments()[0].value().toString()));
+     *  }
+     * @endcode
+     */
     KDSoapPendingCall asyncCall(const QString& method, const KDSoapMessage &message,
                                 const QString& soapAction = QString(),
                                 const KDSoapHeaders& headers = KDSoapHeaders());
