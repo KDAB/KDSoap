@@ -447,13 +447,13 @@ public:
     USHolidayDates( QObject* parent = 0 );
     ~USHolidayDates();
 
-    TNS__GetValentinesDayResponse getValentinesDay( const TNS__GetValentinesDay& parameters );
+    TNS__GetValentinesDayResponse getValentinesDay( const TNS__GetValentinesDay&amp; parameters );
 
-    void asyncGetValentinesDay( const TNS__GetValentinesDay& parameters );
+    void asyncGetValentinesDay( const TNS__GetValentinesDay&amp; parameters );
 
-    void getValentinesDayDone( const TNS__GetValentinesDayResponse& parameters );
+    void getValentinesDayDone( const TNS__GetValentinesDayResponse&amp; parameters );
 
-    void getValentinesDayError( const KDSoapMessage& fault );
+    void getValentinesDayError( const KDSoapMessage&amp; fault );
 };
       </programlisting>
       <para>This is an excerpt of the generated web service interface class. It is a subclass of <classname>QObject</classname> so it can make use of signals for delivering asynchronous results. Both synchronous as well as asynchronous call take an instance of the generate class <classname>TNS__GetValentinesDay</classname> as their only parameter. The synchronous variant returns an instance of class <classname>TNS__GetValentinesDayResponse</classname> once it has completed the call, while the asynchronous <methodname>asyncGetValentinesDay()</methodname> returns without value. Its results are delivered through one of the two signals: <methodname>getValentinesDayDonegetValentinesDayDone()</methodname> which carries an instance of the same class the synchronous <methodname>getValentinesDay()</methodname> returned, or <methodname>getValentinesDayError()</methodname> which carries a fault message (see <xref linkend="apiconcepts" />).</para>
@@ -473,7 +473,7 @@ public:
 class TNS__GetValentinesDayResponse
 {
 public:
-    void setGetValentinesDayResult( const QDateTime& getValentinesDayResult );
+    void setGetValentinesDayResult( const QDateTime&amp; getValentinesDayResult );
     QDateTime getValentinesDayResult() const;
 };
       </programlisting>
