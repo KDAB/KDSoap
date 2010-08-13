@@ -311,6 +311,79 @@ void MyClass::pendingCallFinished(KDSoapPendingCallWatcher* pendingCall)
     </sect1>
   </chapter>
 
+  <chapter id="chapter_headers">
+    <title id="chtxt_headers">SOAP Headers</title>
+
+    <titleabbrev id="chnum_headers">Chapter 4</titleabbrev>
+
+    <para>SOAP specifies a mechanism to transmit data along side the actual SOAP document, so called SOAP headers. The term headers indicates that these values will be part of the HTTP headers section which makes them accessible for components involved in the transfer which do understand HTTP but might not have SOAP capabilities, e.g. the web server or a load balancer in front of it.</para>
+
+    <para>&kdsoap; supports headers on a per method call basis as well as keeping them as local state across calls.</para>
+
+    <sect1>
+      <title id="perinterfaceheaders">SOAP Headers per Client Interface</title>
+
+      <para>One of the most common use case for SOAP headers is providing session information for the recipient of the SOAP transmission. This is mainly necessary because HTTP is a stateless interfacing scheme, where each call arrives through a new network connection. In order to associate such independent connections to the same client, the first connection establishes some sort of session tracking, usually in the form of a session identifier string. This identifier then has to be provided with each call.</para>
+
+      <para>While a header containing such an identifier could be provided at each method call, it will usually be more convenient to let &kdsoap; take care of that by setting the header as a kind of local state on the <classname>KDSoapClientInterface</classname> instance:</para>
+
+     <programlisting>
+KDSoapMessage message;
+message.addArgument(QLatin1String("user"), userName);
+message.addArgument(QLatin1String("password"), password);
+
+KDSoapMessage response = client.call(QLatin1String("Login"), message);
+const QString sessionId = response.arguments()[0].value().toString();
+
+KDSoapMessage header;
+header.addArgument(QLatin1String("SessionId"), sessionId);
+
+client.setHeader(QLatin1String("SessionHeader"), header);
+
+...
+
+response = client.call(QLatin1String("GetUserDetails", KDSoapMessage());
+     </programlisting>
+
+     <para>The example above assumes a fictitious web service which requires a login call to establish a user's authentification and then requires the returned session token to be used for any subsequent call. Setting the identifier as a header allows &kdsoap; to take care of sending it alongside any call invoked through the same <classname>KDSoapClientInterface</classname> instance.</para>
+
+     <para>Please note that the actual name of the header argument, in the case of this example <literal>"SessionId"</literal>, is part of the web service's interface description, while the name passed to <methodname>KDSoapClientInterface::setHeader()</methodname> is purely used for identifying the header between &kdsoap; and the application and can thus be chosen by the user herself.</para>
+    </sect1>
+
+    <sect1>
+      <title id="percallheaders">SOAP Headers for Single Calls</title>
+
+      <para>Sometimes it might not be possible to use a header across calls, e.g. the value of the header changing with each call or be specific to the method being called. In cases like this it is necessary to provide the headers when invoking the <methodname>KDSoapClientInterface::call()</methodname> (or one of its asynchronous variants):</para>
+
+     <programlisting>
+KDSoapMessage header;
+header.addArgument(QLatin1String("SessionId"), sessionId);
+
+KDSoapHeaders headers;
+headers &lt;&lt; header;
+
+response = client.call(QLatin1String("GetUserDetails", KDSoapMessage(), QString(), headers);
+     </programlisting>
+
+     <sect2>
+       <title id="soapaction">SOAP Action</title>
+
+       <para>As already hinted in the example above, there is another per-call parameter: SOAP Actions. It is a mandatory SOAP header but allowed to be empty. Its purpose as suggested by the SOAP specification is to express the intent of the call. In most cases this can be left empty and let &kdsoap; generate a valid value based on the method name.</para>
+
+       <para>As an example of where it is necessary to actually set this, see Google's search API:</para>
+
+       <programlisting>
+KDSoapMessage message;
+
+...
+
+const soapAction = QLatin1String("urn:GoogleSearchAction");
+KDSoapMessage response.call(QLatin1String("doGoogleSearch"), message, soapAction);
+       </programlisting>
+     </sect2>
+    </sect1>
+  </chapter>
+
   <appendix id="appendix_qanda">
     <title id="txt_appendix_qanda">Q&amp;A section</title>
 
