@@ -48,8 +48,41 @@ private slots:
                  QString::fromLatin1("2009-02-14"));
     }
 
+    void testParallelAsyncRequests()
+    {
+        USHolidayDates holidays;
+        QStringList expectedResults;
+        for (int year = 2007; year < 2010; ++year) {
+            TNS__GetValentinesDay parameters;
+            parameters.setYear(year);
+            holidays.asyncGetValentinesDay(parameters);
+            expectedResults += QString::fromLatin1("%1-02-14T00:00:00").arg(year);
+        }
+        connect(&holidays, SIGNAL(getValentinesDayDone(TNS__GetValentinesDayResponse)),
+                this,  SLOT(slotGetValentinesDayDone(TNS__GetValentinesDayResponse)));
+        m_eventLoop.exec();
+
+        //qDebug() << m_resultsReceived;
+
+        // Order of the replies is undefined.
+        m_resultsReceived.sort();
+        QCOMPARE(m_resultsReceived, expectedResults);
+    }
+
     // TODO: a great example for complex returned structures:
     // http://www.holidaywebservice.com/Holidays/HolidayService.asmx?op=GetHolidaysForYear
+
+protected slots:
+    void slotGetValentinesDayDone(const TNS__GetValentinesDayResponse& response)
+    {
+        m_resultsReceived << response.getValentinesDayResult().toString(Qt::ISODate);
+        if (m_resultsReceived.count() == 3)
+            m_eventLoop.quit();
+    }
+
+private:
+    QEventLoop m_eventLoop;
+    QStringList m_resultsReceived;
 };
 
 QTEST_MAIN(WebCallsWSDL)
