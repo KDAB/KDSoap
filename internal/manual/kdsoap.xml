@@ -140,6 +140,9 @@
       goes through the basic steps and methods for the user to create her own
       SOAP client.</para>
 
+      <para>Each subsequent chapter covers more advanced material like different variations of asynchronous calls or providing additional data to the transport protocol layer.
+      Chapter <xref linked="chtxt_kdwsdl2cpp" /> finally describes a less generic but easier and safer to use approach using generated code.</para>
+
       <para>We provide you with many more example programs than shown in this
       manual. We recommend that our readers try them out and run them. Have a
       look at the code and experiment with the various settings, both by
@@ -429,7 +432,6 @@ KDSoapMessage response.call(QLatin1String("doGoogleSearch"), message, soapAction
       <para><userinput>kdwsdl2cpp -o wsdl_holidays.cpp -impl wsd_holidays.h holidays.wsdl</userinput></para>
 
       <para>This creates a source file <filename>wsdl_holidays.cpp</filename> (choice of file name is again up to the user) using the header file <filename>wsdl_holidays.h</filename> as the include for class declarations.</para>
-
     </sect1>
 
     <sect1>
