@@ -384,6 +384,138 @@ KDSoapMessage response.call(QLatin1String("doGoogleSearch"), message, soapAction
     </sect1>
   </chapter>
 
+  <chapter id="chapter_kdwsdl2cpp">
+    <title id="chtxt_kdwsdl2cpp">Using WSDL to Generate Client API</title>
+
+    <titleabbrev id="chnum_kdwsdl2cpp">Chapter 4</titleabbrev>
+
+    <sect1>
+      <title id="wsdlintroduction">Introduction</title>
+
+      <para>Most SOAP based web services are formally described in an XML based markup language called web service description language (WSDL). Such WSDL documents describe web service methods, their parameters and return values, as well as possible errors in a formalized way that makes them viable as input for code generation tools.</para>
+
+      <para>Compared to the generic approach described in the earlier chapters of this manual, using a generated client API introduces several additional advantages:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Named methods: instead of referring to web service methods by names as string parameters to a generic <methodname>call()</methodname> method, a client interface generated from a WSDL document will have C++ methods for each of the web service's methods.</para>
+        </listitem>
+
+        <listitem>
+          <para>Type specific classes: instead of building a single message object containing the method's parameters as lists of named values, methods of a generated client interface take C++ types for each of their parameters. If such a parameter is a type described in the WSDL document, a matching class with suitably named methods and again specifically types will have been generated as well.</para>
+        </listitem>
+
+        <listitem>
+          <para>Build time checks: as a result of neither methods nor parameter or return types being generic anymore, typos in method or parameter names, missing parameters and some forms of invalid parameter contents can now be caught by the C++ compiler instead of resulting in a SOAP error at runtime during method invocation.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>&kdsoap; has full support for this powerful approach through its &kdwsdl2cpp; code generation tool. The following sections document how to use it and the client API it generates.</para>
+    </sect1>
+
+    <sect1>
+      <title id="usingkdwsld2cpp">Using &kdwsdl2cpp;</title>
+
+      <para>Before using &kdwsdl2cpp; it is necessary to obtain the WSDL document describing the target web service and have it available as a local file. It usually available as a download on a web site associated with the web service or similar online distribution methods.</para>
+
+      <para>Code generation using &kdwsdl2cpp; requires two steps: one to generate the header file and one to generate the source file. For example, when processing the <filename>holidays.wsdl</filename> file (which can be found in <filename>examples/holidays_wsdl</filename>) the following two commands need to be executed:</para>
+
+      <para><userinput>kdwsdl2cpp -o wsdl_holidays.h holidays.wsdl</userinput></para>
+
+      <para>This creates a header file <filename>wsdl_holidays.h</filename> (choice of file name is up to the user), which will then contain the declarations of all data classes described in th WSDL file as well as the class representing the web service's interface.</para>
+
+      <para><userinput>kdwsdl2cpp -o wsdl_holidays.cpp -impl wsd_holidays.h holidays.wsdl</userinput></para>
+
+      <para>This creates a source file <filename>wsdl_holidays.cpp</filename> (choice of file name is again up to the user) using the header file <filename>wsdl_holidays.h</filename> as the include for class declarations.</para>
+
+    </sect1>
+
+    <sect1>
+      <title id="generatedcode">Using the Generated Code</title>
+
+      <para>The generated code for the example call used through out this manual looks like this:</para>
+      <programlisting>
+class USHolidayDates : public QObject
+{
+    Q_OBJECT
+
+public:
+    USHolidayDates( QObject* parent = 0 );
+    ~USHolidayDates();
+
+    TNS__GetValentinesDayResponse getValentinesDay( const TNS__GetValentinesDay& parameters );
+
+    void asyncGetValentinesDay( const TNS__GetValentinesDay& parameters );
+
+    void getValentinesDayDone( const TNS__GetValentinesDayResponse& parameters );
+
+    void getValentinesDayError( const KDSoapMessage& fault );
+};
+      </programlisting>
+      <para>This is an excerpt of the generated web service interface class. It is a subclass of <classname>QObject</classname> so it can make use of signals for delivering asynchronous results. Both synchronous as well as asynchronous call take an instance of the generate class <classname>TNS__GetValentinesDay</classname> as their only parameter. The synchronous variant returns an instance of class <classname>TNS__GetValentinesDayResponse</classname> once it has completed the call, while the asynchronous <methodname>asyncGetValentinesDay()</methodname> returns without value. Its results are delivered through one of the two signals: <methodname>getValentinesDayDonegetValentinesDayDone()</methodname> which carries an instance of the same class the synchronous <methodname>getValentinesDay()</methodname> returned, or <methodname>getValentinesDayError()</methodname> which carries a fault message (see <xref linkend="apiconcepts" />).</para>
+
+      <programlisting>
+class TNS__GetValentinesDay
+{
+public:
+    void setYear( int year );
+    int year() const;
+};
+      </programlisting>
+
+      <para>This is an excerpt of the generated request parameter class, using the native integer type for the year parameter.</para>
+
+      <programlisting>
+class TNS__GetValentinesDayResponse
+{
+public:
+    void setGetValentinesDayResult( const QDateTime& getValentinesDayResult );
+    QDateTime getValentinesDayResult() const;
+};
+      </programlisting>
+
+      <para>This is an excerpt of the generated return value class, using Qt's <classname>QDateTime</classname> to represent the resulting date.</para>
+
+      <para>Deploying these classes to perform the example call:</para>
+
+      <programlisting>
+USHolidayDates client;
+
+TNS__GetValentinesDay request;
+resquest.setYear( 2010 );
+
+TNS__GetValentinesDayResponse response = client.getValentinesDay( request );
+const QDateTime valentinesDay = response.getValentinesDayResult();
+      </programlisting>
+    </sect1>
+
+    <sect1>
+      <title id="kdwsdl2cppqmake">Using &kdwsdl2cpp; with QMake</title>
+
+      <para>While running &kdwsdl2cpp; manually and adding the resulting source and header file to a project's QMake <filename>.pro</filename> file works as expected, having QMake take care of the code generation makes it easier to adopt changes in the WSDL file.</para>
+
+      <para>&kdsoap; supports this by making WSDL file processing similar to how QMake treats Qt Designer's <filename>.ui</filename> files. The necessary steps are:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Include the <filename>kdsoap.pri</filename> QMake include file in the project's <filename>.pro</filename> file. It is part of the &kdsoap; package and should be copied to the user's project directory.</para>
+        </listitem>
+
+        <listitem>
+          <para>Add the WSDL files to the <literal>KDWSDL</literal> variable. For the example above it would look like this:</para>
+          <programlisting>
+KDWSDL = holidays.wsdl
+          </programlisting>
+          <para>Generated files will be prefixed with <literal>wsdl_</literal> and have the proper extension depending on file type. I.e. the above line will result in <filename>wsdl_holidays.h</filename> and <filename>wsdl_holidays.cpp</filename>.</para>
+        </listitem>
+
+        <listitem>
+          <para>Set the environment variable <literal>KDSOAPDIR</literal> to the base path of your &kdsoap; build or install directory or provide it as a value to the <filename>qmake</filename> run.</para>
+        </listitem>
+      </itemizedlist>
+    </sect1>
+  </chapter>
+
   <appendix id="appendix_qanda">
     <title id="txt_appendix_qanda">Q&amp;A section</title>
 
