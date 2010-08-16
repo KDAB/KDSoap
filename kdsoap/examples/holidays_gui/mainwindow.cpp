@@ -19,17 +19,20 @@ MainWindow::MainWindow( QWidget *parent ) : QWidget( parent )
   mLblResult = new QLabel(tr("Result: "), this);
   mLblAnim = new QLabel(this);
   
-  mMovAnim = new QMovie(QString::fromAscii(":/animations/anim.gif"));
+  mMovAnim = new QMovie(QString::fromAscii(":/animations/anim.mng"));
   
   QVBoxLayout *centralLayout = new QVBoxLayout(this);
   QHBoxLayout *btnsLayout = new QHBoxLayout();
+  QHBoxLayout *lblsLayout = new QHBoxLayout();
   
   btnsLayout->addWidget( mBtnSync  );
   btnsLayout->addWidget( mBtnAsync );
   
-  centralLayout->addLayout(btnsLayout);
-  centralLayout->addWidget( mLblResult );
-  centralLayout->addWidget( mLblAnim );
+  lblsLayout->addWidget( mLblAnim  );
+  lblsLayout->addWidget( mLblResult );
+  
+  centralLayout->addLayout( btnsLayout );
+  centralLayout->addLayout( lblsLayout );
   
   mLblAnim->setMovie(mMovAnim);
   mMovAnim->start();
