@@ -18,8 +18,8 @@ public:
 private slots:
   void syncCall();
   void asyncCall();
-  void getValentinesDay(const TNS__GetValentinesDayResponse& r);
-  void getValentinesDayError(const KDSoapMessage& error);
+  void done(const TNS__GetValentinesDayResponse& r);
+  void doneError(const KDSoapMessage& error);
   
 private:
   QPushButton *mBtnAsync;
@@ -32,9 +32,6 @@ private:
   
   USHolidayDates *mHolidayDates;
   TNS__GetValentinesDay mParameters;
-    
-  //message.addArgument(QLatin1String("year"), year);
-
 };
 
 #endif
