@@ -1,5 +1,5 @@
  <!DOCTYPE RCC><RCC version="1.0">
  <qresource prefix="/animations">
-     <file alias="anim.gif">anim.gif</file>
+     <file alias="anim.mng">anim.mng</file>
  </qresource>
  </RCC>
