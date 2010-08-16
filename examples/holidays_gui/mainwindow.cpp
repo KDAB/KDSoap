@@ -39,22 +39,21 @@ MainWindow::MainWindow( QWidget *parent ) : QWidget( parent )
   
   mHolidayDates = new USHolidayDates();
   connect(mHolidayDates, SIGNAL(getValentinesDayDone(const TNS__GetValentinesDayResponse&)), 
-          this,          SLOT(  getValentinesDay    (const TNS__GetValentinesDayResponse&)));
+          this,          SLOT(  done    (const TNS__GetValentinesDayResponse&)));
   
   connect(mHolidayDates, SIGNAL(getValentinesDayError(const KDSoapMessage&)),
-          this,          SLOT  (getValentinesDayError(const KDSoapMessage&)));
+          this,          SLOT  (doneError(const KDSoapMessage&)));
   
   mYear = 1960;
   mParameters.setYear(mYear++);                 
 }
 
-void MainWindow::getValentinesDay(const TNS__GetValentinesDayResponse& response)
+void MainWindow::done(const TNS__GetValentinesDayResponse& response)
 {
     mLblResult->setText( response.getValentinesDayResult().toString());
-    
 }
 
-void MainWindow::getValentinesDayError(const KDSoapMessage& error)
+void MainWindow::doneError(const KDSoapMessage& error)
 {
     QMessageBox::warning(this, tr("Error retrieving valentines day"), error.faultAsString());
 }
