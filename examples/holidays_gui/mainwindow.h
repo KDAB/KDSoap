@@ -28,6 +28,8 @@ private:
   QLabel      *mLblAnim;
   QMovie      *mMovAnim;
   
+  unsigned int mYear;
+  
   USHolidayDates *mHolidayDates;
   TNS__GetValentinesDay mParameters;
     
