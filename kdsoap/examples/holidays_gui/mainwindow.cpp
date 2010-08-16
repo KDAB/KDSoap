@@ -7,11 +7,12 @@
 #include <QHBoxLayout>
 #include <QString>
 #include <QDebug>
+#include <QMessageBox>
 
 #include "KDSoapPendingCallWatcher.h"
 
-
-MainWindow::MainWindow( QWidget *parent ) : QWidget( parent ){
+MainWindow::MainWindow( QWidget *parent ) : QWidget( parent )
+{
    
   mBtnSync = new QPushButton(tr("Sync Call"), this);
   mBtnAsync = new QPushButton(tr("Async Call"), this);
@@ -41,26 +42,32 @@ MainWindow::MainWindow( QWidget *parent ) : QWidget( parent ){
           this,          SLOT(  getValentinesDay    (const TNS__GetValentinesDayResponse&)));
   
   connect(mHolidayDates, SIGNAL(getValentinesDayError(const KDSoapMessage&)),
-          this,          SLOT  (vetValentinesDayError(const KDSoapMessage)));
-                  
+          this,          SLOT  (getValentinesDayError(const KDSoapMessage&)));
   
-  mParameters.setYear(2006);
+  mYear = 1960;
+  mParameters.setYear(mYear++);                 
 }
 
-void MainWindow::getValentinesDay(const TNS__GetValentinesDayResponse& response){
+void MainWindow::getValentinesDay(const TNS__GetValentinesDayResponse& response)
+{
     mLblResult->setText( response.getValentinesDayResult().toString());
+    
 }
 
-void MainWindow::getValentinesDayError(const KDSoapMessage& error){
-    Q_UNUSED(error);
-    qDebug() << "Check your internet connection, dear.";
+void MainWindow::getValentinesDayError(const KDSoapMessage& error)
+{
+    QMessageBox::warning(this, tr("Error retrieving valentines day"), error.faultAsString());
 }
   
-void MainWindow::syncCall(){
+void MainWindow::syncCall()
+{
     TNS__GetValentinesDayResponse response = mHolidayDates->getValentinesDay(mParameters);
     mLblResult->setText( response.getValentinesDayResult().toString());
+    mParameters.setYear( mYear++ );
 }
 
-void MainWindow::asyncCall(){
+void MainWindow::asyncCall()
+{
   mHolidayDates->asyncGetValentinesDay(mParameters);
+  mParameters.setYear( mYear++ );
 }
