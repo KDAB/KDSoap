@@ -37,7 +37,6 @@ static void showHelp(const char *appName)
     fprintf(stderr, "Usage: %s [options] [-impl <headerfile>] <wsdlfile>\n\n"
             "  -h, -help                 display this help and exit\n"
             "  -v, -version              display version\n"
-            "  -d, -dependencies         display the dependencies\n"
             "  -s, -service              name of the service to generate\n"
             "  -o <file>                 place the output into <file>\n"
             "  -impl <headerfile>        generate the implementation file, and #include <headerfile>\n"
@@ -48,7 +47,6 @@ int main( int argc, char **argv )
 {
     const char *fileName = 0;
     QString outputFile;
-    bool dependencies = false;
     bool impl = false;
     QString headerFile;
     QString serviceName;
@@ -59,8 +57,6 @@ int main( int argc, char **argv )
         if (opt == QLatin1String("-h") || opt == QLatin1String("-help")) {
             showHelp(argv[0]);
             return 0;
-        } else if (opt == QLatin1String("-d") || opt == QLatin1String("-dependencies")) {
-            dependencies = true;
         } else if (opt == QLatin1String("-impl")) {
             impl = true;
             ++arg;
@@ -99,11 +95,6 @@ int main( int argc, char **argv )
     if (!fileName) {
         showHelp(argv[0]);
         return 1;
-    }
-
-    if (dependencies) {
-        // TODO output dependencies
-        return 0;
     }
 
     QCoreApplication app( argc, argv );
