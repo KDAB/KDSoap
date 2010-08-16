@@ -73,3 +73,4 @@ void MainWindow::asyncCall()
   mHolidayDates->asyncGetValentinesDay(mParameters);
   mParameters.setYear( mYear++ );
 }
+
