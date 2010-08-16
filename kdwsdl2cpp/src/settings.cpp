@@ -26,9 +26,13 @@
 
 #include "settings.h"
 
-Settings *Settings::mSelf = 0;
+class SettingsSingleton
+{
+public:
+    Settings mSettings;
+};
 
-// TODO Q_GLOBAL_STATIC static K3StaticDeleter<Settings> settingsDeleter;
+Q_GLOBAL_STATIC(SettingsSingleton, s_settings)
 
 Settings::Settings()
 {
@@ -43,15 +47,7 @@ Settings::~Settings()
 
 Settings* Settings::self()
 {
-    if ( !mSelf ) {
-#ifdef KDAB_TEMP
-        settingsDeleter.setObject( mSelf, new Settings );
-#else
-        mSelf = new Settings;
-#endif
-    }
-
-    return mSelf;
+    return &s_settings()->mSettings;
 }
 
 void Settings::setWsdlFile(const QString &wsdlFile)
