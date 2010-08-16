@@ -189,7 +189,7 @@ private Q_SLOTS:
 
         NamesServiceService serv;
         serv.setEndPoint(server.endPoint());
-        const QStringList countries = serv.getCountries().country(); // TODO countryList()?
+        const QStringList countries = serv.getCountries().country(); // the wsdl should have named it "countries"...
         QCOMPARE(countries.count(), 2);
         QCOMPARE(countries[0], QString::fromLatin1("Great Britain"));
         QCOMPARE(countries[1], QString::fromLatin1("Ireland"));
