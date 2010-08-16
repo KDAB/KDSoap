@@ -57,9 +57,8 @@ class Settings
     QString wantedService() const;
 
   private:
+    friend class SettingsSingleton;
     Settings();
-
-    static Settings *mSelf;
 
     QString mWsdlFile;
     QString mOutputFileName;
