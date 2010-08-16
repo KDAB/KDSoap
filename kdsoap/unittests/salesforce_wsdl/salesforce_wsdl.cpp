@@ -75,16 +75,16 @@ private Q_SLOTS:
             QCOMPARE(anys[1].value().toString(), QLatin1String("Faure"));
         }
 
-#if 0
         // Check what we sent
         QByteArray expectedRequestXml =
             QByteArray(xmlEnvBegin) +
             "><soap:Body>"
-            // TODO?
+            "<n1:query xmlns:n1=\"urn:partner.soap.sforce.com\">"
+             "<n1:queryString xsi:type=\"xsd:string\">Select Id, FirstName, LastName from Contact</n1:queryString>"
+            "</n1:query>"
             "</soap:Body>" + xmlEnvEnd
             + '\n'; // added by QXmlStreamWriter::writeEndDocument
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
-#endif
     }
 
 private:
