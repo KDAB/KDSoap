@@ -107,6 +107,34 @@ private Q_SLOTS:
         QVERIFY(reply.isFault());
     }
 
+    void testCorrectHttpHeader()
+    {
+        HttpServerThread server(countryResponse(), HttpServerThread::Public);
+        KDSoapClientInterface client(server.endPoint(), countryMessageNamespace());
+        KDSoapAuthentication auth;
+        
+        auth.setUser(QLatin1String("kdab"));
+        auth.setPassword(QLatin1String("unused"));
+        client.setAuthentication(auth); // unused...
+
+        QByteArray expectedRequestXml = expectedCountryRequest();
+        client.setSoapVersion(KDSoapClientInterface::SOAP1_1);
+        {
+            KDSoapMessage ret = client.call(QLatin1String("getEmployeeCountry"), countryMessage());
+            // Check what we sent
+            QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
+            QVERIFY(!ret.isFault());
+            QCOMPARE(ret.arguments().value(QLatin1String("employeeCountry")).toString(), QString::fromLatin1("France"));
+        }        
+        client.setSoapVersion(KDSoapClientInterface::SOAP1_2);
+        {
+            KDSoapMessage ret = client.call(QLatin1String("getEmployeeCountry"), countryMessage());
+            // Check what we sent
+            QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
+            QVERIFY(!ret.isFault());
+            QCOMPARE(ret.arguments().value(QLatin1String("employeeCountry")).toString(), QString::fromLatin1("France"));
+        }
+    }
     // Using direct call(), check the xml we send, the response parsing.
     // Then test callNoReply, then various ways to use asyncCall.
     void testCallNoReply()
