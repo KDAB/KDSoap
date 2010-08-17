@@ -17,6 +17,7 @@ KDSoapClientInterface::KDSoapClientInterface(const QString& endPoint, const QStr
 {
     d->m_endPoint = endPoint;
     d->m_messageNamespace = messageNamespace;
+    d->m_version = SOAP1_1;
 }
 
 KDSoapClientInterface::~KDSoapClientInterface()
@@ -24,6 +25,16 @@ KDSoapClientInterface::~KDSoapClientInterface()
     d->m_thread.stop();
     d->m_thread.wait();
     delete d;
+}
+
+void KDSoapClientInterface::setSoapVersion(KDSoapClientInterface::SoapVersion version)
+{
+    d->m_version = version;
+}
+
+KDSoapClientInterface::SoapVersion KDSoapClientInterface::soapVersion()
+{
+  return d->m_version;
 }
 
 static QString variantToTextValue(const QVariant& value)
@@ -118,9 +129,7 @@ KDSoapClientInterface::Private::Private()
 QNetworkRequest KDSoapClientInterface::Private::prepareRequest(const QString &method, const QString& action)
 {
     QNetworkRequest request(QUrl(this->m_endPoint));
-    // Seems SOAP-1.2 uses application/soap+xml instead of text/xml.
-    // TODO: SOAP-1.2 support: "application/soap+xml;charset=utf-8;action=" + soapAction.toUtf8()
-    request.setHeader(QNetworkRequest::ContentTypeHeader, QLatin1String("text/xml;charset=utf-8"));
+    
     // The soap action seems to be namespace + method in most cases, but not always
     // (e.g. urn:GoogleSearchAction for google).
     QString soapAction = action;
@@ -130,6 +139,16 @@ QNetworkRequest KDSoapClientInterface::Private::prepareRequest(const QString &me
     }
     //qDebug() << "soapAction=" << soapAction;
     request.setRawHeader("SoapAction", soapAction.toUtf8());
+    
+    QString soapHeader;
+    if ( m_version == SOAP1_1){
+        soapHeader += QString::fromLatin1("text/xml;");
+    }else if( m_version == SOAP1_2 ){
+        soapHeader += QString::fromLatin1("application/soap+xml;");
+    }
+    soapHeader += QString::fromLatin1("charset=utf-8;action=") + soapAction;
+    
+    request.setHeader(QNetworkRequest::ContentTypeHeader, soapHeader.toUtf8());
     
     // FIXME need to find out which version of Qt this is no longer necessary
     // without that the server might respond with gzip compressed data and

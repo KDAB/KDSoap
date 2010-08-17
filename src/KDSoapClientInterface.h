@@ -33,6 +33,8 @@ class KDSoapAuthentication;
 class KDSOAP_EXPORT KDSoapClientInterface
 {
 public:
+    enum SoapVersion{ SOAP1_1, SOAP1_2 };
+    
     /**
      * Creates a KDSoapClientInterface object associated with the end point @p endPoint.
      * No connection is done yet at this point, the parameters are simply stored for later use.
@@ -139,9 +141,20 @@ public:
      */
     void setHeader(const QString& name, const KDSoapMessage& header);
 
+    /**
+     * Sets the version of the Soap to be sent with any subsequent soap call.
+     * @param version KDSoapClientInterface::SoapVersion::SOAP1_1 or SOAP1_2
+     */
+    void setSoapVersion(SoapVersion version);
+    
+    /**
+     * gets the version of Soap being used in this instance.
+     */
+    SoapVersion soapVersion();
+    
 private:
     friend class KDSoapThreadTask;
-
+    
     class Private;
     Private * const d;
 };

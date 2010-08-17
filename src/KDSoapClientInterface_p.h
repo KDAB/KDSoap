@@ -25,6 +25,7 @@ public:
     KDSoapClientThread m_thread;
     KDSoapAuthentication m_authentication;
     QMap<QString, KDSoapMessage> m_persistentHeaders;
+    SoapVersion m_version;
 
     QNetworkRequest prepareRequest(const QString &method, const QString& action);
     QBuffer* prepareRequestBuffer(const QString& method, const KDSoapMessage& message, const KDSoapHeaders& headers);
