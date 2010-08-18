@@ -85,6 +85,7 @@ class TypeMap
      * i.e. one with multiple named values, rather than just one value.
      */
     bool isComplexType( const QName &typeName, const QName& elementName ) const;
+    bool isBuiltinType( const QName &typeName, const QName& elementName ) const;
 
     QString localTypeForAttribute( const QName &typeName ) const;
     QStringList headersForAttribute( const QName &typeName ) const;
@@ -103,8 +104,8 @@ class TypeMap
     {
       public:
         Entry() : basicType(false), builtinType(false), complexType(false) {}
-        bool basicType;
-        bool builtinType;
+        bool basicType;   // POD (int, bool, etc.)
+        bool builtinType; // types defined in xmlschema
         bool complexType;
         QString nameSpace;
         QString typeName;
@@ -113,6 +114,8 @@ class TypeMap
         QStringList headers;
         QStringList forwardDeclarations;
         QStringList headerIncludes;
+
+        QString dumpBools() const;
     };
 
     QList<Entry>::ConstIterator typeEntry( const QName &typeName ) const;
