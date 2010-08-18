@@ -53,12 +53,6 @@ class Converter
     void convertSimpleType( const XSD::SimpleType*, const XSD::SimpleType::List& simpleTypeList );
     void createSimpleTypeSerializer( KODE::Class&, const XSD::SimpleType*, const XSD::SimpleType::List& simpleTypeList );
 
-    void convertAttribute( const XSD::Attribute* );
-    void createAttributeSerializer( const XSD::Attribute* );
-
-    //void convertElement( const XSD::Element* );
-    //void createElementSerializer( const XSD::Element* );
-
     // Client Stub
     void convertClientService();
     void convertClientCall( const Operation&, const Binding&, KODE::Class& );
