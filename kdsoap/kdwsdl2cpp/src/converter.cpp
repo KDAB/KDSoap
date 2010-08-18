@@ -83,6 +83,66 @@ void Converter::setWSDL( const WSDL &wsdl )
     mTypeMap.dump();
 }
 
+class TypeCollector
+{
+public:
+    TypeCollector(const QSet<QName>& usedTypes) : m_allUsedTypes(usedTypes) {}
+
+    void collectDependentTypes(const TypeMap& typeMap, const XSD::Types& types)
+    {
+        QSet<QName> typesToProcess = m_allUsedTypes;
+        do {
+            m_alsoUsedTypes.clear();
+            Q_FOREACH(const QName& typeName, typesToProcess.toList() /*slow!*/) {
+                if (typeName.isEmpty())
+                    continue;
+                if (typeMap.isBuiltinType(typeName))
+                    continue;
+                //qDebug() << "used type:" << typeName;
+                XSD::ComplexType complexType = types.complexType(typeName);
+                if (!complexType.name().isEmpty()) { // found it as a complex type
+                    usedComplexTypes.append(complexType);
+
+                    Q_FOREACH(const XSD::Element& element, complexType.elements()) {
+                        addDependency(element.type());
+                    }
+                    Q_FOREACH(const XSD::Attribute& attribute, complexType.attributes()) {
+                        const QName arrayType = attribute.arrayType();
+                        //qDebug() << "attribute arrayType" << arrayType.qname();
+                        if (!arrayType.isEmpty()) {
+                            addDependency(arrayType);
+                        }
+                    }
+
+                } else {
+                    XSD::SimpleType simpleType = types.simpleType(typeName);
+                    if (!simpleType.name().isEmpty()) {
+                        usedSimpleTypes.append(simpleType);
+                        addDependency(simpleType.baseTypeName());
+                        if (simpleType.subType() == XSD::SimpleType::TypeList) {
+                            addDependency(simpleType.listTypeName());
+                        }
+                    } // we rely on the warning in simpleType if not found.
+                }
+            }
+            typesToProcess = m_alsoUsedTypes;
+        } while (!typesToProcess.isEmpty());
+    }
+
+    XSD::ComplexType::List usedComplexTypes;
+    XSD::SimpleType::List usedSimpleTypes;
+private:
+    void addDependency(const QName& type) {
+        if (!m_allUsedTypes.contains(type) && !m_alsoUsedTypes.contains(type)) {
+            m_alsoUsedTypes.insert(type);
+            m_allUsedTypes.insert(type);
+        }
+    }
+
+    QSet<QName> m_allUsedTypes; // All already seen types
+    QSet<QName> m_alsoUsedTypes; // The list of types to process in the next iteration
+};
+
 void Converter::cleanupUnusedTypes()
 {
     // Keep only the portTypes, messages, and types that are actually used, no point in generating unused classes.
@@ -170,51 +230,8 @@ void Converter::cleanupUnusedTypes()
     //qDebug() << "usedTypes:" << usedTypesStrings.toList();
 
     // keep only the types used in these messages
-    XSD::ComplexType::List usedComplexTypes;
-    XSD::SimpleType::List usedSimpleTypes;
-    QSet<QName> allUsedTypes = usedTypes;
-    do {
-        QSet<QName> alsoUsedTypes;
-        Q_FOREACH(const QName& typeName, usedTypes.toList() /*slow!*/) {
-            if (typeName.isEmpty())
-                continue;
-            if (mTypeMap.isBuiltinType(typeName))
-                continue;
-            //qDebug() << "used type:" << typeName;
-            XSD::ComplexType complexType = types.complexType(typeName);
-            if (!complexType.name().isEmpty()) { // found it as a complex type
-                usedComplexTypes.append(complexType);
-
-                Q_FOREACH(const XSD::Element& element, complexType.elements()) {
-                    if (!allUsedTypes.contains(element.type()) && !alsoUsedTypes.contains(element.type())) {
-                        alsoUsedTypes.insert(element.type());
-                        allUsedTypes.insert(element.type());
-                    }
-                }
-                Q_FOREACH(const XSD::Attribute& attribute, complexType.attributes()) {
-                    const QName arrayType = attribute.arrayType();
-                    //qDebug() << "attribute arrayType" << arrayType.qname();
-                    if (!arrayType.isEmpty()) {
-                        if (!allUsedTypes.contains(arrayType) && !alsoUsedTypes.contains(arrayType)) {
-                            alsoUsedTypes.insert(arrayType);
-                            allUsedTypes.insert(arrayType);
-                        }
-                    }
-                }
-
-            } else {
-                XSD::SimpleType simpleType = types.simpleType(typeName);
-                if (!simpleType.name().isEmpty()) {
-                    usedSimpleTypes.append(simpleType);
-                    if (!allUsedTypes.contains(simpleType.baseTypeName()) && !alsoUsedTypes.contains(simpleType.baseTypeName())) {
-                        alsoUsedTypes.insert(simpleType.baseTypeName());
-                        allUsedTypes.insert(simpleType.baseTypeName());
-                    }
-                } // we rely on the warning in simpleType if not found.
-            }
-        }
-        usedTypes = alsoUsedTypes;
-    } while (!usedTypes.isEmpty());
+    TypeCollector collector(usedTypes);
+    collector.collectDependentTypes(mTypeMap, types);
 
     XSD::Element::List usedElements;
     QSetIterator<QName> elemIt(usedElementNames);
@@ -233,8 +250,8 @@ void Converter::cleanupUnusedTypes()
             usedElements.append(element);
     }
     definitions.setMessages(newMessages);
-    types.setComplexTypes(usedComplexTypes);
-    types.setSimpleTypes(usedSimpleTypes);
+    types.setComplexTypes(collector.usedComplexTypes);
+    types.setSimpleTypes(collector.usedSimpleTypes);
     types.setElements(usedElements);
     type.setTypes(types);
     definitions.setType(type);
