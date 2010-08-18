@@ -98,6 +98,10 @@ QString Printer::Private::classHeader( const Class &classObject, bool publicMemb
     code += " */";
   }
 
+  if ( !classObject.nameSpace().isEmpty() ) {
+      code += "namespace " + classObject.nameSpace() + " {";
+  }
+
   QString txt = "class " + classObject.name();
 
   Class::List baseClasses = classObject.baseClasses();
@@ -254,16 +258,24 @@ QString Printer::Private::classHeader( const Class &classObject, bool publicMemb
 
   code += "};";
 
+  if ( !classObject.nameSpace().isEmpty() ) {
+      code += "} // namespace end";
+  }
+
   return code.text();
 }
 
-QString Printer::Private::classImplementation( const Class &classObject, bool nestedClass)
+QString Printer::Private::classImplementation( const Class &classObject, bool nestedClass )
 {
   Code code;
 
   bool needNewLine = false;
 
-  QString functionClassName = nestedClass ? classObject.parentClassName() + QLatin1String("::") + classObject.name() : classObject.name();
+  QString functionClassName = classObject.name();
+  if (nestedClass)
+      functionClassName.prepend( classObject.parentClassName() + QLatin1String("::") );
+  else if ( !classObject.nameSpace().isEmpty() )
+      functionClassName.prepend( classObject.nameSpace() + QLatin1String("::") );
 
   if ( classObject.useDPointer() && !classObject.memberVariables().isEmpty() ) {
     Class privateClass( functionClassName + "::PrivateDPtr" );

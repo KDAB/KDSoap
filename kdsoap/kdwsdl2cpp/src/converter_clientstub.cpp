@@ -49,145 +49,164 @@ void Converter::convertClientService()
   const Service service = mWSDL.definitions().service();
   Q_ASSERT(!service.name().isEmpty());
 
-  KODE::Class newClass( KODE::Style::className(service.name()) );
-  newClass.setUseDPointer( true, "d_ptr" /*avoid clash with possible d() method*/ );
-  newClass.addBaseClass( mQObject );
-  newClass.setDocs(service.documentation());
-
-  // Files included in the header
-  newClass.addHeaderInclude( "QObject" );
-  newClass.addHeaderInclude( "QString" );
-
-  // Files included in the impl, with optional forward-declarations in the header
-  newClass.addInclude("KDSoapMessage.h", "KDSoapMessage");
-  newClass.addInclude("KDSoapClientInterface.h", "KDSoapClientInterface");
-  newClass.addInclude("KDSoapPendingCallWatcher.h", "KDSoapPendingCallWatcher");
-
-  // Variables (which will go into the d pointer)
-  KODE::MemberVariable clientInterfaceVar("m_clientInterface", "KDSoapClientInterface*");
-  clientInterfaceVar.setInitializer("NULL");
-  newClass.addMemberVariable(clientInterfaceVar);
-
-  KODE::MemberVariable lastReply("m_lastReply", "KDSoapMessage");
-  newClass.addMemberVariable(lastReply);
-
-  KODE::MemberVariable endPoint("m_endPoint", "QString");
-  newClass.addMemberVariable(endPoint);
-
-  // Ctor and dtor
-  {
-      KODE::Function ctor( newClass.name() );
-      ctor.addArgument("QObject* parent", "0");
-      ctor.addInitializer("QObject(parent)");
-      KODE::Function dtor( '~' + newClass.name() );
-      KODE::Code ctorCode, dtorCode;
-
-      ctor.setBody( ctorCode );
-      newClass.addFunction( ctor );
-
-      dtorCode += "delete d_ptr->m_clientInterface;";
-
-      dtor.setBody( dtorCode );
-      newClass.addFunction( dtor );
-  }
-  // setEndPoint() method
-  {
-      KODE::Function setEndPoint("setEndPoint", "void");
-      setEndPoint.addArgument( "const QString& endPoint" );
-      KODE::Code code;
-      code += "d_ptr->m_endPoint = endPoint;";
-      setEndPoint.setBody(code);
-      setEndPoint.setDocs("Overwrite the end point defined in the .wsdl file, with another http/https URL.");
-      newClass.addFunction(setEndPoint);
-  }
-  // lastError() method
-  {
-      KODE::Function lastError("lastError", "QString");
-      lastError.setConst(true);
-      KODE::Code code;
-      code += "if (d_ptr->m_lastReply.isFault())";
-      code.indent();
-      code += "return d_ptr->m_lastReply.faultAsString();";
-      code.unindent();
-      code += "return QString();";
-      lastError.setBody(code);
-      lastError.setDocs("Return the error from the last blocking call.\nEmpty if no error.");
-      newClass.addFunction(lastError);
+  QSet<QName> uniqueBindings;
+  Q_FOREACH( const Port& port, service.ports() ) {
+      const Binding binding = mWSDL.findBinding( port.bindingName() );
+      if ( binding.type() == Binding::SOAPBinding ) {
+          uniqueBindings.insert( port.bindingName() );
+      } else {
+          // ignore non-SOAP bindings, like HTTP GET and HTTP POST
+          continue;
+      }
   }
 
-  const Port::List servicePorts = service.ports();
-  Port::List::ConstIterator it;
-  for ( it = servicePorts.begin(); it != servicePorts.end(); ++it ) {
-    Binding binding = mWSDL.findBinding( (*it).bindingName() );
+  //qDebug() << uniqueBindings;
 
-    QUrl webserviceLocation;
+  KODE::Class::List bindingClasses;
+  Q_FOREACH( const QName& bindingName, uniqueBindings ) {
+      const Binding binding = mWSDL.findBinding( bindingName );
 
-    if ( binding.type() == Binding::SOAPBinding ) {
-      const SoapBinding soapBinding( binding.soapBinding() );
-      const SoapBinding::Address address = soapBinding.address();
-      if ( address.location().isValid() )
-        webserviceLocation = address.location();
-    } else {
-        // ignore non-SOAP bindings, like HTTP GET and HTTP POST
-        continue;
-    }
+      QString className = KODE::Style::className(service.name());
+      QString nameSpace;
+      if (uniqueBindings.count() > 1) {
+          nameSpace = className;
+          className = KODE::Style::className(bindingName.localName());
+      }
 
-    // TODO: what if there are multiple soap ports?
-    // clientInterface() private method
-    {
-        KODE::Function clientInterface("clientInterface", "KDSoapClientInterface*", KODE::Function::Private);
-        KODE::Code code;
-        code += "if (!d_ptr->m_clientInterface) {";
-        code.indent();
-        code += "const QString endPoint = !d_ptr->m_endPoint.isEmpty() ? d_ptr->m_endPoint : QString::fromLatin1(\"" + QLatin1String(webserviceLocation.toEncoded()) + "\");";
-        code += "const QString messageNamespace = QString::fromLatin1(\"" + mWSDL.definitions().targetNamespace() + "\");";
-        code += "d_ptr->m_clientInterface = new KDSoapClientInterface(endPoint, messageNamespace);";
-        code.unindent();
-        code += "}";
-        code += "return d_ptr->m_clientInterface;";
-        clientInterface.setBody(code);
-        newClass.addFunction(clientInterface);
-    }
+      KODE::Class newClass( className, nameSpace );
+      newClass.setUseDPointer( true, "d_ptr" /*avoid clash with possible d() method*/ );
+      newClass.addBaseClass( mQObject );
+      newClass.setDocs(service.documentation());
 
-    SoapBinding::Headers soapHeaders;
+      // Files included in the header
+      newClass.addHeaderInclude( "QObject" );
+      newClass.addHeaderInclude( "QString" );
 
-    PortType portType = mWSDL.findPortType( binding.portTypeName() );
-    //qDebug() << portType.name();
-    const Operation::List operations = portType.operations();
-    Q_FOREACH( const Operation& operation, operations ) {
-        Operation::OperationType opType = operation.operationType();
-        switch(opType) {
-        case Operation::OneWayOperation:
-            convertClientInputMessage( operation, binding, newClass );
-            break;
-        case Operation::RequestResponseOperation: // the standard case
-            // sync method
-            convertClientCall( operation, binding, newClass );
-            // async method
-            convertClientInputMessage( operation, binding, newClass );
-            convertClientOutputMessage( operation, binding, newClass );
-            // TODO fault
-            break;
-        case Operation::SolicitResponseOperation:
-            convertClientOutputMessage( operation, binding, newClass );
-            convertClientInputMessage( operation, binding, newClass );
-            // TODO fault
-            break;
-        case Operation::NotificationOperation:
-            convertClientOutputMessage( operation, binding, newClass );
-            break;
-        }
+      // Files included in the impl, with optional forward-declarations in the header
+      newClass.addInclude("KDSoapMessage.h", "KDSoapMessage");
+      newClass.addInclude("KDSoapClientInterface.h", "KDSoapClientInterface");
+      newClass.addInclude("KDSoapPendingCallWatcher.h", "KDSoapPendingCallWatcher");
 
-        // Collect message parts used as headers
-        Q_FOREACH( const SoapBinding::Header& header, getHeaders(binding, operation.name()) ) {
-            if ( !soapHeaders.contains(header) )
-                soapHeaders.append( header );
-        }
-    } // end of for each operation
+      // Variables (which will go into the d pointer)
+      KODE::MemberVariable clientInterfaceVar("m_clientInterface", "KDSoapClientInterface*");
+      clientInterfaceVar.setInitializer("NULL");
+      newClass.addMemberVariable(clientInterfaceVar);
 
-    Q_FOREACH( const SoapBinding::Header& header, soapHeaders ) {
-        createHeader( header, binding, newClass );
-    }
+      KODE::MemberVariable lastReply("m_lastReply", "KDSoapMessage");
+      newClass.addMemberVariable(lastReply);
+
+      KODE::MemberVariable endPoint("m_endPoint", "QString");
+      newClass.addMemberVariable(endPoint);
+
+      // Ctor and dtor
+      {
+          KODE::Function ctor( newClass.name() );
+          ctor.addArgument("QObject* parent", "0");
+          ctor.addInitializer("QObject(parent)");
+          KODE::Function dtor( '~' + newClass.name() );
+          KODE::Code ctorCode, dtorCode;
+
+          ctor.setBody( ctorCode );
+          newClass.addFunction( ctor );
+
+          dtorCode += "delete d_ptr->m_clientInterface;";
+
+          dtor.setBody( dtorCode );
+          newClass.addFunction( dtor );
+      }
+      // setEndPoint() method
+      {
+          KODE::Function setEndPoint("setEndPoint", "void");
+          setEndPoint.addArgument( "const QString& endPoint" );
+          KODE::Code code;
+          code += "d_ptr->m_endPoint = endPoint;";
+          setEndPoint.setBody(code);
+          setEndPoint.setDocs("Overwrite the end point defined in the .wsdl file, with another http/https URL.");
+          newClass.addFunction(setEndPoint);
+      }
+      // lastError() method
+      {
+          KODE::Function lastError("lastError", "QString");
+          lastError.setConst(true);
+          KODE::Code code;
+          code += "if (d_ptr->m_lastReply.isFault())";
+          code.indent();
+          code += "return d_ptr->m_lastReply.faultAsString();";
+          code.unindent();
+          code += "return QString();";
+          lastError.setBody(code);
+          lastError.setDocs("Return the error from the last blocking call.\nEmpty if no error.");
+          newClass.addFunction(lastError);
+      }
+
+      QUrl webserviceLocation;
+
+      if ( binding.type() == Binding::SOAPBinding ) {
+          const SoapBinding soapBinding( binding.soapBinding() );
+          const SoapBinding::Address address = soapBinding.address();
+          if ( address.location().isValid() )
+              webserviceLocation = address.location();
+      } else {
+          // ignore non-SOAP bindings, like HTTP GET and HTTP POST
+          continue;
+      }
+
+      // clientInterface() private method
+      {
+          KODE::Function clientInterface("clientInterface", "KDSoapClientInterface*", KODE::Function::Private);
+          KODE::Code code;
+          code += "if (!d_ptr->m_clientInterface) {";
+          code.indent();
+          code += "const QString endPoint = !d_ptr->m_endPoint.isEmpty() ? d_ptr->m_endPoint : QString::fromLatin1(\"" + QLatin1String(webserviceLocation.toEncoded()) + "\");";
+          code += "const QString messageNamespace = QString::fromLatin1(\"" + mWSDL.definitions().targetNamespace() + "\");";
+          code += "d_ptr->m_clientInterface = new KDSoapClientInterface(endPoint, messageNamespace);";
+          code.unindent();
+          code += "}";
+          code += "return d_ptr->m_clientInterface;";
+          clientInterface.setBody(code);
+          newClass.addFunction(clientInterface);
+      }
+
+      SoapBinding::Headers soapHeaders;
+
+      PortType portType = mWSDL.findPortType( binding.portTypeName() );
+      //qDebug() << portType.name();
+      const Operation::List operations = portType.operations();
+      Q_FOREACH( const Operation& operation, operations ) {
+          Operation::OperationType opType = operation.operationType();
+          switch(opType) {
+          case Operation::OneWayOperation:
+              convertClientInputMessage( operation, binding, newClass );
+              break;
+          case Operation::RequestResponseOperation: // the standard case
+              // sync method
+              convertClientCall( operation, binding, newClass );
+              // async method
+              convertClientInputMessage( operation, binding, newClass );
+              convertClientOutputMessage( operation, binding, newClass );
+              // TODO fault
+              break;
+          case Operation::SolicitResponseOperation:
+              convertClientOutputMessage( operation, binding, newClass );
+              convertClientInputMessage( operation, binding, newClass );
+              // TODO fault
+              break;
+          case Operation::NotificationOperation:
+              convertClientOutputMessage( operation, binding, newClass );
+              break;
+          }
+
+          // Collect message parts used as headers
+          Q_FOREACH( const SoapBinding::Header& header, getHeaders(binding, operation.name()) ) {
+              if ( !soapHeaders.contains(header) )
+                  soapHeaders.append( header );
+          }
+      } // end of for each operation
+
+      Q_FOREACH( const SoapBinding::Header& header, soapHeaders ) {
+          createHeader( header, binding, newClass );
+      }
+      bindingClasses.append(newClass);
 
   } // end of for each port
 
@@ -195,7 +214,7 @@ void Converter::convertClientService()
   mClasses.sortByDependencies();
   // Then add the service, at the end
 
-  mClasses.append(newClass);
+  mClasses += bindingClasses;
 }
 
 void Converter::clientAddOneArgument( KODE::Function& callFunc, const Part& part, KODE::Class &newClass )
