@@ -40,6 +40,7 @@ class Class::Private
 
     QString mName;
     QString mNameSpace;
+    QString mExportDeclaration;
     QString mDPointer;
     bool mUseSharedData;
     bool mCanBeCopied;
@@ -109,6 +110,21 @@ void Class::setNameSpace( const QString &nameSpace )
 QString Class::nameSpace() const
 {
   return d->mNameSpace;
+}
+
+void Class::setExportDeclaration( const QString &name )
+{
+  addHeaderInclude( name.toLower() + "_export.h" );
+  if ( name.contains( "/" ) ) {
+    d->mExportDeclaration = name.split( "/" ).value( 1 );
+  } else {
+    d->mExportDeclaration = name;
+  }
+}
+
+QString Class::exportDeclaration() const
+{
+  return d->mExportDeclaration;
 }
 
 void Class::setUseDPointer( bool useDPointer, const QString& dPointer )
@@ -250,6 +266,14 @@ void Class::addEnum( const Enum &enumValue )
 Enum::List Class::enums() const
 {
   return d->mEnums;
+}
+
+bool Class::hasEnum( const QString &name ) const
+{
+  foreach( Enum e, d->mEnums ) {
+    if ( e.name() == name ) return true;
+  }
+  return false;
 }
 
 bool Class::isValid() const

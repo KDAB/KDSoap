@@ -66,6 +66,11 @@ class KODE_EXPORT Enum
     Enum& operator=( const Enum &other );
 
     /**
+     * Return name of enum.
+    */
+    QString name() const;
+    
+    /**
      * Returns the textual presentation of the enum.
      */
     QString declaration() const;

@@ -87,6 +87,11 @@ QString Printer::Private::classHeader( const Class &classObject, bool publicMemb
 {
   Code code;
 
+  if ( !classObject.nameSpace().isEmpty() ) {
+    code += "namespace " + classObject.nameSpace() + " {";
+    code.indent();
+  }
+
   if ( nestedClass )
     code.indent();
 
@@ -98,11 +103,11 @@ QString Printer::Private::classHeader( const Class &classObject, bool publicMemb
     code += " */";
   }
 
-  if ( !classObject.nameSpace().isEmpty() ) {
-      code += "namespace " + classObject.nameSpace() + " {";
+  QString txt = "class ";
+  if ( !classObject.exportDeclaration().isEmpty() ) {
+    txt += classObject.exportDeclaration().toUpper() + "_EXPORT ";
   }
-
-  QString txt = "class " + classObject.name();
+  txt += classObject.name();
 
   Class::List baseClasses = classObject.baseClasses();
   if ( !baseClasses.isEmpty() ) {
@@ -259,6 +264,7 @@ QString Printer::Private::classHeader( const Class &classObject, bool publicMemb
   code += "};";
 
   if ( !classObject.nameSpace().isEmpty() ) {
+      code.unindent();
       code += "} // namespace end";
   }
 
@@ -450,7 +456,7 @@ void Printer::Private::addFunctionHeaders( Code& code,
         code.unindent();
         code += " */";
       }
-      code += mParent->functionSignature( *it, className ) + ';';
+      code += mParent->functionSignature( *it, className, false, true ) + ';';
       if ( mLabelsDefineIndent )
         code.unindent();
       needNewLine = true;
@@ -529,11 +535,12 @@ void Printer::setIndentLabels( bool b )
 
 QString Printer::functionSignature( const Function &function,
                                     const QString &className,
-                                    bool forImplementation )
+                                    bool includeClassQualifier,
+                                    bool includeDefaultArguments )
 {
   QString s;
 
-  if ( function.isStatic() && !forImplementation ) {
+  if ( function.isStatic() && !includeClassQualifier ) {
     s += "static ";
   }
 
@@ -542,14 +549,23 @@ QString Printer::functionSignature( const Function &function,
     s += d->formatType( ret );
   }
 
-  if ( forImplementation )
+  if ( includeClassQualifier )
     s += className + "::";
 
   s += function.name();
 
   s += '(';
-  if ( function.hasArguments() )
-    s += ' ' + function.arguments( forImplementation ).join( ", " ) + ' ';
+  if ( function.hasArguments() ) {
+    QStringList arguments;
+    foreach( Function::Argument argument, function.arguments() ) {
+      if ( includeDefaultArguments ) {
+        arguments.append( argument.headerDeclaration() );
+      } else {
+        arguments.append( argument.bodyDeclaration() );
+      }
+    }
+    s += ' ' + arguments.join( ", " ) + ' ';
+  }
   s += ')';
 
   if ( function.isConst() )
@@ -757,7 +773,7 @@ void Printer::printImplementation( const File &file, bool createHeaderInclude )
     out.newLine();
 
   if ( !file.nameSpace().isEmpty() ) {
-    out += "using namespace " + file.nameSpace() + ';';
+    out += "namespace " + file.nameSpace() + " {";
     out.newLine();
   }
 
@@ -816,6 +832,11 @@ void Printer::printImplementation( const File &file, bool createHeaderInclude )
     QString str = d->classImplementation( *it );
     if ( !str.isEmpty() )
       out += d->classImplementation( *it );
+  }
+
+  if ( !file.nameSpace().isEmpty() ) {
+    out += "}";
+    out.newLine();
   }
 
   // KDAB: removed; 1) for removing .filename(), and 2) qmake would want moc_foo.cpp anyway

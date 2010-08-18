@@ -26,6 +26,36 @@
 
 using namespace KODE;
 
+class Function::Argument::ArgumentPrivate
+{
+  public:
+    QString declaration;
+    QString defaultArgument;
+};
+
+Function::Argument::Argument( const QString &declaration,
+  const QString &defaultArgument )
+  : d( new ArgumentPrivate )
+{
+  d->declaration = declaration;
+  d->defaultArgument = defaultArgument;
+}
+
+QString Function::Argument::headerDeclaration() const
+{
+  if ( d->defaultArgument.isEmpty() ) {
+    return d->declaration;
+  } else {
+    return d->declaration + " = " + d->defaultArgument;
+  }
+}
+
+QString Function::Argument::bodyDeclaration() const
+{
+  return d->declaration;
+}
+
+
 class Function::FunctionPrivate
 {
   public:
@@ -34,21 +64,12 @@ class Function::FunctionPrivate
     {
     }
 
-    class Argument
-    {
-    public:
-        Argument(const QString& name, const QString& value)
-            : mArgName(name), mArgDefaultValue(value) {}
-        QString mArgName;
-        QString mArgDefaultValue;
-    };
-
     int mAccess;
     bool mIsConst;
     bool mIsStatic;
     QString mReturnType;
     QString mName;
-    QList<Argument> mArguments;
+    Argument::List mArguments;
     QStringList mInitializers;
     QString mBody;
     QString mDocs;
@@ -110,9 +131,14 @@ bool Function::isStatic() const
   return d->mIsStatic;
 }
 
-void Function::addArgument( const QString &argument, const QString& defaultValue )
+void Function::addArgument( const Function::Argument &argument )
 {
-  d->mArguments.append( FunctionPrivate::Argument(argument, defaultValue) );
+  d->mArguments.append( argument );
+}
+
+void Function::addArgument( const QString &argument )
+{
+  d->mArguments.append( Argument( argument ) );
 }
 
 void Function::setArgumentString( const QString &argumentString )
@@ -126,18 +152,9 @@ void Function::setArgumentString( const QString &argumentString )
   }
 }
 
-QStringList Function::arguments( bool forImplementation ) const
+Function::Argument::List Function::arguments() const
 {
-  QStringList lst;
-  Q_FOREACH(const FunctionPrivate::Argument& arg, d->mArguments) {
-      QString argStr = arg.mArgName;
-      if (!forImplementation && !arg.mArgDefaultValue.isEmpty()) {
-          argStr += " = " + arg.mArgDefaultValue;
-      }
-      lst << argStr;
-  }
-
-  return lst;
+  return d->mArguments;
 }
 
 void Function::addInitializer( const QString &initializer )
