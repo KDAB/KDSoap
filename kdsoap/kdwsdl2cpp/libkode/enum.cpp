@@ -72,6 +72,11 @@ Enum& Enum::operator=( const Enum &other )
   return *this;
 }
 
+QString Enum::name() const
+{
+  return d->mName;
+}
+
 QString Enum::declaration() const
 {
   QString retval( "enum " + d->mName + " {" );

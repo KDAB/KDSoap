@@ -101,7 +101,7 @@ void Converter::convertClientService()
       // Ctor and dtor
       {
           KODE::Function ctor( newClass.name() );
-          ctor.addArgument("QObject* parent", "0");
+          ctor.addArgument(KODE::Function::Argument("QObject* parent", "0"));
           ctor.addInitializer("QObject(parent)");
           KODE::Function dtor( '~' + newClass.name() );
           KODE::Code ctorCode, dtorCode;

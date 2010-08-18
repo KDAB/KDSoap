@@ -39,6 +39,21 @@ namespace KODE {
 class KODE_EXPORT Function
 {
   public:
+    class Argument {
+      public:
+        typedef QList<Argument> List;
+      
+        Argument( const QString &declaration,
+          const QString &defaultArgument = QString() );
+
+        QString headerDeclaration() const;
+        QString bodyDeclaration() const;
+    
+      private:
+        class ArgumentPrivate;
+        ArgumentPrivate *d;
+    };
+  
     typedef QList<Function> List;
 
     /**
@@ -125,7 +140,12 @@ class KODE_EXPORT Function
     /**
      * Adds an @param argument to the function.
      */
-    void addArgument( const QString &argument, const QString& defaultValue = QString() );
+    void addArgument( const Function::Argument &argument );
+    
+    /**
+     * Adds an @param argument to the function.
+     */
+    void addArgument( const QString &argument );
 
     /**
      * Sets the complete argument string of the function.
@@ -137,7 +157,7 @@ class KODE_EXPORT Function
      * Returns the list of all arguments.
      * @param forImplementation if true, default values are omitted
      */
-    QStringList arguments( bool forImplementation ) const;
+    Argument::List arguments() const;
 
     /**
      * @return whether the function has any arguments
