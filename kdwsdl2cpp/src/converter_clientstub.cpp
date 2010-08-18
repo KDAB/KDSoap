@@ -204,7 +204,7 @@ void Converter::convertClientService()
       } // end of for each operation
 
       Q_FOREACH( const SoapBinding::Header& header, soapHeaders ) {
-          createHeader( header, binding, newClass );
+          createHeader( header, newClass );
       }
       bindingClasses.append(newClass);
 
@@ -509,9 +509,8 @@ void Converter::convertClientOutputMessage( const Operation &operation,
   newClass.addFunction(finishedSlot);
 }
 
-void Converter::createHeader( const SoapBinding::Header& header, const Binding &binding, KODE::Class &newClass )
+void Converter::createHeader( const SoapBinding::Header& header, KODE::Class &newClass )
 {
-    Q_UNUSED(binding); // TODO remove
     const QName messageName = header.message();
     const QString partName = header.part();
     const Message message = mWSDL.findMessage( messageName );
