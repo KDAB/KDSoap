@@ -226,4 +226,4 @@ private:
 
 QTEST_MAIN(WsdlDocumentTest)
 
-#include "wsdl_document.moc"
+#include "test_wsdl_document.moc"
