@@ -70,6 +70,8 @@ class SCHEMA_EXPORT Parser
      */
     static QString schemaUri();
 
+    static bool debugParsing();
+
   protected:
     bool parse( ParserContext *context, QXmlInputSource *source );
 
