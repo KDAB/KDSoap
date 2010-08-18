@@ -5,7 +5,6 @@ SOURCES = compiler.cpp \
     converter_attribute.cpp \
     converter_clientstub.cpp \
     converter_complextype.cpp \
-    converter_element.cpp \
     converter_serverstub.cpp \
     converter_simpletype.cpp \
     converter_utils.cpp \
