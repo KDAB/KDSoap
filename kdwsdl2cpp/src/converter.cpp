@@ -103,10 +103,12 @@ public:
                 if (!complexType.name().isEmpty()) { // found it as a complex type
                     usedComplexTypes.append(complexType);
 
+                    addDependency(complexType.baseTypeName());
                     Q_FOREACH(const XSD::Element& element, complexType.elements()) {
                         addDependency(element.type());
                     }
                     Q_FOREACH(const XSD::Attribute& attribute, complexType.attributes()) {
+                        addDependency(attribute.type());
                         const QName arrayType = attribute.arrayType();
                         //qDebug() << "attribute arrayType" << arrayType.qname();
                         if (!arrayType.isEmpty()) {
@@ -133,7 +135,7 @@ public:
     XSD::SimpleType::List usedSimpleTypes;
 private:
     void addDependency(const QName& type) {
-        if (!m_allUsedTypes.contains(type) && !m_alsoUsedTypes.contains(type)) {
+        if (!type.isEmpty() && !m_allUsedTypes.contains(type) && !m_alsoUsedTypes.contains(type)) {
             m_alsoUsedTypes.insert(type);
             m_allUsedTypes.insert(type);
         }
