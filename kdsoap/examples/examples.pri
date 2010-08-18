@@ -14,7 +14,7 @@ DEPENDPATH += \
             $$KDSOAP_PATH/src \
             $$KDSOAP_PATH/examples/tools
 LIBS        += -L$$KDSOAP_PATH/lib -l$$KDSOAPLIB
-!isEmpty(QMAKE_RPATH):LIBS += $$QMAKE_RPATH$$KDSOAP_PATH/lib
+!isEmpty(QMAKE_LFLAGS_RPATH):LIBS += $$QMAKE_LFLAGS_RPATH$$KDSOAP_PATH/lib
 
 include(../variables.pri)
 #DEFINES -= QT_NO_CAST_FROM_ASCII
