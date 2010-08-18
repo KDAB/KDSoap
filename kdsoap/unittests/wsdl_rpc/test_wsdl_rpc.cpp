@@ -151,4 +151,4 @@ private Q_SLOTS:
 
 QTEST_MAIN(WsdlRPCTest)
 
-#include "wsdl_rpc.moc"
+#include "test_wsdl_rpc.moc"
