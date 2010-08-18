@@ -31,7 +31,10 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
   const QString typeName( mTypeMap.localType( type->qualifiedName() ) );
   KODE::Class newClass( typeName );
   newClass.setUseSharedData( true, "d_ptr" /*avoid clash with possible d() method */ );
-  //qDebug() << typeName;
+
+  const bool doDebug = (qgetenv("KDSOAP_TYPE_DEBUG").toInt());
+  if (doDebug)
+      qDebug() << "Generating complex type" << typeName;
 
   // subclass handling
   if ( !type->baseTypeName().isEmpty() ) { // this class extends something

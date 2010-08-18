@@ -327,10 +327,13 @@ static QStringList dependenciesForClass( const Class& aClass, const QStringList&
         if ( !baseClass.name().startsWith('Q') )
             lst.append( baseClass.name() );
     }
-    Q_FOREACH( const MemberVariable& member, aClass.memberVariables() ) {
-        const QString type = member.type();
-        if ( allClasses.contains( type ) ) {
-            lst.append(type);
+    if (!aClass.useDPointer())
+    {
+        Q_FOREACH( const MemberVariable& member, aClass.memberVariables() ) {
+            const QString type = member.type();
+            if ( allClasses.contains( type ) ) {
+                lst.append(type);
+            }
         }
     }
 
@@ -393,10 +396,11 @@ static Class::List sortByDependenciesHelper( const Class::List &classes )
       }
       if (allClasses.count() == currentCount) {
           // We didn't resolve anything this time around, so let's not loop forever
-          qDebug() << "Couldn't find class dependencies (base classes, member vars) for classes";
-          for ( it = allClasses.begin(); it != allClasses.end(); ++it ) {
-              qDebug() << (*it).name();
+          qDebug() << "ERROR: Couldn't find class dependencies (base classes, member vars) for classes" << allClasses.classNames();
+          Q_FOREACH(const Class& c, allClasses) {
+              qDebug() << c.name() << "depends on" << dependenciesForClass(c, allClassNames);
           }
+
           return retval;
       }
     }
@@ -416,4 +420,13 @@ ClassList::iterator ClassList::findClass(const QString &name)
         if ((*it).name() == name)
             break;
     return it;
+}
+
+QStringList KODE::ClassList::classNames() const
+{
+    QStringList names;
+    ClassList::const_iterator it = begin();
+    for (; it != end(); ++it)
+        names.append((*it).name());
+    return names;
 }
