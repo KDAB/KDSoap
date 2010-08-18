@@ -547,6 +547,9 @@ SimpleType Parser::parseSimpleType( ParserContext *context, const QDomElement &e
 
   st.setName( element.attribute( "name" ) );
 
+  if (debugParsing())
+      qDebug() << "simpleType:" << d->mNameSpace << st.name();
+
   QDomElement childElement = element.firstChildElement();
 
   while ( !childElement.isNull() ) {
