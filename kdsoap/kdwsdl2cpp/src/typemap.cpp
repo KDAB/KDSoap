@@ -120,11 +120,15 @@ bool TypeMap::isBuiltinType( const QName &typeName ) const
   return it != mTypeMap.constEnd() ? (*it).builtinType : false;
 }
 
+bool TypeMap::isBuiltinType( const QName &typeName, const QName& elementName ) const
+{
+    QList<Entry>::ConstIterator it = !typeName.isEmpty() ? typeEntry( typeName ) : elementEntry( elementName );
+    return it != mTypeMap.constEnd() ? (*it).builtinType : false;
+}
+
 bool TypeMap::isComplexType( const QName &typeName, const QName& elementName ) const
 {
-    // Note the use of typeEntry even for the element name;
-    // the (now useless?) entry in mElementMap doesn't have complexType set
-    QList<Entry>::ConstIterator it = !typeName.isEmpty() ? typeEntry( typeName ) : typeEntry( elementName );
+    QList<Entry>::ConstIterator it = !typeName.isEmpty() ? typeEntry( typeName ) : elementEntry( elementName );
     return it != mTypeMap.constEnd() ? (*it).complexType : false;
 }
 
@@ -298,21 +302,27 @@ void TypeMap::addSchemaTypes( const XSD::Types &types )
   const XSD::Element::List elements = types.elements();
   Q_FOREACH( const XSD::Element& elemIt, elements ) {
     Entry entry;
-    entry.basicType = false;
-    entry.builtinType = false;
     entry.nameSpace = elemIt.nameSpace();
     entry.typeName = elemIt.name();
 
     QName type = elemIt.type();
     if ( type.isEmpty() ) {
-        //if (entry.typeName == "anyType") // hack for http://schemas.xmlsoap.org/soap/encoding/
-        //    type = QName(XMLSchemaURI, "any");
-        //else
-            qDebug() << "ERROR: element without type" << elemIt.nameSpace() << elemIt.name();
+        qDebug() << "ERROR: element without type" << elemIt.nameSpace() << elemIt.name();
     }
-    QString resolvedType = localType( type );
+
+    // Resolve to localType(type)
+    QList<Entry>::ConstIterator it = typeEntry(type);
+    if ( it == mTypeMap.constEnd() ) {
+        qDebug() << "ERROR: basic type not found:" << type;
+        Q_ASSERT(0);
+        continue;
+    }
+    const QString resolvedType = (*it).localType;
     Q_ASSERT( !resolvedType.isEmpty() );
     entry.localType = resolvedType;
+    entry.basicType = (*it).basicType;
+    entry.builtinType = (*it).builtinType;
+    entry.complexType = (*it).complexType;
 
     // The "FooElement" type isn't necessary, we just point to the resolved type
     // directly, this is much simpler.
@@ -335,32 +345,31 @@ void TypeMap::dump() const
             qPrintable( mTypeMap[ i ].localType ),
             qPrintable( mTypeMap[ i ].headers.join( "," ) ),
             qPrintable( mTypeMap[ i ].headerIncludes.join( "," ) ),
-            mTypeMap[ i ].basicType ? "basic" : mTypeMap[i].complexType ? "complex" : "" );
+            qPrintable( mTypeMap[ i ].dumpBools() ) );
   }
 
   qDebug( "--------------------------------" );
   qDebug( "Attributes:" );
   for ( int i = 0; i < mAttributeMap.count(); ++i ) {
     qDebug( "%s\t%s\t%s\t%s\t%s\t%s",
-            ( mAttributeMap[ i ].basicType ? "yes" : "no" ),
-              qPrintable( mAttributeMap[ i ].nameSpace ),
-              qPrintable( mAttributeMap[ i ].typeName ),
-              qPrintable( mAttributeMap[ i ].localType ),
-              qPrintable( mAttributeMap[ i ].headers.join( "," ) ),
-              qPrintable( mAttributeMap[ i ].headerIncludes.join( "," ) ) );
+            qPrintable( mAttributeMap[ i ].nameSpace ),
+            qPrintable( mAttributeMap[ i ].typeName ),
+            qPrintable( mAttributeMap[ i ].localType ),
+            qPrintable( mAttributeMap[ i ].headers.join( "," ) ),
+            qPrintable( mAttributeMap[ i ].headerIncludes.join( "," ) ),
+            qPrintable( mElementMap[ i ].dumpBools() ) );
   }
 
   qDebug( "--------------------------------" );
   qDebug( "Elements:" );
   for ( int i = 0; i < mElementMap.count(); ++i ) {
-    Q_ASSERT( !mElementMap[ i ].basicType );
     qDebug( "%s\t%s\t%s\t%s\t%s\t%s",
               qPrintable( mElementMap[ i ].nameSpace ),
               qPrintable( mElementMap[ i ].typeName ),
               qPrintable( mElementMap[ i ].localType ),
               qPrintable( mElementMap[ i ].headers.join( "," ) ),
               qPrintable( mElementMap[ i ].headerIncludes.join( "," ) ),
-              mTypeMap[ i ].basicType ? "basic" : mTypeMap[i].complexType ? "complex" : "" );
+              qPrintable( mElementMap[ i ].dumpBools() ) );
   }
 }
 
@@ -375,25 +384,39 @@ QString TypeMap::localType( const QName &typeName, const QName& elementName ) co
 
 QString TypeMap::localInputType( const QName &typeName, const QName& elementName ) const
 {
+    QList<Entry>::ConstIterator it;
     if ( !typeName.isEmpty() ) {
-        QList<Entry>::ConstIterator it = typeEntry( typeName );
+        it = typeEntry( typeName );
         if ( it == mTypeMap.constEnd() ) {
             qDebug() << "ERROR: type not found:" << typeName;
             return QString();
         }
-        QString argType = (*it).localType;
-        if (!(*it).basicType)
-            argType = "const " + argType + '&';
-        return argType;
     } else {
-        QString argType = localTypeForElement( elementName );
-        if ( !argType.isEmpty() && argType != "void" )
-            argType = "const " + argType + '&';
-        return argType;
+        it = elementEntry( elementName );
+        if ( it == mElementMap.constEnd() ) {
+            qDebug() << "ERROR: element not found:" << elementName;
+            return QString();
+        }
     }
+    QString argType = (*it).localType;
+    if (!(*it).basicType && argType != "void")
+        argType = "const " + argType + '&';
+    return argType;
 }
 
 bool KWSDL::TypeMap::isTypeAny(const QName &typeName) const
 {
     return (typeName.nameSpace() == XMLSchemaURI && typeName.localName() == "any");
+}
+
+QString KWSDL::TypeMap::Entry::dumpBools() const
+{
+    QStringList lst;
+    if (basicType)
+        lst += "basic";
+    if (builtinType)
+        lst += "builtin";
+    if (complexType)
+        lst += "complex";
+    return lst.join(",");
 }

@@ -221,6 +221,7 @@ void Converter::clientAddOneArgument( KODE::Function& callFunc, const Part& part
 {
     const QString lowerName = lowerlize( part.name() );
     const QString argType = mTypeMap.localInputType( part.type(), part.element() );
+    //qDebug() << "localInputType" << part.type().qname() << part.element().qname() << "->" << argType;
     if ( argType != "void" ) {
         callFunc.addArgument( argType + ' ' + mNameMapper.escape( lowerName ) );
     }
@@ -253,24 +254,21 @@ void Converter::clientAddMessageArgument( KODE::Code& code, const SoapBinding::S
 {
     const QString lowerName = lowerlize( part.name() );
     QString argType = mTypeMap.localType( part.type(), part.element() );
-    bool isBuiltin = false;
-    const QName type = part.type();
-    if ( !type.isEmpty() ) {
-        isBuiltin = mTypeMap.isBuiltinType( type );
-    }
+    const bool builtin = mTypeMap.isBuiltinType( part.type(), part.element() );
     if ( argType != "void" ) {
         if ( bindingStyle == SoapBinding::DocumentStyle ) {
             // In document style, the "part" is directly added as arguments
             // See http://www.ibm.com/developerworks/webservices/library/ws-whichwsdl/
-            if ( isBuiltin )
-                qWarning("Got a builtin type in document style? Didn't think this could happen.");
+            if ( builtin )
+                qDebug() << "ERROR: Got a builtin/basic type in document style:" << part.type() << part.element() << "Didn't think this could happen.";
             code += "message.arguments() += " + lowerName + ".serialize().value<KDSoapValueList>();";
         } else {
             const QString partNameStr = "QLatin1String(\"" + part.name() + "\")";
-            if ( isBuiltin ) {
+            if ( builtin ) {
                 code += "message.addArgument(" + partNameStr + ", " + lowerName + ");";
             } else {
                 code += "message.addArgument(" + partNameStr + ", " + lowerName + ".serialize());";
+                // for debugging, add this to the above line:  //" + part.type().qname() + " - " + part.element().qname();
             }
         }
     }
@@ -355,7 +353,7 @@ void Converter::convertClientCall( const Operation &operation, const Binding &bi
       //const QString lowerName = lowerlize( outPart.name() );
 
       retType = mTypeMap.localType( outPart.type(), outPart.element() );
-      isBuiltin = mTypeMap.isBuiltinType( outPart.type() );
+      isBuiltin = mTypeMap.isBuiltinType( outPart.type(), outPart.element() );
       isComplex = mTypeMap.isComplexType( outPart.type(), outPart.element() );
       //qDebug() << retType << "isComplex=" << isComplex;
 
@@ -471,7 +469,7 @@ void Converter::convertClientOutputMessage( const Operation &operation,
   Q_FOREACH( const Part& part, parts ) {
     const QString partType = mTypeMap.localType( part.type(), part.element() );
     Q_ASSERT(!partType.isEmpty());
-    const bool isBuiltin = mTypeMap.isBuiltinType( part.type() );
+    const bool isBuiltin = mTypeMap.isBuiltinType( part.type(), part.element() );
     const bool isComplex = mTypeMap.isComplexType( part.type(), part.element() );
 
     if ( partType == "void" )
