@@ -17,7 +17,7 @@
         LIBS += -lkdsoap
       }
     } else {
-      !isEmpty(QMAKE_RPATH):LIBS += $$QMAKE_RPATH$$KDSOAPDIR/lib
+      !isEmpty(QMAKE_LFLAGS_RPATH):LIBS += $$QMAKE_LFLAGS_RPATH$$KDSOAPDIR/lib
       LIBS += -lkdsoap
     }
 
