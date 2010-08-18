@@ -1,7 +1,6 @@
 /*
-    This file is part of KDE.
-
     Copyright (c) 2005 Tobias Koenig <tokoe@kde.org>
+    Copyright (c) 2010 David Faure <david.faure@kdab.com>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Library General Public
@@ -25,9 +24,23 @@ using namespace KWSDL;
 
 NameMapper::NameMapper()
 {
-  mKeyWords << "delete" << "class" << "default" << "new" << "not" << "return"
-          << "operator" << "inline" << "namespace"
-          ;
+    // From http://www.cppreference.com/wiki/keywords/start
+    mKeyWords << "and" << "and_eq" << "asm" << "auto" << "bitand" << "bitor"
+            << "bool" << "break" << "case" << "catch" << "char" << "class"
+            << "compl" << "const" << "const_cast" << "continue" << "default"
+            << "delete" << "do" << "double" << "dynamic_cast" << "else"
+            << "enum" << "explicit" << "export" << "extern" << "false"
+            << "float" << "for" << "friend" << "goto" << "if" << "inline"
+            << "int" << "long" << "mutable" << "namespace" << "new" << "not"
+            << "not_eq" << "operator" << "or" << "or_eq" << "private" << "protected"
+            << "public" << "register" << "reinterpret_cast" << "return" << "short"
+            << "signed" << "sizeof" << "static" << "static_cast" << "struct"
+            << "switch" << "template" << "this" << "throw" << "true" << "try"
+            << "typedef" << "typeid" << "typename" << "union" << "unsigned"
+            << "using" << "virtual" << "void" << "volatile" << "wchar_t"
+            << "while" << "xor" << "xor_eq";
+    // Also some Qt keywords:
+    mKeyWords << "emit" << "signals" << "slots" << "foreach";
 }
 
 QString NameMapper::escape( const QString &name ) const
