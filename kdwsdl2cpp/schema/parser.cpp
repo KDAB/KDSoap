@@ -162,7 +162,8 @@ bool Parser::parseSchemaTag( ParserContext *context, const QDomElement &root )
   QDomElement element = root.firstChildElement();
   while ( !element.isNull() ) {
     QName name = element.tagName();
-    //qDebug() << "Schema: parsing" << name.localName();
+    if (debugParsing())
+        qDebug() << "Schema: parsing" << name.localName();
     if ( name.localName() == QLatin1String("import") ) {
       parseImport( context, element );
     } else if ( name.localName() == QLatin1String("element") ) {
@@ -258,7 +259,8 @@ ComplexType Parser::parseComplexType( ParserContext *context, const QDomElement 
 
   newType.setName( element.attribute( "name" ) );
 
-  //qDebug() << "complexType:" << d->mNameSpace << newType.name();
+  if (debugParsing())
+      qDebug() << "complexType:" << d->mNameSpace << newType.name();
 
   if ( element.hasAttribute( "mixed" ) )
     newType.setContentModel( XSDType::MIXED );
@@ -373,7 +375,8 @@ Element Parser::parseElement( ParserContext *context,
   Element newElement( nameSpace );
 
   newElement.setName( element.attribute( "name" ) );
-  //qDebug() << "newElement namespace=" << nameSpace << "name=" << newElement.name();
+  if (debugParsing())
+      qDebug() << "newElement namespace=" << nameSpace << "name=" << newElement.name();
 
   if ( element.hasAttribute( "form" ) ) {
     if ( element.attribute( "form" ) == "qualified" )
@@ -387,7 +390,6 @@ Element Parser::parseElement( ParserContext *context,
   if ( element.hasAttribute( "ref" ) ) {
     QName reference = element.attribute( "ref" );
     reference.setNameSpace( context->namespaceManager()->uri( reference.prefix() ) );
-
     newElement.setReference( reference );
   }
 
@@ -438,10 +440,6 @@ Element Parser::parseElement( ParserContext *context,
     }
   }
 
-  if (newElement.type().isEmpty()) {
-    qDebug() << "ERROR: Element without type:" << newElement.qualifiedName() << newElement.nameSpace() << newElement.name();
-    Q_ASSERT(!newElement.type().isEmpty());
-  }
   return newElement;
 }
 
@@ -979,12 +977,15 @@ void Parser::resolveForwardDeclarations()
     for ( int j = 0; j < elements.count(); ++j ) {
       Element element = elements[ j ];
       if ( !element.isResolved() ) {
-        Element refElement = findElement( element.reference() );
-        Element resolvedElement = refElement;
-        resolvedElement.setMinOccurs( element.minOccurs() );
-        resolvedElement.setMaxOccurs( element.maxOccurs() );
-        resolvedElement.setCompositor( element.compositor() );
-        elements[ j ] = resolvedElement;
+        Element resolvedElement = findElement( element.reference() );
+        if (resolvedElement.qualifiedName().isEmpty()) {
+            qDebug() << "ERROR resolving element" << element.qualifiedName().qname() << "which is a ref to" << element.reference().qname() << ": not found!";
+        } else {
+            resolvedElement.setMinOccurs( element.minOccurs() );
+            resolvedElement.setMaxOccurs( element.maxOccurs() );
+            resolvedElement.setCompositor( element.compositor() );
+            elements[ j ] = resolvedElement;
+        }
       }
     }
     d->mComplexTypes[ i ].setElements( elements );
@@ -1036,6 +1037,11 @@ Annotation::List Parser::annotations() const
   return d->mAnnotations;
 }
 
+
+bool Parser::debugParsing()
+{
+    static bool s_debug = qgetenv("KDSOAP_DEBUG_PARSER").toInt();
+    return s_debug;
 }
 
-// kate: space-indent on; indent-width 2; encoding utf-8; replace-tabs on;
+}

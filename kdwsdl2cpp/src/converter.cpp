@@ -221,6 +221,12 @@ void Converter::cleanupUnusedTypes()
     while (elemIt.hasNext()) {
         const QName name = elemIt.next();
         XSD::Element element = mWSDL.findElement(name);
+
+        if (element.type().isEmpty()) {
+          qDebug() << "ERROR: Element without type:" << element.qualifiedName() << element.nameSpace() << element.name();
+          Q_ASSERT(!element.type().isEmpty());
+        }
+
         if (element.name().isEmpty())
             qDebug() << "cleanupUnusedTypes: element" << name << "not found";
         else
