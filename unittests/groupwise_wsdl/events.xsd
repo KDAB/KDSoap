@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8"?><!-- 
+================================================================================
+File:	events.xsd
+
+Copyright (c) 2005-2006	Novell, Inc. All Rights Reserved.
+
+Use and redistribution of this work is subject to the developer license
+agreement through which this work is made available. Pursuant to that license
+agreement, Novell hereby grants You a royalty-free, non-exclusive license to
+include Novell's sample code in Your product(s) that interoperate with the
+applicable Novell product, and worldwide distribution rights to market,
+distribute, or sell Novell's sample code as a component of Your product.
+
+THE WORK IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, 
+INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
+PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL NOVELL OR THE AUTHORS 
+OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF 
+OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS IN THE WORK.
+
+
+Alternatively, the contents of this file may be used under the terms of 
+GNU General Public License Version 2 (the "GPL") as explained below.  
+If you wish to allow use of your version of this file only under the terms 
+of the GPL, and not to allow others to use your version of this file under 
+the provisions appearing above, indicate your decision by deleting the 
+provisions above and replace them with the notice and other provisions required 
+by the GPL. If you do not delete the provisions above, a recipient may use 
+your version of this file under the above provisions of the GPL.
+
+
+This file is free software; you can redistribute it and/or modify it under the 
+terms of version 2 of the GNU General Public License as published by the 
+Free Software Foundation.  This program is distributed in the hope that it will 
+be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of 
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+for more details.  You should have received a copy of the GNU General Public License 
+along with this program; if not, contact Novell, Inc.
+
+To contact Novell about this file by physical or electronic mail, you may find 
+current contact information at www.novell.com.
+================================================================================
+--><xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://schemas.novell.com/2005/01/GroupWise/events" elementFormDefault="qualified" xmlns="http://schemas.novell.com/2005/01/GroupWise/events" xmlns:tns="http://schemas.novell.com/2005/01/GroupWise/events" xmlns:types="http://schemas.novell.com/2005/01/GroupWise/types">
+
+	<xs:import namespace="http://schemas.novell.com/2005/01/GroupWise/types" schemaLocation="types.xsd"/>
+   
+   <xs:element name="key" type="xs:string"/>
+   <xs:element name="event" type="tns:EventType"/>
+   <xs:element name="field" type="tns:FieldList"/>
+   <xs:element name="id" type="types:uid"/>
+   <xs:complexType name="ContainerList">
+      <xs:sequence>
+         <xs:element name="container" type="types:uid" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+      <xs:attribute name="not" type="xs:boolean" default="0"/>
+   </xs:complexType>
+   <xs:complexType name="Event">
+      <xs:sequence>
+         <xs:element ref="tns:event"/>
+         <xs:element ref="tns:id" minOccurs="0"/>
+         <xs:element name="timeStamp" type="xs:dateTime" minOccurs="0"/>
+         <xs:element ref="tns:field" minOccurs="0"/>
+         <xs:element name="container" type="types:uid" minOccurs="0"/>
+         <xs:element name="from" type="types:uid" minOccurs="0"/>
+         <xs:element name="key" type="xs:string" minOccurs="0"/>
+ 		 <xs:element name="uid" type="xs:unsignedInt" minOccurs="0"/>
+		 <xs:element name="type" type="tns:ItemType" minOccurs="0"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="EventDefinition">
+      <xs:sequence>
+         <xs:element name="events" type="tns:EventTypeList"/>
+         <xs:element name="type" type="tns:ItemTypeList" minOccurs="0"/>
+         <xs:element ref="tns:field" minOccurs="0"/>
+         <xs:element name="containers" type="tns:ContainerList" minOccurs="0"/>
+         <xs:element name="subType" type="xs:string" minOccurs="0"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="EventList">
+      <xs:sequence>
+         <xs:element name="event" type="tns:Event" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="Events">
+      <xs:sequence>
+         <xs:element ref="tns:key"/>
+         <xs:element name="persistence" type="xs:duration" minOccurs="0"/>
+         <xs:element name="ipAddress" type="xs:string" minOccurs="0"/>
+         <xs:element name="port" type="xs:int" minOccurs="0"/>
+         <xs:element name="http" type="xs:boolean" minOccurs="0" default="0"/>
+         <xs:element name="definition" type="tns:EventDefinition" minOccurs="0"/>
+      </xs:sequence>
+      <xs:attribute name="enabled" type="xs:boolean" default="0"/>
+   </xs:complexType>
+   <xs:complexType name="EventsList">
+      <xs:sequence>
+         <xs:element name="event" type="tns:Events" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:simpleType name="EventType">
+      <xs:restriction base="xs:string">
+         <xs:enumeration value="AddressBookAdd"/>
+         <xs:enumeration value="AddressBookDelete"/>
+         <xs:enumeration value="AddressBookModify"/>
+         <xs:enumeration value="AddressBookItemAdd"/>
+         <xs:enumeration value="AddressBookItemDelete"/>
+         <xs:enumeration value="AddressBookItemModify"/>
+         <xs:enumeration value="FolderAccept"/>
+         <xs:enumeration value="FolderAdd"/>
+         <xs:enumeration value="FolderDelete"/>
+         <xs:enumeration value="FolderItemAdd"/>
+         <xs:enumeration value="FolderItemDelete"/>
+         <xs:enumeration value="FolderItemMove"/>
+         <xs:enumeration value="FolderModify"/>
+         <xs:enumeration value="ItemAccept"/>
+         <xs:enumeration value="ItemArchive"/>
+         <xs:enumeration value="ItemComplete"/>
+         <xs:enumeration value="ItemDecline"/>
+         <xs:enumeration value="ItemDelete"/>
+         <xs:enumeration value="ItemMarkPrivate"/>
+         <xs:enumeration value="ItemMarkRead"/>
+         <xs:enumeration value="ItemMarkUnread"/>
+         <xs:enumeration value="ItemModify"/>
+         <xs:enumeration value="ItemPurge"/>
+         <xs:enumeration value="ItemUnarchive"/>
+         <xs:enumeration value="ItemUndelete"/>
+         <xs:enumeration value="Login"/>
+         <xs:enumeration value="Logout"/>
+         <xs:enumeration value="ProxyAccessAdd"/>
+         <xs:enumeration value="ProxyAccessModify"/>
+         <xs:enumeration value="ProxyAccessDelete"/>
+         <xs:enumeration value="ProxyLogin"/>
+         <xs:enumeration value="SessionTimedOut"/>
+         <xs:enumeration value="TrustedApplicationLogin"/>
+         <xs:enumeration value="ItemMarkUnprivate"/>
+         <xs:enumeration value="ItemUnaccept"/>
+         <xs:enumeration value="ItemUncomplete"/>
+         <xs:enumeration value="PersonalGroupItemAdd"/>
+         <xs:enumeration value="PersonalGroupItemDelete"/>
+      </xs:restriction>
+   </xs:simpleType>
+   <xs:complexType name="EventTypeList">
+      <xs:sequence>
+         <xs:element name="event" type="tns:EventType" minOccurs="1" maxOccurs="36"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:simpleType name="Field">
+      <xs:restriction base="xs:string">
+         <xs:enumeration value="AcceptLevel"/>
+         <xs:enumeration value="Alarm"/>
+         <xs:enumeration value="AllDayEvent"/>
+         <xs:enumeration value="Attachment"/>
+         <xs:enumeration value="Category"/>
+         <xs:enumeration value="Classification"/>
+         <xs:enumeration value="Contact"/>
+         <xs:enumeration value="DueDate"/>
+         <xs:enumeration value="Duration"/>
+         <xs:enumeration value="EmailAddress"/>
+         <xs:enumeration value="ExpirationDate"/>
+         <xs:enumeration value="Hidden"/>
+         <xs:enumeration value="IMAddress"/>
+         <xs:enumeration value="MessageBody"/>
+         <xs:enumeration value="Name"/>
+         <xs:enumeration value="Organization"/>
+         <xs:enumeration value="Owner"/>
+         <xs:enumeration value="PersonalSubject"/>
+         <xs:enumeration value="PhoneNumber"/>
+         <xs:enumeration value="Place"/>
+         <xs:enumeration value="PostalAddress"/>
+         <xs:enumeration value="RecipientStatus"/>
+         <xs:enumeration value="Rights"/>
+         <xs:enumeration value="Security"/>
+         <xs:enumeration value="SendPriority"/>
+         <xs:enumeration value="StartDate"/>
+         <xs:enumeration value="Subject"/>
+         <xs:enumeration value="TaskCategory"/>
+         <xs:enumeration value="TaskPriority"/>
+      </xs:restriction>
+   </xs:simpleType>
+   <xs:simpleType name="FieldList">
+      <xs:list itemType="Field"/>
+   </xs:simpleType>
+   <xs:simpleType name="ItemType">
+      <xs:restriction base="xs:string">
+         <xs:enumeration value="AddressBookItem"/>
+         <xs:enumeration value="Appointment"/>
+         <xs:enumeration value="CalendarItem"/>
+         <xs:enumeration value="Contact"/>
+         <xs:enumeration value="Group"/>
+         <xs:enumeration value="Mail"/>
+         <xs:enumeration value="Note"/>
+         <xs:enumeration value="Organization"/>
+         <xs:enumeration value="PhoneMessage"/>
+         <xs:enumeration value="Resource"/>
+         <xs:enumeration value="Task"/>
+		 <xs:enumeration value="DocumentRef"/>
+      </xs:restriction>
+   </xs:simpleType>
+   <xs:simpleType name="ItemTypeList">
+      <xs:list itemType="ItemType"/>
+   </xs:simpleType>
+
+<!-- 
+Applications can be notified by the POA when an event they have subscribed to occurs (a.k.a. slap).  
+The object that is transported is defined by the Notify object.  There can be many notify instantances in one slap.  
+The notification instances will be seperated by \r\n.  For example,
+
+<notify><userid>username</userid><key>GWEvents</key></notify>\r\n
+<notify><userid>username</userid><key>GWEvents</key></notify>\r\n
+-->
+   <xs:complexType name="Notify">
+      <xs:sequence>
+        <xs:element name="userid" type="xs:string" minOccurs="1"/>
+		<xs:element ref="tns:key" minOccurs="1"/>
+      </xs:sequence>
+   </xs:complexType>
+   
+   <xs:element name="cleanEventConfigurationRequest">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element name="all" type="xs:boolean" default="0"/>
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+   <xs:element name="cleanEventConfigurationResponse">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element name="status" type="types:Status"/>
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+   <xs:element name="configureEventsRequest">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element name="events" type="tns:Events" minOccurs="0"/>
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+   <xs:element name="configureEventsResponse">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element name="status" type="types:Status"/>
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+   <xs:element name="getEventConfigurationRequest">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element name="key" type="xs:string" minOccurs="0" nillable="1"/>
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+   <xs:element name="getEventConfigurationResponse">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element name="events" type="tns:EventsList" minOccurs="0"/>
+            <xs:element name="status" type="types:Status"/>
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+   <xs:element name="getEventsRequest">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element ref="tns:key"/>
+            <xs:element name="from" type="xs:dateTime" minOccurs="0" nillable="1"/>
+            <xs:element name="until" type="xs:dateTime" minOccurs="0" nillable="1"/>
+				<xs:element name="uid" type="xs:unsignedInt" minOccurs="0"/>
+            <xs:element name="count" type="xs:int" default="-1"/>
+            <xs:element name="remove" type="xs:boolean" default="0"/>
+            <xs:element name="notify" type="xs:boolean" default="0"/>
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+   <xs:element name="getEventsResponse">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element name="events" type="tns:EventList" minOccurs="0"/>
+            <xs:element name="status" type="types:Status"/>
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+   <xs:element name="removeEventConfigurationRequest">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element ref="tns:key"/>
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+   <xs:element name="removeEventConfigurationResponse">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element name="status" type="types:Status"/>
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+   <xs:element name="removeEventsRequest">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element ref="tns:key"/>
+            <xs:element name="from" type="xs:dateTime" minOccurs="0"/>
+            <xs:element name="until" type="xs:dateTime" minOccurs="0"/>
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+   <xs:element name="removeEventsResponse">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element name="status" type="types:Status"/>
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+
+</xs:schema>
