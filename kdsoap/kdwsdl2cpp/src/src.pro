@@ -2,7 +2,6 @@ TEMPLATE = app
 TARGET = kdwsdl2cpp
 SOURCES = compiler.cpp \
     converter.cpp \
-    converter_attribute.cpp \
     converter_clientstub.cpp \
     converter_complextype.cpp \
     converter_serverstub.cpp \

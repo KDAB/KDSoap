@@ -299,14 +299,4 @@ void Converter::convertTypes()
   qDebug() << "Converting" << complexTypes.count() << "complex types";
   for ( int i = 0; i < complexTypes.count(); ++i )
     convertComplexType( &(complexTypes[ i ]) );
-
-  XSD::Attribute::List attributes = types.attributes();
-  qDebug() << "Converting" << attributes.count() << "attributes";
-  for ( int i = 0; i < attributes.count(); ++i )
-    convertAttribute( &(attributes[ i ]) );
-
-  //XSD::Element::List elements = types.elements();
-  //qDebug() << "Converting" << elements.count() << "elements";
-  //for ( int i = 0; i < elements.count(); ++i )
-  //  convertElement( &(elements[ i ]) );
 }
