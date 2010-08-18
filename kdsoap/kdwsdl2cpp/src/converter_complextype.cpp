@@ -356,7 +356,7 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
                 demarshalCode.addBlock( demarshalArrayVar( mTypeMap, attribute.arrayType(), variableName, typeName ) );
             } else {
                 qWarning("TODO serialize/deserialize non-array attributes");
-                marshalCode += "// TODO serialize non-array attributes";
+                marshalCode += "// TODO serialize non-array attribute " + attribute.name();
             }
         }
     }
