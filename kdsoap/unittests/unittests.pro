@@ -1,5 +1,5 @@
 TEMPLATE = subdirs
-SUBDIRS = webcalls builtinhttp webcalls_wsdl wsdl_document wsdl_rpc salesforce_wsdl
+SUBDIRS = webcalls builtinhttp webcalls_wsdl wsdl_document wsdl_rpc salesforce_wsdl groupwise_wsdl
 
 WIN_BINDIR=release
 CONFIG(debug, debug|release) {

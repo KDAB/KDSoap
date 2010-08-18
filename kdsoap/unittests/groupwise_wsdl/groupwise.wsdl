@@ -1,0 +1,2081 @@
+<?xml version="1.0" encoding="UTF-8"?><!-- 
+================================================================================
+File:	groupwise.wsdl
+
+Copyright (c) 2005-2006	Novell, Inc. All Rights Reserved.
+
+Use and redistribution of this work is subject to the developer license
+agreement through which this work is made available. Pursuant to that license
+agreement, Novell hereby grants You a royalty-free, non-exclusive license to
+include Novell's sample code in Your product(s) that interoperate with the
+applicable Novell product, and worldwide distribution rights to market,
+distribute, or sell Novell's sample code as a component of Your product.
+
+THE WORK IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, 
+INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
+PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL NOVELL OR THE AUTHORS 
+OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF 
+OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS IN THE WORK.
+
+
+Alternatively, the contents of this file may be used under the terms of 
+GNU General Public License Version 2 (the "GPL") as explained below.  
+If you wish to allow use of your version of this file only under the terms 
+of the GPL, and not to allow others to use your version of this file under 
+the provisions appearing above, indicate your decision by deleting the 
+provisions above and replace them with the notice and other provisions required 
+by the GPL. If you do not delete the provisions above, a recipient may use 
+your version of this file under the above provisions of the GPL.
+
+
+This file is free software; you can redistribute it and/or modify it under the 
+terms of version 2 of the GNU General Public License as published by the 
+Free Software Foundation.  This program is distributed in the hope that it will 
+be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of 
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+for more details.  You should have received a copy of the GNU General Public License 
+along with this program; if not, contact Novell, Inc.  
+
+To contact Novell about this file by physical or electronic mail, you may find 
+current contact information at www.novell.com.
+================================================================================
+--><definitions xmlns="http://schemas.xmlsoap.org/wsdl/" targetNamespace="http://schemas.novell.com/2005/01/GroupWise/groupwise.wsdl" xmlns:tns="http://schemas.novell.com/2005/01/GroupWise/groupwise.wsdl" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:types="http://schemas.novell.com/2005/01/GroupWise/types" xmlns:methods="http://schemas.novell.com/2005/01/GroupWise/methods" xmlns:events="http://schemas.novell.com/2005/01/GroupWise/events" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+   
+	<types>
+		<schema xmlns="http://www.w3.org/2001/XMLSchema">
+			<import namespace="http://schemas.novell.com/2005/01/GroupWise/types" schemaLocation="types.xsd"/>
+			<import namespace="http://schemas.novell.com/2005/01/GroupWise/methods" schemaLocation="methods.xsd"/>
+			<import namespace="http://schemas.novell.com/2005/01/GroupWise/events" schemaLocation="events.xsd"/>
+		</schema>		
+	</types>
+
+   <message name="acceptRequestMessage">
+      <part name="acceptReq" element="methods:acceptRequest"/>
+   </message>
+   <message name="acceptResponseMessage">
+       <part name="acceptRes" element="methods:acceptResponse"/>
+   </message>
+
+   <message name="unacceptRequestMessage">
+      <part name="unacceptReq" element="methods:unacceptRequest"/>
+   </message>
+   <message name="unacceptResponseMessage">
+       <part name="unacceptRes" element="methods:unacceptResponse"/>
+   </message>
+
+   <message name="acceptShareRequestMessage">
+      <part name="acceptShareReq" element="methods:acceptShareRequest"/>
+   </message>
+   <message name="acceptShareResponseMessage">
+      <part name="acceptShareRes" element="methods:acceptShareResponse"/>
+   </message>
+
+   <message name="addItemRequestMessage">
+      <part name="addItemReq" element="methods:addItemRequest"/>
+   </message>
+   <message name="addItemResponseMessage">
+      <part name="addItemRes" element="methods:addItemResponse"/>
+   </message>
+
+   <message name="addItemsRequestMessage">
+      <part name="addItemsReq" element="methods:addItemsRequest"/>
+   </message>
+   <message name="addItemsResponseMessage">
+      <part name="addItemsRes" element="methods:addItemsResponse"/>
+   </message>
+
+   <message name="addMembersRequestMessage">
+      <part name="addMembersReq" element="methods:addMembersRequest"/>
+   </message>
+   <message name="addMembersResponseMessage">
+      <part name="addMembersRes" element="methods:addMembersResponse"/>
+   </message>
+
+   <message name="closeFreeBusySessionRequestMessage">
+      <part name="closeFreeBusySessionReq" element="methods:closeFreeBusySessionRequest"/>
+   </message>
+   <message name="closeFreeBusySessionResponseMessage">
+      <part name="closeFreeBusySessionRes" element="methods:closeFreeBusySessionResponse"/>
+   </message>
+
+   <message name="completeRequestMessage">
+      <part name="completeReq" element="methods:completeRequest"/>
+   </message>
+   <message name="completeResponseMessage">
+      <part name="completeRes" element="methods:completeResponse"/>
+   </message>
+
+   <message name="uncompleteRequestMessage">
+      <part name="uncompleteReq" element="methods:uncompleteRequest"/>
+   </message>
+   <message name="uncompleteResponseMessage">
+      <part name="uncompleteRes" element="methods:uncompleteResponse"/>
+   </message>
+
+   <message name="createCursorRequestMessage">
+      <part name="createCursorReq" element="methods:createCursorRequest"/>
+   </message>
+   <message name="createCursorResponseMessage">
+      <part name="createCursorRes" element="methods:createCursorResponse"/>
+   </message>
+
+   <message name="createItemRequestMessage">
+      <part name="createItemReq" element="methods:createItemRequest"/>
+   </message>
+   <message name="createItemResponseMessage">
+      <part name="createItemRes" element="methods:createItemResponse"/>
+   </message>
+
+   <message name="createItemsRequestMessage">
+      <part name="createItemsReq" element="methods:createItemsRequest"/>
+   </message>
+   <message name="createItemsResponseMessage">
+      <part name="createItemsRes" element="methods:createItemsResponse"/>
+   </message>
+
+	<message name="createJunkEntryRequestMessage">
+      <part name="createJunkEntryReq" element="methods:createJunkEntryRequest"/>
+   </message>
+   <message name="createJunkEntryResponseMessage">
+      <part name="createJunkEntryRes" element="methods:createJunkEntryResponse"/>
+   </message>
+
+   <message name="createProxyAccessRequestMessage">
+      <part name="createProxyAccessReq" element="methods:createProxyAccessRequest"/>
+   </message>
+   <message name="createProxyAccessResponseMessage">
+      <part name="createProxyAccessRes" element="methods:createProxyAccessResponse"/>
+   </message>
+
+   <message name="createSignatureRequestMessage">
+      <part name="createSignatureReq" element="methods:createSignatureRequest"/>
+   </message>
+   <message name="createSignatureResponseMessage">
+      <part name="createSignatureRes" element="methods:createSignatureResponse"/>
+   </message>
+
+   <message name="declineRequestMessage">
+      <part name="declineReq" element="methods:declineRequest"/>
+   </message>
+   <message name="declineResponseMessage">
+      <part name="declineRes" element="methods:declineResponse"/>
+   </message>
+
+   <message name="delegateRequestMessage">
+      <part name="delegateReq" element="methods:delegateRequest"/>
+   </message>
+   <message name="delegateResponseMessage">
+      <part name="delegateRes" element="methods:delegateResponse"/>
+   </message>
+
+   <message name="destroyCursorRequestMessage">
+      <part name="destroyCursorReq" element="methods:destroyCursorRequest"/>
+   </message>
+   <message name="destroyCursorResponseMessage">
+      <part name="destroyCursorRes" element="methods:destroyCursorResponse"/>
+   </message>
+
+   <message name="executeRuleRequestMessage">
+      <part name="executeRuleReq" element="methods:executeRuleRequest"/>
+   </message>
+   <message name="executeRuleResponseMessage">
+      <part name="executeRuleRes" element="methods:executeRuleResponse"/>
+	</message>
+
+   <message name="forwardRequestMessage">
+      <part name="forwardReq" element="methods:forwardRequest"/>
+   </message>
+   <message name="forwardResponseMessage">
+      <part name="forwardRes" element="methods:forwardResponse"/>
+   </message>
+
+   <message name="getAddressBookListRequestMessage">
+      <part name="getAddressBookListReq" element="methods:getAddressBookListRequest"/>
+   </message>
+   <message name="getAddressBookListResponseMessage">
+      <part name="getAddressBookListRes" element="methods:getAddressBookListResponse"/>
+   </message>
+
+   <message name="getAttachmentRequestMessage">
+      <part name="getAttachmentReq" element="methods:getAttachmentRequest"/>
+	</message>
+   <message name="getAttachmentResponseMessage">
+      <part name="getAttachmentRes" element="methods:getAttachmentResponse"/>
+   </message>
+
+   <message name="getCategoryListRequestMessage">
+      <part name="getCategoryListReq" element="methods:getCategoryListRequest"/>
+   </message>
+   <message name="getCategoryListResponseMessage">
+      <part name="getCategoryListRes" element="methods:getCategoryListResponse"/>
+   </message>
+
+   <message name="getCustomListRequestMessage">
+      <part name="getCustomListReq" element="methods:getCustomListRequest"/>
+   </message>
+   <message name="getCustomListResponseMessage">
+      <part name="getCustomListRes" element="methods:getCustomListResponse"/>
+   </message>
+
+   <message name="getDeltasRequestMessage">
+      <part name="getDeltasReq" element="methods:getDeltasRequest"/>
+   </message>
+   <message name="getDeltasResponseMessage">
+      <part name="getDeltasRes" element="methods:getDeltasResponse"/>
+   </message>
+
+   <message name="getDeltaInfoRequestMessage">
+      <part name="getDeltaInfoReq" element="methods:getDeltaInfoRequest"/>
+   </message>
+   <message name="getDeltaInfoResponseMessage">
+      <part name="getDeltaInfoRes" element="methods:getDeltaInfoResponse"/>
+   </message>
+
+   <message name="getDocumentTypeListRequestMessage">
+      <part name="getDocumentTypeListReq" element="methods:getDocumentTypeListRequest"/>
+   </message>
+   <message name="getDocumentTypeListResponseMessage">
+      <part name="getDocumentTypeListRes" element="methods:getDocumentTypeListResponse"/>
+   </message>
+
+   <message name="getFolderRequestMessage">
+      <part name="getFolderReq" element="methods:getFolderRequest"/>
+   </message>
+   <message name="getFolderResponseMessage">
+		<part name="getFolderRes" element="methods:getFolderResponse"/>
+   </message>
+
+   <message name="getFolderListRequestMessage">
+      <part name="getFolderListReq" element="methods:getFolderListRequest"/>
+   </message>
+   <message name="getFolderListResponseMessage">
+      <part name="getFolderListRes" element="methods:getFolderListResponse"/>
+   </message>
+
+   <message name="getFreeBusyRequestMessage">
+      <part name="getFreeBusyReq" element="methods:getFreeBusyRequest"/>
+   </message>
+   <message name="getFreeBusyResponseMessage">
+      <part name="getFreeBusyRes" element="methods:getFreeBusyResponse"/>
+   </message>
+
+   <message name="getItemRequestMessage">
+      <part name="getItemReq" element="methods:getItemRequest"/>
+   </message>
+   <message name="getItemResponseMessage">
+      <part name="getItemRes" element="methods:getItemResponse"/>
+   </message>
+
+   <message name="getItemsRequestMessage">
+      <part name="getItemsReq" element="methods:getItemsRequest"/>
+   </message>
+   <message name="getItemsResponseMessage">
+      <part name="getItemsRes" element="methods:getItemsResponse"/>
+   </message>
+
+   <message name="getJunkEntriesRequestMessage">
+      <part name="getJunkEntriesReq" element="methods:getJunkEntriesRequest"/>
+   </message>
+   <message name="getJunkEntriesResponseMessage">
+      <part name="getJunkEntriesRes" element="methods:getJunkEntriesResponse"/>
+   </message>
+
+   <message name="getJunkMailSettingsRequestMessage">
+      <part name="getJunkMailSettingsReq" element="methods:getJunkMailSettingsRequest"/>
+   </message>
+   <message name="getJunkMailSettingsResponseMessage">
+      <part name="getJunkMailSettingsRes" element="methods:getJunkMailSettingsResponse"/>
+   </message>
+
+   <message name="getLibraryItemRequestMessage">
+      <part name="getLibraryItemReq" element="methods:getLibraryItemRequest"/>
+   </message>
+   <message name="getLibraryItemResponseMessage">
+      <part name="getLibraryItemRes" element="methods:getLibraryItemResponse"/>
+   </message>
+
+   <message name="getLibraryListRequestMessage">
+      <part name="getLibraryListReq" element="methods:getLibraryListRequest"/>
+   </message>
+   <message name="getLibraryListResponseMessage">
+      <part name="getLibraryListRes" element="methods:getLibraryListResponse"/>
+   </message>
+
+   <message name="getQuickMessagesRequestMessage">
+      <part name="getQuickMessagesReq" element="methods:getQuickMessagesRequest"/>
+   </message>
+   <message name="getQuickMessagesResponseMessage">
+      <part name="getQuickMessagesRes" element="methods:getQuickMessagesResponse"/>
+   </message>
+
+   <message name="getProxyAccessListRequestMessage">
+      <part name="getProxyAccessListReq" element="methods:getProxyAccessListRequest"/>
+   </message>
+   <message name="getProxyAccessListResponseMessage">
+      <part name="getProxyAccessListRes" element="methods:getProxyAccessListResponse"/>
+   </message>
+
+   <message name="getProxyListRequestMessage">
+      <part name="getProxyListReq" element="methods:getProxyListRequest"/>
+   </message>
+   <message name="getProxyListResponseMessage">
+      <part name="getProxyListRes" element="methods:getProxyListResponse"/>
+   </message>
+
+   <message name="getRuleListRequestMessage">
+      <part name="getRuleListReq" element="methods:getRuleListRequest"/>
+   </message>
+   <message name="getRuleListResponseMessage">
+      <part name="getRuleListRes" element="methods:getRuleListResponse"/>
+	</message>
+
+   <message name="getSettingsRequestMessage">
+      <part name="getSettingsReq" element="methods:getSettingsRequest"/>
+   </message>
+   <message name="getSettingsResponseMessage">
+      <part name="getSettingsRes" element="methods:getSettingsResponse"/>
+   </message>
+
+   <message name="getSignaturesRequestMessage">
+      <part name="getSignaturesReq" element="methods:getSignaturesRequest"/>
+   </message>
+   <message name="getSignaturesResponseMessage">
+      <part name="getSignaturesRes" element="methods:getSignaturesResponse"/>
+   </message>
+
+   <message name="getTimestampRequestMessage">
+      <part name="getTimestampReq" element="methods:getTimestampRequest"/>
+   </message>
+   <message name="getTimestampResponseMessage">
+      <part name="getTimestampRes" element="methods:getTimestampResponse"/>
+   </message>
+
+   <message name="getTimezoneListRequestMessage">
+      <part name="getTimezoneListReq" element="methods:getTimezoneListRequest"/>
+   </message>
+   <message name="getTimezoneListResponseMessage">
+      <part name="getTimezoneListRes" element="methods:getTimezoneListResponse"/>
+   </message>
+
+   <message name="getUserListRequestMessage">
+      <part name="getUserListReq" element="methods:getUserListRequest"/>
+   </message>
+   <message name="getUserListResponseMessage">
+      <part name="getUserListRes" element="methods:getUserListResponse"/>
+   </message>
+
+   <message name="gwTraceMessage">
+      <part name="gwTrace" element="types:gwTrace"/>
+   </message>
+
+   <message name="sessionMessage">
+      <part name="sessionId" element="types:session"/>
+   </message>
+
+   <message name="loginRequestMessage">
+      <part name="loginReq" element="methods:loginRequest"/>
+   </message>
+
+   <message name="loginResponseMessage">
+      <part name="loginRes" element="methods:loginResponse"/>
+   </message>
+
+   <message name="logoutRequestMessage">
+      <part name="logoutReq" element="methods:logoutRequest"/>
+   </message>
+   <message name="logoutResponseMessage">
+      <part name="logoutRes" element="methods:logoutResponse"/>
+   </message>
+
+   <message name="markPrivateRequestMessage">
+      <part name="markPrivateReq" element="methods:markPrivateRequest"/>
+   </message>
+   <message name="markPrivateResponseMessage">
+      <part name="markPrivateRes" element="methods:markPrivateResponse"/>
+   </message>
+
+   <message name="markUnPrivateRequestMessage">
+      <part name="markUnPrivateReq" element="methods:markUnPrivateRequest"/>
+   </message>
+   <message name="markUnPrivateResponseMessage">
+      <part name="markUnPrivateRes" element="methods:markUnPrivateResponse"/>
+   </message>
+
+   <message name="markReadRequestMessage">
+      <part name="markReadReq" element="methods:markReadRequest"/>
+   </message>
+   <message name="markReadResponseMessage">
+      <part name="markReadRes" element="methods:markReadResponse"/>
+   </message>
+
+   <message name="markUnReadRequestMessage">
+      <part name="markUnReadReq" element="methods:markUnReadRequest"/>
+   </message>
+   <message name="markUnReadResponseMessage">
+      <part name="markUnReadRes" element="methods:markUnReadResponse"/>
+   </message>
+
+   <message name="modifyItemRequestMessage">
+      <part name="modifyItemReq" element="methods:modifyItemRequest"/>
+   </message>
+   <message name="modifyItemResponseMessage">
+      <part name="modifyItemRes" element="methods:modifyItemResponse"/>
+   </message>
+
+   <message name="modifyJunkEntryRequestMessage">
+      <part name="modifyJunkEntryReq" element="methods:modifyJunkEntryRequest"/>
+   </message>
+   <message name="modifyJunkEntryResponseMessage">
+      <part name="modifyJunkEntryRes" element="methods:modifyJunkEntryResponse"/>
+   </message>
+   <message name="modifyJunkMailSettingsRequestMessage">
+      <part name="modifyJunkMailSettingsReq" element="methods:modifyJunkMailSettingsRequest"/>
+   </message>
+   <message name="modifyJunkMailSettingsResponseMessage">
+      <part name="modifyJunkMailSettingsRes" element="methods:modifyJunkMailSettingsResponse"/>
+   </message>
+
+   <message name="modifyPasswordRequestMessage">
+      <part name="modifyPasswordReq" element="methods:modifyPasswordRequest"/>
+   </message>
+   <message name="modifyPasswordResponseMessage">
+      <part name="modifyPasswordRes" element="methods:modifyPasswordResponse"/>
+   </message>
+
+   <message name="modifyProxyAccessRequestMessage">
+      <part name="modifyProxyAccessReq" element="methods:modifyProxyAccessRequest"/>
+   </message>
+   <message name="modifyProxyAccessResponseMessage">
+      <part name="modifyProxyAccessRes" element="methods:modifyProxyAccessResponse"/>
+   </message>
+
+   <message name="modifySettingsRequestMessage">
+      <part name="modifySettingsReq" element="methods:modifySettingsRequest"/>
+   </message>
+   <message name="modifySettingsResponseMessage">
+      <part name="modifySettingsRes" element="methods:modifySettingsResponse"/>
+   </message>
+
+   <message name="modifySignaturesRequestMessage">
+      <part name="modifySignaturesReq" element="methods:modifySignaturesRequest"/>
+   </message>
+   <message name="modifySignaturesResponseMessage">
+      <part name="modifySignaturesRes" element="methods:modifySignaturesResponse"/>
+   </message>
+
+   <message name="moveItemRequestMessage">
+      <part name="moveItemReq" element="methods:moveItemRequest"/>
+   </message>
+   <message name="moveItemResponseMessage">
+      <part name="moveItemRes" element="methods:moveItemResponse"/>
+   </message>
+
+   <message name="positionCursorRequestMessage">
+      <part name="positionCursorReq" element="methods:positionCursorRequest"/>
+   </message>
+   <message name="positionCursorResponseMessage">
+      <part name="positionCursorRes" element="methods:positionCursorResponse"/>
+   </message>
+
+   <message name="purgeDeletedItemsRequestMessage">
+      <part name="purgeDeletedItemsReq" element="methods:purgeDeletedItemsRequest"/>
+   </message>
+   <message name="purgeDeletedItemsResponseMessage">
+      <part name="purgeDeletedItemsRes" element="methods:purgeDeletedItemsResponse"/>
+   </message>
+
+   <message name="purgeRequestMessage">
+      <part name="purgeReq" element="methods:purgeRequest"/>
+   </message>
+   <message name="purgeResponseMessage">
+      <part name="purgeRes" element="methods:purgeResponse"/>
+   </message>
+
+   <message name="readCursorRequestMessage">
+      <part name="readCursorReq" element="methods:readCursorRequest"/>
+   </message>
+   <message name="readCursorResponseMessage">
+      <part name="readCursorRes" element="methods:readCursorResponse"/>
+   </message>
+
+   <message name="removeCustomDefinitionRequestMessage">
+      <part name="removeCustomDefinitionReq" element="methods:removeCustomDefinitionRequest"/>
+   </message>
+   <message name="removeCustomDefinitionResponseMessage">
+      <part name="removeCustomDefinitionRes" element="methods:removeCustomDefinitionResponse"/>
+   </message>
+
+   <message name="removeItemRequestMessage">
+      <part name="removeItemReq" element="methods:removeItemRequest"/>
+   </message>
+   <message name="removeItemResponseMessage">
+      <part name="removeItemRes" element="methods:removeItemResponse"/>
+   </message>
+
+   <message name="removeItemsRequestMessage">
+      <part name="removeItemsReq" element="methods:removeItemsRequest"/>
+   </message>
+   <message name="removeItemsResponseMessage">
+      <part name="removeItemsRes" element="methods:removeItemsResponse"/>
+   </message>
+
+   <message name="removeJunkEntryRequestMessage">
+      <part name="removeJunkEntryReq" element="methods:removeJunkEntryRequest"/>
+   </message>
+   <message name="removeJunkEntryResponseMessage">
+      <part name="removeJunkEntryRes" element="methods:removeJunkEntryResponse"/>
+   </message>
+
+   <message name="removeMembersRequestMessage">
+      <part name="removeMembersReq" element="methods:removeMembersRequest"/>
+   </message>
+   <message name="removeMembersResponseMessage">
+      <part name="removeMembersRes" element="methods:removeMembersResponse"/>
+   </message>
+
+   <message name="removeProxyAccessRequestMessage">
+      <part name="removeProxyAccessReq" element="methods:removeProxyAccessRequest"/>
+   </message>
+   <message name="removeProxyAccessResponseMessage">
+      <part name="removeProxyAccessRes" element="methods:removeProxyAccessResponse"/>
+   </message>
+
+   <message name="removeProxyUserRequestMessage">
+      <part name="removeProxyUserReq" element="methods:removeProxyUserRequest"/>
+   </message>
+   <message name="removeProxyUserResponseMessage">
+      <part name="removeProxyUserRes" element="methods:removeProxyUserResponse"/>
+   </message>
+
+   <message name="removeSignatureRequestMessage">
+      <part name="removeSignatureReq" element="methods:removeSignatureRequest"/>
+   </message>
+   <message name="removeSignatureResponseMessage">
+      <part name="removeSignatureRes" element="methods:removeSignatureResponse"/>
+   </message>
+
+   <message name="replyRequestMessage">
+      <part name="replyReq" element="methods:replyRequest"/>
+   </message>
+   <message name="replyResponseMessage">
+      <part name="replyRes" element="methods:replyResponse"/>
+   </message>
+
+   <message name="retractRequestMessage">
+      <part name="retractReq" element="methods:retractRequest"/>
+   </message>
+   <message name="retractResponseMessage">
+      <part name="retractRes" element="methods:retractResponse"/>
+   </message>
+
+   <message name="sendItemRequestMessage">
+      <part name="sendItemReq" element="methods:sendItemRequest"/>
+   </message>
+   <message name="sendItemResponseMessage">
+      <part name="sendItemRes" element="methods:sendItemResponse"/>
+   </message>
+
+   <message name="setTimestampRequestMessage">
+      <part name="setTimestampReq" element="methods:setTimestampRequest"/>
+   </message>
+   <message name="setTimestampResponseMessage">
+      <part name="setTimestampRes" element="methods:setTimestampResponse"/>
+   </message>
+
+   <message name="startFreeBusySessionRequestMessage">
+      <part name="startFreeBusySessionReq" element="methods:startFreeBusySessionRequest"/>
+   </message>
+   <message name="startFreeBusySessionResponseMessage">
+      <part name="startFreeBusySessionRes" element="methods:startFreeBusySessionResponse"/>
+   </message>
+
+   <message name="updateVersionStatusRequestMessage">
+      <part name="updateVersionStatusReq" element="methods:updateVersionStatusRequest"/>
+   </message>
+   <message name="updateVersionStatusResponseMessage">
+      <part name="updateVersionStatusRes" element="methods:updateVersionStatusResponse"/>
+   </message>
+
+   <message name="cleanEventConfigurationRequestMessage">
+      <part name="cleanEventConfigurationReq" element="events:cleanEventConfigurationRequest"/>
+   </message>
+   <message name="cleanEventConfigurationResponseMessage">
+      <part name="cleanEventConfigurationRes" element="events:cleanEventConfigurationResponse"/>
+   </message>
+
+   <message name="configureEventsRequestMessage">
+      <part name="configureEventsReq" element="events:configureEventsRequest"/>
+   </message>
+   <message name="configureEventsResponseMessage">
+      <part name="configureEventsRes" element="events:configureEventsResponse"/>
+   </message>
+
+   <message name="getEventConfigurationRequestMessage">
+      <part name="getEventConfigurationReq" element="events:getEventConfigurationRequest"/>
+   </message>
+   <message name="getEventConfigurationResponseMessage">
+      <part name="getEventConfigurationRes" element="events:getEventConfigurationResponse"/>
+   </message>
+
+   <message name="getEventsRequestMessage">
+      <part name="getEventsReq" element="events:getEventsRequest"/>
+   </message>
+   <message name="getEventsResponseMessage">
+      <part name="getEventsRes" element="events:getEventsResponse"/>
+   </message>
+
+   <message name="removeEventConfigurationRequestMessage">
+      <part name="removeEventConfigurationReq" element="events:removeEventConfigurationRequest"/>
+   </message>
+   <message name="removeEventConfigurationResponseMessage">
+      <part name="removeEventConfigurationRes" element="events:removeEventConfigurationResponse"/>
+   </message>
+
+   <message name="removeEventsRequestMessage">
+      <part name="removeEventsReq" element="events:removeEventsRequest"/>
+   </message>
+   <message name="removeEventsResponseMessage">
+      <part name="removeEventsRes" element="events:removeEventsResponse"/>
+   </message>
+
+   <portType name="GroupWisePortType">
+
+     <operation name="acceptRequest">
+       <input message="tns:acceptRequestMessage"/>
+       <output message="tns:acceptResponseMessage"/>
+     </operation>
+
+     <operation name="acceptShareRequest">
+       <input message="tns:acceptShareRequestMessage"/>
+       <output message="tns:acceptShareResponseMessage"/>
+     </operation>
+
+     <operation name="addItemRequest">
+       <input message="tns:addItemRequestMessage"/>
+       <output message="tns:addItemResponseMessage"/>
+     </operation>
+
+     <operation name="addItemsRequest">
+       <input message="tns:addItemsRequestMessage"/>
+       <output message="tns:addItemsResponseMessage"/>
+     </operation>
+
+     <operation name="addMembersRequest">
+       <input message="tns:addMembersRequestMessage"/>
+       <output message="tns:addMembersResponseMessage"/>
+     </operation>
+
+     <operation name="closeFreeBusySessionRequest">
+       <input message="tns:closeFreeBusySessionRequestMessage"/>
+       <output message="tns:closeFreeBusySessionResponseMessage"/>
+     </operation>
+
+     <operation name="completeRequest">
+       <input message="tns:completeRequestMessage"/>
+       <output message="tns:completeResponseMessage"/>
+     </operation>
+
+     <operation name="createCursorRequest">
+       <input message="tns:createCursorRequestMessage"/>
+       <output message="tns:createCursorResponseMessage"/>
+     </operation>
+
+     <operation name="createItemRequest">
+       <input message="tns:createItemRequestMessage"/>
+       <output message="tns:createItemResponseMessage"/>
+     </operation>
+
+     <operation name="createItemsRequest">
+       <input message="tns:createItemsRequestMessage"/>
+       <output message="tns:createItemsResponseMessage"/>
+     </operation>
+
+     <operation name="createJunkEntryRequest">
+       <input message="tns:createJunkEntryRequestMessage"/>
+       <output message="tns:createJunkEntryResponseMessage"/>
+     </operation>
+
+     <operation name="createProxyAccessRequest">
+       <input message="tns:createProxyAccessRequestMessage"/>
+       <output message="tns:createProxyAccessResponseMessage"/>
+     </operation>
+
+     <operation name="createSignatureRequest">
+       <input message="tns:createSignatureRequestMessage"/>
+       <output message="tns:createSignatureResponseMessage"/>
+     </operation>
+
+     <operation name="declineRequest">
+       <input message="tns:declineRequestMessage"/>
+       <output message="tns:declineResponseMessage"/>
+     </operation>
+
+     <operation name="delegateRequest">
+       <input message="tns:delegateRequestMessage"/>
+       <output message="tns:delegateResponseMessage"/>
+     </operation>
+
+     <operation name="destroyCursorRequest">
+       <input message="tns:destroyCursorRequestMessage"/>
+       <output message="tns:destroyCursorResponseMessage"/>
+     </operation>
+
+     <operation name="executeRuleRequest">
+       <input message="tns:executeRuleRequestMessage"/>
+       <output message="tns:executeRuleResponseMessage"/>
+	  </operation>
+
+     <operation name="forwardRequest">
+       <input message="tns:forwardRequestMessage"/>
+       <output message="tns:forwardResponseMessage"/>
+     </operation>
+
+     <operation name="getAddressBookListRequest">
+       <input message="tns:getAddressBookListRequestMessage"/>
+       <output message="tns:getAddressBookListResponseMessage"/>
+     </operation>
+
+     <operation name="getAttachmentRequestMessage">
+       <input message="tns:getAttachmentRequestMessage"/>
+       <output message="tns:getAttachmentResponseMessage"/>
+     </operation>
+
+     <operation name="getCategoryListRequest">
+       <input message="tns:getCategoryListRequestMessage"/>
+       <output message="tns:getCategoryListResponseMessage"/>
+     </operation>
+
+     <operation name="getCustomListRequest">
+       <input message="tns:getCustomListRequestMessage"/>
+       <output message="tns:getCustomListResponseMessage"/>
+     </operation>
+
+     <operation name="getDeltasRequest">
+       <input message="tns:getDeltasRequestMessage"/>
+       <output message="tns:getDeltasResponseMessage"/>
+     </operation>
+
+     <operation name="getDeltaInfoRequest">
+       <input message="tns:getDeltaInfoRequestMessage"/>
+       <output message="tns:getDeltaInfoResponseMessage"/>
+     </operation>
+
+     <operation name="getDocumentTypeListRequest">
+       <input message="tns:getDocumentTypeListRequestMessage"/>
+       <output message="tns:getDocumentTypeListResponseMessage"/>
+     </operation>
+
+     <operation name="getFolderRequest">
+       <input message="tns:getFolderRequestMessage"/>
+		 <output message="tns:getFolderResponseMessage"/>
+     </operation>
+
+     <operation name="getFolderListRequest">
+       <input message="tns:getFolderListRequestMessage"/>
+       <output message="tns:getFolderListResponseMessage"/>
+     </operation>
+
+     <operation name="getFreeBusyRequest">
+       <input message="tns:getFreeBusyRequestMessage"/>
+       <output message="tns:getFreeBusyResponseMessage"/>
+     </operation>
+
+     <operation name="getItemRequest">
+       <input message="tns:getItemRequestMessage"/>
+       <output message="tns:getItemResponseMessage"/>
+     </operation>
+
+     <operation name="getItemsRequest">
+       <input message="tns:getItemsRequestMessage"/>
+       <output message="tns:getItemsResponseMessage"/>
+     </operation>
+
+     <operation name="getJunkEntriesRequest">
+       <input message="tns:getJunkEntriesRequestMessage"/>
+       <output message="tns:getJunkEntriesResponseMessage"/>
+     </operation>
+
+     <operation name="getJunkMailSettingsRequest">
+       <input message="tns:getJunkMailSettingsRequestMessage"/>
+       <output message="tns:getJunkMailSettingsResponseMessage"/>
+     </operation>
+
+     <operation name="getLibraryItemRequest">
+       <input message="tns:getLibraryItemRequestMessage"/>
+       <output message="tns:getLibraryItemResponseMessage"/>
+     </operation>
+
+     <operation name="getLibraryListRequest">
+       <input message="tns:getLibraryListRequestMessage"/>
+       <output message="tns:getLibraryListResponseMessage"/>
+     </operation>
+
+     <operation name="getQuickMessagesRequest">
+       <input message="tns:getQuickMessagesRequestMessage"/>
+       <output message="tns:getQuickMessagesResponseMessage"/>
+     </operation>
+
+     <operation name="getProxyAccessListRequest">
+       <input message="tns:getProxyAccessListRequestMessage"/>
+       <output message="tns:getProxyAccessListResponseMessage"/>
+     </operation>
+
+     <operation name="getProxyListRequest">
+       <input message="tns:getProxyListRequestMessage"/>
+       <output message="tns:getProxyListResponseMessage"/>
+     </operation>
+
+     <operation name="getRuleListRequest">
+       <input message="tns:getRuleListRequestMessage"/>
+       <output message="tns:getRuleListResponseMessage"/>
+	  </operation>
+
+     <operation name="getSettingsRequest">
+       <input message="tns:getSettingsRequestMessage"/>
+       <output message="tns:getSettingsResponseMessage"/>
+     </operation>
+
+     <operation name="getSignaturesRequest">
+       <input message="tns:getSignaturesRequestMessage"/>
+       <output message="tns:getSignaturesResponseMessage"/>
+     </operation>
+
+     <operation name="getTimestampRequest">
+       <input message="tns:getTimestampRequestMessage"/>
+       <output message="tns:getTimestampResponseMessage"/>
+     </operation>
+
+     <operation name="getTimezoneListRequest">
+       <input message="tns:getTimezoneListRequestMessage"/>
+       <output message="tns:getTimezoneListResponseMessage"/>
+     </operation>
+
+     <operation name="getUserListRequest">
+       <input message="tns:getUserListRequestMessage"/>
+       <output message="tns:getUserListResponseMessage"/>
+     </operation>
+
+     <operation name="loginRequest">
+       <input message="tns:loginRequestMessage"/>
+       <output message="tns:loginResponseMessage"/>
+     </operation>
+     <operation name="logoutRequest">
+       <input message="tns:logoutRequestMessage"/>
+       <output message="tns:logoutResponseMessage"/>
+     </operation>
+
+     <operation name="markPrivateRequest">
+       <input message="tns:markPrivateRequestMessage"/>
+       <output message="tns:markPrivateResponseMessage"/>
+     </operation>
+
+     <operation name="markUnPrivateRequest">
+       <input message="tns:markUnPrivateRequestMessage"/>
+       <output message="tns:markUnPrivateResponseMessage"/>
+     </operation>
+
+     <operation name="markReadRequest">
+       <input message="tns:markReadRequestMessage"/>
+       <output message="tns:markReadResponseMessage"/>
+     </operation>
+
+     <operation name="markUnReadRequest">
+       <input message="tns:markUnReadRequestMessage"/>
+       <output message="tns:markUnReadResponseMessage"/>
+     </operation>
+
+     <operation name="modifyItemRequest">
+       <input message="tns:modifyItemRequestMessage"/>
+       <output message="tns:modifyItemResponseMessage"/>
+     </operation>
+
+     <operation name="modifyJunkEntryRequest">
+       <input message="tns:modifyJunkEntryRequestMessage"/>
+       <output message="tns:modifyJunkEntryResponseMessage"/>
+     </operation>
+
+     <operation name="modifyJunkMailSettingsRequest">
+       <input message="tns:modifyJunkMailSettingsRequestMessage"/>
+       <output message="tns:modifyJunkMailSettingsResponseMessage"/>
+     </operation>
+
+     <operation name="modifyPasswordRequest">
+       <input message="tns:modifyPasswordRequestMessage"/>
+       <output message="tns:modifyPasswordResponseMessage"/>
+     </operation>
+
+     <operation name="modifyProxyAccessRequest">
+       <input message="tns:modifyProxyAccessRequestMessage"/>
+       <output message="tns:modifyProxyAccessResponseMessage"/>
+     </operation>
+
+     <operation name="modifySettingsRequest">
+       <input message="tns:modifySettingsRequestMessage"/>
+       <output message="tns:modifySettingsResponseMessage"/>
+     </operation>
+
+     <operation name="modifySignaturesRequest">
+       <input message="tns:modifySignaturesRequestMessage"/>
+       <output message="tns:modifySignaturesResponseMessage"/>
+     </operation>
+
+     <operation name="moveItemRequest">
+       <input message="tns:moveItemRequestMessage"/>
+       <output message="tns:moveItemResponseMessage"/>
+     </operation>
+
+     <operation name="positionCursorRequest">
+       <input message="tns:positionCursorRequestMessage"/>
+       <output message="tns:positionCursorResponseMessage"/>
+     </operation>
+
+     <operation name="purgeDeletedItemsRequest">
+       <input message="tns:purgeDeletedItemsRequestMessage"/>
+       <output message="tns:purgeDeletedItemsResponseMessage"/>
+     </operation>
+
+     <operation name="purgeRequest">
+       <input message="tns:purgeRequestMessage"/>
+       <output message="tns:purgeResponseMessage"/>
+     </operation>
+
+     <operation name="readCursorRequest">
+       <input message="tns:readCursorRequestMessage"/>
+       <output message="tns:readCursorResponseMessage"/>
+     </operation>
+
+     <operation name="removeCustomDefinitionRequest">
+       <input message="tns:removeCustomDefinitionRequestMessage"/>
+       <output message="tns:removeCustomDefinitionResponseMessage"/>
+     </operation>
+
+     <operation name="removeItemRequest">
+       <input message="tns:removeItemRequestMessage"/>
+       <output message="tns:removeItemResponseMessage"/>
+     </operation>
+
+     <operation name="removeItemsRequest">
+       <input message="tns:removeItemsRequestMessage"/>
+       <output message="tns:removeItemsResponseMessage"/>
+     </operation>
+
+     <operation name="removeJunkEntryRequest">
+       <input message="tns:removeJunkEntryRequestMessage"/>
+       <output message="tns:removeJunkEntryResponseMessage"/>
+     </operation>
+     <operation name="removeMembersRequest">
+       <input message="tns:removeMembersRequestMessage"/>
+       <output message="tns:removeMembersResponseMessage"/>
+     </operation>
+
+     <operation name="removeProxyAccessRequest">
+       <input message="tns:removeProxyAccessRequestMessage"/>
+       <output message="tns:removeProxyAccessResponseMessage"/>
+     </operation>
+
+     <operation name="removeProxyUserRequest">
+       <input message="tns:removeProxyUserRequestMessage"/>
+       <output message="tns:removeProxyUserResponseMessage"/>
+     </operation>
+
+     <operation name="removeSignatureRequest">
+       <input message="tns:removeSignatureRequestMessage"/>
+       <output message="tns:removeSignatureResponseMessage"/>
+     </operation>
+
+     <operation name="replyRequest">
+       <input message="tns:replyRequestMessage"/>
+       <output message="tns:replyResponseMessage"/>
+     </operation>
+
+     <operation name="retractRequest">
+       <input message="tns:retractRequestMessage"/>
+       <output message="tns:retractResponseMessage"/>
+     </operation>
+
+     <operation name="sendItemRequest">
+       <input message="tns:sendItemRequestMessage"/>
+       <output message="tns:sendItemResponseMessage"/>
+     </operation>
+
+     <operation name="setTimestampRequest">
+       <input message="tns:setTimestampRequestMessage"/>
+       <output message="tns:setTimestampResponseMessage"/>
+     </operation>
+
+     <operation name="startFreeBusySessionRequest">
+       <input message="tns:startFreeBusySessionRequestMessage"/>
+       <output message="tns:startFreeBusySessionResponseMessage"/>
+     </operation>
+
+     <operation name="unacceptRequest">
+       <input message="tns:unacceptRequestMessage"/>
+       <output message="tns:unacceptResponseMessage"/>
+     </operation>
+
+     <operation name="uncompleteRequest">
+       <input message="tns:uncompleteRequestMessage"/>
+       <output message="tns:uncompleteResponseMessage"/>
+     </operation>
+
+     <operation name="updateVersionStatusRequest">
+       <input message="tns:updateVersionStatusRequestMessage"/>
+       <output message="tns:updateVersionStatusResponseMessage"/>
+     </operation>
+
+   </portType>
+
+
+   <portType name="GroupWiseEventsPortType">
+   
+     <operation name="cleanEventConfigurationRequest">
+       <input message="tns:cleanEventConfigurationRequestMessage"/>
+       <output message="tns:cleanEventConfigurationResponseMessage"/>
+     </operation>
+     <operation name="configureEventsRequest">
+       <input message="tns:configureEventsRequestMessage"/>
+       <output message="tns:configureEventsResponseMessage"/>
+     </operation>
+     <operation name="getEventConfigurationRequest">
+       <input message="tns:getEventConfigurationRequestMessage"/>
+       <output message="tns:getEventConfigurationResponseMessage"/>
+     </operation>
+     <operation name="getEventsRequest">
+       <input message="tns:getEventsRequestMessage"/>
+       <output message="tns:getEventsResponseMessage"/>
+     </operation>
+     <operation name="removeEventConfigurationRequest">
+       <input message="tns:removeEventConfigurationRequestMessage"/>
+       <output message="tns:removeEventConfigurationResponseMessage"/>
+     </operation>
+     <operation name="removeEventsRequest">
+       <input message="tns:removeEventsRequestMessage"/>
+       <output message="tns:removeEventsResponseMessage"/>
+     </operation>
+
+   </portType>
+
+
+<binding name="GroupWiseBinding" type="tns:GroupWisePortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+    <operation name="acceptRequest">
+      <soap:operation soapAction="acceptRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="acceptShareRequest">
+      <soap:operation soapAction="acceptShareRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="addItemRequest">
+      <soap:operation soapAction="addItemRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="addItemsRequest">
+      <soap:operation soapAction="addItemsRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="addMembersRequest">
+      <soap:operation soapAction="addMembersRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="closeFreeBusySessionRequest">
+      <soap:operation soapAction="closeFreeBusySessionRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="completeRequest">
+      <soap:operation soapAction="completeRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="createCursorRequest">
+      <soap:operation soapAction="createCursorRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="createItemRequest">
+      <soap:operation soapAction="createItemRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="createItemsRequest">
+      <soap:operation soapAction="createItemsRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="createJunkEntryRequest">
+      <soap:operation soapAction="createJunkEntryRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="createProxyAccessRequest">
+      <soap:operation soapAction="createProxyAccessRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="createSignatureRequest">
+      <soap:operation soapAction="createSignatureRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="declineRequest">
+      <soap:operation soapAction="declineRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="delegateRequest">
+      <soap:operation soapAction="delegateRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="destroyCursorRequest">
+      <soap:operation soapAction="destroyCursorRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="executeRuleRequest">
+      <soap:operation soapAction="executeRuleRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+	 </operation>
+
+    <operation name="forwardRequest">
+      <soap:operation soapAction="forwardRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="getAddressBookListRequest">
+      <soap:operation soapAction="getAddressBookListRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="getAttachmentRequestMessage">
+      <soap:operation soapAction="getAttachmentRequestMessage" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="getCategoryListRequest">
+      <soap:operation soapAction="getCategoryListRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="getCustomListRequest">
+      <soap:operation soapAction="getCustomListRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="getDeltasRequest">
+      <soap:operation soapAction="getDeltasRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="getDeltaInfoRequest">
+      <soap:operation soapAction="getDeltaInfoRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="getDocumentTypeListRequest">
+      <soap:operation soapAction="getDocumentTypeListRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="getFolderRequest">
+      <soap:operation soapAction="getFolderRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="getFolderListRequest">
+      <soap:operation soapAction="getFolderListRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="getFreeBusyRequest">
+      <soap:operation soapAction="getFreeBusyRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="getItemRequest">
+      <soap:operation soapAction="getItemRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="getItemsRequest">
+      <soap:operation soapAction="getItemsRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="getJunkEntriesRequest">
+      <soap:operation soapAction="getJunkEntriesRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="getJunkMailSettingsRequest">
+      <soap:operation soapAction="getJunkMailSettingsRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="getLibraryItemRequest">
+      <soap:operation soapAction="getLibraryItemRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="getLibraryListRequest">
+      <soap:operation soapAction="getLibraryListRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="getQuickMessagesRequest">
+      <soap:operation soapAction="getQuickMessagesRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="getProxyAccessListRequest">
+      <soap:operation soapAction="getProxyAccessListRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="getProxyListRequest">
+      <soap:operation soapAction="getProxyListRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="getRuleListRequest">
+      <soap:operation soapAction="getRuleListRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+	 </operation>
+
+    <operation name="getSettingsRequest">
+      <soap:operation soapAction="getSettingsRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="getSignaturesRequest">
+      <soap:operation soapAction="getSignaturesRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="getTimestampRequest">
+      <soap:operation soapAction="getTimestampRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="getTimezoneListRequest">
+      <soap:operation soapAction="getTimezoneListRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="getUserListRequest">
+      <soap:operation soapAction="getUserListRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="loginRequest">
+      <soap:operation soapAction="loginRequest" style="document"/>
+      <input>
+		  <soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="logoutRequest">
+      <soap:operation soapAction="logoutRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="markPrivateRequest">
+      <soap:operation soapAction="markPrivateRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="markReadRequest">
+      <soap:operation soapAction="markReadRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="markUnPrivateRequest">
+      <soap:operation soapAction="markUnPrivateRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="markUnReadRequest">
+      <soap:operation soapAction="markUnReadRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="modifyItemRequest">
+      <soap:operation soapAction="modifyItemRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+	 <operation name="modifyJunkEntryRequest">
+      <soap:operation soapAction="modifyJunkEntryRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="modifyJunkMailSettingsRequest">
+      <soap:operation soapAction="modifyJunkMailSettingsRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="modifyPasswordRequest">
+      <soap:operation soapAction="modifyPasswordRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="modifyProxyAccessRequest">
+      <soap:operation soapAction="modifyProxyAccessRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="modifySettingsRequest">
+      <soap:operation soapAction="modifySettingsRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="modifySignaturesRequest">
+      <soap:operation soapAction="modifySignaturesRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="moveItemRequest">
+      <soap:operation soapAction="moveItemRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="positionCursorRequest">
+      <soap:operation soapAction="positionCursorRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="purgeDeletedItemsRequest">
+      <soap:operation soapAction="purgeDeletedItemsRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="purgeRequest">
+      <soap:operation soapAction="purgeRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="readCursorRequest">
+      <soap:operation soapAction="readCursorRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="removeCustomDefinitionRequest">
+      <soap:operation soapAction="removeCustomDefinitionRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="removeItemRequest">
+      <soap:operation soapAction="removeItemRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="removeItemsRequest">
+      <soap:operation soapAction="removeItemsRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="removeJunkEntryRequest">
+      <soap:operation soapAction="removeJunkEntryRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="removeMembersRequest">
+      <soap:operation soapAction="removeMembersRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="removeProxyAccessRequest">
+      <soap:operation soapAction="removeProxyAccessRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="removeProxyUserRequest">
+      <soap:operation soapAction="removeProxyUserRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="removeSignatureRequest">
+      <soap:operation soapAction="removeSignatureRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="replyRequest">
+      <soap:operation soapAction="replyRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="retractRequest">
+      <soap:operation soapAction="retractRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="sendItemRequest">
+      <soap:operation soapAction="sendItemRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="setTimestampRequest">
+      <soap:operation soapAction="setTimestampRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="startFreeBusySessionRequest">
+      <soap:operation soapAction="startFreeBusySessionRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="unacceptRequest">
+      <soap:operation soapAction="unacceptRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="uncompleteRequest">
+      <soap:operation soapAction="uncompleteRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="updateVersionStatusRequest">
+      <soap:operation soapAction="updateVersionStatusRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+  </binding>
+
+
+  <binding name="GroupWiseEventsBinding" type="tns:GroupWiseEventsPortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+    <operation name="cleanEventConfigurationRequest">
+      <soap:operation soapAction="cleanEventConfigurationRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="configureEventsRequest">
+      <soap:operation soapAction="configureEventsRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="getEventConfigurationRequest">
+      <soap:operation soapAction="getEventConfigurationRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="getEventsRequest">
+      <soap:operation soapAction="getEventsRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="removeEventConfigurationRequest">
+      <soap:operation soapAction="removeEventConfigurationRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+   
+    <operation name="removeEventsRequest">
+      <soap:operation soapAction="removeEventsRequest" style="document"/>
+      <input>
+		<soap:header message="tns:sessionMessage" part="sessionId" use="literal"/>
+		<soap:header message="tns:gwTraceMessage" part="gwTrace" use="literal"/>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+   </binding>
+
+
+   <service name="GroupwiseService">
+
+      <port binding="tns:GroupWiseBinding" name="GroupwiseSOAPPort">
+         <documentation>
+            The default port for the GroupWise SOAP protocol is 7191.
+         </documentation>
+         <soap:address location="http://localhost:8080"/>
+      </port>
+
+      <port binding="tns:GroupWiseEventsBinding" name="GroupwiseEventsSOAPPort">
+         <documentation>
+            The default port for the GroupWise Events is the same as the SOAP protocol - 7191.
+         </documentation>
+         <soap:address location="http://localhost:7191"/>
+      </port>
+
+   </service>
+
+</definitions>
