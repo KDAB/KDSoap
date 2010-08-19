@@ -1,0 +1,101 @@
+#include "KDSoapClientInterface.h"
+#include "KDSoapMessage.h"
+#include "KDSoapValue.h"
+#include "KDSoapPendingCallWatcher.h"
+#include "wsdl_sugarcrm.h"
+#include "httpserver_p.h"
+#include <QtTest/QtTest>
+#include <QEventLoop>
+#include <QDebug>
+
+Q_DECLARE_METATYPE(TNS__Set_entry_result)
+
+using namespace KDSoapUnitTestHelpers;
+
+static const char* xmlEnvBegin =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+        "<soap:Envelope"
+        " xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\""
+        " xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\""
+        " xmlns:xsd=\"http://www.w3.org/1999/XMLSchema\""
+        " xmlns:xsi=\"http://www.w3.org/1999/XMLSchema-instance\""
+        " soap:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\"";
+static const char* xmlEnvEnd = "</soap:Envelope>";
+
+class SugarTest : public QObject
+{
+    Q_OBJECT
+
+private Q_SLOTS:
+    void testParseComplexReplyWsdl()
+    {
+        HttpServerThread server(complexTypeResponse(), HttpServerThread::Public);
+        Sugarsoap sugar(this);
+        sugar.setEndPoint(server.endPoint());
+        TNS__User_auth user_auth;
+        user_auth.setUser_name(QString::fromUtf8("user å"));
+        user_auth.setPassword(QString::fromLatin1("pass"));
+        TNS__Set_entry_result result = sugar.login(user_auth, QString::fromLatin1("application"));
+        QCOMPARE(result.id(), QString::fromLatin1("12345"));
+        QCOMPARE(result.error().number(), QString::fromLatin1("0"));
+        QCOMPARE(result.error().name(), QString::fromLatin1("No Error"));
+        QCOMPARE(result.error().description(), QString::fromLatin1("No Error"));
+
+        // Check what we sent
+        QByteArray expectedRequestXml =
+            QByteArray(xmlEnvBegin) +
+            "><soap:Body>"
+            "<n1:login xmlns:n1=\"http://www.sugarcrm.com/sugarcrm\">"
+              "<n1:user_auth xsi:type=\"n1:user_auth\">"
+                "<n1:user_name xsi:type=\"xsd:string\">user å</n1:user_name>"
+                "<n1:password xsi:type=\"xsd:string\">pass</n1:password>"
+                "<n1:version xsi:type=\"xsd:string\"></n1:version>"
+              "</n1:user_auth>"
+              "<n1:application_name xsi:type=\"xsd:string\">application</n1:application_name>"
+            "</n1:login>"
+            "</soap:Body>" + xmlEnvEnd
+            + '\n'; // added by QXmlStreamWriter::writeEndDocument
+        QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
+    }
+
+    void testParseComplexReplyWsdlAsync()
+    {
+        HttpServerThread server(complexTypeResponse(), HttpServerThread::Public);
+        Sugarsoap sugar(this);
+        sugar.setEndPoint(server.endPoint());
+        TNS__User_auth user_auth;
+        user_auth.setUser_name(QString::fromLatin1("user"));
+        user_auth.setPassword(QString::fromLatin1("pass"));
+        qRegisterMetaType<TNS__Set_entry_result>("TNS__Set_entry_result");
+        QSignalSpy loginDoneSpy(&sugar, SIGNAL(loginDone(TNS__Set_entry_result)));
+        sugar.asyncLogin(user_auth, QString::fromLatin1("application"));
+        QEventLoop loop;
+        connect(&sugar, SIGNAL(loginDone(TNS__Set_entry_result)), &loop, SLOT(quit()));
+        loop.exec();
+        const TNS__Set_entry_result result = loginDoneSpy[0][0].value<TNS__Set_entry_result>();
+        QCOMPARE(result.id(), QString::fromLatin1("12345"));
+        QCOMPARE(result.error().number(), QString::fromLatin1("0"));
+        QCOMPARE(result.error().name(), QString::fromLatin1("No Error"));
+        QCOMPARE(result.error().description(), QString::fromLatin1("No Error"));
+    }
+
+private:
+    static QByteArray complexTypeResponse() {
+        return QByteArray(xmlEnvBegin) + "><soap:Body xmlns:tns=\"http://www.sugarcrm.com/sugarcrm\">"
+                "<ns1:loginResponse xmlns:ns1=\"http://www.sugarcrm.com/sugarcrm\">"
+                "  <return xsi:type=\"tns:set_entry_result\">"
+                "    <id xsi:type=\"xsd:string\">12345</id>"
+                "    <error xsi:type=\"tns:error_value\">"
+                "       <number xsi:type=\"xsd:string\">0</number>"
+                "       <name xsi:type=\"xsd:string\">No Error</name>"
+                "       <description xsi:type=\"xsd:string\">No Error</description>"
+                "    </error>"
+                "  </return>"
+                "</ns1:loginResponse>"
+                "</soap:Body>" + xmlEnvEnd;
+    }
+};
+
+QTEST_MAIN(SugarTest)
+
+#include "test_sugar_wsdl.moc"
