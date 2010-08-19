@@ -20,3 +20,8 @@ include(../variables.pri)
 #DEFINES -= QT_NO_CAST_FROM_ASCII
 
 include(../kdwsdl2cpp.pri)
+
+# Assume command-line by default
+CONFIG += console
+QT -= gui
+macx:CONFIG -= app_bundle

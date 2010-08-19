@@ -1,7 +1,6 @@
 KDSOAP_PATH = $$PWD/../..
 include( $$KDSOAP_PATH/unittests/unittests.pri )
 QT += network
-macx:CONFIG -= app_bundle
 SOURCES = webcalls.cpp
 test.target = test
 test.commands = ./$(TARGET)
