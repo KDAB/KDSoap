@@ -70,9 +70,9 @@ void Binding::loadXML( ParserContext *context, const QDomElement &element )
       mSoapBinding.parseBinding( context, child );
     } else if ( child.tagName() == context->namespaceManager()->fullName( httpStandardNamespace, "binding" ) ) {
       mType = HTTPBinding;
-      // TODO HTTPBinding
+      // Not Implemented: HTTPBinding
     } else {
-      // TODO MIMEBinding
+      // Not Implemented: MIMEBinding
     }
 
     child = child.nextSiblingElement();
