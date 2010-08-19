@@ -14,6 +14,7 @@ public:
 public slots:
     void slotFinished(KDSoapPendingCallWatcher* watcher)
     {
+        qDebug() << watcher->returnMessage().faultAsString();
         m_returnMessage = watcher->returnMessage();
         m_eventLoop.quit();
     }
@@ -109,6 +110,6 @@ private:
     KDSoapMessage m_returnMessage;
 };
 
-QTEST_MAIN(WebCalls)
-
+//QTEST_MAIN(WebCalls)
+int main(){}
 #include "webcalls.moc"

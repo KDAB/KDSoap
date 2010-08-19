@@ -146,18 +146,13 @@ QNetworkRequest KDSoapClientInterface::Private::prepareRequest(const QString &me
         soapAction = this->m_messageNamespace + /*QChar::fromLatin1('/') +*/ method;
     }
     //qDebug() << "soapAction=" << soapAction;
-    request.setRawHeader("SoapAction", soapAction.toUtf8());
 
     QString soapHeader;
     if (m_version == SOAP1_1) {
-        soapHeader += QString::fromLatin1("text/xml;");
+        soapHeader += QString::fromLatin1("text/xml;charset=utf-8");
+        request.setRawHeader("SoapAction", soapAction.toUtf8());
     } else if (m_version == SOAP1_2) {
-        soapHeader += QString::fromLatin1("application/soap+xml;");
-    }
-
-    soapHeader += QString::fromLatin1("charset=utf-8");
-    if (m_version == SOAP1_2) {
-        soapHeader += QString::fromLatin1(";action=") + soapAction;
+        soapHeader += QString::fromLatin1("application/soap+xml;charset=utf-8;action=") + soapAction;
     }
 
     request.setHeader(QNetworkRequest::ContentTypeHeader, soapHeader.toUtf8());

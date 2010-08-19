@@ -121,7 +121,11 @@ private Q_SLOTS:
             // Check what we sent
             QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
             QVERIFY(!ret.isFault());
+
+            QVERIFY(server.header("Content-Type") == "text/xml;charset=utf-8");
+            QVERIFY(server.header("SoapAction") == "http://www.kdab.com/xml/MyWsdl/getEmployeeCountry");
             QCOMPARE(ret.arguments().child(QLatin1String("employeeCountry")).value().toString(), QString::fromLatin1("France"));
+
         }        
         client.setSoapVersion(KDSoapClientInterface::SOAP1_2);
         {
@@ -129,6 +133,7 @@ private Q_SLOTS:
             // Check what we sent
             QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
             QVERIFY(!ret.isFault());
+            QVERIFY(server.header("Content-Type") == "application/soap+xml;charset=utf-8;action=http://www.kdab.com/xml/MyWsdl/getEmployeeCountry");
             QCOMPARE(ret.arguments().child(QLatin1String("employeeCountry")).value().toString(), QString::fromLatin1("France"));
         }
     }

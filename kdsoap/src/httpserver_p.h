@@ -11,6 +11,7 @@
 #include <QSslSocket>
 #endif
 #include <QUrl>
+#include <QStringList>
 
 namespace KDSoapUnitTestHelpers
 {
@@ -118,6 +119,10 @@ public:
         m_receivedHeaders.clear();
     }
 
+    QByteArray header(QByteArray value){
+        HeadersMap headers = parseHeaders(m_receivedHeaders );
+        return headers.value(value);
+    }
 protected:
     /* \reimp */ void run()
     {
@@ -125,8 +130,8 @@ protected:
         server.listen();
         m_port = server.serverPort();
         m_ready.release();
-
-        const bool doDebug = qgetenv("KDSOAP_DEBUG").toInt();
+        
+        const bool doDebug = qgetenv("KDSOAP_DEBUG").toInt(); 
 
         if (doDebug)
             qDebug() << "HttpServerThread listening on port" << m_port;
@@ -167,9 +172,14 @@ protected:
 
             if (headers.value("_path").endsWith("terminateThread")) // we're asked to exit
                 break; // normal exit
+                
             // TODO compared with expected SoapAction
-            if (headers.value("SoapAction").isEmpty()) {
-                qDebug() << "ERROR: no SoapAction set";
+            QList<QByteArray> contentTypes = headers.value("Content-Type").split(';');
+            if (contentTypes[0] == "text/xml" && headers.value("SoapAction").isEmpty()) {
+                qDebug() << "ERROR: no SoapAction set for Soap 1.1";
+                break;
+            }else if( contentTypes[0] == "application/soap+xml" && !contentTypes[2].startsWith("action")){
+                qDebug() << "ERROR: no SoapAction set for Soap 1.2";
                 break;
             }
 
@@ -240,7 +250,7 @@ private:
         data = request.mid(sep + 4);
         return true;
     }
-
+    
     typedef QMap<QByteArray, QByteArray> HeadersMap;
     HeadersMap parseHeaders(const QByteArray& headerData) const{
         HeadersMap headersMap;
@@ -275,7 +285,8 @@ private:
         }
         return headersMap;
     }
-
+    
+    
     enum Method { None, Basic, Plain, Login, Ntlm, CramMd5, DigestMd5 };
     static void parseAuthLine(const QString& str, Method* method, QString* headerVal)
     {
