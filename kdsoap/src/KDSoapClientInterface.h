@@ -142,13 +142,14 @@ public:
     void setHeader(const QString& name, const KDSoapMessage& header);
 
     /**
-     * Sets the version of the Soap to be sent with any subsequent soap call.
+     * Sets the version of the Soap to be used for any subsequent soap call.
      * @param version KDSoapClientInterface::SoapVersion::SOAP1_1 or SOAP1_2
+     * The default version of SOAP 1.1.
      */
     void setSoapVersion(SoapVersion version);
     
     /**
-     * gets the version of Soap being used in this instance.
+     * Returns the version of SOAP being used in this instance.
      */
     SoapVersion soapVersion();
     
