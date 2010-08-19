@@ -1,12 +1,13 @@
 #ifndef KDSOAPNAMESPACEMANAGER_H
 #define KDSOAPNAMESPACEMANAGER_H
 
+#include "KDSoapGlobal.h"
 #include <QString>
 
 /**
  * Repository of namespaces
  */
-class KDSoapNamespaceManager
+class KDSOAP_EXPORT KDSoapNamespaceManager
 {
 public:
     static QString xmlSchema1999();

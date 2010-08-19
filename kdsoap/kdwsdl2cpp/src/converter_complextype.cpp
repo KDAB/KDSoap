@@ -203,6 +203,16 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
   mClasses.append( newClass );
 }
 
+static QString namespaceString(const QString& ns)
+{
+    if (ns == QLatin1String("http://www.w3.org/1999/XMLSchema"))
+        return "KDSoapNamespaceManager::xmlSchema1999()";
+    if (ns == QLatin1String("http://www.w3.org/2001/XMLSchema"))
+        return "KDSoapNamespaceManager::xmlSchema2001()";
+    //qDebug() << "got namespace" << ns;
+    return "QString::fromLatin1(\"" + ns + "\")";
+}
+
 // Helper method for the generation of the serialize() method
 static KODE::Code appendElementArg( const TypeMap& typeMap, const QName& type, const QString& name, const QString& localVariableName, const QByteArray& varName )
 {
@@ -219,7 +229,7 @@ static KODE::Code appendElementArg( const TypeMap& typeMap, const QName& type, c
         }
         // TODO a repository of ready namespace QStrings somewhere, to speed things up...
         block += varName + ".append(KDSoapValue(QString::fromLatin1(\"" + name + "\"), " + value
-                 + ", QString::fromLatin1(\"" + type.nameSpace() + "\"), QString::fromLatin1(\"" + type.localName() + "\")));";
+                 + ", " + namespaceString(type.nameSpace()) + ", QString::fromLatin1(\"" + type.localName() + "\")));";
     }
     return block;
 }
