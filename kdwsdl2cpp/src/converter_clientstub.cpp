@@ -87,6 +87,7 @@ void Converter::convertClientService()
       newClass.addInclude("KDSoapValue.h", "KDSoapValueList");
       newClass.addInclude("KDSoapClientInterface.h", "KDSoapClientInterface");
       newClass.addInclude("KDSoapPendingCallWatcher.h", "KDSoapPendingCallWatcher");
+      newClass.addInclude("KDSoapNamespaceManager.h");
 
       // Variables (which will go into the d pointer)
       KODE::MemberVariable clientInterfaceVar("m_clientInterface", "KDSoapClientInterface*");
