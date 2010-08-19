@@ -158,6 +158,6 @@ const AbstractBinding *Binding::binding() const
 {
   if ( mType == SOAPBinding )
     return &mSoapBinding;
-  else // TODO HTTPBinding and MIMEBinding
+  else // Not Implemented: HTTPBinding and MIMEBinding
     return 0;
 }
