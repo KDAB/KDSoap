@@ -68,9 +68,6 @@ class Converter
     // Server Stub
     void convertServerService();
 
-    // Utils
-    void createSoapUtils();
-
     WSDL mWSDL;
 
     KODE::Class::List mClasses;
