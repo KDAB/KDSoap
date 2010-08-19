@@ -18,6 +18,7 @@ INCLUDEPATH += ..
 QT -= gui
 QT += xml
 
+CONFIG += console
 macx:CONFIG -= app_bundle
 
 # Relink when a static lib changed
