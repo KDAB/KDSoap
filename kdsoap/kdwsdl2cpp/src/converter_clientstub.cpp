@@ -84,6 +84,7 @@ void Converter::convertClientService()
 
       // Files included in the impl, with optional forward-declarations in the header
       newClass.addInclude("KDSoapMessage.h", "KDSoapMessage");
+      newClass.addInclude("KDSoapValue.h", "KDSoapValueList");
       newClass.addInclude("KDSoapClientInterface.h", "KDSoapClientInterface");
       newClass.addInclude("KDSoapPendingCallWatcher.h", "KDSoapPendingCallWatcher");
 
@@ -256,6 +257,7 @@ void Converter::clientAddMessageArgument( KODE::Code& code, const SoapBinding::S
     QString argType = mTypeMap.localType( part.type(), part.element() );
     const bool builtin = mTypeMap.isBuiltinType( part.type(), part.element() );
     if ( argType != "void" ) {
+        const QName type = part.type().isEmpty() ? part.element() : part.type();
         if ( bindingStyle == SoapBinding::DocumentStyle ) {
             // In document style, the "part" is directly added as arguments
             // See http://www.ibm.com/developerworks/webservices/library/ws-whichwsdl/
@@ -264,12 +266,10 @@ void Converter::clientAddMessageArgument( KODE::Code& code, const SoapBinding::S
             code += "message.arguments() += " + lowerName + ".serialize().value<KDSoapValueList>();";
         } else {
             const QString partNameStr = "QLatin1String(\"" + part.name() + "\")";
-            if ( builtin ) {
-                code += "message.addArgument(" + partNameStr + ", " + lowerName + ");";
-            } else {
-                code += "message.addArgument(" + partNameStr + ", " + lowerName + ".serialize());";
-                // for debugging, add this to the above line:  //" + part.type().qname() + " - " + part.element().qname();
-            }
+            const QString valueStr = builtin ? lowerName : (lowerName + ".serialize()");
+            // for debugging, add this to the above line:  //" + part.type().qname() + " - " + part.element().qname();
+            code += "message.addArgument(" + partNameStr + ", " + valueStr
+                    + ", QString::fromLatin1(\"" + type.nameSpace() + "\"), QString::fromLatin1(\"" + type.localName() + "\"));";
         }
     }
 }
@@ -373,14 +373,17 @@ void Converter::convertClientCall( const Operation &operation, const Binding &bi
 
       if ( isComplex && soapStyle(binding) == SoapBinding::DocumentStyle /*no wrapper*/ ) {
           code += retType + " ret;"; // local var
-          code += "ret.deserialize(QVariant::fromValue(d_ptr->m_lastReply.arguments()));";
+          code += "ret.deserialize(d_ptr->m_lastReply.arguments());";
           code += "return ret;";
       } else { // RPC style (adds a wrapper), or simple value
           if ( isBuiltin ) {
               code += QString("return d_ptr->m_lastReply.arguments().first().value().value<%1>();").arg(retType);
           } else {
               code += retType + " ret;"; // local var
-              code += "ret.deserialize(d_ptr->m_lastReply.arguments().first().value());";
+              if ( isComplex )
+                  code += "ret.deserialize(d_ptr->m_lastReply.arguments().first().childValues());";
+              else
+                  code += "ret.deserialize(d_ptr->m_lastReply.arguments().first().value());";
               code += "return ret;";
           }
       }
@@ -480,14 +483,18 @@ void Converter::convertClientOutputMessage( const Operation &operation,
 
     if ( isComplex && soapStyle(binding) == SoapBinding::DocumentStyle /*no wrapper*/ ) {
         slotCode += partType + " ret;"; // local var
-        slotCode += "ret.deserialize(QVariant::fromValue(args));";
+        slotCode += "ret.deserialize(args);";
         partNames << "ret";
     } else { // RPC style (adds a wrapper) or simple value
-        const QString value = "args.value(QLatin1String(\"" + part.name() + "\"))";
+        QString value = "args.child(QLatin1String(\"" + part.name() + "\"))";
         if ( isBuiltin ) {
-            partNames << value + ".value<" + partType + ">()";
+            partNames << value + ".value().value<" + partType + ">()";
         } else {
             slotCode += partType + " ret;"; // local var. TODO ret1/ret2 etc. if more than one.
+            if (isComplex)
+                value += ".childValues()";
+            else
+                value += ".value()";
             slotCode += "ret.deserialize(" + value + ");";
             partNames << "ret";
         }

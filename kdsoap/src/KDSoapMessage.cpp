@@ -23,9 +23,9 @@ KDSoapMessage::~KDSoapMessage()
 {
 }
 
-void KDSoapMessage::addArgument(const QString &argumentName, const QVariant& argumentValue)
+void KDSoapMessage::addArgument(const QString &argumentName, const QVariant& argumentValue, const QString& typeNameSpace, const QString& typeName)
 {
-    d->args.append(KDSoapValue(argumentName, argumentValue));
+    d->args.append(KDSoapValue(argumentName, argumentValue, typeNameSpace, typeName));
 }
 
 KDSoapValueList& KDSoapMessage::arguments()
@@ -56,9 +56,9 @@ bool KDSoapMessage::isFault() const
 QString KDSoapMessage::faultAsString() const
 {
     return QObject::tr("Fault code: %1\nFault description: %2 (%3)")
-            .arg(d->args.value(QLatin1String("faultcode")).toString())
-            .arg(d->args.value(QLatin1String("faultstring")).toString())
-            .arg(d->args.value(QLatin1String("faultactor")).toString());
+            .arg(d->args.child(QLatin1String("faultcode")).value().toString())
+            .arg(d->args.child(QLatin1String("faultstring")).value().toString())
+            .arg(d->args.child(QLatin1String("faultactor")).value().toString());
 }
 
 void KDSoapMessage::setFault(bool fault)

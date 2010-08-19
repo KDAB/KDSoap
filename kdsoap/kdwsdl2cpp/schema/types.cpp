@@ -146,7 +146,9 @@ ComplexType Types::complexType( const Element &element ) const
 
 ComplexType Types::complexType( const QName &typeName ) const
 {
+   //qDebug() << "looking for" << typeName << "ns=" << typeName.nameSpace();
   foreach( const ComplexType& type, d->mComplexTypes ) {
+    //qDebug() << type.nameSpace() << "qualifiedName=" << type.qualifiedName();
     if( typeName == type.qualifiedName() ) return type;
   }
   return ComplexType();

@@ -1,19 +1,87 @@
 #include "KDSoapValue.h"
 #include <QDebug>
 
+class KDSoapValue::Private : public QSharedData
+{
+public:
+    Private() {}
+    Private(const QString& n, const QVariant& v, const QString& typeNameSpace, const QString& typeName)
+        : m_name(n), m_value(v), m_typeNamespace(typeNameSpace), m_typeName(typeName) {}
+
+    QString m_name;
+    QVariant m_value;
+    QString m_typeNamespace;
+    QString m_typeName;
+    KDSoapValueList m_childValues;
+};
+
 uint qHash( const KDSoapValue& value ) { return qHash( value.name() ); }
 
-QVariant KDSoapValueList::value(const QString &name) const
+
+KDSoapValue::KDSoapValue()
+    : d(new Private)
 {
-    const_iterator it = begin();
-    const const_iterator e = end();
-    for ( ; it != e; ++it) {
-        const KDSoapValue& val = *it;
-        if (val.name() == name)
-            return val.value();
-    }
-    return QVariant();
 }
+
+KDSoapValue::KDSoapValue(const QString& n, const QVariant& v, const QString& typeNameSpace, const QString& typeName)
+    : d(new Private(n, v, typeNameSpace, typeName))
+{
+    if (v.canConvert<KDSoapValueList>()) {
+        d->m_childValues = qVariantValue<KDSoapValueList>(v);
+        d->m_value.clear();
+    }
+}
+
+KDSoapValue::KDSoapValue(const QString& n, const KDSoapValueList& children, const QString& typeNameSpace, const QString& typeName)
+    : d(new Private(n, QVariant(), typeNameSpace, typeName))
+{
+    d->m_childValues = children;
+}
+
+KDSoapValue::~KDSoapValue()
+{
+}
+
+KDSoapValue::KDSoapValue(const KDSoapValue& other)
+    : d(other.d)
+{
+}
+
+KDSoapValue & KDSoapValue::operator=(const KDSoapValue &other)
+{
+    d = other.d;
+    return *this;
+}
+
+
+QString KDSoapValue::name() const
+{
+    return d->m_name;
+}
+
+QVariant KDSoapValue::value() const
+{
+    return d->m_value;
+}
+
+void KDSoapValue::setValue(const QVariant &value)
+{
+    d->m_value = value;
+}
+
+KDSoapValueList & KDSoapValue::childValues() const
+{
+    // I want to fool the QSharedDataPointer mechanism here...
+    return const_cast<KDSoapValueList &>(d->m_childValues);
+}
+
+
+bool KDSoapValue::operator ==(const KDSoapValue &other) const
+{
+    return d == other.d;
+}
+
+////
 
 QDebug operator <<(QDebug dbg, const KDSoapValue &value)
 {
@@ -21,19 +89,33 @@ QDebug operator <<(QDebug dbg, const KDSoapValue &value)
     return dbg;
 }
 
-void KDSoapValueList::setType(const QString& nameSpace, const QString &type)
+void KDSoapValue::setType(const QString& nameSpace, const QString &type)
 {
-    m_type = qMakePair(nameSpace, type);
+    d->m_typeNamespace = nameSpace;
+    d->m_typeName = type;
 }
 
-QString KDSoapValueList::typeNs() const
+QString KDSoapValue::typeNs() const
 {
-    return m_type.first;
+    return d->m_typeNamespace;
 }
 
-QString KDSoapValueList::type() const
+QString KDSoapValue::type() const
 {
-    return m_type.second;
+    return d->m_typeName;
+}
+
+
+KDSoapValue KDSoapValueList::child(const QString &name) const
+{
+    const_iterator it = begin();
+    const const_iterator e = end();
+    for ( ; it != e; ++it) {
+        const KDSoapValue& val = *it;
+        if (val.name() == name)
+            return val;
+    }
+    return KDSoapValue();
 }
 
 void KDSoapValueList::setArrayType(const QString& nameSpace, const QString &type)

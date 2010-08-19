@@ -54,10 +54,38 @@ QVariant KDSoapPendingCall::returnValue() const
     return QVariant();
 }
 
-QVariant KDSoapPendingCall::Private::parseReplyElement(QXmlStreamReader& reader)
+// TODO a central repo of these known namespaces
+static const char* xmlSchemaInstanceNS = "http://www.w3.org/1999/XMLSchema-instance";
+static const char* xmlSchemaInstance2001NS = "http://www.w3.org/2001/XMLSchema-instance";
+static const char* soapEncodingNS = "http://schemas.xmlsoap.org/soap/encoding/";
+static const char* soapNS = "http://schemas.xmlsoap.org/soap/envelope/";
+
+KDSoapValue KDSoapPendingCall::Private::parseReplyElement(QXmlStreamReader& reader)
 {
-    //qDebug() << "parsing" << reader.name();
-    KDSoapValueList lst;
+    const QString name = reader.name().toString();
+    KDSoapValue val(name, QVariant());
+    //qDebug() << "parsing" << name;
+
+    const QXmlStreamAttributes attributes = reader.attributes();
+    Q_FOREACH(const QXmlStreamAttribute& attribute, attributes) {
+        const QStringRef name = attribute.name();
+        const QStringRef ns = attribute.namespaceUri();
+        const QStringRef attrValue = attribute.value();
+        // Parse xsi:type and soap-enc:arrayType
+        // and ignore anything else from the xsi or soap-enc namespaces until someone needs it...
+        if (ns == QLatin1String(xmlSchemaInstanceNS) ||
+            ns == QLatin1String(xmlSchemaInstance2001NS)) {
+            if (name == QLatin1String("type")) {
+                // TODO use reader.namespaceDeclarations() in the main loop, to be able to resolve namespaces
+                val.setType(reader.namespaceUri().toString() /*wrong*/, attrValue.toString());
+            }
+            continue;
+        } else if (ns == QLatin1String(soapEncodingNS) || ns == QLatin1String(soapNS)) {
+            continue;
+        }
+        //qDebug() << "Got attribute:" << name << ns << "=" << attrValue;
+        val.childValues().attributes().append(KDSoapValue(name.toString(), attrValue.toString()));
+    }
     QString text;
     while (reader.readNext()) {
         if (reader.isEndElement())
@@ -65,15 +93,13 @@ QVariant KDSoapPendingCall::Private::parseReplyElement(QXmlStreamReader& reader)
         if (reader.isCharacters()) {
             text = reader.text().toString();
             //qDebug() << "text=" << text;
+            val.setValue(text);
         } else if (reader.isStartElement()) {
-            const QVariant subVal = parseReplyElement(reader);
-            const QString name = reader.name().toString();
-            lst.append(KDSoapValue(name, subVal));
+            const KDSoapValue subVal = parseReplyElement(reader);
+            val.childValues().append(subVal);
         }
     }
-    if (!lst.isEmpty())
-        return QVariant::fromValue(lst);
-    return text;
+    return val;
 }
 
 // Wrapper for compatibility with Qt < 4.6.
@@ -119,7 +145,6 @@ void KDSoapPendingCall::Private::parseReply()
         QXmlStreamReader reader(data);
         const QString soapNS = QString::fromLatin1("http://schemas.xmlsoap.org/soap/envelope/");
         //const QString xmlSchemaNS = QString::fromLatin1("http://www.w3.org/1999/XMLSchema");
-        //const QString xmlSchemaInstanceNS = QString::fromLatin1("http://www.w3.org/1999/XMLSchema-instance");
         if (readNextStartElement(reader)) {
             if (reader.name() == "Envelope" && reader.namespaceUri() == soapNS) {
                 if (readNextStartElement(reader) && reader.name() == "Body" && reader.namespaceUri() == soapNS) {
@@ -129,13 +154,8 @@ void KDSoapPendingCall::Private::parseReply()
                         if (reader.name() == "Fault")
                             replyMessage.setFault(true);
 
-                        while (readNextStartElement(reader)) { // Result
-                            const QString name = reader.name().toString();
-                            const QVariant val = parseReplyElement(reader);
-                            replyMessage.addArgument(name, val);
-                            if (doDebug)
-                                qDebug() << "got item" << name << "val=" << val;
-                        }
+                        KDSoapValue val = parseReplyElement(reader);
+                        replyMessage.arguments() = val.childValues();
                     }
 
                 } else {

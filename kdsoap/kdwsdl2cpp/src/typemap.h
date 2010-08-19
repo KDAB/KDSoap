@@ -55,6 +55,7 @@ class TypeMap
      * Example: @p typeName is "xsd:string".
      */
     bool isBuiltinType( const QName &typeName ) const;
+    bool isComplexType( const QName &typeName ) const;
 
     /**
      * Returns true if @p typeName is the special type "any".

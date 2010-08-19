@@ -68,9 +68,16 @@ static QString variantToTextValue(const QVariant& value)
         return QDateTime(value.toDate(), QTime(), Qt::UTC).toString();
     case QVariant::DateTime:
         return value.toDateTime().toString();
+    case QVariant::Invalid:
+        qDebug() << "ERROR: Got invalid QVariant in a KDSoapValue";
+        return QString();
     default:
         if (value.userType() == qMetaTypeId<float>())
             return QString::number(value.value<float>());
+        if (value.userType() == qMetaTypeId<KDSoapValueList>()) {
+            qDebug() << "ERROR: got a KDSoapValueList in a value, should not happen";
+            return QString();
+        }
 
         qDebug() << QString::fromLatin1("QVariants of type %1 are not supported in "
                                         "KDSoap, see the documentation").arg(QLatin1String(value.typeName()));
@@ -113,7 +120,10 @@ static QString variantToXMLType(const QVariant& value)
     default:
         if (value.userType() == qMetaTypeId<float>())
             return QLatin1String("xsd:float");
-        qDebug() << QString::fromLatin1("QVariants of type %1 are not supported in "
+
+        qDebug() << value;
+
+        qDebug() << QString::fromLatin1("variantToXmlType: QVariants of type %1 are not supported in "
                                         "KDSoap, see the documentation").arg(QLatin1String(value.typeName()));
         return QString();
     }
@@ -141,11 +151,12 @@ QNetworkRequest KDSoapClientInterface::Private::prepareRequest(const QString &me
     request.setRawHeader("SoapAction", soapAction.toUtf8());
 
     QString soapHeader;
-    if ( m_version == SOAP1_1){
+    if (m_version == SOAP1_1) {
         soapHeader += QString::fromLatin1("text/xml;");
-    }else if( m_version == SOAP1_2 ){
+    } else if (m_version == SOAP1_2) {
         soapHeader += QString::fromLatin1("application/soap+xml;");
     }
+
     soapHeader += QString::fromLatin1("charset=utf-8");
     if (m_version == SOAP1_2) {
         soapHeader += QString::fromLatin1(";action=") + soapAction;
@@ -247,34 +258,46 @@ QBuffer* KDSoapClientInterface::Private::prepareRequestBuffer(const QString& met
 
 void KDSoapClientInterface::Private::writeArguments(KDSoapNamespacePrefixes& namespacePrefixes, QXmlStreamWriter& writer, const KDSoapValueList& args, KDSoapMessage::Use use)
 {
+    writeAttributes(writer, args.attributes());
     KDSoapValueListIterator it(args);
     while (it.hasNext()) {
         const KDSoapValue& argument = it.next();
+        writer.writeStartElement(this->m_messageNamespace, argument.name());
         const QVariant value = argument.value();
-        if (value.canConvert<KDSoapValueList>()) {
-            writer.writeStartElement(this->m_messageNamespace, argument.name());
-            const KDSoapValueList list = value.value<KDSoapValueList>();
-            if (use == KDSoapMessage::EncodedUse) {
-                // use=encoded means writing out xsi:type attributes. http://www.eherenow.com/soapfight.htm taught me that.
-                writer.writeAttribute(QLatin1String(xmlSchemaInstanceNS), QLatin1String("type"), namespacePrefixes.resolve(list.typeNs(), list.type()));
-                const bool isArray = !list.arrayType().isEmpty();
-                if (isArray) {
-                    writer.writeAttribute(QLatin1String(soapEncodingNS), QLatin1String("arrayType"), namespacePrefixes.resolve(list.arrayTypeNs(), list.arrayType()) + QLatin1Char('[') + QString::number(list.count()) + QLatin1Char(']'));
-                }
-            }
-            writeArguments(namespacePrefixes, writer, list, use); // recursive call
-            writer.writeEndElement();
-        } else {
-            const QString type = variantToXMLType(value);
+        const KDSoapValueList list = argument.childValues();
+        if (use == KDSoapMessage::EncodedUse) {
+            // use=encoded means writing out xsi:type attributes. http://www.eherenow.com/soapfight.htm taught me that.
+            QString type;
+            if (!argument.type().isEmpty())
+                type = namespacePrefixes.resolve(argument.typeNs(), argument.type());
+            if (type.isEmpty() && !value.isNull())
+                type = variantToXMLType(value); // fallback
             if (!type.isEmpty()) {
-                writer.writeStartElement(this->m_messageNamespace, argument.name());
                 writer.writeAttribute(QLatin1String(xmlSchemaInstanceNS), QLatin1String("type"), type);
-                writer.writeCharacters(variantToTextValue(value));
-                writer.writeEndElement();
+            }
+
+            const bool isArray = !list.arrayType().isEmpty();
+            if (isArray) {
+                writer.writeAttribute(QLatin1String(soapEncodingNS), QLatin1String("arrayType"), namespacePrefixes.resolve(list.arrayTypeNs(), list.arrayType()) + QLatin1Char('[') + QString::number(list.count()) + QLatin1Char(']'));
             }
         }
+        writeArguments(namespacePrefixes, writer, list, use); // recursive call
+
+        if (!value.isNull())
+            writer.writeCharacters(variantToTextValue(value));
+
+        writer.writeEndElement();
     }
 }
+
+void KDSoapClientInterface::Private::writeAttributes(QXmlStreamWriter& writer, const QList<KDSoapValue>& attributes)
+{
+    Q_FOREACH(const KDSoapValue& attr, attributes) {
+        Q_ASSERT(!attr.value().isNull());
+        writer.writeAttribute(m_messageNamespace, attr.name(), variantToTextValue(attr.value()));
+    }
+}
+
 
 KDSoapPendingCall KDSoapClientInterface::asyncCall(const QString &method, const KDSoapMessage &message, const QString& soapAction, const KDSoapHeaders& headers)
 {

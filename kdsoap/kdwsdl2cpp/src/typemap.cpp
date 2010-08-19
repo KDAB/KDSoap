@@ -120,6 +120,12 @@ bool TypeMap::isBuiltinType( const QName &typeName ) const
   return it != mTypeMap.constEnd() ? (*it).builtinType : false;
 }
 
+bool TypeMap::isComplexType( const QName &typeName ) const
+{
+  QList<Entry>::ConstIterator it = typeEntry( typeName );
+  return it != mTypeMap.constEnd() ? (*it).complexType : false;
+}
+
 bool TypeMap::isBuiltinType( const QName &typeName, const QName& elementName ) const
 {
     QList<Entry>::ConstIterator it = !typeName.isEmpty() ? typeEntry( typeName ) : elementEntry( elementName );
