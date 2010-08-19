@@ -44,10 +44,8 @@ headers.files = $$INSTALLHEADERS \
 headers.path = $$INSTALL_PREFIX/include
 INSTALLS += headers
 
-# install target to install the src code for license holders:
-lib.files = $${DESTDIR}
-lib.path = $$INSTALL_PREFIX/
-INSTALLS += lib
+target.path = $$INSTALL_PREFIX/lib
+INSTALLS += target
 
 # Mac frameworks
 macx:lib_bundle: { 
