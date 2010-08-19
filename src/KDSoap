@@ -3,4 +3,6 @@
 #include "KDSoapPendingCall.h"
 #include "KDSoapPendingCallWatcher.h"
 #include "KDSoapValue.h"
+#include "KDSoapAuthentication.h"
+#include "KDSoapNamespaceManager.h"
 

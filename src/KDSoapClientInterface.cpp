@@ -1,6 +1,7 @@
 #include "KDSoapClientInterface.h"
 #include "KDSoapClientInterface_p.h"
 #include "KDSoapMessage_p.h"
+#include "KDSoapNamespaceManager.h"
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QAuthenticator>
@@ -8,9 +9,6 @@
 #include <QBuffer>
 #include <QXmlStreamWriter>
 #include <QDateTime>
-
-static const char* xmlSchemaInstanceNS = "http://www.w3.org/1999/XMLSchema-instance";
-static const char* soapEncodingNS = "http://schemas.xmlsoap.org/soap/encoding/";
 
 KDSoapClientInterface::KDSoapClientInterface(const QString& endPoint, const QString& messageNamespace)
     : d(new Private)
@@ -198,22 +196,20 @@ QBuffer* KDSoapClientInterface::Private::prepareRequestBuffer(const QString& met
     QXmlStreamWriter writer(&data);
     writer.writeStartDocument();
 
-    const QString soapNS = QString::fromLatin1("http://schemas.xmlsoap.org/soap/envelope/");
-    const QString xmlSchemaNS = QString::fromLatin1("http://www.w3.org/1999/XMLSchema");
-
     KDSoapNamespacePrefixes namespacePrefixes;
 
+    const QString soapNS = KDSoapNamespaceManager::soapEnvelope();
     namespacePrefixes.writeNamespace(writer, soapNS, QLatin1String("soap"));
-    namespacePrefixes.writeNamespace(writer, QLatin1String(soapEncodingNS), QLatin1String("soap-enc"));
-    namespacePrefixes.writeNamespace(writer, xmlSchemaNS, QLatin1String("xsd"));
-    namespacePrefixes.writeNamespace(writer, QLatin1String(xmlSchemaInstanceNS), QLatin1String("xsi"));
+    namespacePrefixes.writeNamespace(writer, KDSoapNamespaceManager::soapEncoding(), QLatin1String("soap-enc"));
+    namespacePrefixes.writeNamespace(writer, KDSoapNamespaceManager::xmlSchema1999(), QLatin1String("xsd"));
+    namespacePrefixes.writeNamespace(writer, KDSoapNamespaceManager::xmlSchemaInstance1999(), QLatin1String("xsi"));
 
     // Also insert known variants
-    namespacePrefixes.insert(QString::fromLatin1("http://www.w3.org/2001/XMLSchema"), QString::fromLatin1("xsd"));
-    namespacePrefixes.insert(QString::fromLatin1("http://www.w3.org/2001/XMLSchema-instance"), QString::fromLatin1("xsi"));
+    namespacePrefixes.writeNamespace(writer, KDSoapNamespaceManager::xmlSchema2001(), QLatin1String("xsd"));
+    namespacePrefixes.writeNamespace(writer, KDSoapNamespaceManager::xmlSchemaInstance2001(), QLatin1String("xsi"));
 
     writer.writeStartElement(soapNS, QLatin1String("Envelope"));
-    writer.writeAttribute(soapNS, QLatin1String("encodingStyle"), QLatin1String("http://schemas.xmlsoap.org/soap/encoding/"));
+    writer.writeAttribute(soapNS, QLatin1String("encodingStyle"), KDSoapNamespaceManager::soapEncoding());
 
     if (!headers.isEmpty() || !m_persistentHeaders.isEmpty()) {
         // This writeNamespace line adds the xmlns:n1 to <Envelope>, which looks ugly and unusual (and breaks all unittests)
@@ -273,12 +269,12 @@ void KDSoapClientInterface::Private::writeArguments(KDSoapNamespacePrefixes& nam
             if (type.isEmpty() && !value.isNull())
                 type = variantToXMLType(value); // fallback
             if (!type.isEmpty()) {
-                writer.writeAttribute(QLatin1String(xmlSchemaInstanceNS), QLatin1String("type"), type);
+                writer.writeAttribute(KDSoapNamespaceManager::xmlSchemaInstance1999(), QLatin1String("type"), type);
             }
 
             const bool isArray = !list.arrayType().isEmpty();
             if (isArray) {
-                writer.writeAttribute(QLatin1String(soapEncodingNS), QLatin1String("arrayType"), namespacePrefixes.resolve(list.arrayTypeNs(), list.arrayType()) + QLatin1Char('[') + QString::number(list.count()) + QLatin1Char(']'));
+                writer.writeAttribute(KDSoapNamespaceManager::soapEncoding(), QLatin1String("arrayType"), namespacePrefixes.resolve(list.arrayTypeNs(), list.arrayType()) + QLatin1Char('[') + QString::number(list.count()) + QLatin1Char(']'));
             }
         }
         writeArguments(namespacePrefixes, writer, list, use); // recursive call

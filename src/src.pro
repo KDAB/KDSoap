@@ -18,16 +18,17 @@ INSTALLHEADERS = KDSoapMessage.h \
     KDSoapPendingCallWatcher.h \
     KDSoapValue.h \
     KDSoapGlobal.h \
-    KDSoapAuthentication.h
+    KDSoapAuthentication.h \
+    KDSoapNamespaceManager.h
 EXTENSIONLESSHEADERS = KDSoap
 PRIVATEHEADERS = KDSoapPendingCall_p.h \
     KDSoapPendingCallWatcher_p.h \
     KDSoapMessage_p.h \
     KDSoapClientInterface_p.h \
-    KDSoapClientThread_p.h
-HEADERS = $$INSTALLHEADERS \
-    $$PRIVATEHEADERS \
+    KDSoapClientThread_p.h \
     httpserver_p.h
+HEADERS = $$INSTALLHEADERS \
+    $$PRIVATEHEADERS
 SOURCES = KDSoapMessage.cpp \
     KDSoapClientInterface.cpp \
     KDSoapPendingCall.cpp \
@@ -35,7 +36,8 @@ SOURCES = KDSoapMessage.cpp \
     KDSoapClientThread.cpp \
     KDSoapValue.cpp \
     KDSoapAuthentication.cpp \
-    httpserver_p.cpp
+    httpserver_p.cpp \
+    KDSoapNamespaceManager.cpp
 DEFINES += KDSOAP_BUILD_KDSOAP_LIB
 
 # installation targets:
