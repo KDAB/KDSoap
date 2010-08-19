@@ -210,6 +210,7 @@ static QString namespaceString(const QString& ns)
     if (ns == QLatin1String("http://www.w3.org/2001/XMLSchema"))
         return "KDSoapNamespaceManager::xmlSchema2001()";
     //qDebug() << "got namespace" << ns;
+    // TODO register into KDSoapNamespaceManager? This means generating code in the clientinterface ctor...
     return "QString::fromLatin1(\"" + ns + "\")";
 }
 
@@ -227,7 +228,6 @@ static KODE::Code appendElementArg( const TypeMap& typeMap, const QName& type, c
         } else {
             value = localVariableName + ".serialize()";
         }
-        // TODO a repository of ready namespace QStrings somewhere, to speed things up...
         block += varName + ".append(KDSoapValue(QString::fromLatin1(\"" + name + "\"), " + value
                  + ", " + namespaceString(type.nameSpace()) + ", QString::fromLatin1(\"" + type.localName() + "\")));";
     }

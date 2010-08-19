@@ -276,8 +276,6 @@ KODE::Class::List Converter::classes() const
 
 void Converter::convert()
 {
-  createSoapUtils();
-
   convertTypes();
 
 //  mNSManager.dump();
