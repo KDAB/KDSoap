@@ -129,7 +129,7 @@ KDSoapClientInterface::Private::Private()
 QNetworkRequest KDSoapClientInterface::Private::prepareRequest(const QString &method, const QString& action)
 {
     QNetworkRequest request(QUrl(this->m_endPoint));
-    
+
     // The soap action seems to be namespace + method in most cases, but not always
     // (e.g. urn:GoogleSearchAction for google).
     QString soapAction = action;
@@ -139,17 +139,20 @@ QNetworkRequest KDSoapClientInterface::Private::prepareRequest(const QString &me
     }
     //qDebug() << "soapAction=" << soapAction;
     request.setRawHeader("SoapAction", soapAction.toUtf8());
-    
+
     QString soapHeader;
     if ( m_version == SOAP1_1){
         soapHeader += QString::fromLatin1("text/xml;");
     }else if( m_version == SOAP1_2 ){
         soapHeader += QString::fromLatin1("application/soap+xml;");
     }
-    soapHeader += QString::fromLatin1("charset=utf-8;action=") + soapAction;
-    
+    soapHeader += QString::fromLatin1("charset=utf-8");
+    if (m_version == SOAP1_2) {
+        soapHeader += QString::fromLatin1(";action=") + soapAction;
+    }
+
     request.setHeader(QNetworkRequest::ContentTypeHeader, soapHeader.toUtf8());
-    
+
     // FIXME need to find out which version of Qt this is no longer necessary
     // without that the server might respond with gzip compressed data and
     // Qt 4.6.2 fails to decode that properly
