@@ -243,13 +243,13 @@ static KODE::Code demarshalVar( TypeMap& typeMap, const QName& type, const QStri
     KODE::Code code;
     if ( typeMap.isTypeAny( type ) ) {
         Q_ASSERT(false);
-        code += variableName + " = value;";
+        code += variableName + " = val.value();";
     } else if ( typeMap.isBuiltinType( type ) ) {
-        code += variableName + " = value.value<" + typeName + ">();";
+        code += variableName + " = val.value().value<" + typeName + ">();";
     } else if ( typeMap.isComplexType( type ) ) {
         code += variableName + ".deserialize(val.childValues());";
     } else {
-        code += variableName + ".deserialize(value);";
+        code += variableName + ".deserialize(val.value());";
     }
     return code;
 }
@@ -289,28 +289,16 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
     }
 
     marshalCode += "KDSoapValueList args;";
-    /* This is done by the caller now
-    if (!type->name().isEmpty()) {
-        if (type->isArray()) {
-            static const char* soapEncNs = "http://schemas.xmlsoap.org/soap/encoding/";
-            marshalCode += QByteArray("args.setType(QString::fromLatin1(\"") + soapEncNs + "\"), QString::fromLatin1(\"Array\"));";
-        } else {
-            marshalCode += QByteArray("args.setType(QString::fromLatin1(\"") + type->nameSpace() + "\"), QString::fromLatin1(\"" + type->name() + "\"));";
-        }
-    }
-    */
 
     // elements
     const XSD::Element::List elements = type->elements();
     const XSD::Attribute::List attributes = type->attributes();
 
     if ( !elements.isEmpty() ) {
-        //demarshalCode += "KDSoapValueList args = value.value<KDSoapValueList>();";
         demarshalCode += "for (int argNr = 0; argNr < args.count(); ++argNr) {";
         demarshalCode.indent();
         demarshalCode += "const KDSoapValue& val = args.at(argNr);";
         demarshalCode += "const QString name = val.name();";
-        demarshalCode += "const QVariant value = val.value();";
     }
 
     bool first = true;
@@ -362,7 +350,6 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
         demarshalCode.indent();
         demarshalCode += "const KDSoapValue& val = attribs.at(attrNr);";
         demarshalCode += "const QString name = val.name();";
-        demarshalCode += "const QVariant value = val.value();";
 
         bool first = true;
         Q_FOREACH( const XSD::Attribute& attribute, attributes ) {
