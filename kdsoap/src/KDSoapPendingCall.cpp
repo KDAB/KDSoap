@@ -1,6 +1,7 @@
 #include "KDSoapPendingCall.h"
 #include "KDSoapPendingCall_p.h"
 #include "KDSoapMessage_p.h"
+#include "KDSoapNamespaceManager.h"
 #include <QNetworkReply>
 #include <QDebug>
 
@@ -54,12 +55,6 @@ QVariant KDSoapPendingCall::returnValue() const
     return QVariant();
 }
 
-// TODO a central repo of these known namespaces
-static const char* xmlSchemaInstanceNS = "http://www.w3.org/1999/XMLSchema-instance";
-static const char* xmlSchemaInstance2001NS = "http://www.w3.org/2001/XMLSchema-instance";
-static const char* soapEncodingNS = "http://schemas.xmlsoap.org/soap/encoding/";
-static const char* soapNS = "http://schemas.xmlsoap.org/soap/envelope/";
-
 KDSoapValue KDSoapPendingCall::Private::parseReplyElement(QXmlStreamReader& reader)
 {
     const QString name = reader.name().toString();
@@ -73,14 +68,14 @@ KDSoapValue KDSoapPendingCall::Private::parseReplyElement(QXmlStreamReader& read
         const QStringRef attrValue = attribute.value();
         // Parse xsi:type and soap-enc:arrayType
         // and ignore anything else from the xsi or soap-enc namespaces until someone needs it...
-        if (ns == QLatin1String(xmlSchemaInstanceNS) ||
-            ns == QLatin1String(xmlSchemaInstance2001NS)) {
+        if (ns == KDSoapNamespaceManager::xmlSchemaInstance1999() ||
+            ns == KDSoapNamespaceManager::xmlSchemaInstance2001()) {
             if (name == QLatin1String("type")) {
                 // TODO use reader.namespaceDeclarations() in the main loop, to be able to resolve namespaces
                 val.setType(reader.namespaceUri().toString() /*wrong*/, attrValue.toString());
             }
             continue;
-        } else if (ns == QLatin1String(soapEncodingNS) || ns == QLatin1String(soapNS)) {
+        } else if (ns == KDSoapNamespaceManager::soapEncoding() || ns == KDSoapNamespaceManager::soapEnvelope()) {
             continue;
         }
         //qDebug() << "Got attribute:" << name << ns << "=" << attrValue;
@@ -143,11 +138,9 @@ void KDSoapPendingCall::Private::parseReply()
         if (doDebug)
             qDebug() << data;
         QXmlStreamReader reader(data);
-        const QString soapNS = QString::fromLatin1("http://schemas.xmlsoap.org/soap/envelope/");
-        //const QString xmlSchemaNS = QString::fromLatin1("http://www.w3.org/1999/XMLSchema");
         if (readNextStartElement(reader)) {
-            if (reader.name() == "Envelope" && reader.namespaceUri() == soapNS) {
-                if (readNextStartElement(reader) && reader.name() == "Body" && reader.namespaceUri() == soapNS) {
+            if (reader.name() == "Envelope" && reader.namespaceUri() == KDSoapNamespaceManager::soapEnvelope()) {
+                if (readNextStartElement(reader) && reader.name() == "Body" && reader.namespaceUri() == KDSoapNamespaceManager::soapEnvelope()) {
 
                     if (readNextStartElement(reader)) { // the method: Response or Fault
                         //qDebug() << "toplevel element:" << reader.name();
