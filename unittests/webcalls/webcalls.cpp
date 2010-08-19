@@ -110,6 +110,7 @@ private:
     KDSoapMessage m_returnMessage;
 };
 
-//QTEST_MAIN(WebCalls)
-int main(){}
+QTEST_MAIN(WebCalls)
+
 #include "webcalls.moc"
+
