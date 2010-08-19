@@ -200,8 +200,8 @@ QBuffer* KDSoapClientInterface::Private::prepareRequestBuffer(const QString& met
     namespacePrefixes.writeNamespace(writer, KDSoapNamespaceManager::xmlSchemaInstance1999(), QLatin1String("xsi"));
 
     // Also insert known variants
-    namespacePrefixes.writeNamespace(writer, KDSoapNamespaceManager::xmlSchema2001(), QLatin1String("xsd"));
-    namespacePrefixes.writeNamespace(writer, KDSoapNamespaceManager::xmlSchemaInstance2001(), QLatin1String("xsi"));
+    namespacePrefixes.insert(KDSoapNamespaceManager::xmlSchema2001(), QString::fromLatin1("xsd"));
+    namespacePrefixes.insert(KDSoapNamespaceManager::xmlSchemaInstance2001(), QString::fromLatin1("xsi"));
 
     writer.writeStartElement(soapNS, QLatin1String("Envelope"));
     writer.writeAttribute(soapNS, QLatin1String("encodingStyle"), KDSoapNamespaceManager::soapEncoding());
