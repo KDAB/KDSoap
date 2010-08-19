@@ -32,7 +32,7 @@ static KODE::Code createRangeCheckCode( const XSD::SimpleType*, const QString&, 
 // Overall logic:
 // if ENUM -> define "Type" and "type" variable
 // if restricts a basic type or another simple type -> "value" variable
-// else if list -> ...
+// else if list -> define a QList
 
 void Converter::convertSimpleType( const XSD::SimpleType *type, const XSD::SimpleType::List& simpleTypeList )
 {
@@ -186,23 +186,23 @@ void Converter::convertSimpleType( const XSD::SimpleType *type, const XSD::Simpl
 
     newClass.addHeaderInclude( "QList" );
     const QName baseName = type->listTypeName();
-    const QString typeName = mTypeMap.localType( baseName );
+    const QString itemTypeName = mTypeMap.localType( baseName );
 
     // include header
     newClass.addIncludes( QStringList(), mTypeMap.forwardDeclarations( baseName ) );
     newClass.addHeaderIncludes( mTypeMap.headerIncludes( baseName ) );
 
     // member variables
-    KODE::MemberVariable variable( "entries", "QList<" + typeName + ">" );
+    KODE::MemberVariable variable( "entries", "QList<" + itemTypeName + ">" );
     newClass.addMemberVariable( variable );
 
     // setter method
     KODE::Function setter( "setEntries", "void" );
-    setter.addArgument( "QList<" + typeName + "> entries" );
+    setter.addArgument( "const QList<" + itemTypeName + ">& entries" );
     setter.setBody( variable.name() + " = entries;" );
 
     // getter method
-    KODE::Function getter( "entries", "QList<" + typeName + ">" );
+    KODE::Function getter( "entries", "QList<" + itemTypeName + ">" );
     getter.setBody( "return " + variable.name() + ';' );
     getter.setConst( true );
 
@@ -332,9 +332,33 @@ void Converter::createSimpleTypeSerializer( KODE::Class& newClass, const XSD::Si
 
         }
     } else {
-        // TODO lists
-        serializeFunc.addBodyLine( "return QVariant(); // TODO (createSimpleTypeSerializer for lists)" );
-        deserializeFunc.addBodyLine( "Q_UNUSED(value); // TODO (createSimpleTypeSerializer for lists)" );
+        const QName baseName = type->listTypeName();
+        const QString itemTypeName = mTypeMap.localType( baseName );
+        KODE::MemberVariable variable( "entries", "QList<" + itemTypeName + ">" ); // just for the name
+        {
+
+            KODE::Code code;
+            code += "QString str;";
+            code += "for ( int i = 0; i < " + variable.name() + ".count(); ++i ) {";
+            code.indent();
+            code += "if (!str.isEmpty())";
+            code.indent();
+            code += "str += QLatin1Char(' ');";
+            code.unindent();
+            if ( itemTypeName == "QString") // special but common case, no conversion needed
+                code += "str += " + variable.name() + ".at(i);";
+            else if ( mTypeMap.isBuiltinType( baseName ) ) // serialize from int, float, bool, etc.
+                code += "str += QVariant(" + variable.name() + ".at(i)).toString();";
+            else
+                code += "str += " + variable.name() + ".at(i).serialize().toString(); // itemTypeName=" + itemTypeName + " " + baseName.qname();
+            code.unindent();
+            code += "}";
+            code += "return str;";
+            serializeFunc.setBody(code);
+        }
+        {
+            deserializeFunc.addBodyLine( "Q_UNUSED(value); // TODO (createSimpleTypeSerializer for lists) " + typeName );
+        }
     }
 
     newClass.addFunction( serializeFunc );

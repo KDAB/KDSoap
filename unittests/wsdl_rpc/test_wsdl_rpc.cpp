@@ -52,6 +52,12 @@ private Q_SLOTS:
         KDAB__EmployeeType employeeType;
         employeeType.setType(KDAB__EmployeeTypeEnum::Developer);
         employeeType.setOtherRoles(QList<KDAB__EmployeeTypeEnum>() << KDAB__EmployeeTypeEnum::TeamLeader);
+        KDAB__EmployeeTypeEnumList otherRoles;
+        otherRoles.setEntries(QList<KDAB__EmployeeTypeEnum>() << KDAB__EmployeeTypeEnum::TeamLeader << KDAB__EmployeeTypeEnum::Developer);
+        employeeType.setOtherRolesAsList(otherRoles);
+        KDAB__LottoNumbers lottoNumbers;
+        lottoNumbers.setEntries(QList<int>() << 7 << 21 << 30 << 42);
+        employeeType.setLottoNumbers(lottoNumbers);
         employeeType.setTeam(QString::fromLatin1("Minitel"));
 
         KDAB__LoginElement login;
@@ -91,6 +97,8 @@ private Q_SLOTS:
             "<n1:team xsi:type=\"n1:TeamName\">Minitel</n1:team>"
             "<n1:type xsi:type=\"n1:EmployeeTypeEnum\">Developer</n1:type>"
             "<n1:otherRoles xsi:type=\"n1:EmployeeTypeEnum\">TeamLeader</n1:otherRoles>"
+            "<n1:otherRolesAsList xsi:type=\"n1:EmployeeTypeEnumList\">TeamLeader Developer</n1:otherRolesAsList>"
+            "<n1:lottoNumbers xsi:type=\"n1:LottoNumbers\">7 21 30 42</n1:lottoNumbers>"
             "</n1:employeeType>"
             "<n1:employeeName xsi:type=\"n1:EmployeeName\">David Faure</n1:employeeName>"
             "<n1:employeeCountry xsi:type=\"n1:LimitedString\">France</n1:employeeCountry>"

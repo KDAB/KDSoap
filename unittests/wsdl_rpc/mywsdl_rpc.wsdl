@@ -38,11 +38,19 @@
           <enumeration value="CEO"/>
         </restriction>
       </simpleType>
+      <simpleType name="EmployeeTypeEnumList">
+        <list itemType="kdab:EmployeeTypeEnum"/> <!-- space-separated list of enum values -->
+      </simpleType>
+      <simpleType name="LottoNumbers">
+        <list itemType="xsd:int"/> <!-- space-separated list of ints -->
+      </simpleType>
       <element name="EmployeeType">
         <complexType>
           <sequence>
             <element name="type" type="kdab:EmployeeTypeEnum"/>
             <element name="otherRoles" type="kdab:EmployeeTypeEnum" minOccurs="0" maxOccurs="unbounded"/>
+            <element name="otherRolesAsList" type="kdab:EmployeeTypeEnumList"/>
+            <element name="lottoNumbers" type="kdab:LottoNumbers"/>
             <sequence maxOccurs="3">
              <element name="team" type="kdab:TeamName"/>
             </sequence>
