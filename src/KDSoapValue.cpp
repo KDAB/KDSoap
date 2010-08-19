@@ -105,7 +105,6 @@ QString KDSoapValue::type() const
     return d->m_typeName;
 }
 
-
 KDSoapValue KDSoapValueList::child(const QString &name) const
 {
     const_iterator it = begin();

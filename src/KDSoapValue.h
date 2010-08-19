@@ -26,7 +26,14 @@ class KDSoapValueList;
 class KDSOAP_EXPORT KDSoapValue
 {
 public:
+    /**
+     * Constructs an empty KDSoapValue.
+     * This usually indicates an error, e.g. when KDSoapValueList::child() doesn't find the child.
+     */
     KDSoapValue();
+    /**
+     * Destructor.
+     */
     ~KDSoapValue();
 
     /**
@@ -47,7 +54,7 @@ public:
      * @param typeNameSpace namespace of the type of this value; this is only useful if using KDSoapMessage::EncodedUse
      * @param typeName localname of the type of this value; this is only useful if using KDSoapMessage::EncodedUse
      */
-    KDSoapValue(const QString& n, const KDSoapValueList& childValues, const QString& typeNameSpace = QString(), const QString& typeName = QString());
+    KDSoapValue(const QString& name, const KDSoapValueList& childValues, const QString& typeNameSpace = QString(), const QString& typeName = QString());
 
     /**
      * Copy constructor
@@ -58,16 +65,53 @@ public:
      */
     KDSoapValue& operator=(const KDSoapValue& other);
 
+    /**
+     * Returns the name of the argument, as passed to the constructor.
+     */
     QString name() const;
+
+    /**
+     * Returns the value of the argument.
+     */
     QVariant value() const;
+
+    /**
+     * Sets the value of the argument.
+     */
     void setValue(const QVariant& value);
 
+    /**
+     * Returns the list of child values (elements and attributes).
+     * The list is a reference, and can therefore be modified.
+     */
     KDSoapValueList& childValues() const;
 
+    /**
+     * Compares two KDSoapValues.
+     */
     bool operator==(const KDSoapValue& other) const;
 
+    /**
+     * Sets the type information for this KDSoapValue, so that it can be sent
+     * in the xsi:type attribute.
+     * This is only useful if using KDSoapMessage::EncodedUse.
+     *
+     * For instance setType("http://www.w3.org/2001/XMLSchema-instance", "string")
+     * will send xsi:type="xsd:string" in the message XML.
+     *
+     * @param typeNameSpace namespace of the type of this value
+     * @param typeName localname of the type of this value
+     */
     void setType(const QString& nameSpace, const QString& type);
+    /**
+     * Returns the namespace of the type.
+     * Example: "http://www.w3.org/2001/XMLSchema-instance".
+     */
     QString typeNs() const;
+    /**
+     * Returns the localname of the type.
+     * Example: "string".
+     */
     QString type() const;
 
 private:
@@ -95,9 +139,22 @@ public:
      */
     KDSoapValue child(const QString& name) const;
 
-    // TODO: use attributes() instead
+    /**
+     * Sets the type of the elements in this array.
+     *
+     * This is sent as the soap-enc:arrayType attribute in the XML.
+     *
+     * @param nameSpace namespace of the type of this value
+     * @param type localname of the type of this value
+     */
     void setArrayType(const QString& nameSpace, const QString& type);
+    /**
+     * Return the namespace of the type of elements in the array.
+     */
     QString arrayTypeNs() const;
+    /**
+     * Return the localname of the type of elements in the array.
+     */
     QString arrayType() const;
 
     /**
