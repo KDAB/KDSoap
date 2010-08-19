@@ -85,6 +85,7 @@ private:
     QStringList m_resultsReceived;
 };
 
-//QTEST_MAIN(WebCallsWSDL)
-int main(){}
+QTEST_MAIN(WebCallsWSDL)
+
 #include "webcalls_wsdl.moc"
+
