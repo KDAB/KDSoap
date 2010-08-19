@@ -60,6 +60,7 @@ Parser::Parser( const QString &nameSpace )
   : d(new Private)
 {
   d->mNameSpace = nameSpace;
+  clear();
 }
 
 Parser::Parser( const Parser &other )
@@ -93,6 +94,22 @@ void Parser::clear()
   d->mElements.clear();
   d->mAttributes.clear();
   d->mAttributeGroups.clear();
+
+  // From http://schemas.xmlsoap.org/wsdl/soap/encoding
+  static const char* soapEncNs = "http://schemas.xmlsoap.org/soap/encoding/";
+  {
+      ComplexType array(soapEncNs);
+      array.setIsArray(true);
+      array.setName("Array");
+      d->mComplexTypes.append(array);
+  }
+
+  // From http://schemas.xmlsoap.org/soap/encoding/, so that <attribute ref="soap-enc:arrayType" arrayType="kdab:EmployeeAchievement[]"/>
+  // can be resolved.
+  Attribute arrayTypeAttr(soapEncNs);
+  arrayTypeAttr.setName("arrayType");
+  arrayTypeAttr.setType(QName(XMLSchemaURI, "string"));
+  d->mAttributes.append(arrayTypeAttr);
 }
 
 bool Parser::parseFile( ParserContext *context, QFile &file )
@@ -635,6 +652,7 @@ void Parser::parseComplexContent( ParserContext *context, const QDomElement &ele
       complexType.setBaseTypeName( typeName );
 
       // if the base soapenc:Array, then read only the arrayType attribute and nothing else
+      // TODO check namespace is really soap-encoding
       if ( typeName.localName() == "Array" ) {
         complexType.setIsArray( true );
 

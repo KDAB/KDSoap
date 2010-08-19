@@ -148,29 +148,29 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
 
   // attributes
   XSD::Attribute::List attributes = type->attributes();
-  XSD::Attribute::List::ConstIterator attrIt;
-  for ( attrIt = attributes.constBegin(); attrIt != attributes.constEnd(); ++attrIt ) {
+  Q_FOREACH(const XSD::Attribute& attribute, attributes) {
     QString typeName, inputTypeName;
 
-    const bool isArray = !(*attrIt).arrayType().isEmpty();
+    const bool isArray = !attribute.arrayType().isEmpty();
     if ( isArray ) {
-      const QString arrayTypeName = mTypeMap.localType( (*attrIt).arrayType() );
-      //qDebug() << "array of" << (*attrIt).arrayType() << "->" << arrayTypeName;
+      const QString arrayTypeName = mTypeMap.localType( attribute.arrayType() );
+      //qDebug() << "array of" << attribute.arrayType() << "->" << arrayTypeName;
       typeName = "QList<" + arrayTypeName + ">";
       newClass.addInclude(QString(), arrayTypeName); // add forward declaration
       inputTypeName = "const " + typeName + '&';
     } else {
-      typeName = mTypeMap.localType( (*attrIt).type() );
-      inputTypeName = mTypeMap.localInputType( (*attrIt).type(), QName() );
+      typeName = mTypeMap.localType( attribute.type() );
+      inputTypeName = mTypeMap.localInputType( attribute.type(), QName() );
+      qDebug() << "Attribute" << attribute.name();
     }
 
     // member variables
-    KODE::MemberVariable variable( (*attrIt).name(), typeName );
+    KODE::MemberVariable variable( attribute.name(), typeName );
     newClass.addMemberVariable( variable );
     const QString variableName = "d_ptr->" + variable.name();
 
-    QString upperName = upperlize( (*attrIt).name() );
-    QString lowerName = lowerlize( (*attrIt).name() );
+    QString upperName = upperlize( attribute.name() );
+    QString lowerName = lowerlize( attribute.name() );
 
     // setter method
     KODE::Function setter( "set" + upperName, "void" );
@@ -186,8 +186,8 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
     newClass.addFunction( getter );
 
     // include header
-    newClass.addIncludes( QStringList(), mTypeMap.forwardDeclarations( (*attrIt).type() ) );
-    newClass.addHeaderIncludes( mTypeMap.headerIncludes( (*attrIt).type() ) );
+    newClass.addIncludes( QStringList(), mTypeMap.forwardDeclarations( attribute.type() ) );
+    newClass.addHeaderIncludes( mTypeMap.headerIncludes( attribute.type() ) );
     if ( isArray )
       newClass.addHeaderIncludes( QStringList() << "QList" );
   }
@@ -204,22 +204,37 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
 }
 
 // Helper method for the generation of the serialize() method
-static KODE::Code appendElementArg( const TypeMap& typeMap, const QName& type, const QString& name, const QString& localVariableName )
+static KODE::Code appendElementArg( const TypeMap& typeMap, const QName& type, const QString& name, const QString& localVariableName, const QByteArray& varName )
 {
     KODE::Code block;
     QString value;
     //qDebug() << "appendElementArg: type=" << type << "isBuiltin=" << typeMap.isBuiltinType(type);
     if ( typeMap.isTypeAny( type ) ) {
-        block += "args.append(" + localVariableName + ");";
+        block += varName + ".append(" + localVariableName + ");";
     } else {
         if ( typeMap.isBuiltinType( type ) ) {
             value = localVariableName;
         } else {
-            value = "QVariant::fromValue(" + localVariableName + ".serialize())";
+            value = localVariableName + ".serialize()";
         }
-        block += "args.append(KDSoapValue(QString::fromLatin1(\"" + name + "\"), " + value + "));";
+        // TODO a repository of ready namespace QStrings somewhere, to speed things up...
+        block += varName + ".append(KDSoapValue(QString::fromLatin1(\"" + name + "\"), " + value
+                 + ", QString::fromLatin1(\"" + type.nameSpace() + "\"), QString::fromLatin1(\"" + type.localName() + "\")));";
     }
     return block;
+}
+
+// Helper method for the generation of the deserialize() method
+static KODE::Code demarshalNameTest( TypeMap& typeMap, const QName& type, const QString& tagName, bool *first )
+{
+    KODE::Code demarshalCode;
+    if ( typeMap.isTypeAny( type ) ) {
+        demarshalCode += QString::fromLatin1(*first? "" : "else ") + '{';
+    } else {
+        demarshalCode += QString::fromLatin1(*first? "" : "else ") + "if (name == QLatin1String(\"" + tagName + "\")) {";
+    }
+    *first = false;
+    return demarshalCode;
 }
 
 // Helper method for the generation of the deserialize() method
@@ -231,6 +246,8 @@ static KODE::Code demarshalVar( TypeMap& typeMap, const QName& type, const QStri
         code += variableName + " = value;";
     } else if ( typeMap.isBuiltinType( type ) ) {
         code += variableName + " = value.value<" + typeName + ">();";
+    } else if ( typeMap.isComplexType( type ) ) {
+        code += variableName + ".deserialize(val.childValues());";
     } else {
         code += variableName + ".deserialize(value);";
     }
@@ -263,7 +280,7 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
     serializeFunc.setConst( true );
 
     KODE::Function deserializeFunc( "deserialize", "void" );
-    deserializeFunc.addArgument( "const QVariant& value" );
+    deserializeFunc.addArgument( "const KDSoapValueList& args" );
 
     KODE::Code marshalCode, demarshalCode;
 
@@ -272,6 +289,7 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
     }
 
     marshalCode += "KDSoapValueList args;";
+    /* This is done by the caller now
     if (!type->name().isEmpty()) {
         if (type->isArray()) {
             static const char* soapEncNs = "http://schemas.xmlsoap.org/soap/encoding/";
@@ -280,13 +298,14 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
             marshalCode += QByteArray("args.setType(QString::fromLatin1(\"") + type->nameSpace() + "\"), QString::fromLatin1(\"" + type->name() + "\"));";
         }
     }
+    */
 
     // elements
     const XSD::Element::List elements = type->elements();
     const XSD::Attribute::List attributes = type->attributes();
 
-    if ( !elements.isEmpty() || !attributes.isEmpty() ) {
-        demarshalCode += "KDSoapValueList args = value.value<KDSoapValueList>();";
+    if ( !elements.isEmpty() ) {
+        //demarshalCode += "KDSoapValueList args = value.value<KDSoapValueList>();";
         demarshalCode += "for (int argNr = 0; argNr < args.count(); ++argNr) {";
         demarshalCode.indent();
         demarshalCode += "const KDSoapValue& val = args.at(argNr);";
@@ -294,12 +313,11 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
         demarshalCode += "const QVariant value = val.value();";
     }
 
-    bool firstElement = true;
+    bool first = true;
     Q_FOREACH( const XSD::Element& elem, elements ) {
 
         const QString elemName = elem.name();
         const QString typeName = mTypeMap.localType( elem.type() );
-
         Q_ASSERT(!typeName.isEmpty());
 
         if ( typeName == "void" )
@@ -308,26 +326,21 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
         KODE::MemberVariable variable( elemName, typeName ); // was already added; this is just for the naming
         const QString variableName = "d_ptr->" + variable.name();
 
-        if ( mTypeMap.isTypeAny(elem.type()) ) {
-            demarshalCode += QString::fromLatin1(firstElement ? "" : "else ") + '{';
-        } else {
-            demarshalCode += QString::fromLatin1(firstElement ? "" : "else ") + "if (name == QLatin1String(\"" + elemName + "\")) {";
-        }
+        demarshalCode.addBlock( demarshalNameTest( mTypeMap, elem.type(), elemName, &first ) );
         demarshalCode.indent();
-        firstElement = false;
 
         if ( elem.maxOccurs() > 1 ) {
             //const QString typePrefix = mNSManager.prefix( elem.type().nameSpace() );
 
             marshalCode += "for (int i = 0; i < " + variableName + ".count(); ++i) {";
             marshalCode.indent();
-            marshalCode.addBlock( appendElementArg( mTypeMap, elem.type(), elem.name(), variableName + ".at(i)" ) );
+            marshalCode.addBlock( appendElementArg( mTypeMap, elem.type(), elem.name(), variableName + ".at(i)", "args" ) );
             marshalCode.unindent();
             marshalCode += '}';
 
             demarshalCode.addBlock( demarshalArrayVar( mTypeMap, elem.type(), variableName, typeName ) );
         } else {
-            marshalCode.addBlock( appendElementArg( mTypeMap, elem.type(), elem.name(), variableName ) );
+            marshalCode.addBlock( appendElementArg( mTypeMap, elem.type(), elem.name(), variableName, "args" ) );
             demarshalCode.addBlock( demarshalVar( mTypeMap, elem.type(), variableName, typeName ) );
         }
 
@@ -335,30 +348,60 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
         demarshalCode += "}";
     } // end: for each element
 
+    if ( !elements.isEmpty() ) {
+        demarshalCode.unindent();
+        demarshalCode += "}";
+    }
+
     if ( !attributes.isEmpty() ) {
+
+        marshalCode += "KDSoapValueList attribs;";
+
+        demarshalCode += "const QList<KDSoapValue> attribs = args.attributes();";
+        demarshalCode += "for (int attrNr = 0; attrNr < attribs.count(); ++attrNr) {";
+        demarshalCode.indent();
+        demarshalCode += "const KDSoapValue& val = attribs.at(attrNr);";
+        demarshalCode += "const QString name = val.name();";
+        demarshalCode += "const QVariant value = val.value();";
+
+        bool first = true;
         Q_FOREACH( const XSD::Attribute& attribute, attributes ) {
+            const QString attrName = attribute.name();
+            KODE::MemberVariable variable( attrName, "doesnotmatter" ); // was already added; this is just for the naming
+            const QString variableName = "d_ptr->" + variable.name();
+
+            demarshalCode.addBlock( demarshalNameTest( mTypeMap, attribute.type(), attrName, &first ) );
+            demarshalCode.indent();
+
             const bool isArray = !attribute.arrayType().isEmpty();
             if (isArray) {
                 // qDebug() << "attribute:" << attribute.name() << attribute.type() << attribute.arrayType();
 
-                const QString attrName = attribute.name();
                 const QString typeName = mTypeMap.localType( attribute.arrayType() );
-                KODE::MemberVariable variable( attrName, typeName ); // was already added; this is just for the naming
-                const QString variableName = "d_ptr->" + variable.name();
 
                 marshalCode += "args.setArrayType(QString::fromLatin1(\"" + attribute.arrayType().nameSpace() + "\"), QString::fromLatin1(\"" + attribute.arrayType().localName() + "\"));";
                 marshalCode += "for (int i = 0; i < " + variableName + ".count(); ++i) {";
                 marshalCode.indent();
-                marshalCode.addBlock( appendElementArg( mTypeMap, attribute.arrayType(), "item", variableName + ".at(i)" ) );
+                marshalCode.addBlock( appendElementArg( mTypeMap, attribute.arrayType(), "item", variableName + ".at(i)", "args" ) );
                 marshalCode.unindent();
                 marshalCode += '}';
 
                 demarshalCode.addBlock( demarshalArrayVar( mTypeMap, attribute.arrayType(), variableName, typeName ) );
             } else {
-                qWarning("TODO serialize/deserialize non-array attributes");
-                marshalCode += "// TODO serialize non-array attribute " + attribute.name();
+                marshalCode.addBlock( appendElementArg( mTypeMap, attribute.type(), attribute.name(), variableName, "attribs") );
+
+                const QString typeName = mTypeMap.localType( attribute.type() );
+                Q_ASSERT(!typeName.isEmpty());
+                demarshalCode.addBlock( demarshalVar( mTypeMap, attribute.type(), variableName, typeName ) );
             }
+
+            demarshalCode.unindent();
+            demarshalCode += "}";
         }
+        marshalCode += "args.attributes() += attribs;";
+
+        demarshalCode.unindent();
+        demarshalCode += "}";
     }
 
     marshalCode += "return QVariant::fromValue(args);";
@@ -366,219 +409,6 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
     serializeFunc.setBody( marshalCode );
     newClass.addFunction( serializeFunc );
 
-    if ( !elements.isEmpty() || !attributes.isEmpty() ) {
-        demarshalCode.unindent();
-        demarshalCode += "}";
-    }
-
     deserializeFunc.setBody( demarshalCode );
     newClass.addFunction( deserializeFunc );
-
-#ifdef KDAB_DELETED
-  const QString typeName = mTypeMap.localType( type->qualifiedName() );
-  const QString baseType = mTypeMap.localType( type->baseTypeName() );
-
-  KODE::Function marshal( "marshal", "void" );
-  marshal.setStatic( true );
-  marshal.addArgument( "QDomDocument &doc" );
-  marshal.addArgument( "QDomElement &parent" );
-  marshal.addArgument( "const QString &name" );
-  marshal.addArgument( "const " + typeName + " *value" );
-  marshal.addArgument( "bool noNamespace" );
-
-  KODE::Function demarshal( "demarshal", "void" );
-  demarshal.setStatic( true );
-  demarshal.addArgument( "const QDomElement &parent" );
-  demarshal.addArgument( typeName + " *value" );
-
-  KODE::Code marshalCode, demarshalCode, demarshalStartCode, demarshalFinalCode;
-
-  marshalCode += "if ( !value )";
-  marshalCode.indent();
-  marshalCode += "return;";
-  marshalCode.unindent();
-  marshalCode.newLine();
-
-  demarshalStartCode += "if ( !value )";
-  demarshalStartCode.indent();
-  demarshalStartCode += "return;";
-  demarshalStartCode.unindent();
-  demarshalStartCode.newLine();
-
-  // include header
-  mSerializer.addIncludes( QStringList(), mTypeMap.forwardDeclarations( type->qualifiedName() ) );
-
-  marshalCode += "QDomElement parentElement;";
-  marshalCode += "if ( !name.isEmpty() ) {";
-  marshalCode.indent();
-
-  const QString typePrefix = mNSManager.prefix( type->qualifiedName().nameSpace() );
-  marshalCode += "QDomElement root = doc.createElement( noNamespace ? name : \"" + typePrefix + ":\" + name );";
-  marshalCode += "root.setAttribute( \"" + mNSManager.schemaInstancePrefix() + ":type\", \"" +
-                 typePrefix + ":" + typeName + "\" );";
-  marshalCode += "parent.appendChild( root );";
-  marshalCode += "parentElement = root;";
-  marshalCode.unindent();
-  marshalCode += "} else {";
-  marshalCode.indent();
-  marshalCode += "parentElement = parent;";
-  marshalCode.unindent();
-  marshalCode += '}';
-  marshalCode.newLine();
-
-  // handle marshalling of base types
-  if ( type->baseTypeName() != XmlAnyType && !type->baseTypeName().isEmpty() && !type->isArray() ) {
-    marshalCode += "// marshall base type";
-    marshalCode += "Serializer::marshal( doc, parentElement, QString(), (" + baseType + "*)value, noNamespace );";
-  }
-
-  // handle demarshalling of base types
-  if ( type->baseTypeName() != XmlAnyType && !type->baseTypeName().isEmpty() && !type->isArray() ) {
-    demarshalCode += "// demarshall base type";
-    demarshalCode += "Serializer::demarshal( parent, (" + baseType + "*)value );";
-    demarshalCode.newLine();
-  }
-
-  demarshalCode += "QDomNode node = parent.firstChild();";
-  demarshalCode += "while ( !node.isNull() ) {";
-  demarshalCode.indent();
-  demarshalCode += "QDomElement element = node.toElement();";
-  demarshalCode += "if ( !element.isNull() ) {";
-  demarshalCode.indent();
-
-  // elements
-  XSD::Element::List elements = type->elements();
-  XSD::Element::List::ConstIterator elemIt;
-  for ( elemIt = elements.constBegin(); elemIt != elements.constEnd(); ++elemIt ) {
-    const QString typeName = mTypeMap.localType( (*elemIt).type() );
-
-    QString upperName = upperlize( (*elemIt).name() );
-    QString lowerName = lowerlize( (*elemIt).name() );
-
-    KODE::Function setter( "set" + upperName, "void" );
-    KODE::Function getter( mNameMapper.escape( lowerName ), typeName + '*' );
-
-    if ( (*elemIt).maxOccurs() > 1 ) {
-      const QString typePrefix = mNSManager.prefix( (*elemIt).type().nameSpace() );
-
-      marshalCode += '{';
-      marshalCode.indent();
-      marshalCode += "const QList<" + typeName + "*> *list = value->" + mNameMapper.escape( lowerName ) + "();";
-      marshalCode.newLine();
-      marshalCode += "QList<" + typeName + "*>::ConstIterator it;";
-      marshalCode += "for ( it = list->begin(); it != list->end(); ++it ) {";
-      marshalCode.indent();
-      marshalCode += "Serializer::marshal( doc, parentElement, \"" + typePrefix + ":" + (*elemIt).name() + "\", *it, false );";
-      marshalCode.unindent();
-      marshalCode += '}';
-      marshalCode.unindent();
-      marshalCode += '}';
-
-      const QString listName = mNameMapper.escape( lowerName ) + "List";
-
-      demarshalStartCode += "QList<" + typeName + "*> *" + listName + " = new QList<" + typeName + "*>();";
-
-      demarshalCode += "if ( element.tagName() == \"" + (*elemIt).name() + "\" ) {";
-      demarshalCode.indent();
-      demarshalCode += typeName + " *item = new " + typeName + "();";
-      demarshalCode += "Serializer::demarshal( element, item );";
-      demarshalCode += listName + "->append( item );";
-      demarshalCode.unindent();
-      demarshalCode += '}';
-
-      demarshalFinalCode += "value->" + setter.name() + "( " + listName + " );";
-    } else {
-      marshalCode += "Serializer::marshal( doc, parentElement, \"" + (*elemIt).name() + "\", value->" + getter.name() + "(), false );";
-
-      demarshalCode += "if ( element.tagName() == \"" + (*elemIt).name() + "\" ) {";
-      demarshalCode.indent();
-      demarshalCode += typeName + " *item = new " + typeName + "();";
-      demarshalCode += "Serializer::demarshal( element, item );";
-      demarshalCode += "value->" + setter.name() + "( item );";
-      demarshalCode.unindent();
-      demarshalCode += '}';
-    }
-  }
-
-  // attributes
-  XSD::Attribute::List attributes = type->attributes();
-  XSD::Attribute::List::ConstIterator attrIt;
-  for ( attrIt = attributes.constBegin(); attrIt != attributes.constEnd(); ++attrIt ) {
-    QString upperName = upperlize( (*attrIt).name() );
-    QString lowerName = lowerlize( (*attrIt).name() );
-
-    KODE::Function setter( "set" + upperName, "void" );
-
-    bool isArray = !(*attrIt).arrayType().isEmpty();
-    if ( isArray ) {
-      const QString typeName = mTypeMap.localType( (*attrIt).arrayType() );
-      const QString typePrefix = mNSManager.prefix( (*attrIt).arrayType().nameSpace() );
-
-      marshalCode += '{';
-      marshalCode.indent();
-      marshalCode += "const QList<" + typeName + "*> *list = value->" + mNameMapper.escape( lowerName ) + "();";
-      marshalCode.newLine();
-
-      marshalCode += "QDomElement element = doc.createElement( noNamespace ? name : \"" + typePrefix + ":\" + name );";
-      marshalCode += "element.setAttribute( \"" + mNSManager.schemaInstancePrefix() + ":type\", \"" +
-                      mNSManager.soapEncPrefix() + ":Array\" );";
-      marshalCode += "element.setAttribute( \"" + mNSManager.soapEncPrefix() +
-                     ":arrayType\", \"" + typePrefix + ":" + typeName + "[\" + QString::number( list->count() ) + \"]\" );";
-      marshalCode += "parentElement.appendChild( element );";
-      marshalCode.newLine();
-      marshalCode += "QList<" + typeName + "*>::ConstIterator it;";
-      marshalCode += "for ( it = list->begin(); it != list->end(); ++it ) {";
-      marshalCode.indent();
-      marshalCode += "Serializer::marshal( doc, element, \"item\", *it, false );";
-      marshalCode.unindent();
-      marshalCode += '}';
-      marshalCode.unindent();
-      marshalCode += '}';
-
-      const QString listName = mNameMapper.escape( lowerName ) + "List";
-      // TODO: prepend the code somehow
-
-      demarshalStartCode += "QList<" + typeName + "*> *" + listName + " = new QList<" + typeName + "*>();";
-
-      demarshalCode.indent();
-      demarshalCode += typeName + " *item = new " + typeName + "();";
-      demarshalCode += "Serializer::demarshal( element, item );";
-      demarshalCode += listName + "->append( item );";
-      demarshalCode.unindent();
-
-      demarshalFinalCode += "value->" + setter.name() + "( " + listName + " );";
-    } else {
-      const QString typeName = mTypeMap.localType( (*attrIt).type() );
-
-      marshalCode += "parentElement.setAttribute( \"" + (*attrIt).name() + "\", "
-                     "Serializer::marshalValue( value->" + mNameMapper.escape( lowerName ) + "() ) );";
-      marshalCode.newLine();
-
-      demarshalCode += "if ( element.hasAttribute( \"" + (*attrIt).name() + "\" ) ) {";
-      demarshalCode.indent();
-      demarshalCode += typeName + " *item = new " + typeName + "();";
-      demarshalCode += "Serializer::demarshalValue( element.attribute( \"" + (*attrIt).name() + "\" ), item );";
-      demarshalCode += "value->" + setter.name() + "( item );";
-      demarshalCode.unindent();
-      demarshalCode += '}';
-    }
-  }
-
-  demarshalCode.unindent();
-  demarshalCode += '}';
-  demarshalCode += "node = node.nextSibling();";
-  demarshalCode.unindent();
-  demarshalCode += '}';
-  demarshalCode.newLine();
-
-  demarshalCode += demarshalFinalCode;
-  demarshalStartCode.newLine();
-  demarshalStartCode += demarshalCode;
-
-  marshal.setBody( marshalCode );
-  mSerializer.addFunction( marshal );
-
-  demarshal.setBody( demarshalStartCode );
-  mSerializer.addFunction( demarshal );
-#endif
 }

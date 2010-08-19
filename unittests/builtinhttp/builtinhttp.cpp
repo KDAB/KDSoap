@@ -3,13 +3,10 @@
 #include "KDSoapValue.h"
 #include "KDSoapPendingCallWatcher.h"
 #include "KDSoapAuthentication.h"
-#include "wsdl_sugarcrm.h"
 #include "httpserver_p.h"
 #include <QtTest/QtTest>
 #include <QEventLoop>
 #include <QDebug>
-
-Q_DECLARE_METATYPE(TNS__Set_entry_result)
 
 using namespace KDSoapUnitTestHelpers;
 
@@ -41,7 +38,7 @@ private Q_SLOTS:
 #if QT_VERSION >= 0x040600
         QVERIFY(call.isFinished());
 #endif
-        QCOMPARE(call.returnMessage().arguments().value(QLatin1String("employeeCountry")).toString(), QString::fromLatin1("France"));
+        QCOMPARE(call.returnMessage().arguments().child(QLatin1String("employeeCountry")).value().toString(), QString::fromLatin1("France"));
     }
 
     void testFault()
@@ -72,7 +69,7 @@ private Q_SLOTS:
 #if QT_VERSION >= 0x040600
         QVERIFY(call.isFinished());
 #endif
-        QCOMPARE(call.returnMessage().arguments().value(QLatin1String("employeeCountry")).toString(), QString::fromLatin1("France"));
+        QCOMPARE(call.returnMessage().arguments().child(QLatin1String("employeeCountry")).value().toString(), QString::fromLatin1("France"));
     }
 
     // Test for refused auth, with async call
@@ -124,7 +121,7 @@ private Q_SLOTS:
             // Check what we sent
             QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
             QVERIFY(!ret.isFault());
-            QCOMPARE(ret.arguments().value(QLatin1String("employeeCountry")).toString(), QString::fromLatin1("France"));
+            QCOMPARE(ret.arguments().child(QLatin1String("employeeCountry")).value().toString(), QString::fromLatin1("France"));
         }        
         client.setSoapVersion(KDSoapClientInterface::SOAP1_2);
         {
@@ -132,7 +129,7 @@ private Q_SLOTS:
             // Check what we sent
             QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
             QVERIFY(!ret.isFault());
-            QCOMPARE(ret.arguments().value(QLatin1String("employeeCountry")).toString(), QString::fromLatin1("France"));
+            QCOMPARE(ret.arguments().child(QLatin1String("employeeCountry")).value().toString(), QString::fromLatin1("France"));
         }
     }
     // Using direct call(), check the xml we send, the response parsing.
@@ -154,7 +151,7 @@ private Q_SLOTS:
             // Check what we sent
             QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
             QVERIFY(!ret.isFault());
-            QCOMPARE(ret.arguments().value(QLatin1String("employeeCountry")).toString(), QString::fromLatin1("France"));
+            QCOMPARE(ret.arguments().child(QLatin1String("employeeCountry")).value().toString(), QString::fromLatin1("France"));
         }
 
         // Now make the call again, but async, and don't wait for response.
@@ -177,17 +174,38 @@ private Q_SLOTS:
         QVERIFY(server.receivedData().isEmpty());
     }
 
-    void testComplexRequest() // this tests the serialization of KDSoapValue[List] in KDSoapClientInterface
+    void testRequestXml() // this tests the serialization of KDSoapValue[List] in KDSoapClientInterface
     {
-        HttpServerThread server(complexTypeResponse(), HttpServerThread::Public);
+        HttpServerThread server(emptyResponse(), HttpServerThread::Public);
         KDSoapClientInterface client(server.endPoint(), countryMessageNamespace());
         KDSoapMessage message;
         message.setUse(KDSoapMessage::EncodedUse); // write out types explicitely
+
+        // Test simpletype element
         message.addArgument(QString::fromLatin1("testString"), QString::fromUtf8("Hello Klarälvdalens"));
-        KDSoapValueList array;
-        array.setType(QString::fromLatin1("http://schemas.xmlsoap.org/soap/encoding/"), QString::fromLatin1("Array"));
-        array.setArrayType(QString::fromLatin1("http://www.w3.org/2001/XMLSchema"), QString::fromLatin1("string"));
-        message.addArgument(QString::fromLatin1("testArray"), QVariant::fromValue(array));
+
+        // Test simpletype extended to have an attribute
+        KDSoapValue val(QString::fromLatin1("val"), 5, countryMessageNamespace(), QString::fromLatin1("MyVal"));
+        val.childValues().attributes().append(KDSoapValue(QString::fromLatin1("attr"), QString::fromLatin1("attrValue")));
+        message.arguments().append(val);
+
+        // Test complextype with child elements and attributes
+        KDSoapValueList valueList;
+        KDSoapValue orderperson(QString::fromLatin1("orderperson"), QString::fromLatin1("someone"), countryMessageNamespace(), QString::fromLatin1("Person"));
+        valueList.append(orderperson);
+        valueList.attributes().append(KDSoapValue(QString::fromLatin1("attr"), QString::fromLatin1("attrValue")));
+        KDSoapValue order(QString::fromLatin1("order"), valueList, countryMessageNamespace(), QString::fromLatin1("MyOrder"));
+        message.arguments().append(order);
+
+        const QString XMLSchemaNS = QString::fromLatin1("http://www.w3.org/2001/XMLSchema"); // TODO namespace repository
+
+        // Test array
+        KDSoapValueList arrayContents;
+        arrayContents.setArrayType(XMLSchemaNS, QString::fromLatin1("string"));
+        arrayContents.append(KDSoapValue(QString::fromLatin1("item"), QString::fromLatin1("kdab"), XMLSchemaNS, QString::fromLatin1("string")));
+        arrayContents.append(KDSoapValue(QString::fromLatin1("item"), QString::fromLatin1("rocks"), XMLSchemaNS, QString::fromLatin1("string")));
+        KDSoapValue array(QString::fromLatin1("testArray"), arrayContents, QString::fromLatin1("http://schemas.xmlsoap.org/soap/encoding/"), QString::fromLatin1("Array"));
+        message.arguments().append(array);
 
         // Add a header
         KDSoapMessage header1;
@@ -208,7 +226,12 @@ private Q_SLOTS:
             QByteArray("<soap:Body>"
             "<n1:test>"
             "<n1:testString xsi:type=\"xsd:string\">Hello Klarälvdalens</n1:testString>"
-            "<n1:testArray xsi:type=\"soap-enc:Array\" soap-enc:arrayType=\"xsd:string[0]\"/>"
+            "<n1:val xsi:type=\"n1:MyVal\" n1:attr=\"attrValue\">5</n1:val>"
+            "<n1:order xsi:type=\"n1:MyOrder\" n1:attr=\"attrValue\"><n1:orderperson xsi:type=\"n1:Person\">someone</n1:orderperson></n1:order>"
+            "<n1:testArray xsi:type=\"soap-enc:Array\" soap-enc:arrayType=\"xsd:string[2]\">"
+             "<n1:item xsi:type=\"xsd:string\">kdab</n1:item>"
+             "<n1:item xsi:type=\"xsd:string\">rocks</n1:item>"
+            "</n1:testArray>"
             "</n1:test>"
             "</soap:Body>") + xmlEnvEnd
             + '\n'; // added by QXmlStreamWriter::writeEndDocument
@@ -239,14 +262,14 @@ private Q_SLOTS:
         const KDSoapMessage reply = client.call(QLatin1String("getEmployeeCountry"), countryMessage());
         QVERIFY(!reply.isFault());
         QCOMPARE(reply.arguments().count(), 1);
-        const KDSoapValueList lst = qVariantValue<KDSoapValueList>(reply.arguments().first().value());
+        const KDSoapValueList lst = reply.arguments().first().childValues();
         QCOMPARE(lst.count(), 3);
         const KDSoapValue id = lst.first();
         QCOMPARE(id.name(), QString::fromLatin1("id"));
         QCOMPARE(id.value().toString(), QString::fromLatin1("12345"));
         const KDSoapValue error = lst.at(1);
         QCOMPARE(error.name(), QString::fromLatin1("error"));
-        const KDSoapValueList errorList = qVariantValue<KDSoapValueList>(error.value());
+        const KDSoapValueList errorList = error.childValues();
         QCOMPARE(errorList.count(), 3);
         const KDSoapValue number = errorList.at(0);
         QCOMPARE(number.name(), QString::fromLatin1("number"));
@@ -257,59 +280,9 @@ private Q_SLOTS:
         const KDSoapValue description = errorList.at(2);
         QCOMPARE(description.name(), QString::fromLatin1("description"));
         QCOMPARE(description.value().toString(), QString::fromLatin1("No Error"));
-        //qDebug() << lst;
-    }
-
-    void testParseComplexReplyWsdl()
-    {
-        HttpServerThread server(complexTypeResponse(), HttpServerThread::Public);
-        Sugarsoap sugar(this);
-        sugar.setEndPoint(server.endPoint());
-        TNS__User_auth user_auth;
-        user_auth.setUser_name(QString::fromUtf8("user å"));
-        user_auth.setPassword(QString::fromLatin1("pass"));
-        TNS__Set_entry_result result = sugar.login(user_auth, QString::fromLatin1("application"));
-        QCOMPARE(result.id(), QString::fromLatin1("12345"));
-        QCOMPARE(result.error().number(), QString::fromLatin1("0"));
-        QCOMPARE(result.error().name(), QString::fromLatin1("No Error"));
-        QCOMPARE(result.error().description(), QString::fromLatin1("No Error"));
-
-        // Check what we sent
-        QByteArray expectedRequestXml =
-            QByteArray(xmlEnvBegin) +
-            "><soap:Body>"
-            "<n1:login xmlns:n1=\"http://www.sugarcrm.com/sugarcrm\">"
-              "<n1:user_auth xsi:type=\"n1:user_auth\">"
-                "<n1:user_name xsi:type=\"xsd:string\">user å</n1:user_name>"
-                "<n1:password xsi:type=\"xsd:string\">pass</n1:password>"
-                "<n1:version xsi:type=\"xsd:string\"></n1:version>"
-              "</n1:user_auth>"
-              "<n1:application_name xsi:type=\"xsd:string\">application</n1:application_name>"
-            "</n1:login>"
-            "</soap:Body>" + xmlEnvEnd
-            + '\n'; // added by QXmlStreamWriter::writeEndDocument
-        QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
-    }
-
-    void testParseComplexReplyWsdlAsync()
-    {
-        HttpServerThread server(complexTypeResponse(), HttpServerThread::Public);
-        Sugarsoap sugar(this);
-        sugar.setEndPoint(server.endPoint());
-        TNS__User_auth user_auth;
-        user_auth.setUser_name(QString::fromLatin1("user"));
-        user_auth.setPassword(QString::fromLatin1("pass"));
-        qRegisterMetaType<TNS__Set_entry_result>("TNS__Set_entry_result");
-        QSignalSpy loginDoneSpy(&sugar, SIGNAL(loginDone(TNS__Set_entry_result)));
-        sugar.asyncLogin(user_auth, QString::fromLatin1("application"));
-        QEventLoop loop;
-        connect(&sugar, SIGNAL(loginDone(TNS__Set_entry_result)), &loop, SLOT(quit()));
-        loop.exec();
-        const TNS__Set_entry_result result = loginDoneSpy[0][0].value<TNS__Set_entry_result>();
-        QCOMPARE(result.id(), QString::fromLatin1("12345"));
-        QCOMPARE(result.error().number(), QString::fromLatin1("0"));
-        QCOMPARE(result.error().name(), QString::fromLatin1("No Error"));
-        QCOMPARE(result.error().description(), QString::fromLatin1("No Error"));
+        const KDSoapValue array = lst.at(2);
+        QCOMPARE(array.name(), QString::fromLatin1("testArray"));
+        //qDebug() << array;
     }
 
 private:
@@ -322,7 +295,7 @@ private:
         return QByteArray(xmlEnvBegin) +
                 "><soap:Body>"
                 "<n1:getEmployeeCountry xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
-                "<n1:employeeName xsi:type=\"xsd:string\">David Ä Faure</n1:employeeName>"
+                "<n1:employeeName>David Ä Faure</n1:employeeName>"
                 "</n1:getEmployeeCountry>"
                 "</soap:Body>" + xmlEnvEnd;
     }
@@ -344,9 +317,14 @@ private:
 
     }
 
+    static QByteArray emptyResponse() {
+        return QByteArray(xmlEnvBegin) + "><soap:Body/>";
+    }
+
     static QByteArray complexTypeResponse() {
         return QByteArray(xmlEnvBegin) + "><soap:Body xmlns:tns=\"http://www.sugarcrm.com/sugarcrm\">"
-                "<ns1:loginResponse xmlns:ns1=\"http://www.sugarcrm.com/sugarcrm\">"
+                "<ns1:loginResponse xmlns:ns1=\"http://www.sugarcrm.com/sugarcrm\""
+                " soap:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\">" // useless, but seen in the SoapResponder
                 "  <return xsi:type=\"tns:set_entry_result\">"
                 "    <id xsi:type=\"xsd:string\">12345</id>"
                 "    <error xsi:type=\"tns:error_value\">"
@@ -354,7 +332,7 @@ private:
                 "       <name xsi:type=\"xsd:string\">No Error</name>"
                 "       <description xsi:type=\"xsd:string\">No Error</description>"
                 "    </error>"
-                "    <testArray xsi:type=\"soap-enc:Array\" soap-enc:arrayType=\"xsi:string\">"  // not in a real Sugar response; just testing
+                "    <testArray ns1:attr=\"aValue\" xsi:type=\"soap-enc:Array\" soap-enc:arrayType=\"xsi:string\">"
                 "    </testArray>"
                 "  </return>"
                 "</ns1:loginResponse>"

@@ -43,7 +43,8 @@ public:
     };
 
     /**
-     * Define the way the message should be serialized
+     * Define the way the message should be serialized.
+     * The default value is LiteralUse.
      */
     void setUse(Use use);
     /**
@@ -54,9 +55,9 @@ public:
     /**
      * Adds an argument to the message.
      *
-     * Equivalent to arguments().append(KDSoapValue(argumentName, argumentValue));
+     * Equivalent to arguments().append(KDSoapValue(argumentName, argumentValue [, typeNameSpace, typeName] ));
      */
-    void addArgument(const QString& argumentName, const QVariant& argumentValue);
+    void addArgument(const QString& argumentName, const QVariant& argumentValue, const QString& typeNameSpace = QString(), const QString& typeName = QString());
 
     /**
      * Returns the arguments for the message.

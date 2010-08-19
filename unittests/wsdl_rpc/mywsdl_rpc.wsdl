@@ -3,7 +3,7 @@
   xmlns:kdab='http://www.kdab.com/xml/MyWsdl/' 
 	 xmlns:xsd='http://www.w3.org/2001/XMLSchema' 
 	 xmlns:soap='http://schemas.xmlsoap.org/wsdl/soap/' 
-	 xmlns:soap-enc='http://schemas.xmlsoap.org/wsdl/soap/encoding' 
+	 xmlns:soap-enc='http://schemas.xmlsoap.org/soap/encoding/' 
 	 xmlns='http://schemas.xmlsoap.org/wsdl/'>
   <types>
     <!-- Note: kdsoap doesn't support the case where the namespace for elements is different from the namespace for definitions, yet. -->
@@ -57,8 +57,8 @@
       </complexType>
       <complexType name="EmployeeAchievements">
         <complexContent>
-          <restriction base="soapenc:Array">
-            <attribute ref="soapenc:arrayType" arrayType="kdab:EmployeeAchievement[]"/>
+          <restriction base="soap-enc:Array">
+            <attribute ref="soap-enc:arrayType" arrayType="kdab:EmployeeAchievement[]"/>
           </restriction>
         </complexContent>
       </complexType>
@@ -117,8 +117,8 @@
     <operation name='addEmployee' >
       <soap:operation soapAction='http://www.kdab.com/AddEmployee' />
       <input>
-        <soap:header use="literal" message="kdab:Header" part="LoginHeader"/>
-        <soap:header use="literal" message="kdab:Header" part="SessionHeader"/>
+        <soap:header use="encoded" message="kdab:Header" part="LoginHeader"/>
+        <soap:header use="encoded" message="kdab:Header" part="SessionHeader"/>
         <soap:body use='encoded'/>
       </input>
       <output>

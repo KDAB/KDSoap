@@ -133,6 +133,7 @@ protected:
 
         // Wait for first connection (we'll wait for further ones inside the loop)
         QTcpSocket *clientSocket = server.waitForNextConnectionSocket();
+        Q_ASSERT(clientSocket);
 
         Q_FOREVER {
             // get the "request" packet

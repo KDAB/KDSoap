@@ -11,6 +11,7 @@
 class KDSoapClientInterface;
 class KDSoapMessage;
 class KDSoapPendingCallWatcher;
+class KDSoapValueList;
 
 class TNS__GetMothersDayResponse
 {
@@ -18,7 +19,7 @@ public:
     void setGetMothersDayResult( const QDateTime& getMothersDayResult );
     QDateTime getMothersDayResult() const;
     QVariant serialize() const;
-    void deserialize( const QVariant& value );
+    void deserialize( const KDSoapValueList& args );
     TNS__GetMothersDayResponse();
     ~TNS__GetMothersDayResponse();
 
@@ -37,7 +38,7 @@ public:
     void setYear( int year );
     int year() const;
     QVariant serialize() const;
-    void deserialize( const QVariant& value );
+    void deserialize( const KDSoapValueList& args );
     TNS__GetMothersDay();
     ~TNS__GetMothersDay();
 
@@ -56,7 +57,7 @@ public:
     void setGetMemorialDayResult( const QDateTime& getMemorialDayResult );
     QDateTime getMemorialDayResult() const;
     QVariant serialize() const;
-    void deserialize( const QVariant& value );
+    void deserialize( const KDSoapValueList& args );
     TNS__GetMemorialDayResponse();
     ~TNS__GetMemorialDayResponse();
 
@@ -75,7 +76,7 @@ public:
     void setYear( int year );
     int year() const;
     QVariant serialize() const;
-    void deserialize( const QVariant& value );
+    void deserialize( const KDSoapValueList& args );
     TNS__GetFlagDay();
     ~TNS__GetFlagDay();
 
@@ -94,7 +95,7 @@ public:
     void setGetColumbusDayResult( const QDateTime& getColumbusDayResult );
     QDateTime getColumbusDayResult() const;
     QVariant serialize() const;
-    void deserialize( const QVariant& value );
+    void deserialize( const KDSoapValueList& args );
     TNS__GetColumbusDayResponse();
     ~TNS__GetColumbusDayResponse();
 
@@ -113,7 +114,7 @@ public:
     void setGetVeteransDayResult( const QDateTime& getVeteransDayResult );
     QDateTime getVeteransDayResult() const;
     QVariant serialize() const;
-    void deserialize( const QVariant& value );
+    void deserialize( const KDSoapValueList& args );
     TNS__GetVeteransDayResponse();
     ~TNS__GetVeteransDayResponse();
 
@@ -132,7 +133,7 @@ public:
     void setYear( int year );
     int year() const;
     QVariant serialize() const;
-    void deserialize( const QVariant& value );
+    void deserialize( const KDSoapValueList& args );
     TNS__GetChristmasDay();
     ~TNS__GetChristmasDay();
 
@@ -151,7 +152,7 @@ public:
     void setGetHalloweenDayResult( const QDateTime& getHalloweenDayResult );
     QDateTime getHalloweenDayResult() const;
     QVariant serialize() const;
-    void deserialize( const QVariant& value );
+    void deserialize( const KDSoapValueList& args );
     TNS__GetHalloweenDayResponse();
     ~TNS__GetHalloweenDayResponse();
 
@@ -170,7 +171,7 @@ public:
     void setYear( int year );
     int year() const;
     QVariant serialize() const;
-    void deserialize( const QVariant& value );
+    void deserialize( const KDSoapValueList& args );
     TNS__GetVeteransDay();
     ~TNS__GetVeteransDay();
 
@@ -189,7 +190,7 @@ public:
     void setYear( int year );
     int year() const;
     QVariant serialize() const;
-    void deserialize( const QVariant& value );
+    void deserialize( const KDSoapValueList& args );
     TNS__GetThanksgivingDay();
     ~TNS__GetThanksgivingDay();
 
@@ -208,7 +209,7 @@ public:
     void setGetLaborDayResult( const QDateTime& getLaborDayResult );
     QDateTime getLaborDayResult() const;
     QVariant serialize() const;
-    void deserialize( const QVariant& value );
+    void deserialize( const KDSoapValueList& args );
     TNS__GetLaborDayResponse();
     ~TNS__GetLaborDayResponse();
 
@@ -227,7 +228,7 @@ public:
     void setGetCincoDeMayoResult( const QDateTime& getCincoDeMayoResult );
     QDateTime getCincoDeMayoResult() const;
     QVariant serialize() const;
-    void deserialize( const QVariant& value );
+    void deserialize( const KDSoapValueList& args );
     TNS__GetCincoDeMayoResponse();
     ~TNS__GetCincoDeMayoResponse();
 
@@ -246,7 +247,7 @@ public:
     void setYear( int year );
     int year() const;
     QVariant serialize() const;
-    void deserialize( const QVariant& value );
+    void deserialize( const KDSoapValueList& args );
     TNS__GetGeorgeWashingtonsBirthday();
     ~TNS__GetGeorgeWashingtonsBirthday();
 
@@ -265,7 +266,7 @@ public:
     void setYear( int year );
     int year() const;
     QVariant serialize() const;
-    void deserialize( const QVariant& value );
+    void deserialize( const KDSoapValueList& args );
     TNS__GetSaintPatricksDay();
     ~TNS__GetSaintPatricksDay();
 
@@ -284,7 +285,7 @@ public:
     void setGetAbrahamLincolnsBirthdayResult( const QDateTime& getAbrahamLincolnsBirthdayResult );
     QDateTime getAbrahamLincolnsBirthdayResult() const;
     QVariant serialize() const;
-    void deserialize( const QVariant& value );
+    void deserialize( const KDSoapValueList& args );
     TNS__GetAbrahamLincolnsBirthdayResponse();
     ~TNS__GetAbrahamLincolnsBirthdayResponse();
 
@@ -303,7 +304,7 @@ public:
     void setYear( int year );
     int year() const;
     QVariant serialize() const;
-    void deserialize( const QVariant& value );
+    void deserialize( const KDSoapValueList& args );
     TNS__GetNewYearsEve();
     ~TNS__GetNewYearsEve();
 
@@ -322,7 +323,7 @@ public:
     void setYear( int year );
     int year() const;
     QVariant serialize() const;
-    void deserialize( const QVariant& value );
+    void deserialize( const KDSoapValueList& args );
     TNS__GetValentinesDay();
     ~TNS__GetValentinesDay();
 
@@ -341,7 +342,7 @@ public:
     void setYear( int year );
     int year() const;
     QVariant serialize() const;
-    void deserialize( const QVariant& value );
+    void deserialize( const KDSoapValueList& args );
     TNS__GetHalloweenDay();
     ~TNS__GetHalloweenDay();
 
@@ -360,7 +361,7 @@ public:
     void setGetNewYearResult( const QDateTime& getNewYearResult );
     QDateTime getNewYearResult() const;
     QVariant serialize() const;
-    void deserialize( const QVariant& value );
+    void deserialize( const KDSoapValueList& args );
     TNS__GetNewYearResponse();
     ~TNS__GetNewYearResponse();
 
@@ -379,7 +380,7 @@ public:
     void setYear( int year );
     int year() const;
     QVariant serialize() const;
-    void deserialize( const QVariant& value );
+    void deserialize( const KDSoapValueList& args );
     TNS__GetMemorialDay();
     ~TNS__GetMemorialDay();
 
@@ -398,7 +399,7 @@ public:
     void setYear( int year );
     int year() const;
     QVariant serialize() const;
-    void deserialize( const QVariant& value );
+    void deserialize( const KDSoapValueList& args );
     TNS__GetEaster();
     ~TNS__GetEaster();
 
@@ -417,7 +418,7 @@ public:
     void setGetEasterResult( const QDateTime& getEasterResult );
     QDateTime getEasterResult() const;
     QVariant serialize() const;
-    void deserialize( const QVariant& value );
+    void deserialize( const KDSoapValueList& args );
     TNS__GetEasterResponse();
     ~TNS__GetEasterResponse();
 
@@ -436,7 +437,7 @@ public:
     void setGetThanksgivingDayResult( const QDateTime& getThanksgivingDayResult );
     QDateTime getThanksgivingDayResult() const;
     QVariant serialize() const;
-    void deserialize( const QVariant& value );
+    void deserialize( const KDSoapValueList& args );
     TNS__GetThanksgivingDayResponse();
     ~TNS__GetThanksgivingDayResponse();
 
@@ -455,7 +456,7 @@ public:
     void setGetFathersDayResult( const QDateTime& getFathersDayResult );
     QDateTime getFathersDayResult() const;
     QVariant serialize() const;
-    void deserialize( const QVariant& value );
+    void deserialize( const KDSoapValueList& args );
     TNS__GetFathersDayResponse();
     ~TNS__GetFathersDayResponse();
 
@@ -474,7 +475,7 @@ public:
     void setGetNewYearsEveResult( const QDateTime& getNewYearsEveResult );
     QDateTime getNewYearsEveResult() const;
     QVariant serialize() const;
-    void deserialize( const QVariant& value );
+    void deserialize( const KDSoapValueList& args );
     TNS__GetNewYearsEveResponse();
     ~TNS__GetNewYearsEveResponse();
 
@@ -493,7 +494,7 @@ public:
     void setYear( int year );
     int year() const;
     QVariant serialize() const;
-    void deserialize( const QVariant& value );
+    void deserialize( const KDSoapValueList& args );
     TNS__GetIndependenceDay();
     ~TNS__GetIndependenceDay();
 
@@ -512,7 +513,7 @@ public:
     void setYear( int year );
     int year() const;
     QVariant serialize() const;
-    void deserialize( const QVariant& value );
+    void deserialize( const KDSoapValueList& args );
     TNS__GetAbrahamLincolnsBirthday();
     ~TNS__GetAbrahamLincolnsBirthday();
 
@@ -531,7 +532,7 @@ public:
     void setGetMartinLutherKingDayResult( const QDateTime& getMartinLutherKingDayResult );
     QDateTime getMartinLutherKingDayResult() const;
     QVariant serialize() const;
-    void deserialize( const QVariant& value );
+    void deserialize( const KDSoapValueList& args );
     TNS__GetMartinLutherKingDayResponse();
     ~TNS__GetMartinLutherKingDayResponse();
 
@@ -550,7 +551,7 @@ public:
     void setGetValentinesDayResult( const QDateTime& getValentinesDayResult );
     QDateTime getValentinesDayResult() const;
     QVariant serialize() const;
-    void deserialize( const QVariant& value );
+    void deserialize( const KDSoapValueList& args );
     TNS__GetValentinesDayResponse();
     ~TNS__GetValentinesDayResponse();
 
@@ -569,7 +570,7 @@ public:
     void setGetIndependenceDayResult( const QDateTime& getIndependenceDayResult );
     QDateTime getIndependenceDayResult() const;
     QVariant serialize() const;
-    void deserialize( const QVariant& value );
+    void deserialize( const KDSoapValueList& args );
     TNS__GetIndependenceDayResponse();
     ~TNS__GetIndependenceDayResponse();
 
@@ -588,7 +589,7 @@ public:
     void setGetFlagDayResult( const QDateTime& getFlagDayResult );
     QDateTime getFlagDayResult() const;
     QVariant serialize() const;
-    void deserialize( const QVariant& value );
+    void deserialize( const KDSoapValueList& args );
     TNS__GetFlagDayResponse();
     ~TNS__GetFlagDayResponse();
 
@@ -607,7 +608,7 @@ public:
     void setGetAprilFoolsDayResult( const QDateTime& getAprilFoolsDayResult );
     QDateTime getAprilFoolsDayResult() const;
     QVariant serialize() const;
-    void deserialize( const QVariant& value );
+    void deserialize( const KDSoapValueList& args );
     TNS__GetAprilFoolsDayResponse();
     ~TNS__GetAprilFoolsDayResponse();
 
@@ -626,7 +627,7 @@ public:
     void setGetGeorgeWashingtonsBirthdayResult( const QDateTime& getGeorgeWashingtonsBirthdayResult );
     QDateTime getGeorgeWashingtonsBirthdayResult() const;
     QVariant serialize() const;
-    void deserialize( const QVariant& value );
+    void deserialize( const KDSoapValueList& args );
     TNS__GetGeorgeWashingtonsBirthdayResponse();
     ~TNS__GetGeorgeWashingtonsBirthdayResponse();
 
@@ -645,7 +646,7 @@ public:
     void setYear( int year );
     int year() const;
     QVariant serialize() const;
-    void deserialize( const QVariant& value );
+    void deserialize( const KDSoapValueList& args );
     TNS__GetAprilFoolsDay();
     ~TNS__GetAprilFoolsDay();
 
@@ -664,7 +665,7 @@ public:
     void setGetGoodFridayResult( const QDateTime& getGoodFridayResult );
     QDateTime getGoodFridayResult() const;
     QVariant serialize() const;
-    void deserialize( const QVariant& value );
+    void deserialize( const KDSoapValueList& args );
     TNS__GetGoodFridayResponse();
     ~TNS__GetGoodFridayResponse();
 
@@ -683,7 +684,7 @@ public:
     void setYear( int year );
     int year() const;
     QVariant serialize() const;
-    void deserialize( const QVariant& value );
+    void deserialize( const KDSoapValueList& args );
     TNS__GetBlackFriday();
     ~TNS__GetBlackFriday();
 
@@ -702,7 +703,7 @@ public:
     void setYear( int year );
     int year() const;
     QVariant serialize() const;
-    void deserialize( const QVariant& value );
+    void deserialize( const KDSoapValueList& args );
     TNS__GetColumbusDay();
     ~TNS__GetColumbusDay();
 
@@ -721,7 +722,7 @@ public:
     void setYear( int year );
     int year() const;
     QVariant serialize() const;
-    void deserialize( const QVariant& value );
+    void deserialize( const KDSoapValueList& args );
     TNS__GetFathersDay();
     ~TNS__GetFathersDay();
 
@@ -740,7 +741,7 @@ public:
     void setYear( int year );
     int year() const;
     QVariant serialize() const;
-    void deserialize( const QVariant& value );
+    void deserialize( const KDSoapValueList& args );
     TNS__GetPresidentsDay();
     ~TNS__GetPresidentsDay();
 
@@ -759,7 +760,7 @@ public:
     void setGetSaintPatricksDayResult( const QDateTime& getSaintPatricksDayResult );
     QDateTime getSaintPatricksDayResult() const;
     QVariant serialize() const;
-    void deserialize( const QVariant& value );
+    void deserialize( const KDSoapValueList& args );
     TNS__GetSaintPatricksDayResponse();
     ~TNS__GetSaintPatricksDayResponse();
 
@@ -778,7 +779,7 @@ public:
     void setGetChristmasDayResult( const QDateTime& getChristmasDayResult );
     QDateTime getChristmasDayResult() const;
     QVariant serialize() const;
-    void deserialize( const QVariant& value );
+    void deserialize( const KDSoapValueList& args );
     TNS__GetChristmasDayResponse();
     ~TNS__GetChristmasDayResponse();
 
@@ -797,7 +798,7 @@ public:
     void setYear( int year );
     int year() const;
     QVariant serialize() const;
-    void deserialize( const QVariant& value );
+    void deserialize( const KDSoapValueList& args );
     TNS__GetCincoDeMayo();
     ~TNS__GetCincoDeMayo();
 
@@ -816,7 +817,7 @@ public:
     void setYear( int year );
     int year() const;
     QVariant serialize() const;
-    void deserialize( const QVariant& value );
+    void deserialize( const KDSoapValueList& args );
     TNS__GetGoodFriday();
     ~TNS__GetGoodFriday();
 
@@ -835,7 +836,7 @@ public:
     void setYear( int year );
     int year() const;
     QVariant serialize() const;
-    void deserialize( const QVariant& value );
+    void deserialize( const KDSoapValueList& args );
     TNS__GetNewYear();
     ~TNS__GetNewYear();
 
@@ -854,7 +855,7 @@ public:
     void setYear( int year );
     int year() const;
     QVariant serialize() const;
-    void deserialize( const QVariant& value );
+    void deserialize( const KDSoapValueList& args );
     TNS__GetMartinLutherKingDay();
     ~TNS__GetMartinLutherKingDay();
 
@@ -873,7 +874,7 @@ public:
     void setGetBlackFridayResult( const QDateTime& getBlackFridayResult );
     QDateTime getBlackFridayResult() const;
     QVariant serialize() const;
-    void deserialize( const QVariant& value );
+    void deserialize( const KDSoapValueList& args );
     TNS__GetBlackFridayResponse();
     ~TNS__GetBlackFridayResponse();
 
@@ -892,7 +893,7 @@ public:
     void setGetPresidentsDayResult( const QDateTime& getPresidentsDayResult );
     QDateTime getPresidentsDayResult() const;
     QVariant serialize() const;
-    void deserialize( const QVariant& value );
+    void deserialize( const KDSoapValueList& args );
     TNS__GetPresidentsDayResponse();
     ~TNS__GetPresidentsDayResponse();
 
@@ -911,7 +912,7 @@ public:
     void setYear( int year );
     int year() const;
     QVariant serialize() const;
-    void deserialize( const QVariant& value );
+    void deserialize( const KDSoapValueList& args );
     TNS__GetLaborDay();
     ~TNS__GetLaborDay();
 

@@ -80,7 +80,7 @@ private Q_SLOTS:
             QByteArray(xmlEnvBegin) +
             "><soap:Body>"
             "<n1:query xmlns:n1=\"urn:partner.soap.sforce.com\">"
-             "<n1:queryString xsi:type=\"xsd:string\">Select Id, FirstName, LastName from Contact</n1:queryString>"
+             "<n1:queryString>Select Id, FirstName, LastName from Contact</n1:queryString>"
             "</n1:query>"
             "</soap:Body>" + xmlEnvEnd
             + '\n'; // added by QXmlStreamWriter::writeEndDocument
