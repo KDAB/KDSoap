@@ -38,7 +38,6 @@ public:
     bool mQualified;
     bool mUse;
     QName mReference;
-    QName mArrayType;
 };
 
 Attribute::Attribute()
@@ -145,16 +144,6 @@ QName Attribute::reference() const
 bool Attribute::isResolved() const
 {
   return !d->mType.isEmpty();
-}
-
-void Attribute::setArrayType( const QName &arrayType )
-{
-  d->mArrayType = arrayType;
-}
-
-QName Attribute::arrayType() const
-{
-  return d->mArrayType;
 }
 
 }

@@ -83,17 +83,23 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
           Q_ASSERT(false);
           continue;
       }
-
     QString typeName = mTypeMap.localType( elemIt.type() );
 
     if (typeName != "void") // void means empty element, probably just here for later extensions (testcase: SetPasswordResult in salesforce)
     {
-
         QString inputTypeName = mTypeMap.localInputType( elemIt.type(), QName() );
 
         if ( elemIt.maxOccurs() > 1 ) {
             typeName = "QList<" + typeName + ">";
             inputTypeName = "const " + typeName + "&";
+        }
+        if ( type->isArray() ) {
+            const QString arrayTypeName = mTypeMap.localType( type->arrayType() );
+            //qDebug() << "array of" << attribute.arrayType() << "->" << arrayTypeName;
+            typeName = "QList<" + arrayTypeName + ">";
+            newClass.addInclude(QString(), arrayTypeName); // add forward declaration
+            newClass.addHeaderIncludes( QStringList() << "QList" );
+            inputTypeName = "const " + typeName + '&';
         }
 
         // member variables
@@ -131,18 +137,9 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
   Q_FOREACH(const XSD::Attribute& attribute, attributes) {
     QString typeName, inputTypeName;
 
-    const bool isArray = !attribute.arrayType().isEmpty();
-    if ( isArray ) {
-      const QString arrayTypeName = mTypeMap.localType( attribute.arrayType() );
-      //qDebug() << "array of" << attribute.arrayType() << "->" << arrayTypeName;
-      typeName = "QList<" + arrayTypeName + ">";
-      newClass.addInclude(QString(), arrayTypeName); // add forward declaration
-      inputTypeName = "const " + typeName + '&';
-    } else {
-      typeName = mTypeMap.localType( attribute.type() );
-      inputTypeName = mTypeMap.localInputType( attribute.type(), QName() );
-      qDebug() << "Attribute" << attribute.name();
-    }
+    typeName = mTypeMap.localType( attribute.type() );
+    inputTypeName = mTypeMap.localInputType( attribute.type(), QName() );
+    qDebug() << "Attribute" << attribute.name();
 
     // member variables
     KODE::MemberVariable variable( attribute.name(), typeName );
@@ -168,8 +165,6 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
     // include header
     newClass.addIncludes( QStringList(), mTypeMap.forwardDeclarations( attribute.type() ) );
     newClass.addHeaderIncludes( mTypeMap.headerIncludes( attribute.type() ) );
-    if ( isArray )
-      newClass.addHeaderIncludes( QStringList() << "QList" );
   }
 
   createComplexTypeSerializer( newClass, type );
@@ -291,40 +286,60 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
         demarshalCode += "const QString name = val.name();";
     }
 
-    bool first = true;
-    Q_FOREACH( const XSD::Element& elem, elements ) {
+    if ( type->isArray() ) {
+        Q_ASSERT(elements.count() == 1);
+        const XSD::Element elem = elements.first();
+        //const QString typeName = mTypeMap.localType( elem.type() );
+        //Q_ASSERT(!typeName.isEmpty());
+        KODE::MemberVariable variable( elem.name(), "whatever" ); // was already added; this is just for the naming
+        const QString variableName = "d_ptr->" + variable.name(); // always d_ptr->mEntries, actually
+        const QName arrayType = type->arrayType();
+        const QString typeName = mTypeMap.localType( arrayType );
 
-        const QString elemName = elem.name();
-        const QString typeName = mTypeMap.localType( elem.type() );
-        Q_ASSERT(!typeName.isEmpty());
+        marshalCode += "args.setArrayType(QString::fromLatin1(\"" + arrayType.nameSpace() + "\"), QString::fromLatin1(\"" + arrayType.localName() + "\"));";
+        marshalCode += "for (int i = 0; i < " + variableName + ".count(); ++i) {";
+        marshalCode.indent();
+        marshalCode.addBlock( appendElementArg( mTypeMap, arrayType, "item", variableName + ".at(i)", "args" ) );
+        marshalCode.unindent();
+        marshalCode += '}';
 
-        if ( typeName == "void" )
-            continue;
+        demarshalCode.addBlock( demarshalArrayVar( mTypeMap, arrayType, variableName, typeName ) );
+    } else {
+        bool first = true;
+        Q_FOREACH( const XSD::Element& elem, elements ) {
 
-        KODE::MemberVariable variable( elemName, typeName ); // was already added; this is just for the naming
-        const QString variableName = "d_ptr->" + variable.name();
+            const QString elemName = elem.name();
+            const QString typeName = mTypeMap.localType( elem.type() );
+            Q_ASSERT(!typeName.isEmpty());
 
-        demarshalCode.addBlock( demarshalNameTest( mTypeMap, elem.type(), elemName, &first ) );
-        demarshalCode.indent();
+            if ( typeName == "void" )
+                continue;
 
-        if ( elem.maxOccurs() > 1 ) {
-            //const QString typePrefix = mNSManager.prefix( elem.type().nameSpace() );
+            KODE::MemberVariable variable( elemName, typeName ); // was already added; this is just for the naming
+            const QString variableName = "d_ptr->" + variable.name();
 
-            marshalCode += "for (int i = 0; i < " + variableName + ".count(); ++i) {";
-            marshalCode.indent();
-            marshalCode.addBlock( appendElementArg( mTypeMap, elem.type(), elem.name(), variableName + ".at(i)", "args" ) );
-            marshalCode.unindent();
-            marshalCode += '}';
+            demarshalCode.addBlock( demarshalNameTest( mTypeMap, elem.type(), elemName, &first ) );
+            demarshalCode.indent();
 
-            demarshalCode.addBlock( demarshalArrayVar( mTypeMap, elem.type(), variableName, typeName ) );
-        } else {
-            marshalCode.addBlock( appendElementArg( mTypeMap, elem.type(), elem.name(), variableName, "args" ) );
-            demarshalCode.addBlock( demarshalVar( mTypeMap, elem.type(), variableName, typeName ) );
-        }
+            if ( elem.maxOccurs() > 1 ) {
+                //const QString typePrefix = mNSManager.prefix( elem.type().nameSpace() );
 
-        demarshalCode.unindent();
-        demarshalCode += "}";
-    } // end: for each element
+                marshalCode += "for (int i = 0; i < " + variableName + ".count(); ++i) {";
+                marshalCode.indent();
+                marshalCode.addBlock( appendElementArg( mTypeMap, elem.type(), elem.name(), variableName + ".at(i)", "args" ) );
+                marshalCode.unindent();
+                marshalCode += '}';
+
+                demarshalCode.addBlock( demarshalArrayVar( mTypeMap, elem.type(), variableName, typeName ) );
+            } else {
+                marshalCode.addBlock( appendElementArg( mTypeMap, elem.type(), elem.name(), variableName, "args" ) );
+                demarshalCode.addBlock( demarshalVar( mTypeMap, elem.type(), variableName, typeName ) );
+            }
+
+            demarshalCode.unindent();
+            demarshalCode += "}";
+        } // end: for each element
+    }
 
     if ( !elements.isEmpty() ) {
         demarshalCode.unindent();
@@ -350,27 +365,11 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
             demarshalCode.addBlock( demarshalNameTest( mTypeMap, attribute.type(), attrName, &first ) );
             demarshalCode.indent();
 
-            const bool isArray = !attribute.arrayType().isEmpty();
-            if (isArray) {
-                // qDebug() << "attribute:" << attribute.name() << attribute.type() << attribute.arrayType();
+            marshalCode.addBlock( appendElementArg( mTypeMap, attribute.type(), attribute.name(), variableName, "attribs") );
 
-                const QString typeName = mTypeMap.localType( attribute.arrayType() );
-
-                marshalCode += "args.setArrayType(QString::fromLatin1(\"" + attribute.arrayType().nameSpace() + "\"), QString::fromLatin1(\"" + attribute.arrayType().localName() + "\"));";
-                marshalCode += "for (int i = 0; i < " + variableName + ".count(); ++i) {";
-                marshalCode.indent();
-                marshalCode.addBlock( appendElementArg( mTypeMap, attribute.arrayType(), "item", variableName + ".at(i)", "args" ) );
-                marshalCode.unindent();
-                marshalCode += '}';
-
-                demarshalCode.addBlock( demarshalArrayVar( mTypeMap, attribute.arrayType(), variableName, typeName ) );
-            } else {
-                marshalCode.addBlock( appendElementArg( mTypeMap, attribute.type(), attribute.name(), variableName, "attribs") );
-
-                const QString typeName = mTypeMap.localType( attribute.type() );
-                Q_ASSERT(!typeName.isEmpty());
-                demarshalCode.addBlock( demarshalVar( mTypeMap, attribute.type(), variableName, typeName ) );
-            }
+            const QString typeName = mTypeMap.localType( attribute.type() );
+            Q_ASSERT(!typeName.isEmpty());
+            demarshalCode.addBlock( demarshalVar( mTypeMap, attribute.type(), variableName, typeName ) );
 
             demarshalCode.unindent();
             demarshalCode += "}";
