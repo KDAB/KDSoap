@@ -82,7 +82,7 @@ KDSoapValue KDSoapPendingCall::Private::parseReplyElement(QXmlStreamReader& read
         val.childValues().attributes().append(KDSoapValue(name.toString(), attrValue.toString()));
     }
     QString text;
-    while (reader.readNext()) {
+    while (reader.readNext() != QXmlStreamReader::Invalid) {
         if (reader.isEndElement())
             break;
         if (reader.isCharacters()) {
