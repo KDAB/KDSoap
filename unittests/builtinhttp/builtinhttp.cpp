@@ -52,6 +52,17 @@ private Q_SLOTS:
                      "Fault code: 203\n"
                      "Fault description: Error downloading %1 - server replied: Not Found ()").arg(server.endPoint()));
     }
+    void testInvalidXML()
+    {
+        HttpServerThread server(QByteArray(xmlEnvBegin) + "><soap:Body><broken></xml></soap:Body>", HttpServerThread::Public);
+        KDSoapClientInterface client(server.endPoint(), QString::fromLatin1("urn:msg"));
+        KDSoapMessage message;
+        KDSoapMessage ret = client.call(QLatin1String("Method1"), message);
+        QVERIFY(ret.isFault());
+        QCOMPARE(ret.faultAsString(), QString::fromLatin1(
+                     "Fault code: 3\n"
+                     "Fault description: XML error line 1: Opening and ending tag mismatch. ()"));
+    }
 
     // Test for basic auth, with async call
     void testAsyncCallWithAuth()
