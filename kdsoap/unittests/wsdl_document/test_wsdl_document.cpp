@@ -63,6 +63,9 @@ private Q_SLOTS:
         addEmployeeParams.setEmployeeName(QString::fromLatin1("David Faure"));
         addEmployeeParams.setEmployeeCountry(QString::fromLatin1("France"));
         addEmployeeParams.setEmployeeAchievements(achievements);
+        KDAB__EmployeeId id;
+        id.setId(5);
+        addEmployeeParams.setEmployeeId(id);
 
         KDAB__LoginElement login;
         login.setUser(QLatin1String("foo"));
@@ -111,6 +114,9 @@ private Q_SLOTS:
               "<n1:label>C++</n1:label>"
             "</n1:item>"
             "</n1:employeeAchievements>"
+            "<n1:employeeId>"
+            "<n1:id>5</n1:id>"
+            "</n1:employeeId>"
             "</n1:addEmployee>"
             "</soap:Body>" + xmlEnvEnd
             + '\n'; // added by QXmlStreamWriter::writeEndDocument
