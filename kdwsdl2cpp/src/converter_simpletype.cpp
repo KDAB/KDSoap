@@ -327,7 +327,7 @@ void Converter::createSimpleTypeSerializer( KODE::Class& newClass, const XSD::Si
             else if ( mTypeMap.isBuiltinType( baseName ) ) // serialize from int, float, bool, etc.
                 code += "str += QVariant(" + variable.name() + ".at(i)).toString();";
             else
-                code += "str += " + variable.name() + ".at(i).serialize().toString(); // itemTypeName=" + itemTypeName + " " + baseName.qname();
+                code += "str += " + variable.name() + ".at(i).serialize().toString();";
             code.unindent();
             code += "}";
             code += "return str;";
