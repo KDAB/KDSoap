@@ -419,8 +419,6 @@ Element Parser::parseElement( ParserContext *context,
   if ( element.hasAttribute( "nillable" ) )
     nill = true;
 
-  //QName anyType( "http://www.w3.org/2001/XMLSchema", "any" );
-
   if ( element.hasAttribute( "type" ) ) {
     QName typeName = element.attribute( "type" );
     typeName.setNameSpace( context->namespaceManager()->uri( typeName.prefix() ) );
@@ -633,11 +631,6 @@ void Parser::parseComplexContent( ParserContext *context, const QDomElement &ele
 {
   QName typeName;
 
-  if ( element.attribute( "mixed" ) == "true" ) {
-    qDebug( "<complexContent>: No support for mixed=true" );
-    return;
-  }
-
   complexType.setContentModel( XSDType::COMPLEX );
 
   QDomElement childElement = element.firstChildElement();
@@ -649,7 +642,9 @@ void Parser::parseComplexContent( ParserContext *context, const QDomElement &ele
       typeName = childElement.attribute( "base" );
       typeName.setNameSpace( context->namespaceManager()->uri( typeName.prefix() ) );
 
-      complexType.setBaseTypeName( typeName );
+      if (typeName != QName(XMLSchemaURI, QString::fromLatin1("anyType"))) { // ignore this
+        complexType.setBaseTypeName( typeName );
+      }
 
       // if the base soapenc:Array, then read only the arrayType attribute and nothing else
       // TODO check namespace is really soap-encoding
@@ -698,6 +693,9 @@ void Parser::parseComplexContent( ParserContext *context, const QDomElement &ele
     }
 
     childElement = childElement.nextSiblingElement();
+  }
+  if ( element.attribute( "mixed" ) == "true" ) {
+    qDebug( "<complexContent>: No support for mixed=true" );
   }
 }
 

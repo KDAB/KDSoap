@@ -63,6 +63,15 @@
           </restriction>
         </complexContent>
       </complexType>
+      <complexType name="EmployeeId">
+        <complexContent>
+          <restriction base="xsd:anyType"> <!-- just testing, not very useful -->
+            <sequence>
+              <element name="id" type="xsd:nonNegativeInteger"/>
+            </sequence>
+          </restriction>
+        </complexContent>
+      </complexType>
       <element name="AddEmployeeParams">
         <complexType>
           <sequence>
@@ -70,6 +79,7 @@
            <element name='employeeName' type='kdab:EmployeeName'/>
            <element name='employeeCountry' type='kdab:LimitedString'/>
            <element name='employeeAchievements' type='kdab:EmployeeAchievements'/>
+           <element name='employeeId' type='kdab:EmployeeId'/>
           </sequence>
          </complexType>
       </element>
