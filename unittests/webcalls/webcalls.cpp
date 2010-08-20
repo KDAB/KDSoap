@@ -14,7 +14,6 @@ public:
 public slots:
     void slotFinished(KDSoapPendingCallWatcher* watcher)
     {
-        qDebug() << watcher->returnMessage().faultAsString();
         m_returnMessage = watcher->returnMessage();
         m_eventLoop.quit();
     }

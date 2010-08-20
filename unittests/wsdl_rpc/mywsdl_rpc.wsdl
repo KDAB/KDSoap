@@ -8,13 +8,6 @@
   <types>
     <!-- Note: kdsoap doesn't support the case where the namespace for elements is different from the namespace for definitions, yet. -->
     <xsd:schema targetNamespace='http://www.kdab.com/xml/MyWsdl/' xmlns='http://www.w3.org/2001/XMLSchema'>
-      <element name="HelloWorld">
-        <complexType>
-          <sequence>
-            <element minOccurs="0" maxOccurs="1" name="who" type="xsd:string" />
-          </sequence>
-        </complexType>
-      </element>
       <simpleType name="LimitedString">
         <restriction base="xsd:string">
           <minLength value="1"/>
@@ -70,6 +63,14 @@
           </restriction>
         </complexContent>
       </complexType>
+      <complexType name="Employee">
+        <sequence>
+          <element name='employeeType' type='kdab:EmployeeType'/>
+          <element name='employeeName' type='kdab:EmployeeName'/>
+          <element name='employeeCountry' type='kdab:LimitedString'/>
+          <element name='employeeAchievements' type='kdab:EmployeeAchievements'/>
+        </sequence>
+      </complexType>
 
       <element name="LoginElement">
         <complexType>
@@ -98,11 +99,11 @@
     <part name='bstrReturn' type='xsd:string'/>
   </message>
 
-  <message name='getEmployeeCountry'>
+  <message name='getEmployee'>
      <part name='employeeName' type='kdab:EmployeeName'/>
   </message>
-  <message name='getEmployeeCountryResponse'>
-     <part name='employeeCountry' type='kdab:LimitedString'/>
+  <message name='getEmployeeResponse'>
+     <part name='employee' type='kdab:Employee'/>
   </message>
 
   <message name="Header">
@@ -115,9 +116,9 @@
       <input message='kdab:addEmployee' />
       <output message='kdab:addEmployeeResponse' />
     </operation>
-    <operation name='getEmployeeCountry'>
-      <input message='kdab:getEmployeeCountry' />
-      <output message='kdab:getEmployeeCountryResponse' />
+    <operation name='getEmployee'>
+      <input message='kdab:getEmployee' />
+      <output message='kdab:getEmployeeResponse' />
     </operation>
   </portType>
   <binding name='MyWsdlBinding' type='kdab:MyWsdlPortType' >
@@ -133,12 +134,12 @@
         <soap:body use='encoded'/>
       </output>
     </operation>
-    <operation name='getEmployeeCountry'>
+    <operation name='getEmployee'>
       <input>
-        <soap:body use='literal'/>
+        <soap:body use='encoded'/>
       </input>
       <output>
-        <soap:body use='literal'/>
+        <soap:body use='encoded'/>
       </output>
     </operation>
   </binding>

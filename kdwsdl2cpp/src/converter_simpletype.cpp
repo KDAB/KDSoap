@@ -336,7 +336,6 @@ void Converter::createSimpleTypeSerializer( KODE::Class& newClass, const XSD::Si
         const QString itemTypeName = mTypeMap.localType( baseName );
         KODE::MemberVariable variable( "entries", "QList<" + itemTypeName + ">" ); // just for the name
         {
-
             KODE::Code code;
             code += "QString str;";
             code += "for ( int i = 0; i < " + variable.name() + ".count(); ++i ) {";
@@ -357,7 +356,25 @@ void Converter::createSimpleTypeSerializer( KODE::Class& newClass, const XSD::Si
             serializeFunc.setBody(code);
         }
         {
-            deserializeFunc.addBodyLine( "Q_UNUSED(value); // TODO (createSimpleTypeSerializer for lists) " + typeName );
+            newClass.addHeaderInclude("QtCore/QStringList");
+            KODE::Code code;
+            code += "const QStringList list = value.toString().split(QLatin1Char(' '));";
+            code += "for (int i = 0; i < list.count(); ++i) {";
+            code.indent();
+            QString val = QString::fromLatin1("list.at(i)");
+            if ( itemTypeName == "QString" )
+                /*nothing to do*/;
+            else if ( mTypeMap.isBuiltinType( baseName ) ) { // deserialize to int, float, bool, etc.
+                val = "QVariant(" + val + ").value<" + itemTypeName + ">()";
+            } else {
+                code += itemTypeName + " tmp;";
+                code += "tmp.deserialize(" + val + ");";
+                val = "tmp";
+            }
+            code += variable.name() + ".append(" + val + ");";
+            code.unindent();
+            code += "}";
+            deserializeFunc.setBody(code);
         }
     }
 
@@ -578,7 +595,7 @@ static KODE::Code createRangeCheckCode( const XSD::SimpleType *type, const QStri
   code += "bool rangeOk = true;";
   code.newLine();
 
-  // TODO
+  // TODO range-check code for facetWhiteSpace, facetTotalDigits, facetFractionDigits
   /*
     WhiteSpaceType facetWhiteSpace() const;
     int facetTotalDigits() const;
