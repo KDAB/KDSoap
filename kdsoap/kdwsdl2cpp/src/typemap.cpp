@@ -41,11 +41,12 @@ TypeMap::TypeMap()
 {
   // see http://www.w3.org/TR/xmlschema-2
   addBuiltinType("any", "KDSoapValue");
+  addBuiltinType("anyType", "KDSoapValue");
   addBuiltinType("anyURI", "QString");
   addBuiltinType("base64Binary", "QByteArray");
   addBuiltinType("binary", "QByteArray");
   addBuiltinType("boolean", "bool");
-  addBuiltinType("byte", "char");
+  addBuiltinType("byte", "signed char"); // 8 bit, signed
   addBuiltinType("date", "QDate");
   addBuiltinType("dateTime", "QDateTime");
   addBuiltinType("decimal", "float");
@@ -54,18 +55,22 @@ TypeMap::TypeMap()
   addBuiltinType("duration", "QString");
   addBuiltinType("float", "float");
   addBuiltinType("hexBinary", "QByteArray");
-  addBuiltinType("integer", "int");
-  addBuiltinType("int", "int");
-  addBuiltinType("nonPositiveInteger", "int");
+  addBuiltinType("integer", "qint64");
+  addBuiltinType("int", "int"); // 32 bits
+  addBuiltinType("nonPositiveInteger", "qint64");
   addBuiltinType("language", "QString");
-  addBuiltinType("short", "short");
+  addBuiltinType("long", "qint64"); // 64 bits
+  addBuiltinType("short", "short"); // 16 bits
   addBuiltinType("string", "QString");
   addBuiltinType("time", "QTime");
   addBuiltinType("unsignedByte", "unsigned char");
-  addBuiltinType("unsignedLong", "unsigned long");
-  addBuiltinType("positiveInteger", "unsigned int");
-  addBuiltinType("nonNegativeInteger", "unsigned int");
-  addBuiltinType("unsignedInt", "unsigned int");
+  addBuiltinType("unsignedShort", "unsigned short"); // 16 bits, 0-65535
+  addBuiltinType("unsignedLong", "quint64"); // 64 bits
+  addBuiltinType("positiveInteger", "quint64"); // unbounded (1 to inf)
+  addBuiltinType("nonPositiveInteger", "qint64"); // unbounded (-inf to 0)
+  addBuiltinType("negativeInteger", "qint64"); // unbounded (-inf to -1)
+  addBuiltinType("nonNegativeInteger", "quint64"); // unbounded (0 to inf)
+  addBuiltinType("unsignedInt", "unsigned int"); // 32 bits
   addBuiltinType("token", "QString");
 }
 
