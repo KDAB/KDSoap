@@ -23,13 +23,13 @@ class WsdlRPCTest : public QObject
 private Q_SLOTS:
     // Using wsdl-generated code, make a call, and check the xml that was sent,
     // and check that the server's response was correctly parsed.
-    void testMyWsdl()
+    void testRequest()
     {
         // Prepare response
         QByteArray responseData = QByteArray(xmlEnvBegin) + "><soap:Body>"
                                   "<kdab:addEmployeeResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl/\"><kdab:bStrReturn>Foo</kdab:bStrReturn></kdab:addEmployeeResponse>"
                                   " </soap:Body>" + xmlEnvEnd;
-        HttpServerThread server(responseData, HttpServerThread::Public /*TODO ssl test*/);
+        HttpServerThread server(responseData, HttpServerThread::Public);
 
         // For testing the http server with telnet or wget:
         //httpGet(server.endPoint());
@@ -93,25 +93,7 @@ private Q_SLOTS:
             " xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">%1"
             "<soap:Body>"
             "<n1:addEmployee>"
-            "<n1:employeeType xsi:type=\"n1:EmployeeType\">"
-            "<n1:team xsi:type=\"n1:TeamName\">Minitel</n1:team>"
-            "<n1:type xsi:type=\"n1:EmployeeTypeEnum\">Developer</n1:type>"
-            "<n1:otherRoles xsi:type=\"n1:EmployeeTypeEnum\">TeamLeader</n1:otherRoles>"
-            "<n1:otherRolesAsList xsi:type=\"n1:EmployeeTypeEnumList\">TeamLeader Developer</n1:otherRolesAsList>"
-            "<n1:lottoNumbers xsi:type=\"n1:LottoNumbers\">7 21 30 42</n1:lottoNumbers>"
-            "</n1:employeeType>"
-            "<n1:employeeName xsi:type=\"n1:EmployeeName\">David Faure</n1:employeeName>"
-            "<n1:employeeCountry xsi:type=\"n1:LimitedString\">France</n1:employeeCountry>"
-            "<n1:employeeAchievements xsi:type=\"n1:EmployeeAchievements\" soap-enc:arrayType=\"n1:EmployeeAchievement[2]\">"
-            "<n1:item xsi:type=\"n1:EmployeeAchievement\">"
-              "<n1:type xsi:type=\"xsd:string\">Project</n1:type>"
-              "<n1:label xsi:type=\"xsd:string\">Management</n1:label>"
-            "</n1:item>"
-            "<n1:item xsi:type=\"n1:EmployeeAchievement\">"
-              "<n1:type xsi:type=\"xsd:string\">Development</n1:type>"
-              "<n1:label xsi:type=\"xsd:string\">C++</n1:label>"
-            "</n1:item>"
-            "</n1:employeeAchievements>"
+            + serializedEmployee() +
             "</n1:addEmployee>"
             "</soap:Body>" + xmlEnvEnd
             + '\n'; // added by QXmlStreamWriter::writeEndDocument
@@ -153,6 +135,57 @@ private Q_SLOTS:
             expectedRequestXml.replace("%1", "<soap:Header/>");
             QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
         }
+    }
+
+    void testResponse()
+    {
+        // Prepare response
+        QByteArray responseData = QByteArray(xmlEnvBegin) + "><soap:Body>"
+                                  "<n1:getEmployeeResponse xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
+                                  "<n1:employee>"
+                                   + serializedEmployee() +
+                                  "</n1:employee>"
+                                  "</n1:getEmployeeResponse>"
+                                  " </soap:Body>" + xmlEnvEnd;
+        HttpServerThread server(responseData, HttpServerThread::Public);
+        MyWsdl service;
+        service.setEndPoint(server.endPoint());
+        const KDAB__Employee employee = service.getEmployee(QString::fromLatin1("David Faure"));
+        const KDAB__EmployeeType employeeType = employee.employeeType();
+        QCOMPARE(employeeType.team().value().value(), QString::fromLatin1("Minitel"));
+        QCOMPARE(employeeType.type().type(), KDAB__EmployeeTypeEnum::Developer);
+        QCOMPARE(employeeType.otherRoles(), QList<KDAB__EmployeeTypeEnum>() << KDAB__EmployeeTypeEnum::TeamLeader);
+        QCOMPARE(employeeType.otherRolesAsList().entries(), QList<KDAB__EmployeeTypeEnum>() << KDAB__EmployeeTypeEnum::TeamLeader << KDAB__EmployeeTypeEnum::Developer);
+        QCOMPARE(employeeType.lottoNumbers().entries(), QList<int>() << 7 << 21 << 30 << 42);
+        QCOMPARE(employee.employeeName().value().value(), QString::fromLatin1("David Faure"));
+        QCOMPARE(employee.employeeCountry().value(), QString::fromLatin1("France"));
+    }
+
+private:
+    static QByteArray serializedEmployeeType() {
+        return QByteArray(
+                "<n1:employeeType xsi:type=\"n1:EmployeeType\">"
+                "<n1:team xsi:type=\"n1:TeamName\">Minitel</n1:team>"
+                "<n1:type xsi:type=\"n1:EmployeeTypeEnum\">Developer</n1:type>"
+                "<n1:otherRoles xsi:type=\"n1:EmployeeTypeEnum\">TeamLeader</n1:otherRoles>"
+                "<n1:otherRolesAsList xsi:type=\"n1:EmployeeTypeEnumList\">TeamLeader Developer</n1:otherRolesAsList>"
+                "<n1:lottoNumbers xsi:type=\"n1:LottoNumbers\">7 21 30 42</n1:lottoNumbers>"
+                "</n1:employeeType>");
+    }
+    static QByteArray serializedEmployee() {
+        return serializedEmployeeType() +
+                "<n1:employeeName xsi:type=\"n1:EmployeeName\">David Faure</n1:employeeName>"
+                "<n1:employeeCountry xsi:type=\"n1:LimitedString\">France</n1:employeeCountry>"
+                "<n1:employeeAchievements xsi:type=\"n1:EmployeeAchievements\" soap-enc:arrayType=\"n1:EmployeeAchievement[2]\">"
+                "<n1:item xsi:type=\"n1:EmployeeAchievement\">"
+                "<n1:type xsi:type=\"xsd:string\">Project</n1:type>"
+                "<n1:label xsi:type=\"xsd:string\">Management</n1:label>"
+                "</n1:item>"
+                "<n1:item xsi:type=\"n1:EmployeeAchievement\">"
+                "<n1:type xsi:type=\"xsd:string\">Development</n1:type>"
+                "<n1:label xsi:type=\"xsd:string\">C++</n1:label>"
+                "</n1:item>"
+                "</n1:employeeAchievements>";
     }
 };
 
