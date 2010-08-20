@@ -36,6 +36,7 @@
 
 static const QString XMLSchemaURI( "http://www.w3.org/2001/XMLSchema" );
 static const QString WSDLSchemaURI( "http://schemas.xmlsoap.org/wsdl/" );
+static const char* soapEncNs = "http://schemas.xmlsoap.org/soap/encoding/";
 
 namespace XSD {
 
@@ -96,10 +97,9 @@ void Parser::clear()
   d->mAttributeGroups.clear();
 
   // From http://schemas.xmlsoap.org/wsdl/soap/encoding
-  static const char* soapEncNs = "http://schemas.xmlsoap.org/soap/encoding/";
   {
       ComplexType array(soapEncNs);
-      array.setIsArray(true);
+      array.setArrayType(QName(XMLSchemaURI, QString::fromLatin1("any")));
       array.setName("Array");
       d->mComplexTypes.append(array);
   }
@@ -654,12 +654,10 @@ void Parser::parseComplexContent( ParserContext *context, const QDomElement &ele
       // if the base soapenc:Array, then read only the arrayType attribute and nothing else
       // TODO check namespace is really soap-encoding
       if ( typeName.localName() == "Array" ) {
-        complexType.setIsArray( true );
-
-        QDomElement arrayElement = childElement.firstChildElement();
+        const QDomElement arrayElement = childElement.firstChildElement();
         if ( !arrayElement.isNull() ) {
-          QString prefix = context->namespaceManager()->prefix( WSDLSchemaURI );
-          QString attributeName = ( prefix.isEmpty() ? "arrayType" : prefix + ":arrayType" );
+          const QString prefix = context->namespaceManager()->prefix( WSDLSchemaURI );
+          const QString attributeName = ( prefix.isEmpty() ? "arrayType" : prefix + ":arrayType" );
 
           QString typeStr = arrayElement.attribute( attributeName );
           if ( typeStr.endsWith( "[]" ) )
@@ -667,15 +665,15 @@ void Parser::parseComplexContent( ParserContext *context, const QDomElement &ele
 
           QName arrayType( typeStr );
           arrayType.setNameSpace( context->namespaceManager()->uri( arrayType.prefix() ) );
+          complexType.setArrayType( arrayType );
 
-          Attribute attr( complexType.nameSpace() );
-          attr.setName( "items" );
-          attr.setType( QName( "arrayType" ) );
-          attr.setArrayType( arrayType );
+          Element items( complexType.nameSpace() );
+          items.setName( "items" );
+          items.setType( arrayType );
+          //items.setArrayType( arrayType );
+          complexType.addElement( items );
 
           //qDebug() << complexType.name() << "is array of" << arrayType;
-
-          complexType.addAttribute( attr );
         }
       } else {
         QDomElement ctElement = childElement.firstChildElement();

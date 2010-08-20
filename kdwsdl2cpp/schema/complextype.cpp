@@ -42,6 +42,7 @@ public:
 
     Derivation mBaseDerivation;
     QName mBaseTypeName;
+    QName mArrayType;
 };
 
 ComplexType::ComplexType( const QString &nameSpace )
@@ -110,14 +111,19 @@ bool ComplexType::isSimple() const
   return false;
 }
 
-void ComplexType::setIsArray( bool isArray )
+void ComplexType::setArrayType( const QName &arrayType )
 {
-  d->mIsArray = isArray;
+  d->mArrayType = arrayType;
+}
+
+QName ComplexType::arrayType() const
+{
+  return d->mArrayType;
 }
 
 bool ComplexType::isArray() const
 {
-  return d->mIsArray;
+    return !arrayType().isEmpty();
 }
 
 void ComplexType::setAnonymous( bool anonymous )
@@ -163,6 +169,15 @@ AttributeGroup::List ComplexType::attributeGroups() const
 void ComplexType::addAttribute( const Attribute &attribute )
 {
   d->mAttributes.append( attribute );
+}
+
+Attribute ComplexType::attribute(const QName &attrName) const
+{
+    Q_FOREACH(const Attribute& attr, d->mAttributes) {
+        if (attr.qualifiedName() == attrName)
+            return attr;
+    }
+    return Attribute();
 }
 
 void ComplexType::addElement( const Element &element )

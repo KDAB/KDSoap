@@ -89,12 +89,8 @@ public:
                     }
                     Q_FOREACH(const XSD::Attribute& attribute, complexType.attributes()) {
                         addDependency(attribute.type());
-                        const QName arrayType = attribute.arrayType();
-                        //qDebug() << "attribute arrayType" << arrayType.qname();
-                        if (!arrayType.isEmpty()) {
-                            addDependency(arrayType);
-                        }
                     }
+                    addDependency(complexType.arrayType());
 
                 } else {
                     XSD::SimpleType simpleType = types.simpleType(typeName);

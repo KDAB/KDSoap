@@ -71,11 +71,13 @@ class SCHEMA_EXPORT ComplexType : public XSDType
 
     void setAttributes( const Attribute::List &attributes );
     Attribute::List attributes() const;
+    Attribute attribute( const QName& attrName ) const;
 
     void setAttributeGroups( const AttributeGroup::List &attributeGroups );
     AttributeGroup::List attributeGroups() const;
 
-    void setIsArray( bool isArray );
+    void setArrayType( const QName &arrayType );
+    QName arrayType() const;
     bool isArray() const;
 
     void addAttribute( const Attribute &attribute );

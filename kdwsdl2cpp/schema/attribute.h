@@ -66,9 +66,6 @@ class SCHEMA_EXPORT Attribute : public XmlElement
 
     bool isResolved() const;
 
-    void setArrayType( const QName &arrayType );
-    QName arrayType() const;
-
   private:
     class Private;
     Private *d;

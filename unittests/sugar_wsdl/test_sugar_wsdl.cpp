@@ -79,6 +79,40 @@ private Q_SLOTS:
         QCOMPARE(result.error().description(), QString::fromLatin1("No Error"));
     }
 
+    void testParseReplyWithArray()
+    {
+        HttpServerThread server(arrayResponse(), HttpServerThread::Public);
+        Sugarsoap sugar(this);
+        sugar.setEndPoint(server.endPoint());
+
+        const TNS__Module_list modules = sugar.get_available_modules(QLatin1String("session"));
+        QCOMPARE(sugar.lastError(), QString());
+        const TNS__Select_fields fields = modules.modules();
+        const QStringList items = fields.items();
+        QCOMPARE(items.count(), 4);
+    }
+
+    static QByteArray arrayResponse() {
+        return QByteArray(xmlEnvBegin) + " xmlns:tns=\"http://www.sugarcrm.com/sugarcrm\"><soap:Body>"
+                "<ns1:get_available_modulesResponse xmlns:ns1=\"http://www.sugarcrm.com/sugarcrm\">"
+                "<return xsi:type=\"tns:module_list\">"
+                "<modules xsi:type=\"soap-enc:Array\" soap-enc:arrayType=\"xsd:string[4]\">"
+                "<item xsi:type=\"xsd:string\">Home</item>"
+                "<item xsi:type=\"xsd:string\">Dashboard</item>"
+                "<item xsi:type=\"xsd:string\">Calendar</item>"
+                "<item xsi:type=\"xsd:string\">Activities</item>"
+                "</modules>"
+                "<error xsi:type=\"tns:error_value\">"
+                "<number xsi:type=\"xsd:string\">0</number>"
+                "<name xsi:type=\"xsd:string\">No Error</name>"
+                "<description xsi:type=\"xsd:string\">No Error</description>"
+                "</error>"
+                "</return>"
+                "</ns1:get_available_modulesResponse>"
+                "</soap:Body>" + xmlEnvEnd;
+    }
+
+
 private:
     static QByteArray complexTypeResponse() {
         return QByteArray(xmlEnvBegin) + "><soap:Body xmlns:tns=\"http://www.sugarcrm.com/sugarcrm\">"
