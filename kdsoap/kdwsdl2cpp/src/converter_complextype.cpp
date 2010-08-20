@@ -1,4 +1,5 @@
 #include "converter.h"
+#include <libkode/style.h>
 
 #include <QDebug>
 
@@ -139,7 +140,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
 
     typeName = mTypeMap.localType( attribute.type() );
     inputTypeName = mTypeMap.localInputType( attribute.type(), QName() );
-    qDebug() << "Attribute" << attribute.name();
+    //qDebug() << "Attribute" << attribute.name();
 
     // member variables
     KODE::MemberVariable variable( attribute.name(), typeName );
@@ -270,10 +271,14 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
     KODE::Code marshalCode, demarshalCode;
 
     if ( type->baseTypeName() != XmlAnyType && !type->baseTypeName().isEmpty() && !type->isArray() ) {
-        qDebug() << "TODO: handle marshalling/demarshalling of base types";
-    }
 
-    marshalCode += "KDSoapValueList args;";
+        QString baseName = mTypeMap.localType( type->baseTypeName() );
+        qDebug() << "TODO: handle marshalling/demarshalling of base type" << type->baseTypeName() << "in" << type->name();
+        marshalCode += "// TODO: handle marshalling/demarshalling of base type " + type->baseTypeName().qname();
+        marshalCode += "KDSoapValueList args;"; // = " + KODE::Style::className( baseName ) + "::serialize().value<KDSoapValueList>();";
+    } else {
+        marshalCode += "KDSoapValueList args;";
+    }
 
     // elements
     const XSD::Element::List elements = type->elements();
