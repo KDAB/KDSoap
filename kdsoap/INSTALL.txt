@@ -1,0 +1,64 @@
+KD SOAP 1.x requires a Qt version >= 4 with Network and XML support enabled.
+
+0) From the top directory of your KD SOAP installation run the "configure" scripts.
+
+   On Windows use depending on the kind of build on one of the following;
+     configure.bat -shared -debug
+     configure.bat -shared -release
+     configure.bat -static -debug
+     configure.bat -static -release
+
+   On Unix use depending on the kind of build on one of the following;
+     ./configure.sh -shared -debug
+     ./configure.sh -shared -release
+     ./configure.sh -static -debug
+     ./configure.sh -static -release
+
+   To define the install-location use for example;
+     configure.bat -shared -debug -prefix c:/kdsoap
+     ./configure.sh -shared -debug -prefix /opt/kdsoap
+
+
+1) Unix
+
+set your LD_LIBRARY_PATH to point to your KD SOAP installation lib directory.
+
+If you do not have LD_LIBRARY_PATH set already then use this line:
+LD_LIBRARY_PATH=/path/to/kdsoap/lib:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH
+
+The above has to be added into your .bashrc or similar to remain. It may also of course be run from a shell just before building software using KD SOAP, but in this case your settings will only be available for this shell.
+
+2) MacOS
+Proceed as described above, but using DYLD_LIBRARY_PATH instead
+of LD_LIBRARY_PATH
+
+3) Windows
+Add the path to KD SOAP lib into your LIB environment variable and the path
+to KD SOAP bin into your PATH environment variable.
+
+Or run:
+set PATH=\path\to\kdsoap\bin;%PATH%
+set LIB=\path\to\kdsoap\lib;%LIB%
+
+
+4) Build everything by typing:
+
+make    # Unix,
+nmake   # Windows
+
+
+5) (optionally:) Install KD SOAP:
+
+   From your top-level KD SOAP directory just type
+
+make install   # Unix,
+nmake install  # Windows
+
+   This will copy the necessary files into the sub-directories of
+   your installation path:
+   For Unix/Linux, Mac: /usr/local/KDAB/KDSoap-VERSION/
+   For Windows that is: C:\KDAB\KDSoap-VERSION\
+
+
+6) Have a look at the examples applications. They will get you started with KD SOAP 1.x.
