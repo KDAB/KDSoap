@@ -17,33 +17,35 @@ class KDSoapPendingCallWatcher;
  * The KDSoapPendingCallWatcher class allows one to connect to a signal that will
  * indicate when the reply has arrived or if an error occurred.
  *
- * Note: If you create a copy of a KDSoapPendingCall object, all information will
+ * \note If you create a copy of a KDSoapPendingCall object, all information will
  * be shared among the many copies. Therefore, KDSoapPendingCall is an
  * explicitly-shared object and does not provide a method of detaching the copies
  * (since they refer to the same pending call)
+ *
+ * \see KDSoapClientInterface::asyncCall()
  */
 class KDSOAP_EXPORT KDSoapPendingCall
 {
 public:
     /**
-     * Creates a copy of the other pending asynchronous call.
+     * Creates a copy of the \p other pending asynchronous call.
      * Note that both objects will refer to the same pending call.
      */
     KDSoapPendingCall(const KDSoapPendingCall &other);
 
     /**
-     * Destroys this copy of the KDSoapPendingCall object. If this copy is
-     * also the last copy of a pending asynchronous call, the call will be
-     * canceled and no further notifications will be received.
+     * Destroys this copy of the KDSoapPendingCall object.
+     * \warning If this copy is also the last copy of a pending asynchronous call,
+     * the call will be canceled and no further notifications will be received.
      */
     ~KDSoapPendingCall();
 
     /**
-     * Creates a copy of the other pending asynchronous call and drops
+     * Creates a copy of the \p other pending asynchronous call and drops
      * the reference to the previously-referenced call. Note that both objects
      * will refer to the same pending call after this function.
      *
-     * If this object contained the last reference of a pending asynchronous
+     * \warning If this object contained the last reference of a pending asynchronous
      * call, the call will be canceled and no further notifications will be
      * received.
      */
@@ -62,16 +64,16 @@ public:
     QVariant returnValue() const;
 
     /**
-     * Returns true if the pending call has finished processing and the reply has been received.
+     * Returns \c true if the pending call has finished processing and the reply has been received.
      *
-     * Note that this function only changes state if an external event happens,
+     * \note This function only changes state if an external event happens,
      * which in general only happens if you return to the event loop execution.
      *
      * You generally do not need to use this: use KDSoapPendingCallWatcher to be notified
      * of the call completion.
      *
-     * WARNING: This method requires Qt 4.6 to work properly. Do not call isFinished when
-     * KDSoap was compiled against 4.4 or 4.5, it will always return false.
+     * \warning This method requires Qt 4.6 to work properly. Do not call isFinished when
+     * KDSoap was compiled against 4.4 or 4.5, it will always return \c false.
      */
     bool isFinished() const;
 
