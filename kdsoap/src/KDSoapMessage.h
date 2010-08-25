@@ -24,11 +24,11 @@ public:
     ~KDSoapMessage();
 
     /**
-     * Constructs a copy of the object given by @p other.
+     * Constructs a copy of the object given by \p other.
      */
     KDSoapMessage(const KDSoapMessage& other);
     /**
-     * Copies the contents of the object given by @p other.
+     * Copies the contents of the object given by \p other.
      */
     KDSoapMessage &operator=(const KDSoapMessage &other);
 
@@ -38,24 +38,33 @@ public:
      */
     enum Use
     {
-      LiteralUse, ///< data is serialized according to a given schema, no xsi:type attributes are written out
-      EncodedUse  ///< each message part references an abstract type using the xsi:type attribute
+      LiteralUse, ///< data is serialized according to a given schema, no \c xsi:type attributes are written out
+      EncodedUse  ///< each message part references an abstract type using the \c xsi:type attribute
     };
 
     /**
      * Define the way the message should be serialized.
-     * The default value is LiteralUse.
+     * The default value is #LiteralUse.
      */
     void setUse(Use use);
     /**
-     * Returns the value passed to setUse.
+     * Returns the value passed to setUse().
      */
     Use use() const;
 
     /**
      * Adds an argument to the message.
      *
-     * Equivalent to arguments().append(KDSoapValue(argumentName, argumentValue [, typeNameSpace, typeName] ));
+     * \param argumentName the argument name (which corresponds to the element or attribute name in the XML)
+     * \param argumentValue this QVariant can hold either a simple value, or a KDSoapValueList of child values.
+     *          (the KDSoapValueList support is mostly for the convenience of the \c kdwsdl2cpp generated code)
+     * \param typeNameSpace namespace of the type of this value; this is only useful if using KDSoapMessage::EncodedUse
+     * \param typeName localname of the type of this value; this is only useful if using KDSoapMessage::EncodedUse
+     *
+     * Equivalent to
+     * \code
+     * arguments().append(KDSoapValue(argumentName, argumentValue [, typeNameSpace, typeName] ));
+     * \endcode
      */
     void addArgument(const QString& argumentName, const QVariant& argumentValue, const QString& typeNameSpace = QString(), const QString& typeName = QString());
 
@@ -72,12 +81,13 @@ public:
     const KDSoapValueList& arguments() const;
 
     /**
-     * @return true if this message is a "fault" message.
+     * \return \c true if this message is a "fault" message.
      * A fault message is the message returned by a SOAP server when an error occurred.
      */
     bool isFault() const;
+
     /**
-     * @return the fault message as a string that can be shown to the user.
+     * \return the fault message as a string that can be shown to the user.
      */
     QString faultAsString() const;
 
@@ -92,7 +102,7 @@ private:
 
 /**
  * Set of headers that can be provided when making a SOAP call.
- * @see KDSoapClientInterface
+ * \see KDSoapClientInterface
  */
 class KDSoapHeaders : public QList<KDSoapMessage>
 {

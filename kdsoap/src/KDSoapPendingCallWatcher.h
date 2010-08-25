@@ -12,15 +12,15 @@
  * when a reply arrives.
  *
  * It is usually used like the following example:
-@code
- KDSoapPendingCall pendingCall = client.asyncCall(QLatin1String("MethodName"), message);
- KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);
-
- QObject::connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher*)),
-                  this, SLOT(slotFinished(KDSoapPendingCallWatcher*)));
-@endcode
+ * \code
+ *  KDSoapPendingCall pendingCall = client.asyncCall(QLatin1String("MethodName"), message);
+ *  KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);
  *
- * Note that it is not necessary to keep the original KDSoapPendingCall object
+ *  QObject::connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher*)),
+ *                   this, SLOT(slotFinished(KDSoapPendingCallWatcher*)));
+ * \endcode
+ *
+ * \note It is not necessary to keep the original KDSoapPendingCall object
  * around since KDSoapPendingCallWatcher inherits from that class too.
  */
 class KDSOAP_EXPORT KDSoapPendingCallWatcher : public QObject, public KDSoapPendingCall
@@ -29,8 +29,8 @@ class KDSOAP_EXPORT KDSoapPendingCallWatcher : public QObject, public KDSoapPend
 public:
     /**
      * Creates a KDSoapPendingCallWatcher object to watch for replies on the
-     * asynchronous pending call @p call and sets this object's parent to
-     * @p parent.
+     * asynchronous pending call \p call and sets this object's parent to
+     * \p parent.
      */
     explicit KDSoapPendingCallWatcher(const KDSoapPendingCall &call, QObject *parent=0);
     /**
@@ -41,7 +41,7 @@ public:
 Q_SIGNALS:
     /**
      * This signal is emitted when the pending call has finished and its reply
-     * is available. The self parameter is a pointer to the object itself,
+     * is available. The \p self parameter is a pointer to the object itself,
      * passed for convenience so that the slot can access the properties and
      * determine the contents of the reply.
      */

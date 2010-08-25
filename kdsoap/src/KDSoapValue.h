@@ -16,7 +16,7 @@ class KDSoapValueList;
  * KDSoapValue represents a value in a SOAP argument list.
  * It is composed of the argument name, and actual value as a QVariant.
  *
- * Optionally, the type name can be set (will become the xsi:type attribute,
+ * Optionally, the type name can be set (will become the \c xsi:type attribute,
  * which gives type information at runtime).
  *
  * In terms of the actual XML being sent or received, this represents one XML element
@@ -39,20 +39,20 @@ public:
     /**
      * Constructs a value from a QVariant.
      *
-     * @param name the argument name (which corresponds to the element or attribute name in the XML)
-     * @param valueVariant this QVariant can hold either a simple value, or a KDSoapValueList of child values.
+     * \param name the argument name (which corresponds to the element or attribute name in the XML)
+     * \param valueVariant this QVariant can hold either a simple value, or a KDSoapValueList of child values.
      *          (the KDSoapValueList support is mostly for the convenience of the kdwsdl2cpp generated code)
-     * @param typeNameSpace namespace of the type of this value; this is only useful if using KDSoapMessage::EncodedUse
-     * @param typeName localname of the type of this value; this is only useful if using KDSoapMessage::EncodedUse
+     * \param typeNameSpace namespace of the type of this value; this is only useful if using KDSoapMessage::EncodedUse
+     * \param typeName localname of the type of this value; this is only useful if using KDSoapMessage::EncodedUse
      */
     KDSoapValue(const QString& name, const QVariant& valueVariant, const QString& typeNameSpace = QString(), const QString& typeName = QString());
     /**
      * Constructs a "complex" value with child values
      *
-     * @param name the argument name (which corresponds to the element or attribute name in the XML)
-     * @param childValues the child elements and the attributes of this value.
-     * @param typeNameSpace namespace of the type of this value; this is only useful if using KDSoapMessage::EncodedUse
-     * @param typeName localname of the type of this value; this is only useful if using KDSoapMessage::EncodedUse
+     * \param name the argument name (which corresponds to the element or attribute name in the XML)
+     * \param childValues the child elements and the attributes of this value.
+     * \param typeNameSpace namespace of the type of this value; this is only useful if using KDSoapMessage::EncodedUse
+     * \param typeName localname of the type of this value; this is only useful if using KDSoapMessage::EncodedUse
      */
     KDSoapValue(const QString& name, const KDSoapValueList& childValues, const QString& typeNameSpace = QString(), const QString& typeName = QString());
 
@@ -76,7 +76,7 @@ public:
     QVariant value() const;
 
     /**
-     * Sets the value of the argument.
+     * Sets the \p value of the argument.
      */
     void setValue(const QVariant& value);
 
@@ -93,14 +93,17 @@ public:
 
     /**
      * Sets the type information for this KDSoapValue, so that it can be sent
-     * in the xsi:type attribute.
+     * in the \c xsi:type attribute.
      * This is only useful if using KDSoapMessage::EncodedUse.
      *
-     * For instance setType("http://www.w3.org/2001/XMLSchema-instance", "string")
-     * will send xsi:type="xsd:string" in the message XML.
+     * For instance
+     * \code
+     * setType("http://www.w3.org/2001/XMLSchema-instance", "string")
+     * \endcode
+     * will send \c xsi:type="xsd:string" in the message XML.
      *
-     * @param typeNameSpace namespace of the type of this value
-     * @param typeName localname of the type of this value
+     * \param nameSpace namespace of the type of this value
+     * \param type localname of the type of this value
      */
     void setType(const QString& nameSpace, const QString& type);
     /**
@@ -133,19 +136,19 @@ class KDSOAP_EXPORT KDSoapValueList : public QList<KDSoapValue>
 {
 public:
     /**
-     * Convenience method for extracting a child argument by @p name.
+     * Convenience method for extracting a child argument by \p name.
      * If multiple arguments have the same name, the first match is returned.
-     * This method mostly makes sense for the case where only one argument uses @p name.
+     * This method mostly makes sense for the case where only one argument uses \p name.
      */
     KDSoapValue child(const QString& name) const;
 
     /**
      * Sets the type of the elements in this array.
      *
-     * This is sent as the soap-enc:arrayType attribute in the XML.
+     * This is sent as the \c soap-enc:arrayType attribute in the XML.
      *
-     * @param nameSpace namespace of the type of this value
-     * @param type localname of the type of this value
+     * \param nameSpace namespace of the type of this value
+     * \param type localname of the type of this value
      */
     void setArrayType(const QString& nameSpace, const QString& type);
     /**
