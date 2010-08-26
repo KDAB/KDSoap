@@ -7,6 +7,7 @@
 #include <KDSoapClientInterface.h>
 #include <KDSoapMessage.h>
 #include <KDSoapPendingCallWatcher.h>
+#include <KDSoapNamespaceManager.h>
 
 using namespace KDSoapUnitTestHelpers;
 
@@ -189,7 +190,7 @@ private Q_SLOTS:
         QByteArray responseData = QByteArray(xmlEnvBegin) + "><soap:Body>"
                                   "<tb:getCountriesResponse xmlns:tb=\"http://namesservice.thomas_bayer.com/\"><tb:country>Great Britain</tb:country><tb:country>Ireland</tb:country></tb:getCountriesResponse>"
                                   " </soap:Body>" + xmlEnvEnd;
-        HttpServerThread server(responseData, HttpServerThread::Public /*TODO ssl test*/);
+        HttpServerThread server(responseData, HttpServerThread::Public);
 
         NamesServiceService serv;
         serv.setEndPoint(server.endPoint());
@@ -213,6 +214,47 @@ private Q_SLOTS:
             QCOMPARE(m_returnMessage.arguments()[0].value().toString(), QString::fromLatin1("Great Britain"));
             QCOMPARE(m_returnMessage.arguments()[1].value().toString(), QString::fromLatin1("Ireland"));
         }
+    }
+
+    void testAnyType()
+    {
+        // Prepare response
+        QByteArray responseData = QByteArray(xmlEnvBegin) + "><soap:Body>"
+                                  "<kdab:AnyTypeResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl/\">"
+                                  "<kdab:return xsd:type=\"xsd:int\">42</kdab:return>"
+                                  "<kdab:return xsd:type=\"xsd:string\">Forty-two</kdab:return>"
+                                  "<kdab:return xsd:type=\"kdab:TeamName\">Minitel</kdab:return>"
+                                  "<kdab:return xsd:type=\"kdab:EmployeeAchievement\">"
+                                    "<kdab:type>Project</kdab:type>"
+                                    "<kdab:label>Management</kdab:label>"
+                                  "</kdab:return>"
+                                  "</kdab:AnyTypeResponse>"
+                                  "</soap:Body>" + xmlEnvEnd;
+        HttpServerThread server(responseData, HttpServerThread::Public);
+        MyWsdlDocument service;
+        service.setEndPoint(server.endPoint());
+
+        KDAB__AnyType anyType;
+        anyType.setInput(KDSoapValue(QString::fromLatin1("foo"), QString::fromLatin1("Value"), KDSoapNamespaceManager::xmlSchema1999(), QString::fromLatin1("string")));
+        const KDAB__AnyTypeResponse response = service.testAnyType(anyType);
+        const QList<KDSoapValue> values = response._return();
+        QCOMPARE(values.count(), 4);
+        QCOMPARE(values.at(0).value().toInt(), 42);
+        QCOMPARE(values.at(1).value().toString(), QString::fromLatin1("Forty-two"));
+        QCOMPARE(values.at(2).value().toString(), QString::fromLatin1("Minitel"));
+        const QList<KDSoapValue> achievements = values.at(3).childValues();
+        QCOMPARE(achievements.count(), 2);
+        QCOMPARE(achievements.at(0).value().toString(), QString::fromLatin1("Project"));
+        QCOMPARE(achievements.at(1).value().toString(), QString::fromLatin1("Management"));
+
+        const QByteArray expectedRequestXml =
+            QByteArray(xmlEnvBegin) + ">"
+            "<soap:Body>"
+            "<n1:testAnyType xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
+            "<n1:foo>Value</n1:foo>"
+            "</n1:testAnyType>"
+            "</soap:Body>" + xmlEnvEnd;
+            QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
     }
 
 public slots:
