@@ -228,8 +228,7 @@ static KODE::Code demarshalVar( TypeMap& typeMap, const QName& type, const QStri
 {
     KODE::Code code;
     if ( typeMap.isTypeAny( type ) ) {
-        Q_ASSERT(false);
-        code += variableName + " = val.value();";
+        code += variableName + " = val;";
     } else if ( typeMap.isBuiltinType( type ) ) {
         code += variableName + " = val.value().value<" + typeName + ">();";
     } else if ( typeMap.isComplexType( type ) ) {
