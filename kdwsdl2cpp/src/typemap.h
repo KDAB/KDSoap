@@ -56,7 +56,7 @@ class TypeMap
     bool isComplexType( const QName &typeName ) const;
 
     /**
-     * Returns true if @p typeName is the special type "any".
+     * Returns true if @p typeName is the special type "any" or "anyType".
      */
     bool isTypeAny( const QName &typeName ) const;
 

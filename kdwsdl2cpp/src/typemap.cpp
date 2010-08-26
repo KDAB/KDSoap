@@ -415,7 +415,7 @@ QString TypeMap::localInputType( const QName &typeName, const QName& elementName
 
 bool KWSDL::TypeMap::isTypeAny(const QName &typeName) const
 {
-    return (typeName.nameSpace() == XMLSchemaURI && typeName.localName() == "any");
+    return (typeName.nameSpace() == XMLSchemaURI && (typeName.localName() == "any" || typeName.localName() == "anyType"));
 }
 
 QString KWSDL::TypeMap::Entry::dumpBools() const
