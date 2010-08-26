@@ -76,7 +76,7 @@
     <itemizedlist>
       <listitem>
         <para>Depending on your version of &kdsoap;, you will find a unique
-        <filename>INSTALL</filename> file cantaining instructions on how to
+        <filename>INSTALL</filename> file containing instructions on how to
         install &kdsoap; on your platform. Each instruction set also includes
         step-by-step description of how to build &kdsoap; directly from the
         source code.</para>
@@ -144,7 +144,7 @@
       <xref linkend="chtxt_kdwsdl2cpp" /> finally describes a less generic but easier and safer to use approach using generated code.</para>
 
       <para>We provide you with many more example programs than shown in this
-      manual. We recommend that our readers try them out and run them. Have a
+      manual. We recommend that you try them out and run them. Have a
       look at the code and experiment with the various settings, both by
       adjusting them via the user interface, and by trying out your own code
       modifications.</para>
@@ -185,7 +185,7 @@ message.addArgument(QLatin1String("year"), 2010);
 KDSoapMessage response = client.call(QLatin1String("GetValentinesDay"), message);
         </programlisting>
 
-        <para>The code example the three basic steps for calling a web service method.</para>
+        <para>The code example shows the three basic steps for calling a web service method.</para>
 
         <itemizedlist>
           <listitem>
@@ -199,7 +199,7 @@ KDSoapMessage response = client.call(QLatin1String("GetValentinesDay"), message)
           </listitem>
         </itemizedlist>
 
-        <para>The reponse, i.e. either the call's return value or an error structure, is delivered in the same abstract form the call parameters where constructed in. Therefore simple use cases like this sample only require use of two classes: <classname>KDSoapClientInterface</classname> and <classname>KDSoapMessage</classname></para>
+        <para>The response, i.e. either the call's return value or an error structure, is delivered in the same abstract form the call parameters where constructed in. Therefore simple use cases like this sample only require use of two classes: <classname>KDSoapClientInterface</classname> and <classname>KDSoapMessage</classname></para>
       </sect2>
 
       <sect2>
@@ -210,13 +210,13 @@ KDSoapMessage response = client.call(QLatin1String("GetValentinesDay"), message)
 
         <itemizedlist>
           <listitem>
-            <para>All interactions with web services happens through instance of <classname>KDSoapClientInterface</classname>. One such instance is needed for each web service an applications wants to interact with, i.e. it is not possible to switch an instance to a different service at runtime.</para>
+            <para>All interactions with web services happens through instances of <classname>KDSoapClientInterface</classname>. One such instance is needed for each web service an application wants to interact with, i.e. it is not possible to switch an instance to a different service at runtime.</para>
             <para><classname>KDSoapClientInterface</classname> provides functionality to make synchronous and asynchronous method calls. The first can be convenient in non-interactive applications or when used in threads, the latter is also suitable for use in a GUI application's main thread.</para>
           </listitem>
 
           <listitem>
-            <para>Web service method calls require the name of the method and a single parameter object of type <classname>KDSoapMessage</classname>. Optional data such as SOAP request headers, e.g. for passing a session identifier alongside the request, can pass with each method call or set permanently on the client interface instance.</para>
-            <para>The single parameter object can contain an arbitrary number of named parameter values, each potentially again being a list. Simple types such as numbers or strings are representable by a single parameter value, complex types, e.g. a structure with multiple members, can be represented as a list of said members.</para>
+            <para>Web service method calls require the name of the method and a single parameter object of type <classname>KDSoapMessage</classname>. Optional data such as SOAP request headers, e.g. for passing a session identifier alongside the request, can be passed with each method call or set permanently on the client interface instance.</para>
+            <para>The single parameter object can contain an arbitrary number of named parameter values, each potentially again being a list. Simple types such as numbers or strings are representable by a single parameter value; complex types, e.g. a structure with multiple members, can be represented as a list of said members.</para>
             <programlisting>
 KDSoapMessage message;
 
@@ -224,7 +224,7 @@ KDSoapMessage message;
 message.addArgument(QLatin1String("text"), "some text");
 
 // add a structured type argument
-QRect rect( 0, 0, 100, 200 );
+QRect rect(0, 0, 100, 200);
 KDSoapValueList rectArgument;
 rectArgument.addArgument(QLatin1String("x"), rect.x());
 rectArgument.addArgument(QLatin1String("y"), rect.y());
@@ -270,7 +270,7 @@ message.addArgument(QLatin1String("rect"), rectArgument);
     <sect1>
       <title id="synchronouscalls">Synchronous Calls</title>
 
-      <para>Calls performed by invoking the <classname>KDSoapClientInterface</classname>'s <methodname>call()</methodname> method are synchronous calls. Synchronous means that the calling thread will not return from the method before it has completed the full roundtrip processing. Due to its similarity with an in-process method call it is the easier to deploy variant supported by &kdsoap;. However, it should only be used when its blocking nature is of little concern, e.g. use in a worker thread or used in a non-interactive application like a command line tool.</para>
+      <para>Calls performed by invoking the <classname>KDSoapClientInterface</classname>'s <methodname>call()</methodname> method are synchronous calls. Synchronous means that the calling thread will not return from the method before it has completed the full roundtrip processing. Due to its similarity with an in-process method call it is the easier to deploy variant supported by &kdsoap;. However, it should only be used when its blocking nature is of little concern, e.g. in a worker thread or in a non-interactive application like a command line tool.</para>
     </sect1>
 
     <sect1>
@@ -282,7 +282,7 @@ message.addArgument(QLatin1String("rect"), rectArgument);
      <programlisting>
 ...
 // mPendingCall is a member variable so it lives beyond
-// the scope of the method creating it and so it mClient
+// the scope of the method creating it and so is mClient
 mPendingCall = mClient-&gt;asynCall(QLatin1String("GetValentinesDay"), message);
 
 ...
@@ -310,7 +310,7 @@ void MyClass::pendingCallFinished(KDSoapPendingCallWatcher* pendingCall)
 }
      </programlisting>
 
-     <para>Both variant support having more than one call pending, i.e. calling another web service method while a previous call is still being processed. However, there might be restrictions on the web service's side, e.g. not allowing more than one call per client at any given time to limit resource usage. In general it is also undetermined whether the results arrive in the same or a different order than the one the requests were sent in.</para>
+     <para>Both variants support having more than one call pending, i.e. calling another web service method while a previous call is still being processed. However, there might be restrictions on the web service's side, e.g. not allowing more than one call per client at any given time to limit resource usage. In general it is also undetermined whether the results arrive in the same or a different order than the one the requests were sent in. A safer solution for multiple concurrent calls is to use multiple instances of KDSoapClientInterface, which results in multiple independent connections to the web service.</para>
 
      <para>Sometimes it might not be necessary at all to know whether a call succeeded or what its result was. In such cases use <methodname>KDSoapClientInterface::callNoReply()</methodname> instead.</para>
     </sect1>
@@ -407,7 +407,7 @@ KDSoapMessage response.call(QLatin1String("doGoogleSearch"), message, soapAction
         </listitem>
 
         <listitem>
-          <para>Type specific classes: instead of building a single message object containing the method's parameters as lists of named values, methods of a generated client interface take C++ types for each of their parameters. If such a parameter is a type described in the WSDL document, a matching class with suitably named methods and again specifically types will have been generated as well.</para>
+          <para>Type specific classes: instead of building a single message object containing the method's parameters as lists of named values, methods of a generated client interface take C++ types for each of their parameters. If such a parameter is a type described in the WSDL document, a matching class with suitably named methods and again specific types will have been generated as well.</para>
         </listitem>
 
         <listitem>
@@ -429,7 +429,7 @@ KDSoapMessage response.call(QLatin1String("doGoogleSearch"), message, soapAction
 
       <para>This creates a header file <filename>wsdl_holidays.h</filename> (choice of file name is up to the user), which will then contain the declarations of all data classes described in th WSDL file as well as the class representing the web service's interface.</para>
 
-      <para><userinput>kdwsdl2cpp -o wsdl_holidays.cpp -impl wsd_holidays.h holidays.wsdl</userinput></para>
+      <para><userinput>kdwsdl2cpp -o wsdl_holidays.cpp -impl wsdl_holidays.h holidays.wsdl</userinput></para>
 
       <para>This creates a source file <filename>wsdl_holidays.cpp</filename> (choice of file name is again up to the user) using the header file <filename>wsdl_holidays.h</filename> as the include for class declarations.</para>
     </sect1>
@@ -456,7 +456,7 @@ public:
     void getValentinesDayError( const KDSoapMessage&amp; fault );
 };
       </programlisting>
-      <para>This is an excerpt of the generated web service interface class. It is a subclass of <classname>QObject</classname> so it can make use of signals for delivering asynchronous results. Both synchronous as well as asynchronous call take an instance of the generate class <classname>TNS__GetValentinesDay</classname> as their only parameter. The synchronous variant returns an instance of class <classname>TNS__GetValentinesDayResponse</classname> once it has completed the call, while the asynchronous <methodname>asyncGetValentinesDay()</methodname> returns without value. Its results are delivered through one of the two signals: <methodname>getValentinesDayDonegetValentinesDayDone()</methodname> which carries an instance of the same class the synchronous <methodname>getValentinesDay()</methodname> returned, or <methodname>getValentinesDayError()</methodname> which carries a fault message (see <xref linkend="apiconcepts" />).</para>
+      <para>This is an excerpt of the generated web service interface class. It is a subclass of <classname>QObject</classname> so it can make use of signals for delivering asynchronous results. Both synchronous as well as asynchronous calls take an instance of the generate class <classname>TNS__GetValentinesDay</classname> as their only parameter. The synchronous variant returns an instance of class <classname>TNS__GetValentinesDayResponse</classname> once it has completed the call, while the asynchronous <methodname>asyncGetValentinesDay()</methodname> returns without value. Its results are delivered through one of the two signals: <methodname>getValentinesDayDone()</methodname> which carries an instance of the same response class returned by the synchronous <methodname>getValentinesDay()</methodname>, or <methodname>getValentinesDayError()</methodname> which carries a fault message (see <xref linkend="apiconcepts" />).</para>
 
       <programlisting>
 class TNS__GetValentinesDay
@@ -581,7 +581,7 @@ KDWSDL = holidays.wsdl
             <filename>examples/holidays_wsdl/holidays.cpp</filename> to show what
             you are trying to achieve you can just send us the
             <filename>holidays.cpp</filename> file and state that it is a to be
-            used in <filename>examples/holdiays_wsdl/</filename>.</para>
+            used in <filename>examples/holidays_wsdl/</filename>.</para>
           </answer>
         </qandaentry>
       </qandadiv>
