@@ -63,10 +63,25 @@ public:
      *
      * Equivalent to
      * \code
-     * arguments().append(KDSoapValue(argumentName, argumentValue [, typeNameSpace, typeName] ));
+     * arguments().addArgument(argumentName, argumentValue [, typeNameSpace, typeName] );
      * \endcode
      */
     void addArgument(const QString& argumentName, const QVariant& argumentValue, const QString& typeNameSpace = QString(), const QString& typeName = QString());
+
+    /**
+     * Adds a complex-type argument to the message.
+     *
+     * \param argumentName the argument name (which corresponds to the element or attribute name in the XML)
+     * \param argumentValueList KDSoapValueList of child values.
+     * \param typeNameSpace namespace of the type of this value; this is only useful if using KDSoapMessage::EncodedUse
+     * \param typeName localname of the type of this value; this is only useful if using KDSoapMessage::EncodedUse
+     *
+     * Equivalent to
+     * \code
+     * arguments().append(KDSoapValue(argumentName, argumentValueList [, typeNameSpace, typeName] ));
+     * \endcode
+     */
+    void addArgument(const QString& argumentName, const KDSoapValueList& argumentValueList, const QString& typeNameSpace = QString(), const QString& typeName = QString());
 
     /**
      * Returns the arguments for the message.

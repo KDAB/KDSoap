@@ -136,6 +136,22 @@ class KDSOAP_EXPORT KDSoapValueList : public QList<KDSoapValue>
 {
 public:
     /**
+     * Convenience method for adding an argument to the list.
+     *
+     * \param argumentName the argument name (which corresponds to the element or attribute name in the XML)
+     * \param argumentValue this QVariant can hold either a simple value, or a KDSoapValueList of child values.
+     *          (the KDSoapValueList support is mostly for the convenience of the \c kdwsdl2cpp generated code)
+     * \param typeNameSpace namespace of the type of this value; this is only useful if using KDSoapMessage::EncodedUse
+     * \param typeName localname of the type of this value; this is only useful if using KDSoapMessage::EncodedUse
+     *
+     * Equivalent to
+     * \code
+     * append(KDSoapValue(argumentName, argumentValue [, typeNameSpace, typeName] ));
+     * \endcode
+     */
+    void addArgument(const QString& argumentName, const QVariant& argumentValue, const QString& typeNameSpace = QString(), const QString& typeName = QString());
+
+    /**
      * Convenience method for extracting a child argument by \p name.
      * If multiple arguments have the same name, the first match is returned.
      * This method mostly makes sense for the case where only one argument uses \p name.

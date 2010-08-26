@@ -3,6 +3,7 @@
 #include "KDSoapValue.h"
 #include "KDSoapPendingCallWatcher.h"
 #include "KDSoapAuthentication.h"
+#include "KDSoapNamespaceManager.h"
 #include "httpserver_p.h"
 #include <QtTest/QtTest>
 #include <QEventLoop>
@@ -210,10 +211,18 @@ private Q_SLOTS:
         KDSoapValue orderperson(QString::fromLatin1("orderperson"), QString::fromLatin1("someone"), countryMessageNamespace(), QString::fromLatin1("Person"));
         valueList.append(orderperson);
         valueList.attributes().append(KDSoapValue(QString::fromLatin1("attr"), QString::fromLatin1("attrValue")));
-        KDSoapValue order(QString::fromLatin1("order"), valueList, countryMessageNamespace(), QString::fromLatin1("MyOrder"));
-        message.arguments().append(order);
+        message.addArgument(QString::fromLatin1("order"), valueList, countryMessageNamespace(), QString::fromLatin1("MyOrder"));
 
-        const QString XMLSchemaNS = QString::fromLatin1("http://www.w3.org/2001/XMLSchema"); // TODO namespace repository
+        // Code from documentation
+        QRect rect(0, 0, 100, 200);
+        KDSoapValueList rectArgument;
+        rectArgument.addArgument(QLatin1String("x"), rect.x());
+        rectArgument.addArgument(QLatin1String("y"), rect.y());
+        rectArgument.addArgument(QLatin1String("width"), rect.width());
+        rectArgument.addArgument(QLatin1String("height"), rect.height());
+        message.addArgument(QLatin1String("rect"), rectArgument); // NOTE: type information is missing
+
+        const QString XMLSchemaNS = KDSoapNamespaceManager::xmlSchema2001();
 
         // Test array
         KDSoapValueList arrayContents;
@@ -244,6 +253,7 @@ private Q_SLOTS:
             "<n1:testString xsi:type=\"xsd:string\">Hello Klarälvdalens</n1:testString>"
             "<n1:val xsi:type=\"n1:MyVal\" n1:attr=\"attrValue\">5</n1:val>"
             "<n1:order xsi:type=\"n1:MyOrder\" n1:attr=\"attrValue\"><n1:orderperson xsi:type=\"n1:Person\">someone</n1:orderperson></n1:order>"
+            "<n1:rect><n1:x xsi:type=\"xsd:int\">0</n1:x><n1:y xsi:type=\"xsd:int\">0</n1:y><n1:width xsi:type=\"xsd:int\">100</n1:width><n1:height xsi:type=\"xsd:int\">200</n1:height></n1:rect>"
             "<n1:testArray xsi:type=\"soap-enc:Array\" soap-enc:arrayType=\"xsd:string[2]\">"
              "<n1:item xsi:type=\"xsd:string\">kdab</n1:item>"
              "<n1:item xsi:type=\"xsd:string\">rocks</n1:item>"
@@ -275,10 +285,10 @@ private Q_SLOTS:
     {
         HttpServerThread server(complexTypeResponse(), HttpServerThread::Public);
         KDSoapClientInterface client(server.endPoint(), countryMessageNamespace());
-        const KDSoapMessage reply = client.call(QLatin1String("getEmployeeCountry"), countryMessage());
-        QVERIFY(!reply.isFault());
-        QCOMPARE(reply.arguments().count(), 1);
-        const KDSoapValueList lst = reply.arguments().first().childValues();
+        const KDSoapMessage response = client.call(QLatin1String("getEmployeeCountry"), countryMessage());
+        QVERIFY(!response.isFault());
+        QCOMPARE(response.arguments().count(), 1);
+        const KDSoapValueList lst = response.arguments().first().childValues();
         QCOMPARE(lst.count(), 3);
         const KDSoapValue id = lst.first();
         QCOMPARE(id.name(), QString::fromLatin1("id"));
@@ -299,6 +309,10 @@ private Q_SLOTS:
         const KDSoapValue array = lst.at(2);
         QCOMPARE(array.name(), QString::fromLatin1("testArray"));
         //qDebug() << array;
+
+        // Code from documentation
+        const QString sessionId = response.arguments()[0].value().toString();
+        Q_UNUSED(sessionId);
     }
 
 private:

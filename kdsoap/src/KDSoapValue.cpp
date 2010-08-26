@@ -131,3 +131,8 @@ QString KDSoapValueList::arrayType() const
 {
     return m_arrayType.second;
 }
+
+void KDSoapValueList::addArgument(const QString& argumentName, const QVariant& argumentValue, const QString& typeNameSpace, const QString& typeName)
+{
+    append(KDSoapValue(argumentName, argumentValue, typeNameSpace, typeName));
+}
