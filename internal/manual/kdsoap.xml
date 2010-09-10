@@ -233,6 +233,25 @@ rectArgument.addArgument(QLatin1String("height"), rect.height());
 
 message.addArgument(QLatin1String("rect"), rectArgument);
             </programlisting>
+
+            <note>
+                <para>When manually constructing message call arguments, it is the responsibility of the developer to provide &kdsoap; with marshalling hints if necessary. These hints are either defined as enums of the respective &kdsoap; class or through explicit type specification</para>
+              <itemizedlist>
+                <listitem>
+                    <para><constant>KDSoapClientInterface::SoapVersion</constant></para>
+                </listitem>
+                <listitem>
+                    <para><constant>KDSoapMessage::Use</constant></para>
+                </listitem>
+                <listitem>
+                    <para><methodname>KDSoapValue::setType()</methodname></para>
+                </listitem>
+                <listitem>
+                    <para><methodname>KDSoapValueList::setArrayType()</methodname></para>
+                </listitem>
+              </itemizedlist>
+              <para>See <xref linkend="chtxt_kdwsdl2cpp" /> for an approach on how to automate that.</para>
+            </note>
           </listitem>
 
           <listitem>
