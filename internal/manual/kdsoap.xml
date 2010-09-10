@@ -576,12 +576,13 @@ KDWSDL = holidays.wsdl
             </note>
 
             <para>Often the easiest way to create such a sample program could
-            be to modify one of our programs and send the source file, e.g. if
-            you have modified
-            <filename>examples/holidays_wsdl/holidays.cpp</filename> to show what
-            you are trying to achieve you can just send us the
-            <filename>holidays.cpp</filename> file and state that it is a to be
-            used in <filename>examples/holidays_wsdl/</filename>.</para>
+            be to look at one of our example programs, e.g.
+            <filename>examples/holidays_wsdl/holidays.cpp</filename> and do something similar just with your WSDL file.</para>
+            <para>If the webservice is not available to us, e.g. is software not available as at least a trial version and you (or your customer) not allowed to create a test account for us on your installation, we'll probably require logs of the SOAP communication as well.</para>
+            <para>&kdsoap; has built-in functionality to print the SOAP communication to the application's standard output. To enables this either set the environment variable <literal>KDSOAP_DEBUG</literal> to <literal>1</literal> or put the following code into the test application:</para>
+            <programlisting>
+qputenv( "KDSOAP_DEBUG", "1" );
+            </programlisting>
           </answer>
         </qandaentry>
       </qandadiv>
