@@ -12,7 +12,8 @@
 #endif
 #include <QUrl>
 #include <QStringList>
-
+#include <QSslCertificate>
+#include <QSslKey>
 namespace KDSoapUnitTestHelpers
 {
     KDSOAP_EXPORT bool xmlBufferCompare(const QByteArray& source, const QByteArray& dest);
@@ -23,9 +24,8 @@ namespace KDSoapUnitTestHelpers
 static void setupSslServer(QSslSocket* serverSocket)
 {
     serverSocket->setProtocol(QSsl::AnyProtocol);
-    // TODO
-    //serverSocket->setLocalCertificate (SRCDIR "/certs/server.pem");
-    //serverSocket->setPrivateKey (SRCDIR  "/certs/server.key");
+    serverSocket->setLocalCertificate (QString::fromLatin1("certs/qt-test-server-cacert.pem"));
+    serverSocket->setPrivateKey (QString::fromLatin1("certs/server.key"));
 }
 #endif
 
