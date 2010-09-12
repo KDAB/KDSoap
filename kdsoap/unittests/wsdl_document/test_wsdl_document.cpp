@@ -171,7 +171,7 @@ private Q_SLOTS:
         HttpServerThread server(responseData, HttpServerThread::Public);
         MyWsdlDocument service;
         service.setEndPoint(server.endPoint());
-
+	
         KDAB__EmployeeType employeeType = service.getEmployeeType(KDAB__EmployeeName(QLatin1String("Joe")));
         if (!service.lastError().isEmpty())
             qDebug() << service.lastError();
@@ -182,7 +182,29 @@ private Q_SLOTS:
         QCOMPARE((int)employeeType.type().type(), (int)KDAB__EmployeeTypeEnum::Developer);
     }
 
-
+    void testSoapVersion()
+    {
+        // Prepare response
+        QByteArray responseData = QByteArray(xmlEnvBegin) + "><soap:Body>"
+                                  "<kdab:getEmployeeTypeResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl/\" kdab:type=\"Developer\">"
+                                    "<kdab:team>Minitel</kdab:team>"
+                                    "<kdab:otherRoles>TeamLeader</kdab:otherRoles>"
+                                  "</kdab:getEmployeeTypeResponse>"
+                                  "</soap:Body>" + xmlEnvEnd;
+        HttpServerThread server(responseData, HttpServerThread::Public);
+        MyWsdlDocument service;
+        service.setEndPoint(server.endPoint());
+	
+	service.setSoapVersion(1);
+        KDAB__EmployeeType employeeType = service.getEmployeeType(KDAB__EmployeeName(QLatin1String("Joe")));
+	QVERIFY(service.lastError().isEmpty());
+	
+	service.setSoapVersion(2);
+	KDAB__EmployeeType employeeType2 = service.getEmployeeType(KDAB__EmployeeName(QLatin1String("Joe")));
+	QVERIFY(service.lastError().isEmpty());
+	
+    }
+    
     // Was http://www.service-repository.com/service/wsdl?id=163859, but it disappeared.
     void testSequenceInResponse()
     {
