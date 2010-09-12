@@ -52,11 +52,11 @@ private slots:
     {
         const int year = 2009;
         USHolidayDates holidays;
+	//holidays.setSoapVersion(2);
         TNS__GetValentinesDay parameters;
         parameters.setYear(year);
         TNS__GetValentinesDayResponse response = holidays.getValentinesDay(parameters);
 	QString dateString = response.getValentinesDayResult().date().toString(Qt::ISODate);
-	qDebug() << dateString;
         QCOMPARE(dateString, QString::fromLatin1("2009-02-14"));
     }
     
