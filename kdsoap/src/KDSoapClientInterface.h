@@ -39,9 +39,9 @@ public:
      */
     enum SoapVersion {
       /** Use format version 1.1 of the SOAP specification */
-      SOAP1_1,
+      SOAP1_1 = 1,
       /** Use format version 1.2 of the SOAP specification */
-      SOAP1_2
+      SOAP1_2 = 2
     };
 
     /**
