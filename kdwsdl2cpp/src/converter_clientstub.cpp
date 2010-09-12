@@ -111,7 +111,15 @@ void Converter::convertClientService()
 	  KODE::Function setSoapVersion("setSoapVersion", "void");
 	  setSoapVersion.addArgument("int soapVersion");
 	  KODE::Code code;
-	  code +="clientInterface()->setSoapVersion((KDSoapClientInterface::SoapVersion)soapVersion);";
+	  code += "if (soapVersion == 1){";
+	  code.indent();
+	  code += "clientInterface()->setSoapVersion(KDSoapClientInterface::SOAP1_1);";
+	  code.unindent();
+	  code += "}else{";
+	  code.indent();
+	  code += "clientInterface()->setSoapVersion(KDSoapClientInterface::SOAP1_2);";
+	  code.unindent();
+	  code += "}";
 	  setSoapVersion.setBody(code);
 	  setSoapVersion.setDocs("Overwrite the soap version defined in the .wsdl file, with another version. \n"
 				"version can be 1 for soap 1.1 or 2 for soap 1.2");
@@ -153,7 +161,7 @@ void Converter::convertClientService()
           code += "const QString endPoint = !d_ptr->m_endPoint.isEmpty() ? d_ptr->m_endPoint : QString::fromLatin1(\"" + QLatin1String(webserviceLocation.toEncoded()) + "\");";
           code += "const QString messageNamespace = QString::fromLatin1(\"" + mWSDL.definitions().targetNamespace() + "\");";
           code += "d_ptr->m_clientInterface = new KDSoapClientInterface(endPoint, messageNamespace);";
-	  code += "d_ptr->m_clientInterface->setSoapVersion( (KDSoapClientInterface::SoapVersion) 1 );";
+	  code += "d_ptr->m_clientInterface->setSoapVersion( KDSoapClientInterface::SOAP1_1 );";
           code.unindent();
           code += "}";
           code += "return d_ptr->m_clientInterface;";

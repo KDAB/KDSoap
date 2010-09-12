@@ -37,17 +37,29 @@ private slots:
 
     // Soap in Document mode.
 
-    void testHolidays_wsdl()
+    void testHolidays_wsdl_soap1_1()
     {
         const int year = 2009;
         USHolidayDates holidays;
         TNS__GetValentinesDay parameters;
         parameters.setYear(year);
         TNS__GetValentinesDayResponse response = holidays.getValentinesDay(parameters);
-        QCOMPARE(response.getValentinesDayResult().date().toString(Qt::ISODate),
-                 QString::fromLatin1("2009-02-14"));
+	QString dateString = response.getValentinesDayResult().date().toString(Qt::ISODate);
+        QCOMPARE(dateString, QString::fromLatin1("2009-02-14"));
     }
 
+    void testHolidays_wsdl_soap1_2()
+    {
+        const int year = 2009;
+        USHolidayDates holidays;
+        TNS__GetValentinesDay parameters;
+        parameters.setYear(year);
+        TNS__GetValentinesDayResponse response = holidays.getValentinesDay(parameters);
+	QString dateString = response.getValentinesDayResult().date().toString(Qt::ISODate);
+	qDebug() << dateString;
+        QCOMPARE(dateString, QString::fromLatin1("2009-02-14"));
+    }
+    
     void testParallelAsyncRequests()
     {
         USHolidayDates holidays;
