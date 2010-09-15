@@ -1,4 +1,4 @@
-//#include "KDSoapClientInterface.h"
+#include "KDSoapClientInterface.h"
 //#include "KDSoapMessage.h"
 //#include "KDSoapValue.h"
 #include "wsdl_soapresponder.h"
@@ -19,6 +19,7 @@ private slots:
     void testSoapResponder_sync()
     {
         SoapResponder responder;
+        responder.setSoapVersion(KDSoapClientInterface::SOAP1_2);
         QString ret = responder.method1(QLatin1String("abc"), QLatin1String("def"));
         QCOMPARE(ret, QString::fromLatin1("Your input parameters are abc and def"));
     }
@@ -37,7 +38,7 @@ private slots:
 
     // Soap in Document mode.
 
-    void testHolidays_wsdl_soap1_1()
+    void testHolidays_wsdl_soap()
     {
         const int year = 2009;
         USHolidayDates holidays;
@@ -48,18 +49,6 @@ private slots:
         QCOMPARE(dateString, QString::fromLatin1("2009-02-14"));
     }
 
-    void testHolidays_wsdl_soap1_2()
-    {
-        const int year = 2009;
-        USHolidayDates holidays;
-	//holidays.setSoapVersion(2);
-        TNS__GetValentinesDay parameters;
-        parameters.setYear(year);
-        TNS__GetValentinesDayResponse response = holidays.getValentinesDay(parameters);
-	QString dateString = response.getValentinesDayResult().date().toString(Qt::ISODate);
-        QCOMPARE(dateString, QString::fromLatin1("2009-02-14"));
-    }
-    
     void testParallelAsyncRequests()
     {
         USHolidayDates holidays;
