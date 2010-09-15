@@ -38,7 +38,7 @@ public:
     ~BlockingHttpServer() {}
 
     QTcpSocket* waitForNextConnectionSocket() {
-        if (!waitForNewConnection(2000))
+        if (!waitForNewConnection(10000)) // 2000 would be enough, except in valgrind
             return 0;
         if (doSsl) {
             Q_ASSERT(sslSocket);
@@ -183,24 +183,29 @@ protected:
                 break;
             }
 
-            //qDebug() << "headers received:" << m_receivedHeader;
+            //qDebug() << "headers received:" << m_receivedHeaders;
+            //qDebug() << headers;
             //qDebug() << "data received:" << m_receivedData;
 
+
             if (m_features & BasicAuth) {
-                const QByteArray authValue = headers.value("Authorization");
+                QByteArray authValue = headers.value("Authorization");
+                if (authValue.isEmpty())
+                    authValue = headers.value("authorization"); // as sent by Qt-4.5
                 bool authOk = false;
                 if (!authValue.isEmpty()) {
-                    //qDebug() << "got authValue=" << authValue; // looks like "Basic <base64 of user:pass>"
+                    qDebug() << "got authValue=" << authValue; // looks like "Basic <base64 of user:pass>"
                     Method method;
                     QString headerVal;
                     parseAuthLine(QString::fromLatin1(authValue), &method, &headerVal);
+                    //qDebug() << "method=" << method << "headerVal=" << headerVal;
                     switch (method) {
                     case None: // we want auth, so reject "None"
                         break;
                     case Basic:
                         {
                         const QByteArray userPass = QByteArray::fromBase64(headerVal.toLatin1());
-                        //qDebug() << userPass;
+                        qDebug() << userPass;
                         // TODO if (validateAuth(userPass)) {
                         if (userPass == ("kdab:testpass")) {
                             authOk = true;

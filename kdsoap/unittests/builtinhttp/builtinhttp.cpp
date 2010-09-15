@@ -77,8 +77,11 @@ private Q_SLOTS:
         KDSoapPendingCall call = client.asyncCall(QLatin1String("getEmployeeCountry"), countryMessage());
         QVERIFY(!call.isFinished());
         waitForCallFinished(call);
-        QVERIFY(xmlBufferCompare(server.receivedData(), expectedCountryRequest()));
+        qDebug() << server.receivedHeaders();
 #if QT_VERSION >= 0x040600
+        // Auth is broken in Qt-4.5: QNetworkAccessManager doesn't re-send the body when it re-sends the request
+        // with an authorization header (in response to a 401). Bug in Qt-4.5?
+        QVERIFY(xmlBufferCompare(server.receivedData(), expectedCountryRequest()));
         QVERIFY(call.isFinished());
 #endif
         QCOMPARE(call.returnMessage().arguments().child(QLatin1String("employeeCountry")).value().toString(), QString::fromLatin1("France"));
@@ -96,8 +99,8 @@ private Q_SLOTS:
         KDSoapPendingCall call = client.asyncCall(QLatin1String("getEmployeeCountry"), countryMessage());
         QVERIFY(!call.isFinished());
         waitForCallFinished(call);
-        QVERIFY(xmlBufferCompare(server.receivedData(), expectedCountryRequest()));
 #if QT_VERSION >= 0x040600
+        QVERIFY(xmlBufferCompare(server.receivedData(), expectedCountryRequest()));
         QVERIFY(call.isFinished());
 #endif
         QVERIFY(call.returnMessage().isFault());
