@@ -93,7 +93,7 @@ void KDSoapUnitTestHelpers::httpGet(const QUrl& url)
 static void setupSslServer(QSslSocket* serverSocket)
 {
     serverSocket->setProtocol(QSsl::AnyProtocol);
-    serverSocket->setLocalCertificate(QString::fromLatin1("certs/qt-test-server-cacert.pem"));
+    serverSocket->setLocalCertificate(QString::fromLatin1("certs/server.pem"));
     serverSocket->setPrivateKey(QString::fromLatin1("certs/server.key"));
 }
 #endif
@@ -130,6 +130,12 @@ public:
             // ### fails in QSslSocketBackendPrivate::startServerEncryption
             serverSocket->startServerEncryption();
             sslSocket = serverSocket;
+            // If startServerEncryption fails internally [and waitForEncrypted hangs],
+            // then this is how to debug it.
+            // A way to catch such errors is really missing in Qt..
+            //qDebug() << "startServerEncryption said:" << sslSocket->errorString();
+            bool ok = serverSocket->waitForEncrypted();
+            Q_ASSERT(ok);
         } else
 #endif
             QTcpServer::incomingConnection(socketDescriptor);
