@@ -20,61 +20,6 @@ namespace KDSoapUnitTestHelpers
     KDSOAP_EXPORT void httpGet(const QUrl& url);
 }
 
-#ifndef QT_NO_OPENSSL
-static void setupSslServer(QSslSocket* serverSocket)
-{
-    serverSocket->setProtocol(QSsl::AnyProtocol);
-    serverSocket->setLocalCertificate (QString::fromLatin1("certs/qt-test-server-cacert.pem"));
-    serverSocket->setPrivateKey (QString::fromLatin1("certs/server.key"));
-}
-#endif
-
-// A blocking http server (must be used in a thread) which supports SSL.
-class BlockingHttpServer : public QTcpServer
-{
-    Q_OBJECT
-public:
-    BlockingHttpServer(bool ssl) : doSsl(ssl), sslSocket(0) {}
-    ~BlockingHttpServer() {}
-
-    QTcpSocket* waitForNextConnectionSocket() {
-        if (!waitForNewConnection(10000)) // 2000 would be enough, except in valgrind
-            return 0;
-        if (doSsl) {
-            Q_ASSERT(sslSocket);
-            return sslSocket;
-        } else {
-            //qDebug() << "returning nextPendingConnection";
-            return nextPendingConnection();
-        }
-    }
-    virtual void incomingConnection(int socketDescriptor)
-    {
-#ifndef QT_NO_OPENSSL
-        if (doSsl) {
-            QSslSocket *serverSocket = new QSslSocket;
-            serverSocket->setParent(this);
-            serverSocket->setSocketDescriptor(socketDescriptor);
-            connect(serverSocket, SIGNAL(sslErrors(QList<QSslError>)), this, SLOT(slotSslErrors(QList<QSslError>)));
-            setupSslServer(serverSocket);
-            serverSocket->startServerEncryption();
-            sslSocket = serverSocket;
-        } else
-#endif
-            QTcpServer::incomingConnection(socketDescriptor);
-    }
-private slots:
-#ifndef QT_NO_OPENSSL
-    void slotSslErrors(const QList<QSslError>& errors)
-    {
-        qDebug() << "slotSslErrors" << sslSocket->errorString() << errors;
-    }
-#endif
-private:
-    const bool doSsl;
-    QTcpSocket* sslSocket;
-};
-
 class KDSOAP_EXPORT HttpServerThread : public QThread
 {
     Q_OBJECT
@@ -119,60 +64,14 @@ public:
         m_receivedHeaders.clear();
     }
 
-    QByteArray header(QByteArray value){
-        HeadersMap headers = parseHeaders(m_receivedHeaders );
-        return headers.value(value);
+    QByteArray header(const QByteArray& value) const {
+        return m_headers.value(value);
     }
 protected:
     /* \reimp */ void run();
 
 private:
-    static bool splitHeadersAndData(const QByteArray& request, QByteArray& header, QByteArray& data)
-    {
-        const int sep = request.indexOf("\r\n\r\n");
-        if (sep <= 0)
-            return false;
-        header = request.left(sep);
-        data = request.mid(sep + 4);
-        return true;
-    }
-    
-    typedef QMap<QByteArray, QByteArray> HeadersMap;
-    HeadersMap parseHeaders(const QByteArray& headerData) const{
-        HeadersMap headersMap;
-        QBuffer sourceBuffer;
-        sourceBuffer.setData(headerData);
-        sourceBuffer.open(QIODevice::ReadOnly);
-        // The first line is special, it's the GET or POST line
-        const QList<QByteArray> firstLine = sourceBuffer.readLine().split(' ');
-        if (firstLine.count() < 3) {
-            qDebug() << "Malformed HTTP request:" << firstLine;
-            return headersMap;
-        }
-        const QByteArray request = firstLine[0];
-        const QByteArray path = firstLine[1];
-        const QByteArray httpVersion = firstLine[2];
-        if (request != "GET" && request != "POST") {
-            qDebug() << "Unknown HTTP request:" << firstLine;
-            return headersMap;
-        }
-        headersMap.insert("_path", path);
-        headersMap.insert("_httpVersion", httpVersion);
 
-        while (!sourceBuffer.atEnd()) {
-            const QByteArray line = sourceBuffer.readLine();
-            const int pos = line.indexOf(':');
-            if (pos == -1)
-                qDebug() << "Malformed HTTP header:" << line;
-            const QByteArray header = line.left(pos);
-            const QByteArray value = line.mid(pos+1).trimmed(); // remove space before and \r\n after
-            //qDebug() << "HEADER" << header << "VALUE" << value;
-            headersMap.insert(header, value);
-        }
-        return headersMap;
-    }
-    
-    
     enum Method { None, Basic, Plain, Login, Ntlm, CramMd5, DigestMd5 };
     static void parseAuthLine(const QString& str, Method* method, QString* headerVal)
     {
@@ -219,6 +118,7 @@ private:
     QByteArray m_dataToSend;
     QByteArray m_receivedData;
     QByteArray m_receivedHeaders;
+    QMap<QByteArray, QByteArray> m_headers;
     int m_port;
     Features m_features;
 };
