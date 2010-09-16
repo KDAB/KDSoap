@@ -89,6 +89,108 @@ void KDSoapUnitTestHelpers::httpGet(const QUrl& url)
     delete reply;
 }
 
+#ifndef QT_NO_OPENSSL
+static void setupSslServer(QSslSocket* serverSocket)
+{
+    serverSocket->setProtocol(QSsl::AnyProtocol);
+    serverSocket->setLocalCertificate(QString::fromLatin1("certs/qt-test-server-cacert.pem"));
+    serverSocket->setPrivateKey(QString::fromLatin1("certs/server.key"));
+}
+#endif
+
+// A blocking http server (must be used in a thread) which supports SSL.
+class BlockingHttpServer : public QTcpServer
+{
+    Q_OBJECT
+public:
+    BlockingHttpServer(bool ssl) : doSsl(ssl), sslSocket(0) {}
+    ~BlockingHttpServer() {}
+
+    QTcpSocket* waitForNextConnectionSocket() {
+        if (!waitForNewConnection(10000)) // 2000 would be enough, except in valgrind
+            return 0;
+        if (doSsl) {
+            Q_ASSERT(sslSocket);
+            return sslSocket;
+        } else {
+            //qDebug() << "returning nextPendingConnection";
+            return nextPendingConnection();
+        }
+    }
+    virtual void incomingConnection(int socketDescriptor)
+    {
+#ifndef QT_NO_OPENSSL
+        if (doSsl) {
+            QSslSocket *serverSocket = new QSslSocket;
+            serverSocket->setParent(this);
+            serverSocket->setSocketDescriptor(socketDescriptor);
+            connect(serverSocket, SIGNAL(sslErrors(QList<QSslError>)), this, SLOT(slotSslErrors(QList<QSslError>)));
+            setupSslServer(serverSocket);
+            qDebug() << "Created QSslSocket, starting server encryption";
+            // ### fails in QSslSocketBackendPrivate::startServerEncryption
+            serverSocket->startServerEncryption();
+            sslSocket = serverSocket;
+        } else
+#endif
+            QTcpServer::incomingConnection(socketDescriptor);
+    }
+private slots:
+#ifndef QT_NO_OPENSSL
+    void slotSslErrors(const QList<QSslError>& errors)
+    {
+        qDebug() << "slotSslErrors" << sslSocket->errorString() << errors;
+    }
+#endif
+private:
+    const bool doSsl;
+    QTcpSocket* sslSocket;
+};
+
+static bool splitHeadersAndData(const QByteArray& request, QByteArray& header, QByteArray& data)
+{
+    const int sep = request.indexOf("\r\n\r\n");
+    if (sep <= 0)
+        return false;
+    header = request.left(sep);
+    data = request.mid(sep + 4);
+    return true;
+}
+
+typedef QMap<QByteArray, QByteArray> HeadersMap;
+static HeadersMap parseHeaders(const QByteArray& headerData) {
+    HeadersMap headersMap;
+    QBuffer sourceBuffer;
+    sourceBuffer.setData(headerData);
+    sourceBuffer.open(QIODevice::ReadOnly);
+    // The first line is special, it's the GET or POST line
+    const QList<QByteArray> firstLine = sourceBuffer.readLine().split(' ');
+    if (firstLine.count() < 3) {
+        qDebug() << "Malformed HTTP request:" << firstLine;
+        return headersMap;
+    }
+    const QByteArray request = firstLine[0];
+    const QByteArray path = firstLine[1];
+    const QByteArray httpVersion = firstLine[2];
+    if (request != "GET" && request != "POST") {
+        qDebug() << "Unknown HTTP request:" << firstLine;
+        return headersMap;
+    }
+    headersMap.insert("_path", path);
+    headersMap.insert("_httpVersion", httpVersion);
+
+    while (!sourceBuffer.atEnd()) {
+        const QByteArray line = sourceBuffer.readLine();
+        const int pos = line.indexOf(':');
+        if (pos == -1)
+            qDebug() << "Malformed HTTP header:" << line;
+        const QByteArray header = line.left(pos);
+        const QByteArray value = line.mid(pos+1).trimmed(); // remove space before and \r\n after
+        //qDebug() << "HEADER" << header << "VALUE" << value;
+        headersMap.insert(header, value);
+    }
+    return headersMap;
+}
+
 void HttpServerThread::run()
 {
     BlockingHttpServer server(m_features & Ssl);
@@ -133,14 +235,14 @@ void HttpServerThread::run()
         const bool splitOK = splitHeadersAndData(request, m_receivedHeaders, m_receivedData);
         Q_ASSERT(splitOK);
         Q_UNUSED(splitOK); // To avoid a warning if Q_ASSERT doesn't expand to anything.
-        QMap<QByteArray, QByteArray> headers = parseHeaders(m_receivedHeaders);
+        m_headers = parseHeaders(m_receivedHeaders);
 
-        if (headers.value("_path").endsWith("terminateThread")) // we're asked to exit
+        if (m_headers.value("_path").endsWith("terminateThread")) // we're asked to exit
             break; // normal exit
 
         // TODO compared with expected SoapAction
-        QList<QByteArray> contentTypes = headers.value("Content-Type").split(';');
-        if (contentTypes[0] == "text/xml" && headers.value("SoapAction").isEmpty()) {
+        QList<QByteArray> contentTypes = m_headers.value("Content-Type").split(';');
+        if (contentTypes[0] == "text/xml" && m_headers.value("SoapAction").isEmpty()) {
             qDebug() << "ERROR: no SoapAction set for Soap 1.1";
             break;
         }else if( contentTypes[0] == "application/soap+xml" && !contentTypes[2].startsWith("action")){
@@ -154,9 +256,9 @@ void HttpServerThread::run()
 
 
         if (m_features & BasicAuth) {
-            QByteArray authValue = headers.value("Authorization");
+            QByteArray authValue = m_headers.value("Authorization");
             if (authValue.isEmpty())
-                authValue = headers.value("authorization"); // as sent by Qt-4.5
+                authValue = m_headers.value("authorization"); // as sent by Qt-4.5
             bool authOk = false;
             if (!authValue.isEmpty()) {
                 //qDebug() << "got authValue=" << authValue; // looks like "Basic <base64 of user:pass>"
@@ -211,3 +313,4 @@ void HttpServerThread::run()
 }
 
 #include "moc_httpserver_p.cpp"
+#include "httpserver_p.moc"
