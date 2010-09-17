@@ -199,7 +199,7 @@ private Q_SLOTS:
         QString ret = service.addEmployee(addEmployeeParameters());
         if (!service.lastError().isEmpty())
             qDebug() << service.lastError();
-	
+
         QVERIFY(service.lastError().isEmpty());
         QCOMPARE(ret, QString::fromLatin1("Foo"));
         // Check what we sent
@@ -208,6 +208,22 @@ private Q_SLOTS:
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
         QCOMPARE(QString::fromUtf8(server.receivedData()), QString::fromUtf8(expectedRequestXml));
         QVERIFY(server.receivedHeaders().contains("SoapAction: http://www.kdab.com/AddEmployee"));
+    }
+
+    // Test calls with 'simple type' arguments
+    // Same as the call made by builtinhttp, but here using the wsdl-generated code
+    void testSimpleType()
+    {
+        HttpServerThread server(countryResponse(), HttpServerThread::Public);
+        MyWsdlDocument service;
+        service.setEndPoint(server.endPoint());
+
+        KDAB__LimitedString employeeCountry = service.getEmployeeCountry(KDAB__EmployeeName(QString::fromUtf8("David Ä Faure")));
+        if (!service.lastError().isEmpty())
+            qDebug() << service.lastError();
+        QVERIFY(service.lastError().isEmpty());
+        QCOMPARE(employeeCountry.value(), QString::fromLatin1("France"));
+        QCOMPARE(QString::fromUtf8(server.receivedData()), QString::fromUtf8(expectedCountryRequest()));
     }
 
     // Test enum deserialization
@@ -223,7 +239,7 @@ private Q_SLOTS:
         HttpServerThread server(responseData, HttpServerThread::Public);
         MyWsdlDocument service;
         service.setEndPoint(server.endPoint());
-	
+
         KDAB__EmployeeType employeeType = service.getEmployeeType(KDAB__EmployeeName(QLatin1String("Joe")));
         if (!service.lastError().isEmpty())
             qDebug() << service.lastError();
@@ -246,17 +262,17 @@ private Q_SLOTS:
         HttpServerThread server(responseData, HttpServerThread::Public);
         MyWsdlDocument service;
         service.setEndPoint(server.endPoint());
-	
+
 	service.setSoapVersion(1);
         KDAB__EmployeeType employeeType = service.getEmployeeType(KDAB__EmployeeName(QLatin1String("Joe")));
 	QVERIFY(service.lastError().isEmpty());
-	
+
 	service.setSoapVersion(2);
 	KDAB__EmployeeType employeeType2 = service.getEmployeeType(KDAB__EmployeeName(QLatin1String("Joe")));
 	QVERIFY(service.lastError().isEmpty());
-	
+
     }
-    
+
     // Was http://www.service-repository.com/service/wsdl?id=163859, but it disappeared.
     void testSequenceInResponse()
     {
@@ -341,6 +357,20 @@ public slots:
 private:
     QEventLoop m_eventLoop;
     KDSoapMessage m_returnMessage;
+
+    static QByteArray countryResponse() {
+        return QByteArray(xmlEnvBegin) + "><soap:Body>"
+                "<kdab:getEmployeeCountryResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl/\"><kdab:employeeCountry>France</kdab:employeeCountry></kdab:getEmployeeCountryResponse>"
+                " </soap:Body>" + xmlEnvEnd;
+    }
+    static QByteArray expectedCountryRequest() {
+        return QByteArray(xmlEnvBegin) +
+                "><soap:Body>"
+                "<n1:getEmployeeCountry xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
+                "<n1:employeeName>David Ä Faure</n1:employeeName>"
+                "</n1:getEmployeeCountry>"
+                "</soap:Body>" + xmlEnvEnd;
+    }
 };
 
 
