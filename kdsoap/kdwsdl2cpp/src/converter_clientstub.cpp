@@ -96,6 +96,15 @@ void Converter::convertClientService()
           dtor.setBody( dtorCode );
           newClass.addFunction( dtor );
       }
+      // ignoreSslErrors() method
+      {
+          KODE::Function ignoreSslErrors("ignoreSslErrors", "void");
+          KODE::Code code;
+          code += "clientInterface()->ignoreSslErrors();";
+          ignoreSslErrors.setBody(code);
+          ignoreSslErrors.setDocs("Asks Qt to ignore ssl errors in https requests. Use this for testing only!");
+          newClass.addFunction(ignoreSslErrors);
+      }
       // setEndPoint() method
       {
           KODE::Function setEndPoint("setEndPoint", "void");

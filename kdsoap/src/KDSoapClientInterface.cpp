@@ -128,7 +128,7 @@ static QString variantToXMLType(const QVariant& value)
 }
 
 KDSoapClientInterface::Private::Private()
-    : m_authentication()
+    : m_authentication(), m_ignoreSslErrors(false)
 {
     connect(&m_accessManager, SIGNAL(authenticationRequired(QNetworkReply*,QAuthenticator*)),
             this, SLOT(_kd_slotAuthenticationRequired(QNetworkReply*,QAuthenticator*)));
@@ -295,6 +295,7 @@ KDSoapPendingCall KDSoapClientInterface::asyncCall(const QString &method, const 
     QBuffer* buffer = d->prepareRequestBuffer(method, message, headers);
     QNetworkRequest request = d->prepareRequest(method, soapAction);
     QNetworkReply* reply = d->m_accessManager.post(request, buffer);
+    d->setupReply(reply);
     return KDSoapPendingCall(reply, buffer);
 }
 
@@ -319,6 +320,7 @@ void KDSoapClientInterface::callNoReply(const QString &method, const KDSoapMessa
     QBuffer* buffer = d->prepareRequestBuffer(method, message, headers);
     QNetworkRequest request = d->prepareRequest(method, soapAction);
     QNetworkReply* reply = d->m_accessManager.post(request, buffer);
+    d->setupReply(reply);
     QObject::connect(reply, SIGNAL(finished()), reply, SLOT(deleteLater()));
 }
 
@@ -335,6 +337,18 @@ void KDSoapClientInterface::setAuthentication(const KDSoapAuthentication &authen
 void KDSoapClientInterface::setHeader(const QString& name, const KDSoapMessage &header)
 {
     d->m_persistentHeaders[name] = header;
+}
+
+void KDSoapClientInterface::ignoreSslErrors()
+{
+    d->m_ignoreSslErrors = true;
+}
+
+void KDSoapClientInterface::Private::setupReply(QNetworkReply *reply)
+{
+    if (m_ignoreSslErrors) {
+        QObject::connect(reply, SIGNAL(sslErrors(const QList<QSslError>&)), reply, SLOT(ignoreSslErrors()));
+    }
 }
 
 #include "moc_KDSoapClientInterface_p.cpp"
