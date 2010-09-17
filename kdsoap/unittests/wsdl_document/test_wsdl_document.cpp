@@ -169,7 +169,7 @@ private Q_SLOTS:
         }
     }
 
-   void testMyWsdlSSL()
+    void testMyWsdlSSL()
     {
         HttpServerThread server(addEmployeeResponse(), HttpServerThread::Ssl);
 
@@ -223,6 +223,7 @@ private Q_SLOTS:
             qDebug() << service.lastError();
         QVERIFY(service.lastError().isEmpty());
         QCOMPARE(employeeCountry.value(), QString::fromLatin1("France"));
+        QVERIFY(xmlBufferCompare(server.receivedData(), expectedCountryRequest()));
         QCOMPARE(QString::fromUtf8(server.receivedData()), QString::fromUtf8(expectedCountryRequest()));
     }
 
@@ -367,9 +368,10 @@ private:
         return QByteArray(xmlEnvBegin) +
                 "><soap:Body>"
                 "<n1:getEmployeeCountry xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
-                "<n1:employeeName>David Ä Faure</n1:employeeName>"
+                "David Ä Faure"
                 "</n1:getEmployeeCountry>"
-                "</soap:Body>" + xmlEnvEnd;
+                "</soap:Body>" + xmlEnvEnd
+                + '\n'; // added by QXmlStreamWriter::writeEndDocument
     }
 };
 

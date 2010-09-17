@@ -84,6 +84,11 @@ class TypeMap
      * i.e. one with multiple named values, rather than just one value.
      */
     bool isComplexType( const QName &typeName, const QName& elementName ) const;
+    /**
+     * Returns true if @p typeName (or @p elementName, only one is set) refers to a builtin type,
+     * i.e. a type we always know about, from XML schema.
+     * Example: @p typeName is "xsd:string".
+     */
     bool isBuiltinType( const QName &typeName, const QName& elementName ) const;
 
     QString localTypeForAttribute( const QName &typeName ) const;

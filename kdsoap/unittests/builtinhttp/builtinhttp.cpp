@@ -231,8 +231,7 @@ private Q_SLOTS:
         arrayContents.setArrayType(XMLSchemaNS, QString::fromLatin1("string"));
         arrayContents.append(KDSoapValue(QString::fromLatin1("item"), QString::fromLatin1("kdab"), XMLSchemaNS, QString::fromLatin1("string")));
         arrayContents.append(KDSoapValue(QString::fromLatin1("item"), QString::fromLatin1("rocks"), XMLSchemaNS, QString::fromLatin1("string")));
-        KDSoapValue array(QString::fromLatin1("testArray"), arrayContents, QString::fromLatin1("http://schemas.xmlsoap.org/soap/encoding/"), QString::fromLatin1("Array"));
-        message.arguments().append(array);
+        message.addArgument(QString::fromLatin1("testArray"), arrayContents, QString::fromLatin1("http://schemas.xmlsoap.org/soap/encoding/"), QString::fromLatin1("Array"));
 
         // Add a header
         KDSoapMessage header1;

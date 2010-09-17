@@ -30,7 +30,8 @@ public:
 
     QNetworkRequest prepareRequest(const QString &method, const QString& action);
     QBuffer* prepareRequestBuffer(const QString& method, const KDSoapMessage& message, const KDSoapHeaders& headers);
-    void writeArguments(KDSoapNamespacePrefixes& namespacePrefixes, QXmlStreamWriter& writer, const KDSoapValueList& args, KDSoapMessage::Use use);
+    void writeElementContents(KDSoapNamespacePrefixes& namespacePrefixes, QXmlStreamWriter& writer, const KDSoapValue& element, KDSoapMessage::Use use);
+    void writeChildren(KDSoapNamespacePrefixes& namespacePrefixes, QXmlStreamWriter& writer, const KDSoapValueList& args, KDSoapMessage::Use use);
     void writeAttributes(QXmlStreamWriter& writer, const QList<KDSoapValue>& attributes);
     void setupReply(QNetworkReply* reply);
 

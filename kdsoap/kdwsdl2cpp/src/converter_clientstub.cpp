@@ -65,6 +65,7 @@ void Converter::convertClientService()
       // Files included in the impl, with optional forward-declarations in the header
       newClass.addInclude("KDSoapMessage.h", "KDSoapMessage");
       newClass.addInclude("KDSoapValue.h", "KDSoapValueList");
+      newClass.addInclude("KDSoapValue.h", "KDSoapValue");
       newClass.addInclude("KDSoapClientInterface.h", "KDSoapClientInterface");
       newClass.addInclude("KDSoapPendingCallWatcher.h", "KDSoapPendingCallWatcher");
       newClass.addInclude("KDSoapNamespaceManager.h");
@@ -266,20 +267,27 @@ void Converter::clientAddMessageArgument( KODE::Code& code, const SoapBinding::S
     const QString lowerName = lowerlize( part.name() );
     QString argType = mTypeMap.localType( part.type(), part.element() );
     const bool builtin = mTypeMap.isBuiltinType( part.type(), part.element() );
+    const bool isComplex = mTypeMap.isComplexType( part.type(), part.element() );
     if ( argType != "void" ) {
-        const QName type = part.type().isEmpty() ? part.element() : part.type();
         if ( bindingStyle == SoapBinding::DocumentStyle ) {
             // In document style, the "part" is directly added as arguments
             // See http://www.ibm.com/developerworks/webservices/library/ws-whichwsdl/
             if ( builtin )
                 qDebug() << "ERROR: Got a builtin/basic type in document style:" << part.type() << part.element() << "Didn't think this could happen.";
-            code += "message.arguments() += " + lowerName + ".serialize().value<KDSoapValueList>();";
+            if ( isComplex ) {
+                code += "message.arguments() += " + lowerName + ".serialize(QString()).childValues();";
+            } else {
+                code += "message.setValue(" + lowerName + ".serialize());";
+            }
         } else {
+            //qDebug() << "caller:" << part.name() << "type=" << part.type() << "element=" << part.element() << "argType=" << argType << "builtin=" << builtin;
+            code.addBlock( appendElementArg( part.type(), part.element(), part.name(), lowerName, "message.childValues()" ) );
+#if 0 // old
             const QString partNameStr = "QLatin1String(\"" + part.name() + "\")";
             const QString valueStr = builtin ? lowerName : (lowerName + ".serialize()");
-            // for debugging, add this to the above line:  //" + part.type().qname() + " - " + part.element().qname();
             code += "message.addArgument(" + partNameStr + ", " + valueStr
                     + ", QString::fromLatin1(\"" + type.nameSpace() + "\"), QString::fromLatin1(\"" + type.localName() + "\"));";
+#endif
         }
     }
 }

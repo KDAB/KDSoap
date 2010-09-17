@@ -9,12 +9,13 @@ KDSoapMessage::KDSoapMessage()
 }
 
 KDSoapMessage::KDSoapMessage(const KDSoapMessage& other)
-    : d(other.d)
+    : KDSoapValue(other), d(other.d)
 {
 }
 
 KDSoapMessage &KDSoapMessage::operator =(const KDSoapMessage &other)
 {
+    KDSoapValue::operator=(other);
     d = other.d;
     return *this;
 }
@@ -25,32 +26,28 @@ KDSoapMessage::~KDSoapMessage()
 
 void KDSoapMessage::addArgument(const QString &argumentName, const QVariant& argumentValue, const QString& typeNameSpace, const QString& typeName)
 {
-    d->args.append(KDSoapValue(argumentName, argumentValue, typeNameSpace, typeName));
+    childValues().append(KDSoapValue(argumentName, argumentValue, typeNameSpace, typeName));
 }
 
 void KDSoapMessage::addArgument(const QString& argumentName, const KDSoapValueList& argumentValueList, const QString& typeNameSpace, const QString& typeName)
 {
-    d->args.append(KDSoapValue(argumentName, argumentValueList, typeNameSpace, typeName));
+    KDSoapValue soapValue(argumentName, argumentValueList, typeNameSpace, typeName);
+    childValues().append(soapValue);
 }
 
 KDSoapValueList& KDSoapMessage::arguments()
 {
-    return d->args;
+    return childValues();
 }
 
 const KDSoapValueList& KDSoapMessage::arguments() const
 {
-    return d->args;
+    return childValues();
 }
 
 QDebug operator <<(QDebug dbg, const KDSoapMessage &msg)
 {
-    KDSoapValueListIterator it(msg.d->args);
-    while (it.hasNext()) {
-        const KDSoapValue& value = it.next();
-        dbg << value.name() << value.value();
-    }
-    return dbg;
+    return dbg << KDSoapValue(msg);
 }
 
 bool KDSoapMessage::isFault() const
@@ -61,9 +58,9 @@ bool KDSoapMessage::isFault() const
 QString KDSoapMessage::faultAsString() const
 {
     return QObject::tr("Fault code: %1\nFault description: %2 (%3)")
-            .arg(d->args.child(QLatin1String("faultcode")).value().toString())
-            .arg(d->args.child(QLatin1String("faultstring")).value().toString())
-            .arg(d->args.child(QLatin1String("faultactor")).value().toString());
+            .arg(childValues().child(QLatin1String("faultcode")).value().toString())
+            .arg(childValues().child(QLatin1String("faultstring")).value().toString())
+            .arg(childValues().child(QLatin1String("faultactor")).value().toString());
 }
 
 void KDSoapMessage::setFault(bool fault)

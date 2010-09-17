@@ -41,12 +41,23 @@ private Q_SLOTS:
         }
     }
 
+    void testStringBaseType()
+    {
+        TYPES__ContainerRef cref(QString::fromLatin1("str"));
+        cref.setDeleted(QDateTime(QDate(2010,31,12)));
+        const KDSoapValue v = cref.serialize(QLatin1String("container"));
+        qDebug() << v;
+
+        TYPES__ContainerRef cref2;
+        // TODO cref2.deserialize(v);
+    }
+
 #if 0
     void testParseComplexReplyWsdl()
     {
         HttpServerThread server(queryResponse(), HttpServerThread::Public);
-        SforceService sforce(this);
-        sforce.setEndPoint(server.endPoint());
+        GroupwiseService::GroupWiseBinding groupwise;
+        groupwise.setEndPoint(server.endPoint());
 
         TNS__Query query;
         query.setQueryString(QLatin1String("Select Id, FirstName, LastName from Contact"));
