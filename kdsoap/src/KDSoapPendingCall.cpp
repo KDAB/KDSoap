@@ -1,6 +1,5 @@
 #include "KDSoapPendingCall.h"
 #include "KDSoapPendingCall_p.h"
-#include "KDSoapMessage_p.h"
 #include "KDSoapNamespaceManager.h"
 #include <QNetworkReply>
 #include <QDebug>
@@ -144,11 +143,12 @@ void KDSoapPendingCall::Private::parseReply()
 
                     if (readNextStartElement(reader)) { // the method: Response or Fault
                         //qDebug() << "toplevel element:" << reader.name();
-                        if (reader.name() == "Fault")
-                            replyMessage.setFault(true);
+                        const bool isFault = (reader.name() == "Fault");
 
-                        KDSoapValue val = parseReplyElement(reader);
-                        replyMessage.arguments() = val.childValues();
+                        //replyMessage.KDSoapValue::operator=(parseReplyElement(reader));
+                        static_cast<KDSoapValue>(replyMessage) = parseReplyElement(reader);
+                        if (isFault)
+                            replyMessage.setFault(true);
                     }
 
                 } else {

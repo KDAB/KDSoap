@@ -1,5 +1,4 @@
 #include "KDSoapMessage.h"
-#include "KDSoapMessage_p.h"
 #include <QDebug>
 #include <QVariant>
 
