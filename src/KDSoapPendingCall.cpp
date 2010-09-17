@@ -146,7 +146,7 @@ void KDSoapPendingCall::Private::parseReply()
                         const bool isFault = (reader.name() == "Fault");
 
                         //replyMessage.KDSoapValue::operator=(parseReplyElement(reader));
-                        static_cast<KDSoapValue>(replyMessage) = parseReplyElement(reader);
+                        static_cast<KDSoapValue &>(replyMessage) = parseReplyElement(reader);
                         if (isFault)
                             replyMessage.setFault(true);
                     }
