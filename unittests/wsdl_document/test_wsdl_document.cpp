@@ -106,7 +106,7 @@ private Q_SLOTS:
     // and check that the server's response was correctly parsed.
     void testMyWsdlPublic()
     {
-        HttpServerThread server(addEmployeeResponse(), HttpServerThread::Public /*TODO ssl test*/);
+        HttpServerThread server(addEmployeeResponse(), HttpServerThread::Public);
 
         // For testing the http server with telnet or wget:
         //httpGet(server.endPoint());
