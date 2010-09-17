@@ -95,17 +95,18 @@ private:
                           "</n1:SessionHeader>"
                           "</soap:Header>");
     }
+    static QByteArray addEmployeeResponse() {
+        return QByteArray(xmlEnvBegin) + "><soap:Body>"
+                "<kdab:addEmployeeResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl/\"><kdab:bStrReturn>Foo</kdab:bStrReturn></kdab:addEmployeeResponse>"
+                " </soap:Body>" + xmlEnvEnd;
+    }
 
 private Q_SLOTS:
     // Using wsdl-generated code, make a call, and check the xml that was sent,
     // and check that the server's response was correctly parsed.
     void testMyWsdlPublic()
     {
-        // Prepare response
-        QByteArray responseData = QByteArray(xmlEnvBegin) + "><soap:Body>"
-                                  "<kdab:addEmployeeResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl/\"><kdab:bStrReturn>Foo</kdab:bStrReturn></kdab:addEmployeeResponse>"
-                                  " </soap:Body>" + xmlEnvEnd;
-        HttpServerThread server(responseData, HttpServerThread::Public /*TODO ssl test*/);
+        HttpServerThread server(addEmployeeResponse(), HttpServerThread::Public /*TODO ssl test*/);
 
         // For testing the http server with telnet or wget:
         //httpGet(server.endPoint());
@@ -168,13 +169,9 @@ private Q_SLOTS:
         }
     }
 
-   void testMyWsdlSSL() // TODO integrate with previous test, using a _data for Public/Ssl
+   void testMyWsdlSSL()
     {
-        // Prepare response
-        QByteArray responseData = QByteArray(xmlEnvBegin) + "><soap:Body>"
-                                  "<kdab:addEmployeeResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl/\"><kdab:bStrReturn>Foo</kdab:bStrReturn></kdab:addEmployeeResponse>"
-                                  " </soap:Body>" + xmlEnvEnd;
-        HttpServerThread server(responseData, HttpServerThread::Ssl);
+        HttpServerThread server(addEmployeeResponse(), HttpServerThread::Ssl);
 
         // For testing the http server with telnet or wget:
         //qDebug() << "endPoint=" << server.endPoint();
@@ -184,6 +181,11 @@ private Q_SLOTS:
 
         MyWsdlDocument service;
         service.setEndPoint(server.endPoint());
+        // Our test certificate fails because:
+        // ERROR: cannot verify 127.0.0.1's certificate, issued by `/C=NO/ST=Oslo/L=Nydalen/O=Trolltech ASA/OU=Development/CN=fluke.troll.no/emailAddress=ahanssen@trolltech.com':
+        // Unable to locally verify the issuer's authority.
+        // ERROR: certificate common name `fluke.troll.no' doesn't match requested host name `127.0.0.1'.
+        service.ignoreSslErrors();
 
         KDAB__LoginElement login;
         login.setUser(QLatin1String("foo"));

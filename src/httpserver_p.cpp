@@ -77,7 +77,7 @@ void KDSoapUnitTestHelpers::httpGet(const QUrl& url)
     QNetworkRequest request(url);
     QNetworkAccessManager manager;
     QNetworkReply* reply = manager.get(request);
-    //reply->ignoreSslErrors();
+    QObject::connect(reply, SIGNAL(sslErrors(const QList<QSslError>&)), reply, SLOT(ignoreSslErrors()));
 
     QEventLoop ev;
     QObject::connect(reply, SIGNAL(finished()), &ev, SLOT(quit()));
@@ -126,8 +126,7 @@ public:
             serverSocket->setSocketDescriptor(socketDescriptor);
             connect(serverSocket, SIGNAL(sslErrors(QList<QSslError>)), this, SLOT(slotSslErrors(QList<QSslError>)));
             setupSslServer(serverSocket);
-            qDebug() << "Created QSslSocket, starting server encryption";
-            // ### fails in QSslSocketBackendPrivate::startServerEncryption
+            //qDebug() << "Created QSslSocket, starting server encryption";
             serverSocket->startServerEncryption();
             sslSocket = serverSocket;
             // If startServerEncryption fails internally [and waitForEncrypted hangs],

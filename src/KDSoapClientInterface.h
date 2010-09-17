@@ -163,6 +163,12 @@ public:
      */
     SoapVersion soapVersion();
 
+    /**
+     * Asks Qt to ignore ssl errors in https requests. Use this for testing
+     * only!
+     */
+    void ignoreSslErrors();
+
 private:
     friend class KDSoapThreadTask;
 

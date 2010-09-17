@@ -57,6 +57,7 @@ void KDSoapThreadTask::process(QNetworkAccessManager& accessManager)
     QBuffer* buffer = m_data->m_iface->d->prepareRequestBuffer(m_data->m_method, m_data->m_message, m_data->m_headers);
     QNetworkRequest request = m_data->m_iface->d->prepareRequest(m_data->m_method, m_data->m_action);
     QNetworkReply* reply = accessManager.post(request, buffer);
+    m_data->m_iface->d->setupReply(reply);
     KDSoapPendingCall pendingCall(reply, buffer);
 
     KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);
