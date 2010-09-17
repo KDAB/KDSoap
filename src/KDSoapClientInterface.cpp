@@ -1,6 +1,5 @@
 #include "KDSoapClientInterface.h"
 #include "KDSoapClientInterface_p.h"
-#include "KDSoapMessage_p.h"
 #include "KDSoapNamespaceManager.h"
 #include <QNetworkRequest>
 #include <QNetworkReply>
