@@ -304,8 +304,8 @@ void Converter::createSimpleTypeSerializer( KODE::Class& newClass, const XSD::Si
                 serializeFunc.addBodyLine( "return QVariant::fromValue(" + variable.name() + ");" );
                 deserializeFunc.addBodyLine( variable.name() + " = value.value<" + baseTypeName + ">();" );
             } else { // inherits another simple type, need to call its serialize/deserialize method
-                serializeFunc.addBodyLine( "return " + variable.name() + ".serialize();" );
-                deserializeFunc.addBodyLine( variable.name() + ".deserialize( value );" );
+                serializeFunc.addBodyLine( "return " + variable.name() + ".serialize();" COMMENT );
+                deserializeFunc.addBodyLine( variable.name() + ".deserialize( value );" COMMENT );
             }
 
         }

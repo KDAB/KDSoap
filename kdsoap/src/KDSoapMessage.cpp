@@ -35,7 +35,7 @@ void KDSoapMessage::addArgument(const QString& argumentName, const KDSoapValueLi
     childValues().append(soapValue);
 }
 
-KDSoapValueList& KDSoapMessage::arguments()
+KDSoapValueList& KDSoapMessage::arguments() // TODO remove?
 {
     return childValues();
 }

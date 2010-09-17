@@ -272,22 +272,17 @@ void Converter::clientAddMessageArgument( KODE::Code& code, const SoapBinding::S
         if ( bindingStyle == SoapBinding::DocumentStyle ) {
             // In document style, the "part" is directly added as arguments
             // See http://www.ibm.com/developerworks/webservices/library/ws-whichwsdl/
-            if ( builtin )
-                qDebug() << "ERROR: Got a builtin/basic type in document style:" << part.type() << part.element() << "Didn't think this could happen.";
-            if ( isComplex ) {
-                code += "message.arguments() += " + lowerName + ".serialize(QString()).childValues();";
+            if ( builtin ) {
+                qDebug() << "Got a builtin/basic type in document style:" << part.type() << part.element() << "Didn't think this could happen.";
+                code += "message.setValue(QVariant::fromValue(" + lowerName + "));" COMMENT;
+            } if ( isComplex ) {
+                code += "message.arguments() += " + lowerName + ".serialize(QString()).childValues();" COMMENT;
             } else {
-                code += "message.setValue(" + lowerName + ".serialize());";
+                code += "message.setValue(" + lowerName + ".serialize());" COMMENT;
             }
         } else {
             //qDebug() << "caller:" << part.name() << "type=" << part.type() << "element=" << part.element() << "argType=" << argType << "builtin=" << builtin;
             code.addBlock( appendElementArg( part.type(), part.element(), part.name(), lowerName, "message.childValues()" ) );
-#if 0 // old
-            const QString partNameStr = "QLatin1String(\"" + part.name() + "\")";
-            const QString valueStr = builtin ? lowerName : (lowerName + ".serialize()");
-            code += "message.addArgument(" + partNameStr + ", " + valueStr
-                    + ", QString::fromLatin1(\"" + type.nameSpace() + "\"), QString::fromLatin1(\"" + type.localName() + "\"));";
-#endif
         }
     }
 }
@@ -340,12 +335,14 @@ void Converter::convertClientCall( const Operation &operation, const Binding &bi
   QString retType;
   bool isBuiltin = false;
   bool isComplex = false;
+  Part retPart;
   Q_FOREACH( const Part& outPart, outParts ) {
       //const QString lowerName = lowerlize( outPart.name() );
 
       retType = mTypeMap.localType( outPart.type(), outPart.element() );
       isBuiltin = mTypeMap.isBuiltinType( outPart.type(), outPart.element() );
       isComplex = mTypeMap.isComplexType( outPart.type(), outPart.element() );
+      retPart = outPart;
       //qDebug() << retType << "isComplex=" << isComplex;
 
       callFunc.setReturnType( retType );
@@ -364,19 +361,13 @@ void Converter::convertClientCall( const Operation &operation, const Binding &bi
 
       if ( isComplex && soapStyle(binding) == SoapBinding::DocumentStyle /*no wrapper*/ ) {
           code += retType + " ret;"; // local var
-          code += "ret.deserialize(d_ptr->m_lastReply.arguments());";
-          code += "return ret;";
+          code += "ret.deserialize(d_ptr->m_lastReply);";
+          code += "return ret;" COMMENT;
       } else { // RPC style (adds a wrapper), or simple value
-          if ( isBuiltin ) {
-              code += QString("return d_ptr->m_lastReply.arguments().first().value().value<%1>();").arg(retType);
-          } else {
-              code += retType + " ret;"; // local var
-              if ( isComplex )
-                  code += "ret.deserialize(d_ptr->m_lastReply.arguments().first().childValues());";
-              else
-                  code += "ret.deserialize(d_ptr->m_lastReply.arguments().first().value());";
-              code += "return ret;";
-          }
+          code += retType + " ret;"; // local var
+          code += "const KDSoapValue val = d_ptr->m_lastReply.arguments().first();" COMMENT;
+          code += demarshalVar( retPart.type(), retPart.element(), "ret", retType );
+          code += "return ret;";
       }
 
   }
@@ -454,7 +445,6 @@ void Converter::convertClientOutputMessage( const Operation &operation,
   slotCode.unindent();
   slotCode += "} else {";
   slotCode.indent();
-  slotCode += "const KDSoapValueList args = reply.arguments();";
 
   const Message message = mWSDL.findMessage( operation.output().message() );
 
@@ -474,19 +464,17 @@ void Converter::convertClientOutputMessage( const Operation &operation,
 
     if ( isComplex && soapStyle(binding) == SoapBinding::DocumentStyle /*no wrapper*/ ) {
         slotCode += partType + " ret;"; // local var
-        slotCode += "ret.deserialize(args);";
+        slotCode += "ret.deserialize(reply);";
         partNames << "ret";
     } else { // RPC style (adds a wrapper) or simple value
-        QString value = "args.child(QLatin1String(\"" + part.name() + "\"))";
+        QString value = "reply.childValues().child(QLatin1String(\"" + part.name() + "\"))";
         if ( isBuiltin ) {
             partNames << value + ".value().value<" + partType + ">()";
         } else {
             slotCode += partType + " ret;"; // local var. TODO ret1/ret2 etc. if more than one.
-            if (isComplex)
-                value += ".childValues()";
-            else
+            if (!isComplex)
                 value += ".value()";
-            slotCode += "ret.deserialize(" + value + ");";
+            slotCode += "ret.deserialize(" + value + ");" COMMENT;
             partNames << "ret";
         }
     }
