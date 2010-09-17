@@ -41,15 +41,18 @@ private Q_SLOTS:
         }
     }
 
+    // This test uses "internal" API, not very wise.
+    // Makes refactoring harder.
     void testStringBaseType()
     {
         TYPES__ContainerRef cref(QString::fromLatin1("str"));
         cref.setDeleted(QDateTime(QDate(2010,31,12)));
         const KDSoapValue v = cref.serialize(QLatin1String("container"));
-        qDebug() << v;
 
         TYPES__ContainerRef cref2;
-        // TODO cref2.deserialize(v);
+        cref2.deserialize(v);
+        QCOMPARE(cref.value(), cref2.value());
+        QCOMPARE(cref.deleted(), cref2.deleted());
     }
 
 #if 0

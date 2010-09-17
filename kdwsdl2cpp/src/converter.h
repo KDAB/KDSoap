@@ -28,6 +28,12 @@
 #include "namemapper.h"
 #include "typemap.h"
 
+#ifdef NDEBUG
+#define COMMENT
+#else
+#define COMMENT "// " __FILE__ ":"  + QString::number(__LINE__)
+#endif
+
 namespace KWSDL {
 
 class Converter
@@ -63,6 +69,8 @@ class Converter
     void clientAddMessageArgument( KODE::Code& code, const SoapBinding::Style& bindingStyle, const Part& part );
     void createHeader( const SoapBinding::Header& header, KODE::Class& newClass );
     KODE::Code appendElementArg( const QName& type, const QName& elementType, const QString& name, const QString& localVariableName, const QByteArray& varName );
+    KODE::Code demarshalVar( const QName& type, const QName& elementType, const QString& variableName, const QString& typeName, const QString& soapValueVarName = "val" ) const;
+    KODE::Code demarshalArrayVar( const QName& type, const QString& variableName, const QString& typeName ) const;
 
     // Server Stub
     void convertServerService();
