@@ -118,6 +118,8 @@ public:
     QString type() const;
 
 private:
+    // To catch mistakes
+    KDSoapValue(QString, QString, QString);
     class Private;
     QSharedDataPointer<Private> d;
 };

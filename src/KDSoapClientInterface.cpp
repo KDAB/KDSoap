@@ -213,10 +213,10 @@ QBuffer* KDSoapClientInterface::Private::prepareRequestBuffer(const QString& met
         namespacePrefixes.writeNamespace(writer, this->m_messageNamespace, QLatin1String("n1") /*make configurable?*/);
         writer.writeStartElement(soapNS, QLatin1String("Header"));
         Q_FOREACH(const KDSoapMessage& header, m_persistentHeaders) {
-            writeArguments(namespacePrefixes, writer, header.d->args, header.use());
+            writeChildren(namespacePrefixes, writer, header.childValues(), header.use());
         }
         Q_FOREACH(const KDSoapMessage& header, headers) {
-            writeArguments(namespacePrefixes, writer, header.d->args, header.use());
+            writeChildren(namespacePrefixes, writer, header.childValues(), header.use());
         }
         writer.writeEndElement(); // Header
     } else {
@@ -226,13 +226,11 @@ QBuffer* KDSoapClientInterface::Private::prepareRequestBuffer(const QString& met
     }
 
     writer.writeStartElement(soapNS, QLatin1String("Body"));
+
     writer.writeStartElement(this->m_messageNamespace, method);
-
-    // Arguments
-    const KDSoapValueList args = message.d->args;
-    writeArguments(namespacePrefixes, writer, args, message.use());
-
+    writeElementContents(namespacePrefixes, writer, message, message.use());
     writer.writeEndElement(); // <method>
+
     writer.writeEndElement(); // Body
     writer.writeEndElement(); // Envelope
     writer.writeEndDocument();
@@ -247,36 +245,40 @@ QBuffer* KDSoapClientInterface::Private::prepareRequestBuffer(const QString& met
     return buffer;
 }
 
-void KDSoapClientInterface::Private::writeArguments(KDSoapNamespacePrefixes& namespacePrefixes, QXmlStreamWriter& writer, const KDSoapValueList& args, KDSoapMessage::Use use)
+void KDSoapClientInterface::Private::writeElementContents(KDSoapNamespacePrefixes& namespacePrefixes, QXmlStreamWriter& writer, const KDSoapValue& element, KDSoapMessage::Use use)
+{
+    const QVariant value = element.value();
+    const KDSoapValueList list = element.childValues();
+    if (use == KDSoapMessage::EncodedUse) {
+        // use=encoded means writing out xsi:type attributes. http://www.eherenow.com/soapfight.htm taught me that.
+        QString type;
+        if (!element.type().isEmpty())
+            type = namespacePrefixes.resolve(element.typeNs(), element.type());
+        if (type.isEmpty() && !value.isNull())
+            type = variantToXMLType(value); // fallback
+        if (!type.isEmpty()) {
+            writer.writeAttribute(KDSoapNamespaceManager::xmlSchemaInstance1999(), QLatin1String("type"), type);
+        }
+
+        const bool isArray = !list.arrayType().isEmpty();
+        if (isArray) {
+            writer.writeAttribute(KDSoapNamespaceManager::soapEncoding(), QLatin1String("arrayType"), namespacePrefixes.resolve(list.arrayTypeNs(), list.arrayType()) + QLatin1Char('[') + QString::number(list.count()) + QLatin1Char(']'));
+        }
+    }
+    writeChildren(namespacePrefixes, writer, list, use);
+
+    if (!value.isNull())
+        writer.writeCharacters(variantToTextValue(value));
+}
+
+void KDSoapClientInterface::Private::writeChildren(KDSoapNamespacePrefixes& namespacePrefixes, QXmlStreamWriter& writer, const KDSoapValueList& args, KDSoapMessage::Use use)
 {
     writeAttributes(writer, args.attributes());
     KDSoapValueListIterator it(args);
     while (it.hasNext()) {
-        const KDSoapValue& argument = it.next();
-        writer.writeStartElement(this->m_messageNamespace, argument.name());
-        const QVariant value = argument.value();
-        const KDSoapValueList list = argument.childValues();
-        if (use == KDSoapMessage::EncodedUse) {
-            // use=encoded means writing out xsi:type attributes. http://www.eherenow.com/soapfight.htm taught me that.
-            QString type;
-            if (!argument.type().isEmpty())
-                type = namespacePrefixes.resolve(argument.typeNs(), argument.type());
-            if (type.isEmpty() && !value.isNull())
-                type = variantToXMLType(value); // fallback
-            if (!type.isEmpty()) {
-                writer.writeAttribute(KDSoapNamespaceManager::xmlSchemaInstance1999(), QLatin1String("type"), type);
-            }
-
-            const bool isArray = !list.arrayType().isEmpty();
-            if (isArray) {
-                writer.writeAttribute(KDSoapNamespaceManager::soapEncoding(), QLatin1String("arrayType"), namespacePrefixes.resolve(list.arrayTypeNs(), list.arrayType()) + QLatin1Char('[') + QString::number(list.count()) + QLatin1Char(']'));
-            }
-        }
-        writeArguments(namespacePrefixes, writer, list, use); // recursive call
-
-        if (!value.isNull())
-            writer.writeCharacters(variantToTextValue(value));
-
+        const KDSoapValue& element = it.next();
+        writer.writeStartElement(this->m_messageNamespace, element.name());
+        writeElementContents(namespacePrefixes, writer, element, use);
         writer.writeEndElement();
     }
 }

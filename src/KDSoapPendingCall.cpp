@@ -50,8 +50,8 @@ KDSoapMessage KDSoapPendingCall::returnMessage() const
 QVariant KDSoapPendingCall::returnValue() const
 {
     d->parseReply();
-    if (!d->replyMessage.d->args.isEmpty())
-        return d->replyMessage.d->args.first().value();
+    if (!d->replyMessage.childValues().isEmpty())
+        return d->replyMessage.childValues().first().value();
     return QVariant();
 }
 

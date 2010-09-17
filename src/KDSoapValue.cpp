@@ -27,6 +27,8 @@ KDSoapValue::KDSoapValue(const QString& n, const QVariant& v, const QString& typ
     : d(new Private(n, v, typeNameSpace, typeName))
 {
     if (v.canConvert<KDSoapValueList>()) {
+        // TODO should never happen anymore; check and clean up
+        qWarning() << "ERROR: Got a KDSoapValueList!";
         d->m_childValues = qVariantValue<KDSoapValueList>(v);
         d->m_value.clear();
     }
@@ -86,6 +88,24 @@ bool KDSoapValue::operator ==(const KDSoapValue &other) const
 QDebug operator <<(QDebug dbg, const KDSoapValue &value)
 {
     dbg << value.name() << value.value();
+    if (!value.childValues().isEmpty()) {
+        dbg << "<children>";
+        KDSoapValueListIterator it(value.childValues());
+        while (it.hasNext()) {
+            const KDSoapValue& child = it.next();
+            dbg << child;
+        }
+        dbg << "</children>";
+    }
+    if (!value.childValues().attributes().isEmpty()) {
+        dbg << "<attributes>";
+        QListIterator<KDSoapValue> it(value.childValues().attributes());
+        while (it.hasNext()) {
+            const KDSoapValue& child = it.next();
+            dbg << child;
+        }
+        dbg << "</attributes>";
+    }
     return dbg;
 }
 
