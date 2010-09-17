@@ -23,7 +23,6 @@ INSTALLHEADERS = KDSoapMessage.h \
 EXTENSIONLESSHEADERS = KDSoap
 PRIVATEHEADERS = KDSoapPendingCall_p.h \
     KDSoapPendingCallWatcher_p.h \
-    KDSoapMessage_p.h \
     KDSoapClientInterface_p.h \
     KDSoapClientThread_p.h \
     httpserver_p.h

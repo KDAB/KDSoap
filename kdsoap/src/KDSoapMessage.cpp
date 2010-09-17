@@ -3,6 +3,17 @@
 #include <QDebug>
 #include <QVariant>
 
+class KDSoapMessageData : public QSharedData
+{
+public:
+    KDSoapMessageData()
+        : use(KDSoapMessage::LiteralUse), isFault(false)
+    {}
+
+    KDSoapMessage::Use use;
+    bool isFault;
+};
+
 KDSoapMessage::KDSoapMessage()
     : d(new KDSoapMessageData)
 {
