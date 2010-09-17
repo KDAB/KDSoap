@@ -45,7 +45,11 @@ void KDSoapMessage::addArgument(const QString& argumentName, const KDSoapValueLi
     childValues().append(soapValue);
 }
 
-KDSoapValueList& KDSoapMessage::arguments() // TODO remove?
+// I'm leaving the arguments() method even though it's the same as childValues,
+// because it's the documented public API, needed even in the most simple case,
+// while childValues is the "somewhat internal" KDSoapValue stuff.
+
+KDSoapValueList& KDSoapMessage::arguments()
 {
     return childValues();
 }
