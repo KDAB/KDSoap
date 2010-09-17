@@ -135,6 +135,7 @@ public:
             //qDebug() << "startServerEncryption said:" << sslSocket->errorString();
             bool ok = serverSocket->waitForEncrypted();
             Q_ASSERT(ok);
+            Q_UNUSED(ok);
         } else
 #endif
             QTcpServer::incomingConnection(socketDescriptor);
