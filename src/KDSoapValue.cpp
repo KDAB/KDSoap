@@ -26,12 +26,6 @@ KDSoapValue::KDSoapValue()
 KDSoapValue::KDSoapValue(const QString& n, const QVariant& v, const QString& typeNameSpace, const QString& typeName)
     : d(new Private(n, v, typeNameSpace, typeName))
 {
-    if (v.canConvert<KDSoapValueList>()) {
-        // TODO should never happen anymore; check and clean up
-        qWarning() << "ERROR: Got a KDSoapValueList!";
-        d->m_childValues = qVariantValue<KDSoapValueList>(v);
-        d->m_value.clear();
-    }
 }
 
 KDSoapValue::KDSoapValue(const QString& n, const KDSoapValueList& children, const QString& typeNameSpace, const QString& typeName)

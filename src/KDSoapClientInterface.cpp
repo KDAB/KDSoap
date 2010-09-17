@@ -72,10 +72,6 @@ static QString variantToTextValue(const QVariant& value)
     default:
         if (value.userType() == qMetaTypeId<float>())
             return QString::number(value.value<float>());
-        if (value.userType() == qMetaTypeId<KDSoapValueList>()) {
-            qDebug() << "ERROR: got a KDSoapValueList in a value, should not happen";
-            return QString();
-        }
 
         qDebug() << QString::fromLatin1("QVariants of type %1 are not supported in "
                                         "KDSoap, see the documentation").arg(QLatin1String(value.typeName()));

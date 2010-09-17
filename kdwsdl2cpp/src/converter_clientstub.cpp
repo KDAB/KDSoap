@@ -64,7 +64,6 @@ void Converter::convertClientService()
 
       // Files included in the impl, with optional forward-declarations in the header
       newClass.addInclude("KDSoapMessage.h", "KDSoapMessage");
-      newClass.addInclude("KDSoapValue.h", "KDSoapValueList");
       newClass.addInclude("KDSoapValue.h", "KDSoapValue");
       newClass.addInclude("KDSoapClientInterface.h", "KDSoapClientInterface");
       newClass.addInclude("KDSoapPendingCallWatcher.h", "KDSoapPendingCallWatcher");

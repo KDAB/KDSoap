@@ -200,6 +200,6 @@ private:
 
 typedef QListIterator<KDSoapValue> KDSoapValueListIterator;
 
-Q_DECLARE_METATYPE(KDSoapValueList)
+//Q_DECLARE_METATYPE(KDSoapValueList)
 
 #endif // KDSOAPVALUE_H
