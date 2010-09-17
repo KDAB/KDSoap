@@ -275,7 +275,7 @@ void Converter::clientAddMessageArgument( KODE::Code& code, const SoapBinding::S
                 qDebug() << "Got a builtin/basic type in document style:" << part.type() << part.element() << "Didn't think this could happen.";
                 code += "message.setValue(QVariant::fromValue(" + lowerName + "));" COMMENT;
             } if ( isComplex ) {
-                code += "message.arguments() += " + lowerName + ".serialize(QString()).childValues();" COMMENT;
+                code += "message.childValues() += " + lowerName + ".serialize(QString()).childValues();" COMMENT;
             } else {
                 code += "message.setValue(" + lowerName + ".serialize());" COMMENT;
             }
@@ -364,7 +364,7 @@ void Converter::convertClientCall( const Operation &operation, const Binding &bi
           code += "return ret;" COMMENT;
       } else { // RPC style (adds a wrapper), or simple value
           code += retType + " ret;"; // local var
-          code += "const KDSoapValue val = d_ptr->m_lastReply.arguments().first();" COMMENT;
+          code += "const KDSoapValue val = d_ptr->m_lastReply.childValues().first();" COMMENT;
           code += demarshalVar( retPart.type(), retPart.element(), "ret", retType );
           code += "return ret;";
       }
