@@ -264,11 +264,11 @@ private Q_SLOTS:
         MyWsdlDocument service;
         service.setEndPoint(server.endPoint());
 
-	service.setSoapVersion(1);
+	service.setSoapVersion(KDSoapClientInterface::SOAP1_1);
         KDAB__EmployeeType employeeType = service.getEmployeeType(KDAB__EmployeeName(QLatin1String("Joe")));
 	QVERIFY(service.lastError().isEmpty());
 
-	service.setSoapVersion(2);
+	service.setSoapVersion(KDSoapClientInterface::SOAP1_2);
 	KDAB__EmployeeType employeeType2 = service.getEmployeeType(KDAB__EmployeeName(QLatin1String("Joe")));
 	QVERIFY(service.lastError().isEmpty());
 

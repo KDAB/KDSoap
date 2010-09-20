@@ -65,10 +65,12 @@ void Converter::convertClientService()
       // Files included in the impl, with optional forward-declarations in the header
       newClass.addInclude("KDSoapMessage.h", "KDSoapMessage");
       newClass.addInclude("KDSoapValue.h", "KDSoapValue");
-      newClass.addInclude("KDSoapClientInterface.h", "KDSoapClientInterface");
       newClass.addInclude("KDSoapPendingCallWatcher.h", "KDSoapPendingCallWatcher");
       newClass.addInclude("KDSoapNamespaceManager.h");
 
+      // Files included in the implementation.
+      newClass.addHeaderInclude("KDSoapClientInterface.h");
+      
       // Variables (which will go into the d pointer)
       KODE::MemberVariable clientInterfaceVar("m_clientInterface", "KDSoapClientInterface*");
       clientInterfaceVar.setInitializer("NULL");
@@ -118,20 +120,12 @@ void Converter::convertClientService()
       //setSoapVersion() method
       {
 	  KODE::Function setSoapVersion("setSoapVersion", "void");
-	  setSoapVersion.addArgument("int soapVersion");
+	  setSoapVersion.addArgument("KDSoapClientInterface::SoapVersion soapVersion");
 	  KODE::Code code;
-	  code += "if (soapVersion == 1){";
-	  code.indent();
-	  code += "clientInterface()->setSoapVersion(KDSoapClientInterface::SOAP1_1);";
-	  code.unindent();
-	  code += "}else{";
-	  code.indent();
-	  code += "clientInterface()->setSoapVersion(KDSoapClientInterface::SOAP1_2);";
-	  code.unindent();
-	  code += "}";
+	  code += "clientInterface()->setSoapVersion(soapVersion);";
 	  setSoapVersion.setBody(code);
 	  setSoapVersion.setDocs("Overwrite the soap version defined in the .wsdl file, with another version. \n"
-				"version can be 1 for soap 1.1 or 2 for soap 1.2");
+				"version can be KDSoapClientInterface::SOAP1_1 or KDSoapClientInterface::SOAP1_2");
 	  newClass.addFunction(setSoapVersion);
       }
       // lastError() method
