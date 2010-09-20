@@ -171,6 +171,9 @@ private Q_SLOTS:
 
     void testMyWsdlSSL()
     {
+        if (!QSslSocket::supportsSsl()) {
+            QSKIP("No SSL support on this machine, check that ssleay.so/ssleay32.dll is installed", SkipAll);
+        }
         HttpServerThread server(addEmployeeResponse(), HttpServerThread::Ssl);
 
         // For testing the http server with telnet or wget:
