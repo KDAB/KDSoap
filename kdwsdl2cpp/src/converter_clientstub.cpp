@@ -61,6 +61,7 @@ void Converter::convertClientService()
       // Files included in the header
       newClass.addHeaderInclude( "QObject" );
       newClass.addHeaderInclude( "QString" );
+      newClass.addHeaderInclude("KDSoapClientInterface.h");
 
       // Files included in the impl, with optional forward-declarations in the header
       newClass.addInclude("KDSoapMessage.h", "KDSoapMessage");
@@ -68,9 +69,6 @@ void Converter::convertClientService()
       newClass.addInclude("KDSoapPendingCallWatcher.h", "KDSoapPendingCallWatcher");
       newClass.addInclude("KDSoapNamespaceManager.h");
 
-      // Files included in the implementation.
-      newClass.addHeaderInclude("KDSoapClientInterface.h");
-      
       // Variables (which will go into the d pointer)
       KODE::MemberVariable clientInterfaceVar("m_clientInterface", "KDSoapClientInterface*");
       clientInterfaceVar.setInitializer("NULL");
