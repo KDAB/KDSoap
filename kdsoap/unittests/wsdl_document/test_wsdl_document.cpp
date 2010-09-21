@@ -8,6 +8,9 @@
 #include <KDSoapMessage.h>
 #include <KDSoapPendingCallWatcher.h>
 #include <KDSoapNamespaceManager.h>
+#ifndef QT_NO_OPENSSL
+#include <QSslSocket>
+#endif
 
 using namespace KDSoapUnitTestHelpers;
 
@@ -169,6 +172,7 @@ private Q_SLOTS:
         }
     }
 
+#ifndef QT_NO_OPENSSL
     void testMyWsdlSSL()
     {
         if (!QSslSocket::supportsSsl()) {
@@ -212,6 +216,7 @@ private Q_SLOTS:
         QCOMPARE(QString::fromUtf8(server.receivedData()), QString::fromUtf8(expectedRequestXml));
         QVERIFY(server.receivedHeaders().contains("SoapAction: http://www.kdab.com/AddEmployee"));
     }
+#endif
 
     // Test calls with 'simple type' arguments
     // Same as the call made by builtinhttp, but here using the wsdl-generated code
