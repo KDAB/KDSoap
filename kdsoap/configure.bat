@@ -266,7 +266,7 @@ if errorlevel 1 (
     goto :CleanEnd
 )
 
-echo Ok, now run nmake to build the framework.
+echo Ok, now run nmake (for Visual Studio) or mingw32-make (for mingw) to build the framework.
 goto :end
 
 :usage
