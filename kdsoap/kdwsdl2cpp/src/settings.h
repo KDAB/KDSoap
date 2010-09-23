@@ -58,7 +58,7 @@ class Settings
     friend class SettingsSingleton;
     Settings();
 
-    QString mWsdlFile;
+    QString mWsdlUrl;
     QString mOutputFileName;
     QString mOutputDirectory;
     QString mHeaderFile;

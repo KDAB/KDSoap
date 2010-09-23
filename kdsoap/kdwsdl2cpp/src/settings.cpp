@@ -50,28 +50,33 @@ Settings* Settings::self()
 
 void Settings::setWsdlFile(const QString &wsdlFile)
 {
-    mWsdlFile = QDir::fromNativeSeparators(wsdlFile);
+    //qDebug() << "wsdlFile=" << wsdlFile;
+    mWsdlUrl = QDir::fromNativeSeparators(wsdlFile);
 
-    if (QDir::isRelativePath(wsdlFile))
-        mWsdlFile = QDir::current().path() + '/' + mWsdlFile;
+    QUrl u(mWsdlUrl);
+    if (u.isRelative()) { // no scheme yet in the URL
+        if (QDir::isRelativePath(wsdlFile)) {
+            mWsdlUrl = QDir::current().path() + '/' + mWsdlUrl;
+        }
+        mWsdlUrl = QString::fromLatin1(QUrl::fromLocalFile(mWsdlUrl).toEncoded());
+    }
 
-    //qDebug() << this << "setWsdlUrl: remembering" << mWsdlFile;
+    //qDebug() << this << "setWsdlUrl: remembering" << mWsdlUrl;
 }
 
 QUrl Settings::wsdlUrl() const
 {
-    //qDebug() << this << "get:" << mWsdlFile;
-    return QUrl::fromLocalFile(mWsdlFile);
+    return mWsdlUrl;
 }
 
 QString Settings::wsdlBaseUrl() const
 {
-  return mWsdlFile.left( mWsdlFile.lastIndexOf( '/' ) );
+  return mWsdlUrl.left( mWsdlUrl.lastIndexOf( '/' ) );
 }
 
 QString Settings::wsdlFileName() const
 {
-  return mWsdlFile.mid( mWsdlFile.lastIndexOf( '/' ) + 1 );
+  return mWsdlUrl.mid( mWsdlUrl.lastIndexOf( '/' ) + 1 );
 }
 
 void Settings::setOutputFileName( const QString &outputFileName )
