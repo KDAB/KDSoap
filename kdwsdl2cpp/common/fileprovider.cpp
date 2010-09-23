@@ -67,7 +67,7 @@ bool FileProvider::get( const QUrl &url, QString &target )
     mFileName = target;
   }
 
-  qDebug("Downloading external schema '%s'", url.toEncoded().constData());
+  qDebug("Downloading '%s'", url.toEncoded().constData());
 
   QNetworkAccessManager manager;
   QNetworkRequest request(url);

@@ -819,8 +819,10 @@ static QUrl urlForLocation(ParserContext *context, const QString& location)
     QUrl url( location );
     if ((url.scheme().isEmpty() || url.scheme() == "file")) {
         QDir dir( location );
-        if (dir.isRelative())
-            url = QUrl::fromLocalFile(context->documentBaseUrl() + '/' + location);
+        if (dir.isRelative()) {
+            url = context->documentBaseUrl();
+            url.setPath( url.path() + '/' + location );
+        }
     }
     return url;
 }
