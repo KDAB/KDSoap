@@ -107,9 +107,10 @@ gpl.setOptions( '-unittests -release' )
 gpl.setBuildTypes( 'MSF' ) # snapshots are release builds
 
 #if 'Darwin' in platform.platform():
-	#jobs = [ SharedDebug, commercial,commercial_us, gpl ]
+#jobs = [ SharedDebug, commercial,commercial_us, gpl ]
 #else:
-	jobs = [ SharedDebug, commercial, StaticDebug, StaticRelease, commercial_us, gpl ]
+
+jobs = [ SharedDebug, commercial, StaticDebug, StaticRelease, commercial_us, gpl ]
 
 # set up a callback to inject extra command line commands into the build process:
 # in this case, we add a command to be executed in the folder where the source code is executed 
