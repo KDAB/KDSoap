@@ -124,6 +124,8 @@ private:
     QSharedDataPointer<Private> d;
 };
 
+Q_DECLARE_TYPEINFO( KDSoapValue, Q_MOVABLE_TYPE );
+
 KDSOAP_EXPORT QDebug operator <<(QDebug dbg, const KDSoapValue &value);
 
 KDSOAP_EXPORT uint qHash( const KDSoapValue& value );
