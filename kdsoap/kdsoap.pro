@@ -51,10 +51,12 @@ system('echo KDSOAPLIB=$$KDSOAPLIB >> .qmake.cache')
 
 # forward make test calls to unittests:
 test.target=test
+unittests {
 unix:!macx:test.commands=export LD_LIBRARY_PATH=\"$$PWD/lib\":$$(LD_LIBRARY_PATH); (cd unittests && make test)
 macx:test.commands=export DYLD_LIBRARY_PATH=\"$$PWD/lib\":$$(DYLD_LIBRARY_PATH); (cd unittests && make test)
 win32:test.commands=(cd unittests && nmake test)
-test.depends = $(TARGET)
+}
+test.depends = first
 QMAKE_EXTRA_TARGETS += test
 
 # install licenses: 
