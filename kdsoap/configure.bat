@@ -3,8 +3,9 @@
 set PRODUCT_CAP=KDSOAP
 set product_low=kdsoap
 set Product_mix=KDSoap
+set Product_Space="KD Soap"
 
-set VERSION=1.0
+set VERSION=1.0.0
 
 set INSTALLATION_SUPPORTED=true
 set STATIC_BUILD_SUPPORTED=true
@@ -29,27 +30,26 @@ if exist .license.accepted goto :CheckLicenseComplete
 set license_file=
 
 if exist LICENSE.GPL (
-    set license_name="GNU General Public License (GPL)"
-    set license_file=LICENSE.GPL
-) else (
     if exist LICENSE.US (
-        set license_name="%Product_mix% Commercial License"
         if exist LICENSE (
             echo.
-            echo Please choose your region.
+            echo Please choose your license.
             echo.
-            echo Type 1 for North or South America.
-            echo Type 2 for anywhere outside North and South America.
+            echo Type 1 for the GNU General Public License (GPL).
+            echo Type 2 for the %Product_Space% Commercial License for USA/Canada.
+            echo Type 3 for the %Product_Space% Commercial License for anywhere outside USA/Canada.
             echo Anything else cancels.
             echo.
-            set /p region=Select:
-        ) else (
-            set license_file=LICENSE.US
-        )
+            set /p license=Select:
+    ) else (
+        license=1
+    )
+) else (
+    if exist LICENSE.US (
+        license=2
     ) else (
         if exist LICENSE (
-            set license_name="%Product_mix% Commercial License"
-            set license_file=LICENSE
+            license=3
         ) else (
             echo "Couldn't find license file, aborting"
             exit /B 1
@@ -57,9 +57,24 @@ if exist LICENSE.GPL (
     )
 )
 
-if "%license_file%" == "" (
-	set license_file=LICENSE
+if "%license%" == "1" (
+    set license_name="GNU General Public License (GPL)"
+    set license_file=LICENSE.GPL
 	goto :CheckLicense
+) else (
+    if "%license%" == "2" (
+        set license_name="%Product_Space% USA/Canada Commercial License"
+        set license_file=LICENSE.US
+        goto :CheckLicense
+    ) else (
+        if "%license%" == "3" (
+            set license_name="%Product_Space% Commercial License"
+            set license_file=LICENSE
+            goto :CheckLicense
+        ) else (
+            exit /B 1
+        )
+    )
 )
 
 :CheckLicense
@@ -256,17 +271,18 @@ if "%STATIC_BUILD_SUPPORTED%" == "true" (
 echo   Compiled-In Unit Tests..: %unittests% (default: no)
 echo.
 
-REM Make a copy so that each run of qmake on $product.pro starts clean
-copy .qmake.cache .confqmake.cache
-
-%QTDIR%\bin\qmake %product_low%.pro -recursive "%PRODUCT_CAP%_BASE=%CD%"
+%QTDIR%\bin\qmake %product_low%.pro "%PRODUCT_CAP%_BASE=%CD%"
 
 if errorlevel 1 (
     echo qmake failed
     goto :CleanEnd
 )
 
-echo Ok, now run nmake (for Visual Studio) or mingw32-make (for mingw) to build the framework.
+if "%QMAKESPEC%" == "win32-msvc2008" (
+    echo Ok, now run nmake to build the framework.
+)
+else
+    echo Ok, now run mingw32-make to build the framework.
 goto :end
 
 :usage

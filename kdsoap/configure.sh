@@ -3,8 +3,9 @@
 PRODUCT=KDSOAP
 Product=KDSoap
 product=kdsoap
+ProductSpace="KD Soap"
 
-VERSION=1.0
+VERSION=1.0.0
 
 INSTALLATION_SUPPORTED=true
 STATIC_BUILD_SUPPORTED=true
@@ -32,41 +33,43 @@ function check_license {
     [ -d $PACKSCRIPTS_DIR ] && return 0 
     [ -f .license.accepted ] && return 0
 
-    if [ -f LICENSE.GPL ] ; then
-        license_name="GNU General Public License (GPL)"
-        license_file=LICENSE.GPL
-
-    elif [ -f LICENSE.US -a -f LICENSE ] ; then
-        license_name="$Product Commercial License"
-
+    if [ -f LICENSE.GPL -a -f LICENSE.US -a -f LICENSE ] ; then
         echo
-        echo "Please choose your region."
+        echo "Please choose your license."
         echo
-        echo "Type 1 for North or South America."
-        echo "Type 2 for anywhere outside North and South America."
+        echo "Type 1 for the GNU General Public License (GPL)."
+        echo "Type 2 for the $ProductSpace Commercial License for USA/Canada."
+        echo "Type 3 for the $ProductSpace Commercial License for anywhere outside USA/Canada."
         echo "Anything else cancels."
         echo
         echo -n "Select: "
-        read region
+        read license
 
-        if [ "$region" = "1" ]; then
-            license_file=LICENSE.US
-        elif [ "$region" = "2" ]; then
-            license_file=LICENSE
-        else
-            return 1
-        fi
+    elif [ -f LICENSE.GPL ] ; then
+        license="1"
 
     elif [ -f LICENSE.US ] ; then
-        license_name="$Product Commercial License"
-        license_file=LICENSE.US
+        license="2"
 
     elif [ -f LICENSE ] ; then
-        license_name="$Product Commercial License"
-        license_file=LICENSE
+        license="3"
     else
         die "Couldn't find license file, aborting"
     fi
+
+    if [ "$license" = "1" ]; then
+        license_name="GNU General Public License (GPL)"
+        license_file=LICENSE.GPL
+    elif [ "$license" = "2" ]; then
+        license_name="$ProductSpace USA/Canada Commercial License"
+        license_file=LICENSE.US
+    elif [ "$license" = "3" ]; then
+        license_name="$ProductSpace Commercial License"
+        license_file=LICENSE
+    else
+        return 1
+    fi
+
     while true ; do
 	cat <<EOF
 
@@ -127,7 +130,7 @@ cat <<EOF 1>&2
       enable/disable compiled-in unittests
 
   -[spec]
-      compile $product for a specific Qt-supported target
+      compile kdchart for a specific Qt-supported target
 
 EOF
     exit 1
@@ -187,11 +190,11 @@ while [ $# -ne 0 ] ; do
             release=yes
             ;;
         -spec)
-	    shift
+            shift
             if [ $# -eq 0 ] ; then
-		    echo "-prefix needs an argument" 2>&1
-		    usage
-	    fi
+                echo "-prefix needs an argument" 2>&1
+                usage
+            fi
             SPEC="-spec $1"
             ;;
         *)
@@ -250,7 +253,6 @@ echo -n > ".qmake.cache"
       echo "CONFIG += shared"
     else
       echo "CONFIG += static"
-      echo "CONFIG += staticlib"
       echo "CONFIG -= shared"
     fi
 
@@ -297,10 +299,7 @@ cat <<EOF 1>&2
 
 EOF
 
-# Make a copy so that each run of qmake on $product.pro starts clean
-cp -f .qmake.cache .confqmake.cache
-
-$QTDIR/bin/qmake ${SPEC} $product.pro -recursive "${PRODUCT}_BASE=`pwd`" || die "qmake failed"
+$QTDIR/bin/qmake ${SPEC} $product.pro "${PRODUCT}_BASE=`pwd`" || die "qmake failed"
 
 if [ "$INSTALLATION_SUPPORTED" = "true" ]; then
   echo "Ok, now run make, then make install to install into $prefix"
