@@ -43,11 +43,6 @@ KDSoapValue::KDSoapValue(const KDSoapValue& other)
 {
 }
 
-KDSoapValue & KDSoapValue::operator=(const KDSoapValue &other)
-{
-    d = other.d;
-    return *this;
-}
 
 
 QString KDSoapValue::name() const
