@@ -60,10 +60,28 @@ public:
      * Copy constructor
      */
     KDSoapValue(const KDSoapValue& other);
+
     /**
      * Assignment operator
      */
-    KDSoapValue& operator=(const KDSoapValue& other);
+    KDSoapValue& operator=(const KDSoapValue& other) {
+        if ( this != &other ) {
+            KDSoapValue copy( other );
+            swap( copy );
+        }
+        return *this;
+    }
+
+    /**
+     * Swaps the contents of \a other with the contents of \c this. Never throws.
+     */
+    void swap( KDSoapValue& other ) {
+#if QT_VERSION < 0x040600
+        qSwap( reinterpret_cast<Private*&>(d), reinterpret_cast<Private*&>(other.d) );
+#else
+        d.swap( other.d );
+#endif
+    }
 
     /**
      * Returns the name of the argument, as passed to the constructor.
