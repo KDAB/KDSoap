@@ -1,4 +1,6 @@
 @echo off
+rem This file was generated automatically.
+rem Please edit generate-configure.sh rather than this file.
 
 set PRODUCT_CAP=KDSOAP
 set product_low=kdsoap
@@ -271,18 +273,17 @@ if "%STATIC_BUILD_SUPPORTED%" == "true" (
 echo   Compiled-In Unit Tests..: %unittests% (default: no)
 echo.
 
-%QTDIR%\bin\qmake %product_low%.pro "%PRODUCT_CAP%_BASE=%CD%"
+rem Make a copy so that each run of qmake on $product.pro starts clean
+copy .qmake.cache .confqmake.cache
+
+%QTDIR%\bin\qmake %product_low%.pro -recursive "%PRODUCT_CAP%_BASE=%CD%"
 
 if errorlevel 1 (
     echo qmake failed
     goto :CleanEnd
 )
 
-if "%QMAKESPEC%" == "win32-msvc2008" (
-    echo Ok, now run nmake to build the framework.
-)
-else
-    echo Ok, now run mingw32-make to build the framework.
+echo Ok, now run nmake (for Visual Studio) or mingw32-make (for mingw) to build the framework.
 goto :end
 
 :usage

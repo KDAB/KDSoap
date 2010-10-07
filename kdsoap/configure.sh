@@ -1,4 +1,6 @@
 #!/bin/bash
+# This file was generated automatically.
+# Please edit generate-configure.sh rather than this file.
 
 PRODUCT=KDSOAP
 Product=KDSoap
@@ -106,7 +108,7 @@ EOF
 if [ "$INSTALLATION_SUPPORTED" = "true" ]; then
     cat <<EOF 1>&2
   -prefix <path>
-      install $Product into <path>
+      install $ProductSpace into <path>
 EOF
 fi  
 cat <<EOF 1>&2
@@ -130,7 +132,7 @@ cat <<EOF 1>&2
       enable/disable compiled-in unittests
 
   -[spec]
-      compile kdchart for a specific Qt-supported target
+      compile $ProductSpace for a specific Qt-supported target
 
 EOF
     exit 1
@@ -227,11 +229,6 @@ echo -n > ".qmake.cache"
 (
     echo "CONFIG += ${product}_target"
 
-# The following disabled to make debug builds work again:
-#    echo '!contains($$list($$[QT_VERSION]), 4.2.*):CONFIG += debug_and_release build_all'
-#    [ "$debug" = "yes"   ] && echo "else:CONFIG -=release += debug"
-#    [ "$release" = "yes" ] && echo "else:CONFIG -=debug += release"
-
     if [ "$debug" = "yes" ]; then
       echo "CONFIG -= release"
       echo "CONFIG += debug"
@@ -253,6 +250,7 @@ echo -n > ".qmake.cache"
       echo "CONFIG += shared"
     else
       echo "CONFIG += static"
+      echo "CONFIG += staticlib"
       echo "CONFIG -= shared"
     fi
 
@@ -268,7 +266,7 @@ echo -n > ".qmake.cache"
 ) >> ".qmake.cache"
 
 cat <<EOF 1>&2
-$Product v$VERSION configuration:
+$ProductSpace v$VERSION configuration:
 EOF
 
 if [ "$INSTALLATION_SUPPORTED" = "true" ]; then
@@ -299,7 +297,10 @@ cat <<EOF 1>&2
 
 EOF
 
-$QTDIR/bin/qmake ${SPEC} $product.pro "${PRODUCT}_BASE=`pwd`" || die "qmake failed"
+# Make a copy so that each run of qmake on $product.pro starts clean
+cp -f .qmake.cache .confqmake.cache
+
+$QTDIR/bin/qmake ${SPEC} $product.pro -recursive "${PRODUCT}_BASE=`pwd`" || die "qmake failed"
 
 if [ "$INSTALLATION_SUPPORTED" = "true" ]; then
   echo "Ok, now run make, then make install to install into $prefix"
