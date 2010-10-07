@@ -17,6 +17,6 @@ unix:macx {
 }
 win32:test.commands=for %d in ($${SUBDIRS}); do runTest.bat "%d" $$WIN_BINDIR || exit 1; don
 unix:test.commands=for d in $${SUBDIRS}; do cd "\$$d" && $(MAKE) test && cd .. || exit 1; done
-test.depends = $(TARGET)
+test.depends = first
 QMAKE_EXTRA_TARGETS += test
 
