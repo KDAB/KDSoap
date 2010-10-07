@@ -5,9 +5,6 @@ QT -= gui
 
 QT += network
 
-# TEMPORARY? Just for QDomDocument in httpserver_p.cpp
-QT += xml
-
 # Workaround for visual studio integration
 DESTDIR = ../lib
 win32:DLLDESTDIR = ../bin
@@ -25,7 +22,7 @@ PRIVATEHEADERS = KDSoapPendingCall_p.h \
     KDSoapPendingCallWatcher_p.h \
     KDSoapClientInterface_p.h \
     KDSoapClientThread_p.h \
-    httpserver_p.h
+
 HEADERS = $$INSTALLHEADERS \
     $$PRIVATEHEADERS
 SOURCES = KDSoapMessage.cpp \
@@ -35,7 +32,6 @@ SOURCES = KDSoapMessage.cpp \
     KDSoapClientThread.cpp \
     KDSoapValue.cpp \
     KDSoapAuthentication.cpp \
-    httpserver_p.cpp \
     KDSoapNamespaceManager.cpp
 DEFINES += KDSOAP_BUILD_KDSOAP_LIB
 

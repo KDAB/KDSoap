@@ -6,3 +6,7 @@ DESTDIR=.
 
 CONFIG += qtestlib
 
+INCLUDEPATH += $$KDSOAP_PATH/testtools
+DEPENDPATH += $$KDSOAP_PATH/testtools
+LIBS += -L../lib -ltesttools
+
