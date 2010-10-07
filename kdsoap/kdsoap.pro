@@ -2,8 +2,7 @@ TEMPLATE = subdirs
 SUBDIRS  = src kdwsdl2cpp examples
 unittests: SUBDIRS += unittests
 CONFIG   += ordered
-VERSION  = 1.0.0
-MAJOR_VERSION = 1
+MAJOR_VERSION = 1 ### extract from $$VERSION
 
 unix:DEFAULT_INSTALL_PREFIX = /usr/local/KDAB/KDSoap-$$VERSION
 win32:DEFAULT_INSTALL_PREFIX = "C:\KDAB\KDSoap"-$$VERSION
@@ -46,7 +45,6 @@ unix:system('cp ".confqmake.cache" ".qmake.cache"')
 system('echo $${MESSAGE} >> .qmake.cache')
 # store PREFIX:
 system('echo INSTALL_PREFIX=$$INSTALL_PREFIX >> .qmake.cache')
-system('echo VERSION=$$VERSION >> .qmake.cache')
 system('echo KDSOAPLIB=$$KDSOAPLIB >> .qmake.cache')
 
 # forward make test calls to unittests:

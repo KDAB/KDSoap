@@ -14,8 +14,6 @@ set STATIC_BUILD_SUPPORTED=true
 
 set PACKSCRIPTS_DIR=../admin/packscripts
 
-set default_prefix=C:\KDAB\%Product_mix%-%VERSION%
-
 set shared=yes
 set debug=no
 set release=no
@@ -135,6 +133,9 @@ if "%1" == ""          goto :EndOfOptions
 if "%1" == "-prefix"   goto :Prefix
 if "%1" == "/prefix"   goto :Prefix
 
+if "%1" == "-override-version"  goto :OverrideVersion
+if "%1" == "/override-version"  goto :OverrideVersion
+
 if "%1" == "-unittests"    goto :Unittests
 if "%1" == "/unittests"    goto :Unittests
 
@@ -176,6 +177,9 @@ goto :Options
       goto :OptionWithArg
 rem   goto :usage
     )
+:OverrideVersion
+    set VERSION=%2
+    goto :OptionWithArg
 :Unittests
     set unittests=yes
     goto :OptionNoArg
@@ -247,12 +251,15 @@ if "%unittests%" == "yes" (
     echo CONFIG += unittests >> .qmake.cache
 )
 
+set default_prefix=C:\KDAB\%Product_mix%-%VERSION%
+
 if "%prefix%" == "" (
     set prefix="%default_prefix%"
 )
 echo %PRODUCT_CAP%_INSTALL_PREFIX = %prefix% >> .qmake.cache
 
 
+echo VERSION=%VERSION% >> .qmake.cache
 echo CONFIG += %product_low%_target >> .qmake.cache
 
 if exist "%QTDIR%\include\Qt\private" (
