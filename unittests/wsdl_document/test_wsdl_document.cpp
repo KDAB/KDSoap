@@ -140,7 +140,7 @@ private Q_SLOTS:
             QByteArray expectedRequestXml = requestXmlTemplate();
             expectedRequestXml.replace("%1", expectedHeader());
             QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
-            QCOMPARE(QString::fromUtf8(server.receivedData()), QString::fromUtf8(expectedRequestXml));
+            QCOMPARE(QString::fromUtf8(server.receivedData().constData()), QString::fromUtf8(expectedRequestXml.constData()));
             QVERIFY(server.receivedHeaders().contains("SoapAction: http://www.kdab.com/AddEmployee"));
         }
 
@@ -213,7 +213,7 @@ private Q_SLOTS:
         QByteArray expectedRequestXml = requestXmlTemplate();
         expectedRequestXml.replace("%1", expectedHeader());
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
-        QCOMPARE(QString::fromUtf8(server.receivedData()), QString::fromUtf8(expectedRequestXml));
+        QCOMPARE(QString::fromUtf8(server.receivedData().constData()), QString::fromUtf8(expectedRequestXml.constData()));
         QVERIFY(server.receivedHeaders().contains("SoapAction: http://www.kdab.com/AddEmployee"));
     }
 #endif
@@ -232,7 +232,7 @@ private Q_SLOTS:
         QVERIFY(service.lastError().isEmpty());
         QCOMPARE(employeeCountry.value(), QString::fromLatin1("France"));
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedCountryRequest()));
-        QCOMPARE(QString::fromUtf8(server.receivedData()), QString::fromUtf8(expectedCountryRequest()));
+        QCOMPARE(QString::fromUtf8(server.receivedData().constData()), QString::fromUtf8(expectedCountryRequest().constData()));
     }
 
     // Test enum deserialization
