@@ -10,6 +10,10 @@
 #include <QtCore/QSharedDataPointer>
 #include "KDSoapGlobal.h"
 
+#ifndef QT_NO_STL
+# include <algorithm>
+#endif
+
 class KDSoapValueList;
 
 /**
@@ -147,6 +151,15 @@ Q_DECLARE_TYPEINFO( KDSoapValue, Q_MOVABLE_TYPE );
 KDSOAP_EXPORT QDebug operator <<(QDebug dbg, const KDSoapValue &value);
 
 KDSOAP_EXPORT uint qHash( const KDSoapValue& value );
+inline void qSwap( KDSoapValue & lhs, KDSoapValue & rhs ) { lhs.swap( rhs ); }
+
+#ifndef QT_NO_STL
+namespace std {
+    template <> inline void swap<KDSoapValue>( KDSoapValue & lhs, KDSoapValue & rhs ) {
+        lhs.swap( rhs );
+    }
+}
+#endif
 
 /**
  * KDSoapValueList represents a list of arguments passed to a SOAP message.
