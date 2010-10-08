@@ -16,11 +16,11 @@
 #include <QSslKey>
 namespace KDSoapUnitTestHelpers
 {
-    KDSOAP_EXPORT bool xmlBufferCompare(const QByteArray& source, const QByteArray& dest);
-    KDSOAP_EXPORT void httpGet(const QUrl& url);
+    bool xmlBufferCompare(const QByteArray& source, const QByteArray& dest);
+    void httpGet(const QUrl& url);
 }
 
-class KDSOAP_EXPORT HttpServerThread : public QThread
+class HttpServerThread : public QThread
 {
     Q_OBJECT
 public:
