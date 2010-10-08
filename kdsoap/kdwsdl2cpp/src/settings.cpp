@@ -58,7 +58,8 @@ void Settings::setWsdlFile(const QString &wsdlFile)
         if (QDir::isRelativePath(wsdlFile)) {
             mWsdlUrl = QDir::current().path() + '/' + mWsdlUrl;
         }
-        mWsdlUrl = QString::fromLatin1(QUrl::fromLocalFile(mWsdlUrl).toEncoded());
+        const QByteArray encoded = QUrl::fromLocalFile(mWsdlUrl).toEncoded();
+        mWsdlUrl = QString::fromLatin1(encoded.data(), encoded.size());
     }
 
     //qDebug() << this << "setWsdlUrl: remembering" << mWsdlUrl;

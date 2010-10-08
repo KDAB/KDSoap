@@ -270,7 +270,7 @@ void HttpServerThread::run()
                 //qDebug() << "got authValue=" << authValue; // looks like "Basic <base64 of user:pass>"
                 Method method;
                 QString headerVal;
-                parseAuthLine(QString::fromLatin1(authValue), &method, &headerVal);
+                parseAuthLine(QString::fromLatin1(authValue.data(),authValue.size()), &method, &headerVal);
                 //qDebug() << "method=" << method << "headerVal=" << headerVal;
                 switch (method) {
                 case None: // we want auth, so reject "None"
