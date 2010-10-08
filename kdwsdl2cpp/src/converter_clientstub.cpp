@@ -159,7 +159,8 @@ void Converter::convertClientService()
           KODE::Code code;
           code += "if (!d_ptr->m_clientInterface) {";
           code.indent();
-          code += "const QString endPoint = !d_ptr->m_endPoint.isEmpty() ? d_ptr->m_endPoint : QString::fromLatin1(\"" + QLatin1String(webserviceLocation.toEncoded()) + "\");";
+          const QByteArray encoded = webserviceLocation.toEncoded();
+          code += "const QString endPoint = !d_ptr->m_endPoint.isEmpty() ? d_ptr->m_endPoint : QString::fromLatin1(\"" + QString::fromLatin1( encoded.data(), encoded.size() ) + "\");";
           code += "const QString messageNamespace = QString::fromLatin1(\"" + mWSDL.definitions().targetNamespace() + "\");";
           code += "d_ptr->m_clientInterface = new KDSoapClientInterface(endPoint, messageNamespace);";
 	  code += "d_ptr->m_clientInterface->setSoapVersion( KDSoapClientInterface::SOAP1_1 );";

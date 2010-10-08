@@ -46,7 +46,10 @@ static QString variantToTextValue(const QVariant& value)
         // xmlpatterns/data/qatomicvalue.cpp says to do this:
         return value.toUrl().toString();
     case QVariant::ByteArray:
-        return QString::fromLatin1(value.toByteArray().toBase64());
+        {
+            const QByteArray b64 = value.toByteArray().toBase64();
+            return QString::fromLatin1(b64.data(),b64.size());
+        }
     case QVariant::Int:
         // fall-through
     case QVariant::LongLong:

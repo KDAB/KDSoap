@@ -215,7 +215,7 @@ Code &Code::operator+=( const QString &str )
 
 Code &Code::operator+=( const QByteArray& str )
 {
-  addLine( QString::fromLocal8Bit( str ) );
+  addLine( QString::fromLocal8Bit( str.data(), str.size() ) );
   return *this;
 }
 
