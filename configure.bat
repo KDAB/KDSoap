@@ -245,6 +245,8 @@ if "%shared%" == "yes" (
     echo CONFIG += shared >> .qmake.cache
 ) else (
     echo CONFIG += static >> .qmake.cache
+    rem This is needed too, when Qt is static, otherwise it sets -DQT_DLL and linking fails.
+    echo CONFIG += qt_static >> .qmake.cache
 )
 
 if "%unittests%" == "yes" (
