@@ -6,8 +6,6 @@ class Basic : public QObject
     Q_OBJECT
 private Q_SLOTS:
 
-    // Soap in Document mode.
-
     void testValueSwap()
     {
         static const QLatin1String hello("Hello, World!" );
