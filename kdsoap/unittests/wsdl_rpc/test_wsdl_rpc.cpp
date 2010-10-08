@@ -101,7 +101,7 @@ private Q_SLOTS:
             QByteArray expectedRequestXml = requestXmlTemplate;
             expectedRequestXml.replace("%1", expectedHeader);
             QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
-            QCOMPARE(QString::fromUtf8(server.receivedData()), QString::fromUtf8(expectedRequestXml));
+            QCOMPARE(QString::fromUtf8(server.receivedData().constData()), QString::fromUtf8(expectedRequestXml.constData()));
             QVERIFY(server.receivedHeaders().contains("SoapAction: http://www.kdab.com/AddEmployee"));
         }
 
