@@ -76,7 +76,7 @@
     <itemizedlist>
       <listitem>
         <para>Depending on your version of &kdsoap;, you will find a unique
-        <filename>INSTALL</filename> file containing instructions on how to
+        <filename>INSTALL.txt</filename> file containing instructions on how to
         install &kdsoap; on your platform. Each instruction set also includes
         step-by-step description of how to build &kdsoap; directly from the
         source code.</para>
@@ -579,15 +579,15 @@ KDWSDL = holidays.wsdl
           <answer>
             <para>To report issues/problems, or ask for help on &kdsoap;
             please send your mail with a description of your
-            problem/question/wishes to the support address given to you with
-            your license. Please include a description of your setup: CPU
+            problem/question/wishes to the support address <ulink
+        url="mailto:kdsoap-support@kdab.com">kdsoap-support@kdab.com</ulink>. Please include a description of your setup: CPU
             type, operating system with release number, compiler (version)
             used, any changes you made on libraries that are linked to ...
             Just include every detail that might help us set up a comparable
             test environment in our labs.</para>
 
             <para>In most cases it will make sense to include a small sample
-            program showing the problem you are describing: We will then
+            program showing the problem you are describing. We will then
             reproduce the issue on our machines and either fix your sample
             code or adjust our own code (in case your reported issue might
             turn out to result from sub-optimal implementation in
