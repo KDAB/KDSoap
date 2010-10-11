@@ -14,6 +14,7 @@ public:
 public slots:
     void slotFinished(KDSoapPendingCallWatcher* watcher)
     {
+        qDebug() << Q_FUNC_INFO;
         m_returnMessage = watcher->returnMessage();
         m_eventLoop.quit();
     }
@@ -24,6 +25,7 @@ private slots:
 
     void testAddIntegers_async()
     {
+        qDebug() << Q_FUNC_INFO << "this=" << this << "thread()=" << thread() << "currentThread=" << QThread::currentThread() << "main thread=" << qApp->thread();
         const QString endPoint = QString::fromLatin1("http://www.mathertel.de/AJAXEngine/S02_AJAXCoreSamples/CalcService.asmx");
         const QString messageNamespace = QString::fromLatin1("http://www.mathertel.de/CalcFactors/");
         KDSoapClientInterface client(endPoint, messageNamespace);
@@ -31,7 +33,9 @@ private slots:
         message.addArgument(QLatin1String("number1"), 42);
         message.addArgument(QLatin1String("number2"), 43);
         KDSoapPendingCall pendingCall = client.asyncCall(QLatin1String("AddInteger"), message/*, action*/);
+        qDebug() << "pendingCall created";
         KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);
+        qDebug() << "Created watcher" << watcher;
         connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher*)),
                 this, SLOT(slotFinished(KDSoapPendingCallWatcher*)));
         m_eventLoop.exec();
