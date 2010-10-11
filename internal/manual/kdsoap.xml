@@ -174,8 +174,10 @@
         <title id="apisample" xreflabel="codesample">Code Sample</title>
 
         <programlisting>
-const QString endPoint = QLatin1String("http://www.27seconds.com/Holidays/US/Dates/USHolidayDates.asmx");
-const QString messageNamespace = QLatin1String("http://www.27seconds.com/Holidays/US/Dates/");
+const QString endPoint =
+  QLatin1String("http://www.27seconds.com/Holidays/US/Dates/USHolidayDates.asmx");
+const QString messageNamespace =
+  QLatin1String("http://www.27seconds.com/Holidays/US/Dates/");
 
 KDSoapClientInterface client(endPoint, messageNamespace);
 
@@ -315,10 +317,12 @@ if ( mPendingCall.isFinished() ) {
      <programlisting>
 ...
 
-KDSoapPendingCall pendingCall = mClient-&gt;asyncCall(QLatin1String("GetValentinesDay"), message);
+KDSoapPendingCall pendingCall =
+  mClient-&gt;asyncCall(QLatin1String("GetValentinesDay"), message);
 
 // create a watcher object that will signal the call's completion
-KDSoapPendingCallWatcher* watcher = new KDSoapPendingCallWatcher(pendingCall, this);
+KDSoapPendingCallWatcher* watcher =
+  new KDSoapPendingCallWatcher(pendingCall, this);
 connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher*)),
         this, SLOT(pendingCallFinished(KDSoapPendingCallWatcher*)));
 ...
@@ -386,7 +390,8 @@ header.addArgument(QLatin1String("SessionId"), sessionId);
 KDSoapHeaders headers;
 headers &lt;&lt; header;
 
-response = client.call(QLatin1String("GetUserDetails", KDSoapMessage(), QString(), headers);
+response = client.call(QLatin1String("GetUserDetails"),
+                       KDSoapMessage(), QString(), headers);
      </programlisting>
 
      <sect2>
@@ -466,7 +471,8 @@ public:
     USHolidayDates( QObject* parent = 0 );
     ~USHolidayDates();
 
-    TNS__GetValentinesDayResponse getValentinesDay( const TNS__GetValentinesDay&amp; parameters );
+    TNS__GetValentinesDayResponse
+      getValentinesDay( const TNS__GetValentinesDay&amp; parameters );
 
     void asyncGetValentinesDay( const TNS__GetValentinesDay&amp; parameters );
 
