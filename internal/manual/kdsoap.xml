@@ -550,7 +550,7 @@ KDWSDL = holidays.wsdl
 
     <titleabbrev>Appendix A</titleabbrev>
 
-    <qandaset defaultlabel="number">
+    <qandaset defaultlabel="qanda">
       <qandadiv>
         <title>Building and installing &kdsoap;</title>
 
