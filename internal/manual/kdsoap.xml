@@ -303,11 +303,11 @@ message.addArgument(QLatin1String("rect"), rectArgument);
 ...
 // mPendingCall is a member variable so it lives beyond
 // the scope of the method creating it and so is mClient
-mPendingCall = mClient-&gt;asynCall(QLatin1String("GetValentinesDay"), message);
+mPendingCall = mClient-&gt;asyncCall(QLatin1String("GetValentinesDay"), message);
 
 ...
 
-if ( mPendingCall.isFinished() ) {
+if (mPendingCall.isFinished()) {
   KDSoapMessage response = mPendingCall.returnMessage();
 }
      </programlisting>
@@ -369,7 +369,7 @@ client.setHeader(QLatin1String("SessionHeader"), header);
 
 ...
 
-response = client.call(QLatin1String("GetUserDetails", KDSoapMessage());
+response = client.call(QLatin1String("GetUserDetails"), KDSoapMessage());
      </programlisting>
 
      <para>The example above assumes a fictitious web service which requires a login call to establish a user's authentification and then requires the returned session token to be used for any subsequent call. Setting the identifier as a header allows &kdsoap; to take care of sending it alongside any call invoked through the same <classname>KDSoapClientInterface</classname> instance.</para>
@@ -406,7 +406,8 @@ KDSoapMessage message;
 ...
 
 const soapAction = QLatin1String("urn:GoogleSearchAction");
-KDSoapMessage response.call(QLatin1String("doGoogleSearch"), message, soapAction);
+KDSoapMessage response =
+  client.call(QLatin1String("doGoogleSearch"), message, soapAction);
        </programlisting>
      </sect2>
     </sect1>
