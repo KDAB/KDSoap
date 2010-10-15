@@ -10,16 +10,13 @@
 
 from core.plugins.packagers.CPack import CPack
 from core.helpers.BoilerPlate import getBuildProject
-from products.ProductConfiguration import ProductConfiguration
+from products.ProductBoilerPlate import getConfigurations
 
 build, project = getBuildProject( minimumMomVersion = "0.5.0",
 	projectName = "KD SOAP", projectVersionNumber = '1.0.0',
 	scmUrl = 'svn+ssh://svn.kdab.com/home/SVN-klaralv/products/kdsoap/trunk' )
 
-staticDebug = ProductConfiguration( configName = 'Static Debug', debug = True, shared = False, parent = project )
-staticRelease = ProductConfiguration( configName = 'Static Release', debug = False, shared = False, parent = project )
-sharedDebug = ProductConfiguration( configName = 'Shared Debug', debug = True, shared = True, parent = project )
-sharedRelease = ProductConfiguration( configName = 'Shared Release', debug = False, shared = True, parent = project )
+staticDebug, staticRelease, sharedDebug, sharedRelease = getConfigurations( project )
 
 sharedRelease.addPlugin( CPack( sourcePackage = True ) )
 sharedRelease.addPlugin( CPack( sourcePackage = False ) )
