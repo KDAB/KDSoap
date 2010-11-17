@@ -19,6 +19,5 @@ build, project = getBuildProject( minimumMomVersion = "0.5.0",
 staticDebug, staticRelease, sharedDebug, sharedRelease = getConfigurations( project )
 
 sharedRelease.addPlugin( CPack( sourcePackage = True ) )
-sharedRelease.addPlugin( CPack( sourcePackage = False ) )
 
 build.build()
