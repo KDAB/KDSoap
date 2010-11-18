@@ -14,7 +14,7 @@ from products.ProductBoilerPlate import getConfigurations
 
 build, project = getBuildProject( minimumMomVersion = "0.5.0",
 	projectName = "KD SOAP", projectVersionNumber = '1.0.0',
-	scmUrl = 'svn+ssh://svn.kdab.com/home/SVN-klaralv/products/kdsoap/trunk' )
+	scmUrl = 'svn+ssh://svn.kdab.com/home/SVN-klaralv/products/kdsoap/branches/kdsoap-1.0' )
 
 staticDebug, staticRelease, sharedDebug, sharedRelease = getConfigurations( project )
 
