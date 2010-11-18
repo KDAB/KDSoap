@@ -22,5 +22,5 @@ Manual.
 
 With best regards,
 
-the KDAB KD Soap team.
+the KDAB KD Soap Team.
 
