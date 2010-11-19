@@ -10,6 +10,11 @@ KDSOAP_MAJOR_VERSION = 1
     KDSOAPDIR=$${TOP_SOURCE_DIR}
     KDSOAPDIR_BUILD=$${TOP_BUILD_DIR}
   }
+
+  isEmpty( KDSOAPDIR_BUILD ) {
+    KDSOAPDIR_BUILD = $${KDSOAPDIR}
+  }
+
   !isEmpty( KDSOAPDIR ) {
     #Invalid check since the moment this prf is loaded the kdsoap-lib wasn't build yet.
     #unix:!macx:isEmpty(QMAKE_EXTENSION_SHLIB):QMAKE_EXTENSION_SHLIB=so
