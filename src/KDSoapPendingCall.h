@@ -1,5 +1,5 @@
 /****************************************************************************
-** Copyright (C) 2010-2010 Klaralvdalens Datakonsult AB.  All rights reserved.
+** Copyright (C) 2010 Klaralvdalens Datakonsult AB.  All rights reserved.
 **
 ** This file is part of the KD SOAP library.
 **
