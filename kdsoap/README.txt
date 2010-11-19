@@ -10,7 +10,7 @@ or the
 
 For terms of redistribution, refer to the license agreement.
 
-KD Soap requires Qt 4.4.0 or newer.
+KD Soap requires Qt 4.6.0 or newer.
 
 To build KD Soap, run qmake in the root of the KD Soap source
 distribution. After qmake, run make.
