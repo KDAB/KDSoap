@@ -1,0 +1,54 @@
+KDSOAP_MAJOR_VERSION = 1
+
+:  # copy from environment:
+  isEmpty( KDSOAPDIR ) {
+    KDSOAPDIR=$$(KDSOAPDIR)
+    KDSOAPDIR_BUILD=$$(KDSOAPDIR)
+  }
+  # If no KDSOAPDIR was specified, assume it is the current [build/source] directory
+  isEmpty( KDSOAPDIR ) {
+    KDSOAPDIR=$${TOP_SOURCE_DIR}
+    KDSOAPDIR_BUILD=$${TOP_BUILD_DIR}
+  }
+  !isEmpty( KDSOAPDIR ) {
+    #Invalid check since the moment this prf is loaded the kdsoap-lib wasn't build yet.
+    #unix:!macx:isEmpty(QMAKE_EXTENSION_SHLIB):QMAKE_EXTENSION_SHLIB=so
+    #unix:macx:isEmpty(QMAKE_EXTENSION_SHLIB):QMAKE_EXTENSION_SHLIB=dylib
+    #unix {
+    #  staticlib {
+    #    !exists( $$KDSOAPDIR/lib/libkdsoap.a ):error( "Cannot find libkdsoap.a in $KDSOAPDIR/lib" )
+    #  } else {
+    #    message( KDSOAPDIR is $$KDSOAPDIR)
+    #    !exists( $$KDSOAPDIR/lib/libkdsoap.$$QMAKE_EXTENSION_SHLIB ):error( "Cannot find libkdsoap.$$QMAKE_EXTENSION_SHLIB in $KDSOAPDIR/lib" )
+    #  }
+    #}
+
+    #Only re-enable this after you have figured out a way to make it not break "make distclean"!
+    #win32:!exists( $$KDSOAPDIR/lib/kdsoap.lib ):error( "Cannot find kdsoap.lib in $KDSOAPDIR/lib" )
+    #!exists( $$KDSOAPDIR/include/KDSoap ):error( "Cannot find KDSoap in $KDSOAPDIR/include" )
+
+    KDSOAP_LIB_TYPE_SUFFIX=""
+    KDSOAP_LIB_VERSION_SUFFIX=""
+    win32 {
+      CONFIG(debug, debug|release) {
+        KDSOAP_LIB_TYPE_SUFFIX="d"
+      }
+      KDSOAP_LIB_VERSION_SUFFIX=$$KDSOAP_MAJOR_VERSION
+    }
+    LIBS += -L$${KDSOAPDIR_BUILD}/lib
+    LIBS += -lkdsoap$$KDSOAP_LIB_TYPE_SUFFIX$$KDSOAP_LIB_VERSION_SUFFIX
+	
+    unix {
+      !isEmpty(QMAKE_LFLAGS_RPATH):LIBS += $$QMAKE_LFLAGS_RPATH$${KDSOAPDIR_BUILD}/lib
+    }
+
+    INCLUDEPATH += $$KDSOAPDIR/include
+# What dependencies are in /include ?
+    DEPENDPATH += $$KDSOAPDIR/include
+
+    CONFIG += have_kdsoap
+    DEFINES += HAVE_KDSOAP
+
+  } else:equals( builddir, $$top_builddir ) {
+    error( "WARNING: kdsoap not found. Please set KDSOAPDIR either as an environment variable or on the qmake command line if you want kdsoap support")
+  }
