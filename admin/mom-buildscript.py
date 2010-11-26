@@ -2,11 +2,12 @@
 #
 # KDAB confidential
 #
-# This file is part of KDAB's internal build system setup.
-# Author: Mirko Boehm, mirko.boehm@kdab.com
+# This file is part of KDAB's internal build system setup. It is the
+# build script for KD SOAP, which integrates it into the continuous
+# integration system. 
 #
-# This script sets up Make-O-Matic and Autobuild in the current folder.
-# It generates a shell script that can be sourced to use the created environment.
+# Author: Mirko Boehm, mirko.boehm@kdab.com
+
 
 from core.plugins.packagers.CPack import CPack
 from core.helpers.BoilerPlate import getBuildProject
