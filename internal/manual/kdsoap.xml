@@ -164,8 +164,18 @@
     <titleabbrev id="chnum_api">Chapter 2</titleabbrev>
 
     <para>&kdsoap; builds on technologies introduced with Qt 4, most importantly <classname>QNetworkAccessManager</classname>.
-    This ensures that HTTP requests done by &kdsoap; will follow the operating system's proxy settings and be able to correctly process cookies.</para>
-
+    This ensures that HTTP requests done by &kdsoap; will support</para>
+    <itemizedlist>
+      <listitem>
+        <para>following the operating system's proxy settings,</para>
+      </listitem>
+      <listitem>
+        <para>processing of cookies,</para>
+      </listitem>
+      <listitem>
+        <para>and doing HTTP authentication using the following methods: Basic, NTML version 1 (version 2 is not supported by Qt yet) and Digest-MD5. </para>
+      </listitem>
+    </itemizedlist>
     <sect1>
       <title id="apioverview">Overview</title>
 
