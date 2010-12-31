@@ -220,17 +220,15 @@ void Parser::parseImport( ParserContext *context, const QDomElement &element )
   QString location = element.attribute( "schemaLocation" );
 
   if ( location.isEmpty() )
-    location = element.attribute( "namespace" );
+    return; // Testcase: <s:import namespace="http://microsoft.com/wsdl/types/" /> in the WSDL at https://www.elogbook.org/logbookws/logbookifv3.asmx
 
-  if ( !location.isEmpty() ) {
-    // don't import a schema twice
-    if ( d->mImportedSchemas.contains( location ) )
+  // don't import a schema twice
+  if ( d->mImportedSchemas.contains( location ) )
       return;
-    else
-      d->mImportedSchemas.append( location );
+  else
+    d->mImportedSchemas.append( location );
 
-    importSchema( context, location );
-  }
+  importSchema( context, location );
 }
 
 void Parser::parseInclude( ParserContext *context, const QDomElement &element )
@@ -827,6 +825,8 @@ static QUrl urlForLocation(ParserContext *context, const QString& location)
     return url;
 }
 
+// Note: http://www.w3.org/TR/xmlschema-0/#schemaLocation paragraph 3 (for <import>) says
+// "schemaLocation is only a hint"
 void Parser::importSchema( ParserContext *context, const QString &location )
 {
     // Ignore this one, we have it built into the typemap
@@ -886,6 +886,9 @@ void Parser::importSchema( ParserContext *context, const QString &location )
 }
 
 // TODO: Try to merge import and include schema
+// The main difference is that <include> can only
+//     "pull in definitions and declarations from a schema whose
+//      target namespace is the same as the including schema's target namespace"
 void Parser::includeSchema( ParserContext *context, const QString &location )
 {
   FileProvider provider;

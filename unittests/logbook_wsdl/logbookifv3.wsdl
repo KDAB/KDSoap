@@ -1,0 +1,1185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="https://www.elogbook.org/elogbook" xmlns:s1="http://microsoft.com/wsdl/types/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" targetNamespace="https://www.elogbook.org/elogbook" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="https://www.elogbook.org/elogbook">
+      <s:import namespace="http://microsoft.com/wsdl/types/" />
+      <s:element name="GetSyncTCBBlock">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="username" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="clientsyncid" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="cids" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfString">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="string" nillable="true" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetSyncTCBBlockResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetSyncTCBBlockResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetSyncObjects">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="username" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="clientsyncid" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="objIDS">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetSyncObjectsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetSyncObjectsResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetUserSettings">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="username" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="tablename" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="clientid" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetUserSettingsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetUserSettingsResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UploadOpRecords">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="username" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="clientid" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="records">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UploadOpRecordsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UploadOpRecordsResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UploadOpRecordsV2">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="username" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="clientid" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="records">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+            <s:element minOccurs="0" maxOccurs="1" name="src" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UploadOpRecordsV2Response">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UploadOpRecordsV2Result">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UploadFormRecords">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="username" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="clientid" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="records">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UploadFormRecordsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UploadFormRecordsResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="BuildSyncList">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="username" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="clientsyncid" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="syncdays" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="BuildSyncListResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="BuildSyncListResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="BuildSyncListEx">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="username" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="clientsyncid" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="syncdays" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="speccapbs">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="BuildSyncListExResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="BuildSyncListExResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetUserDetails">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="username" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="clientid" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetUserDetailsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetUserDetailsResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UpdateUserDetails">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="username" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="clientid" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="title" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="givenName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="sn" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="email" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="postalAddress" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="postalCode" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="trainingStartDate" type="s:dateTime" />
+            <s:element minOccurs="1" maxOccurs="1" name="psd" type="s:dateTime" />
+            <s:element minOccurs="1" maxOccurs="1" name="deanery" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="surgicalGrade" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="modified" type="s:dateTime" />
+            <s:element minOccurs="0" maxOccurs="1" name="breplace" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UpdateUserDetailsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UpdateUserDetailsResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ChangePassword">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="username" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="newpassword" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="clientid" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ChangePasswordResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="ChangePasswordResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="MarkSyncComplete">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="username" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="clientsyncid" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="syncdays" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="MarkSyncCompleteResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="MarkSyncCompleteResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="MarkSyncCompleteEx">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="username" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="clientsyncid" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="syncdays" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="clientcapbs">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="MarkSyncCompleteExResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="MarkSyncCompleteExResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetUpdateInfo">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="DBSerial" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="spec" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetUpdateInfoResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetUpdateInfoResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetSpecialtyList">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="clientid" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetSpecialtyListResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetSpecialtyListResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="DBNeedsUpdating">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="DBSerial" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="spec" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="DBNeedsUpdatingResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="DBNeedsUpdatingResult" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetTableData">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="tblname" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="spec" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="serial" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetTableDataResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetTableDataResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ResetClientSyncRecord">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="username" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="clientsyncid" type="s1:guid" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ResetClientSyncRecordResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="LinkTest">
+        <s:complexType />
+      </s:element>
+      <s:element name="LinkTestResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="LinkTestResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ResetOpFavourites">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="username" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="clientid" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="opcodes" type="tns:ArrayOfFavOpCode" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfFavOpCode">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="FavOpCode" nillable="true" type="tns:FavOpCode" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="FavOpCode">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Specialty" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="OpCode" type="s:int" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="ResetOpFavouritesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ResetOpFavouritesResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ResetHospitalFavourites">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="username" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="clientid" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="hospcodes" type="tns:ArrayOfFavHospCode" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfFavHospCode">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="FavHospCode" nillable="true" type="tns:FavHospCode" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="FavHospCode">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Specialty" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="HospCode" type="s:int" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="ResetHospitalFavouritesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ResetHospitalFavouritesResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UploadMyConsultants">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="username" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="clientid" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="consultants" type="tns:ArrayOfMyConsultantRec" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfMyConsultantRec">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="MyConsultantRec" nillable="true" type="tns:MyConsultantRec" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="MyConsultantRec">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="GMC" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Initials" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="firstnames" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="surname" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="UploadMyConsultantsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UploadMyConsultantsResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://microsoft.com/wsdl/types/">
+      <s:simpleType name="guid">
+        <s:restriction base="s:string">
+          <s:pattern value="[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}" />
+        </s:restriction>
+      </s:simpleType>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="GetSyncTCBBlockSoapIn">
+    <wsdl:part name="parameters" element="tns:GetSyncTCBBlock" />
+  </wsdl:message>
+  <wsdl:message name="GetSyncTCBBlockSoapOut">
+    <wsdl:part name="parameters" element="tns:GetSyncTCBBlockResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetSyncObjectsSoapIn">
+    <wsdl:part name="parameters" element="tns:GetSyncObjects" />
+  </wsdl:message>
+  <wsdl:message name="GetSyncObjectsSoapOut">
+    <wsdl:part name="parameters" element="tns:GetSyncObjectsResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetUserSettingsSoapIn">
+    <wsdl:part name="parameters" element="tns:GetUserSettings" />
+  </wsdl:message>
+  <wsdl:message name="GetUserSettingsSoapOut">
+    <wsdl:part name="parameters" element="tns:GetUserSettingsResponse" />
+  </wsdl:message>
+  <wsdl:message name="UploadOpRecordsSoapIn">
+    <wsdl:part name="parameters" element="tns:UploadOpRecords" />
+  </wsdl:message>
+  <wsdl:message name="UploadOpRecordsSoapOut">
+    <wsdl:part name="parameters" element="tns:UploadOpRecordsResponse" />
+  </wsdl:message>
+  <wsdl:message name="UploadOpRecordsV2SoapIn">
+    <wsdl:part name="parameters" element="tns:UploadOpRecordsV2" />
+  </wsdl:message>
+  <wsdl:message name="UploadOpRecordsV2SoapOut">
+    <wsdl:part name="parameters" element="tns:UploadOpRecordsV2Response" />
+  </wsdl:message>
+  <wsdl:message name="UploadFormRecordsSoapIn">
+    <wsdl:part name="parameters" element="tns:UploadFormRecords" />
+  </wsdl:message>
+  <wsdl:message name="UploadFormRecordsSoapOut">
+    <wsdl:part name="parameters" element="tns:UploadFormRecordsResponse" />
+  </wsdl:message>
+  <wsdl:message name="BuildSyncListSoapIn">
+    <wsdl:part name="parameters" element="tns:BuildSyncList" />
+  </wsdl:message>
+  <wsdl:message name="BuildSyncListSoapOut">
+    <wsdl:part name="parameters" element="tns:BuildSyncListResponse" />
+  </wsdl:message>
+  <wsdl:message name="BuildSyncListExSoapIn">
+    <wsdl:part name="parameters" element="tns:BuildSyncListEx" />
+  </wsdl:message>
+  <wsdl:message name="BuildSyncListExSoapOut">
+    <wsdl:part name="parameters" element="tns:BuildSyncListExResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetUserDetailsSoapIn">
+    <wsdl:part name="parameters" element="tns:GetUserDetails" />
+  </wsdl:message>
+  <wsdl:message name="GetUserDetailsSoapOut">
+    <wsdl:part name="parameters" element="tns:GetUserDetailsResponse" />
+  </wsdl:message>
+  <wsdl:message name="UpdateUserDetailsSoapIn">
+    <wsdl:part name="parameters" element="tns:UpdateUserDetails" />
+  </wsdl:message>
+  <wsdl:message name="UpdateUserDetailsSoapOut">
+    <wsdl:part name="parameters" element="tns:UpdateUserDetailsResponse" />
+  </wsdl:message>
+  <wsdl:message name="ChangePasswordSoapIn">
+    <wsdl:part name="parameters" element="tns:ChangePassword" />
+  </wsdl:message>
+  <wsdl:message name="ChangePasswordSoapOut">
+    <wsdl:part name="parameters" element="tns:ChangePasswordResponse" />
+  </wsdl:message>
+  <wsdl:message name="MarkSyncCompleteSoapIn">
+    <wsdl:part name="parameters" element="tns:MarkSyncComplete" />
+  </wsdl:message>
+  <wsdl:message name="MarkSyncCompleteSoapOut">
+    <wsdl:part name="parameters" element="tns:MarkSyncCompleteResponse" />
+  </wsdl:message>
+  <wsdl:message name="MarkSyncCompleteExSoapIn">
+    <wsdl:part name="parameters" element="tns:MarkSyncCompleteEx" />
+  </wsdl:message>
+  <wsdl:message name="MarkSyncCompleteExSoapOut">
+    <wsdl:part name="parameters" element="tns:MarkSyncCompleteExResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetUpdateInfoSoapIn">
+    <wsdl:part name="parameters" element="tns:GetUpdateInfo" />
+  </wsdl:message>
+  <wsdl:message name="GetUpdateInfoSoapOut">
+    <wsdl:part name="parameters" element="tns:GetUpdateInfoResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetSpecialtyListSoapIn">
+    <wsdl:part name="parameters" element="tns:GetSpecialtyList" />
+  </wsdl:message>
+  <wsdl:message name="GetSpecialtyListSoapOut">
+    <wsdl:part name="parameters" element="tns:GetSpecialtyListResponse" />
+  </wsdl:message>
+  <wsdl:message name="DBNeedsUpdatingSoapIn">
+    <wsdl:part name="parameters" element="tns:DBNeedsUpdating" />
+  </wsdl:message>
+  <wsdl:message name="DBNeedsUpdatingSoapOut">
+    <wsdl:part name="parameters" element="tns:DBNeedsUpdatingResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetTableDataSoapIn">
+    <wsdl:part name="parameters" element="tns:GetTableData" />
+  </wsdl:message>
+  <wsdl:message name="GetTableDataSoapOut">
+    <wsdl:part name="parameters" element="tns:GetTableDataResponse" />
+  </wsdl:message>
+  <wsdl:message name="ResetClientSyncRecordSoapIn">
+    <wsdl:part name="parameters" element="tns:ResetClientSyncRecord" />
+  </wsdl:message>
+  <wsdl:message name="ResetClientSyncRecordSoapOut">
+    <wsdl:part name="parameters" element="tns:ResetClientSyncRecordResponse" />
+  </wsdl:message>
+  <wsdl:message name="LinkTestSoapIn">
+    <wsdl:part name="parameters" element="tns:LinkTest" />
+  </wsdl:message>
+  <wsdl:message name="LinkTestSoapOut">
+    <wsdl:part name="parameters" element="tns:LinkTestResponse" />
+  </wsdl:message>
+  <wsdl:message name="ResetOpFavouritesSoapIn">
+    <wsdl:part name="parameters" element="tns:ResetOpFavourites" />
+  </wsdl:message>
+  <wsdl:message name="ResetOpFavouritesSoapOut">
+    <wsdl:part name="parameters" element="tns:ResetOpFavouritesResponse" />
+  </wsdl:message>
+  <wsdl:message name="ResetHospitalFavouritesSoapIn">
+    <wsdl:part name="parameters" element="tns:ResetHospitalFavourites" />
+  </wsdl:message>
+  <wsdl:message name="ResetHospitalFavouritesSoapOut">
+    <wsdl:part name="parameters" element="tns:ResetHospitalFavouritesResponse" />
+  </wsdl:message>
+  <wsdl:message name="UploadMyConsultantsSoapIn">
+    <wsdl:part name="parameters" element="tns:UploadMyConsultants" />
+  </wsdl:message>
+  <wsdl:message name="UploadMyConsultantsSoapOut">
+    <wsdl:part name="parameters" element="tns:UploadMyConsultantsResponse" />
+  </wsdl:message>
+  <wsdl:portType name="LogbookIFV3Soap">
+    <wsdl:operation name="GetSyncTCBBlock">
+      <wsdl:input message="tns:GetSyncTCBBlockSoapIn" />
+      <wsdl:output message="tns:GetSyncTCBBlockSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetSyncObjects">
+      <wsdl:input message="tns:GetSyncObjectsSoapIn" />
+      <wsdl:output message="tns:GetSyncObjectsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetUserSettings">
+      <wsdl:input message="tns:GetUserSettingsSoapIn" />
+      <wsdl:output message="tns:GetUserSettingsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="UploadOpRecords">
+      <wsdl:input message="tns:UploadOpRecordsSoapIn" />
+      <wsdl:output message="tns:UploadOpRecordsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="UploadOpRecordsV2">
+      <wsdl:input message="tns:UploadOpRecordsV2SoapIn" />
+      <wsdl:output message="tns:UploadOpRecordsV2SoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="UploadFormRecords">
+      <wsdl:input message="tns:UploadFormRecordsSoapIn" />
+      <wsdl:output message="tns:UploadFormRecordsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="BuildSyncList">
+      <wsdl:input message="tns:BuildSyncListSoapIn" />
+      <wsdl:output message="tns:BuildSyncListSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="BuildSyncListEx">
+      <wsdl:input message="tns:BuildSyncListExSoapIn" />
+      <wsdl:output message="tns:BuildSyncListExSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetUserDetails">
+      <wsdl:input message="tns:GetUserDetailsSoapIn" />
+      <wsdl:output message="tns:GetUserDetailsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdateUserDetails">
+      <wsdl:input message="tns:UpdateUserDetailsSoapIn" />
+      <wsdl:output message="tns:UpdateUserDetailsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ChangePassword">
+      <wsdl:input message="tns:ChangePasswordSoapIn" />
+      <wsdl:output message="tns:ChangePasswordSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="MarkSyncComplete">
+      <wsdl:input message="tns:MarkSyncCompleteSoapIn" />
+      <wsdl:output message="tns:MarkSyncCompleteSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="MarkSyncCompleteEx">
+      <wsdl:input message="tns:MarkSyncCompleteExSoapIn" />
+      <wsdl:output message="tns:MarkSyncCompleteExSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetUpdateInfo">
+      <wsdl:input message="tns:GetUpdateInfoSoapIn" />
+      <wsdl:output message="tns:GetUpdateInfoSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetSpecialtyList">
+      <wsdl:input message="tns:GetSpecialtyListSoapIn" />
+      <wsdl:output message="tns:GetSpecialtyListSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="DBNeedsUpdating">
+      <wsdl:input message="tns:DBNeedsUpdatingSoapIn" />
+      <wsdl:output message="tns:DBNeedsUpdatingSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetTableData">
+      <wsdl:input message="tns:GetTableDataSoapIn" />
+      <wsdl:output message="tns:GetTableDataSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ResetClientSyncRecord">
+      <wsdl:input message="tns:ResetClientSyncRecordSoapIn" />
+      <wsdl:output message="tns:ResetClientSyncRecordSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="LinkTest">
+      <wsdl:input message="tns:LinkTestSoapIn" />
+      <wsdl:output message="tns:LinkTestSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ResetOpFavourites">
+      <wsdl:input message="tns:ResetOpFavouritesSoapIn" />
+      <wsdl:output message="tns:ResetOpFavouritesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ResetHospitalFavourites">
+      <wsdl:input message="tns:ResetHospitalFavouritesSoapIn" />
+      <wsdl:output message="tns:ResetHospitalFavouritesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="UploadMyConsultants">
+      <wsdl:input message="tns:UploadMyConsultantsSoapIn" />
+      <wsdl:output message="tns:UploadMyConsultantsSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="LogbookIFV3Soap" type="tns:LogbookIFV3Soap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetSyncTCBBlock">
+      <soap:operation soapAction="https://www.elogbook.org/elogbook/GetSyncTCBBlock" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSyncObjects">
+      <soap:operation soapAction="https://www.elogbook.org/elogbook/GetSyncObjects" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetUserSettings">
+      <soap:operation soapAction="https://www.elogbook.org/elogbook/GetUserSettings" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UploadOpRecords">
+      <soap:operation soapAction="https://www.elogbook.org/elogbook/UploadOpRecords" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UploadOpRecordsV2">
+      <soap:operation soapAction="https://www.elogbook.org/elogbook/UploadOpRecordsV2" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UploadFormRecords">
+      <soap:operation soapAction="https://www.elogbook.org/elogbook/UploadFormRecords" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="BuildSyncList">
+      <soap:operation soapAction="https://www.elogbook.org/elogbook/BuildSyncList" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="BuildSyncListEx">
+      <soap:operation soapAction="https://www.elogbook.org/elogbook/BuildSyncListEx" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetUserDetails">
+      <soap:operation soapAction="https://www.elogbook.org/elogbook/GetUserDetails" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateUserDetails">
+      <soap:operation soapAction="https://www.elogbook.org/elogbook/UpdateUserDetails" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ChangePassword">
+      <soap:operation soapAction="https://www.elogbook.org/elogbook/ChangePassword" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="MarkSyncComplete">
+      <soap:operation soapAction="https://www.elogbook.org/elogbook/MarkSyncComplete" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="MarkSyncCompleteEx">
+      <soap:operation soapAction="https://www.elogbook.org/elogbook/MarkSyncCompleteEx" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetUpdateInfo">
+      <soap:operation soapAction="https://www.elogbook.org/elogbook/GetUpdateInfo" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSpecialtyList">
+      <soap:operation soapAction="https://www.elogbook.org/elogbook/GetSpecialtyList" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DBNeedsUpdating">
+      <soap:operation soapAction="https://www.elogbook.org/elogbook/DBNeedsUpdating" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetTableData">
+      <soap:operation soapAction="https://www.elogbook.org/elogbook/GetTableData" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ResetClientSyncRecord">
+      <soap:operation soapAction="https://www.elogbook.org/elogbook/ResetClientSyncRecord" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="LinkTest">
+      <soap:operation soapAction="https://www.elogbook.org/elogbook/LinkTest" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ResetOpFavourites">
+      <soap:operation soapAction="https://www.elogbook.org/elogbook/ResetOpFavourites" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ResetHospitalFavourites">
+      <soap:operation soapAction="https://www.elogbook.org/elogbook/ResetHospitalFavourites" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UploadMyConsultants">
+      <soap:operation soapAction="https://www.elogbook.org/elogbook/UploadMyConsultants" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="LogbookIFV3Soap12" type="tns:LogbookIFV3Soap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetSyncTCBBlock">
+      <soap12:operation soapAction="https://www.elogbook.org/elogbook/GetSyncTCBBlock" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSyncObjects">
+      <soap12:operation soapAction="https://www.elogbook.org/elogbook/GetSyncObjects" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetUserSettings">
+      <soap12:operation soapAction="https://www.elogbook.org/elogbook/GetUserSettings" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UploadOpRecords">
+      <soap12:operation soapAction="https://www.elogbook.org/elogbook/UploadOpRecords" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UploadOpRecordsV2">
+      <soap12:operation soapAction="https://www.elogbook.org/elogbook/UploadOpRecordsV2" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UploadFormRecords">
+      <soap12:operation soapAction="https://www.elogbook.org/elogbook/UploadFormRecords" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="BuildSyncList">
+      <soap12:operation soapAction="https://www.elogbook.org/elogbook/BuildSyncList" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="BuildSyncListEx">
+      <soap12:operation soapAction="https://www.elogbook.org/elogbook/BuildSyncListEx" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetUserDetails">
+      <soap12:operation soapAction="https://www.elogbook.org/elogbook/GetUserDetails" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateUserDetails">
+      <soap12:operation soapAction="https://www.elogbook.org/elogbook/UpdateUserDetails" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ChangePassword">
+      <soap12:operation soapAction="https://www.elogbook.org/elogbook/ChangePassword" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="MarkSyncComplete">
+      <soap12:operation soapAction="https://www.elogbook.org/elogbook/MarkSyncComplete" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="MarkSyncCompleteEx">
+      <soap12:operation soapAction="https://www.elogbook.org/elogbook/MarkSyncCompleteEx" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetUpdateInfo">
+      <soap12:operation soapAction="https://www.elogbook.org/elogbook/GetUpdateInfo" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSpecialtyList">
+      <soap12:operation soapAction="https://www.elogbook.org/elogbook/GetSpecialtyList" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DBNeedsUpdating">
+      <soap12:operation soapAction="https://www.elogbook.org/elogbook/DBNeedsUpdating" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetTableData">
+      <soap12:operation soapAction="https://www.elogbook.org/elogbook/GetTableData" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ResetClientSyncRecord">
+      <soap12:operation soapAction="https://www.elogbook.org/elogbook/ResetClientSyncRecord" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="LinkTest">
+      <soap12:operation soapAction="https://www.elogbook.org/elogbook/LinkTest" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ResetOpFavourites">
+      <soap12:operation soapAction="https://www.elogbook.org/elogbook/ResetOpFavourites" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ResetHospitalFavourites">
+      <soap12:operation soapAction="https://www.elogbook.org/elogbook/ResetHospitalFavourites" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UploadMyConsultants">
+      <soap12:operation soapAction="https://www.elogbook.org/elogbook/UploadMyConsultants" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="LogbookIFV3">
+    <wsdl:port name="LogbookIFV3Soap" binding="tns:LogbookIFV3Soap">
+      <soap:address location="http://www.elogbook.org:8052/logbookws/logbookifv3.asmx" />
+    </wsdl:port>
+    <wsdl:port name="LogbookIFV3Soap12" binding="tns:LogbookIFV3Soap12">
+      <soap12:address location="http://www.elogbook.org:8052/logbookws/logbookifv3.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
