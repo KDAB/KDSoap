@@ -4,10 +4,21 @@
 :  # copy from environment:
   isEmpty( KDSOAPDIR ):KDSOAPDIR="$$(KDSOAPDIR)"
   !isEmpty( KDSOAPDIR ) {
-    unix:isEmpty(QMAKE_EXTENSION_SHLIB):QMAKE_EXTENSION_SHLIB=so
-    unix:!exists( $$KDSOAPDIR/lib/libkdsoap.$$QMAKE_EXTENSION_SHLIB ):error( "Cannot find libkdsoap.$$QMAKE_EXTENSION_SHLIB in $KDSOAPDIR/lib" )
+    unix {
+      static:!exists( $$KDSOAPDIR/lib/libkdsoap.a ) {
+        error( "Cannot find libkdsoap.a in $KDSOAPDIR/lib" )
+      } else {
+        isEmpty(QMAKE_EXTENSION_SHLIB) {
+          macx:QMAKE_EXTENSION_SHLIB=dylib
+          else:QMAKE_EXTENSION_SHLIB=so
+        }
+        !exists( $$KDSOAPDIR/lib/libkdsoap.$$QMAKE_EXTENSION_SHLIB ):!exists( $$KDSOAPDIR/lib/libkdsoap.a ) {
+          error( "Cannot find libkdsoap.$$QMAKE_EXTENSION_SHLIB or libkdsoap.a in $KDSOAPDIR/lib" )
+        }
+      }
+      !exists( $$KDSOAPDIR/src/KDSoapClientInterface.h ):error( "Cannot find KDSoapClientInterface.h in $KDSOAPDIR/src" )
+    }
     #win32:!exists( $$KDSOAPDIR/lib/kdsoap.lib ):error( "Cannot find kdsoap.lib in $KDSOAPDIR/lib" )
-    unix:!exists( $$KDSOAPDIR/src/KDSoapClientInterface.h ):error( "Cannot find KDSoapClientInterface.h in $KDSOAPDIR/src" )
 
     LIBS += -L$$KDSOAPDIR/lib
     win32* {
@@ -20,6 +31,7 @@
       !isEmpty(QMAKE_LFLAGS_RPATH):LIBS += $$QMAKE_LFLAGS_RPATH$$KDSOAPDIR/lib
       LIBS += -lkdsoap
     }
+    QT += network
 
     INCLUDEPATH += $$KDSOAPDIR/include $$KDSOAPDIR/src
     DEPENDPATH += $$KDSOAPDIR/include $$KDSOAPDIR/src
