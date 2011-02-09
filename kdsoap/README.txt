@@ -10,11 +10,11 @@ or the
 
 For terms of redistribution, refer to the license agreement.
 
-KD Soap requires Qt 4.4.0 or newer.
+KD Soap requires Qt 4.6.0 or newer.
 
-To build KD Soap, run qmake in the root of the KD Soap source
-distribution. After qmake, run make.
-qmake understands the PREFIX=<dir> command line option to specify an
+To build KD Soap, run ./configure.sh (configure.bat on Windows) in the root of the KD Soap source
+distribution. Then run make.
+configure understands the -prefix <dir> command line option to specify an
 installation prefix for KD Soap. This affects make install.
 
 For more information, please refer to the KD Soap Programmer's
