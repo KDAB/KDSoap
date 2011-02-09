@@ -7,7 +7,7 @@ set product_low=kdsoap
 set Product_mix=KDSoap
 set Product_Space="KD Soap"
 
-set VERSION=1.0.0
+set VERSION=1.1.0
 
 set INSTALLATION_SUPPORTED=true
 set STATIC_BUILD_SUPPORTED=false
@@ -208,16 +208,16 @@ if "%STATIC_BUILD_SUPPORTED%" == "true" (
 
 :EndOfOptions
 
-if exist %PACKSCRIPTS_DIR% (
-    echo.
-    echo Creating include directory...
-    perl %PACKSCRIPTS_DIR%/makeincludes.pl > makeincludes.log 2>&1
-    if errorlevel 1 (
-	echo Failed to run %PACKSCRIPTS_DIR%/makeincludes.pl
-	goto :CleanEnd
-    )
-    del makeincludes.log
-)
+REM if exist %PACKSCRIPTS_DIR% (
+    REM echo.
+    REM echo Creating include directory...
+    REM perl %PACKSCRIPTS_DIR%/makeincludes.pl > makeincludes.log 2>&1
+    REM if errorlevel 1 (
+    REM echo Failed to run %PACKSCRIPTS_DIR%/makeincludes.pl
+    REM goto :CleanEnd
+    REM )
+    REM del makeincludes.log
+REM )
 
 if "%release%" == "yes" (
     if "%debug%" == "yes" (

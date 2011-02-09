@@ -7,7 +7,7 @@ Product=KDSoap
 product=kdsoap
 ProductSpace="KD Soap"
 
-VERSION=1.0.0
+VERSION=1.1.0
 
 INSTALLATION_SUPPORTED=true
 STATIC_BUILD_SUPPORTED=false
@@ -218,14 +218,14 @@ if [ -f src/src.pro ] ; then
     rm -rf lib bin
 fi
 
-if [ -d $PACKSCRIPTS_DIR ] ; then
-    echo
-    echo -n "Creating include directory..."
-    perl $PACKSCRIPTS_DIR/makeincludes.pl > makeincludes.log 2>&1 || die "Failed to run $PACKSCRIPTS_DIR/makeincludes.pl"
-    rm makeincludes.log
-    echo done
-    echo
-fi
+#if [ -d $PACKSCRIPTS_DIR ] ; then
+#    echo
+#    echo -n "Creating include directory..."
+#    perl $PACKSCRIPTS_DIR/makeincludes.pl > makeincludes.log 2>&1 || die "Failed to run $PACKSCRIPTS_DIR/makeincludes.pl"
+#    rm makeincludes.log
+#    echo done
+#    echo
+#fi
 
 default_prefix=/usr/local/KDAB/$Product-$VERSION
 if [ -z "$prefix" ] ; then

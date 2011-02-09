@@ -65,3 +65,5 @@ INSTALLS += licenses
 readme.files = README.KDSoap
 readme.path = $$INSTALL_PREFIX
 INSTALLS += readme
+
+OTHER_FILES += configure.sh configure.bat
