@@ -10,7 +10,7 @@ set Product_Space="KD Soap"
 set VERSION=1.0.0
 
 set INSTALLATION_SUPPORTED=true
-set STATIC_BUILD_SUPPORTED=true
+set STATIC_BUILD_SUPPORTED=false
 
 set PACKSCRIPTS_DIR=../admin/packscripts
 
