@@ -8,16 +8,15 @@
 #
 # Author: Mirko Boehm, mirko.boehm@kdab.com
 
-
 from core.helpers.BoilerPlate import BuildProject
 from products.ProductBoilerPlate import ProductConfigurations
-from core.plugins.packagers.CPack import CPack
+from products.ProductPackager import ProductPackager
 
-build, project = BuildProject( 'KD SOAP', 'svn+ssh://svn.kdab.com/home/SVN-klaralv/products/kdsoap', '1.0.0',
-								minimumMomVersion = "0.5.0" )
+build, project = BuildProject( name = 'KD SOAP', version = '1.0.0', url = 'svn+ssh://svn.kdab.com/home/SVN-klaralv/products/kdsoap' )
 
-staticDebug, staticRelease, sharedDebug, sharedRelease = ProductConfigurations( project )
+configs = ProductConfigurations( project )
 
-sharedRelease.addPlugin( CPack( sourcePackage = True ) )
+default = configs.getDefaultConfiguration()
+default.addPlugin( ProductPackager( sourcePackage = True ) )
 
 build.build()
