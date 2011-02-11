@@ -1,12 +1,16 @@
 #ifndef KDSOAPTHREADPOOL_H
 #define KDSOAPTHREADPOOL_H
 
-class KDSoapSocketPool;
+#include <QObject>
+#include <QHash>
+#include "KDSoapServerGlobal.h"
+class KDSoapServerObjectFactory;
+class KDSoapServer;
 
 /**
  *
  */
-class KDSoapThreadPool : public QObject
+class KDSOAPSERVER_EXPORT KDSoapThreadPool : public QObject
 {
     Q_OBJECT
 public:
@@ -15,12 +19,25 @@ public:
      */
     KDSoapThreadPool(QObject* parent = 0);
 
-    // TODO setMaxThreads
+    ~KDSoapThreadPool();
 
-    void handleIncomingConnection(int socketDescriptor);
+    /**
+     * Sets the maximum number of threads used by the thread pool.
+     * Note: The thread pool will always use at least 1 thread, even if \p maxThreadCount limit is zero or negative.
+     * The default maxThreadCount is QThread::idealThreadCount().
+     */
+    void setMaxThreadCount(int maxThreadCount);
+
+    /**
+     * Returns the maximum number of threads used by the thread pool.
+     */
+    int maxThreadCount() const;
 
 private:
-    KDSoapSocketPool* m_mainThreadSocketPool;
+    friend class KDSoapServer;
+    void handleIncomingConnection(int socketDescriptor, KDSoapServer* server);
+    class Private;
+    Private* const d;
 };
 
 #endif // KDSOAPTHREADPOOL_H

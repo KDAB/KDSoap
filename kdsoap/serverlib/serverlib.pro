@@ -18,11 +18,17 @@ PRIVATEHEADERS =
 HEADERS = $$INSTALLHEADERS \
     $$PRIVATEHEADERS \
     KDSoapThreadPool.h \
-    KDSoapSocketPool_p.h
+    KDSoapServerObject.h \
+    KDSoapServerSocket_p.h \
+    KDSoapServerThread_p.h \
+    KDSoapSocketList_p.h
 
 SOURCES = KDSoapServer.cpp \
     KDSoapThreadPool.cpp \
-    KDSoapSocketPool.cpp
+    KDSoapServerObject.cpp \
+    KDSoapServerSocket.cpp \
+    KDSoapServerThread.cpp \
+    KDSoapSocketList.cpp
 
 DEFINES += KDSOAP_BUILD_KDSOAPSERVER_LIB
 

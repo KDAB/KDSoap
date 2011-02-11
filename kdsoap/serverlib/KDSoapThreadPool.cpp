@@ -1,16 +1,84 @@
-#include "KDSoapSocketPool_p.h"
 #include "KDSoapThreadPool.h"
+#include "KDSoapServerThread_p.h"
+
+class KDSoapThreadPool::Private
+{
+public:
+    Private()
+        : m_maxThreadCount(QThread::idealThreadCount())
+    {
+    }
+
+    KDSoapServerThread* chooseNextThread();
+
+    int m_maxThreadCount;
+    typedef QList<KDSoapServerThread *> ThreadCollection;
+    ThreadCollection m_threads;
+};
 
 KDSoapThreadPool::KDSoapThreadPool(QObject* parent)
     : QObject(parent),
-      m_mainThreadSocketPool(new KDSoapSocketPool(this))
+      d(new Private)
 {
 }
 
-void KDSoapThreadPool::handleIncomingConnection(int socketDescriptor)
+KDSoapThreadPool::~KDSoapThreadPool()
 {
-    // TODO KDSoapServerThread : public QThread
-    m_mainThreadSocketPool->handleIncomingConnection(socketDescriptor);
+    // TODO ask all threads to finish, then delete them all
+    delete d;
+}
+
+void KDSoapThreadPool::setMaxThreadCount(int maxThreadCount)
+{
+    d->m_maxThreadCount = maxThreadCount;
+}
+
+int KDSoapThreadPool::maxThreadCount() const
+{
+    return d->m_maxThreadCount;
+}
+
+KDSoapServerThread * KDSoapThreadPool::Private::chooseNextThread()
+{
+    KDSoapServerThread* chosenThread = 0;
+    // Try to pick an existing thread
+    int minSocketCount = 0;
+    KDSoapServerThread* bestThread = 0;
+    ThreadCollection::const_iterator it = m_threads.constBegin();
+    for (; it != m_threads.constEnd(); ++it) {
+        KDSoapServerThread* thr = *it;
+        const int sc = thr->socketCount();
+        if (sc == 0) { // Perfect, an idling thread
+            chosenThread = thr;
+            break;
+        }
+        if (!bestThread || sc < minSocketCount) {
+            minSocketCount = sc;
+            bestThread = thr;
+        }
+    }
+
+    // Use an existing non-idling thread, if we reached maxThreads
+    if (!chosenThread && bestThread && m_threads.count() < m_maxThreadCount) {
+        chosenThread = bestThread;
+    }
+
+    // Create new thread
+    if (!chosenThread) {
+        chosenThread = new KDSoapServerThread(0);
+        m_threads.append(chosenThread);
+        chosenThread->start();
+    }
+    return chosenThread;
+}
+
+void KDSoapThreadPool::handleIncomingConnection(int socketDescriptor, KDSoapServer* server)
+{
+    // First, pick or create a thread.
+    KDSoapServerThread* chosenThread = d->chooseNextThread();
+
+    // Then create the socket, and register it in the corresponding socket-pool, and move it to the thread.
+    chosenThread->handleIncomingConnection(socketDescriptor, server);
 }
 
 #include "moc_KDSoapThreadPool.cpp"
