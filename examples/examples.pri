@@ -8,10 +8,12 @@ isEmpty(KDSOAPLIB): error("KDSOAPLIB is empty. This should not happen, please ch
 #          before examples.pri is included
 INCLUDEPATH += \
             $$KDSOAP_PATH/src \
+            $$KDSOAP_PATH/serverlib \
             $$KDSOAP_PATH/include \
             $$KDSOAP_PATH/examples/tools
 DEPENDPATH += \
             $$KDSOAP_PATH/src \
+            $$KDSOAP_PATH/serverlib \
             $$KDSOAP_PATH/examples/tools
 LIBS        += -L$$KDSOAP_PATH/lib -l$$KDSOAPLIB
 !isEmpty(QMAKE_LFLAGS_RPATH):LIBS += $$QMAKE_LFLAGS_RPATH$$KDSOAP_PATH/lib

@@ -1,5 +1,5 @@
 TEMPLATE = subdirs
-SUBDIRS  = src kdwsdl2cpp examples features
+SUBDIRS  = src serverlib kdwsdl2cpp examples features
 unittests: SUBDIRS += testtools unittests
 CONFIG   += ordered
 MAJOR_VERSION = 1 ### extract from $$VERSION
@@ -30,6 +30,7 @@ CONFIG(debug, debug|release) {
 !unix:!mac:!staticlib:VERSION_SUFFIX=$$MAJOR_VERSION
 
 KDSOAPLIB = kdsoap$$DEBUG_SUFFIX$$VERSION_SUFFIX
+KDSOAPSERVERLIB = kdsoap-server$$DEBUG_SUFFIX$$VERSION_SUFFIX
 
 
 message(Install prefix is $$INSTALL_PREFIX)
@@ -46,6 +47,7 @@ system('echo $${MESSAGE} >> .qmake.cache')
 # store PREFIX:
 system('echo INSTALL_PREFIX=$$INSTALL_PREFIX >> .qmake.cache')
 system('echo KDSOAPLIB=$$KDSOAPLIB >> .qmake.cache')
+system('echo KDSOAPSERVERLIB=$$KDSOAPSERVERLIB >> .qmake.cache')
 
 # forward make test calls to unittests:
 test.target=test
