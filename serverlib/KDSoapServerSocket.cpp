@@ -88,12 +88,13 @@ void KDSoapServerSocket::slotReadyRead()
         // TODO fault handling, in replyMsg
     } else {
         // Call method on m_serverObject
-        //KDSoapServerObjectInterface* serverObjectInterface = qobject_cast<KDSoapServerObjectInterface *>(m_serverObject);
+        KDSoapServerObjectInterface* serverObjectInterface = qobject_cast<KDSoapServerObjectInterface *>(m_serverObject);
 
+        serverObjectInterface->resetFault();
+        // TODO serverObjectInterface->setHeaders(headers);
 
         const QByteArray method = requestMsg.name().toLatin1();
         // TODO error handling, e.g. empty method, no such slot
-        qDebug() << "method=" << method;
 
         // TODO find the slot, see QDBusConnectionPrivate::activateCall
         // It also uses a cache, interesting idea.
@@ -106,22 +107,35 @@ void KDSoapServerSocket::slotReadyRead()
         QGenericArgument args[10];
         const KDSoapValueList& values = requestMsg.childValues();
         argValues.resize(values.count());
+        qDebug() << "method=" << method << values.count() << "values";
         for (int i = 0; i < values.count(); ++i) {
             const KDSoapValue& soapValue = values.at(i);
             const QVariant& value = soapValue.value();
             //const int variantType = value.userType();
             // TODO type conversion if necessary
             argValues[i] = value;
+            qDebug() << value;
             args[i] = QGenericArgument(value.typeName() /*must match method arg type*/, argValues.at(i).constData());
         }
 
         bool callOK = QMetaObject::invokeMethod(m_serverObject, method.constData(), Qt::DirectConnection, ret, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9]);
         if (callOK) {
-            qDebug() << "Got return value" << retval;
-            // TODO FooResponse element
-            replyMsg.setValue(retval);
+
+            if (serverObjectInterface->hasFault()) {
+                // TODO call getFault
+                qDebug() << "Got fault!";
+                // TODO set attributes in replyMsg
+                replyMsg.setFault(true);
+            } else {
+
+                qDebug() << "Got return value" << retval;
+                // TODO FooResponse element
+                replyMsg.setValue(retval);
+            }
         } else {
             // TODO error handling for callOK, log error
+
+            // TODO show full signature, it could be a problem with the argument types
             qDebug() << "Method not found:" << method << "in" << m_serverObject;
         }
 
