@@ -96,7 +96,7 @@ void KDSoapMessage::setUse(Use use)
 
 ////
 
-static KDSoapValue parseReplyElement(QXmlStreamReader& reader)
+static KDSoapValue parseRootElement(QXmlStreamReader& reader)
 {
     const QString name = reader.name().toString();
     KDSoapValue val(name, QVariant());
@@ -131,7 +131,7 @@ static KDSoapValue parseReplyElement(QXmlStreamReader& reader)
             //qDebug() << "text=" << text;
             val.setValue(text);
         } else if (reader.isStartElement()) {
-            const KDSoapValue subVal = parseReplyElement(reader);
+            const KDSoapValue subVal = parseRootElement(reader); // recurse
             val.childValues().append(subVal);
         }
     }
@@ -161,12 +161,12 @@ void KDSoapMessage::parseSoapXml(const QByteArray& data)
         if (reader.name() == "Envelope" && reader.namespaceUri() == KDSoapNamespaceManager::soapEnvelope()) {
             if (readNextStartElement(reader) && reader.name() == "Body" && reader.namespaceUri() == KDSoapNamespaceManager::soapEnvelope()) {
 
-                if (readNextStartElement(reader)) { // the method: Response or Fault
+                if (readNextStartElement(reader)) { // the root element: request, response or fault
                     //qDebug() << "toplevel element:" << reader.name();
                     const bool isFault = (reader.name() == "Fault");
 
                     //KDSoapValue::operator=(parseReplyElement(reader));
-                    static_cast<KDSoapValue &>(*this) = parseReplyElement(reader);
+                    static_cast<KDSoapValue &>(*this) = parseRootElement(reader);
                     if (isFault)
                         setFault(true);
                 }
