@@ -106,10 +106,11 @@ public:
     QString faultAsString() const;
 
 private:
-    void setFault(bool fault);
-    void parseSoapXml(const QByteArray& data);
     friend class KDSoapClientInterface;
     friend class KDSoapPendingCall;
+    friend class KDSoapServerSocket;
+    void setFault(bool fault);
+    void parseSoapXml(const QByteArray& data);
     friend QDebug operator<<(QDebug dbg, const KDSoapMessage &msg);
 
     QSharedDataPointer<KDSoapMessageData> d;
@@ -126,6 +127,6 @@ class KDSoapHeaders : public QList<KDSoapMessage>
 /**
  * Support for debugging KDSoapMessage objects via qDebug() << msg;
  */
-QDebug operator<<(QDebug dbg, const KDSoapMessage &msg);
+KDSOAP_EXPORT QDebug operator<<(QDebug dbg, const KDSoapMessage &msg);
 
 #endif // KDSOAPMESSAGE_H
