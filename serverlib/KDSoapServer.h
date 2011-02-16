@@ -4,9 +4,7 @@
 #include "KDSoapServerGlobal.h"
 #include <QTcpServer>
 
-class KDSoapServerObjectFactory;
 class KDSoapThreadPool;
-class KDSoapServerObject;
 
 /**
  * HTTP soap server - see QTcpServer for API
@@ -28,6 +26,8 @@ public:
      * Deletes the server object factory as well.
      */
     ~KDSoapServer();
+
+    // TODO setOptions use=encoded/literal, style=rpc/document
 
     /**
      * Sets the thread pool for this server.
@@ -52,10 +52,13 @@ public:
     /**
      * Reimplement this method to create an application-specific server object
      * to handle incoming requests.
+     * Important: the created object must derive from KDSoapServerObjectInterface
+     * and must use Q_INTERFACES(KDSoapServerObjectInterface) under the Q_OBJECT macro.
+     *
      * When using a thread pool, this method will be called from different threads.
      * The server takes ownership of the created object.
      */
-    virtual KDSoapServerObject* createServerObject() = 0;
+    virtual QObject* createServerObject() = 0;
 
 protected:
     /*! \reimp */ void incomingConnection(int socketDescriptor);
