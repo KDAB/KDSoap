@@ -129,12 +129,12 @@ static KDSoapValue parseRootElement(QXmlStreamReader& reader)
         if (reader.isCharacters()) {
             text = reader.text().toString();
             //qDebug() << "text=" << text;
-            val.setValue(text);
         } else if (reader.isStartElement()) {
             const KDSoapValue subVal = parseRootElement(reader); // recurse
             val.childValues().append(subVal);
         }
     }
+    val.setValue(text);
     return val;
 }
 
