@@ -4,7 +4,7 @@
 #include <QSet>
 class QTcpSocket;
 class KDSoapServer;
-class KDSoapServerObject;
+class QObject;
 class KDSoapServerSocket;
 
 class KDSoapSocketList
@@ -19,7 +19,7 @@ public:
     int socketCount() const;
 
 private:
-    KDSoapServerObject* m_serverObject;
+    QObject* m_serverObject;
     QSet<KDSoapServerSocket *> m_sockets;
 };
 

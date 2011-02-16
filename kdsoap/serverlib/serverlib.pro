@@ -18,19 +18,24 @@ PRIVATEHEADERS =
 HEADERS = $$INSTALLHEADERS \
     $$PRIVATEHEADERS \
     KDSoapThreadPool.h \
-    KDSoapServerObject.h \
     KDSoapServerSocket_p.h \
     KDSoapServerThread_p.h \
-    KDSoapSocketList_p.h
+    KDSoapSocketList_p.h \
+    KDSoapServerObjectInterface.h
 
 SOURCES = KDSoapServer.cpp \
     KDSoapThreadPool.cpp \
-    KDSoapServerObject.cpp \
     KDSoapServerSocket.cpp \
     KDSoapServerThread.cpp \
-    KDSoapSocketList.cpp
+    KDSoapSocketList.cpp \
+    KDSoapServerObjectInterface.cpp
 
 DEFINES += KDSOAP_BUILD_KDSOAPSERVER_LIB
+
+# We use the soap client library, for xml parsing
+INCLUDEPATH += ../src
+DEPENDPATH += ../src
+LIBS        += -L../lib -l$$KDSOAPLIB
 
 # installation targets:
 headers.files = $$INSTALLHEADERS \
