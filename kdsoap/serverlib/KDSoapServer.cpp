@@ -23,6 +23,7 @@ public:
     KDSoapThreadPool* m_threadPool;
     bool m_ownThreadPool;
     KDSoapSocketList* m_mainThreadSocketList;
+    KDSoapServer::LogLevel m_logLevel;
 };
 
 KDSoapServer::KDSoapServer(QObject* parent)
@@ -67,6 +68,17 @@ QString KDSoapServer::endPoint() const {
             .arg(QString::fromLatin1(/*(m_features & Ssl)?"https":*/"http"))
             .arg(addressStr)
             .arg(serverPort());
+}
+
+void KDSoapServer::setLogLevel(KDSoapServer::LogLevel level)
+{
+    // TODO use somewhere :-)
+    d->m_logLevel = level;
+}
+
+KDSoapServer::LogLevel KDSoapServer::logLevel() const
+{
+    return d->m_logLevel;
 }
 
 #include "moc_KDSoapServer.cpp"

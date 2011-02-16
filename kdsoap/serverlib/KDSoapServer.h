@@ -32,8 +32,6 @@ public:
      */
     ~KDSoapServer();
 
-    // TODO? setOptions use=encoded/literal, style=rpc/document
-
     /**
      * Sets the thread pool for this server.
      * This is useful if you want to share a thread pool between multiple server instances,
@@ -64,6 +62,24 @@ public:
      * The server takes ownership of the created object.
      */
     virtual QObject* createServerObject() = 0;
+
+    // TODO? setOptions for controlling the encoding of the responses sent by the server:
+    //    use=encoded/literal, style=rpc/document
+
+    enum LogLevel { LogNothing, LogFaults, LogEveryCall };
+    /**
+     * Sets the level of logging to be used by this SOAP server:
+     * <ul>
+     *  <li>LogNothing: no logging (the default).</li>
+     *  <li>LogFaults: log all faults.</li>
+     *  <li>LogEveryCall: log every call, successful or not.</li>
+     * </ul>
+     */
+    void setLogLevel(LogLevel level);
+    /**
+     * Returns the level of logging set by setLogLevel.
+     */
+    LogLevel logLevel() const;
 
 protected:
     /*! \reimp \internal */ void incomingConnection(int socketDescriptor);
