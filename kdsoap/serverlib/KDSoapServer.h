@@ -7,8 +7,13 @@
 class KDSoapThreadPool;
 
 /**
- * HTTP soap server - see QTcpServer for API
- * [TODO expand docu]
+ * HTTP soap server.
+ *
+ * Every instance of KDSoapServer represents one service, listening on one port.
+ * Call the listen() method from QTcpServer in order to start listening on a port.
+ *
+ * KDSoapServer is a base class for your server, you must inherit from it
+ * and reimplement the method createServerObject().
  */
 class KDSOAPSERVER_EXPORT KDSoapServer : public QTcpServer
 {
@@ -27,7 +32,7 @@ public:
      */
     ~KDSoapServer();
 
-    // TODO setOptions use=encoded/literal, style=rpc/document
+    // TODO? setOptions use=encoded/literal, style=rpc/document
 
     /**
      * Sets the thread pool for this server.
@@ -61,7 +66,7 @@ public:
     virtual QObject* createServerObject() = 0;
 
 protected:
-    /*! \reimp */ void incomingConnection(int socketDescriptor);
+    /*! \reimp \internal */ void incomingConnection(int socketDescriptor);
 
 private:
     class Private;
