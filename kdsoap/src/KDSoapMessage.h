@@ -115,7 +115,6 @@ private:
     friend class KDSoapServerSocket;
     void setFault(bool fault);
     void parseSoapXml(const QByteArray& data, QString* pMessageNamespace);
-    friend QDebug operator<<(QDebug dbg, const KDSoapMessage &msg);
 
     QSharedDataPointer<KDSoapMessageData> d;
 };

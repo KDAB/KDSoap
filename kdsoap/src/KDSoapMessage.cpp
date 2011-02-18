@@ -97,7 +97,7 @@ void KDSoapMessage::setUse(Use use)
 
 ////
 
-static KDSoapValue parseRootElement(QXmlStreamReader& reader)
+static KDSoapValue parseElement(QXmlStreamReader& reader)
 {
     const QString name = reader.name().toString();
     KDSoapValue val(name, QVariant());
@@ -131,7 +131,7 @@ static KDSoapValue parseRootElement(QXmlStreamReader& reader)
             text = reader.text().toString();
             //qDebug() << "text=" << text;
         } else if (reader.isStartElement()) {
-            const KDSoapValue subVal = parseRootElement(reader); // recurse
+            const KDSoapValue subVal = parseElement(reader); // recurse
             val.childValues().append(subVal);
         }
     }
@@ -169,7 +169,7 @@ void KDSoapMessage::parseSoapXml(const QByteArray& data, QString* pMessageNamesp
                     //KDSoapValue::operator=(parseReplyElement(reader));
                     if (pMessageNamespace)
                         *pMessageNamespace = reader.namespaceUri().toString();
-                    static_cast<KDSoapValue &>(*this) = parseRootElement(reader);
+                    static_cast<KDSoapValue &>(*this) = parseElement(reader);
                     if (isFault)
                         setFault(true);
                 }
