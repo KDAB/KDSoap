@@ -6,6 +6,7 @@
 #include "KDSoapValue.h"
 class QString;
 class KDSoapMessageData;
+class KDSoapHeaders;
 
 /**
  * The KDSoapMessage class represents one message sent or received via SOAP.
@@ -111,7 +112,6 @@ private:
     friend class KDSoapServerSocket;
     void setFault(bool fault);
     void parseSoapXml(const QByteArray& data);
-    QByteArray toXml(const QString& messageNamespace, const QString& method, const KDSoapHeaders& headers, const KDSoapHeaders& persistentHeaders) const;
     friend QDebug operator<<(QDebug dbg, const KDSoapMessage &msg);
 
     QSharedDataPointer<KDSoapMessageData> d;

@@ -24,7 +24,9 @@ PRIVATEHEADERS = KDSoapPendingCall_p.h \
     KDSoapClientThread_p.h \
 
 HEADERS = $$INSTALLHEADERS \
-    $$PRIVATEHEADERS
+    $$PRIVATEHEADERS \
+    KDSoapMessageWriter_p.h \
+    KDSoapNamespacePrefixes_p.h
 SOURCES = KDSoapMessage.cpp \
     KDSoapClientInterface.cpp \
     KDSoapPendingCall.cpp \
@@ -32,7 +34,8 @@ SOURCES = KDSoapMessage.cpp \
     KDSoapClientThread.cpp \
     KDSoapValue.cpp \
     KDSoapAuthentication.cpp \
-    KDSoapNamespaceManager.cpp
+    KDSoapNamespaceManager.cpp \
+    KDSoapMessageWriter.cpp
 DEFINES += KDSOAP_BUILD_KDSOAP_LIB
 
 # installation targets:

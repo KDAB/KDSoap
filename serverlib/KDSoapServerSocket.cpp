@@ -3,6 +3,7 @@
 #include "KDSoapServerObjectInterface.h"
 #include <KDSoapMessage.h>
 #include <KDSoapNamespaceManager.h>
+#include <KDSoapMessageWriter_p.h>
 #include <QBuffer>
 #include <QMetaMethod>
 #include <QVarLengthArray>
@@ -350,14 +351,18 @@ void KDSoapServerSocket::slotReadyRead()
     }
 
     // send replyMsg on socket
+    KDSoapMessageWriter msgWriter;
+    // TODO! msgWriter.setMessageNamespace();
+    const QString responseName = QString::fromLatin1("FooResponse"); // TODO
+    const QByteArray xmlResponse = msgWriter.messageToXml(replyMsg, responseName, KDSoapHeaders(), QMap<QString, KDSoapMessage>());
 #if 0 // TODO
     const QByteArray response = makeHttpResponse(replyMsg.toXml());
     const bool doDebug = true; // TODO
     if (doDebug) {
         qDebug() << "HttpServerThread: writing" << response;
     }
-#endif
     write(response);
+#endif
     // flush() ?
 }
 
