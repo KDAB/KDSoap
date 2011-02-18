@@ -2,7 +2,10 @@
 #include "KDSoapSocketList_p.h"
 #include "KDSoapServerObjectInterface.h"
 #include <KDSoapMessage.h>
+#include <KDSoapNamespaceManager.h>
 #include <QBuffer>
+#include <QMetaMethod>
+#include <QVarLengthArray>
 
 KDSoapServerSocket::KDSoapServerSocket(KDSoapSocketList* owner, QObject* serverObject)
     : QTcpSocket(),
@@ -65,6 +68,174 @@ static bool splitHeadersAndData(const QByteArray& request, QByteArray& header, Q
     return true;
 }
 
+static int kdSoapNameToTypeId(const char *name)
+{
+    int id = static_cast<int>( QVariant::nameToType(name) );
+    if (id == QVariant::UserType)
+        id = QMetaType::type(name);
+    return id;
+}
+
+// Reverse operation from variantToXmlType in KDSoapClientInterface
+static QByteArray xmlTypeToVariant(const QString& xmlType)
+{
+    static const struct {
+        const char* xml; // xsd: prefix assumed
+        const char* qType;
+    } s_types[] = {
+        { "string", "QString" }, // or QUrl
+        { "base64Binary", "QByteArray" },
+        { "int", "int" }, // or long, or uint, or longlong
+        { "unsignedInt", "qulonglong" },
+        { "boolean", "bool" },
+        { "float", "float" },
+        { "double", "double" },
+        { "time", "QTime" },
+        { "date", "QDate" },
+        { "dateTime", "QDateTime" }
+    };
+    // Speed: could be sorted and then we could use qBinaryFind
+    static const int s_numTypes = sizeof(s_types) / sizeof(*s_types);
+    for (int i = 0; i < s_numTypes; ++i) {
+        if (xmlType == QLatin1String(s_types[i].xml)) {
+            return s_types[i].qType;
+        }
+    }
+    qDebug() << QString::fromLatin1("xmlTypeToVariant: XML type %1 is not supported in "
+                                    "KDSoap, see the documentation").arg(xmlType);
+    return QByteArray();
+}
+
+#if 0
+// calculates the metatypes for the method
+// the slot must have the parameters in the following form:
+//  - zero or more value or const-ref parameters of any kind
+//  - zero or more non-const ref parameters
+// No parameter may be a template.
+// this function returns -1 if the parameters don't match the above form
+// this function returns the number of *input* parameters
+// this function does not check the return type, so metaTypes[0] is always 0 and always present
+// metaTypes.count() >= retval + 1 in all cases
+//
+// sig must be the normalised signature for the method
+static int kdSoapParametersForMethod(const QMetaMethod &mm, QList<int>& metaTypes)
+{
+    //QDBusMetaTypeId::init();
+
+    QList<QByteArray> parameterTypes = mm.parameterTypes();
+    metaTypes.clear();
+
+    metaTypes.append(0);        // return type
+    int inputCount = 0;
+    QList<QByteArray>::ConstIterator it = parameterTypes.constBegin();
+    QList<QByteArray>::ConstIterator end = parameterTypes.constEnd();
+    for ( ; it != end; ++it) {
+        const QByteArray &type = *it;
+        if (type.endsWith('*')) {
+            //qWarning("Could not parse the method '%s'", mm.signature());
+            // pointer?
+            return -1;
+        }
+
+        if (type.endsWith('&')) {
+            QByteArray basictype = type;
+            basictype.truncate(type.length() - 1);
+
+            int id = kdSoapNameToTypeId(basictype.constData());
+            if (id == 0) {
+                //qWarning("Could not parse the method '%s'", mm.signature());
+                // invalid type in method parameter list
+                return -1;
+            }// else if (QDBusMetaType::typeToSignature(id) == 0)
+            //    return -1;
+
+            metaTypes.append( id );
+            continue;
+        }
+
+        int id = kdSoapNameToTypeId(type.constData());
+        if (id == 0) {
+            //qWarning("Could not parse the method '%s'", mm.signature());
+            // invalid type in method parameter list
+            return -1;
+        }
+
+        //if (QDBusMetaType::typeToSignature(id) == 0)
+        //    return -1;
+
+        metaTypes.append(id);
+        ++inputCount;
+    }
+
+    return inputCount;
+}
+#endif
+
+static int findSlot(const QMetaObject *mo, const QByteArray &name,
+                    const QList<QByteArray>& qtTypes, int* returnMetaType)
+{
+    for (int idx = mo->methodCount() - 1 ; idx >= QObject::staticMetaObject.methodCount(); --idx) {
+        QMetaMethod mm = mo->method(idx);
+
+        // check access:
+        if (mm.access() != QMetaMethod::Public)
+            continue;
+
+        // check type:
+        if (mm.methodType() != QMetaMethod::Slot)
+            continue;
+
+        // check name:
+        QByteArray slotname = mm.signature();
+        int paren = slotname.indexOf('(');
+        if (paren != name.length() || !slotname.startsWith(name))
+            continue;
+
+        // check argument types:
+        if (mm.parameterTypes() != qtTypes) {
+            continue;
+        }
+
+        const int returnType = kdSoapNameToTypeId(mm.typeName());
+
+#if 0
+        // Fill in the metaTypes array for this slot
+        QList<int> foundMetaTypes;
+        int inputCount = kdSoapParametersForMethod(mm, foundMetaTypes);
+        if (inputCount == -1)
+            continue;           // problem parsing
+
+        if (foundMetaTypes != metaTypes)
+            continue;
+#endif
+
+        *returnMetaType = returnType;
+
+        // if we got here, this slot matched
+        return idx;
+    }
+
+    // no slot matched
+    return -1;
+}
+
+#if 0
+// This would be if we had the full signature, but we don't
+int QDBusConnectionPrivate::findSlot(QObject* obj, const QByteArray &normalizedName,
+                                     QList<int> &params)
+{
+    int midx = obj->metaObject()->indexOfMethod(normalizedName);
+    if (midx == -1)
+        return -1;
+
+    int inputCount = kdSoapParametersForMethod(obj->metaObject()->method(midx), params);
+    if ( inputCount == -1 || inputCount + 1 != params.count() )
+        return -1;              // failed to parse or invalid arguments or output arguments
+
+    return midx;
+}
+#endif
+
 void KDSoapServerSocket::slotReadyRead()
 {
     qDebug() << "slotReadyRead!";
@@ -94,31 +265,69 @@ void KDSoapServerSocket::slotReadyRead()
         // TODO serverObjectInterface->setHeaders(headers);
 
         const QByteArray method = requestMsg.name().toLatin1();
-        // TODO error handling, e.g. empty method, no such slot
 
-        // TODO find the slot, see QDBusConnectionPrivate::activateCall
-        // It also uses a cache, interesting idea.
-        // And then we shouldn't use invokeMethod, it looks up the method again
-        // ==> use qt_metacall()
+        const KDSoapValueList& values = requestMsg.childValues();
+
+        // TODO use a cache like in QDBusConnectionPrivate::activateCall?
+        const QMetaObject* mo = m_serverObject->metaObject();
+        QList<QByteArray> qtTypes;
+        //QList<int> metaTypes; // TODO needed?
+
+        QVarLengthArray<void *, 10> params;
+        params.reserve(values.count());
+        // first one is the return type -- add it below
+        params.append(0);
 
         QVector<QVariant> argValues;
-        QString retval;
-        QGenericReturnArgument ret("QString", &retval); // TODO determine from method signature
-        QGenericArgument args[10];
-        const KDSoapValueList& values = requestMsg.childValues();
         argValues.resize(values.count());
         qDebug() << "method=" << method << values.count() << "values";
         for (int i = 0; i < values.count(); ++i) {
             const KDSoapValue& soapValue = values.at(i);
             const QVariant& value = soapValue.value();
-            //const int variantType = value.userType();
-            // TODO type conversion if necessary
+            // use type information if provided (use=encoded)
+            QByteArray qtType;
+            //int typeId = -1;
+            if (soapValue.typeNs() == KDSoapNamespaceManager::xmlSchema1999() ||
+                    soapValue.typeNs() == KDSoapNamespaceManager::xmlSchema2001()) {
+                qtType = xmlTypeToVariant(soapValue.type());
+                //typeId = kdSoapNameToTypeId(qtType.constData());
+            } else {
+                qtType = value.typeName();
+                //typeId = value.userType();
+            }
+            qtTypes.append(qtType);
+            // TODO error handling
+            //Q_ASSERT(typeId != -1);
+            Q_ASSERT(!qtType.isEmpty());
+            //metaTypes.append(typeId);
             argValues[i] = value;
+            params.append(const_cast<void *>(argValues.at(i).constData()));
             qDebug() << value;
-            args[i] = QGenericArgument(value.typeName() /*must match method arg type*/, argValues.at(i).constData());
+        }
+        int returnMetaType = -1;
+        const int slotIdx = ::findSlot(mo, method, qtTypes, &returnMetaType);
+        if (slotIdx < 0) {
+            qDebug() << "Slot not found:" << mo->className() << method << qtTypes;
         }
 
-        bool callOK = QMetaObject::invokeMethod(m_serverObject, method.constData(), Qt::DirectConnection, ret, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9]);
+        // output arguments
+        QVariantList outputArgs;
+        void *null = 0;
+        if (returnMetaType != QMetaType::Void) {
+            //qDebug() << "return type is" << returnMetaType;
+            QVariant arg(returnMetaType, null);
+            outputArgs.append(arg);
+            params[0] = const_cast<void*>(outputArgs.at(0).constData());
+        }
+#if 0 // other output arguments, not sure we support this
+        for ( ; i < metaTypes.count(); ++i) {
+            QVariant arg(metaTypes[i], null);
+            outputArgs.append( arg );
+            params.append(const_cast<void*>(outputArgs.at( outputArgs.count() - 1 ).constData()));
+        }
+#endif
+        const bool callOK = m_serverObject->qt_metacall(QMetaObject::InvokeMetaMethod, slotIdx, params.data()) < 0;
+
         if (callOK) {
 
             if (serverObjectInterface->hasFault()) {
@@ -128,9 +337,9 @@ void KDSoapServerSocket::slotReadyRead()
                 replyMsg.setFault(true);
             } else {
 
-                qDebug() << "Got return value" << retval;
+                qDebug() << "Got return value" << outputArgs[0];
                 // TODO FooResponse element
-                replyMsg.setValue(retval);
+                replyMsg.setValue(outputArgs[0]);
             }
         } else {
             // TODO error handling for callOK, log error
@@ -138,77 +347,17 @@ void KDSoapServerSocket::slotReadyRead()
             // TODO show full signature, it could be a problem with the argument types
             qDebug() << "Method not found:" << method << "in" << m_serverObject;
         }
-
-#if 0
-        // From qdbusintegrator.cpp:
-
-        QVarLengthArray<void *, 10> params;
-         params.reserve(metaTypes.count());
-
-         QVariantList auxParameters;
-         // let's create the parameter list
-
-         // first one is the return type -- add it below
-         params.append(0);
-
-         // add the input parameters
-         int i;
-         int pCount = qMin(msg.arguments().count(), metaTypes.count() - 1);
-         for (i = 1; i <= pCount; ++i) {
-             int id = metaTypes[i];
-             const QVariant &arg = msg.arguments().at(i - 1);
-             if (arg.userType() == id)
-                 // no conversion needed
-                 params.append(const_cast<void *>(arg.constData()));
-             else if (arg.userType() == qMetaTypeId<QDBusArgument>()) {
-                 // convert to what the function expects
-                 void *null = 0;
-                 auxParameters.append(QVariant(id, null));
-
-                 const QDBusArgument &in =
-                     *reinterpret_cast<const QDBusArgument *>(arg.constData());
-                 QVariant &out = auxParameters[auxParameters.count() - 1];
-
-                 if (!QDBusMetaType::demarshall(in, out.userType(), out.data()))
-                     qFatal("Internal error: demarshalling function for type '%s' (%d) failed!",
-                            out.typeName(), out.userType());
-
-                 params.append(const_cast<void *>(out.constData()));
-             } else {
-                 qFatal("Internal error: got invalid meta type %d (%s) "
-                        "when trying to convert to meta type %d (%s)",
-                        arg.userType(), QMetaType::typeName(arg.userType()),
-                        id, QMetaType::typeName(id));
-             }
-         }
-
-        // output arguments
-        QVariantList outputArgs;
-        void *null = 0;
-        if (metaTypes[0] != QMetaType::Void) {
-            QVariant arg(metaTypes[0], null);
-            outputArgs.append( arg );
-            params[0] = const_cast<void*>(outputArgs.at( outputArgs.count() - 1 ).constData());
-        }
-        for ( ; i < metaTypes.count(); ++i) {
-            QVariant arg(metaTypes[i], null);
-            outputArgs.append( arg );
-            params.append(const_cast<void*>(outputArgs.at( outputArgs.count() - 1 ).constData()));
-        }
-        bool fail = m_serverObject->qt_metacall(QMetaObject::InvokeMetaMethod, slotIdx, params.data()) >= 0;
-#endif
     }
 
     // send replyMsg on socket
 #if 0 // TODO
-    // design: use a QIODevice?
     const QByteArray response = makeHttpResponse(replyMsg.toXml());
     const bool doDebug = true; // TODO
     if (doDebug) {
         qDebug() << "HttpServerThread: writing" << response;
     }
-    write(response);
 #endif
+    write(response);
     // flush() ?
 }
 
