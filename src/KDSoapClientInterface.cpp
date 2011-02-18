@@ -81,6 +81,7 @@ static QString variantToTextValue(const QVariant& value)
     }
 }
 
+// See also xmlTypeToVariant in serverlib
 static QString variantToXMLType(const QVariant& value)
 {
     switch (value.userType())
@@ -185,58 +186,7 @@ public:
 
 QBuffer* KDSoapClientInterface::Private::prepareRequestBuffer(const QString& method, const KDSoapMessage& message, const KDSoapHeaders& headers)
 {
-    QByteArray data;
-    QXmlStreamWriter writer(&data);
-    writer.writeStartDocument();
-
-    KDSoapNamespacePrefixes namespacePrefixes;
-
-    const QString soapNS = KDSoapNamespaceManager::soapEnvelope();
-    namespacePrefixes.writeNamespace(writer, soapNS, QLatin1String("soap"));
-    namespacePrefixes.writeNamespace(writer, KDSoapNamespaceManager::soapEncoding(), QLatin1String("soap-enc"));
-    namespacePrefixes.writeNamespace(writer, KDSoapNamespaceManager::xmlSchema1999(), QLatin1String("xsd"));
-    namespacePrefixes.writeNamespace(writer, KDSoapNamespaceManager::xmlSchemaInstance1999(), QLatin1String("xsi"));
-
-    // Also insert known variants
-    namespacePrefixes.insert(KDSoapNamespaceManager::xmlSchema2001(), QString::fromLatin1("xsd"));
-    namespacePrefixes.insert(KDSoapNamespaceManager::xmlSchemaInstance2001(), QString::fromLatin1("xsi"));
-
-    writer.writeStartElement(soapNS, QLatin1String("Envelope"));
-    writer.writeAttribute(soapNS, QLatin1String("encodingStyle"), KDSoapNamespaceManager::soapEncoding());
-
-    if (!headers.isEmpty() || !m_persistentHeaders.isEmpty()) {
-        // This writeNamespace line adds the xmlns:n1 to <Envelope>, which looks ugly and unusual (and breaks all unittests)
-        // However it's the best solution in case of headers, otherwise we get n1 in the header and n2 in the body,
-        // and xsi:type attributes that refer to n1, which isn't defined in the body...
-        namespacePrefixes.writeNamespace(writer, this->m_messageNamespace, QLatin1String("n1") /*make configurable?*/);
-        writer.writeStartElement(soapNS, QLatin1String("Header"));
-        Q_FOREACH(const KDSoapMessage& header, m_persistentHeaders) {
-            writeChildren(namespacePrefixes, writer, header.childValues(), header.use());
-        }
-        Q_FOREACH(const KDSoapMessage& header, headers) {
-            writeChildren(namespacePrefixes, writer, header.childValues(), header.use());
-        }
-        writer.writeEndElement(); // Header
-    } else {
-        // So in the standard case (no headers) we just rely on Qt calling it n1 and insert it into the map.
-        // Calling this after the writeStartElement(method) below leads to a double-definition of n1.
-        namespacePrefixes.insert(this->m_messageNamespace, QString::fromLatin1("n1"));
-    }
-
-    writer.writeStartElement(soapNS, QLatin1String("Body"));
-
-    writer.writeStartElement(this->m_messageNamespace, method);
-    writeElementContents(namespacePrefixes, writer, message, message.use());
-    writer.writeEndElement(); // <method>
-
-    writer.writeEndElement(); // Body
-    writer.writeEndElement(); // Envelope
-    writer.writeEndDocument();
-
-    if (qgetenv("KDSOAP_DEBUG").toInt()) {
-        qDebug() << data;
-    }
-
+    QByteArray data = message.toXml(m_messageNamespace, method, headers, m_persistentHeaders);
     QBuffer* buffer = new QBuffer;
     buffer->setData(data);
     buffer->open(QIODevice::ReadOnly);
