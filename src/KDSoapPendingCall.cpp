@@ -74,11 +74,13 @@ void KDSoapPendingCall::Private::parseReply()
             //qDebug() << reply->readAll();
             qDebug() << reply->errorString();
         }
-    } else {
-        const QByteArray data = reply->readAll();
-        if (doDebug)
-            qDebug() << data;
-
-        replyMessage.parseSoapXml(data, 0);
+        if (reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt() != 500)
+            return;
+        // HTTP 500 is used to return faults, so parse the fault, below
     }
+    const QByteArray data = reply->readAll();
+    if (doDebug)
+        qDebug() << data;
+
+    replyMessage.parseSoapXml(data, 0);
 }
