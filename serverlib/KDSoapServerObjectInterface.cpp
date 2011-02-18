@@ -34,12 +34,12 @@ void KDSoapServerObjectInterface::resetFault()
     d->m_faultCode.clear();
 }
 
-void KDSoapServerObjectInterface::getFault(QString &faultCode, QString &faultString, QString &faultActor, QString &detail) const
+void KDSoapServerObjectInterface::storeFaultAttributes(KDSoapMessage& message) const
 {
-    faultCode = d->m_faultCode;
-    faultString = d->m_faultString;
-    faultActor = d->m_faultActor;
-    detail = d->m_detail;
+    message.addArgument(QString::fromLatin1("faultcode"), d->m_faultCode);
+    message.addArgument(QString::fromLatin1("faultstring"), d->m_faultString);
+    message.addArgument(QString::fromLatin1("faultactor"), d->m_faultActor);
+    message.addArgument(QString::fromLatin1("detail"), d->m_detail);
 }
 
 bool KDSoapServerObjectInterface::hasFault() const
