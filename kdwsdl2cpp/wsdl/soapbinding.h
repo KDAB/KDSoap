@@ -80,8 +80,10 @@ class KWSDL_EXPORT SoapBinding : public AbstractBinding
         Body();
         ~Body();
 
+#if 0
         void setEncodingStyle( const QString &encodingStyle );
         QString encodingStyle() const;
+#endif
 
         void setPart( const QString &part );
         QString part() const;
@@ -96,7 +98,9 @@ class KWSDL_EXPORT SoapBinding : public AbstractBinding
         void saveXML( ParserContext *context, QDomDocument &document, QDomElement &parent ) const;
 
       private:
+#if 0
         QString mEncodingStyle;
+#endif
         QString mPart;
         Use mUse;
         QString mNameSpace;
@@ -108,8 +112,10 @@ class KWSDL_EXPORT SoapBinding : public AbstractBinding
         Fault();
         ~Fault();
 
+#if 0
         void setEncodingStyle( const QString &encodingStyle );
         QString encodingStyle() const;
+#endif
 
         void setUse( Use use );
         Use use() const;
@@ -121,7 +127,9 @@ class KWSDL_EXPORT SoapBinding : public AbstractBinding
         void saveXML( ParserContext *context, QDomDocument &document, QDomElement &parent ) const;
 
       private:
+#if 0
         QString mEncodingStyle;
+#endif
         Use mUse;
         QString mNameSpace;
     };
@@ -138,8 +146,10 @@ class KWSDL_EXPORT SoapBinding : public AbstractBinding
         void setMessage( const QName &message );
         QName message() const;
 
+#if 0
         void setEncodingStyle( const QString &encodingStyle );
         QString encodingStyle() const;
+#endif
 
         void setPart( const QString &part );
         QString part() const;
@@ -154,7 +164,9 @@ class KWSDL_EXPORT SoapBinding : public AbstractBinding
         QName mMessage;
         QString mPart;
         Use mUse;
+#if 0
         QString mEncodingStyle;
+#endif
         QString mNameSpace;
     };
 
@@ -181,9 +193,10 @@ class KWSDL_EXPORT SoapBinding : public AbstractBinding
         void setUse( const Use &use );
         Use use() const;
 
+#if 0
         void setEncodingStyle( const QString encodingStyle );
         QString encodingStyle() const;
-
+#endif
         void setNameSpace( const QString &nameSpace );
         QString nameSpace() const;
 
@@ -193,7 +206,9 @@ class KWSDL_EXPORT SoapBinding : public AbstractBinding
         QName mMessage;
         QString mPart;
         Use mUse;
+#if 0
         QString mEncodingStyle;
+#endif
         QString mNameSpace;
     };
 

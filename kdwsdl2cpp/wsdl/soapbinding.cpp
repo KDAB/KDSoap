@@ -244,6 +244,7 @@ SoapBinding::Body::~Body()
 {
 }
 
+#if 0
 void SoapBinding::Body::setEncodingStyle( const QString &encodingStyle )
 {
   mEncodingStyle = encodingStyle;
@@ -253,6 +254,7 @@ QString SoapBinding::Body::encodingStyle() const
 {
   return mEncodingStyle;
 }
+#endif
 
 void SoapBinding::Body::setPart( const QString &part )
 {
@@ -286,10 +288,13 @@ QString SoapBinding::Body::nameSpace() const
 
 void SoapBinding::Body::loadXML( ParserContext *context, const QDomElement &element )
 {
+#if 0
+  // ## Seems to be set to a namespace, always http://schemas.xmlsoap.org/soap/encoding/ ... unused here.
   if ( element.hasAttribute( "encodingStyle" ) )
     mEncodingStyle = element.attribute( "encodingStyle" );
   else
     mEncodingStyle = QString();
+#endif
 
   mPart = element.attribute( "part" );
   mNameSpace = element.attribute( "namespace" );
@@ -309,8 +314,10 @@ void SoapBinding::Body::saveXML( ParserContext *context, QDomDocument &document,
   QDomElement element = document.createElementNS( soapStandardNamespace, soapPrefix( context ) + "body" );
   parent.appendChild( element );
 
+#if 0
   if ( !mEncodingStyle.isEmpty() )
     element.setAttribute( "encodingStyle", mEncodingStyle );
+#endif
   if ( !mPart.isEmpty() )
     element.setAttribute( "part", mPart );
   if ( !mNameSpace.isEmpty() )
@@ -332,6 +339,7 @@ SoapBinding::Fault::~Fault()
 {
 }
 
+#if 0
 void SoapBinding::Fault::setEncodingStyle( const QString &encodingStyle )
 {
   mEncodingStyle = encodingStyle;
@@ -341,6 +349,7 @@ QString SoapBinding::Fault::encodingStyle() const
 {
   return mEncodingStyle;
 }
+#endif
 
 void SoapBinding::Fault::setUse( Use use )
 {
@@ -363,10 +372,12 @@ QString SoapBinding::Fault::nameSpace() const
 }
 void SoapBinding::Fault::loadXML( ParserContext *context, const QDomElement &element )
 {
+#if 0
   if ( element.hasAttribute( "encodingStyle" ) )
     mEncodingStyle = element.attribute( "encodingStyle" );
   else
     mEncodingStyle = QString();
+#endif
 
   mNameSpace = element.attribute( "namespace" );
 
@@ -385,8 +396,10 @@ void SoapBinding::Fault::saveXML( ParserContext *context, QDomDocument &document
   QDomElement element = document.createElementNS( soapStandardNamespace, soapPrefix( context ) + "fault" );
   parent.appendChild( element );
 
+#if 0
   if ( !mEncodingStyle.isEmpty() )
     element.setAttribute( "encodingStyle", mEncodingStyle );
+#endif
   if ( !mNameSpace.isEmpty() )
     element.setAttribute( "namespace", mNameSpace );
 
@@ -446,6 +459,7 @@ SoapBinding::Use SoapBinding::Header::use() const
   return mUse;
 }
 
+#if 0
 void SoapBinding::Header::setEncodingStyle( const QString encodingStyle )
 {
   mEncodingStyle = encodingStyle;
@@ -455,6 +469,7 @@ QString SoapBinding::Header::encodingStyle() const
 {
   return mEncodingStyle;
 }
+#endif
 
 void SoapBinding::Header::setNameSpace( const QString &nameSpace )
 {
@@ -489,10 +504,12 @@ void SoapBinding::Header::loadXML( ParserContext *context, const QDomElement &el
   else
     context->messageHandler()->warning( "SoapBinding::Header: unknown 'use' value" );
 
+#if 0
   if ( element.hasAttribute( "encodingStyle" ) )
     mEncodingStyle = element.attribute( "encodingStyle" );
   else
     mEncodingStyle = QString();
+#endif
 
   mNameSpace = element.attribute( "namespace" );
 
@@ -523,8 +540,10 @@ void SoapBinding::Header::saveXML( ParserContext *context, QDomDocument &documen
   else
     context->messageHandler()->warning( "SoapBinding::Header: 'part' required" );
 
+#if 0
   if ( !mEncodingStyle.isEmpty() )
     element.setAttribute( "encodingStyle", mEncodingStyle );
+#endif
   if ( !mNameSpace.isEmpty() )
     element.setAttribute( "namespace", mNameSpace );
 
@@ -556,6 +575,7 @@ QName SoapBinding::HeaderFault::message() const
   return mMessage;
 }
 
+#if 0
 void SoapBinding::HeaderFault::setEncodingStyle( const QString &encodingStyle )
 {
   mEncodingStyle = encodingStyle;
@@ -565,6 +585,7 @@ QString SoapBinding::HeaderFault::encodingStyle() const
 {
   return mEncodingStyle;
 }
+#endif
 
 void SoapBinding::HeaderFault::setPart( const QString &part )
 {
@@ -615,10 +636,12 @@ void SoapBinding::HeaderFault::loadXML( ParserContext *context, const QDomElemen
   else
     context->messageHandler()->warning( "SoapBinding::HeaderFault: unknown 'use' value" );
 
+#if 0
   if ( element.hasAttribute( "encodingStyle" ) )
     mEncodingStyle = element.attribute( "encodingStyle" );
   else
     mEncodingStyle = QString();
+#endif
 
   mNameSpace = element.attribute( "namespace" );
 }
@@ -638,8 +661,10 @@ void SoapBinding::HeaderFault::saveXML( ParserContext *context, QDomDocument &do
   else
     context->messageHandler()->warning( "SoapBinding::HeaderFault: 'part' required" );
 
+#if 0
   if ( !mEncodingStyle.isEmpty() )
     element.setAttribute( "encodingStyle", mEncodingStyle );
+#endif
   if ( !mNameSpace.isEmpty() )
     element.setAttribute( "namespace", mNameSpace );
 
@@ -859,7 +884,9 @@ bool SoapBinding::Headers::contains(const Header &other) const
         if (header.mMessage == other.mMessage &&
             header.mPart == other.mPart &&
             header.mUse == other.mUse &&
+#if 0
             header.mEncodingStyle == other.mEncodingStyle &&
+#endif
             header.mNameSpace == other.mNameSpace)
             return true;
     }
