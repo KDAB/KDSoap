@@ -237,20 +237,21 @@ int QDBusConnectionPrivate::findSlot(QObject* obj, const QByteArray &normalizedN
 }
 #endif
 
-static QByteArray makeHttpResponse(const QByteArray& responseData)
+static QByteArray httpResponseHeaders(bool fault, int responseDataSize)
 {
     QByteArray httpResponse;
-    httpResponse += "HTTP/1.1 200 OK\r\n";
+    httpResponse.reserve(50);
+    if (fault) {
+        // http://www.w3.org/TR/2007/REC-soap12-part0-20070427 and look for 500
+        httpResponse += "HTTP/1.1 500 Internal Server Error\r\n";
+    } else {
+        httpResponse += "HTTP/1.1 200 OK\r\n";
+    }
     httpResponse += "Content-Type: text/xml\r\nContent-Length: ";
-    httpResponse += QByteArray::number(responseData.size());
+    httpResponse += QByteArray::number(responseDataSize);
     httpResponse += "\r\n";
 
-    // We don't support multiple connexions (TODO) so let's ask the client
-    // to close the connection every time. See testCallNoReply which performs
-    // multiple connexions at the same time (QNAM keeps the old connexion open).
-    httpResponse += "Connection: close\r\n";
-    httpResponse += "\r\n";
-    httpResponse += responseData;
+    httpResponse += "\r\n"; // end of headers
     return httpResponse;
 }
 
@@ -274,8 +275,10 @@ void KDSoapServerSocket::slotReadyRead()
     QString messageNamespace;
     requestMsg.parseSoapXml(m_receivedData, &messageNamespace);
     const QString method = requestMsg.name();
-    QString responseName = QString::fromLatin1("Fault"); // assume the worst
     KDSoapMessage replyMsg;
+    replyMsg.setFault(true);
+    QString responseName = QString::fromLatin1("Fault"); // assume the worst
+
     if (requestMsg.isFault()) {
         // Can this happen? Getting a fault as a request !? Doesn't make sense...
         // TODO reply with a fault, but we don't even know what main element name to use
@@ -358,6 +361,7 @@ void KDSoapServerSocket::slotReadyRead()
                 responseName = method + QString::fromLatin1("Response");
                 // TODO employeeCountry wrapper element
                 replyMsg.setValue(outputArgs[0]);
+                replyMsg.setFault(false);
             }
         } else {
             // TODO error handling for callOK, log error
@@ -371,12 +375,13 @@ void KDSoapServerSocket::slotReadyRead()
     KDSoapMessageWriter msgWriter;
     msgWriter.setMessageNamespace(messageNamespace);
     const QByteArray xmlResponse = msgWriter.messageToXml(replyMsg, responseName, KDSoapHeaders(), QMap<QString, KDSoapMessage>());
-    const QByteArray response = makeHttpResponse(xmlResponse);
+    const QByteArray response = httpResponseHeaders(replyMsg.isFault(), xmlResponse.size());
     const bool doDebug = true; // TODO
     if (doDebug) {
-        qDebug() << "HttpServerThread: writing" << response;
+        qDebug() << "HttpServerThread: writing" << response << xmlResponse;
     }
     write(response);
+    write(xmlResponse);
     // flush() ?
 }
 
