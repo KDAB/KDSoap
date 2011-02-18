@@ -2,6 +2,7 @@
 #define KDSOAPSERVER_H
 
 #include "KDSoapServerGlobal.h"
+#include <KDSoapMessage.h>
 #include <QTcpServer>
 
 class KDSoapThreadPool;
@@ -63,8 +64,17 @@ public:
      */
     virtual QObject* createServerObject() = 0;
 
-    // TODO? setOptions for controlling the encoding of the responses sent by the server:
-    //    use=encoded/literal, style=rpc/document
+    /**
+     * Define the way the message should be serialized: with or without type information.
+     * This value usually comes from the <binding> element in the WSDL service description.
+     * The default value is KDSoapMessage::LiteralUse.
+     * \see KDSoapMessage::Use
+     */
+    void setUse(KDSoapMessage::Use use);
+    /**
+     * Returns the value passed to setUse().
+     */
+    KDSoapMessage::Use use() const;
 
     enum LogLevel { LogNothing, LogFaults, LogEveryCall };
     /**
