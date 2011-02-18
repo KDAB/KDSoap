@@ -45,6 +45,8 @@ public:
      */
     KDSoapHeaders headers() const;
 
+    // TODO setHeaders in order to add headers to the response (http://www.w3.org/TR/2000/NOTE-SOAP-20000508 example 7)
+
     /**
      * Instructs KD SOAP to return a fault message instead of the return value of the slot.
      *

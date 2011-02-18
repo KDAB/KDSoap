@@ -1,6 +1,7 @@
 #include "KDSoapServerSocket_p.h"
 #include "KDSoapSocketList_p.h"
 #include "KDSoapServerObjectInterface.h"
+#include "KDSoapServer.h"
 #include <KDSoapMessage.h>
 #include <KDSoapNamespaceManager.h>
 #include <KDSoapMessageWriter_p.h>
@@ -370,6 +371,8 @@ void KDSoapServerSocket::slotReadyRead()
             qDebug() << "Method not found:" << method << "in" << m_serverObject;
         }
     }
+
+    replyMsg.setUse(m_owner->server()->use());
 
     // send replyMsg on socket
     KDSoapMessageWriter msgWriter;

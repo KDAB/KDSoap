@@ -8,7 +8,8 @@ public:
     Private()
         : m_threadPool(new KDSoapThreadPool),
           m_ownThreadPool(true),
-          m_mainThreadSocketList(0)
+          m_mainThreadSocketList(0),
+          m_use(KDSoapMessage::LiteralUse)
     {
     }
 
@@ -24,6 +25,7 @@ public:
     bool m_ownThreadPool;
     KDSoapSocketList* m_mainThreadSocketList;
     KDSoapServer::LogLevel m_logLevel;
+    KDSoapMessage::Use m_use;
 };
 
 KDSoapServer::KDSoapServer(QObject* parent)
@@ -79,6 +81,16 @@ void KDSoapServer::setLogLevel(KDSoapServer::LogLevel level)
 KDSoapServer::LogLevel KDSoapServer::logLevel() const
 {
     return d->m_logLevel;
+}
+
+void KDSoapServer::setUse(KDSoapMessage::Use use)
+{
+    d->m_use = use;
+}
+
+KDSoapMessage::Use KDSoapServer::use() const
+{
+    return d->m_use;
 }
 
 #include "moc_KDSoapServer.cpp"

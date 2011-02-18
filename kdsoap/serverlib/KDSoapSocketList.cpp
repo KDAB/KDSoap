@@ -5,8 +5,9 @@
 const bool doDebug = true;
 
 KDSoapSocketList::KDSoapSocketList(KDSoapServer* server)
-    : m_serverObject(server->createServerObject())
+    : m_server(server), m_serverObject(server->createServerObject())
 {
+    Q_ASSERT(m_server);
     Q_ASSERT(m_serverObject);
 }
 

@@ -18,7 +18,10 @@ public:
 
     int socketCount() const;
 
+    KDSoapServer* server() const { return m_server; }
+
 private:
+    KDSoapServer* m_server;
     QObject* m_serverObject;
     QSet<KDSoapServerSocket *> m_sockets;
 };
