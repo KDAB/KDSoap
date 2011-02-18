@@ -63,7 +63,7 @@ private:
     void setHeaders(const KDSoapHeaders& headers);
     void resetFault();
     bool hasFault() const;
-    void getFault(QString& faultCode, QString& faultString, QString& faultActor, QString& detail) const;
+    void storeFaultAttributes(KDSoapMessage& message) const;
     class Private;
     Private* const d;
 };

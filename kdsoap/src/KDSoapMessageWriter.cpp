@@ -197,7 +197,7 @@ void KDSoapMessageWriter::writeChildren(KDSoapNamespacePrefixes& namespacePrefix
     KDSoapValueListIterator it(args);
     while (it.hasNext()) {
         const KDSoapValue& element = it.next();
-        writer.writeStartElement(this->m_messageNamespace, element.name());
+        writer.writeStartElement(m_messageNamespace, element.name());
         writeElementContents(namespacePrefixes, writer, element, use);
         writer.writeEndElement();
     }

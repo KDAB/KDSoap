@@ -237,6 +237,23 @@ int QDBusConnectionPrivate::findSlot(QObject* obj, const QByteArray &normalizedN
 }
 #endif
 
+static QByteArray makeHttpResponse(const QByteArray& responseData)
+{
+    QByteArray httpResponse;
+    httpResponse += "HTTP/1.1 200 OK\r\n";
+    httpResponse += "Content-Type: text/xml\r\nContent-Length: ";
+    httpResponse += QByteArray::number(responseData.size());
+    httpResponse += "\r\n";
+
+    // We don't support multiple connexions (TODO) so let's ask the client
+    // to close the connection every time. See testCallNoReply which performs
+    // multiple connexions at the same time (QNAM keeps the old connexion open).
+    httpResponse += "Connection: close\r\n";
+    httpResponse += "\r\n";
+    httpResponse += responseData;
+    return httpResponse;
+}
+
 void KDSoapServerSocket::slotReadyRead()
 {
     qDebug() << "slotReadyRead!";
@@ -254,18 +271,20 @@ void KDSoapServerSocket::slotReadyRead()
     qDebug() << "data received:" << m_receivedData;
 
     KDSoapMessage requestMsg;
-    requestMsg.parseSoapXml(m_receivedData);
+    QString messageNamespace;
+    requestMsg.parseSoapXml(m_receivedData, &messageNamespace);
+    const QString method = requestMsg.name();
+    QString responseName = QString::fromLatin1("Fault"); // assume the worst
     KDSoapMessage replyMsg;
     if (requestMsg.isFault()) {
-        // TODO fault handling, in replyMsg
+        // Can this happen? Getting a fault as a request !? Doesn't make sense...
+        // TODO reply with a fault, but we don't even know what main element name to use
     } else {
         // Call method on m_serverObject
         KDSoapServerObjectInterface* serverObjectInterface = qobject_cast<KDSoapServerObjectInterface *>(m_serverObject);
 
         serverObjectInterface->resetFault();
         // TODO serverObjectInterface->setHeaders(headers);
-
-        const QByteArray method = requestMsg.name().toLatin1();
 
         const KDSoapValueList& values = requestMsg.childValues();
 
@@ -306,7 +325,7 @@ void KDSoapServerSocket::slotReadyRead()
             qDebug() << value;
         }
         int returnMetaType = -1;
-        const int slotIdx = ::findSlot(mo, method, qtTypes, &returnMetaType);
+        const int slotIdx = ::findSlot(mo, method.toLatin1(), qtTypes, &returnMetaType);
         if (slotIdx < 0) {
             qDebug() << "Slot not found:" << mo->className() << method << qtTypes;
         }
@@ -332,14 +351,12 @@ void KDSoapServerSocket::slotReadyRead()
         if (callOK) {
 
             if (serverObjectInterface->hasFault()) {
-                // TODO call getFault
                 qDebug() << "Got fault!";
-                // TODO set attributes in replyMsg
-                replyMsg.setFault(true);
+                serverObjectInterface->storeFaultAttributes(replyMsg);
             } else {
-
                 qDebug() << "Got return value" << outputArgs[0];
-                // TODO FooResponse element
+                responseName = method + QString::fromLatin1("Response");
+                // TODO employeeCountry wrapper element
                 replyMsg.setValue(outputArgs[0]);
             }
         } else {
@@ -352,17 +369,14 @@ void KDSoapServerSocket::slotReadyRead()
 
     // send replyMsg on socket
     KDSoapMessageWriter msgWriter;
-    // TODO! msgWriter.setMessageNamespace();
-    const QString responseName = QString::fromLatin1("FooResponse"); // TODO
+    msgWriter.setMessageNamespace(messageNamespace);
     const QByteArray xmlResponse = msgWriter.messageToXml(replyMsg, responseName, KDSoapHeaders(), QMap<QString, KDSoapMessage>());
-#if 0 // TODO
-    const QByteArray response = makeHttpResponse(replyMsg.toXml());
+    const QByteArray response = makeHttpResponse(xmlResponse);
     const bool doDebug = true; // TODO
     if (doDebug) {
         qDebug() << "HttpServerThread: writing" << response;
     }
     write(response);
-#endif
     // flush() ?
 }
 

@@ -79,6 +79,6 @@ void KDSoapPendingCall::Private::parseReply()
         if (doDebug)
             qDebug() << data;
 
-        replyMessage.parseSoapXml(data);
+        replyMessage.parseSoapXml(data, 0);
     }
 }

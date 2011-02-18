@@ -96,8 +96,11 @@ public:
     const KDSoapValueList& arguments() const;
 
     /**
-     * \return \c true if this message is a "fault" message.
-     * A fault message is the message returned by a SOAP server when an error occurred.
+     * \return \c true if this message is a "fault" message, or if an error
+     * occurred while parsing the XML.
+     *
+     * A fault message is the message returned by a SOAP server when an
+     * error occurred in the processing of the request.
      */
     bool isFault() const;
 
@@ -111,7 +114,7 @@ private:
     friend class KDSoapPendingCall;
     friend class KDSoapServerSocket;
     void setFault(bool fault);
-    void parseSoapXml(const QByteArray& data);
+    void parseSoapXml(const QByteArray& data, QString* pMessageNamespace);
     friend QDebug operator<<(QDebug dbg, const KDSoapMessage &msg);
 
     QSharedDataPointer<KDSoapMessageData> d;

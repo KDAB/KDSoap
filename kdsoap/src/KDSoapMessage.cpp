@@ -155,7 +155,7 @@ static bool readNextStartElement(QXmlStreamReader& reader)
 #endif
 }
 
-void KDSoapMessage::parseSoapXml(const QByteArray& data)
+void KDSoapMessage::parseSoapXml(const QByteArray& data, QString* pMessageNamespace)
 {
     QXmlStreamReader reader(data);
     if (readNextStartElement(reader)) {
@@ -167,6 +167,8 @@ void KDSoapMessage::parseSoapXml(const QByteArray& data)
                     const bool isFault = (reader.name() == "Fault");
 
                     //KDSoapValue::operator=(parseReplyElement(reader));
+                    if (pMessageNamespace)
+                        *pMessageNamespace = reader.namespaceUri().toString();
                     static_cast<KDSoapValue &>(*this) = parseRootElement(reader);
                     if (isFault)
                         setFault(true);
