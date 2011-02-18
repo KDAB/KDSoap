@@ -2,13 +2,13 @@ KD SOAP 1.x requires a Qt version >= 4.6 with Network and XML support enabled.
 
 0) From the top directory of your KD SOAP installation run the "configure" scripts.
 
-   On Windows use depending on the kind of build on one of the following;
+   On Windows use depending on the kind of build one of the following;
      configure.bat -shared -debug
      configure.bat -shared -release
      configure.bat -static -debug
      configure.bat -static -release
 
-   On Unix use depending on the kind of build on one of the following;
+   On Unix use depending on the kind of build one of the following;
      ./configure.sh -shared -debug
      ./configure.sh -shared -release
      ./configure.sh -static -debug
