@@ -96,6 +96,7 @@ private:
     QByteArray makeHttpResponse(const QByteArray& responseData)
     {
         QByteArray httpResponse;
+        // ### missing here: error code 500 if response is a fault
         if (m_features & Error404)
             httpResponse += "HTTP/1.1 404 Not Found\r\n";
         else

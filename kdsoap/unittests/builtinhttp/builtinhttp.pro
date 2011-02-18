@@ -7,4 +7,6 @@ test.commands = ./$(TARGET)
 test.depends = $(TARGET)
 QMAKE_EXTRA_TARGETS += test
 
+LIBS        += -L$$KDSOAP_PATH/lib -l$$KDSOAPSERVERLIB
+
 #KDWSDL = sugarcrm.wsdl
