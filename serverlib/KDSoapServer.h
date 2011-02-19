@@ -84,6 +84,10 @@ public:
      *  <li>LogFaults: log all faults.</li>
      *  <li>LogEveryCall: log every call, successful or not.</li>
      * </ul>
+     *
+     * Warning: enabling logging reduces performance severely. Not only
+     * because of the time spent logging, but also because the threads can
+     * only write one at a time to the file, to avoid mixed output.
      */
     void setLogLevel(LogLevel level);
     /**
@@ -91,10 +95,24 @@ public:
      */
     LogLevel logLevel() const;
 
+    /**
+     * Sets the name of the file where logging should go.
+     * The server always appends to this file, you should delete it
+     * or rename it first if you don't want an ever-growing log file.
+     */
+    void setLogFileName(const QString& fileName);
+
+    /**
+     * Returns the name of the log file given to setLogFileName().
+     */
+    QString logFileName() const;
+
 protected:
     /*! \reimp \internal */ void incomingConnection(int socketDescriptor);
 
 private:
+    friend class KDSoapServerSocket;
+    void log(const QByteArray& text);
     class Private;
     Private* const d;
 };

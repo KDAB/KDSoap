@@ -11,6 +11,7 @@ class KDSoapServerThread : public QThread
     Q_OBJECT
 public:
     explicit KDSoapServerThread(QObject *parent = 0);
+    ~KDSoapServerThread();
 
     void handleIncomingConnection(int socketDescriptor, KDSoapServer* server);
 

@@ -78,36 +78,6 @@ static int kdSoapNameToTypeId(const char *name)
     return id;
 }
 
-// Reverse operation from variantToXmlType in KDSoapClientInterface
-static QByteArray xmlTypeToVariant(const QString& xmlType)
-{
-    static const struct {
-        const char* xml; // xsd: prefix assumed
-        const char* qType;
-    } s_types[] = {
-        { "string", "QString" }, // or QUrl
-        { "base64Binary", "QByteArray" },
-        { "int", "int" }, // or long, or uint, or longlong
-        { "unsignedInt", "qulonglong" },
-        { "boolean", "bool" },
-        { "float", "float" },
-        { "double", "double" },
-        { "time", "QTime" },
-        { "date", "QDate" },
-        { "dateTime", "QDateTime" }
-    };
-    // Speed: could be sorted and then we could use qBinaryFind
-    static const int s_numTypes = sizeof(s_types) / sizeof(*s_types);
-    for (int i = 0; i < s_numTypes; ++i) {
-        if (xmlType == QLatin1String(s_types[i].xml)) {
-            return s_types[i].qType;
-        }
-    }
-    qDebug() << QString::fromLatin1("xmlTypeToVariant: XML type %1 is not supported in "
-                                    "KDSoap, see the documentation").arg(xmlType);
-    return QByteArray();
-}
-
 #if 0
 // calculates the metatypes for the method
 // the slot must have the parameters in the following form:
@@ -276,9 +246,47 @@ void KDSoapServerSocket::slotReadyRead()
     QString messageNamespace;
     requestMsg.parseSoapXml(m_receivedData, &messageNamespace);
     const QString method = requestMsg.name();
+
     KDSoapMessage replyMsg;
-    replyMsg.setFault(true);
-    QString responseName = QString::fromLatin1("Fault"); // assume the worst
+    makeCall(requestMsg, replyMsg);
+
+    const bool isFault = replyMsg.isFault();
+    KDSoapServer* server = m_owner->server();
+    replyMsg.setUse(server->use());
+
+    // send replyMsg on socket
+
+    KDSoapMessageWriter msgWriter;
+    msgWriter.setMessageNamespace(messageNamespace);
+    const QString responseName = isFault ? QString::fromLatin1("Fault") : method + QString::fromLatin1("Response");
+    const QByteArray xmlResponse = msgWriter.messageToXml(replyMsg, responseName, KDSoapHeaders(), QMap<QString, KDSoapMessage>());
+    const QByteArray response = httpResponseHeaders(isFault, xmlResponse.size());
+    const bool doDebug = true; // TODO
+    if (doDebug) {
+        qDebug() << "HttpServerThread: writing" << response << xmlResponse;
+    }
+    write(response);
+    write(xmlResponse);
+    // flush() ?
+
+    // All done, check if we should log this
+    const KDSoapServer::LogLevel logLevel = server->logLevel(); // we do this here in order to support dynamic settings changes (at the price of a mutex)
+    if (logLevel != KDSoapServer::LogNothing) {
+        if (logLevel == KDSoapServer::LogEveryCall ||
+                (logLevel == KDSoapServer::LogFaults && isFault)) {
+
+            if (isFault)
+                server->log("FAULT: " + method.toLatin1() + '\n' + xmlResponse);
+            else
+                server->log("CALL " + method.toLatin1());
+        }
+    }
+}
+
+void KDSoapServerSocket::makeCall(const KDSoapMessage &requestMsg, KDSoapMessage& replyMsg)
+{
+    const QString method = requestMsg.name();
+    replyMsg.setFault(true); // assume the worst
 
     if (requestMsg.isFault()) {
         // Can this happen? Getting a fault as a request !? Doesn't make sense...
@@ -310,15 +318,21 @@ void KDSoapServerSocket::slotReadyRead()
             const QVariant& value = soapValue.value();
             // use type information if provided (use=encoded)
             QByteArray qtType;
+#if 0
             //int typeId = -1;
+            // TODO remove, already done in parseSoapXml
             if (soapValue.typeNs() == KDSoapNamespaceManager::xmlSchema1999() ||
                     soapValue.typeNs() == KDSoapNamespaceManager::xmlSchema2001()) {
                 qtType = xmlTypeToVariant(soapValue.type());
                 //typeId = kdSoapNameToTypeId(qtType.constData());
-            } else {
+                // TODO convert the variant to this type, for the void*-cast to work...
+            } else
+#endif
+            {
                 qtType = value.typeName();
                 //typeId = value.userType();
             }
+            qDebug() << i << "soapValue" << soapValue << soapValue.type() << soapValue.typeNs() << "-> qtType=" << qtType;
             qtTypes.append(qtType);
             // TODO error handling
             //Q_ASSERT(typeId != -1);
@@ -332,6 +346,9 @@ void KDSoapServerSocket::slotReadyRead()
         const int slotIdx = ::findSlot(mo, method.toLatin1(), qtTypes, &returnMetaType);
         if (slotIdx < 0) {
             qDebug() << "Slot not found:" << mo->className() << method << qtTypes;
+            replyMsg.addArgument(QString::fromLatin1("faultcode"), QString::fromLatin1("Server.MethodNotFound"));
+            replyMsg.addArgument(QString::fromLatin1("faultstring"), QString::fromLatin1("%1 not found").arg(method));
+            return;
         }
 
         // output arguments
@@ -359,7 +376,6 @@ void KDSoapServerSocket::slotReadyRead()
                 serverObjectInterface->storeFaultAttributes(replyMsg);
             } else {
                 qDebug() << "Got return value" << outputArgs[0];
-                responseName = method + QString::fromLatin1("Response");
                 // TODO employeeCountry wrapper element
                 replyMsg.setValue(outputArgs[0]);
                 replyMsg.setFault(false);
@@ -372,20 +388,6 @@ void KDSoapServerSocket::slotReadyRead()
         }
     }
 
-    replyMsg.setUse(m_owner->server()->use());
-
-    // send replyMsg on socket
-    KDSoapMessageWriter msgWriter;
-    msgWriter.setMessageNamespace(messageNamespace);
-    const QByteArray xmlResponse = msgWriter.messageToXml(replyMsg, responseName, KDSoapHeaders(), QMap<QString, KDSoapMessage>());
-    const QByteArray response = httpResponseHeaders(replyMsg.isFault(), xmlResponse.size());
-    const bool doDebug = true; // TODO
-    if (doDebug) {
-        qDebug() << "HttpServerThread: writing" << response << xmlResponse;
-    }
-    write(response);
-    write(xmlResponse);
-    // flush() ?
 }
 
 #include "moc_KDSoapServerSocket_p.cpp"
