@@ -5,6 +5,7 @@
 #include <QMap>
 class QObject;
 class KDSoapSocketList;
+class KDSoapMessage;
 
 class KDSoapServerSocket : public QTcpSocket
 {
@@ -17,6 +18,8 @@ private Q_SLOTS:
     void slotReadyRead();
 
 private:
+    void makeCall(const KDSoapMessage& requestMsg, KDSoapMessage& replyMsg);
+
     KDSoapSocketList* m_owner;
     QObject* m_serverObject;
 
