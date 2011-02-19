@@ -122,8 +122,9 @@ static int xmlTypeToMetaType(const QString& xmlType)
             return s_types[i].metaTypeId;
         }
     }
-    qDebug() << QString::fromLatin1("xmlTypeToVariant: XML type %1 is not supported in "
-                                    "KDSoap, see the documentation").arg(xmlType);
+    // This will happen with any custom type, don't bother the user
+    //qDebug() << QString::fromLatin1("xmlTypeToMetaType: XML type %1 is not supported in "
+    //                                "KDSoap, see the documentation").arg(xmlType);
     return -1;
 }
 
@@ -183,7 +184,9 @@ static KDSoapValue parseElement(QXmlStreamReader& reader, const QXmlStreamNamesp
 
     QVariant variant(text);
     if (metaTypeId != QVariant::Invalid) {
-        variant.convert(metaTypeId);
+        QVariant copy = variant;
+        if (!variant.convert(metaTypeId))
+            variant = copy;
     }
     val.setValue(variant);
     return val;
