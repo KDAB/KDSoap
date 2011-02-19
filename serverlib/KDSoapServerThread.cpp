@@ -7,6 +7,11 @@ KDSoapServerThread::KDSoapServerThread(QObject *parent)
 {
 }
 
+KDSoapServerThread::~KDSoapServerThread()
+{
+    qDeleteAll(m_socketLists.values());
+}
+
 // Called from main thread!
 int KDSoapServerThread::socketCount() const
 {
@@ -26,6 +31,7 @@ KDSoapSocketList * KDSoapServerThread::socketListForServer(KDSoapServer *server)
         return sockets;
 
     sockets = new KDSoapSocketList(server);
+    m_socketLists.insert(server, sockets);
     return sockets;
 }
 
