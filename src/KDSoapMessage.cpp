@@ -97,11 +97,52 @@ void KDSoapMessage::setUse(Use use)
 
 ////
 
-static KDSoapValue parseElement(QXmlStreamReader& reader)
+static int xmlTypeToMetaType(const QString& xmlType)
+{
+    // Reverse operation from variantToXmlType in KDSoapClientInterface, keep in sync
+    static const struct {
+        const char* xml; // xsd: prefix assumed
+        const int metaTypeId;
+    } s_types[] = {
+        { "string", QVariant::String }, // or QUrl
+        { "base64Binary", QVariant::ByteArray },
+        { "int", QVariant::Int }, // or long, or uint, or longlong
+        { "unsignedInt", QVariant::ULongLong },
+        { "boolean", QVariant::Bool },
+        { "float", QMetaType::Float },
+        { "double", QVariant::Double },
+        { "time", QVariant::Time },
+        { "date", QVariant::Date },
+        { "dateTime", QVariant::DateTime }
+    };
+    // Speed: could be sorted and then we could use qBinaryFind
+    static const int s_numTypes = sizeof(s_types) / sizeof(*s_types);
+    for (int i = 0; i < s_numTypes; ++i) {
+        if (xmlType == QLatin1String(s_types[i].xml)) {
+            return s_types[i].metaTypeId;
+        }
+    }
+    qDebug() << QString::fromLatin1("xmlTypeToVariant: XML type %1 is not supported in "
+                                    "KDSoap, see the documentation").arg(xmlType);
+    return -1;
+}
+
+static QStringRef namespaceForPrefix(const QXmlStreamNamespaceDeclarations& decls, const QString& prefix)
+{
+    for (int i = 0; i < decls.count(); ++i) {
+        const QXmlStreamNamespaceDeclaration& decl = decls.at(i);
+        if (decl.prefix() == prefix)
+            return decl.namespaceUri();
+    }
+    return QStringRef();
+}
+
+static KDSoapValue parseElement(QXmlStreamReader& reader, const QXmlStreamNamespaceDeclarations& envNsDecls)
 {
     const QString name = reader.name().toString();
     KDSoapValue val(name, QVariant());
     //qDebug() << "parsing" << name;
+    QVariant::Type metaTypeId = QVariant::Invalid;
 
     const QXmlStreamAttributes attributes = reader.attributes();
     Q_FOREACH(const QXmlStreamAttribute& attribute, attributes) {
@@ -113,8 +154,12 @@ static KDSoapValue parseElement(QXmlStreamReader& reader)
         if (ns == KDSoapNamespaceManager::xmlSchemaInstance1999() ||
             ns == KDSoapNamespaceManager::xmlSchemaInstance2001()) {
             if (name == QLatin1String("type")) {
-                // TODO use reader.namespaceDeclarations() in the main loop, to be able to resolve namespaces
-                val.setType(reader.namespaceUri().toString() /*wrong*/, attrValue.toString());
+                // The type can be like xsd:float, resolve that
+                const QString type = attrValue.toString();
+                const int pos = type.indexOf(QLatin1Char(':'));
+                const QString dataType = type.mid(pos+1);
+                val.setType(namespaceForPrefix(envNsDecls, type.left(pos)).toString(), dataType);
+                metaTypeId = static_cast<QVariant::Type>(xmlTypeToMetaType(dataType));
             }
             continue;
         } else if (ns == KDSoapNamespaceManager::soapEncoding() || ns == KDSoapNamespaceManager::soapEnvelope()) {
@@ -131,11 +176,16 @@ static KDSoapValue parseElement(QXmlStreamReader& reader)
             text = reader.text().toString();
             //qDebug() << "text=" << text;
         } else if (reader.isStartElement()) {
-            const KDSoapValue subVal = parseElement(reader); // recurse
+            const KDSoapValue subVal = parseElement(reader, envNsDecls); // recurse
             val.childValues().append(subVal);
         }
     }
-    val.setValue(text);
+
+    QVariant variant(text);
+    if (metaTypeId != QVariant::Invalid) {
+        variant.convert(metaTypeId);
+    }
+    val.setValue(variant);
     return val;
 }
 
@@ -160,6 +210,7 @@ void KDSoapMessage::parseSoapXml(const QByteArray& data, QString* pMessageNamesp
     QXmlStreamReader reader(data);
     if (readNextStartElement(reader)) {
         if (reader.name() == "Envelope" && reader.namespaceUri() == KDSoapNamespaceManager::soapEnvelope()) {
+            const QXmlStreamNamespaceDeclarations envNsDecls = reader.namespaceDeclarations();
             if (readNextStartElement(reader) && reader.name() == "Body" && reader.namespaceUri() == KDSoapNamespaceManager::soapEnvelope()) {
 
                 if (readNextStartElement(reader)) { // the root element: request, response or fault
@@ -169,7 +220,7 @@ void KDSoapMessage::parseSoapXml(const QByteArray& data, QString* pMessageNamesp
                     //KDSoapValue::operator=(parseReplyElement(reader));
                     if (pMessageNamespace)
                         *pMessageNamespace = reader.namespaceUri().toString();
-                    static_cast<KDSoapValue &>(*this) = parseElement(reader);
+                    static_cast<KDSoapValue &>(*this) = parseElement(reader, envNsDecls);
                     if (isFault)
                         setFault(true);
                 }
