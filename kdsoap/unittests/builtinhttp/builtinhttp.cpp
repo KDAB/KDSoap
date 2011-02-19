@@ -87,27 +87,6 @@ private Q_SLOTS:
                      "Fault description: Error downloading %1 - server replied: Not Found ()").arg(server.endPoint()));
     }
 
-    void testServerFault() // fault returned by server
-    {
-        CountryServer server;
-        QVERIFY(server.listen());
-        //HttpServerThread server(countryResponse(), HttpServerThread::Public);
-
-        qDebug() << "server ready, proceeding" << server.endPoint();
-        KDSoapClientInterface client(server.endPoint(), countryMessageNamespace());
-        KDSoapMessage message;
-        message.addArgument(QLatin1String("employeeName"), QString());
-        KDSoapPendingCall call = client.asyncCall(QLatin1String("getEmployeeCountry"), message);
-        QVERIFY(!call.isFinished());
-        QTest::qWait(1000);
-        // TODO QVERIFY(xmlBufferCompare(server.receivedData(), expectedCountryRequest()));
-#if QT_VERSION >= 0x040600
-        QVERIFY(call.isFinished());
-#endif
-        QVERIFY(call.returnMessage().isFault());
-        QCOMPARE(call.returnMessage().arguments().child(QLatin1String("faultcode")).value().toString(), QString::fromLatin1("Client.Data"));
-    }
-
     void testInvalidXML()
     {
         HttpServerThread server(QByteArray(xmlEnvBegin) + "><soap:Body><broken></xml></soap:Body>", HttpServerThread::Public);
