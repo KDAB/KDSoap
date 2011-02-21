@@ -2,22 +2,21 @@
 #
 # KDAB confidential
 #
-# This file is part of KDAB's internal build system setup.
-# Author: Mirko Boehm, mirko.boehm@kdab.com
+# This file is part of KDAB's internal build system setup. It is the
+# build script for KD SOAP, which integrates it into the continuous
+# integration system. 
 #
-# This script sets up Make-O-Matic and Autobuild in the current folder.
-# It generates a shell script that can be sourced to use the created environment.
+# Author: Mirko Boehm, mirko.boehm@kdab.com
 
-from core.plugins.packagers.CPack import CPack
-from core.helpers.BoilerPlate import getBuildProject
-from products.ProductBoilerPlate import getSharedConfigurations
+from core.helpers.BoilerPlate import BuildProject
+from products.ProductBoilerPlate import ProductConfigurations
+from products.ProductPackager import ProductPackager
 
-build, project = getBuildProject( minimumMomVersion = "0.5.0",
-	projectName = "KD SOAP", projectVersionNumber = '1.0.0',
-	scmUrl = 'svn+ssh://svn.kdab.com/home/SVN-klaralv/products/kdsoap/branches/kdsoap-1.0.0-release' )
+build, project = BuildProject( name = 'KD SOAP', version = '1.0.0', url = 'svn+ssh://svn.kdab.com/home/SVN-klaralv/products/kdsoap' )
 
-sharedDebug, sharedRelease = getSharedConfigurations( project )
+configs = ProductConfigurations( project )
 
-sharedRelease.addPlugin( CPack( sourcePackage = True ) )
+default = configs.getDefaultConfiguration()
+default.addPlugin( ProductPackager( sourcePackage = True ) )
 
 build.build()
