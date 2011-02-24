@@ -59,7 +59,7 @@ private slots:
     void testHolidays()
     {
         const int year = 2009;
-        const QString endPoint = QString::fromLatin1("http://www.27seconds.com/Holidays/US/Dates/USHolidayDates.asmx");
+        const QString endPoint = QString::fromLatin1("http://www.holidaywebservice.com/Holidays/HolidayService.asmx");
         const QString messageNamespace = QString::fromLatin1("http://www.27seconds.com/Holidays/US/Dates/");
         KDSoapClientInterface client(endPoint, messageNamespace);
         KDSoapMessage message;

@@ -95,11 +95,14 @@ private Q_SLOTS:
 
         KDSoapClientInterface client(server->endPoint(), countryMessageNamespace());
         KDSoapMessage message;
-        message.setUse(KDSoapMessage::EncodedUse); // tell the server the data types!
         message.addArgument(QLatin1String("foo"), 4);
         message.addArgument(QLatin1String("bar"), float(3.2));
         message.addArgument(QLatin1String("dateTime"), QDateTime::fromTime_t(123456));
         const KDSoapMessage response = client.call(QLatin1String("getStuff"), message);
+        if (response.isFault()) {
+            qDebug() << response.faultAsString();
+            QVERIFY(!response.isFault());
+        }
         QCOMPARE(response.value().toDouble(), double(4+3.2+123456));
     }
 
@@ -116,9 +119,26 @@ private Q_SLOTS:
         QCOMPARE(response.arguments().child(QLatin1String("faultstring")).value().toString(), QString::fromLatin1("doesNotExist not found"));
     }
 
+    void testMissingParams()
+    {
+        CountryServerThread serverThread;
+        CountryServer* server = serverThread.startThread();
+
+        KDSoapClientInterface client(server->endPoint(), countryMessageNamespace());
+        KDSoapMessage message;
+        message.addArgument(QLatin1String("foo"), 4);
+        const KDSoapMessage response = client.call(QLatin1String("getStuff"), message);
+        QVERIFY(response.isFault());
+        qDebug() << response.faultAsString();
+    }
+
     void testCallAndLogging()
     {
         // TODO
+
+        // JUST A TEST
+        QList<int> foo; foo << 1 << 2 << 3 << 4 << 5;
+        qDebug() << foo;
     }
 
     void testServerFault() // fault returned by server

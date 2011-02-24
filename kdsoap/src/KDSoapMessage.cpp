@@ -183,6 +183,8 @@ static KDSoapValue parseElement(QXmlStreamReader& reader, const QXmlStreamNamesp
     }
 
     QVariant variant(text);
+    // With use=encoded, we have type info, we can convert the variant here
+    // Otherwise, for servers, we do it later, once we know the method's parameter types.
     if (metaTypeId != QVariant::Invalid) {
         QVariant copy = variant;
         if (!variant.convert(metaTypeId))
