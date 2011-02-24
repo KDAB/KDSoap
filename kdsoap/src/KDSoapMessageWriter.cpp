@@ -16,7 +16,7 @@ void KDSoapMessageWriter::setMessageNamespace(const QString &ns)
     m_messageNamespace = ns;
 }
 
-static QString variantToTextValue(const QVariant& value)
+static QString variantToTextValue(const QVariant& value, const QString& typeNs, const QString& type)
 {
     switch (value.userType())
     {
@@ -28,10 +28,18 @@ static QString variantToTextValue(const QVariant& value)
         // xmlpatterns/data/qatomicvalue.cpp says to do this:
         return value.toUrl().toString();
     case QVariant::ByteArray:
-        {
-            const QByteArray b64 = value.toByteArray().toBase64();
-            return QString::fromLatin1(b64.data(),b64.size());
+    {
+        const QByteArray data = value.toByteArray();
+        if (typeNs == KDSoapNamespaceManager::xmlSchema1999() || typeNs == KDSoapNamespaceManager::xmlSchema2001()) {
+            if (type == QLatin1String("hexBinary")) {
+                const QByteArray hb = data.toHex();
+                return QString::fromLatin1(hb.constData(), hb.size());
+            }
         }
+        // default to base64Binary, like variantToXMLType() does.
+        const QByteArray b64 = value.toByteArray().toBase64();
+        return QString::fromLatin1(b64.constData(), b64.size());
+    }
     case QVariant::Int:
         // fall-through
     case QVariant::LongLong:
@@ -56,7 +64,7 @@ static QString variantToTextValue(const QVariant& value)
     }
     case QVariant::Date:
         return value.toDate().toString(Qt::ISODate);
-    case QVariant::DateTime:
+    case QVariant::DateTime: // http://www.w3.org/TR/xmlschema-2/#dateTime
     {
         const QDateTime dt = value.toDateTime();
         const QTime time = dt.time();
@@ -205,7 +213,7 @@ void KDSoapMessageWriter::writeElementContents(KDSoapNamespacePrefixes& namespac
     writeChildren(namespacePrefixes, writer, list, use);
 
     if (!value.isNull())
-        writer.writeCharacters(variantToTextValue(value));
+        writer.writeCharacters(variantToTextValue(value, element.typeNs(), element.type()));
 }
 
 void KDSoapMessageWriter::writeChildren(KDSoapNamespacePrefixes& namespacePrefixes, QXmlStreamWriter& writer, const KDSoapValueList& args, KDSoapMessage::Use use) const
@@ -224,6 +232,6 @@ void KDSoapMessageWriter::writeAttributes(QXmlStreamWriter& writer, const QList<
 {
     Q_FOREACH(const KDSoapValue& attr, attributes) {
         Q_ASSERT(!attr.value().isNull());
-        writer.writeAttribute(m_messageNamespace, attr.name(), variantToTextValue(attr.value()));
+        writer.writeAttribute(m_messageNamespace, attr.name(), variantToTextValue(attr.value(), attr.typeNs(), attr.type()));
     }
 }
