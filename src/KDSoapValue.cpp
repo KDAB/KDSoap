@@ -76,7 +76,7 @@ bool KDSoapValue::operator ==(const KDSoapValue &other) const
 
 QDebug operator <<(QDebug dbg, const KDSoapValue &value)
 {
-    dbg << value.name() << value.value();
+    dbg.space() << value.name() << value.value();
     if (!value.childValues().isEmpty()) {
         dbg << "<children>";
         KDSoapValueListIterator it(value.childValues());
