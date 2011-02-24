@@ -30,7 +30,7 @@ public Q_SLOTS: // SOAP slots
 
     double getStuff(int foo, float bar, const QDateTime& dateTime) const {
         qDebug() << "getStuff called:" << foo << bar << dateTime.toTime_t();
-        return double(foo) + bar + double(dateTime.toTime_t());
+        return double(foo) + bar + double(dateTime.toTime_t()) + double(dateTime.time().msec() / 1000.0);
     }
 };
 
@@ -97,13 +97,15 @@ private Q_SLOTS:
         KDSoapMessage message;
         message.addArgument(QLatin1String("foo"), 4);
         message.addArgument(QLatin1String("bar"), float(3.2));
-        message.addArgument(QLatin1String("dateTime"), QDateTime::fromTime_t(123456));
+        QDateTime dt = QDateTime::fromTime_t(123456);
+        dt.setTime(dt.time().addMSecs(789));
+        message.addArgument(QLatin1String("dateTime"), dt);
         const KDSoapMessage response = client.call(QLatin1String("getStuff"), message);
         if (response.isFault()) {
             qDebug() << response.faultAsString();
             QVERIFY(!response.isFault());
         }
-        QCOMPARE(response.value().toDouble(), double(4+3.2+123456));
+        QCOMPARE(response.value().toDouble(), double(4+3.2+123456.789));
     }
 
     void testMethodNotFound()
