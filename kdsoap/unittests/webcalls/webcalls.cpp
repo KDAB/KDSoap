@@ -59,17 +59,22 @@ private slots:
     void testHolidays()
     {
         const int year = 2009;
-        const QString endPoint = QString::fromLatin1("http://www.holidaywebservice.com/Holidays/HolidayService.asmx");
-        const QString messageNamespace = QString::fromLatin1("http://www.27seconds.com/Holidays/US/Dates/");
+        const QString endPoint = QString::fromLatin1("http://www.holidaywebservice.com/HolidayService_v2/HolidayService2.asmx");
+        const QString messageNamespace = QString::fromLatin1("http://www.holidaywebservice.com/HolidayService_v2/");
         KDSoapClientInterface client(endPoint, messageNamespace);
         KDSoapMessage message;
+        message.addArgument(QLatin1String("countryCode"), QLatin1String("UnitedStates")); // http://www.holidaywebservice.com/ServicesAvailable_HolidayService2_Country-Enum.aspx
+        message.addArgument(QLatin1String("holidayCode"), QLatin1String("VALENTINES-DAY"));          // http://www.holidaywebservice.com/ServicesAvailable_HolidayService2_HolidayCode-Object.aspx
         message.addArgument(QLatin1String("year"), year);
-        KDSoapPendingCall pendingCall = client.asyncCall(QLatin1String("GetValentinesDay"), message/*, action*/);
+        KDSoapPendingCall pendingCall = client.asyncCall(QLatin1String("GetHolidayDate"), message/*, action*/);
         KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);
         connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher*)),
                 this, SLOT(slotFinished(KDSoapPendingCallWatcher*)));
         m_eventLoop.exec();
-        QVERIFY(!m_returnMessage.isFault());
+        if (m_returnMessage.isFault()) {
+            qDebug() << m_returnMessage.faultAsString();
+            QVERIFY(!m_returnMessage.isFault());
+        }
         QCOMPARE(m_returnMessage.arguments().first().value(), QVariant(QString::fromLatin1("2009-02-14T00:00:00")));
     }
 
