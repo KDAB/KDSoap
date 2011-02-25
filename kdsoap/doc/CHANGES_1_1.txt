@@ -4,6 +4,7 @@ Fixed handling of faults (fault XML was not parsed when the HTTP error code was 
 Fixed serialization of times and datetimes, to use ISO format and include milliseconds
 Support for hexBinary
 Response parsing in KDSoapMessage: implement type conversion based on type information sent back, fix handling of empty strings.
+Fix compilation error when the name of a wsdl:service contains a '-'.
 
 NEW: server side support
 
