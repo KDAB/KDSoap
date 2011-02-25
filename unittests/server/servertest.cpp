@@ -15,9 +15,50 @@ class CountryServerObject : public QObject, public KDSoapServerObjectInterface
     Q_OBJECT
     Q_INTERFACES(KDSoapServerObjectInterface)
 public:
-    CountryServerObject() : QObject() {}
+    CountryServerObject() : QObject(), KDSoapServerObjectInterface() {
+    }
 
-public Q_SLOTS: // SOAP slots
+    virtual void processRequest(const KDSoapMessage &request, KDSoapMessage &response)
+    {
+        const QByteArray method = request.name().toLatin1();
+        if (method == "getEmployeeCountry") {
+            const QString employeeName = request.childValues().child(QLatin1String("employeeName")).value().toString();
+            const QString ret = this->getEmployeeCountry(employeeName);
+            if (!hasFault()) {
+                response.setValue(QLatin1String("getEmployeeCountryResponse"));
+                response.addArgument(QLatin1String("employeeCountry"), ret);
+            }
+        } else if (method == "getStuff") {
+            const KDSoapValueList& values = request.childValues();
+            const KDSoapValue valueFoo = values.child(QLatin1String("foo"));
+            const KDSoapValue valueBar = values.child(QLatin1String("bar"));
+            const KDSoapValue valueDateTime = values.child(QLatin1String("dateTime"));
+            if (valueFoo.isNull() || valueBar.isNull() || valueDateTime.isNull()) {
+                response.setFault(true);
+                response.addArgument(QLatin1String("faultcode"), QLatin1String("Server.MethodNotFound"));
+                return;
+            }
+            const int foo = valueFoo.value().toInt();
+            const float bar = valueBar.value().toFloat();
+            const QDateTime dateTime = valueDateTime.value().toDateTime();
+            const double ret = this->getStuff(foo, bar, dateTime);
+            if (!hasFault()) {
+                response.setValue(ret);
+            }
+        } else if (method == "hexBinaryTest") {
+            const KDSoapValueList& values = request.childValues();
+            const QByteArray input1 = QByteArray::fromBase64(values.child(QLatin1String("a")).value().toByteArray());
+            //qDebug() << "input1=" << input1;
+            const QByteArray input2 = QByteArray::fromHex(values.child(QLatin1String("b")).value().toByteArray());
+            //qDebug() << "input2=" << input2;
+            const QByteArray hex = this->hexBinaryTest(input1, input2);
+            response.setValue(QVariant(hex));
+        } else {
+            KDSoapServerObjectInterface::processRequest(request, response);
+        }
+    }
+
+public: // SOAP slots
     QString getEmployeeCountry(const QString& employeeName) {
         if (employeeName.isEmpty()) {
             setFault(QLatin1String("Client.Data"), QLatin1String("Empty employee name"),
@@ -31,6 +72,9 @@ public Q_SLOTS: // SOAP slots
     double getStuff(int foo, float bar, const QDateTime& dateTime) const {
         qDebug() << "getStuff called:" << foo << bar << dateTime.toTime_t();
         return double(foo) + bar + double(dateTime.toTime_t()) + double(dateTime.time().msec() / 1000.0);
+    }
+    QByteArray hexBinaryTest(const QByteArray& input1, const QByteArray& input2) const {
+        return input1 + input2;
     }
 };
 
@@ -85,7 +129,7 @@ private Q_SLOTS:
         //qDebug() << "server ready, proceeding" << server->endPoint();
         KDSoapClientInterface client(server->endPoint(), countryMessageNamespace());
         const KDSoapMessage response = client.call(QLatin1String("getEmployeeCountry"), countryMessage());
-        QCOMPARE(response.value().toString(), QString::fromLatin1("France"));
+        QCOMPARE(response.childValues().first().value().toString(), QString::fromLatin1("France"));
     }
 
     void testParamTypes()
@@ -106,6 +150,20 @@ private Q_SLOTS:
             QVERIFY(!response.isFault());
         }
         QCOMPARE(response.value().toDouble(), double(4+3.2+123456.789));
+    }
+
+    void testHexBinary()
+    {
+        CountryServerThread serverThread;
+        CountryServer* server = serverThread.startThread();
+
+        //qDebug() << "server ready, proceeding" << server->endPoint();
+        KDSoapClientInterface client(server->endPoint(), countryMessageNamespace());
+        KDSoapMessage message;
+        message.addArgument(QLatin1String("a"), QByteArray("KD"), KDSoapNamespaceManager::xmlSchema2001(), QString::fromLatin1("base64Binary"));
+        message.addArgument(QLatin1String("b"), QByteArray("Soap"), KDSoapNamespaceManager::xmlSchema2001(), QString::fromLatin1("hexBinary"));
+        const KDSoapMessage response = client.call(QLatin1String("hexBinaryTest"), message);
+        QCOMPARE(QString::fromLatin1(QByteArray::fromBase64(response.value().toByteArray()).constData()), QString::fromLatin1("KDSoap"));
     }
 
     void testMethodNotFound()
@@ -137,10 +195,6 @@ private Q_SLOTS:
     void testCallAndLogging()
     {
         // TODO
-
-        // JUST A TEST
-        QList<int> foo; foo << 1 << 2 << 3 << 4 << 5;
-        qDebug() << foo;
     }
 
     void testServerFault() // fault returned by server

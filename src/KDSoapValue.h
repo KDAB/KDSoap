@@ -88,6 +88,11 @@ public:
     }
 
     /**
+     * Returns true if this KDSoapValue was created with the default constructor.
+     */
+    bool isNull() const;
+
+    /**
      * Returns the name of the argument, as passed to the constructor.
      */
     QString name() const;
@@ -190,6 +195,8 @@ public:
      * Convenience method for extracting a child argument by \p name.
      * If multiple arguments have the same name, the first match is returned.
      * This method mostly makes sense for the case where only one argument uses \p name.
+     *
+     * If no such argument can be found, returns a null KDSoapValue.
      */
     KDSoapValue child(const QString& name) const;
 

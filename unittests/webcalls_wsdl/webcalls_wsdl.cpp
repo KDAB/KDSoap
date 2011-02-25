@@ -14,6 +14,7 @@ public:
 
 private slots:
 
+#if 0 // www.soapclient.com is down...
     // Soap in RPC mode; using WSDL-generated class
     // http://www.soapclient.com/soapclient?fn=soapform&template=/clientform.html&soaptemplate=/soapresult.html&soapwsdl=http://soapclient.com/xml/soapresponder.wsdl
     void testSoapResponder_sync()
@@ -35,6 +36,7 @@ private slots:
         QCOMPARE(spyDone.count(), 1);
         QCOMPARE(spyDone[0][0].toString(), QString::fromLatin1("Your input parameters are abc and def"));
     }
+#endif
 
     // Soap in Document mode.
 

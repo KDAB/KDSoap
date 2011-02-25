@@ -19,14 +19,15 @@ private Q_SLOTS:
 
 private:
     void makeCall(const KDSoapMessage& requestMsg, KDSoapMessage& replyMsg);
+    void handleError(KDSoapMessage& replyMsg, const char* errorCode, const QString& error);
 
     KDSoapSocketList* m_owner;
     QObject* m_serverObject;
     bool m_doDebug;
 
     QByteArray m_receivedData;
-    QByteArray m_receivedHeaders;
-    QMap<QByteArray, QByteArray> m_headers;
+    QByteArray m_receivedHttpHeaders;
+    QMap<QByteArray, QByteArray> m_httpHeaders;
 };
 
 #endif // KDSOAPSERVERSOCKET_P_H

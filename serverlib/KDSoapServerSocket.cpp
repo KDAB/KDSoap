@@ -61,6 +61,7 @@ static HeadersMap parseHeaders(const QByteArray& headerData)
     return headersMap;
 }
 
+// TODO: parse headers as we go along looking for \r\n, and stop at empty header line, to avoid all this memory copying
 static bool splitHeadersAndData(const QByteArray& request, QByteArray& header, QByteArray& data)
 {
     const int sep = request.indexOf("\r\n\r\n");
@@ -71,6 +72,7 @@ static bool splitHeadersAndData(const QByteArray& request, QByteArray& header, Q
     return true;
 }
 
+#ifdef KDSOAP_DIRECT_SLOT_CALLS
 static int kdSoapNameToTypeId(const char *name)
 {
     int id = static_cast<int>( QVariant::nameToType(name) );
@@ -78,6 +80,7 @@ static int kdSoapNameToTypeId(const char *name)
         id = QMetaType::type(name);
     return id;
 }
+#endif
 
 #if 0
 // calculates the metatypes for the method
@@ -211,6 +214,9 @@ static int findSlotFullSig(QObject* obj, const QByteArray &normalizedName,
 }
 #endif
 
+// like in qdbus, but not good for complex types, so removed.
+// Also, it was assuming positional arguments (in the request), rather than named arguments.
+#ifdef KDSOAP_DIRECT_SLOT_CALLS
 static int findSlotByName(const QMetaObject *mo, const QByteArray &name,
                           QList<QByteArray>* returnQtTypes, int* returnMetaType)
 {
@@ -240,6 +246,7 @@ static int findSlotByName(const QMetaObject *mo, const QByteArray &name,
     // no slot matched
     return -1;
 }
+#endif
 
 static QByteArray httpResponseHeaders(bool fault, int responseDataSize)
 {
@@ -266,16 +273,18 @@ void KDSoapServerSocket::slotReadyRead()
 
     //qDebug() << "KDSoapServerSocket: request:" << request;
 
-    const bool splitOK = splitHeadersAndData(request, m_receivedHeaders, m_receivedData);
+    const bool splitOK = splitHeadersAndData(request, m_receivedHttpHeaders, m_receivedData);
     Q_ASSERT(splitOK);
     Q_UNUSED(splitOK); // To avoid a warning if Q_ASSERT doesn't expand to anything.
-    m_headers = parseHeaders(m_receivedHeaders);
+    m_httpHeaders = parseHeaders(m_receivedHttpHeaders);
 
     if (m_doDebug) {
-        qDebug() << "headers received:" << m_receivedHeaders;
-        qDebug() << m_headers;
+        qDebug() << "headers received:" << m_receivedHttpHeaders;
+        qDebug() << m_httpHeaders;
         qDebug() << "data received:" << m_receivedData;
     }
+
+    // TODO: parse soapAction header?
 
     KDSoapMessage requestMsg;
     QString messageNamespace;
@@ -317,10 +326,17 @@ void KDSoapServerSocket::slotReadyRead()
     }
 }
 
+void KDSoapServerSocket::handleError(KDSoapMessage &replyMsg, const char *errorCode, const QString &error)
+{
+    qWarning("%s", qPrintable(error));
+    replyMsg.setFault(true);
+    replyMsg.addArgument(QString::fromLatin1("faultcode"), QString::fromLatin1(errorCode));
+    replyMsg.addArgument(QString::fromLatin1("faultstring"), error);
+}
+
 void KDSoapServerSocket::makeCall(const KDSoapMessage &requestMsg, KDSoapMessage& replyMsg)
 {
     const QString method = requestMsg.name();
-    replyMsg.setFault(true); // assume the worst
 
     if (requestMsg.isFault()) {
         // Can this happen? Getting a fault as a request !? Doesn't make sense...
@@ -328,13 +344,27 @@ void KDSoapServerSocket::makeCall(const KDSoapMessage &requestMsg, KDSoapMessage
     } else {
         // Call method on m_serverObject
         KDSoapServerObjectInterface* serverObjectInterface = qobject_cast<KDSoapServerObjectInterface *>(m_serverObject);
+        if (!serverObjectInterface) {
+            const QString error = QString::fromLatin1("Server object %1 does not implement KDSoapServerObjectInterface!").arg(QString::fromLatin1(m_serverObject->metaObject()->className()));
+            handleError(replyMsg, "Server.ImplementationError", error);
+            return;
+        }
 
         serverObjectInterface->resetFault();
-        // TODO serverObjectInterface->setHeaders(m_responseHeaders);
+        // TODO serverObjectInterface->setRequestHeaders(m_soapHeaders);
 
         const KDSoapValueList& values = requestMsg.childValues();
         qDebug() << values;
 
+        serverObjectInterface->processRequest(requestMsg, replyMsg);
+
+        if (serverObjectInterface->hasFault()) {
+            qDebug() << "Got fault!";
+            replyMsg.setFault(true);
+            serverObjectInterface->storeFaultAttributes(replyMsg);
+        }
+
+#ifdef KDSOAP_DIRECT_SLOT_CALLS // like in qdbus, but not good for complex types, so removed
         // TODO use a cache like in QDBusConnectionPrivate::activateCall?
         const QMetaObject* mo = m_serverObject->metaObject();
         QList<QByteArray> qtTypes;
@@ -362,6 +392,7 @@ void KDSoapServerSocket::makeCall(const KDSoapMessage &requestMsg, KDSoapMessage
             qDebug() << i << soapValue << value;
         }
 #endif
+        replyMsg.setFault(true); // assume the worst
         int returnMetaType = -1;
         const int slotIdx = ::findSlotByName(mo, method.toLatin1(), &qtTypes, &returnMetaType);
         if (slotIdx < 0) {
@@ -434,8 +465,8 @@ void KDSoapServerSocket::makeCall(const KDSoapMessage &requestMsg, KDSoapMessage
 
             qDebug() << "Method not found:" << method << "in" << m_serverObject;
         }
+#endif
     }
-
 }
 
 #include "moc_KDSoapServerSocket_p.cpp"
