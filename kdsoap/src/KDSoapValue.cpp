@@ -43,7 +43,10 @@ KDSoapValue::KDSoapValue(const KDSoapValue& other)
 {
 }
 
-
+bool KDSoapValue::isNull() const
+{
+    return d->m_name.isEmpty() && d->m_childValues.isEmpty();
+}
 
 QString KDSoapValue::name() const
 {

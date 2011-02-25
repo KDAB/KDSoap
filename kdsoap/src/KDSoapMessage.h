@@ -109,11 +109,15 @@ public:
      */
     QString faultAsString() const;
 
+    /**
+     * Turns this message into a "fault" message.
+     * Normally this is only used in server implementations that handle dynamic calls.
+     */
+    void setFault(bool fault);
+
 private:
-    friend class KDSoapClientInterface;
     friend class KDSoapPendingCall;
     friend class KDSoapServerSocket;
-    void setFault(bool fault);
     void parseSoapXml(const QByteArray& data, QString* pMessageNamespace);
 
     QSharedDataPointer<KDSoapMessageData> d;

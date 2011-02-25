@@ -1,9 +1,10 @@
 #include "KDSoapServerObjectInterface.h"
+#include <QDebug>
 
 class KDSoapServerObjectInterface::Private
 {
 public:
-    KDSoapHeaders m_headers;
+    KDSoapHeaders m_requestHeaders;
     QString m_faultCode;
     QString m_faultString;
     QString m_faultActor;
@@ -18,6 +19,15 @@ KDSoapServerObjectInterface::KDSoapServerObjectInterface()
 KDSoapServerObjectInterface::~KDSoapServerObjectInterface()
 {
     delete d;
+}
+
+void KDSoapServerObjectInterface::processRequest(const KDSoapMessage &request, KDSoapMessage& response)
+{
+    const QString method = request.name();
+    qDebug() << "Slot not found:" << method /* << "in" << metaObject()->className()*/;
+    response.setFault(true);
+    response.addArgument(QString::fromLatin1("faultcode"), QString::fromLatin1("Server.MethodNotFound"));
+    response.addArgument(QString::fromLatin1("faultstring"), QString::fromLatin1("%1 not found").arg(method));
 }
 
 void KDSoapServerObjectInterface::setFault(const QString &faultCode, const QString &faultString, const QString &faultActor, const QString &detail)
@@ -49,10 +59,11 @@ bool KDSoapServerObjectInterface::hasFault() const
 
 KDSoapHeaders KDSoapServerObjectInterface::headers() const
 {
-    return d->m_headers;
+    return d->m_requestHeaders;
 }
 
-void KDSoapServerObjectInterface::setHeaders(const KDSoapHeaders &headers)
+void KDSoapServerObjectInterface::setRequestHeaders(const KDSoapHeaders &headers)
 {
-    d->m_headers = headers;
+    d->m_requestHeaders = headers;
 }
+
