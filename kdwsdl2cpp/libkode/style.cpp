@@ -59,7 +59,11 @@ Style& Style::operator=( const Style &other )
 QString Style::className( const QString &str )
 {
   Q_ASSERT(!str.isEmpty());
-  return upperFirst( str );
+  QString cl = upperFirst( str );
+  cl.replace(QLatin1Char('-'), QLatin1Char('_'));
+  cl.replace(QLatin1Char(';'), QLatin1Char('_'));
+  cl.replace(QLatin1Char(':'), QLatin1Char('_'));
+  return cl;
 }
 
 QString Style::upperFirst( const QString &str )
