@@ -23,32 +23,6 @@ static const char* xmlEnvBegin =
         " soap:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\"";
 static const char* xmlEnvEnd = "</soap:Envelope>";
 
-class CountryServerObject : public QObject, public KDSoapServerObjectInterface
-{
-    Q_OBJECT
-    Q_INTERFACES(KDSoapServerObjectInterface)
-public:
-    CountryServerObject() : QObject() {}
-
-public Q_SLOTS: // SOAP slots
-    QString getEmployeeCountry(const QString& employeeName) {
-        if (employeeName.isEmpty()) {
-            setFault(QLatin1String("Client.Data"), QLatin1String("Empty employee name"),
-                     QLatin1String("CountryServerObject"), tr("Employee name must not be empty"));
-            return QString();
-        }
-        qDebug() << "getEmployeeCountry(" << employeeName << ") called";
-        return QString::fromLatin1("France");
-    }
-};
-
-class CountryServer : public KDSoapServer
-{
-public:
-    CountryServer() : KDSoapServer() {}
-    virtual QObject* createServerObject() { return new CountryServerObject; }
-};
-
 class BuiltinHttpTest : public QObject
 {
     Q_OBJECT
@@ -58,9 +32,7 @@ private Q_SLOTS:
     // Test that we can use asyncCall without using a watcher, just waiting and checking isFinished.
     void testAsyncCall()
     {
-        CountryServer server;
-        QVERIFY(server.listen());
-        //HttpServerThread server(countryResponse(), HttpServerThread::Public);
+        HttpServerThread server(countryResponse(), HttpServerThread::Public);
 
         qDebug() << "server ready, proceeding" << server.endPoint();
         KDSoapClientInterface client(server.endPoint(), countryMessageNamespace());
@@ -72,7 +44,7 @@ private Q_SLOTS:
 #if QT_VERSION >= 0x040600
         QVERIFY(call.isFinished());
 #endif
-        QCOMPARE(call.returnMessage()/*.arguments().child(QLatin1String("employeeCountry"))*/.value().toString(), QString::fromLatin1("France"));
+        QCOMPARE(call.returnMessage().arguments().child(QLatin1String("employeeCountry")).value().toString(), QString::fromLatin1("France"));
     }
 
     void testFault() // HTTP error, creates fault on client side
