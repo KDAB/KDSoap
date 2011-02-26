@@ -7,7 +7,6 @@
 #include "KDSoapThreadPool.h"
 #include "KDSoapServerObjectInterface.h"
 #include <QtTest/QtTest>
-#include <QEventLoop>
 #include <QDebug>
 
 class CountryServerObject : public QObject, public KDSoapServerObjectInterface
@@ -35,7 +34,7 @@ public:
             const KDSoapValue valueDateTime = values.child(QLatin1String("dateTime"));
             if (valueFoo.isNull() || valueBar.isNull() || valueDateTime.isNull()) {
                 response.setFault(true);
-                response.addArgument(QLatin1String("faultcode"), QLatin1String("Server.MethodNotFound"));
+                response.addArgument(QLatin1String("faultcode"), QLatin1String("Server.RequiredArgumentMissing"));
                 return;
             }
             const int foo = valueFoo.value().toInt();
@@ -52,7 +51,9 @@ public:
             const QByteArray input2 = QByteArray::fromHex(values.child(QLatin1String("b")).value().toByteArray());
             //qDebug() << "input2=" << input2;
             const QByteArray hex = this->hexBinaryTest(input1, input2);
-            response.setValue(QVariant(hex));
+            if (!hasFault()) {
+                response.setValue(QVariant(hex));
+            }
         } else {
             KDSoapServerObjectInterface::processRequest(request, response);
         }

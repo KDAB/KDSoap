@@ -21,9 +21,11 @@
     #win32:!exists( $$KDSOAPDIR/lib/kdsoap.lib ):error( "Cannot find kdsoap.lib in $KDSOAPDIR/lib" )
 
     LIBS += -L$$KDSOAPDIR/lib
+    KDSOAPSERVERLIB = kdsoap-server
     win32* {
       CONFIG(debug, debug|release) {
         LIBS += -lkdsoapd
+        KDSOAPSERVERLIB = kdsoap-serverd
       } else {
         LIBS += -lkdsoap
       }
@@ -33,8 +35,8 @@
     }
     QT += network
 
-    INCLUDEPATH += $$KDSOAPDIR/include $$KDSOAPDIR/src
-    DEPENDPATH += $$KDSOAPDIR/include $$KDSOAPDIR/src
+    INCLUDEPATH += $$KDSOAPDIR/include $$KDSOAPDIR/src $$KDSOAPDIR/serverlib
+    DEPENDPATH += $$KDSOAPDIR/include $$KDSOAPDIR/src $$KDSOAPDIR/serverlib
 
     CONFIG += have_kdsoap
     DEFINES += HAVE_KDSOAP

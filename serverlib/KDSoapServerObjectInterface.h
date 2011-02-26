@@ -35,7 +35,7 @@
   </code>
  *
  * swsdl_employee.cpp will contain the code which calls getEmployeeCountry
- * when parsing a KDSoapMessage that is a getEmployeeCountry request.
+ * when parsing a KDSoapMessage that is a "getEmployeeCountry" request.
  */
 class KDSOAPSERVER_EXPORT KDSoapServerObjectInterface
 {
