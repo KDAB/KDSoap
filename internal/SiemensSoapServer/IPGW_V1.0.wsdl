@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wsdl:definitions xmlns:amis="amis.ts.ptdea.ipgateway" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="WSDLFile_HEX" targetNamespace="amis.ts.ptdea.ipgateway">
+  
+  <!-- Types -->
+  
+  <wsdl:types>
+    <xsd:schema targetNamespace="amis.ts.ptdea.ipgateway">
+      <xsd:element name="IPGatewayDataRequest">
+        <xsd:complexType>
+          <xsd:sequence>
+          	<xsd:element name="EquipInformationBlock">
+          		<xsd:simpleType>
+          			<xsd:restriction base="xsd:hexBinary">
+          				<xsd:minLength value="1"></xsd:minLength>
+          				<xsd:maxLength value="80"></xsd:maxLength>
+          			</xsd:restriction>
+          		</xsd:simpleType>
+          	</xsd:element>
+          	<xsd:element name="Telegram">
+          		<xsd:simpleType>
+          			<xsd:restriction base="xsd:hexBinary">
+          				<xsd:minLength value="1"></xsd:minLength>
+          				<xsd:maxLength value="255"></xsd:maxLength>
+          			</xsd:restriction>
+          		</xsd:simpleType>
+          	</xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="IPGatewayDataResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="Telegram" minOccurs="0">
+            	<xsd:simpleType>
+            		<xsd:restriction base="xsd:hexBinary">
+            			<xsd:minLength value="1"></xsd:minLength>
+            			<xsd:maxLength value="255"></xsd:maxLength>
+            		</xsd:restriction>
+            	</xsd:simpleType>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:schema>
+  </wsdl:types>
+  
+  <!-- Messages -->
+  
+  <wsdl:message name="IPGatewayDataRequest">
+    <wsdl:part element="amis:IPGatewayDataRequest" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="IPGatewayDataResponse">
+    <wsdl:part element="amis:IPGatewayDataResponse" name="parameters"/>
+  </wsdl:message>
+  
+  <!-- PortTypes -->
+    
+  <wsdl:portType name="AmisTS-IPGateway">
+    <wsdl:operation name="IPGatewayData">
+      <wsdl:input message="amis:IPGatewayDataRequest"/>
+      <wsdl:output message="amis:IPGatewayDataResponse"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  
+  
+  <!-- Service Bindings -->
+  
+  <wsdl:binding name="AmisTS-IPGateway" type="amis:AmisTS-IPGateway">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="IPGatewayData">
+      <soap:operation soapAction="amis.ts.ptdea.ipgateway/IPGateway"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  
+  <!-- Service -->
+  
+  <wsdl:service name="AmisTS-IPGateway">
+    <wsdl:port binding="amis:AmisTS-IPGateway" name="AmisTS-IPGateway">
+      <soap:address location="http://www.kunde.com/"/>
+    </wsdl:port>
+  </wsdl:service>
+  
+</wsdl:definitions>
