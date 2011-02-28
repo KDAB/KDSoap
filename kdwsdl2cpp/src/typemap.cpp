@@ -429,3 +429,31 @@ QString KWSDL::TypeMap::Entry::dumpBools() const
         lst += "complex";
     return lst.join(",");
 }
+
+QString KWSDL::TypeMap::deserializeBuiltin( const QName &typeName, const QName& elementName, const QString& var, const QString& qtTypeName ) const
+{
+    if ((typeName.nameSpace() == XMLSchemaURI && typeName.localName() == "hexBinary") ||
+            (elementName.nameSpace() == XMLSchemaURI && elementName.localName() == "hexBinary")) {
+        return "QByteArray::fromHex(" + var + ".toString().toLatin1())";
+    } else if ((typeName.nameSpace() == XMLSchemaURI && typeName.localName() == "base64Binary") ||
+                (elementName.nameSpace() == XMLSchemaURI && elementName.localName() == "base64Binary")) {
+        return "QByteArray::fromBase64(" + var + ".toString().toLatin1())";
+    } else {
+        return var + ".value<" + qtTypeName + ">()";
+    }
+}
+
+QString KWSDL::TypeMap::serializeBuiltin( const QName &typeName, const QName& elementName, const QString& var, const QString& qtTypeName ) const
+{
+    Q_UNUSED(qtTypeName);
+    if ((typeName.nameSpace() == XMLSchemaURI && typeName.localName() == "hexBinary") ||
+            (elementName.nameSpace() == XMLSchemaURI && elementName.localName() == "hexBinary")) {
+        return "QString::fromLatin1(" + var + ".toHex().toUpper().constData())";
+    } else if ((typeName.nameSpace() == XMLSchemaURI && typeName.localName() == "base64Binary") ||
+                (elementName.nameSpace() == XMLSchemaURI && elementName.localName() == "base64Binary")) {
+        return "QString::fromLatin1(" + var + ".toBase64().constData())";
+    } else {
+        return "QVariant::fromValue(" + var + ");";
+    }
+}
+

@@ -91,6 +91,12 @@ class TypeMap
      */
     bool isBuiltinType( const QName &typeName, const QName& elementName ) const;
 
+    /**
+     * Return C++ code for converting the variant in "var" into the right type.
+     */
+    QString deserializeBuiltin( const QName &typeName, const QName& elementName, const QString& var, const QString& qtTypeName ) const;
+    QString serializeBuiltin( const QName &typeName, const QName& elementName, const QString& var, const QString& qtTypeName ) const;
+
     QString localTypeForAttribute( const QName &typeName ) const;
     QStringList headersForAttribute( const QName &typeName ) const;
     QStringList forwardDeclarationsForAttribute( const QName &typeName ) const;

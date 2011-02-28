@@ -225,13 +225,13 @@ static KODE::Code demarshalNameTest( TypeMap& typeMap, const QName& type, const 
 }
 
 // Helper method for the generation of the deserialize() method, also used by convertClientCall
-KODE::Code Converter::demarshalVar( const QName& type, const QName& elementType, const QString& variableName, const QString& typeName, const QString& soapValueVarName ) const
+KODE::Code Converter::demarshalVar( const QName& type, const QName& elementType, const QString& variableName, const QString& qtTypeName, const QString& soapValueVarName ) const
 {
     KODE::Code code;
     if ( mTypeMap.isTypeAny( type ) ) {
         code += variableName + " = " + soapValueVarName + ";" COMMENT;
     } else if ( mTypeMap.isBuiltinType( type, elementType ) ) {
-        code += variableName + " = " + soapValueVarName + ".value().value<" + typeName + ">();" COMMENT;
+        code += variableName + " = " + mTypeMap.deserializeBuiltin(type, elementType, soapValueVarName + ".value()", qtTypeName) + ";" COMMENT;
     } else if ( mTypeMap.isComplexType( type, elementType ) ) {
         code += variableName + ".deserialize(" + soapValueVarName + ");" COMMENT;
     } else {
