@@ -34,11 +34,11 @@ private:
         KDAB__EmployeeAchievements achievements;
         QList<KDAB__EmployeeAchievement> lst;
         KDAB__EmployeeAchievement achievement1;
-        achievement1.setType(QString::fromLatin1("Project"));
+        achievement1.setType(QByteArray("Project"));
         achievement1.setLabel(QString::fromLatin1("Management"));
         lst.append(achievement1);
         KDAB__EmployeeAchievement achievement2;
-        achievement2.setType(QString::fromLatin1("Development"));
+        achievement2.setType(QByteArray("Development"));
         achievement2.setLabel(QString::fromLatin1("C++"));
         lst.append(achievement2);
         achievements.setItems(lst);
@@ -72,11 +72,11 @@ private:
                 "<n1:employeeCountry>France</n1:employeeCountry>"
                 "<n1:employeeAchievements>"
                 "<n1:item>"
-                "<n1:type>Project</n1:type>"
+                "<n1:type>50726f6a656374</n1:type>" // Project
                 "<n1:label>Management</n1:label>"
                 "</n1:item>"
                 "<n1:item>"
-                "<n1:type>Development</n1:type>"
+                "<n1:type>446576656c6f706d656e74</n1:type>" // Development
                 "<n1:label>C++</n1:label>"
                 "</n1:item>"
                 "</n1:employeeAchievements>"
@@ -100,7 +100,7 @@ private:
     }
     static QByteArray addEmployeeResponse() {
         return QByteArray(xmlEnvBegin) + "><soap:Body>"
-                "<kdab:addEmployeeResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl/\"><kdab:bStrReturn>Foo</kdab:bStrReturn></kdab:addEmployeeResponse>"
+                "<kdab:addEmployeeResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl/\"><kdab:bStrReturn>466F6F</kdab:bStrReturn></kdab:addEmployeeResponse>"
                 " </soap:Body>" + xmlEnvEnd;
     }
 
@@ -130,11 +130,11 @@ private Q_SLOTS:
 
         KDAB__AddEmployeeParams addEmployeeParams = addEmployeeParameters();
 
-        QString ret = service.addEmployee(addEmployeeParams);
+        QByteArray ret = service.addEmployee(addEmployeeParams);
         if (!service.lastError().isEmpty())
             qDebug() << service.lastError();
         QVERIFY(service.lastError().isEmpty());
-        QCOMPARE(ret, QString::fromLatin1("Foo"));
+        QCOMPARE(ret, QByteArray("Foo"));
         // Check what we sent
         {
             QByteArray expectedRequestXml = requestXmlTemplate();
@@ -156,7 +156,7 @@ private Q_SLOTS:
             expectedRequestXml.replace("France", "фгн7");
             ret = service.addEmployee(addEmployeeParams);
             QVERIFY(service.lastError().isEmpty());
-            QCOMPARE(ret, QString::fromLatin1("Foo"));
+            QCOMPARE(ret, QByteArray("Foo"));
             QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
         }
 
@@ -203,12 +203,12 @@ private Q_SLOTS:
         service.setLoginHeader(login);
         service.setSessionHeader(session);
 
-        QString ret = service.addEmployee(addEmployeeParameters());
+        QByteArray ret = service.addEmployee(addEmployeeParameters());
         if (!service.lastError().isEmpty())
             qDebug() << service.lastError();
 
         QVERIFY(service.lastError().isEmpty());
-        QCOMPARE(ret, QString::fromLatin1("Foo"));
+        QCOMPARE(ret, QByteArray("Foo"));
         // Check what we sent
         QByteArray expectedRequestXml = requestXmlTemplate();
         expectedRequestXml.replace("%1", expectedHeader());
@@ -272,13 +272,13 @@ private Q_SLOTS:
         MyWsdlDocument service;
         service.setEndPoint(server.endPoint());
 
-	service.setSoapVersion(KDSoapClientInterface::SOAP1_1);
+        service.setSoapVersion(KDSoapClientInterface::SOAP1_1);
         KDAB__EmployeeType employeeType = service.getEmployeeType(KDAB__EmployeeName(QLatin1String("Joe")));
-	QVERIFY(service.lastError().isEmpty());
+        QVERIFY(service.lastError().isEmpty());
 
-	service.setSoapVersion(KDSoapClientInterface::SOAP1_2);
-	KDAB__EmployeeType employeeType2 = service.getEmployeeType(KDAB__EmployeeName(QLatin1String("Joe")));
-	QVERIFY(service.lastError().isEmpty());
+        service.setSoapVersion(KDSoapClientInterface::SOAP1_2);
+        KDAB__EmployeeType employeeType2 = service.getEmployeeType(KDAB__EmployeeName(QLatin1String("Joe")));
+        QVERIFY(service.lastError().isEmpty());
 
     }
 
@@ -352,6 +352,30 @@ private Q_SLOTS:
             "<n1:testAnyType xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
             "<n1:foo>Value</n1:foo>"
             "</n1:testAnyType>"
+            "</soap:Body>" + xmlEnvEnd;
+            QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
+    }
+
+    void testByteArrays()
+    {
+        // Prepare response
+        QByteArray responseData = QByteArray(xmlEnvBegin) + "><soap:Body>"
+                                  "<kdab:sendTelegramResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl/\">"
+                                    "<kdab:telegram>466F6F</kdab:telegram>" // TODO: something's wrong, the response needs this nested element but not the request!?
+                                  "</kdab:sendTelegramResponse>"
+                                  "</soap:Body>" + xmlEnvEnd;
+        HttpServerThread server(responseData, HttpServerThread::Public);
+        MyWsdlDocument service;
+        service.setEndPoint(server.endPoint());
+
+        const KDAB__Telegram ret = service.sendTelegram(KDAB__Telegram("Hello"));
+        QVERIFY(service.lastError().isEmpty());
+        QCOMPARE(ret.value(), QByteArray("Foo"));
+
+        const QByteArray expectedRequestXml =
+            QByteArray(xmlEnvBegin) + ">"
+            "<soap:Body>"
+            "<n1:sendTelegram xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">48656C6C6F</n1:sendTelegram>"
             "</soap:Body>" + xmlEnvEnd;
             QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
     }
