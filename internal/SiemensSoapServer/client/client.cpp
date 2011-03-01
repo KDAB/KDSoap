@@ -26,6 +26,7 @@ private Q_SLOTS:
             QVERIFY(false);
         } else {
             qDebug() << response.telegram();
+            QCOMPARE(QString::fromLatin1(response.telegram().value().constData()), QString::fromLatin1("This is the response to telegram Test_telegram"));
         }
     }
 
