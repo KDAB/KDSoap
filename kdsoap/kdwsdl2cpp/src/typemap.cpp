@@ -366,7 +366,7 @@ void TypeMap::dump() const
             qPrintable( mAttributeMap[ i ].localType ),
             qPrintable( mAttributeMap[ i ].headers.join( "," ) ),
             qPrintable( mAttributeMap[ i ].headerIncludes.join( "," ) ),
-            qPrintable( mElementMap[ i ].dumpBools() ) );
+            qPrintable( mAttributeMap[ i ].dumpBools() ) );
   }
 
   qDebug( "--------------------------------" );
