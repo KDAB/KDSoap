@@ -11,6 +11,11 @@ KDSoapSocketList::KDSoapSocketList(KDSoapServer* server)
     Q_ASSERT(m_serverObject);
 }
 
+KDSoapSocketList::~KDSoapSocketList()
+{
+    delete m_serverObject;
+}
+
 KDSoapServerSocket* KDSoapSocketList::handleIncomingConnection(int socketDescriptor)
 {
     KDSoapServerSocket* socket = new KDSoapServerSocket(this, m_serverObject);

@@ -8,8 +8,7 @@ class KDSoapServer::Private
 {
 public:
     Private()
-        : m_threadPool(new KDSoapThreadPool),
-          m_ownThreadPool(true),
+        : m_threadPool(0),
           m_mainThreadSocketList(0),
           m_use(KDSoapMessage::LiteralUse),
           m_logLevel(KDSoapServer::LogNothing)
@@ -18,14 +17,10 @@ public:
 
     ~Private()
     {
-        if (m_ownThreadPool) {
-            delete m_threadPool;
-        }
         delete m_mainThreadSocketList;
     }
 
     KDSoapThreadPool* m_threadPool;
-    bool m_ownThreadPool;
     KDSoapSocketList* m_mainThreadSocketList;
     KDSoapMessage::Use m_use;
 
@@ -44,15 +39,16 @@ KDSoapServer::KDSoapServer(QObject* parent)
 
 KDSoapServer::~KDSoapServer()
 {
-    delete d->m_mainThreadSocketList;
     delete d;
 }
 
 void KDSoapServer::incomingConnection(int socketDescriptor)
 {
     if (d->m_threadPool) {
+        //qDebug() << "incomingConnection: using thread pool";
         d->m_threadPool->handleIncomingConnection(socketDescriptor, this);
     } else {
+        //qDebug() << "incomingConnection: using main-thread socketlist";
         if (!d->m_mainThreadSocketList)
             d->m_mainThreadSocketList = new KDSoapSocketList(this /*server*/);
         d->m_mainThreadSocketList->handleIncomingConnection(socketDescriptor);
@@ -62,7 +58,6 @@ void KDSoapServer::incomingConnection(int socketDescriptor)
 void KDSoapServer::setThreadPool(KDSoapThreadPool *threadPool)
 {
     d->m_threadPool = threadPool;
-    d->m_ownThreadPool = false;
 }
 
 KDSoapThreadPool * KDSoapServer::threadPool() const

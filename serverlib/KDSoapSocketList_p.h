@@ -11,6 +11,7 @@ class KDSoapSocketList
 {
 public:
     KDSoapSocketList(KDSoapServer* server);
+    ~KDSoapSocketList();
 
     KDSoapServerSocket* handleIncomingConnection(int socketDescriptor);
 
