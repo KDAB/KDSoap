@@ -1,5 +1,6 @@
 #include "KDSoapThreadPool.h"
 #include "KDSoapServerThread_p.h"
+#include <QDebug>
 
 class KDSoapThreadPool::Private
 {
@@ -24,7 +25,15 @@ KDSoapThreadPool::KDSoapThreadPool(QObject* parent)
 
 KDSoapThreadPool::~KDSoapThreadPool()
 {
-    // TODO ask all threads to finish, then delete them all
+    // ask all threads to finish, then delete them all
+    Q_FOREACH(KDSoapServerThread* thread, d->m_threads) {
+        thread->quitThread();
+    }
+    Q_FOREACH(KDSoapServerThread* thread, d->m_threads) {
+        thread->wait();
+        delete thread;
+    }
+
     delete d;
 }
 
@@ -49,6 +58,7 @@ KDSoapServerThread * KDSoapThreadPool::Private::chooseNextThread()
         KDSoapServerThread* thr = *it;
         const int sc = thr->socketCount();
         if (sc == 0) { // Perfect, an idling thread
+            qDebug() << "Picked" << thr << "since it was idling"; // TODO: why never reached?
             chosenThread = thr;
             break;
         }
@@ -59,15 +69,16 @@ KDSoapServerThread * KDSoapThreadPool::Private::chooseNextThread()
     }
 
     // Use an existing non-idling thread, if we reached maxThreads
-    if (!chosenThread && bestThread && m_threads.count() < m_maxThreadCount) {
+    if (!chosenThread && bestThread && m_threads.count() == m_maxThreadCount) {
         chosenThread = bestThread;
     }
 
     // Create new thread
     if (!chosenThread) {
         chosenThread = new KDSoapServerThread(0);
+        qDebug() << "Creating KDSoapServerThread" << chosenThread;
         m_threads.append(chosenThread);
-        chosenThread->start();
+        chosenThread->startThread();
     }
     return chosenThread;
 }

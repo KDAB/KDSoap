@@ -6,6 +6,7 @@
 #include <KDSoapNamespaceManager.h>
 #include <KDSoapMessageWriter_p.h>
 #include <QBuffer>
+#include <QThread>
 #include <QMetaMethod>
 #include <QVarLengthArray>
 
@@ -268,7 +269,7 @@ static QByteArray httpResponseHeaders(bool fault, int responseDataSize)
 
 void KDSoapServerSocket::slotReadyRead()
 {
-    qDebug() << "slotReadyRead!";
+    qDebug() << QThread::currentThread() << "slotReadyRead!";
     const QByteArray request = this->readAll(); // ## TODO what if it's not all available?
 
     //qDebug() << "KDSoapServerSocket: request:" << request;

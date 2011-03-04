@@ -90,6 +90,7 @@ KDSoapPendingCall KDSoapClientInterface::asyncCall(const QString &method, const 
 {
     QBuffer* buffer = d->prepareRequestBuffer(method, message, headers);
     QNetworkRequest request = d->prepareRequest(method, soapAction);
+    //qDebug() << "post()";
     QNetworkReply* reply = d->m_accessManager.post(request, buffer);
     d->setupReply(reply);
     return KDSoapPendingCall(reply, buffer);
