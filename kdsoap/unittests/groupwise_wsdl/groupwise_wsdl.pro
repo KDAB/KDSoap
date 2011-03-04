@@ -8,3 +8,4 @@ test.depends = $(TARGET)
 QMAKE_EXTRA_TARGETS += test
 
 KDWSDL = groupwise.wsdl
+OTHER_FILES = $$KDWSDL types.xsd methods.xsd events.xsd
