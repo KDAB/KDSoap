@@ -57,11 +57,11 @@ public:
     QStringList mNamespaces;
 };
 
-Parser::Parser( const QString &nameSpace )
+Parser::Parser( ParserContext *context, const QString &nameSpace )
   : d(new Private)
 {
   d->mNameSpace = nameSpace;
-  clear();
+  init(context);
 }
 
 Parser::Parser( const Parser &other )
@@ -95,6 +95,23 @@ void Parser::clear()
   d->mElements.clear();
   d->mAttributes.clear();
   d->mAttributeGroups.clear();
+}
+
+void Parser::init(ParserContext *context)
+{
+#if 0
+  if (!parseFile(context, ":/schema/XMLSchema.xsd")) {
+      qWarning("Error parsing builtin file XMLSchema.xsd");
+  }
+#else
+  Q_UNUSED(context);
+#endif
+    {
+        Element schema(XMLSchemaURI);
+        schema.setName("schema");
+        schema.setType(QName(XMLSchemaURI, "string"));
+        d->mElements.append(schema);
+    }
 
   // From http://schemas.xmlsoap.org/wsdl/soap/encoding
   {
@@ -112,12 +129,19 @@ void Parser::clear()
   d->mAttributes.append(arrayTypeAttr);
 }
 
-bool Parser::parseFile( ParserContext *context, QFile &file )
+bool Parser::parseFile( ParserContext *context, const QString &fileName )
 {
-  QXmlInputSource source( &file );
-  return parse( context, &source );
+    QFile file(fileName);
+    if (!file.open(QIODevice::ReadOnly)) {
+        qWarning("Error opening file %s", qPrintable(fileName));
+        return false;
+    } else {
+        QXmlInputSource source( &file );
+        return parse( context, &source );
+    }
 }
 
+// currently unused
 bool Parser::parseString( ParserContext *context, const QString &data )
 {
   QXmlInputSource source;
@@ -577,7 +601,8 @@ SimpleType Parser::parseSimpleType( ParserContext *context, const QDomElement &e
       parseRestriction( context, childElement, st );
     } else if ( name.localName() == "union" ) {
       st.setSubType( SimpleType::TypeUnion );
-      qDebug( "simpletype::union not supported" );
+      qDebug( "simpletype::union not supported (%s)", qPrintable(st.name()) );
+      // It means "the contents can be either one of my child elements".
     } else if ( name.localName() == "list" ) {
       st.setSubType( SimpleType::TypeList );
       if ( childElement.hasAttribute( "itemType" ) ) {
@@ -611,16 +636,17 @@ void Parser::parseRestriction( ParserContext*, const QDomElement &element, Simpl
   QDomElement childElement = element.firstChildElement();
 
   while ( !childElement.isNull() ) {
-    QName tagName = childElement.tagName();
-    SimpleType::FacetType ft = st.parseFacetId( tagName.localName() );
-    if ( ft == SimpleType::NONE ) {
-      qDebug( "<restriction>: %s is not a valid facet for the simple type", qPrintable( childElement.tagName() ) );
-      childElement = childElement.nextSiblingElement();
-      continue;
+    const QName tagName = childElement.tagName();
+    if ( tagName.localName() == "annotation" ) {
+      // Skip annotations here.
+    } else {
+        SimpleType::FacetType ft = st.parseFacetId( tagName.localName() );
+        if ( ft == SimpleType::NONE ) {
+            qDebug( "<restriction>: %s is not a valid facet for the simple type '%s'", qPrintable( childElement.tagName() ), qPrintable(st.name()) );
+        } else {
+            st.setFacetValue( ft, childElement.attribute( "value" ) );
+        }
     }
-
-    st.setFacetValue( ft, childElement.attribute( "value" ) );
-
     childElement = childElement.nextSiblingElement();
   }
 }
@@ -1002,6 +1028,7 @@ void Parser::resolveForwardDeclarations()
         Element resolvedElement = findElement( element.reference() );
         if (resolvedElement.qualifiedName().isEmpty()) {
             qDebug() << "ERROR resolving element" << element.qualifiedName().qname() << "which is a ref to" << element.reference().qname() << ": not found!";
+            d->mElements.dump();
         } else {
             resolvedElement.setMinOccurs( element.minOccurs() );
             resolvedElement.setMaxOccurs( element.maxOccurs() );
@@ -1044,7 +1071,7 @@ Types Parser::types() const
 
   types.setSimpleTypes( d->mSimpleTypes );
   types.setComplexTypes( d->mComplexTypes );
-  //qDebug() << "Parser::types";
+  //qDebug() << "Parser::types: elements:";
   //d->mElements.dump();
   types.setElements( d->mElements );
   types.setAttributes( d->mAttributes );

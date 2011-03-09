@@ -42,7 +42,7 @@ class SCHEMA_EXPORT Parser
   public:
     enum { UNBOUNDED = 100000 };
 
-    Parser( const QString &nameSpace = QString() );
+    Parser( ParserContext *context, const QString &nameSpace = QString() );
     Parser( const Parser &other );
     ~Parser();
 
@@ -52,13 +52,10 @@ class SCHEMA_EXPORT Parser
 
     Annotation::List annotations() const;
 
-    void clear();
-
     /**
-      Parse schema from file. The file has to be open. Returns true on success,
-      otherwise false.
+      Parse schema from file.
     */
-    bool parseFile( ParserContext *context, QFile &file );
+    bool parseFile( ParserContext *context, const QString &fileName );
     bool parseString( ParserContext *context, const QString &data );
 
     bool parseSchemaTag( ParserContext *context, const QDomElement &element );
@@ -124,6 +121,8 @@ class SCHEMA_EXPORT Parser
     Element findElement( const QName &name );
     Attribute findAttribute( const QName &name );
     AttributeGroup findAttributeGroup( const QName &name );
+    void init(ParserContext *context);
+    void clear();
     void resolveForwardDeclarations();
 
     class Private;
