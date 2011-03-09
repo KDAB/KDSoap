@@ -196,7 +196,11 @@ KODE::Code Converter::appendElementArg( const QName& type, const QName& elementT
     //block += "// type: " + type.qname() + " element:" + elementType.qname();
     //qDebug() << "appendElementArg: type=" << type << "isBuiltin=" << mTypeMap.isBuiltinType(type);
     if ( mTypeMap.isTypeAny( type ) ) {
+        block += "if (!" + localVariableName + ".isNull()) {";
+        block.indent();
         block += varName + ".append(" + localVariableName + ");" COMMENT;
+        block.unindent();
+        block += "}";
     } else {
         const QString nameArg = "QString::fromLatin1(\"" + name + "\")";
         const QString typeArgs = namespaceString(type.nameSpace()) + ", QString::fromLatin1(\"" + type.localName() + "\")";

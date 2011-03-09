@@ -190,7 +190,7 @@ void Converter::convertSimpleType( const XSD::SimpleType *type, const XSD::Simpl
   break;
   case XSD::SimpleType::TypeUnion:
       classDocumentation = "This class encapsulates a union type. NOT IMPLEMENTED.";
-      qDebug() << "ERROR: unions are not implemented";
+      qDebug() << "ERROR: cannot generate" << type->qualifiedName() << typeName << "because unions are not implemented";
       break;
   };
 
