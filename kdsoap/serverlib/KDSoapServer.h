@@ -107,6 +107,42 @@ public:
      */
     QString logFileName() const;
 
+    /**
+     * Force flushing the log file to disk.
+     */
+    void flushLogFile();
+
+    /**
+     * Sets the number of expected sockets in this process.
+     * This is necessary in order to increase system limits when a large number of clients
+     * is expected.
+     *
+     * The special value -1 means "as many as possible in this non-root process".
+     * Only processes running as root can set the absolute maximum to an arbitrary value.
+     */
+    static bool setExpectedSocketCount(int sockets);
+
+    /**
+     * Returns the number of connected sockets.
+     * This information can change at any time, and is therefore only useful
+     * for statistical purposes.
+     */
+    int numConnectedSockets() const;
+
+#if 0
+public Q_SLOTS:
+    /**
+     * Temporarily suspend (do not listen to incoming connections, and close all
+     * connected sockets after servicing current requests).
+     */
+    void suspend();
+
+    /**
+     * Resume activity after suspend
+     */
+    void resume();
+#endif
+
 protected:
     /*! \reimp \internal */ void incomingConnection(int socketDescriptor);
 

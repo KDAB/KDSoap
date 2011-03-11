@@ -21,6 +21,7 @@ public Q_SLOTS:
 
 public:
     int socketCount();
+    int socketCountForServer(const KDSoapServer* server);
 
     void addIncomingConnection();
 
@@ -44,6 +45,7 @@ public:
     void quitThread();
 
     int socketCount() const;
+    int socketCountForServer(const KDSoapServer* server) const;
     void handleIncomingConnection(int socketDescriptor, KDSoapServer* server);
 
 protected:

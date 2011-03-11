@@ -28,6 +28,13 @@ int KDSoapServerThread::socketCount() const
     return 0;
 }
 
+int KDSoapServerThread::socketCountForServer(const KDSoapServer* server) const
+{
+    if (d)
+        return d->socketCountForServer(server);
+    return 0;
+}
+
 void KDSoapServerThread::startThread()
 {
     QThread::start();
@@ -100,4 +107,11 @@ void KDSoapServerThreadImpl::handleIncomingConnection(int socketDescriptor, KDSo
 void KDSoapServerThreadImpl::quit()
 {
     thread()->quit();
+}
+
+int KDSoapServerThreadImpl::socketCountForServer(const KDSoapServer *server)
+{
+    QMutexLocker lock(&m_socketListMutex);
+    KDSoapSocketList* sockets = m_socketLists.value(const_cast<KDSoapServer*>(server));
+    return sockets ? sockets->socketCount() : 0;
 }

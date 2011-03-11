@@ -94,6 +94,7 @@
       <element name="AnyType">
         <complexType>
           <sequence>
+           <element ref="xsd:schema" />
            <element name="input" type="xsd:anyType"/>
           </sequence>
         </complexType>

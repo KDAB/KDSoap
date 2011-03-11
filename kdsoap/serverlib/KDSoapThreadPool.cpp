@@ -56,9 +56,15 @@ KDSoapServerThread * KDSoapThreadPool::Private::chooseNextThread()
     ThreadCollection::const_iterator it = m_threads.constBegin();
     for (; it != m_threads.constEnd(); ++it) {
         KDSoapServerThread* thr = *it;
+        // We look at the amount of sockets connected to each thread, and pick the less busy one.
+        // Note that this isn't fully accurate, due to Keep-Alive: it's possible for long-term
+        // idling clients to be all on one thread, and active clients on another one, and this
+        // wouldn't use CPU fully. But this is probably still beter than no keep-alive (much more
+        // connection overhead). Maybe we have to look at sockets who made a request in the last
+        // N seconds... but the past is no indication of the future.
         const int sc = thr->socketCount();
         if (sc == 0) { // Perfect, an idling thread
-            qDebug() << "Picked" << thr << "since it was idling"; // TODO: why never reached?
+            //qDebug() << "Picked" << thr << "since it was idling";
             chosenThread = thr;
             break;
         }
@@ -76,7 +82,7 @@ KDSoapServerThread * KDSoapThreadPool::Private::chooseNextThread()
     // Create new thread
     if (!chosenThread) {
         chosenThread = new KDSoapServerThread(0);
-        qDebug() << "Creating KDSoapServerThread" << chosenThread;
+        //qDebug() << "Creating KDSoapServerThread" << chosenThread;
         m_threads.append(chosenThread);
         chosenThread->startThread();
     }
@@ -90,6 +96,15 @@ void KDSoapThreadPool::handleIncomingConnection(int socketDescriptor, KDSoapServ
 
     // Then create the socket, and register it in the corresponding socket-pool, and move it to the thread.
     chosenThread->handleIncomingConnection(socketDescriptor, server);
+}
+
+int KDSoapThreadPool::numConnectedSockets(const KDSoapServer *server) const
+{
+    int sc = 0;
+    Q_FOREACH(KDSoapServerThread* thread, d->m_threads) {
+        sc += thread->socketCountForServer(server);
+    }
+    return sc;
 }
 
 #include "moc_KDSoapThreadPool.cpp"
