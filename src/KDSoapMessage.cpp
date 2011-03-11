@@ -74,7 +74,8 @@ bool KDSoapMessage::isFault() const
 
 QString KDSoapMessage::faultAsString() const
 {
-    return QObject::tr("Fault code: %1\nFault description: %2 (%3)")
+    // This better be on a single line, since it's used by server-side logging too
+    return QObject::tr("Fault code %1: %2 (%3)")
             .arg(childValues().child(QLatin1String("faultcode")).value().toString())
             .arg(childValues().child(QLatin1String("faultstring")).value().toString())
             .arg(childValues().child(QLatin1String("faultactor")).value().toString());
