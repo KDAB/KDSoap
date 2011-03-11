@@ -163,11 +163,15 @@ void KDSoapServerSocket::handleError(KDSoapMessage &replyMsg, const char *errorC
 
 void KDSoapServerSocket::makeCall(const KDSoapMessage &requestMsg, KDSoapMessage& replyMsg)
 {
-    const QString method = requestMsg.name();
+    //const QString method = requestMsg.name();
 
     if (requestMsg.isFault()) {
         // Can this happen? Getting a fault as a request !? Doesn't make sense...
-        // TODO reply with a fault, but we don't even know what main element name to use
+        // reply with a fault, but we don't even know what main element name to use
+        // Oh well, just use the incoming fault :-)
+        replyMsg = requestMsg;
+        replyMsg.addArgument(QString::fromLatin1("faultcode"), QString::fromLatin1("Client.Data"));
+        replyMsg.addArgument(QString::fromLatin1("faultstring"), QString::fromLatin1("Request was a fault"));
     } else {
         // Call method on m_serverObject
         KDSoapServerObjectInterface* serverObjectInterface = qobject_cast<KDSoapServerObjectInterface *>(m_serverObject);

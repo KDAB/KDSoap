@@ -154,8 +154,6 @@ bool KDSoapServer::setExpectedSocketCount(int sockets)
     // Solution: ulimit -n 4096
     // Or in C code, below.
 
-    sockets += 20; // we need some file descriptors too
-
 #ifdef Q_OS_UNIX
     struct rlimit lim;
     if (getrlimit(RLIMIT_NOFILE, &lim) != 0) {
@@ -165,12 +163,14 @@ bool KDSoapServer::setExpectedSocketCount(int sockets)
     bool changingHardLimit = false;
     if (sockets > -1) {
         qDebug() << "Current limit" << lim.rlim_cur << lim.rlim_max;
-        if (sockets <= int(lim.rlim_cur))
+        sockets += 20; // we need some file descriptors too
+        if (rlim_t(sockets) <= lim.rlim_cur)
             return true; // nothing to do
 
-        if (sockets > int(lim.rlim_max)) {
+        if (rlim_t(sockets) > lim.rlim_max) {
             // Seems we need to run as root then
             lim.rlim_max = sockets;
+            qDebug() << "Setting rlim_max to" << sockets;
             changingHardLimit = true;
         }
     }
