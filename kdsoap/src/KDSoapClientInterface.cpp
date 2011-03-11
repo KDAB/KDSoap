@@ -63,11 +63,28 @@ static QString variantToTextValue(const QVariant& value)
     case QVariant::Double:
         return value.toString();
     case QVariant::Time:
-        return value.toDateTime().toString();
+    {
+        const QTime time = value.toTime();
+        if (time.msec()) {
+            // include milli-seconds
+            return time.toString(QLatin1String("hh:mm:ss.zzz"));
+        } else {
+            return time.toString(Qt::ISODate);
+        }
+    }
     case QVariant::Date:
-        return QDateTime(value.toDate(), QTime(), Qt::UTC).toString();
+        return value.toDate().toString(Qt::ISODate);
     case QVariant::DateTime:
-        return value.toDateTime().toString();
+    {
+        const QDateTime dt = value.toDateTime();
+        const QTime time = dt.time();
+        if (time.msec()) {
+            // include milli-seconds
+            return dt.toString(QLatin1String("yyyy-MM-ddThh:mm:ss.zzz"));
+        } else {
+            return dt.toString(Qt::ISODate);
+        }
+    }
     case QVariant::Invalid:
         qDebug() << "ERROR: Got invalid QVariant in a KDSoapValue";
         return QString();
