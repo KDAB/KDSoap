@@ -10,8 +10,10 @@
 
   NORMAL_CFLAGS += -pedantic
 
-  debug:NORMAL_CXXFLAGS += -O0 -g3
-  debug:NORMAL_CXXFLAGS -= -g
+  CONFIG(debug, debug|release) {
+    NORMAL_CXXFLAGS += -O0 -g3
+    NORMAL_CXXFLAGS -= -g
+  }
   USABLE_CXXFLAGS = -Wold-style-cast
   HARD_CXXFLAGS = -Weffc++ -Wshadow
   PITA_CXXFLAGS = -Wunreachable-code
