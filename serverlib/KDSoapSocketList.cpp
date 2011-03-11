@@ -1,6 +1,7 @@
 #include "KDSoapSocketList_p.h"
 #include "KDSoapServerSocket_p.h"
 #include "KDSoapServer.h"
+#include <QDebug>
 
 const bool doDebug = true;
 
@@ -28,6 +29,7 @@ KDSoapServerSocket* KDSoapSocketList::handleIncomingConnection(int socketDescrip
 
 void KDSoapSocketList::socketDeleted(KDSoapServerSocket *socket)
 {
+    //qDebug() << Q_FUNC_INFO;
     m_sockets.remove(socket);
 }
 

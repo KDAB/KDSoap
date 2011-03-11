@@ -335,6 +335,7 @@ private Q_SLOTS:
 
         KDAB__AnyType anyType;
         anyType.setInput(KDSoapValue(QString::fromLatin1("foo"), QString::fromLatin1("Value"), KDSoapNamespaceManager::xmlSchema1999(), QString::fromLatin1("string")));
+        anyType.setSchema(QLatin1String("foo")); // TODO <test>foo</test> will escape with &lt;. Do we need KDSoapValue::fromXml/toXml instead?
         const KDAB__AnyTypeResponse response = service.testAnyType(anyType);
         const QList<KDSoapValue> values = response._return();
         QCOMPARE(values.count(), 4);
@@ -350,6 +351,7 @@ private Q_SLOTS:
             QByteArray(xmlEnvBegin) + ">"
             "<soap:Body>"
             "<n1:testAnyType xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
+            "<n1:schema>foo</n1:schema>"
             "<n1:foo>Value</n1:foo>"
             "</n1:testAnyType>"
             "</soap:Body>" + xmlEnvEnd;

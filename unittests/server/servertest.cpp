@@ -89,7 +89,7 @@ public: // SOAP-accessible methods
                      QLatin1String("CountryServerObject"), tr("Employee name must not be empty"));
             return QString();
         }
-        qDebug() << "getEmployeeCountry(" << employeeName << ") called";
+        //qDebug() << "getEmployeeCountry(" << employeeName << ") called";
         //if (employeeName == QLatin1String("Slow"))
         //    PublicThread::msleep(100);
         return QString::fromLatin1("France");
@@ -111,8 +111,15 @@ public:
     CountryServer() : KDSoapServer() {}
     virtual QObject* createServerObject() { return new CountryServerObject; }
 
+Q_SIGNALS:
+    void releaseSemaphore();
+
 public Q_SLOTS:
     void quit() { thread()->quit(); }
+#if 0
+    void suspend() { KDSoapServer::suspend(); qDebug() << "server suspended"; emit releaseSemaphore(); }
+    void resume() { KDSoapServer::resume(); emit releaseSemaphore(); }
+#endif
 };
 
 // We need to do the listening and socket handling in a separate thread,
@@ -121,6 +128,7 @@ public Q_SLOTS:
 // KDSoap-based server.
 class CountryServerThread : public QThread
 {
+    Q_OBJECT
 public:
     CountryServerThread(KDSoapThreadPool* pool = 0)
         : m_threadPool(pool)
@@ -136,6 +144,17 @@ public:
         m_semaphore.acquire(); // wait for init to be done
         return m_pServer;
     }
+#if 0
+    void suspend() {
+        QMetaObject::invokeMethod(m_pServer, "suspend");
+        m_semaphore.acquire();
+    }
+    void resume() {
+        QMetaObject::invokeMethod(m_pServer, "resume");
+        m_semaphore.acquire();
+    }
+#endif
+
 protected:
     void run() {
         CountryServer server;
@@ -143,10 +162,16 @@ protected:
             server.setThreadPool(m_threadPool);
         if (server.listen())
             m_pServer = &server;
+        connect(&server, SIGNAL(releaseSemaphore()), this, SLOT(slotReleaseSemaphore()), Qt::DirectConnection);
         m_semaphore.release();
         exec();
         m_pServer = 0;
     }
+private Q_SLOTS:
+    void slotReleaseSemaphore() {
+        m_semaphore.release();
+    }
+
 private:
     KDSoapThreadPool* m_threadPool;
     QSemaphore m_semaphore;
@@ -165,12 +190,16 @@ private Q_SLOTS:
             CountryServer* server = serverThread.startThread();
 
             //qDebug() << "server ready, proceeding" << server->endPoint();
-            KDSoapClientInterface client(server->endPoint(), countryMessageNamespace());
-            const KDSoapMessage response = client.call(QLatin1String("getEmployeeCountry"), countryMessage());
+            KDSoapClientInterface* client = new KDSoapClientInterface(server->endPoint(), countryMessageNamespace());
+            const KDSoapMessage response = client->call(QLatin1String("getEmployeeCountry"), countryMessage());
             QCOMPARE(response.childValues().first().value().toString(), QString::fromLatin1("France"));
 
             QCOMPARE(s_serverObjects.count(), 1);
             QVERIFY(s_serverObjects.value(&serverThread)); // request handled by server thread itself (no thread pool)
+            QCOMPARE(server->numConnectedSockets(), 1);
+            delete client;
+            QTest::qWait(100);
+            QCOMPARE(server->numConnectedSockets(), 0);
         }
         QCOMPARE(s_serverObjects.count(), 0);
     }
@@ -242,13 +271,17 @@ private Q_SLOTS:
             CountryServerThread serverThread(&threadPool);
             CountryServer* server = serverThread.startThread();
 
-            KDSoapClientInterface client(server->endPoint(), countryMessageNamespace());
-            const KDSoapMessage response = client.call(QLatin1String("getEmployeeCountry"), countryMessage());
+            KDSoapClientInterface* client = new KDSoapClientInterface(server->endPoint(), countryMessageNamespace());
+            const KDSoapMessage response = client->call(QLatin1String("getEmployeeCountry"), countryMessage());
             QCOMPARE(response.childValues().first().value().toString(), QString::fromLatin1("France"));
             QCOMPARE(s_serverObjects.count(), 1);
             QThread* thread = s_serverObjects.begin().key();
             QVERIFY(thread != qApp->thread());
             QVERIFY(thread != &serverThread);
+            QCOMPARE(server->numConnectedSockets(), 1);
+            delete client;
+            QTest::qWait(100); // race: we're waiting for the thread to be told about the socket disconnecting
+            QCOMPARE(server->numConnectedSockets(), 0);
         }
         QCOMPARE(s_serverObjects.count(), 0);
     }
@@ -257,6 +290,7 @@ private Q_SLOTS:
     {
         QTest::addColumn<int>("maxThreads");
         QTest::addColumn<int>("numRequests");
+        QTest::addColumn<int>("numClients");
         QTest::addColumn<int>("expectedServerObjects");
 
         // QNetworkAccessManager only does 6 concurrent http requests
@@ -264,70 +298,222 @@ private Q_SLOTS:
         // so with numRequests > 6, don't expect more than 6 threads being used; for this
         // we would need more than one QNAM, i.e. more than one KDSoapClientInterface.
 
-        QTest::newRow("5 parallel requests") << 5 << 5 << 5;
-        QTest::newRow("5 requests in 3 threads") << 3 << 5 << 3;
+        QTest::newRow("5 parallel requests") << 5 << 5 << 1 << 5;
+        QTest::newRow("5 requests in 3 threads") << 3 << 5 << 1 << 3;
+        QTest::newRow("3 requests in 3 threads, from 2 clients") << 3 << 3 << 2 << 3; // this one reuses the idle threads
     }
 
     void testMultipleThreads()
     {
         QFETCH(int, maxThreads);
         QFETCH(int, numRequests);
+        QFETCH(int, numClients);
         QFETCH(int, expectedServerObjects);
         {
             KDSoapThreadPool threadPool;
             threadPool.setMaxThreadCount(maxThreads);
             CountryServerThread serverThread(&threadPool);
             CountryServer* server = serverThread.startThread();
-            KDSoapClientInterface client(server->endPoint(), countryMessageNamespace());
-            KDSoapMessage message;
-            message.addArgument(QLatin1String("employeeName"), QString::fromLatin1("Slow"));
-            m_returnMessages.clear();
-            m_expectedMessages = numRequests;
+            for (int i = 0; i < numClients; ++i) {
+                if (i > 0)
+                    QTest::qWait(100); // handle disconnection from previous client
+                //qDebug() << "Creating new client";
+                KDSoapClientInterface client(server->endPoint(), countryMessageNamespace());
+                m_returnMessages.clear();
+                m_expectedMessages = numRequests;
 
-            QList<KDSoapPendingCallWatcher*> watchers;
-            for (int i = 0; i < numRequests; ++i) {
-                KDSoapPendingCall pendingCall = client.asyncCall(QLatin1String("getEmployeeCountry"), message);
-                KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);
-                connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher*)),
-                        this, SLOT(slotFinished(KDSoapPendingCallWatcher*)));
-                watchers.append(watcher);
-            }
-            m_eventLoop.exec();
+                makeAsyncCalls(client, numRequests);
+                QCOMPARE(server->numConnectedSockets(), 0); // too early, none of them connected yet
+                m_eventLoop.exec();
+                QCOMPARE(server->numConnectedSockets(), numRequests); // works, but racy, by design.
 
-            QCOMPARE(m_returnMessages.count(), m_expectedMessages);
-            Q_FOREACH(const KDSoapMessage& response, m_returnMessages) {
-                QCOMPARE(response.childValues().first().value().toString(), QString::fromLatin1("France"));
-            }
-            QCOMPARE(s_serverObjects.count(), expectedServerObjects);
-            QMapIterator<QThread*, CountryServerObject*> it(s_serverObjects);
-            while (it.hasNext()) {
-                QThread* thread = it.next().key();
-                QVERIFY(thread != qApp->thread());
-                QVERIFY(thread != &serverThread);
+                QCOMPARE(m_returnMessages.count(), m_expectedMessages);
+                Q_FOREACH(const KDSoapMessage& response, m_returnMessages) {
+                    QCOMPARE(response.childValues().first().value().toString(), QString::fromLatin1("France"));
+                }
+                QCOMPARE(s_serverObjects.count(), expectedServerObjects);
+                QMapIterator<QThread*, CountryServerObject*> it(s_serverObjects);
+                while (it.hasNext()) {
+                    QThread* thread = it.next().key();
+                    QVERIFY(thread != qApp->thread());
+                    QVERIFY(thread != &serverThread);
+                }
             }
         }
         QCOMPARE(s_serverObjects.count(), 0);
     }
 
-    void testCallAndLogging()
+    void testMultipleThreadsMultipleClients_data()
     {
-        // TODO
+        QTest::addColumn<int>("maxThreads");
+        QTest::addColumn<int>("numClients"); // number of "client interface" instances
+        QTest::addColumn<int>("numRequests"); // number of requests per client interface (maximum 6)
+
+        QTest::newRow("300 requests") << 5 << 50 << 6;
+        QTest::newRow("500 requests") << 5 << 125 << 4;
+        QTest::newRow("600 requests, requires >1K fd") << 5 << 100 << 6;
+        //QTest::newRow("1800 requests") << 5 << 300 << 6;
+        QTest::newRow("3000 requests, requires >4K fd") << 5 << 500 << 6;
+        QTest::newRow("10000 requests") << 5 << 1700 << 6;
+
+        // Performance results (on a dual-core linux laptop)
+        // time sudo ./server testMultipleThreadsMultipleClients:'10000 requests' ("total" number of seconds)
+        // In release mode with Qt 4.6 in debug mode but a one-line change in QXmlStreamReaderPrivate::getChar: 32s total
+        // In release mode with Qt 4.7 in release mode: 20s total
     }
+
+    void testMultipleThreadsMultipleClients()
+    {
+        QFETCH(int, maxThreads);
+        QFETCH(int, numClients);
+        QFETCH(int, numRequests);
+        const int expectedConnectedSockets = numClients * numRequests;
+        // the *2 is because in this unittest, we have both the client and the server socket, in the same process
+        if (!KDSoapServer::setExpectedSocketCount(expectedConnectedSockets * 2)) {
+            if (expectedConnectedSockets > 500)
+                QSKIP("needs root", SkipSingle);
+            else
+                QVERIFY(false); // should not happen
+        }
+
+        // Test making many more concurrent connections, using multiple QNAMs to circumvent the 6 connections limit.
+        KDSoapThreadPool threadPool;
+        threadPool.setMaxThreadCount(maxThreads);
+        CountryServerThread serverThread(&threadPool);
+        CountryServer* server = serverThread.startThread();
+        QVector<KDSoapClientInterface *> clients;
+        clients.resize(numClients);
+        m_returnMessages.clear();
+        m_expectedMessages = numRequests * numClients;
+        for (int i = 0; i < numClients; ++i) {
+            KDSoapClientInterface* client = new KDSoapClientInterface(server->endPoint(), countryMessageNamespace());
+            clients[i] = client;
+
+            makeAsyncCalls(*client, numRequests);
+        }
+        m_server = server;
+        QTimer timer;
+        connect(&timer, SIGNAL(timeout()), this, SLOT(slotStats()));
+        timer.start(1000);
+
+        // FOR DEBUG
+        //qDebug() << server->endPoint();
+        //qApp->exec();
+
+        m_eventLoop.exec();
+        slotStats();
+        if (server->numConnectedSockets() < expectedConnectedSockets) {
+            Q_FOREACH(const KDSoapMessage& response, m_returnMessages) {
+                if (response.isFault()) {
+                    qDebug() << response.faultAsString();
+                    break;
+                }
+            }
+        }
+        QCOMPARE(server->numConnectedSockets(), expectedConnectedSockets);
+
+        QCOMPARE(m_returnMessages.count(), m_expectedMessages);
+        Q_FOREACH(const KDSoapMessage& response, m_returnMessages) {
+            QCOMPARE(response.childValues().first().value().toString(), QString::fromLatin1("France"));
+        }
+        //QCOMPARE(s_serverObjects.count(), expectedServerObjects);
+        qDeleteAll(clients);
+    }
+
+#if 0
+    void testSuspend()
+    {
+        KDSoapThreadPool threadPool;
+        threadPool.setMaxThreadCount(6);
+        CountryServerThread serverThread(&threadPool);
+        CountryServer* server = serverThread.startThread();
+        KDSoapClientInterface client(server->endPoint(), countryMessageNamespace());
+        m_returnMessages.clear();
+        m_expectedMessages = 2;
+        makeAsyncCalls(client, m_expectedMessages);
+        m_eventLoop.exec();
+        QCOMPARE(server->numConnectedSockets(), m_expectedMessages);
+        const quint16 oldPort = server->serverPort();
+        QCOMPARE(m_returnMessages.count(), 2);
+
+        // suspend
+        serverThread.suspend();
+        m_returnMessages.clear();
+        m_expectedMessages = 3;
+        QCOMPARE(m_returnMessages.count(), 0);
+        // -> a new client can't connect at all:
+        KDSoapClientInterface client2(server->endPoint(), countryMessageNamespace());
+        makeAsyncCalls(client2, 3);
+        m_eventLoop.exec();
+        QCOMPARE(m_returnMessages.count(), 3);
+        QCOMPARE(m_returnMessages.first().isFault(), true);
+        qDebug() << m_returnMessages.first().faultAsString();
+        m_returnMessages.clear();
+#if 0
+        // -> and an existing connected client shouldn't be allowed to make new calls -- TODO
+        makeAsyncCalls(client, 1);
+        m_eventLoop.exec();
+        QCOMPARE(m_returnMessages.count(), 1);
+        QCOMPARE(m_returnMessages.first().isFault(), true);
+        qDebug() << m_returnMessages.first().faultAsString();
+        m_returnMessages.clear();
+#endif
+
+        // resume
+        m_expectedMessages = 1;
+        serverThread.resume();
+        QCOMPARE(server->serverPort(), oldPort);
+        makeAsyncCalls(client, 1);
+        m_eventLoop.exec();
+        QCOMPARE(m_returnMessages.count(), 1);
+    }
+#endif
 
     void testServerFault() // fault returned by server
     {
         CountryServerThread serverThread;
         CountryServer* server = serverThread.startThread();
-
-        KDSoapClientInterface client(server->endPoint(), countryMessageNamespace());
-        KDSoapMessage message;
-        message.addArgument(QLatin1String("employeeName"), QString());
-        const KDSoapMessage response = client.call(QLatin1String("getEmployeeCountry"), message);
-        QVERIFY(response.isFault());
-        QCOMPARE(response.arguments().child(QLatin1String("faultcode")).value().toString(), QString::fromLatin1("Client.Data"));
+        makeFaultyCall(server->endPoint());
     }
 
-public slots:
+
+    void testLogging()
+    {
+        CountryServerThread serverThread;
+        CountryServer* server = serverThread.startThread();
+
+        const QString fileName = QString::fromLatin1("output.log");
+        QFile::remove(fileName);
+        server->setLogFileName(fileName);
+        QCOMPARE(server->logFileName(), fileName);
+        server->setLogLevel(KDSoapServer::LogEveryCall);
+
+        makeSimpleCall(server->endPoint());
+        makeFaultyCall(server->endPoint());
+        server->flushLogFile();
+
+        QList<QByteArray> expected;
+        expected << "CALL getEmployeeCountry";
+        expected << "FAULT getEmployeeCountry -- Fault code Client.Data: Empty employee name (CountryServerObject)";
+        compareLines(expected, fileName);
+
+        server->setLogLevel(KDSoapServer::LogNothing);
+        makeSimpleCall(server->endPoint());
+        makeFaultyCall(server->endPoint());
+        server->flushLogFile();
+        compareLines(expected, fileName);
+
+        server->setLogLevel(KDSoapServer::LogFaults);
+        makeSimpleCall(server->endPoint());
+        makeFaultyCall(server->endPoint());
+        expected << "FAULT getEmployeeCountry -- Fault code Client.Data: Empty employee name (CountryServerObject)";
+        server->flushLogFile();
+        compareLines(expected, fileName);
+
+        QFile::remove(fileName);
+    }
+
+public Q_SLOTS:
     void slotFinished(KDSoapPendingCallWatcher* watcher)
     {
         m_returnMessages.append(watcher->returnMessage());
@@ -335,12 +521,49 @@ public slots:
             m_eventLoop.quit();
     }
 
+    void slotStats()
+    {
+        qDebug() << m_server->numConnectedSockets() << "sockets connected";
+    }
+
 private:
     QEventLoop m_eventLoop;
     int m_expectedMessages;
     QList<KDSoapMessage> m_returnMessages;
 
+    KDSoapServer* m_server;
+
 private:
+    void makeSimpleCall(const QString& endPoint)
+    {
+        KDSoapClientInterface client(endPoint, countryMessageNamespace());
+        const KDSoapMessage response = client.call(QLatin1String("getEmployeeCountry"), countryMessage());
+        QCOMPARE(response.childValues().first().value().toString(), QString::fromLatin1("France"));
+    }
+
+    void makeFaultyCall(const QString& endPoint)
+    {
+        KDSoapClientInterface client(endPoint, countryMessageNamespace());
+        KDSoapMessage message;
+        message.addArgument(QLatin1String("employeeName"), QString());
+        const KDSoapMessage response = client.call(QLatin1String("getEmployeeCountry"), message);
+        QVERIFY(response.isFault());
+        QCOMPARE(response.arguments().child(QLatin1String("faultcode")).value().toString(), QString::fromLatin1("Client.Data"));
+    }
+
+    QList<KDSoapPendingCallWatcher*> makeAsyncCalls(KDSoapClientInterface& client, int numRequests)
+    {
+        QList<KDSoapPendingCallWatcher*> watchers;
+        for (int i = 0; i < numRequests; ++i) {
+            KDSoapPendingCall pendingCall = client.asyncCall(QLatin1String("getEmployeeCountry"), countryMessage());
+            KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);
+            connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher*)),
+                    this, SLOT(slotFinished(KDSoapPendingCallWatcher*)));
+            watchers.append(watcher);
+        }
+        return watchers;
+    }
+
     static QString countryMessageNamespace() {
         return QString::fromLatin1("http://www.kdab.com/xml/MyWsdl/");
     }
@@ -349,6 +572,41 @@ private:
         message.addArgument(QLatin1String("employeeName"), QString::fromUtf8("David Ä Faure"));
         return message;
     }
+
+    static QList<QByteArray> readLines(const QString& fileName)
+    {
+        Q_ASSERT(!fileName.isEmpty());
+        Q_ASSERT(QFile::exists(fileName));
+        QFile file(fileName);
+        const bool opened = file.open(QIODevice::ReadOnly);
+        Q_ASSERT(opened);
+        Q_UNUSED(opened);
+        QList<QByteArray> lines;
+        QByteArray line;
+        do {
+            line = file.readLine();
+            if (!line.isEmpty())
+                lines.append(line);
+        } while(!line.isEmpty());
+        return lines;
+    }
+
+    void compareLines(const QList<QByteArray>& expectedLines, const QString& fileName)
+    {
+        QList<QByteArray> lines = readLines(fileName);
+        //qDebug() << lines;
+        QCOMPARE(lines.count(), expectedLines.count());
+        for (int i = 0; i < lines.count(); ++i) {
+            QByteArray line = lines[i];
+            QVERIFY(line.endsWith('\n'));
+            line.chop(1);
+            if (!line.endsWith(expectedLines[i])) {
+                qDebug() << "line" << i << ":\n" << line << "\nexpected\n" << expectedLines[i];
+                QVERIFY(line.endsWith(expectedLines[i]));
+            }
+        }
+    }
+
 };
 
 QTEST_MAIN(ServerTest)

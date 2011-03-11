@@ -41,6 +41,11 @@ public:
      */
     int maxThreadCount() const;
 
+    /**
+     * Returns the number of connected sockets for a given server
+     */
+    int numConnectedSockets(const KDSoapServer* server) const;
+
 private:
     friend class KDSoapServer;
     void handleIncomingConnection(int socketDescriptor, KDSoapServer* server);
