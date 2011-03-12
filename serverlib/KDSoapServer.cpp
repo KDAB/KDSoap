@@ -6,6 +6,8 @@
 #ifdef Q_OS_UNIX
 #include <sys/time.h>
 #include <sys/resource.h>
+#include <errno.h>
+#include <limits.h>
 #endif
 
 class KDSoapServer::Private
@@ -157,7 +159,7 @@ bool KDSoapServer::setExpectedSocketCount(int sockets)
 #ifdef Q_OS_UNIX
     struct rlimit lim;
     if (getrlimit(RLIMIT_NOFILE, &lim) != 0) {
-        qDebug() << "error calling getrlimit";
+        qDebug() << "error calling getrlimit:" << strerror(errno);
         return false;
     }
     bool changingHardLimit = false;
@@ -174,14 +176,20 @@ bool KDSoapServer::setExpectedSocketCount(int sockets)
             changingHardLimit = true;
         }
     }
+#ifdef OPEN_MAX
+    // Mac OSX: setrlimit() no longer accepts "rlim_cur = RLIM_INFINITY" for RLIM_NOFILE.  Use "rlim_cur = min(OPEN_MAX, rlim_max)".
+    lim.rlim_cur = qMin(OPEN_MAX, lim.rlim_max);
+#else
+    // Linux: does not define OPEN_MAX anymore, since it's "configurable at runtime".
     lim.rlim_cur = lim.rlim_max;
+#endif
     if (setrlimit(RLIMIT_NOFILE, &lim) == 0) {
         qDebug() << "limit set to" << lim.rlim_cur;
     } else {
         if (changingHardLimit) {
             qDebug() << "WARNING: hard limit is not high enough";
         }
-        qDebug() << "error calling setrlimit";
+        qDebug() << "error calling setrlimit(" << lim.rlim_cur << "," << lim.rlim_max << ") :" << strerror(errno);
         return false;
     }
 #endif
