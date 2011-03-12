@@ -178,7 +178,7 @@ bool KDSoapServer::setExpectedSocketCount(int sockets)
     }
 #ifdef OPEN_MAX
     // Mac OSX: setrlimit() no longer accepts "rlim_cur = RLIM_INFINITY" for RLIM_NOFILE.  Use "rlim_cur = min(OPEN_MAX, rlim_max)".
-    lim.rlim_cur = qMin(OPEN_MAX, lim.rlim_max);
+    lim.rlim_cur = qMin(rlim_t(OPEN_MAX), lim.rlim_max);
 #else
     // Linux: does not define OPEN_MAX anymore, since it's "configurable at runtime".
     lim.rlim_cur = lim.rlim_max;
