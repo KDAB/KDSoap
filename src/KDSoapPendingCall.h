@@ -52,8 +52,8 @@ public:
     KDSoapPendingCall &operator=(const KDSoapPendingCall &other);
 
     /**
-     * Returns the reply message sent by the server.
-     * Could either be a fault (see KDSoapMessage::isFault) or the actual reply arguments.
+     * Returns the response message sent by the server.
+     * Could either be a fault (see KDSoapMessage::isFault) or the actual response arguments.
      */
     KDSoapMessage returnMessage() const;
 
@@ -62,6 +62,11 @@ public:
      * Returns the value of that single argument.
      */
     QVariant returnValue() const;
+
+    /**
+     * Returns the response headers sent by the server.
+     */
+    KDSoapHeaders returnHeaders() const;
 
     /**
      * Returns \c true if the pending call has finished processing and the reply has been received.

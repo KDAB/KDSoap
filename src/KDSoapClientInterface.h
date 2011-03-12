@@ -164,6 +164,13 @@ public:
     SoapVersion soapVersion();
 
     /**
+     * Returns the headers returned by the last synchronous call().
+     * For asyncCall(), use KDSoapPendingCall::returnHeaders().
+     * \since 1.1
+     */
+    KDSoapHeaders lastResponseHeaders() const;
+
+    /**
      * Asks Qt to ignore ssl errors in https requests. Use this for testing
      * only!
      */

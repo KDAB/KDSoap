@@ -5,6 +5,7 @@ class KDSoapServerObjectInterface::Private
 {
 public:
     KDSoapHeaders m_requestHeaders;
+    KDSoapHeaders m_responseHeaders;
     QString m_faultCode;
     QString m_faultString;
     QString m_faultActor;
@@ -39,11 +40,6 @@ void KDSoapServerObjectInterface::setFault(const QString &faultCode, const QStri
     d->m_detail = detail;
 }
 
-void KDSoapServerObjectInterface::resetFault()
-{
-    d->m_faultCode.clear();
-}
-
 void KDSoapServerObjectInterface::storeFaultAttributes(KDSoapMessage& message) const
 {
     message.addArgument(QString::fromLatin1("faultcode"), d->m_faultCode);
@@ -57,7 +53,7 @@ bool KDSoapServerObjectInterface::hasFault() const
     return !d->m_faultCode.isEmpty();
 }
 
-KDSoapHeaders KDSoapServerObjectInterface::headers() const
+KDSoapHeaders KDSoapServerObjectInterface::requestHeaders() const
 {
     return d->m_requestHeaders;
 }
@@ -65,5 +61,18 @@ KDSoapHeaders KDSoapServerObjectInterface::headers() const
 void KDSoapServerObjectInterface::setRequestHeaders(const KDSoapHeaders &headers)
 {
     d->m_requestHeaders = headers;
+    // Prepare for a new request to be handled
+    d->m_faultCode.clear();
+    d->m_responseHeaders.clear();
+}
+
+void KDSoapServerObjectInterface::setResponseHeaders(const KDSoapHeaders &headers)
+{
+    d->m_responseHeaders = headers;
+}
+
+KDSoapHeaders KDSoapServerObjectInterface::responseHeaders() const
+{
+    return d->m_responseHeaders;
 }
 

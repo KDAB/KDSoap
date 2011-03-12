@@ -6,6 +6,7 @@
 class QObject;
 class KDSoapSocketList;
 class KDSoapMessage;
+class KDSoapHeaders;
 
 class KDSoapServerSocket : public QTcpSocket
 {
@@ -18,7 +19,7 @@ private Q_SLOTS:
     void slotReadyRead();
 
 private:
-    void makeCall(const KDSoapMessage& requestMsg, KDSoapMessage& replyMsg);
+    void makeCall(const KDSoapMessage& requestMsg, KDSoapMessage& replyMsg, const KDSoapHeaders& requestHeaders, KDSoapHeaders& responseHeaders);
     void handleError(KDSoapMessage& replyMsg, const char* errorCode, const QString& error);
 
     KDSoapSocketList* m_owner;

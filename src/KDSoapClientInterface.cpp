@@ -107,7 +107,8 @@ KDSoapMessage KDSoapClientInterface::call(const QString& method, const KDSoapMes
     if (!d->m_thread.isRunning())
         d->m_thread.start();
     task->waitForCompletion();
-    KDSoapMessage ret = task->returnArguments();
+    KDSoapMessage ret = task->response();
+    d->m_lastResponseHeaders = task->responseHeaders();
     delete task;
     return ret;
 }
@@ -146,6 +147,11 @@ void KDSoapClientInterface::Private::setupReply(QNetworkReply *reply)
     if (m_ignoreSslErrors) {
         QObject::connect(reply, SIGNAL(sslErrors(const QList<QSslError>&)), reply, SLOT(ignoreSslErrors()));
     }
+}
+
+KDSoapHeaders KDSoapClientInterface::lastResponseHeaders() const
+{
+    return d->m_lastResponseHeaders;
 }
 
 #include "moc_KDSoapClientInterface_p.cpp"

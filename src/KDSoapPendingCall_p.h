@@ -35,6 +35,7 @@ public:
 #endif
     QBuffer* buffer;
     KDSoapMessage replyMessage;
+    KDSoapHeaders replyHeaders;
     bool parsed;
 };
 

@@ -46,6 +46,12 @@ KDSoapMessage KDSoapPendingCall::returnMessage() const
     return d->replyMessage;
 }
 
+KDSoapHeaders KDSoapPendingCall::returnHeaders() const
+{
+    d->parseReply();
+    return d->replyHeaders;
+}
+
 QVariant KDSoapPendingCall::returnValue() const
 {
     d->parseReply();
@@ -82,5 +88,5 @@ void KDSoapPendingCall::Private::parseReply()
     if (doDebug)
         qDebug() << data;
 
-    replyMessage.parseSoapXml(data, 0);
+    replyMessage.parseSoapXml(data, 0, &replyHeaders);
 }
