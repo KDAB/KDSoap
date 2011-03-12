@@ -62,9 +62,12 @@ public:
      * This can be used to retrieve authentication headers, or any kind of session
      * (per-client) data.
      */
-    KDSoapHeaders headers() const;
+    KDSoapHeaders requestHeaders() const;
 
-    // TODO setResponseHeaders in order to add headers to the response (http://www.w3.org/TR/2000/NOTE-SOAP-20000508 example 7)
+    /**
+     * Sets the soap headers to be sent in the response
+     */
+    void setResponseHeaders(const KDSoapHeaders& headers);
 
     /**
      * Instructs KD SOAP to return a fault message instead of the return value of the slot.
@@ -87,7 +90,7 @@ public:
 private:
     friend class KDSoapServerSocket;
     void setRequestHeaders(const KDSoapHeaders& headers);
-    void resetFault();
+    KDSoapHeaders responseHeaders() const;
     void storeFaultAttributes(KDSoapMessage& message) const;
     class Private;
     Private* const d;

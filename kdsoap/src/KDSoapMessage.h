@@ -118,7 +118,7 @@ public:
 private:
     friend class KDSoapPendingCall;
     friend class KDSoapServerSocket;
-    void parseSoapXml(const QByteArray& data, QString* pMessageNamespace);
+    void parseSoapXml(const QByteArray& data, QString* pMessageNamespace, KDSoapHeaders* pRequestHeaders);
 
     QSharedDataPointer<KDSoapMessageData> d;
 };
@@ -127,8 +127,13 @@ private:
  * Set of headers that can be provided when making a SOAP call.
  * \see KDSoapClientInterface
  */
-class KDSoapHeaders : public QList<KDSoapMessage>
+class KDSOAP_EXPORT KDSoapHeaders : public QList<KDSoapMessage>
 {
+public:
+    /**
+     * Convenience method: return the header with a given name (assumes unicity)
+     */
+    KDSoapMessage header(const QString& name) const;
 };
 
 /**

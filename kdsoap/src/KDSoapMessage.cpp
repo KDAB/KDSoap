@@ -211,31 +211,43 @@ static bool readNextStartElement(QXmlStreamReader& reader)
 #endif
 }
 
-void KDSoapMessage::parseSoapXml(const QByteArray& data, QString* pMessageNamespace)
+void KDSoapMessage::parseSoapXml(const QByteArray& data, QString* pMessageNamespace, KDSoapHeaders* pRequestHeaders)
 {
     QXmlStreamReader reader(data);
     if (readNextStartElement(reader)) {
         if (reader.name() == "Envelope" && reader.namespaceUri() == KDSoapNamespaceManager::soapEnvelope()) {
             const QXmlStreamNamespaceDeclarations envNsDecls = reader.namespaceDeclarations();
-            if (readNextStartElement(reader) && reader.name() == "Body" && reader.namespaceUri() == KDSoapNamespaceManager::soapEnvelope()) {
-
-                if (readNextStartElement(reader)) { // the root element: request, response or fault
-                    //qDebug() << "toplevel element:" << reader.name();
-                    const bool isFault = (reader.name() == "Fault");
-
-                    //KDSoapValue::operator=(parseReplyElement(reader));
-                    if (pMessageNamespace)
-                        *pMessageNamespace = reader.namespaceUri().toString();
-                    static_cast<KDSoapValue &>(*this) = parseElement(reader, envNsDecls);
-                    if (isFault)
-                        setFault(true);
+            if (readNextStartElement(reader)) {
+                if (reader.name() == "Header" && reader.namespaceUri() == KDSoapNamespaceManager::soapEnvelope()) {
+                    while (readNextStartElement(reader)) {
+                        KDSoapMessage header;
+                        static_cast<KDSoapValue &>(header) = parseElement(reader, envNsDecls);
+                        pRequestHeaders->append(header);
+                    }
+                    readNextStartElement(reader); // read <Body>
                 }
+                if (reader.name() == "Body" && reader.namespaceUri() == KDSoapNamespaceManager::soapEnvelope()) {
 
+                    if (readNextStartElement(reader)) { // the root element: request, response or fault
+                        //qDebug() << "toplevel element:" << reader.name();
+                        const bool isFault = (reader.name() == "Fault");
+
+                        //KDSoapValue::operator=(parseReplyElement(reader));
+                        if (pMessageNamespace)
+                            *pMessageNamespace = reader.namespaceUri().toString();
+                        static_cast<KDSoapValue &>(*this) = parseElement(reader, envNsDecls);
+                        if (isFault)
+                            setFault(true);
+                    }
+
+                } else {
+                    reader.raiseError(QObject::tr("Invalid SOAP Message, Body expected"));
+                }
             } else {
-                reader.raiseError(QObject::tr("Invalid SOAP Response, Body expected"));
+                reader.raiseError(QObject::tr("Invalid SOAP Message, empty Envelope"));
             }
         } else {
-            reader.raiseError(QObject::tr("Invalid SOAP Response, Envelope expected"));
+            reader.raiseError(QObject::tr("Invalid SOAP Message, Envelope expected"));
         }
     }
     if (reader.hasError()) {
@@ -245,3 +257,13 @@ void KDSoapMessage::parseSoapXml(const QByteArray& data, QString* pMessageNamesp
     }
 }
 
+KDSoapMessage KDSoapHeaders::header(const QString &name) const
+{
+    const_iterator it = begin();
+    const const_iterator e = end();
+    for ( ; it != e ; ++it) {
+        if ((*it).name() == name)
+            return *it;
+    }
+    return KDSoapMessage();
+}

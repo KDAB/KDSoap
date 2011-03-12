@@ -21,7 +21,8 @@ public:
         : m_iface(iface), m_method(method), m_message(message), m_action(action), m_headers(headers) {}
 
     void waitForCompletion() { m_semaphore.acquire(); }
-    KDSoapMessage returnArguments() const { return m_returnArguments; }
+    KDSoapMessage response() const { return m_response; }
+    KDSoapHeaders responseHeaders() const { return m_responseHeaders; }
 
     KDSoapClientInterface* m_iface; // used by KDSoapThreadTask::process()
     KDSoapAuthentication m_authentication;
@@ -29,7 +30,8 @@ public:
     KDSoapMessage m_message;
     QString m_action;
     QSemaphore m_semaphore;
-    KDSoapMessage m_returnArguments;
+    KDSoapMessage m_response;
+    KDSoapHeaders m_responseHeaders;
     KDSoapHeaders m_headers;
 };
 

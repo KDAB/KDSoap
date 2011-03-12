@@ -67,7 +67,8 @@ void KDSoapThreadTask::process(QNetworkAccessManager& accessManager)
 
 void KDSoapThreadTask::slotFinished(KDSoapPendingCallWatcher* watcher)
 {
-    m_data->m_returnArguments = watcher->returnMessage();
+    m_data->m_response = watcher->returnMessage();
+    m_data->m_responseHeaders = watcher->returnHeaders();
     m_data->m_semaphore.release();
     // Helgrind bug: says this races with main thread. Looks like it's confused by QSharedDataPointer
     //qDebug() << m_data->m_returnArguments.value();

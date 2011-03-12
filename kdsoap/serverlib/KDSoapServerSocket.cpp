@@ -115,11 +115,13 @@ void KDSoapServerSocket::slotReadyRead()
 
     KDSoapMessage requestMsg;
     QString messageNamespace;
-    requestMsg.parseSoapXml(m_receivedData, &messageNamespace);
+    KDSoapHeaders requestHeaders;
+    requestMsg.parseSoapXml(m_receivedData, &messageNamespace, &requestHeaders);
     const QString method = requestMsg.name();
 
     KDSoapMessage replyMsg;
-    makeCall(requestMsg, replyMsg);
+    KDSoapHeaders responseHeaders;
+    makeCall(requestMsg, replyMsg, requestHeaders, responseHeaders);
 
     const bool isFault = replyMsg.isFault();
     KDSoapServer* server = m_owner->server();
@@ -130,7 +132,7 @@ void KDSoapServerSocket::slotReadyRead()
     KDSoapMessageWriter msgWriter;
     msgWriter.setMessageNamespace(messageNamespace);
     const QString responseName = isFault ? QString::fromLatin1("Fault") : method + QString::fromLatin1("Response");
-    const QByteArray xmlResponse = msgWriter.messageToXml(replyMsg, responseName, KDSoapHeaders(), QMap<QString, KDSoapMessage>());
+    const QByteArray xmlResponse = msgWriter.messageToXml(replyMsg, responseName, responseHeaders, QMap<QString, KDSoapMessage>());
     const QByteArray response = httpResponseHeaders(isFault, xmlResponse.size());
     if (m_doDebug) {
         qDebug() << "HttpServerThread: writing" << response << xmlResponse;
@@ -161,7 +163,7 @@ void KDSoapServerSocket::handleError(KDSoapMessage &replyMsg, const char *errorC
     replyMsg.addArgument(QString::fromLatin1("faultstring"), error);
 }
 
-void KDSoapServerSocket::makeCall(const KDSoapMessage &requestMsg, KDSoapMessage& replyMsg)
+void KDSoapServerSocket::makeCall(const KDSoapMessage &requestMsg, KDSoapMessage& replyMsg, const KDSoapHeaders& requestHeaders, KDSoapHeaders& responseHeaders)
 {
     //const QString method = requestMsg.name();
 
@@ -181,13 +183,11 @@ void KDSoapServerSocket::makeCall(const KDSoapMessage &requestMsg, KDSoapMessage
             return;
         }
 
-        serverObjectInterface->resetFault();
-        // TODO serverObjectInterface->setRequestHeaders(m_soapHeaders);
-
-        //const KDSoapValueList& values = requestMsg.childValues();
-        //qDebug() << "childValues:" << values;
+        serverObjectInterface->setRequestHeaders(requestHeaders);
 
         serverObjectInterface->processRequest(requestMsg, replyMsg);
+
+        responseHeaders = serverObjectInterface->responseHeaders();
 
         if (serverObjectInterface->hasFault()) {
             //qDebug() << "Got fault!";

@@ -95,8 +95,17 @@ public: // SOAP-accessible methods
         return QString::fromLatin1("France");
     }
 
-    double getStuff(int foo, float bar, const QDateTime& dateTime) const {
+    double getStuff(int foo, float bar, const QDateTime& dateTime) {
         qDebug() << "getStuff called:" << foo << bar << dateTime.toTime_t();
+        //qDebug() << "Request headers:" << requestHeaders();
+        const QString header1 = requestHeaders().header(QString::fromLatin1("header1")).value().toString();
+        if (header1 == QLatin1String("headerValue")) {
+            KDSoapHeaders headers;
+            KDSoapMessage header2;
+            header2.addArgument(QString::fromLatin1("header2"), QString::fromLatin1("responseHeader"));
+            headers.append(header2);
+            setResponseHeaders(headers);
+        }
         return double(foo) + bar + double(dateTime.toTime_t()) + double(dateTime.time().msec() / 1000.0);
     }
     QByteArray hexBinaryTest(const QByteArray& input1, const QByteArray& input2) const {
@@ -216,12 +225,22 @@ private Q_SLOTS:
         QDateTime dt = QDateTime::fromTime_t(123456);
         dt.setTime(dt.time().addMSecs(789));
         message.addArgument(QLatin1String("dateTime"), dt);
-        const KDSoapMessage response = client.call(QLatin1String("getStuff"), message);
+
+        // Add a header
+        KDSoapMessage header1;
+        header1.addArgument(QString::fromLatin1("header1"), QString::fromLatin1("headerValue"));
+        KDSoapHeaders headers;
+        headers << header1;
+
+        const KDSoapMessage response = client.call(QLatin1String("getStuff"), message, QString::fromLatin1("MySoapAction"), headers);
         if (response.isFault()) {
             qDebug() << response.faultAsString();
             QVERIFY(!response.isFault());
         }
         QCOMPARE(response.value().toDouble(), double(4+3.2+123456.789));
+        const KDSoapHeaders responseHeaders = client.lastResponseHeaders();
+        //qDebug() << responseHeaders;
+        QCOMPARE(responseHeaders.header(QString::fromLatin1("header2")).value().toString(), QString::fromLatin1("responseHeader"));
     }
 
     void testHexBinary()
