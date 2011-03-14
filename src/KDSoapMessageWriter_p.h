@@ -24,11 +24,6 @@ public:
                             const QMap<QString, KDSoapMessage>& persistentHeaders) const;
 
 private:
-    void writeElementContents(KDSoapNamespacePrefixes& namespacePrefixes, QXmlStreamWriter& writer, const KDSoapValue& element, KDSoapMessage::Use use) const;
-    void writeChildren(KDSoapNamespacePrefixes& namespacePrefixes, QXmlStreamWriter& writer, const KDSoapValueList& args, KDSoapMessage::Use use) const;
-    void writeAttributes(QXmlStreamWriter& writer, const QList<KDSoapValue>& attributes) const;
-
-private:
     QString m_messageNamespace;
 };
 

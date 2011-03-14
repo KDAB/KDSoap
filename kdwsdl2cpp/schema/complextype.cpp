@@ -21,6 +21,7 @@
  */
 
 #include "complextype.h"
+#include <QDebug>
 
 namespace XSD {
 
@@ -182,15 +183,7 @@ Attribute ComplexType::attribute(const QName &attrName) const
 
 void ComplexType::addElement( const Element &element )
 {
-    QName anyType( "http://www.w3.org/2001/XMLSchema", "any" );
-    if (!d->mElements.isEmpty() && d->mElements.last().type() == anyType) {
-        // Hack for deserialization: keep "any" last.
-        Element lastElem = d->mElements.takeLast();
-        d->mElements.append( element );
-        d->mElements.append( lastElem );
-    } else {
-        d->mElements.append( element );
-    }
+    d->mElements.append( element );
 }
 
 bool ComplexType::isEmpty() const
