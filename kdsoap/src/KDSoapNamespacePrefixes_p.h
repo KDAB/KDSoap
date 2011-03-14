@@ -7,6 +7,8 @@
 class KDSoapNamespacePrefixes : public QMap<QString /*ns*/, QString /*prefix*/>
 {
 public:
+    void writeStandardNamespaces(QXmlStreamWriter& writer);
+
     void writeNamespace(QXmlStreamWriter& writer, const QString& ns, const QString& prefix) {
         //qDebug() << "writeNamespace" << ns << prefix;
         insert(ns, prefix);

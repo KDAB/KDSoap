@@ -320,6 +320,7 @@ private Q_SLOTS:
         // Prepare response
         QByteArray responseData = QByteArray(xmlEnvBegin) + "><soap:Body>"
                                   "<kdab:AnyTypeResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl/\">"
+                                  "<xsd:schema><xsd:test>response</xsd:test></xsd:schema>"
                                   "<kdab:return xsd:type=\"xsd:int\">42</kdab:return>"
                                   "<kdab:return xsd:type=\"xsd:string\">Forty-two</kdab:return>"
                                   "<kdab:return xsd:type=\"kdab:TeamName\">Minitel</kdab:return>"
@@ -335,7 +336,13 @@ private Q_SLOTS:
 
         KDAB__AnyType anyType;
         anyType.setInput(KDSoapValue(QString::fromLatin1("foo"), QString::fromLatin1("Value"), KDSoapNamespaceManager::xmlSchema1999(), QString::fromLatin1("string")));
-        anyType.setSchema(QLatin1String("foo")); // TODO <test>foo</test> will escape with &lt;. Do we need KDSoapValue::fromXml/toXml instead?
+        KDSoapValueList schemaChildValues;
+        KDSoapValue testVal(QLatin1String("test"), QString::fromLatin1("input"));
+        testVal.setNamespaceUri(KDSoapNamespaceManager::xmlSchema1999());
+        schemaChildValues.append(testVal);
+        KDSoapValue inputSchema(QLatin1String("schema"), schemaChildValues);
+        inputSchema.setNamespaceUri(KDSoapNamespaceManager::xmlSchema1999());
+        anyType.setSchema(inputSchema);
         const KDAB__AnyTypeResponse response = service.testAnyType(anyType);
         const QList<KDSoapValue> values = response._return();
         QCOMPARE(values.count(), 4);
@@ -351,11 +358,26 @@ private Q_SLOTS:
             QByteArray(xmlEnvBegin) + ">"
             "<soap:Body>"
             "<n1:testAnyType xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
-            "<n1:schema>foo</n1:schema>"
             "<n1:foo>Value</n1:foo>"
+            "<xsd:schema><xsd:test>input</xsd:test></xsd:schema>"
             "</n1:testAnyType>"
             "</soap:Body>" + xmlEnvEnd;
-            QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
+        QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
+
+        const KDSoapValue schema = response.schema();
+        QCOMPARE(schema.name(), QString::fromLatin1("schema"));
+        QCOMPARE(schema.namespaceUri(), KDSoapNamespaceManager::xmlSchema1999());
+        const QByteArray expectedResponseSchemaXml =
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+                "<xsd:schema"
+                " xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\""
+                " xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\""
+                " xmlns:xsd=\"http://www.w3.org/1999/XMLSchema\""
+                " xmlns:xsi=\"http://www.w3.org/1999/XMLSchema-instance\""
+                ">"
+                "<xsd:test>response</xsd:test>"
+                "</xsd:schema>";
+        QVERIFY(xmlBufferCompare(schema.toXml(), expectedResponseSchemaXml));
     }
 
     void testByteArrays()

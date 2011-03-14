@@ -15,6 +15,8 @@
 #endif
 
 class KDSoapValueList;
+class KDSoapNamespacePrefixes;
+class QXmlStreamWriter;
 
 /**
  * KDSoapValue represents a value in a SOAP argument list.
@@ -98,6 +100,16 @@ public:
     QString name() const;
 
     /**
+     * Returns the namespace of this argument, if it differs from the "message namespace".
+     */
+    QString namespaceUri() const;
+
+    /**
+     * Sets the namespace of this argument, if it differs from the "message namespace".
+     */
+    void setNamespaceUri(const QString& ns);
+
+    /**
      * Returns the value of the argument.
      */
     QVariant value() const;
@@ -144,9 +156,27 @@ public:
      */
     QString type() const;
 
+    /**
+     * Defines the way the message should be serialized.
+     * See the "use" attribute for soap:body, in the WSDL file.
+     */
+    enum Use
+    {
+      LiteralUse, ///< data is serialized according to a given schema, no \c xsi:type attributes are written out
+      EncodedUse  ///< each message part references an abstract type using the \c xsi:type attribute
+    };
+
+    QByteArray toXml(Use use = LiteralUse, const QString& messageNamespace = QString()) const;
+
 private:
     // To catch mistakes
     KDSoapValue(QString, QString, QString);
+
+    friend class KDSoapMessageWriter;
+    void writeElement(KDSoapNamespacePrefixes& namespacePrefixes, QXmlStreamWriter& writer, KDSoapValue::Use use, const QString& messageNamespace) const;
+    void writeElementContents(KDSoapNamespacePrefixes& namespacePrefixes, QXmlStreamWriter& writer, KDSoapValue::Use use, const QString& messageNamespace) const;
+    void writeChildren(KDSoapNamespacePrefixes& namespacePrefixes, QXmlStreamWriter& writer, KDSoapValue::Use use, const QString& messageNamespace) const;
+
     class Private;
     QSharedDataPointer<Private> d;
 };

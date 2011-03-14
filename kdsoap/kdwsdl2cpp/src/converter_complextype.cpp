@@ -216,13 +216,13 @@ KODE::Code Converter::appendElementArg( const QName& type, const QName& elementT
 }
 
 // Helper method for the generation of the deserialize() method
-static KODE::Code demarshalNameTest( TypeMap& typeMap, const QName& type, const QString& tagName, bool *first )
+static KODE::Code demarshalNameTest( TypeMap& /*TODO REMOVE*/, const QName& type, const QString& tagName, bool *first )
 {
     KODE::Code demarshalCode;
-    if ( typeMap.isTypeAny( type ) ) {
-        demarshalCode += QString::fromLatin1(*first? "" : "else ") + '{';
+    if ( type.nameSpace() == XMLSchemaURI && (type.localName() == "any") ) {
+        demarshalCode += QString::fromLatin1(*first? "" : "else ") + "{" COMMENT;
     } else {
-        demarshalCode += QString::fromLatin1(*first? "" : "else ") + "if (name == QLatin1String(\"" + tagName + "\")) {";
+        demarshalCode += QString::fromLatin1(*first? "" : "else ") + "if (name == QLatin1String(\"" + tagName + "\")) {" COMMENT;
     }
     *first = false;
     return demarshalCode;

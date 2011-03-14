@@ -143,6 +143,7 @@ static KDSoapValue parseElement(QXmlStreamReader& reader, const QXmlStreamNamesp
 {
     const QString name = reader.name().toString();
     KDSoapValue val(name, QVariant());
+    val.setNamespaceUri(reader.namespaceUri().toString());
     //qDebug() << "parsing" << name;
     QVariant::Type metaTypeId = QVariant::Invalid;
 

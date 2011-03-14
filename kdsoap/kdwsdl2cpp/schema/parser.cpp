@@ -109,7 +109,7 @@ void Parser::init(ParserContext *context)
     {
         Element schema(XMLSchemaURI);
         schema.setName("schema");
-        schema.setType(QName(XMLSchemaURI, "string"));
+        schema.setType(QName(XMLSchemaURI, "any"));
         d->mElements.append(schema);
     }
 
@@ -1019,25 +1019,39 @@ AttributeGroup Parser::findAttributeGroup( const QName &name )
 
 void Parser::resolveForwardDeclarations()
 {
+  const QName any( "http://www.w3.org/2001/XMLSchema", "any" );
+  //const QName anyType( "http://www.w3.org/2001/XMLSchema", "anyType" );
   for ( int i = 0; i < d->mComplexTypes.count(); ++i ) {
 
     Element::List elements = d->mComplexTypes[ i ].elements();
+    Element::List finalElementList;
     for ( int j = 0; j < elements.count(); ++j ) {
       Element element = elements[ j ];
       if ( !element.isResolved() ) {
         Element resolvedElement = findElement( element.reference() );
         if (resolvedElement.qualifiedName().isEmpty()) {
-            qDebug() << "ERROR resolving element" << element.qualifiedName().qname() << "which is a ref to" << element.reference().qname() << ": not found!";
+            qWarning("ERROR resolving element %s which is a ref to %s: not found!", qPrintable(element.qualifiedName().qname()), qPrintable(element.reference().qname()));
             d->mElements.dump();
         } else {
             resolvedElement.setMinOccurs( element.minOccurs() );
             resolvedElement.setMaxOccurs( element.maxOccurs() );
             resolvedElement.setCompositor( element.compositor() );
-            elements[ j ] = resolvedElement;
+            element = resolvedElement;
         }
       }
+      if (j > 0 && finalElementList.last().type() == any) {
+          // Hack for deserialization: keep "any" last.
+          Element lastElem = finalElementList.takeLast();
+          finalElementList.append( element );
+          finalElementList.append( lastElem );
+          if (element.type() == any) {
+              qWarning("ERROR: two 'any' values in the same type %s", qPrintable(d->mComplexTypes[i].name()));
+          }
+      } else {
+          finalElementList.append( element );
+      }
     }
-    d->mComplexTypes[ i ].setElements( elements );
+    d->mComplexTypes[ i ].setElements( finalElementList );
 
     Attribute::List attributes = d->mComplexTypes[ i ].attributes();
 

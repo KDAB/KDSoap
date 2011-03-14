@@ -33,16 +33,6 @@ public:
     KDSoapMessage &operator=(const KDSoapMessage &other);
 
     /**
-     * Defines the way the message should be serialized.
-     * See the "use" attribute for soap:body, in the WSDL file.
-     */
-    enum Use
-    {
-      LiteralUse, ///< data is serialized according to a given schema, no \c xsi:type attributes are written out
-      EncodedUse  ///< each message part references an abstract type using the \c xsi:type attribute
-    };
-
-    /**
      * Define the way the message should be serialized.
      * The default value is #LiteralUse.
      */

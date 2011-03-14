@@ -35,7 +35,8 @@ SOURCES = KDSoapMessage.cpp \
     KDSoapValue.cpp \
     KDSoapAuthentication.cpp \
     KDSoapNamespaceManager.cpp \
-    KDSoapMessageWriter.cpp
+    KDSoapMessageWriter.cpp \
+    KDSoapNamespacePrefixes.cpp
 DEFINES += KDSOAP_BUILD_KDSOAP_LIB
 
 # installation targets:
