@@ -104,6 +104,7 @@
           <sequence>
             <element ref="xsd:schema" />
             <element name="return" type="xsd:anyType" minOccurs="0" maxOccurs="unbounded"/>
+            <any/>
           </sequence>
         </complexType>
       </element>

@@ -109,7 +109,7 @@ void Parser::init(ParserContext *context)
     {
         Element schema(XMLSchemaURI);
         schema.setName("schema");
-        schema.setType(QName(XMLSchemaURI, "any"));
+        schema.setType(QName(XMLSchemaURI, "anyType"));
         d->mElements.append(schema);
     }
 

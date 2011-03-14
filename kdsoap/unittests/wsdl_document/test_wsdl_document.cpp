@@ -358,8 +358,8 @@ private Q_SLOTS:
             QByteArray(xmlEnvBegin) + ">"
             "<soap:Body>"
             "<n1:testAnyType xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
-            "<n1:foo>Value</n1:foo>"
             "<xsd:schema><xsd:test>input</xsd:test></xsd:schema>"
+            "<n1:foo>Value</n1:foo>"
             "</n1:testAnyType>"
             "</soap:Body>" + xmlEnvEnd;
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
