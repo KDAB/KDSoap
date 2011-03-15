@@ -200,7 +200,7 @@ static QString variantToXMLType(const QVariant& value)
 void KDSoapValue::writeElement(KDSoapNamespacePrefixes& namespacePrefixes, QXmlStreamWriter& writer, KDSoapValue::Use use, const QString& messageNamespace) const
 {
     const QString ns = d->m_nameNamespace.isEmpty() ? messageNamespace : d->m_nameNamespace;
-    qDebug() << d->m_nameNamespace << name();
+    //qDebug() << "writeElement" << d->m_nameNamespace << name();
     writer.writeStartElement(ns, name());
     writeElementContents(namespacePrefixes, writer, use, messageNamespace);
     writer.writeEndElement();
