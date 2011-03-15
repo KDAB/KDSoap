@@ -87,6 +87,36 @@ private Q_SLOTS:
         QCOMPARE(response.status().code(), 0);
     }
 
+    void testDateTime()
+    {
+        HttpServerThread server(updateVersionStatusResponse(), HttpServerThread::Public);
+        GroupwiseService::GroupWiseBinding groupwise;
+        groupwise.setEndPoint(server.endPoint());
+
+        METHODS__SetTimestampRequest req;
+        req.setBackup(QDateTime(QDate(2011, 03, 15), QTime(4, 3, 2, 1)));
+        req.setRetention(QDateTime(QDate(2011, 01, 15), QTime(4, 3, 2, 1)));
+
+        METHODS__SetTimestampResponse response = groupwise.setTimestampRequest(req);
+
+        // Check what we sent
+        QByteArray expectedRequestXml =
+            QByteArray(xmlEnvBegin) +
+            "><soap:Body>"
+            "<n1:setTimestampRequest xmlns:n1=\"http://schemas.novell.com/2005/01/GroupWise/groupwise.wsdl\">"
+                "<n1:backup>2011-03-15T04:03:02.001</n1:backup>"
+                "<n1:retention>2011-01-15T04:03:02.001</n1:retention>"
+            "</n1:setTimestampRequest>"
+            "</soap:Body>" + xmlEnvEnd
+            + '\n'; // added by QXmlStreamWriter::writeEndDocument
+        QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
+
+        // The response didn't have the expected fields. Not sure how we should handle that.
+        // Right now there's no error, just an "empty" response data.
+
+        QCOMPARE(response.status().code(), 0);
+    }
+
 private:
 
     // Bogus response
