@@ -59,7 +59,7 @@ private slots:
     void testHolidays()
     {
         const int year = 2009;
-        const QString endPoint = QString::fromLatin1("http://www.27seconds.com/Holidays/US/Dates/USHolidayDates.asmx");
+        const QString endPoint = QString::fromLatin1("http://www.holidaywebservice.com/Holidays/US/Dates/USHolidayDates.asmx");
         const QString messageNamespace = QString::fromLatin1("http://www.27seconds.com/Holidays/US/Dates/");
         KDSoapClientInterface client(endPoint, messageNamespace);
         KDSoapMessage message;
@@ -70,7 +70,7 @@ private slots:
                 this, SLOT(slotFinished(KDSoapPendingCallWatcher*)));
         m_eventLoop.exec();
         QVERIFY(!m_returnMessage.isFault());
-        QCOMPARE(m_returnMessage.arguments().first().value(), QVariant(QString::fromLatin1("2009-02-14T00:00:00.0000000-05:00")));
+        QCOMPARE(m_returnMessage.arguments().first().value(), QVariant(QString::fromLatin1("2009-02-14T00:00:00")));
     }
 
     void testConnectionError()
