@@ -12,11 +12,8 @@ from core.helpers.BoilerPlate import BuildProject
 from products.ProductBoilerPlate import ProductConfigurations
 from products.ProductPackager import ProductPackager
 
-build, project = BuildProject( name = 'KD SOAP', version = '1.0.0', url = 'svn+ssh://svn.kdab.com/home/SVN-klaralv/products/kdsoap' )
+build, project = BuildProject( name = 'KD SOAP', build = 'KD SOAP trunk', version = '1.1.0-trunk', url = 'svn+ssh://svn.kdab.com/home/SVN-klaralv/products/kdsoap' )
 
 configs = ProductConfigurations( project )
-
-default = configs.getDefaultConfiguration()
-default.addPlugin( ProductPackager( sourcePackage = True ) )
 
 build.build()
