@@ -212,10 +212,10 @@ KODE::Code Converter::appendElementArg( const QName& type, const QName& elementT
 }
 
 // Helper method for the generation of the deserialize() method
-static KODE::Code demarshalNameTest( TypeMap& typeMap, const QName& type, const QString& tagName, bool *first )
+static KODE::Code demarshalNameTest( TypeMap& , const QName& type, const QString& tagName, bool *first )
 {
     KODE::Code demarshalCode;
-    if ( typeMap.isTypeAny( type ) ) {
+    if ( type.nameSpace() == XMLSchemaURI && (type.localName() == "any") ) {
         demarshalCode += QString::fromLatin1(*first? "" : "else ") + '{';
     } else {
         demarshalCode += QString::fromLatin1(*first? "" : "else ") + "if (name == QLatin1String(\"" + tagName + "\")) {";

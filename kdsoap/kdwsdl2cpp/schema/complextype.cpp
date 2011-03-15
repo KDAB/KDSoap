@@ -182,8 +182,13 @@ Attribute ComplexType::attribute(const QName &attrName) const
 
 void ComplexType::addElement( const Element &element )
 {
-    QName anyType( "http://www.w3.org/2001/XMLSchema", "any" );
-    if (!d->mElements.isEmpty() && d->mElements.last().type() == anyType) {
+    QName any( "http://www.w3.org/2001/XMLSchema", "any" );
+    if (!d->mElements.isEmpty() && d->mElements.last().type() == any) {
+        if (element.type() == any) {
+            // Keep only one any. The alternative would be to implement namespace "filtering"...
+            return;
+        }
+
         // Hack for deserialization: keep "any" last.
         Element lastElem = d->mElements.takeLast();
         d->mElements.append( element );
