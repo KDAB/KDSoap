@@ -216,7 +216,7 @@ KODE::Code Converter::appendElementArg( const QName& type, const QName& elementT
 }
 
 // Helper method for the generation of the deserialize() method
-static KODE::Code demarshalNameTest( TypeMap& /*TODO REMOVE*/, const QName& type, const QString& tagName, bool *first )
+static KODE::Code demarshalNameTest( const QName& type, const QString& tagName, bool *first )
 {
     KODE::Code demarshalCode;
     if ( type.nameSpace() == XMLSchemaURI && (type.localName() == "any") ) {
@@ -358,7 +358,7 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
             KODE::MemberVariable variable( elemName, typeName ); // was already added; this is just for the naming
             const QString variableName = "d_ptr->" + variable.name();
 
-            demarshalCode.addBlock( demarshalNameTest( mTypeMap, elem.type(), elemName, &first ) );
+            demarshalCode.addBlock( demarshalNameTest( elem.type(), elemName, &first ) );
             demarshalCode.indent();
 
             if ( elem.maxOccurs() > 1 ) {
@@ -402,7 +402,7 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
             KODE::MemberVariable variable( attrName, "doesnotmatter" ); // was already added; this is just for the naming
             const QString variableName = "d_ptr->" + variable.name();
 
-            demarshalCode.addBlock( demarshalNameTest( mTypeMap, attribute.type(), attrName, &first ) );
+            demarshalCode.addBlock( demarshalNameTest( attribute.type(), attrName, &first ) );
             demarshalCode.indent();
 
             marshalCode.addBlock( appendElementArg( attribute.type(), QName(), attribute.name(), variableName, "attribs") );
