@@ -67,8 +67,6 @@ private Q_SLOTS:
         sigData.setSize(6);
         req.setPart(sigData);
         METHODS__UpdateVersionStatusResponse response = groupwise.updateVersionStatusRequest(req);
-        //qDebug() << groupwise.lastError(); // TODO, should be set because the response was incorrect
-        Q_UNUSED(response);
 
         // Check what we sent
         QByteArray expectedRequestXml =
@@ -82,7 +80,11 @@ private Q_SLOTS:
             "</soap:Body>" + xmlEnvEnd
             + '\n'; // added by QXmlStreamWriter::writeEndDocument
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
-        //QCOMPARE(response.status().code(), 42); // TODO
+
+        // The response didn't have the expected fields. Not sure how we should handle that.
+        // Right now there's no error, just an "empty" response data.
+
+        QCOMPARE(response.status().code(), 0);
     }
 
 private:

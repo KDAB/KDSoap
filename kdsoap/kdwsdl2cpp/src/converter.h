@@ -71,6 +71,7 @@ class Converter
     KODE::Code appendElementArg( const QName& type, const QName& elementType, const QString& name, const QString& localVariableName, const QByteArray& varName );
     KODE::Code demarshalVar( const QName& type, const QName& elementType, const QString& variableName, const QString& typeName, const QString& soapValueVarName = "val" ) const;
     KODE::Code demarshalArrayVar( const QName& type, const QString& variableName, const QString& typeName ) const;
+    void addVariableInitializer( KODE::MemberVariable& variable ) const;
 
     // Server Stub
     void convertServerService();
