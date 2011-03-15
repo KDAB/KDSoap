@@ -64,7 +64,7 @@ SharedDebug.setPackageDependencies( [ 'Qt-4.[4-9].?-Shared-Debug' ] )
 SharedDebug.setBuildMode( 'inSource' )
 #SharedDebug.setPlatFormWhiteList( ['win32-msvc2005', 'macx-g++','linux-g++','linux-g++-64'] )
 if 'Windows' in platform.platform():
-	SharedDebug.setOptions( '-debug' )
+	SharedDebug.setOptions( '-no-unittests -debug' )
 else:
 	SharedDebug.setOptions( '-unittests -debug' )
 SharedDebug.setBuildTypes( 'MCDF' ) # debug is not built for snapshots
@@ -75,7 +75,7 @@ commercial.setBuilder('autotools')
 commercial.setPackageDependencies( [ 'Qt-4.[4-9].?-Shared-Release' ] )
 commercial.setBuildMode( 'inSource' )
 if 'Windows' in platform.platform():
-	commercial.setOptions( '-release' )
+	commercial.setOptions( '-no-unittests -release' )
 else:
 	commercial.setOptions( '-unittests -release' )
 commercial.setBuildTypes( 'MCDSF' ) # snapshots are release builds
@@ -86,7 +86,7 @@ StaticDebug.setBuilder('autotools')
 StaticDebug.setPackageDependencies( [ 'Qt-4.[4-9].?-Static-Debug' ] )
 StaticDebug.setBuildMode( 'inSource' )
 if 'Windows' in platform.platform():
-	StaticDebug.setOptions( '-static -debug' )
+	StaticDebug.setOptions( '-no-unittests -static -debug' )
 else:
 	StaticDebug.setOptions( '-unittests -static -debug' )
 StaticDebug.setBuildTypes('MCDF')
@@ -97,7 +97,7 @@ StaticRelease.setBuilder('autotools')
 StaticRelease.setPackageDependencies( [ 'Qt-4.[4-9].?-Static-Release' ] )
 StaticRelease.setBuildMode( 'inSource' )
 if 'Windows' in platform.platform():
-	StaticRelease.setOptions( '-static -release' )
+	StaticRelease.setOptions( '-no-unittests -static -release' )
 else:
 	StaticRelease.setOptions( '-unittests -static -release' )
 StaticRelease.setBuildTypes('MCDF')
@@ -108,7 +108,7 @@ commercial_us.setBuilder('autotools')
 commercial_us.setPackageDependencies( [ 'Qt-4.[4-9].?-Shared-Release' ] )
 commercial_us.setBuildMode( 'inSource' )
 if 'Windows' in platform.platform():
-	commercial_us.setOptions( '-release' )
+	commercial_us.setOptions( '-no-unittests -release' )
 else:
 	commercial_us.setOptions( '-unittests -release' )
 commercial_us.setBuildTypes( 'MSF' ) # snapshots are release builds
@@ -119,7 +119,7 @@ gpl.setBuilder('autotools')
 gpl.setPackageDependencies( [ 'Qt-4.[4-9].?-Shared-Release' ] )
 gpl.setBuildMode( 'inSource' )
 if 'Windows' in platform.platform():
-	gpl.setOptions( '-release' )
+	gpl.setOptions( '-no-unittests -release' )
 else:
 	gpl.setOptions( '-unittests -release' )
 gpl.setBuildTypes( 'MSF' ) # snapshots are release builds
