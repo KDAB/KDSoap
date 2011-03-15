@@ -43,7 +43,7 @@ class KWSDL_EXPORT Type : public Element
     void setTypes( const XSD::Types &types );
     XSD::Types types() const;
 
-    void loadXML( ParserContext *context, const QDomElement &element );
+    bool loadXML( ParserContext *context, const QDomElement &element );
     void saveXML( ParserContext *context, QDomDocument &document, QDomElement &parent ) const;
 
   private:

@@ -232,7 +232,8 @@ bool Parser::parseSchemaTag( ParserContext *context, const QDomElement &root )
   d->mNamespaces = joinNamespaces( d->mNamespaces, namespaceManager.uris() );
   d->mNamespaces = joinNamespaces( d->mNamespaces, QStringList( d->mNameSpace ) );
 
-  resolveForwardDeclarations();
+  if (!resolveForwardDeclarations())
+      return false;
 
   d->mNameSpace = oldNamespace;
 
@@ -1017,7 +1018,7 @@ AttributeGroup Parser::findAttributeGroup( const QName &name )
   return AttributeGroup();
 }
 
-void Parser::resolveForwardDeclarations()
+bool Parser::resolveForwardDeclarations()
 {
   const QName any( "http://www.w3.org/2001/XMLSchema", "any" );
   //const QName anyType( "http://www.w3.org/2001/XMLSchema", "anyType" );
@@ -1032,6 +1033,7 @@ void Parser::resolveForwardDeclarations()
         if (resolvedElement.qualifiedName().isEmpty()) {
             qWarning("ERROR resolving element %s which is a ref to %s: not found!", qPrintable(element.qualifiedName().qname()), qPrintable(element.reference().qname()));
             d->mElements.dump();
+            return false;
         } else {
             resolvedElement.setMinOccurs( element.minOccurs() );
             resolvedElement.setMaxOccurs( element.maxOccurs() );
@@ -1046,6 +1048,7 @@ void Parser::resolveForwardDeclarations()
           finalElementList.append( lastElem );
           if (element.type() == any) {
               qWarning("ERROR: two 'any' values in the same type %s", qPrintable(d->mComplexTypes[i].name()));
+              return false;
           }
       } else {
           finalElementList.append( element );
@@ -1077,6 +1080,7 @@ void Parser::resolveForwardDeclarations()
 
     d->mComplexTypes[ i ].setAttributes( attributes );
   }
+  return true;
 }
 
 Types Parser::types() const

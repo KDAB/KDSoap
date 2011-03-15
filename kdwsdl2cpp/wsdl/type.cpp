@@ -54,7 +54,7 @@ XSD::Types Type::types() const
   return mTypes;
 }
 
-void Type::loadXML( ParserContext *context, const QDomElement &element )
+bool Type::loadXML( ParserContext *context, const QDomElement &element )
 {
   NSManager* nsManager = context->namespaceManager();
   XSD::Parser parser( context, nameSpace() );
@@ -65,7 +65,8 @@ void Type::loadXML( ParserContext *context, const QDomElement &element )
     if ( nsManager->nameSpace( child ) == XSD::Parser::schemaUri() &&
          nsManager->localName( child ) == "schema" ) {
       //qDebug() << "Loading schema" << nameSpace();
-      parser.parseSchemaTag( context, child );
+      if (!parser.parseSchemaTag( context, child ))
+          return false;
 
       mTypes += parser.types();
     }
@@ -73,6 +74,7 @@ void Type::loadXML( ParserContext *context, const QDomElement &element )
     nsManager->exitChild( child );
     child = child.nextSiblingElement();
   }
+  return true;
 }
 
 void Type::saveXML( ParserContext *context, QDomDocument &document, QDomElement &parent ) const
