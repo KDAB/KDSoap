@@ -123,7 +123,7 @@ class SCHEMA_EXPORT Parser
     AttributeGroup findAttributeGroup( const QName &name );
     void init(ParserContext *context);
     void clear();
-    void resolveForwardDeclarations();
+    bool resolveForwardDeclarations();
 
     class Private;
     Private *d;

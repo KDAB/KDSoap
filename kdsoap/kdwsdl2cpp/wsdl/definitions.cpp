@@ -138,7 +138,8 @@ bool Definitions::loadXML( ParserContext *context, const QDomElement &element )
       qFatal("Unsupported <import> element in <definitions> - TODO");
       //mImports.append( import );
     } else if ( tagName.localName() == "types" ) {
-      mType.loadXML( context, child );
+      if ( !mType.loadXML( context, child ) )
+          return false;
     } else if ( tagName.localName() == "message" ) {
       Message message( mTargetNamespace );
       message.loadXML( context, child );
