@@ -7,6 +7,24 @@ using namespace KWSDL;
 static QString escapeEnum( const QString& );
 static KODE::Code createRangeCheckCode( const XSD::SimpleType*, const QString&, KODE::Class& );
 
+void Converter::addVariableInitializer( KODE::MemberVariable& variable ) const
+{
+    const QByteArray type = variable.type().toLatin1();
+    static const char* s_numericTypes[] = {
+        "int", "unsigned int", "quint64", "qint64",
+        "char", "signed char", "unsigned char", "short", "unsigned short",
+        "float", "double" };
+    for ( uint i = 0; i < sizeof(s_numericTypes) / sizeof(*s_numericTypes); ++i ) {
+        if ( type == s_numericTypes[i] ) {
+            variable.setInitializer("0");
+            return;
+        }
+    }
+    if (type == "bool") {
+        variable.setInitializer("false");
+    }
+}
+
 // Overall logic:
 // if ENUM -> define "Type" and "type" variable
 // if restricts a basic type or another simple type -> "value" variable
@@ -104,6 +122,7 @@ void Converter::convertSimpleType( const XSD::SimpleType *type, const XSD::Simpl
 
       // member variables
       KODE::MemberVariable variable( "value", baseTypeName );
+      addVariableInitializer( variable );
       newClass.addMemberVariable( variable );
 
       // setter method

@@ -38,6 +38,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
 
             // member variables
             KODE::MemberVariable variable( "value", typeName );
+            addVariableInitializer( variable );
             newClass.addMemberVariable( variable );
 
             const QString variableName = "d_ptr->" + variable.name();
@@ -103,6 +104,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
 
             // member variables
             KODE::MemberVariable variable( elemIt.name(), typeName );
+            addVariableInitializer( variable );
             newClass.addMemberVariable( variable );
 
             const QString variableName = "d_ptr->" + variable.name();
@@ -142,6 +144,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
 
         // member variables
         KODE::MemberVariable variable( attribute.name(), typeName );
+        addVariableInitializer( variable );
         newClass.addMemberVariable( variable );
         const QString variableName = "d_ptr->" + variable.name();
 
