@@ -48,7 +48,7 @@ TypeMap::TypeMap()
   addBuiltinType("boolean", "bool");
   addBuiltinType("byte", "signed char"); // 8 bit, signed
   addBuiltinType("date", "QDate");
-  addBuiltinType("dateTime", "QDateTime");
+  addBuiltinType("dateTime", "KDDateTime");
   addBuiltinType("decimal", "float");
   addBuiltinType("double", "double");
   // TODO: add duration class
@@ -432,12 +432,14 @@ QString KWSDL::TypeMap::Entry::dumpBools() const
 
 QString KWSDL::TypeMap::deserializeBuiltin( const QName &typeName, const QName& elementName, const QString& var, const QString& qtTypeName ) const
 {
-    if ((typeName.nameSpace() == XMLSchemaURI && typeName.localName() == "hexBinary") ||
-            (elementName.nameSpace() == XMLSchemaURI && elementName.localName() == "hexBinary")) {
+    const QName type = typeName.isEmpty() ? elementName : typeName;
+    if (type.nameSpace() == XMLSchemaURI && type.localName() == "hexBinary") {
         return "QByteArray::fromHex(" + var + ".toString().toLatin1())";
-    } else if ((typeName.nameSpace() == XMLSchemaURI && typeName.localName() == "base64Binary") ||
-                (elementName.nameSpace() == XMLSchemaURI && elementName.localName() == "base64Binary")) {
+    } else if (type.nameSpace() == XMLSchemaURI && type.localName() == "base64Binary") {
         return "QByteArray::fromBase64(" + var + ".toString().toLatin1())";
+    } else if (type.nameSpace() == XMLSchemaURI && type.localName() == "dateTime") {
+        Q_ASSERT(qtTypeName == QLatin1String("KDDateTime"));
+        return "KDDateTime::fromDateString(" + var + ".toString())";
     } else {
         return var + ".value<" + qtTypeName + ">()";
     }
@@ -446,12 +448,15 @@ QString KWSDL::TypeMap::deserializeBuiltin( const QName &typeName, const QName& 
 QString KWSDL::TypeMap::serializeBuiltin( const QName &typeName, const QName& elementName, const QString& var, const QString& qtTypeName ) const
 {
     Q_UNUSED(qtTypeName);
-    if ((typeName.nameSpace() == XMLSchemaURI && typeName.localName() == "hexBinary") ||
-            (elementName.nameSpace() == XMLSchemaURI && elementName.localName() == "hexBinary")) {
-        return "QString::fromLatin1(" + var + ".toHex().toUpper().constData())";
-    } else if ((typeName.nameSpace() == XMLSchemaURI && typeName.localName() == "base64Binary") ||
-                (elementName.nameSpace() == XMLSchemaURI && elementName.localName() == "base64Binary")) {
+    const QName type = typeName.isEmpty() ? elementName : typeName;
+    // variantToTextValue also has support for calling toHex/toBase64 at runtime, but this fails
+    // when the type derives from hexBinary and is named differently, see Telegram testcase.
+    if (type.nameSpace() == XMLSchemaURI && type.localName() == "hexBinary") {
+        return "QString::fromLatin1(" + var + ".toHex().constData())";
+    } else if (type.nameSpace() == XMLSchemaURI && type.localName() == "base64Binary") {
         return "QString::fromLatin1(" + var + ".toBase64().constData())";
+    } else if (type.nameSpace() == XMLSchemaURI && type.localName() == "dateTime") {
+        return var + ".toDateString()";
     } else {
         return "QVariant::fromValue(" + var + ")";
     }

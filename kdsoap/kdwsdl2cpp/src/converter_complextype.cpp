@@ -208,7 +208,10 @@ KODE::Code Converter::appendElementArg( const QName& type, const QName& elementT
         const QString nameArg = "QString::fromLatin1(\"" + name + "\")";
         const QString typeArgs = namespaceString(type.nameSpace()) + ", QString::fromLatin1(\"" + type.localName() + "\")";
         if ( mTypeMap.isBuiltinType( type, elementType ) ) {
-            block += varName + ".append(KDSoapValue(" + nameArg + ", " + localVariableName + ", " + typeArgs + "));" COMMENT;
+            const QString qtTypeName = mTypeMap.localType( type, elementType );
+            const QString value = mTypeMap.serializeBuiltin( type, elementType, localVariableName, qtTypeName );
+
+            block += varName + ".append(KDSoapValue(" + nameArg + ", " + value + ", " + typeArgs + "));" COMMENT;
         } else if ( mTypeMap.isComplexType( type, elementType ) ) {
             block += varName + ".append(" + localVariableName + ".serialize(" + nameArg + "));" COMMENT;
         } else {
@@ -293,7 +296,7 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
         } else {
             QString value;
             if ( mTypeMap.isBuiltinType( baseName ) )
-                value = "QVariant::fromValue(" + variableName + ")";
+                value = mTypeMap.serializeBuiltin( baseName, QName(), variableName, typeName );
             else
                 value += variableName + ".serialize()";
             marshalCode += "KDSoapValue mainValue(valueName, " + value + ", " + typeArgs + ");" + COMMENT;

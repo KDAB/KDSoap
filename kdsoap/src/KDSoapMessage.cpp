@@ -1,6 +1,7 @@
 #include "KDSoapMessage.h"
 #include "KDSoapNamespaceManager.h"
 #include "KDSoapNamespacePrefixes_p.h"
+#include "KDDateTime.h"
 #include <QDebug>
 #include <QXmlStreamReader>
 #include <QVariant>
@@ -113,8 +114,7 @@ static int xmlTypeToMetaType(const QString& xmlType)
         { "float", QMetaType::Float },
         { "double", QVariant::Double },
         { "time", QVariant::Time },
-        { "date", QVariant::Date },
-        { "dateTime", QVariant::DateTime }
+        { "date", QVariant::Date }
     };
     // Speed: could be sorted and then we could use qBinaryFind
     static const int s_numTypes = sizeof(s_types) / sizeof(*s_types);
@@ -123,6 +123,8 @@ static int xmlTypeToMetaType(const QString& xmlType)
             return s_types[i].metaTypeId;
         }
     }
+    if (xmlType == QLatin1String("dateTime"))
+        return qMetaTypeId<KDDateTime>();
     // This will happen with any custom type, don't bother the user
     //qDebug() << QString::fromLatin1("xmlTypeToMetaType: XML type %1 is not supported in "
     //                                "KDSoap, see the documentation").arg(xmlType);
@@ -184,15 +186,18 @@ static KDSoapValue parseElement(QXmlStreamReader& reader, const QXmlStreamNamesp
         }
     }
 
-    QVariant variant(text);
-    // With use=encoded, we have type info, we can convert the variant here
-    // Otherwise, for servers, we do it later, once we know the method's parameter types.
-    if (metaTypeId != QVariant::Invalid) {
-        QVariant copy = variant;
-        if (!variant.convert(metaTypeId))
-            variant = copy;
+    if (!text.isEmpty()) {
+        QVariant variant(text);
+        //qDebug() << text << variant << metaTypeId;
+        // With use=encoded, we have type info, we can convert the variant here
+        // Otherwise, for servers, we do it later, once we know the method's parameter types.
+        if (metaTypeId != QVariant::Invalid) {
+            QVariant copy = variant;
+            if (!variant.convert(metaTypeId))
+                variant = copy;
+        }
+        val.setValue(variant);
     }
-    val.setValue(variant);
     return val;
 }
 

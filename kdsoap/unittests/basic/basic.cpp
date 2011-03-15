@@ -1,4 +1,5 @@
 #include "KDSoapValue.h"
+#include "KDDateTime.h"
 #include <QtTest/QtTest>
 
 class Basic : public QObject
@@ -25,6 +26,21 @@ private Q_SLOTS:
         QCOMPARE( v1.value().toString(), hello );
         QCOMPARE( v2.value().toInt(), 10 );
 #endif
+    }
+
+    void testDateTime()
+    {
+        QDateTime qdt(QDate(2010, 12, 31));
+        QVERIFY(qdt.isValid());
+        KDDateTime kdt(qdt);
+        QVERIFY(kdt.isValid());
+        QCOMPARE(kdt.toDateString(), QString::fromLatin1("2010-12-31T00:00:00"));
+        QVERIFY(kdt.timeZone().isEmpty());
+        kdt.setTimeZone(QString::fromLatin1("Z"));
+        QCOMPARE(kdt.toDateString(), QString::fromLatin1("2010-12-31T00:00:00Z"));
+        kdt = QDateTime(QDate(2011, 03, 15), QTime(23, 59, 59, 999));
+        kdt.setTimeZone(QString::fromLatin1("+01:00"));
+        QCOMPARE(kdt.toDateString(), QString::fromLatin1("2011-03-15T23:59:59.999+01:00"));
     }
 };
 

@@ -47,7 +47,8 @@ private slots:
         TNS__GetValentinesDay parameters;
         parameters.setYear(year);
         TNS__GetValentinesDayResponse response = holidays.getValentinesDay(parameters);
-	QString dateString = response.getValentinesDayResult().date().toString(Qt::ISODate);
+        qDebug() << response.getValentinesDayResult();
+        const QString dateString = response.getValentinesDayResult().date().toString(Qt::ISODate);
         QCOMPARE(dateString, QString::fromLatin1("2009-02-14"));
     }
 
