@@ -283,6 +283,7 @@ QString Printer::Private::classImplementation( const Class &classObject, bool ne
   else if ( !classObject.nameSpace().isEmpty() )
       functionClassName.prepend( classObject.nameSpace() + QLatin1String("::") );
 
+  // Generate private class
   if ( classObject.useDPointer() && !classObject.memberVariables().isEmpty() ) {
     Class privateClass( functionClassName + "::PrivateDPtr" );
     if ( classObject.useSharedData() ) {
@@ -293,7 +294,7 @@ QString Printer::Private::classImplementation( const Class &classObject, bool ne
     Function ctor("PrivateDPtr");
     bool hasInitializers = false;
     for ( it = vars.constBegin(); it != vars.constEnd(); ++it ) {
-        MemberVariable v = *it;
+        const MemberVariable v = *it;
         privateClass.addMemberVariable( v );
         if ( !v.initializer().isEmpty() ) {
             ctor.addInitializer( v.name() + '(' + v.initializer() + ')' );
@@ -307,15 +308,16 @@ QString Printer::Private::classImplementation( const Class &classObject, bool ne
         code += classImplementation( privateClass );
   }
 
+  // Generate static vars
   MemberVariable::List vars = classObject.memberVariables();
   MemberVariable::List::ConstIterator itV;
   for ( itV = vars.constBegin(); itV != vars.constEnd(); ++itV ) {
-    MemberVariable v = *itV;
+    const MemberVariable v = *itV;
     if ( !v.isStatic() )
       continue;
 
-    code += v.type() + functionClassName + "::" + v.name() + " = " + v.initializer() +
-            ';';
+    // ## I thought the static int foo = 42; syntax was not portable?
+    code += v.type() + functionClassName + "::" + v.name() + " = " + v.initializer() + ';';
     needNewLine = true;
   }
 
@@ -338,6 +340,17 @@ QString Printer::Private::classImplementation( const Class &classObject, bool ne
          f.name() == classObject.name() ) {
       inits.append( classObject.dPointerName() + "(new PrivateDPtr)" );
     }
+    if ( !classObject.useDPointer() && f.name() == classObject.name()
+         && f.arguments().isEmpty() ) {
+      // Default constructor: add initializers for variables
+      for ( itV = vars.constBegin(); itV != vars.constEnd(); ++itV ) {
+          const MemberVariable v = *itV;
+          if ( !v.initializer().isEmpty() ) {
+              inits.append( v.name() + '(' + v.initializer() + ')' );
+          }
+      }
+    }
+
     if (!inits.isEmpty()) {
       code.indent();
       code += ": " + inits.join( ", " );
@@ -350,6 +363,7 @@ QString Printer::Private::classImplementation( const Class &classObject, bool ne
     if ( classObject.useDPointer() && !classObject.useSharedData() &&
         !classObject.memberVariables().isEmpty() &&
         f.name() == '~' + classObject.name() ) {
+      // Delete d pointer
       code.newLine();
       code.indent();
       code += "delete " + classObject.dPointerName() + ";";
