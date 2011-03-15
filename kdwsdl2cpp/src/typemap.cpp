@@ -453,7 +453,7 @@ QString KWSDL::TypeMap::serializeBuiltin( const QName &typeName, const QName& el
                 (elementName.nameSpace() == XMLSchemaURI && elementName.localName() == "base64Binary")) {
         return "QString::fromLatin1(" + var + ".toBase64().constData())";
     } else {
-        return "QVariant::fromValue(" + var + ");";
+        return "QVariant::fromValue(" + var + ")";
     }
 }
 
