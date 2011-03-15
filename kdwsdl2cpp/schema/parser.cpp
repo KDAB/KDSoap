@@ -1042,14 +1042,16 @@ bool Parser::resolveForwardDeclarations()
         }
       }
       if (j > 0 && finalElementList.last().type() == any) {
+          if (element.type() == any) {
+              // Keep only one any. The alternative would be to implement namespace "filtering"...
+              //qWarning("ERROR: two 'any' values in the same type %s", qPrintable(d->mComplexTypes[i].name()));
+              //return false;
+              continue;
+          }
           // Hack for deserialization: keep "any" last.
           Element lastElem = finalElementList.takeLast();
           finalElementList.append( element );
           finalElementList.append( lastElem );
-          if (element.type() == any) {
-              qWarning("ERROR: two 'any' values in the same type %s", qPrintable(d->mComplexTypes[i].name()));
-              return false;
-          }
       } else {
           finalElementList.append( element );
       }

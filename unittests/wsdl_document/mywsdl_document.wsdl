@@ -104,7 +104,8 @@
           <sequence>
             <element ref="xsd:schema" />
             <element name="return" type="xsd:anyType" minOccurs="0" maxOccurs="unbounded"/>
-            <any/>
+            <any minOccurs="0" maxOccurs="unbounded" namespace="http://www.w3.org/2001/XMLSchema" processContents="lax" />
+            <any minOccurs="1" namespace="urn:schemas-microsoft-com:xml-diffgram-v1" processContents="lax" />
           </sequence>
         </complexType>
       </element>
