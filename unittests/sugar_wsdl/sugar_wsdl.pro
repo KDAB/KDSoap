@@ -8,3 +8,4 @@ test.depends = $(TARGET)
 QMAKE_EXTRA_TARGETS += test
 
 KDWSDL = sugarcrm.wsdl
+OTHER_FILES += $$KDWSDL

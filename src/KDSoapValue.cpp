@@ -1,6 +1,7 @@
 #include "KDSoapValue.h"
 #include "KDSoapNamespacePrefixes_p.h"
 #include "KDSoapNamespaceManager.h"
+#include "KDDateTime.h"
 #include <QDateTime>
 #include <QUrl>
 #include <QDebug>
@@ -129,20 +130,15 @@ static QString variantToTextValue(const QVariant& value, const QString& typeNs, 
     case QVariant::Date:
         return value.toDate().toString(Qt::ISODate);
     case QVariant::DateTime: // http://www.w3.org/TR/xmlschema-2/#dateTime
-    {
-        const QDateTime dt = value.toDateTime();
-        const QTime time = dt.time();
-        if (time.msec()) {
-            // include milli-seconds
-            return dt.toString(QLatin1String("yyyy-MM-ddThh:mm:ss.zzz"));
-        } else {
-            return dt.toString(Qt::ISODate);
-        }
-    }
+        return KDDateTime(value.toDateTime()).toDateString();
     case QVariant::Invalid:
         qDebug() << "ERROR: Got invalid QVariant in a KDSoapValue";
         return QString();
     default:
+        if (value.canConvert<KDDateTime>()) {
+            return value.value<KDDateTime>().toDateString();
+        }
+
         if (value.userType() == qMetaTypeId<float>())
             return QString::number(value.value<float>());
 
@@ -188,6 +184,9 @@ static QString variantToXMLType(const QVariant& value)
     default:
         if (value.userType() == qMetaTypeId<float>())
             return QLatin1String("xsd:float");
+        if (value.canConvert<KDDateTime>())
+            return QLatin1String("xsd:dateTime");
+
 
         qDebug() << value;
 

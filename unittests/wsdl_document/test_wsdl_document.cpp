@@ -385,7 +385,7 @@ private Q_SLOTS:
         // Prepare response
         QByteArray responseData = QByteArray(xmlEnvBegin) + "><soap:Body>"
                                   "<kdab:sendTelegramResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl/\">"
-                                    "<kdab:telegram>466F6F</kdab:telegram>" // TODO: something's wrong, the response needs this nested element but not the request!?
+                                    "<kdab:telegram>466f6f</kdab:telegram>" // TODO: something's wrong, the response needs this nested element but not the request!?
                                   "</kdab:sendTelegramResponse>"
                                   "</soap:Body>" + xmlEnvEnd;
         HttpServerThread server(responseData, HttpServerThread::Public);
@@ -399,7 +399,7 @@ private Q_SLOTS:
         const QByteArray expectedRequestXml =
             QByteArray(xmlEnvBegin) + ">"
             "<soap:Body>"
-            "<n1:sendTelegram xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">48656C6C6F</n1:sendTelegram>"
+            "<n1:sendTelegram xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">48656c6c6f</n1:sendTelegram>"
             "</soap:Body>" + xmlEnvEnd;
             QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
     }
