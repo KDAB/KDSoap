@@ -39,8 +39,7 @@ private Q_SLOTS:
         KDSoapPendingCall call = client.asyncCall(QLatin1String("getEmployeeCountry"), countryMessage());
         QVERIFY(!call.isFinished());
         QTest::qWait(1000);
-        // TODO how to access the xml received by the server? Or should we keep the builtinhttp server for this?
-        // QVERIFY(xmlBufferCompare(server.receivedData(), expectedCountryRequest()));
+        QVERIFY(xmlBufferCompare(server.receivedData(), expectedCountryRequest()));
 #if QT_VERSION >= 0x040600
         QVERIFY(call.isFinished());
 #endif
