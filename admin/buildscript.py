@@ -63,7 +63,10 @@ SharedDebug.setBuilder('autotools')
 SharedDebug.setPackageDependencies( [ 'Qt-4.[4-9].?-Shared-Debug' ] )
 SharedDebug.setBuildMode( 'inSource' )
 #SharedDebug.setPlatFormWhiteList( ['win32-msvc2005', 'macx-g++','linux-g++','linux-g++-64'] )
-SharedDebug.setOptions( '-unittests -debug' )
+if 'Windows' in platform.platform():
+	SharedDebug.setOptions( '-debug' )
+else:
+	SharedDebug.setOptions( '-unittests -debug' )
 SharedDebug.setBuildTypes( 'MCDF' ) # debug is not built for snapshots
 
 commercial = Configuration( product , 'commercial')
@@ -71,7 +74,10 @@ commercial.setPreBuildHook( preBuildJobHook )
 commercial.setBuilder('autotools')
 commercial.setPackageDependencies( [ 'Qt-4.[4-9].?-Shared-Release' ] )
 commercial.setBuildMode( 'inSource' )
-commercial.setOptions( '-unittests -release' )
+if 'Windows' in platform.platform():
+	commercial.setOptions( '-release' )
+else:
+	commercial.setOptions( '-unittests -release' )
 commercial.setBuildTypes( 'MCDSF' ) # snapshots are release builds
 
 StaticDebug = Configuration( product, 'Static-Debug')
@@ -79,7 +85,10 @@ StaticDebug.setPreBuildHook( preBuildJobHook )
 StaticDebug.setBuilder('autotools')
 StaticDebug.setPackageDependencies( [ 'Qt-4.[4-9].?-Static-Debug' ] )
 StaticDebug.setBuildMode( 'inSource' )
-StaticDebug.setOptions( '-unittests -static -debug' )
+if 'Windows' in platform.platform():
+	StaticDebug.setOptions( '-static -debug' )
+else:
+	StaticDebug.setOptions( '-unittests -static -debug' )
 StaticDebug.setBuildTypes('MCDF')
 
 StaticRelease = Configuration( product, 'Static-Release')
@@ -87,7 +96,10 @@ StaticRelease.setPreBuildHook( preBuildJobHook )
 StaticRelease.setBuilder('autotools')
 StaticRelease.setPackageDependencies( [ 'Qt-4.[4-9].?-Static-Release' ] )
 StaticRelease.setBuildMode( 'inSource' )
-StaticRelease.setOptions( '-unittests -static -release' )
+if 'Windows' in platform.platform():
+	StaticRelease.setOptions( '-static -release' )
+else:
+	StaticRelease.setOptions( '-unittests -static -release' )
 StaticRelease.setBuildTypes('MCDF')
 
 commercial_us = Configuration( product, 'commercial_us')
@@ -95,7 +107,10 @@ commercial_us.setPreBuildHook( preBuildJobHook )
 commercial_us.setBuilder('autotools')
 commercial_us.setPackageDependencies( [ 'Qt-4.[4-9].?-Shared-Release' ] )
 commercial_us.setBuildMode( 'inSource' )
-commercial_us.setOptions( '-unittests -release' )
+if 'Windows' in platform.platform():
+	commercial_us.setOptions( '-release' )
+else:
+	commercial_us.setOptions( '-unittests -release' )
 commercial_us.setBuildTypes( 'MSF' ) # snapshots are release builds
 
 gpl = Configuration( product, 'gpl')
@@ -103,7 +118,10 @@ gpl.setPreBuildHook( preBuildJobHook )
 gpl.setBuilder('autotools')
 gpl.setPackageDependencies( [ 'Qt-4.[4-9].?-Shared-Release' ] )
 gpl.setBuildMode( 'inSource' )
-gpl.setOptions( '-unittests -release' )
+if 'Windows' in platform.platform():
+	gpl.setOptions( '-release' )
+else:
+	gpl.setOptions( '-unittests -release' )
 gpl.setBuildTypes( 'MSF' ) # snapshots are release builds
 
 #if 'Darwin' in platform.platform():
