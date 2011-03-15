@@ -373,7 +373,9 @@ private Q_SLOTS:
         QTest::newRow("600 requests, requires >1K fd") << 5 << 100 << 6;
         //QTest::newRow("1800 requests") << 5 << 300 << 6;
         QTest::newRow("3000 requests, requires >4K fd") << 5 << 500 << 6;
+#ifndef Q_OS_WIN
         QTest::newRow("10000 requests") << 5 << 1700 << 6;
+#endif
 
         // Performance results (on a dual-core linux laptop)
         // time sudo ./server testMultipleThreadsMultipleClients:'10000 requests' ("total" number of seconds)
