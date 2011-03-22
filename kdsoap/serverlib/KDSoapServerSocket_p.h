@@ -19,7 +19,9 @@ private Q_SLOTS:
     void slotReadyRead();
 
 private:
-    void makeCall(const KDSoapMessage& requestMsg, KDSoapMessage& replyMsg, const KDSoapHeaders& requestHeaders, KDSoapHeaders& responseHeaders);
+    void makeCall(const KDSoapMessage& requestMsg, KDSoapMessage& replyMsg,
+                  const KDSoapHeaders& requestHeaders, KDSoapHeaders& responseHeaders,
+                  const QByteArray& soapAction);
     void handleError(KDSoapMessage& replyMsg, const char* errorCode, const QString& error);
 
     KDSoapSocketList* m_owner;
