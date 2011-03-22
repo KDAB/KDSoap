@@ -123,3 +123,18 @@ XSD::Element WSDL::findElement( const QName &elementName ) const
   return XSD::Element();
 }
 
+QSet<QName> KWSDL::WSDL::uniqueBindings() const
+{
+    QSet<QName> bindings;
+    const Service service = mDefinitions.service();
+    Q_FOREACH( const Port& port, service.ports() ) {
+        const Binding binding = findBinding( port.bindingName() );
+        if ( binding.type() == Binding::SOAPBinding ) {
+            bindings.insert( port.bindingName() );
+        } else {
+            // ignore non-SOAP bindings, like HTTP GET and HTTP POST
+            continue;
+        }
+    }
+    return bindings;
+}

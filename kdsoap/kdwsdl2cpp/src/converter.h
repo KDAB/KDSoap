@@ -65,8 +65,8 @@ class Converter
     void clientAddOneArgument( KODE::Function& callFunc, const Part& part, KODE::Class &newClass );
     void clientAddArguments( KODE::Function& callFunc, const Message& message, KODE::Class &newClass );
     bool clientAddAction( KODE::Code& code, const Binding &binding, const QString& operationName );
-    void clientGenerateMessage( KODE::Code& code, const Binding& binding, const Message& message, const Operation& operatoin );
-    void clientAddMessageArgument( KODE::Code& code, const SoapBinding::Style& bindingStyle, const Part& part );
+    void clientGenerateMessage( KODE::Code& code, const Binding& binding, const Message& message, const Operation& operation );
+    void addMessageArgument( KODE::Code& code, const SoapBinding::Style& bindingStyle, const Part& part, const QString& partName, const QByteArray& messageName );
     void createHeader( const SoapBinding::Header& header, KODE::Class& newClass );
     KODE::Code appendElementArg( const QName& type, const QName& elementType, const QString& name, const QString& localVariableName, const QByteArray& varName );
     KODE::Code demarshalVar( const QName& type, const QName& elementType, const QString& variableName, const QString& typeName, const QString& soapValueVarName = "val" ) const;
@@ -75,6 +75,9 @@ class Converter
 
     // Server Stub
     void convertServerService();
+    void generateServerMethod(KODE::Code& code, const Binding& binding, const Operation& operation, KODE::Class &newClass, bool first);
+
+    SoapBinding::Style soapStyle( const Binding& binding ) const;
 
     WSDL mWSDL;
 
