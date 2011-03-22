@@ -37,6 +37,9 @@ class Settings
     bool generateImplementation() const;
     QString headerFile() const;
 
+    void setGenerateServerCode(bool b);
+    bool generateServerCode() const;
+
     void setWsdlFile(const QString &wsdlFile);
     QUrl wsdlUrl() const;
     QString wsdlBaseUrl() const;
@@ -65,6 +68,7 @@ class Settings
     QString mWantedService;
     NSMapping mNamespaceMapping;
     bool mImpl;
+    bool mServer;
 };
 
 #endif

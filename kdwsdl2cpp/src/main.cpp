@@ -27,7 +27,7 @@
 #include <QDebug>
 
 static const char* WSDL2CPP_DESCRIPTION = "KDAB's WSDL to C++ compiler";
-static const char* WSDL2CPP_VERSION_STR = "1.0";
+static const char* WSDL2CPP_VERSION_STR = "2.0";
 
 static void showHelp(const char *appName)
 {
@@ -36,8 +36,9 @@ static void showHelp(const char *appName)
             "  -h, -help                 display this help and exit\n"
             "  -v, -version              display version\n"
             "  -s, -service              name of the service to generate\n"
-            "  -o <file>                 place the output into <file>\n"
+            "  -o <file>                 generate the header file into <file>\n"
             "  -impl <headerfile>        generate the implementation file, and #include <headerfile>\n"
+            "  -server <file>            generate server-side processRequest into <file>\n"
             "\n", appName);
 }
 
@@ -46,6 +47,7 @@ int main( int argc, char **argv )
     const char *fileName = 0;
     QString outputFile;
     bool impl = false;
+    bool server = false;
     QString headerFile;
     QString serviceName;
 
@@ -63,6 +65,14 @@ int main( int argc, char **argv )
                 return 1;
             }
             headerFile = QFile::decodeName(argv[arg]);
+        } else if (opt == QLatin1String("-server")) {
+            server = true;
+            ++arg;
+            if (!argv[arg]) {
+                showHelp(argv[0]);
+                return 1;
+            }
+            outputFile = QFile::decodeName(argv[arg]);
         } else if (opt == QLatin1String("-v") || opt == QLatin1String("-version")) {
             fprintf(stderr, "%s %s\n", WSDL2CPP_DESCRIPTION, WSDL2CPP_VERSION_STR);
             return 0;
@@ -97,7 +107,10 @@ int main( int argc, char **argv )
 
     QCoreApplication app( argc, argv );
 
-    Settings::self()->setGenerateImplementation(impl, headerFile);
+    if (server)
+        Settings::self()->setGenerateServerCode(true);
+    else
+        Settings::self()->setGenerateImplementation(impl, headerFile);
     Settings::self()->setOutputFileName(outputFile);
     Settings::self()->setWsdlFile(fileName);
     Settings::self()->setWantedService(serviceName);

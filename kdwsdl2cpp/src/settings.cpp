@@ -37,6 +37,7 @@ Settings::Settings()
   mOutputDirectory = QDir::current().path();
   mOutputFileName = "kwsdl_generated";
   mImpl = false;
+  mServer = false;
 }
 
 Settings::~Settings()
@@ -142,4 +143,14 @@ void Settings::setWantedService(const QString &service)
 QString Settings::wantedService() const
 {
     return mWantedService;
+}
+
+void Settings::setGenerateServerCode(bool b)
+{
+    mServer = b;
+}
+
+bool Settings::generateServerCode() const
+{
+    return mServer;
 }

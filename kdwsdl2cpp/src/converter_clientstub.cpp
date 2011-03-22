@@ -4,7 +4,7 @@
 
 using namespace KWSDL;
 
-static SoapBinding::Style soapStyle( const Binding& binding )
+SoapBinding::Style Converter::soapStyle( const Binding& binding ) const
 {
     if ( binding.type() == Binding::SOAPBinding ) {
         const SoapBinding soapBinding( binding.soapBinding() );
@@ -29,17 +29,7 @@ void Converter::convertClientService()
   const Service service = mWSDL.definitions().service();
   Q_ASSERT(!service.name().isEmpty());
 
-  QSet<QName> uniqueBindings;
-  Q_FOREACH( const Port& port, service.ports() ) {
-      const Binding binding = mWSDL.findBinding( port.bindingName() );
-      if ( binding.type() == Binding::SOAPBinding ) {
-          uniqueBindings.insert( port.bindingName() );
-      } else {
-          // ignore non-SOAP bindings, like HTTP GET and HTTP POST
-          continue;
-      }
-  }
-
+  QSet<QName> uniqueBindings = mWSDL.uniqueBindings();
   //qDebug() << uniqueBindings;
 
   KODE::Class::List bindingClasses;
@@ -163,7 +153,7 @@ void Converter::convertClientService()
           code += "const QString endPoint = !d_ptr->m_endPoint.isEmpty() ? d_ptr->m_endPoint : QString::fromLatin1(\"" + QString::fromLatin1( encoded.data(), encoded.size() ) + "\");";
           code += "const QString messageNamespace = QString::fromLatin1(\"" + mWSDL.definitions().targetNamespace() + "\");";
           code += "d_ptr->m_clientInterface = new KDSoapClientInterface(endPoint, messageNamespace);";
-	  code += "d_ptr->m_clientInterface->setSoapVersion( KDSoapClientInterface::SOAP1_1 );";
+          code += "d_ptr->m_clientInterface->setSoapVersion( KDSoapClientInterface::SOAP1_1 );";
           code.unindent();
           code += "}";
           code += "return d_ptr->m_clientInterface;";
@@ -254,9 +244,9 @@ bool Converter::clientAddAction( KODE::Code& code, const Binding &binding, const
     return hasAction;
 }
 
-void Converter::clientAddMessageArgument( KODE::Code& code, const SoapBinding::Style& bindingStyle, const Part& part )
+void Converter::addMessageArgument( KODE::Code& code, const SoapBinding::Style& bindingStyle, const Part& part, const QString& partName, const QByteArray& messageName )
 {
-    const QString lowerName = lowerlize( part.name() );
+    const QString lowerName = lowerlize( partName );
     QString argType = mTypeMap.localType( part.type(), part.element() );
     const bool builtin = mTypeMap.isBuiltinType( part.type(), part.element() );
     const bool isComplex = mTypeMap.isComplexType( part.type(), part.element() );
@@ -266,15 +256,15 @@ void Converter::clientAddMessageArgument( KODE::Code& code, const SoapBinding::S
             // See http://www.ibm.com/developerworks/webservices/library/ws-whichwsdl/
             if ( builtin ) {
                 qDebug() << "Got a builtin/basic type in document style:" << part.type() << part.element() << "Didn't think this could happen.";
-                code += "message.setValue(QVariant::fromValue(" + lowerName + "));" COMMENT;
-            } if ( isComplex ) {
-                code += "message.childValues() += " + lowerName + ".serialize(QString()).childValues();" COMMENT;
+                code += messageName + ".setValue(QVariant::fromValue(" + lowerName + "));" COMMENT;
+            } else if ( isComplex ) {
+                code += messageName + ".childValues() += " + lowerName + ".serialize(QString()).childValues();" COMMENT;
             } else {
-                code += "message.setValue(" + lowerName + ".serialize());" COMMENT;
+                code += messageName + ".setValue(" + lowerName + ".serialize());" COMMENT;
             }
         } else {
             //qDebug() << "caller:" << part.name() << "type=" << part.type() << "element=" << part.element() << "argType=" << argType << "builtin=" << builtin;
-            code.addBlock( appendElementArg( part.type(), part.element(), part.name(), lowerName, "message.childValues()" ) );
+            code.addBlock( appendElementArg( part.type(), part.element(), partName, lowerName, messageName + ".childValues()" ) );
         }
     }
 }
@@ -295,7 +285,7 @@ void Converter::clientGenerateMessage( KODE::Code& code, const Binding& binding,
 
     const Part::List parts = message.parts();
     Q_FOREACH( const Part& part, parts ) {
-        clientAddMessageArgument( code, soapStyle(binding), part );
+        addMessageArgument( code, soapStyle(binding), part, part.name(), "message" );
     }
 }
 
@@ -507,7 +497,7 @@ void Converter::createHeader( const SoapBinding::Header& header, KODE::Class &ne
             code += "message.setUse(KDSoapMessage::EncodedUse);";
         else
             code += "message.setUse(KDSoapMessage::LiteralUse);";
-        clientAddMessageArgument( code, SoapBinding::RPCStyle, part );
+        addMessageArgument( code, SoapBinding::RPCStyle, part, part.name(), "message" );
         code += "clientInterface()->setHeader( QLatin1String(\"" + partName + "\"), message );";
         headerSetter.setBody(code);
         newClass.addFunction(headerSetter);

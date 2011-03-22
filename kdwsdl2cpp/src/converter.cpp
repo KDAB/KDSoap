@@ -252,12 +252,13 @@ KODE::Class::List Converter::classes() const
 
 void Converter::convert()
 {
-  convertTypes();
-
-//  mNSManager.dump();
-
-  // TODO: allow server service
-  convertClientService();
+    if (Settings::self()->generateServerCode()) {
+        convertServerService();
+    } else {
+        convertTypes();
+        //  mNSManager.dump();
+        convertClientService();
+    }
 }
 
 void Converter::convertTypes()

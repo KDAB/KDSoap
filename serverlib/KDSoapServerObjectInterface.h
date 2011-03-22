@@ -31,6 +31,7 @@
   </code>
   And in the .cpp file:
   <code>
+    #define KDWSDLServerClass EmployeeServerObject
     #include "swsdl_employee.cpp"
   </code>
  *
@@ -103,5 +104,7 @@ private:
 
 Q_DECLARE_INTERFACE(KDSoapServerObjectInterface,
                     "com.kdab.KDSoap.ServerObjectInterface/1.0")
+
+#define KDSOAP_OBJECT virtual void processRequest(const KDSoapMessage &request, KDSoapMessage &response);
 
 #endif // KDSOAPSERVEROBJECTINTERFACE_H
