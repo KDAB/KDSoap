@@ -1,6 +1,7 @@
 TEMPLATE = subdirs
-SUBDIRS  = src serverlib kdwsdl2cpp examples features
+SUBDIRS  = src serverlib kdwsdl2cpp features
 unittests: SUBDIRS += testtools unittests
+SUBDIRS += examples
 CONFIG   += ordered
 MAJOR_VERSION = 1 ### extract from $$VERSION
 
@@ -68,4 +69,4 @@ readme.files = README.KDSoap
 readme.path = $$INSTALL_PREFIX
 INSTALLS += readme
 
-OTHER_FILES += configure.sh configure.bat kdsoap.pri
+OTHER_FILES += configure.sh configure.bat kdsoap.pri kdwsdl2cpp.pri
