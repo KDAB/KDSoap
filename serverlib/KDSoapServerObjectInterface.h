@@ -65,6 +65,11 @@ public:
     KDSoapHeaders requestHeaders() const;
 
     /**
+     * Returns the "Soap Action" header sent by the client.
+     */
+    QByteArray soapAction() const;
+
+    /**
      * Sets the soap headers to be sent in the response
      */
     void setResponseHeaders(const KDSoapHeaders& headers);
@@ -89,7 +94,7 @@ public:
 
 private:
     friend class KDSoapServerSocket;
-    void setRequestHeaders(const KDSoapHeaders& headers);
+    void setRequestHeaders(const KDSoapHeaders& headers, const QByteArray& soapAction);
     KDSoapHeaders responseHeaders() const;
     void storeFaultAttributes(KDSoapMessage& message) const;
     class Private;

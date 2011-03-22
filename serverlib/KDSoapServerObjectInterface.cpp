@@ -10,6 +10,7 @@ public:
     QString m_faultString;
     QString m_faultActor;
     QString m_detail;
+    QByteArray m_soapAction;
 };
 
 KDSoapServerObjectInterface::KDSoapServerObjectInterface()
@@ -58,9 +59,10 @@ KDSoapHeaders KDSoapServerObjectInterface::requestHeaders() const
     return d->m_requestHeaders;
 }
 
-void KDSoapServerObjectInterface::setRequestHeaders(const KDSoapHeaders &headers)
+void KDSoapServerObjectInterface::setRequestHeaders(const KDSoapHeaders &headers, const QByteArray& soapAction)
 {
     d->m_requestHeaders = headers;
+    d->m_soapAction = soapAction;
     // Prepare for a new request to be handled
     d->m_faultCode.clear();
     d->m_responseHeaders.clear();
@@ -74,5 +76,10 @@ void KDSoapServerObjectInterface::setResponseHeaders(const KDSoapHeaders &header
 KDSoapHeaders KDSoapServerObjectInterface::responseHeaders() const
 {
     return d->m_responseHeaders;
+}
+
+QByteArray KDSoapServerObjectInterface::soapAction() const
+{
+    return d->m_soapAction;
 }
 

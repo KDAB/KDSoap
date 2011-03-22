@@ -98,6 +98,10 @@ public: // SOAP-accessible methods
     double getStuff(int foo, float bar, const QDateTime& dateTime) {
         qDebug() << "getStuff called:" << foo << bar << dateTime.toTime_t();
         //qDebug() << "Request headers:" << requestHeaders();
+        if (soapAction() != "MySoapAction") {
+            qDebug() << "ERROR: SoapAction was" << soapAction();
+            return 0; // error
+        }
         const QString header1 = requestHeaders().header(QString::fromLatin1("header1")).value().toString();
         if (header1 == QLatin1String("headerValue")) {
             KDSoapHeaders headers;
@@ -109,6 +113,10 @@ public: // SOAP-accessible methods
         return double(foo) + bar + double(dateTime.toTime_t()) + double(dateTime.time().msec() / 1000.0);
     }
     QByteArray hexBinaryTest(const QByteArray& input1, const QByteArray& input2) const {
+        if (soapAction() != "ActionHex") {
+            qDebug() << "ERROR: SoapAction was" << soapAction();
+            return ""; // error
+        }
         return input1 + input2;
     }
 };
@@ -250,10 +258,11 @@ private Q_SLOTS:
 
         //qDebug() << "server ready, proceeding" << server->endPoint();
         KDSoapClientInterface client(server->endPoint(), countryMessageNamespace());
+        client.setSoapVersion(KDSoapClientInterface::SOAP1_2);
         KDSoapMessage message;
         message.addArgument(QLatin1String("a"), QByteArray("KD"), KDSoapNamespaceManager::xmlSchema2001(), QString::fromLatin1("base64Binary"));
         message.addArgument(QLatin1String("b"), QByteArray("Soap"), KDSoapNamespaceManager::xmlSchema2001(), QString::fromLatin1("hexBinary"));
-        const KDSoapMessage response = client.call(QLatin1String("hexBinaryTest"), message);
+        const KDSoapMessage response = client.call(QLatin1String("hexBinaryTest"), message, QString::fromLatin1("ActionHex"));
         QCOMPARE(QString::fromLatin1(QByteArray::fromBase64(response.value().toByteArray()).constData()), QString::fromLatin1("KDSoap"));
     }
 

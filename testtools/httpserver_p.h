@@ -105,7 +105,7 @@ private:
         httpResponse += QByteArray::number(responseData.size());
         httpResponse += "\r\n";
 
-        // We don't support multiple connexions (TODO) so let's ask the client
+        // We don't support multiple connexions so let's ask the client
         // to close the connection every time. See testCallNoReply which performs
         // multiple connexions at the same time (QNAM keeps the old connexion open).
         httpResponse += "Connection: close\r\n";

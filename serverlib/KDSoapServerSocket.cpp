@@ -111,7 +111,22 @@ void KDSoapServerSocket::slotReadyRead()
         qDebug() << "data received:" << m_receivedData;
     }
 
-    // TODO: parse soapAction header?
+    // check soap version and extract soapAction header
+    QByteArray soapAction;
+    const QByteArray contentType = m_httpHeaders.value("Content-Type");
+    if (contentType.startsWith("text/xml")) {
+        // SOAP 1.1
+        soapAction = m_httpHeaders.value("SoapAction");
+    } else if (contentType.startsWith("application/soap+xml")) {
+        // SOAP 1.2
+        // Example: application/soap+xml;charset=utf-8;action=ActionHex
+        const QList<QByteArray> parts = contentType.split(';');
+        Q_FOREACH(const QByteArray& part, parts) {
+            if (part.startsWith("action=")) {
+                soapAction = part.mid(strlen("action="));
+            }
+        }
+    }
 
     KDSoapMessage requestMsg;
     QString messageNamespace;
@@ -121,7 +136,7 @@ void KDSoapServerSocket::slotReadyRead()
 
     KDSoapMessage replyMsg;
     KDSoapHeaders responseHeaders;
-    makeCall(requestMsg, replyMsg, requestHeaders, responseHeaders);
+    makeCall(requestMsg, replyMsg, requestHeaders, responseHeaders, soapAction);
 
     const bool isFault = replyMsg.isFault();
     KDSoapServer* server = m_owner->server();
@@ -163,7 +178,7 @@ void KDSoapServerSocket::handleError(KDSoapMessage &replyMsg, const char *errorC
     replyMsg.addArgument(QString::fromLatin1("faultstring"), error);
 }
 
-void KDSoapServerSocket::makeCall(const KDSoapMessage &requestMsg, KDSoapMessage& replyMsg, const KDSoapHeaders& requestHeaders, KDSoapHeaders& responseHeaders)
+void KDSoapServerSocket::makeCall(const KDSoapMessage &requestMsg, KDSoapMessage& replyMsg, const KDSoapHeaders& requestHeaders, KDSoapHeaders& responseHeaders, const QByteArray& soapAction)
 {
     //const QString method = requestMsg.name();
 
@@ -183,7 +198,7 @@ void KDSoapServerSocket::makeCall(const KDSoapMessage &requestMsg, KDSoapMessage
             return;
         }
 
-        serverObjectInterface->setRequestHeaders(requestHeaders);
+        serverObjectInterface->setRequestHeaders(requestHeaders, soapAction);
 
         serverObjectInterface->processRequest(requestMsg, replyMsg);
 
