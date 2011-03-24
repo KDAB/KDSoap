@@ -299,6 +299,17 @@ class KODE_EXPORT Class
      */
     void setParentClassName( const QString &name );
 
+    /**
+     * Adds a declaration macro at the top of the class, like Q_PROPERTY(...)
+     * or Q_INTERFACES(...).
+     */
+    void addDeclarationMacro( const QString& macro );
+
+    /**
+     * Returns the list of declaration macros added by addDeclarationMacro()
+     */
+    QStringList declarationMacros() const;
+
   private:
     class Private;
     Private* d;
