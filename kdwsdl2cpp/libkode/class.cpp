@@ -55,6 +55,7 @@ class Class::Private
     QString mDocs;
     Class::List mNestedClasses;
     QString mParentClassName;
+    QStringList mDeclMacros;
 };
 
 Class::Class()
@@ -453,4 +454,14 @@ QStringList KODE::ClassList::classNames() const
     for (; it != end(); ++it)
         names.append((*it).name());
     return names;
+}
+
+void KODE::Class::addDeclarationMacro(const QString &macro)
+{
+    d->mDeclMacros.append(macro);
+}
+
+QStringList KODE::Class::declarationMacros() const
+{
+    return d->mDeclMacros;
 }

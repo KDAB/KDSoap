@@ -143,6 +143,10 @@ QString Printer::Private::classHeader( const Class &classObject, bool publicMemb
     code += "Q_OBJECT";
     code.newLine();
   }
+  Q_FOREACH( const QString& declMacro, classObject.declarationMacros() ) {
+    code += declMacro;
+    code.newLine();
+  }
 
   Class::List nestedClasses = classObject.nestedClasses();
   // Generate nestedclasses
