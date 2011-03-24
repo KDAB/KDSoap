@@ -318,7 +318,17 @@ class KODE_EXPORT Class
 class ClassList: public QList<Class>
 {
 public:
-    void sortByDependencies();
+    /**
+     * Sort the classes so that the result compiles, i.e. so that a class using another
+     * (via member vars or via inheritance) is after it in the list.
+     *
+     * @param excludedClasses list of base classes which can be excluded from the search
+     * for dependencies, usually because them come from underlying libraries.
+     * All classes starting with Q are automatically excluded
+     */
+    void sortByDependencies( const QStringList& excludedClasses = QStringList() );
+    // maybe we could have a bool ignoreUnknownClasses, too, for people who write bugfree code...
+
 
     QStringList classNames() const;
 

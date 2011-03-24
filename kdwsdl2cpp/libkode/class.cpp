@@ -345,11 +345,12 @@ QString Class::dPointerName() const
 ////
 
 // Returns what a class depends on: its base class(es) and any by-value member var
-static QStringList dependenciesForClass( const Class& aClass, const QStringList& allClasses )
+static QStringList dependenciesForClass( const Class& aClass, const QStringList& allClasses, const QStringList& excludedClasses )
 {
     QStringList lst;
     Q_FOREACH( const Class& baseClass, aClass.baseClasses() ) {
-        if ( !baseClass.name().startsWith('Q') )
+        const QString baseName = baseClass.name();
+        if ( !baseName.startsWith('Q') && !excludedClasses.contains( baseName ) )
             lst.append( baseClass.name() );
     }
     if (!aClass.useDPointer())
@@ -381,7 +382,7 @@ static bool allKnown( const QStringList& deps, const QStringList& classNames )
  * of a class, as well as the classes it use by value in member vars,
  * always appear before the class itself.
  */
-static Class::List sortByDependenciesHelper( const Class::List &classes )
+static Class::List sortByDependenciesHelper( const Class::List &classes, const QStringList& excludedClasses )
 {
     Class::List allClasses( classes );
     QStringList allClassNames;
@@ -395,7 +396,7 @@ static Class::List sortByDependenciesHelper( const Class::List &classes )
     // copy all classes without dependencies
     Class::List::Iterator it;
     for ( it = allClasses.begin(); it != allClasses.end(); ++it ) {
-      if ( dependenciesForClass( *it, allClassNames ).isEmpty() ) {
+      if ( dependenciesForClass( *it, allClassNames, excludedClasses ).isEmpty() ) {
         retval.append( *it );
         classNames.append( (*it).name() );
 
@@ -410,7 +411,7 @@ static Class::List sortByDependenciesHelper( const Class::List &classes )
       // as base class - or as member variable
       for ( it = allClasses.begin(); it != allClasses.end(); ++it ) {
 
-        const QStringList deps = dependenciesForClass( *it, allClassNames );
+        const QStringList deps = dependenciesForClass( *it, allClassNames, excludedClasses );
         if ( allKnown( deps, classNames ) ) {
           retval.append( *it );
           classNames.append( (*it).name() );
@@ -423,7 +424,7 @@ static Class::List sortByDependenciesHelper( const Class::List &classes )
           // We didn't resolve anything this time around, so let's not loop forever
           qDebug() << "ERROR: Couldn't find class dependencies (base classes, member vars) for classes" << allClasses.classNames();
           Q_FOREACH(const Class& c, allClasses) {
-              qDebug() << c.name() << "depends on" << dependenciesForClass(c, allClassNames);
+              qDebug() << c.name() << "depends on" << dependenciesForClass( c, allClassNames, excludedClasses );
           }
 
           return retval;
@@ -433,9 +434,9 @@ static Class::List sortByDependenciesHelper( const Class::List &classes )
     return retval;
 }
 
-void ClassList::sortByDependencies()
+void ClassList::sortByDependencies( const QStringList& excludedClasses )
 {
-    *this = sortByDependenciesHelper(*this);
+    *this = sortByDependenciesHelper( *this, excludedClasses );
 }
 
 ClassList::iterator ClassList::findClass(const QString &name)
