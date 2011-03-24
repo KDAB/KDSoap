@@ -336,6 +336,9 @@ QString Printer::Private::classImplementation( const Class &classObject, bool ne
     // Omit signals
     if ( f.access() == Function::Signal )
       continue;
+    // Omit pure virtuals without a body
+    if ( f.virtualMode() == Function::PureVirtual && f.body().isEmpty() )
+      continue;
 
     code += mParent->functionSignature( f, functionClassName, true );
 
@@ -562,6 +565,10 @@ QString Printer::functionSignature( const Function &function,
     s += "static ";
   }
 
+  if ( function.virtualMode() != Function::NotVirtual ) {
+    s += "virtual ";
+  }
+
   QString ret = function.returnType();
   if ( !ret.isEmpty() ) {
     s += d->formatType( ret );
@@ -588,6 +595,9 @@ QString Printer::functionSignature( const Function &function,
 
   if ( function.isConst() )
     s += " const";
+
+  if ( function.virtualMode() == Function::PureVirtual )
+    s += " = 0";
 
   return s;
 }

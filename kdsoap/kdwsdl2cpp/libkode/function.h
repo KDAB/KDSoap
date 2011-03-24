@@ -137,6 +137,17 @@ class KODE_EXPORT Function
      */
     bool isStatic() const;
 
+    enum VirtualMode { NotVirtual, Virtual, PureVirtual };
+    /**
+     * Sets whether the function is marked as virtual or pure virtual.
+     */
+    void setVirtualMode( VirtualMode v );
+
+    /**
+     * Returns whether the function is marked as virtual or pure virtual.
+     */
+    VirtualMode virtualMode() const;
+
     /**
      * Adds an @param argument to the function.
      */

@@ -60,7 +60,7 @@ class Function::FunctionPrivate
 {
   public:
     FunctionPrivate()
-      : mAccess( Public ), mIsConst( false ), mIsStatic( false )
+      : mAccess( Public ), mIsConst( false ), mIsStatic( false ), mVirtualMode( NotVirtual )
     {
     }
 
@@ -73,6 +73,7 @@ class Function::FunctionPrivate
     QStringList mInitializers;
     QString mBody;
     QString mDocs;
+    Function::VirtualMode mVirtualMode;
 };
 
 Function::Function()
@@ -249,7 +250,17 @@ QString Function::docs() const
   return d->mDocs;
 }
 
-bool KODE::Function::hasArguments() const
+bool Function::hasArguments() const
 {
   return !d->mArguments.isEmpty();
+}
+
+void Function::setVirtualMode( Function::VirtualMode v )
+{
+  d->mVirtualMode = v;
+}
+
+Function::VirtualMode Function::virtualMode() const
+{
+  return d->mVirtualMode;
 }
