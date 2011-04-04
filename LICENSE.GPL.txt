@@ -5,6 +5,8 @@
  the GNU General Public License version 2 or under the terms of GNU General
  Public License version 3 both of which are displayed below.
 
+ For the server-side library, see serverlib/LICENSE.AGPL3
+
 -------------------------------------------------------------------------
 
 		    GNU GENERAL PUBLIC LICENSE
