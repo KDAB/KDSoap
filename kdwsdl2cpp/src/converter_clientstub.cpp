@@ -346,6 +346,16 @@ void Converter::convertClientCall( const Operation &operation, const Binding &bi
           code += "ret.deserialize(d_ptr->m_lastReply);";
           code += "return ret;" COMMENT;
       } else { // RPC style (adds a wrapper), or simple value
+
+          // Protect the call to .first() below
+          code += "if (d_ptr->m_lastReply.childValues().isEmpty()) {";
+          code.indent();
+          code += "d_ptr->m_lastReply.setFault(true);";
+          code += "d_ptr->m_lastReply.addArgument(QString::fromLatin1(\"faultcode\"), QString::fromLatin1(\"Server.EmptyResponse\"));";
+          code += "return " + retType + "();"; // default-constructed value
+          code.unindent();
+          code += "}";
+
           code += retType + " ret;"; // local var
           code += "const KDSoapValue val = d_ptr->m_lastReply.childValues().first();" COMMENT;
           code += demarshalVar( retPart.type(), retPart.element(), "ret", retType );

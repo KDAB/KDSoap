@@ -235,6 +235,16 @@ private Q_SLOTS:
         QCOMPARE(QString::fromUtf8(server.receivedData().constData()), QString::fromUtf8(expectedCountryRequest().constData()));
     }
 
+    void testEmptyResponse()
+    {
+        HttpServerThread server(emptyResponse(), HttpServerThread::Public);
+        MyWsdlDocument service;
+        service.setEndPoint(server.endPoint());
+        KDAB__LimitedString employeeCountry = service.getEmployeeCountry(KDAB__EmployeeName(QString::fromLatin1("David")));
+        QCOMPARE(service.lastError(), QString::fromLatin1("Fault code Server.EmptyResponse:  ()"));
+        QCOMPARE(employeeCountry.value(), QString());
+    }
+
     // Test enum deserialization
     void testEnums()
     {
@@ -415,6 +425,9 @@ private:
     QEventLoop m_eventLoop;
     KDSoapMessage m_returnMessage;
 
+    static QByteArray emptyResponse() {
+        return QByteArray(xmlEnvBegin) + "><soap:Body/>" + xmlEnvEnd;
+    }
     static QByteArray countryResponse() {
         return QByteArray(xmlEnvBegin) + "><soap:Body>"
                 "<kdab:getEmployeeCountryResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl/\"><kdab:employeeCountry>France</kdab:employeeCountry></kdab:getEmployeeCountryResponse>"
