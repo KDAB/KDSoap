@@ -71,6 +71,12 @@
           <element name='employeeAchievements' type='kdab:EmployeeAchievements'/>
         </sequence>
       </complexType>
+      <simpleType name="Telegram">
+        <restriction base="xsd:hexBinary">
+          <minLength value="1"></minLength>
+          <maxLength value="255"></maxLength>
+        </restriction>
+      </simpleType>
 
       <element name="LoginElement">
         <complexType>
@@ -120,6 +126,15 @@
      <part name='employeeType' type='kdab:EmployeeType'/>
   </message>
 
+  <message name='sendTelegram'>
+     <part name='telegram' type='kdab:Telegram'/>
+  </message>
+  <message name='sendTelegramResponse'>
+     <part name='telegram' type='kdab:Telegram'/>
+  </message>
+
+
+
   <message name="Header">
     <part element="kdab:LoginElement" name="LoginHeader"/>
     <part element="kdab:SessionElement" name="SessionHeader"/>
@@ -141,6 +156,10 @@
     <operation name='getEmployeeType'>
       <input message='kdab:getEmployeeType' />
       <output message='kdab:getEmployeeTypeResponse' />
+    </operation>
+    <operation name='sendTelegram'>
+      <input message='kdab:sendTelegram' />
+      <output message='kdab:sendTelegramResponse' />
     </operation>
   </portType>
   <binding name='MyWsdlBinding' type='kdab:MyWsdlPortType' >
@@ -178,6 +197,14 @@
       </input>
       <output>
         <soap:body use='encoded'/>
+      </output>
+    </operation>
+    <operation name='sendTelegram'>
+      <input>
+        <soap:body use='literal'/>
+      </input>
+      <output>
+        <soap:body use='literal'/>
       </output>
     </operation>
   </binding>
