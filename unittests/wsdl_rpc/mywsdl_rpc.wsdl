@@ -106,6 +106,13 @@
      <part name='employee' type='kdab:Employee'/>
   </message>
 
+  <message name='getEmployeeCountry'>
+     <part name='employeeName' type='kdab:EmployeeName'/>
+  </message>
+  <message name='getEmployeeCountryResponse'>
+     <part name='employeeCountry' type='kdab:LimitedString'/>
+  </message>
+
   <message name='getEmployeeType'>
      <part name='employeeName' type='kdab:EmployeeName'/>
   </message>
@@ -126,6 +133,10 @@
     <operation name='getEmployee'>
       <input message='kdab:getEmployee' />
       <output message='kdab:getEmployeeResponse' />
+    </operation>
+    <operation name='getEmployeeCountry'>
+      <input message='kdab:getEmployeeCountry' />
+      <output message='kdab:getEmployeeCountryResponse' />
     </operation>
     <operation name='getEmployeeType'>
       <input message='kdab:getEmployeeType' />
@@ -151,6 +162,14 @@
       </input>
       <output>
         <soap:body use='encoded'/>
+      </output>
+    </operation>
+    <operation name='getEmployeeCountry'>
+      <input>
+        <soap:body use='literal'/>
+      </input>
+      <output>
+        <soap:body use='literal'/>
       </output>
     </operation>
     <operation name='getEmployeeType'>
