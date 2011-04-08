@@ -161,6 +161,23 @@ private Q_SLOTS:
         QCOMPARE(employee.employeeCountry().value(), QString::fromLatin1("France"));
     }
 
+    // Test calls with 'simple type' arguments
+    // Same as the call made by builtinhttp, but here using the wsdl-generated code
+    void testSimpleType()
+    {
+        HttpServerThread server(countryResponse(), HttpServerThread::Public);
+        MyWsdl service;
+        service.setEndPoint(server.endPoint());
+
+        KDAB__LimitedString employeeCountry = service.getEmployeeCountry(KDAB__EmployeeName(QString::fromUtf8("David Ä Faure")));
+        if (!service.lastError().isEmpty())
+            qDebug() << service.lastError();
+        QVERIFY(service.lastError().isEmpty());
+        QCOMPARE(employeeCountry.value(), QString::fromLatin1("France"));
+        QVERIFY(xmlBufferCompare(server.receivedData(), expectedCountryRequest()));
+        QCOMPARE(QString::fromUtf8(server.receivedData().constData()), QString::fromUtf8(expectedCountryRequest().constData()));
+    }
+
     // Test enum deserialization
     void testEnums()
     {
@@ -212,8 +229,26 @@ private:
                 "</n1:item>"
                 "</n1:employeeAchievements>";
     }
-};
 
+    static QByteArray countryResponse() {
+        return QByteArray(xmlEnvBegin) + "><soap:Body>"
+                "<kdab:getEmployeeCountryResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl/\">"
+                "<kdab:employeeCountry>France</kdab:employeeCountry>"
+                "</kdab:getEmployeeCountryResponse>"
+                " </soap:Body>" + xmlEnvEnd;
+    }
+    static QByteArray expectedCountryRequest() {
+        return QByteArray(xmlEnvBegin) +
+                "><soap:Body>"
+                "<n1:getEmployeeCountry xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
+                "<n1:employeeName>"
+                "David Ä Faure"
+                "</n1:employeeName>"
+                "</n1:getEmployeeCountry>"
+                "</soap:Body>" + xmlEnvEnd
+                + '\n'; // added by QXmlStreamWriter::writeEndDocument
+    }
+};
 
 QTEST_MAIN(WsdlRPCTest)
 
