@@ -58,6 +58,7 @@ void Converter::convertSimpleType( const XSD::SimpleType *type, const XSD::Simpl
 
       // member variables
       KODE::MemberVariable variable( "type", "Type" );
+      variable.setInitializer( "Type(0)" );
       newClass.addMemberVariable( variable );
 
       // setter method
