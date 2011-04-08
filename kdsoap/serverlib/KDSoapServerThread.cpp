@@ -1,6 +1,7 @@
 #include "KDSoapServerThread_p.h"
 #include "KDSoapSocketList_p.h"
 #include "KDSoapServerSocket_p.h"
+#include <QMetaType>
 
 KDSoapServerThread::KDSoapServerThread(QObject *parent)
     : QThread(parent), d(0)
