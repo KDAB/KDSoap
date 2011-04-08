@@ -206,7 +206,8 @@ KODE::Code Converter::appendElementArg( const QName& type, const QName& elementT
         block += "}";
     } else {
         const QString nameArg = "QString::fromLatin1(\"" + name + "\")";
-        const QString typeArgs = namespaceString(type.nameSpace()) + ", QString::fromLatin1(\"" + type.localName() + "\")";
+        const QName actualType = type.isEmpty() ? elementType : type;
+        const QString typeArgs = namespaceString(actualType.nameSpace()) + ", QString::fromLatin1(\"" + actualType.localName() + "\")";
         if ( mTypeMap.isBuiltinType( type, elementType ) ) {
             const QString qtTypeName = mTypeMap.localType( type, elementType );
             const QString value = mTypeMap.serializeBuiltin( type, elementType, localVariableName, qtTypeName );
@@ -272,6 +273,8 @@ KODE::Code Converter::demarshalArrayVar( const QName& type, const QString& varia
 
 void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::ComplexType *type )
 {
+    newClass.addInclude("KDSoapNamespaceManager.h");
+
     KODE::Function serializeFunc( "serialize", "KDSoapValue" );
     serializeFunc.addArgument( "const QString& valueName" );
     serializeFunc.setConst( true );
