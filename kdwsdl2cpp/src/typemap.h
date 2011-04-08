@@ -108,7 +108,8 @@ class TypeMap
 
   private:
     void addBuiltinType( const char* typeName, const char* localType );
-    QString localTypeForElement( const QName &typeName ) const;
+    QString localTypeForElement( const QName &elementName ) const;
+    QName typeForElement( const QName& elementName ) const;
 
     class Entry
     {

@@ -224,15 +224,26 @@ QList<TypeMap::Entry>::ConstIterator TypeMap::elementEntry( const QName &typeNam
   return it;
 }
 
-QString TypeMap::localTypeForElement( const QName &typeName ) const
+QString TypeMap::localTypeForElement( const QName &elementName ) const
 {
-  QList<Entry>::ConstIterator it = elementEntry( typeName );
+  QList<Entry>::ConstIterator it = elementEntry( elementName );
   if ( it != mElementMap.constEnd() ) {
       return (*it).localType;
   }
 
-  qDebug() << "TypeMap::localTypeForElement: unknown type" << typeName;
+  qDebug() << "TypeMap::localTypeForElement: unknown type" << elementName;
   return QString();
+}
+
+QName TypeMap::typeForElement( const QName &elementName ) const
+{
+  QList<Entry>::ConstIterator it = elementEntry( elementName );
+  if ( it != mElementMap.constEnd() ) {
+      return (*it).baseType;
+  }
+
+  qDebug() << "TypeMap::typeForElement: unknown type" << elementName;
+  return QName();
 }
 
 #if 0
@@ -332,6 +343,7 @@ void TypeMap::addSchemaTypes( const XSD::Types &types )
     entry.basicType = (*it).basicType;
     entry.builtinType = (*it).builtinType;
     entry.complexType = (*it).complexType;
+    entry.baseType = type;
 
     // The "FooElement" type isn't necessary, we just point to the resolved type
     // directly, this is much simpler.
@@ -432,7 +444,7 @@ QString KWSDL::TypeMap::Entry::dumpBools() const
 
 QString KWSDL::TypeMap::deserializeBuiltin( const QName &typeName, const QName& elementName, const QString& var, const QString& qtTypeName ) const
 {
-    const QName type = typeName.isEmpty() ? elementName : typeName;
+    const QName type = typeName.isEmpty() ? typeForElement(elementName) : typeName;
     if (type.nameSpace() == XMLSchemaURI && type.localName() == "hexBinary") {
         return "QByteArray::fromHex(" + var + ".toString().toLatin1())";
     } else if (type.nameSpace() == XMLSchemaURI && type.localName() == "base64Binary") {
@@ -448,7 +460,7 @@ QString KWSDL::TypeMap::deserializeBuiltin( const QName &typeName, const QName& 
 QString KWSDL::TypeMap::serializeBuiltin( const QName &typeName, const QName& elementName, const QString& var, const QString& qtTypeName ) const
 {
     Q_UNUSED(qtTypeName);
-    const QName type = typeName.isEmpty() ? elementName : typeName;
+    const QName type = typeName.isEmpty() ? typeForElement(elementName) : typeName;
     // variantToTextValue also has support for calling toHex/toBase64 at runtime, but this fails
     // when the type derives from hexBinary and is named differently, see Telegram testcase.
     if (type.nameSpace() == XMLSchemaURI && type.localName() == "hexBinary") {

@@ -205,7 +205,9 @@ void Converter::convertClientService()
   } // end of for each port
 
   // First sort all classes so that the order compiles
-  mClasses.sortByDependencies();
+  QStringList excludedClasses;
+  excludedClasses << "KDSoapServerObjectInterface";
+  mClasses.sortByDependencies(excludedClasses);
   // Then add the service, at the end
 
   mClasses += bindingClasses;
@@ -255,8 +257,8 @@ void Converter::addMessageArgument( KODE::Code& code, const SoapBinding::Style& 
             // In document style, the "part" is directly added as arguments
             // See http://www.ibm.com/developerworks/webservices/library/ws-whichwsdl/
             if ( builtin ) {
-                qDebug() << "Got a builtin/basic type in document style:" << part.type() << part.element() << "Didn't think this could happen.";
-                code += messageName + ".setValue(QVariant::fromValue(" + lowerName + "));" COMMENT;
+                // document/literal without wrapping. Need to write out the xml element, and the basic type inside.
+                code.addBlock( appendElementArg( part.type(), part.element(), part.name(), lowerName, messageName + ".childValues()" ) );
             } else if ( isComplex ) {
                 code += messageName + ".childValues() += " + lowerName + ".serialize(QString()).childValues();" COMMENT;
             } else {
