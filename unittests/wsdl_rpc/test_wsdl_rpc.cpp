@@ -161,12 +161,37 @@ private Q_SLOTS:
         QCOMPARE(employee.employeeCountry().value(), QString::fromLatin1("France"));
     }
 
+    // Test enum deserialization
+    void testEnums()
+    {
+        // Prepare response
+        QByteArray responseData = QByteArray(xmlEnvBegin) + "><soap:Body>"
+                                  "<kdab:getEmployeeTypeResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl/\">"
+                                    "<kdab:employeeType kdab:type=\"Developer\">"
+                                      "<kdab:team>Minitel</kdab:team>"
+                                      "<kdab:otherRoles>TeamLeader</kdab:otherRoles>"
+                                    "</kdab:employeeType>"
+                                  "</kdab:getEmployeeTypeResponse>"
+                                  "</soap:Body>" + xmlEnvEnd;
+        HttpServerThread server(responseData, HttpServerThread::Public);
+        MyWsdl service;
+        service.setEndPoint(server.endPoint());
+
+        KDAB__EmployeeType employeeType = service.getEmployeeType(KDAB__EmployeeName(QLatin1String("Joe")));
+        if (!service.lastError().isEmpty())
+            qDebug() << service.lastError();
+        QVERIFY(service.lastError().isEmpty());
+        QCOMPARE(employeeType.team().value().value(), QLatin1String("Minitel"));
+        QCOMPARE(employeeType.otherRoles().count(), 1);
+        QCOMPARE(employeeType.otherRoles().at(0).type(), KDAB__EmployeeTypeEnum::TeamLeader);
+        QCOMPARE((int)employeeType.type().type(), (int)KDAB__EmployeeTypeEnum::Developer);
+    }
+
 private:
     static QByteArray serializedEmployeeType() {
         return QByteArray(
-                "<n1:employeeType xsi:type=\"n1:EmployeeType\">"
+                "<n1:employeeType xsi:type=\"n1:EmployeeType\" n1:type=\"Developer\">"
                 "<n1:team xsi:type=\"n1:TeamName\">Minitel</n1:team>"
-                "<n1:type xsi:type=\"n1:EmployeeTypeEnum\">Developer</n1:type>"
                 "<n1:otherRoles xsi:type=\"n1:EmployeeTypeEnum\">TeamLeader</n1:otherRoles>"
                 "<n1:otherRolesAsList xsi:type=\"n1:EmployeeTypeEnumList\">TeamLeader Developer</n1:otherRolesAsList>"
                 "<n1:lottoNumbers xsi:type=\"n1:LottoNumbers\">7 21 30 42</n1:lottoNumbers>"
