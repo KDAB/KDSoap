@@ -204,6 +204,32 @@ private Q_SLOTS:
         QCOMPARE((int)employeeType.type().type(), (int)KDAB__EmployeeTypeEnum::Developer);
     }
 
+    void testByteArrays()
+    {
+        // Prepare response
+        QByteArray responseData = QByteArray(xmlEnvBegin) + "><soap:Body>"
+                                  "<kdab:sendTelegramResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl/\">"
+                                    "<kdab:telegram>466f6f</kdab:telegram>"
+                                  "</kdab:sendTelegramResponse>"
+                                  "</soap:Body>" + xmlEnvEnd;
+        HttpServerThread server(responseData, HttpServerThread::Public);
+        MyWsdl service;
+        service.setEndPoint(server.endPoint());
+
+        const KDAB__Telegram ret = service.sendTelegram(KDAB__Telegram("Hello"));
+        QCOMPARE(service.lastError(), QString());
+        QCOMPARE(ret.value(), QByteArray("Foo"));
+
+        const QByteArray expectedRequestXml =
+            QByteArray(xmlEnvBegin) + ">"
+            "<soap:Body>"
+            "<n1:sendTelegram xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
+               "<n1:telegram>48656c6c6f</n1:telegram>"
+            "</n1:sendTelegram>"
+            "</soap:Body>" + xmlEnvEnd;
+            QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
+    }
+
 private:
     static QByteArray serializedEmployeeType() {
         return QByteArray(
