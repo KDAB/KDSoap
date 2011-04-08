@@ -40,7 +40,6 @@
       <element name="EmployeeType">
         <complexType>
           <sequence>
-            <element name="type" type="kdab:EmployeeTypeEnum"/>
             <element name="otherRoles" type="kdab:EmployeeTypeEnum" minOccurs="0" maxOccurs="unbounded"/>
             <element name="otherRolesAsList" type="kdab:EmployeeTypeEnumList"/>
             <element name="lottoNumbers" type="kdab:LottoNumbers"/>
@@ -48,6 +47,7 @@
              <element name="team" type="kdab:TeamName"/>
             </sequence>
           </sequence>
+          <attribute name="type" type="kdab:EmployeeTypeEnum"/>
         </complexType>
       </element>
       <complexType name="EmployeeAchievement">
@@ -106,6 +106,13 @@
      <part name='employee' type='kdab:Employee'/>
   </message>
 
+  <message name='getEmployeeType'>
+     <part name='employeeName' type='kdab:EmployeeName'/>
+  </message>
+  <message name='getEmployeeTypeResponse'>
+     <part name='employeeType' type='kdab:EmployeeType'/>
+  </message>
+
   <message name="Header">
     <part element="kdab:LoginElement" name="LoginHeader"/>
     <part element="kdab:SessionElement" name="SessionHeader"/>
@@ -119,6 +126,10 @@
     <operation name='getEmployee'>
       <input message='kdab:getEmployee' />
       <output message='kdab:getEmployeeResponse' />
+    </operation>
+    <operation name='getEmployeeType'>
+      <input message='kdab:getEmployeeType' />
+      <output message='kdab:getEmployeeTypeResponse' />
     </operation>
   </portType>
   <binding name='MyWsdlBinding' type='kdab:MyWsdlPortType' >
@@ -135,6 +146,14 @@
       </output>
     </operation>
     <operation name='getEmployee'>
+      <input>
+        <soap:body use='encoded'/>
+      </input>
+      <output>
+        <soap:body use='encoded'/>
+      </output>
+    </operation>
+    <operation name='getEmployeeType'>
       <input>
         <soap:body use='encoded'/>
       </input>
