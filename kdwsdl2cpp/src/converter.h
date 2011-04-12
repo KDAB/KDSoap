@@ -66,12 +66,14 @@ class Converter
     void clientAddArguments( KODE::Function& callFunc, const Message& message, KODE::Class &newClass );
     bool clientAddAction( KODE::Code& code, const Binding &binding, const QString& operationName );
     void clientGenerateMessage( KODE::Code& code, const Binding& binding, const Message& message, const Operation& operation );
-    void addMessageArgument( KODE::Code& code, const SoapBinding::Style& bindingStyle, const Part& part, const QString& partName, const QByteArray& messageName );
+    void addMessageArgument( KODE::Code& code, const SoapBinding::Style& bindingStyle, const Part& part, const QString& localVariableName, const QByteArray& messageName );
     void createHeader( const SoapBinding::Header& header, KODE::Class& newClass );
-    KODE::Code appendElementArg( const QName& type, const QName& elementType, const QString& name, const QString& localVariableName, const QByteArray& varName );
+    KODE::Code serializeElementArg( const QName& type, const QName& elementType, const QString& name, const QString& localVariableName, const QByteArray& varName, bool append );
     KODE::Code demarshalVar( const QName& type, const QName& elementType, const QString& variableName, const QString& typeName, const QString& soapValueVarName = "val" ) const;
     KODE::Code demarshalArrayVar( const QName& type, const QString& variableName, const QString& typeName ) const;
     void addVariableInitializer( KODE::MemberVariable& variable ) const;
+    KODE::Code deserializeRetVal(const KWSDL::Part& part, const QString& replyMsgName, const QString& qtRetType) const;
+    QString elementNameForPart(const Part& part) const;
 
     // Server Stub
     void convertServerService();
@@ -83,6 +85,7 @@ class Converter
 
     KODE::Class::List mClasses;
     KODE::Class mQObject;
+    KODE::Class mKDSoapServerObjectInterface;
 
     NameMapper mNameMapper;
     TypeMap mTypeMap;

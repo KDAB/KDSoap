@@ -12,6 +12,8 @@ class KDSoapNamespacePrefixes;
 class KDSoapValue;
 class KDSoapValueList;
 
+/// Internal class -- only exported for the server lib
+
 class KDSOAP_EXPORT KDSoapMessageWriter
 {
 public:
@@ -19,7 +21,7 @@ public:
 
     void setMessageNamespace(const QString& ns);
 
-    QByteArray messageToXml(const KDSoapMessage& message, const QString& method,
+    QByteArray messageToXml(const KDSoapMessage& message, const QString& method /*empty in document style*/,
                             const KDSoapHeaders& headers,
                             const QMap<QString, KDSoapMessage>& persistentHeaders) const;
 

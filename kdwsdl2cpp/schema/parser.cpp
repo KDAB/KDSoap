@@ -857,7 +857,7 @@ static QUrl urlForLocation(ParserContext *context, const QString& location)
 void Parser::importSchema( ParserContext *context, const QString &location )
 {
     // Ignore this one, we have it built into the typemap
-    if (location == QLatin1String("http://schemas.xmlsoap.org/soap/encoding/"))
+    if (location == QLatin1String(soapEncNs))
         return;
     // Ignore this one, we don't need it, and it relies on soap/encoding
     if (location == QLatin1String("http://schemas.xmlsoap.org/wsdl/"))

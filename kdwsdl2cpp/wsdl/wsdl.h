@@ -47,6 +47,7 @@ class KWSDL_EXPORT WSDL
     PortType findPortType( const QName &portTypeName ) const;
     Message findMessage( const QName &messageName ) const;
     XSD::Element findElement( const QName &elementName ) const;
+    XSD::ComplexType findComplexType( const QName &typeName ) const;
 
   private:
     Definitions mDefinitions;

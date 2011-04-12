@@ -80,7 +80,7 @@
           </restriction>
         </complexContent>
       </complexType>
-      <element name="AddEmployeeParams">
+      <element name="addEmployee">
         <complexType>
           <sequence>
            <element name='employeeType' type='kdab:EmployeeType'/>
@@ -91,6 +91,23 @@
           </sequence>
          </complexType>
       </element>
+      <element name="addEmployeeMyResponse" type="xsd:hexBinary"/>
+      <element name="EmployeeNameParams">
+        <complexType>
+          <sequence>
+            <element name='employeeName' type='kdab:EmployeeName'/>
+          </sequence>
+        </complexType>
+      </element>
+
+      <element name="EmployeeCountryResponse">
+        <complexType>
+          <sequence>
+            <element name='employeeCountry' type='kdab:LimitedString'/>
+          </sequence>
+        </complexType>
+      </element>
+
       <element name="AnyType">
         <complexType>
           <sequence>
@@ -128,10 +145,10 @@
     </xsd:schema>
   </types>
   <message name='addEmployee'>
-    <part element="kdab:AddEmployeeParams" name="parameters"/>
+    <part element="kdab:addEmployee" name="parameters"/>
   </message>
   <message name='addEmployeeResponse'>
-    <part name='bstrReturn' type='xsd:hexBinary'/>
+    <part element="kdab:addEmployeeMyResponse" name="parameters"/>
   </message>
 
   <message name='testAnyType'>
@@ -141,26 +158,27 @@
     <part element="kdab:AnyTypeResponse" name="parameters"/>
   </message>
 
-
+  <!-- TODO: Document/literal wrapped requires that the element is named after the operation,
+       otherwise the server can't dispatch the request... -->
   <message name='getEmployeeCountry'>
-     <part name='employeeName' type='kdab:EmployeeName'/>
+     <part name='parameters' element='kdab:EmployeeNameParams'/>
   </message>
   <message name='getEmployeeCountryResponse'>
-     <part name='employeeCountry' type='kdab:LimitedString'/>
+     <part name='parameters' element='kdab:EmployeeCountryResponse'/>
   </message>
 
   <message name='getEmployeeType'>
-     <part name='employeeName' type='kdab:EmployeeName'/>
+     <part name='parameters' element='kdab:EmployeeNameParams'/>
   </message>
   <message name='getEmployeeTypeResponse'>
-     <part name='employeeType' type='kdab:EmployeeType'/>
+     <part name='parameters' element='kdab:EmployeeType'/>
   </message>
 
   <message name='sendTelegram'>
-     <part name='telegram' type='kdab:Telegram'/>
+     <part element='kdab:Telegram' name='telegram'/>
   </message>
   <message name='sendTelegramResponse'>
-     <part name='telegram' type='kdab:Telegram'/>
+     <part element='kdab:Telegram' name='telegram'/>
   </message>
 
   <message name="Header">

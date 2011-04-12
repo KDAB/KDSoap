@@ -153,6 +153,9 @@ void Converter::convertClientService()
           code += "const QString endPoint = !d_ptr->m_endPoint.isEmpty() ? d_ptr->m_endPoint : QString::fromLatin1(\"" + QString::fromLatin1( encoded.data(), encoded.size() ) + "\");";
           code += "const QString messageNamespace = QString::fromLatin1(\"" + mWSDL.definitions().targetNamespace() + "\");";
           code += "d_ptr->m_clientInterface = new KDSoapClientInterface(endPoint, messageNamespace);";
+          if ( soapStyle(binding) == SoapBinding::DocumentStyle ) {
+              code += "d_ptr->m_clientInterface->setStyle( KDSoapClientInterface::DocumentStyle );";
+          }
           code += "d_ptr->m_clientInterface->setSoapVersion( KDSoapClientInterface::SOAP1_1 );";
           code.unindent();
           code += "}";
@@ -219,7 +222,21 @@ void Converter::clientAddOneArgument( KODE::Function& callFunc, const Part& part
     const QString argType = mTypeMap.localInputType( part.type(), part.element() );
     //qDebug() << "localInputType" << part.type().qname() << part.element().qname() << "->" << argType;
     if ( argType != "void" ) {
-        callFunc.addArgument( argType + ' ' + mNameMapper.escape( lowerName ) );
+        QString def;
+        if ( part.type().isEmpty() ) { // element (document style)
+            // If the complex type is empty, we need it for serialization,
+            // but we don't need the app to see it, so give it a default value.
+            // Example:
+            // TNS__LogoutResponse logout( const TNS__Logout& parameters = TNS__Logout() );
+            const XSD::Element element = mWSDL.findElement( part.element() );
+            const XSD::ComplexType ctype = mWSDL.findComplexType( element.type() );
+            if ( !ctype.isNull() && ctype.isEmpty() ) {
+                def = mTypeMap.localType( part.type(), part.element() ) + "()";
+            }
+        }
+
+        KODE::Function::Argument arg( argType + ' ' + mNameMapper.escape( lowerName ), def );
+        callFunc.addArgument( arg );
     }
     newClass.addHeaderIncludes( mTypeMap.headerIncludes( part.type() ) );
 }
@@ -246,27 +263,27 @@ bool Converter::clientAddAction( KODE::Code& code, const Binding &binding, const
     return hasAction;
 }
 
-void Converter::addMessageArgument( KODE::Code& code, const SoapBinding::Style& bindingStyle, const Part& part, const QString& partName, const QByteArray& messageName )
+QString Converter::elementNameForPart(const Part& part) const
 {
-    const QString lowerName = lowerlize( partName );
-    QString argType = mTypeMap.localType( part.type(), part.element() );
-    const bool builtin = mTypeMap.isBuiltinType( part.type(), part.element() );
-    const bool isComplex = mTypeMap.isComplexType( part.type(), part.element() );
-    if ( argType != "void" ) {
-        if ( bindingStyle == SoapBinding::DocumentStyle ) {
-            // In document style, the "part" is directly added as arguments
-            // See http://www.ibm.com/developerworks/webservices/library/ws-whichwsdl/
-            if ( builtin ) {
-                // document/literal without wrapping. Need to write out the xml element, and the basic type inside.
-                code.addBlock( appendElementArg( part.type(), part.element(), part.name(), lowerName, messageName + ".childValues()" ) );
-            } else if ( isComplex ) {
-                code += messageName + ".childValues() += " + lowerName + ".serialize(QString()).childValues();" COMMENT;
-            } else {
-                code += messageName + ".setValue(" + lowerName + ".serialize());" COMMENT;
-            }
-        } else {
-            //qDebug() << "caller:" << part.name() << "type=" << part.type() << "element=" << part.element() << "argType=" << argType << "builtin=" << builtin;
-            code.addBlock( appendElementArg( part.type(), part.element(), partName, lowerName, messageName + ".childValues()" ) );
+    if (part.type().isEmpty()) { // element (document style)
+        XSD::Element element = mWSDL.findElement(part.element());
+        return element.name();
+    } else { // type (rpc style)
+        return part.name();
+    }
+}
+
+void Converter::addMessageArgument( KODE::Code& code, const SoapBinding::Style& bindingStyle, const Part& part, const QString& localVariableName, const QByteArray& messageName )
+{
+    const QString lowerName = lowerlize( localVariableName );
+    // In document style, the "part" is directly added as arguments
+    // See http://www.ibm.com/developerworks/webservices/library/ws-whichwsdl/
+    if ( bindingStyle == SoapBinding::DocumentStyle )
+        code.addBlock( serializeElementArg( part.type(), part.element(), elementNameForPart(part), lowerName, messageName, false) );
+    else {
+        const QString argType = mTypeMap.localType( part.type(), part.element() );
+        if ( argType != "void" ) {
+            code.addBlock( serializeElementArg( part.type(), part.element(), elementNameForPart(part), lowerName, messageName + ".childValues()", true ) );
         }
     }
 }
@@ -289,6 +306,27 @@ void Converter::clientGenerateMessage( KODE::Code& code, const Binding& binding,
     Q_FOREACH( const Part& part, parts ) {
         addMessageArgument( code, soapStyle(binding), part, part.name(), "message" );
     }
+}
+
+KODE::Code Converter::deserializeRetVal(const KWSDL::Part& part, const QString& replyMsgName, const QString& qtRetType) const
+{
+    // This is the opposite logic as appendElementArg, which does:
+    // if builtin -> xml element with basic contents
+    // if complex -> serialize and add result
+    // else -> serialize
+
+    KODE::Code code;
+    const bool isBuiltin = mTypeMap.isBuiltinType( part.type(), part.element() );
+    const bool isComplex = mTypeMap.isComplexType( part.type(), part.element() );
+    if ( isBuiltin ) {
+        code += "ret = " + mTypeMap.deserializeBuiltin( part.type(), part.element(), replyMsgName + ".value()", qtRetType ) + ";" COMMENT;
+    } else if ( isComplex ) {
+        code += "ret.deserialize(" + replyMsgName + ");" COMMENT;
+    } else {
+        // testcase: MyWsdlDocument::sendTelegram
+        code += "ret.deserialize(" + replyMsgName + ".value());" COMMENT;
+    }
+    return code;
 }
 
 // Generate synchronous call
@@ -317,17 +355,12 @@ void Converter::convertClientCall( const Operation &operation, const Binding &bi
       // the async code (convertClientOutputMessage) actually supports it, since it can emit multiple values in the signal
   }
   QString retType;
-  bool isBuiltin = false;
-  bool isComplex = false;
   Part retPart;
   Q_FOREACH( const Part& outPart, outParts ) {
       //const QString lowerName = lowerlize( outPart.name() );
 
       retType = mTypeMap.localType( outPart.type(), outPart.element() );
-      isBuiltin = mTypeMap.isBuiltinType( outPart.type(), outPart.element() );
-      isComplex = mTypeMap.isComplexType( outPart.type(), outPart.element() );
       retPart = outPart;
-      //qDebug() << retType << "isComplex=" << isComplex;
 
       callFunc.setReturnType( retType );
       break; // only one...
@@ -343,9 +376,9 @@ void Converter::convertClientCall( const Operation &operation, const Binding &bi
   if ( retType != "void" )
   {
 
-      if ( isComplex && soapStyle(binding) == SoapBinding::DocumentStyle /*no wrapper*/ ) {
+      if ( soapStyle(binding) == SoapBinding::DocumentStyle /*no wrapper*/ ) {
           code += retType + " ret;"; // local var
-          code += "ret.deserialize(d_ptr->m_lastReply);";
+          code.addBlock(deserializeRetVal(retPart, "d_ptr->m_lastReply", retType));
           code += "return ret;" COMMENT;
       } else { // RPC style (adds a wrapper), or simple value
 
@@ -447,8 +480,6 @@ void Converter::convertClientOutputMessage( const Operation &operation,
   Q_FOREACH( const Part& part, parts ) {
     const QString partType = mTypeMap.localType( part.type(), part.element() );
     Q_ASSERT(!partType.isEmpty());
-    const bool isBuiltin = mTypeMap.isBuiltinType( part.type(), part.element() );
-    const bool isComplex = mTypeMap.isComplexType( part.type(), part.element() );
 
     if ( partType == "void" )
         continue;
@@ -456,16 +487,20 @@ void Converter::convertClientOutputMessage( const Operation &operation,
     QString lowerName = mNameMapper.escape( lowerlize( part.name() ) );
     doneSignal.addArgument( mTypeMap.localInputType( part.type(), part.element() ) + ' ' + lowerName );
 
-    if ( isComplex && soapStyle(binding) == SoapBinding::DocumentStyle /*no wrapper*/ ) {
+    // WARNING: if you change the logic below, also adapt the result parsing for sync calls, above
+
+    if ( soapStyle(binding) == SoapBinding::DocumentStyle /*no wrapper*/ ) {
         slotCode += partType + " ret;"; // local var
-        slotCode += "ret.deserialize(reply);";
+        slotCode.addBlock(deserializeRetVal(part, "reply", partType));
         partNames << "ret";
     } else { // RPC style (adds a wrapper) or simple value
         QString value = "reply.childValues().child(QLatin1String(\"" + part.name() + "\"))";
+        const bool isBuiltin = mTypeMap.isBuiltinType( part.type(), part.element() );
         if ( isBuiltin ) {
             partNames << value + ".value().value<" + partType + ">()";
         } else {
             slotCode += partType + " ret;"; // local var. TODO ret1/ret2 etc. if more than one.
+            const bool isComplex = mTypeMap.isComplexType( part.type(), part.element() );
             if (!isComplex)
                 value += ".value()";
             slotCode += "ret.deserialize(" + value + ");" COMMENT;
@@ -509,7 +544,7 @@ void Converter::createHeader( const SoapBinding::Header& header, KODE::Class &ne
             code += "message.setUse(KDSoapMessage::EncodedUse);";
         else
             code += "message.setUse(KDSoapMessage::LiteralUse);";
-        addMessageArgument( code, SoapBinding::RPCStyle, part, part.name(), "message" );
+        addMessageArgument( code, SoapBinding::RPCStyle, part, partName, "message" );
         code += "clientInterface()->setHeader( QLatin1String(\"" + partName + "\"), message );";
         headerSetter.setBody(code);
         newClass.addFunction(headerSetter);

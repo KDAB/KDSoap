@@ -64,7 +64,7 @@ public:
     /**
      * Calls the method \p method on this interface and passes the arguments specified in \p message
      * to the method.
-     * \param method method name, without arguments. For instance \c "addContact".
+     * \param method method name, without arguments. For instance \c "addContact". Only used in RPC style.
      * \param message arguments for the method call
      * \param soapAction optional \c "SoapAction" header, see the specification of the SOAP service.
      * \param headers optional arguments which will be passed as \c <soap:Header>.
@@ -110,7 +110,7 @@ public:
     /**
      * Calls the method \p method on this interface and passes the parameters specified in \p message
      * to the method.
-     * \param method method name, without arguments. For instance \c "addContact".
+     * \param method method name, without arguments. For instance \c "addContact". Only used in RPC style.
      * \param message arguments for the method call
      * \param soapAction optional \c "SoapAction" header, see the specification of the SOAP service.
      * \param headers optional arguments which will be passed as \c <soap:Header>.
@@ -126,7 +126,7 @@ public:
     /**
      * Calls the method \p method on this interface and passes the parameters specified in \p message
      * to the method.
-     * \param method method name, without arguments. For instance \c "addContact".
+     * \param method method name, without arguments. For instance \c "addContact". Only used in RPC style.
      * \param message arguments for the method call
      * \param soapAction optional \c "SoapAction" header, see the specification of the SOAP service.
      * \param headers optional arguments which will be passed as \c <soap:Header>.
@@ -162,6 +162,36 @@ public:
      * Returns the version of SOAP being used in this instance.
      */
     SoapVersion soapVersion();
+
+    /**
+     * WSDL style. See the "style" attribute for soap:binding, in the WSDL file.
+     * See http://www.ibm.com/developerworks/webservices/library/ws-whichwsdl/ for a discussion
+     * on the pros and cons of both styles.
+     *
+     * In RPC style, the method name passed to call() or asyncCall() is sent as an xml element
+     * wrapping the message parameters.
+     *
+     * In Document style, the KDSoapMessage represents the entire "document" to be sent, so the
+     * the method name passed to call() or asyncCall() is ignored, and the name of the KDSoapMessage
+     * is used as the main xml element name. This difference is mostly useful in the case of
+     * generated code, so that it can serialize existing complex types, and send them as messages.
+     */
+    enum Style {
+        RPCStyle,       ///< the method name is sent as an xml element wrapping the message parameters
+        DocumentStyle   ///< the message is sent as is, the method name is usually the name of the message
+    };
+
+    /**
+     * Sets the WSDL style used by this service.
+     * \since 1.1
+     */
+    void setStyle(Style style);
+
+    /**
+     * Returns the WSDL style used by this service.
+     * \since 1.1
+     */
+    Style style() const;
 
     /**
      * Returns the headers returned by the last synchronous call().

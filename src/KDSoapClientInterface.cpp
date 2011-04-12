@@ -35,7 +35,7 @@ KDSoapClientInterface::SoapVersion KDSoapClientInterface::soapVersion()
 
 
 KDSoapClientInterface::Private::Private()
-    : m_authentication(), m_ignoreSslErrors(false)
+    : m_authentication(), m_style(RPCStyle), m_ignoreSslErrors(false)
 {
     connect(&m_accessManager, SIGNAL(authenticationRequired(QNetworkReply*,QAuthenticator*)),
             this, SLOT(_kd_slotAuthenticationRequired(QNetworkReply*,QAuthenticator*)));
@@ -79,7 +79,7 @@ QBuffer* KDSoapClientInterface::Private::prepareRequestBuffer(const QString& met
 {
     KDSoapMessageWriter msgWriter;
     msgWriter.setMessageNamespace(m_messageNamespace);
-    QByteArray data = msgWriter.messageToXml(message, method, headers, m_persistentHeaders);
+    const QByteArray data = msgWriter.messageToXml(message, (m_style == RPCStyle) ? method : QString(), headers, m_persistentHeaders);
     QBuffer* buffer = new QBuffer;
     buffer->setData(data);
     buffer->open(QIODevice::ReadOnly);
@@ -152,6 +152,16 @@ void KDSoapClientInterface::Private::setupReply(QNetworkReply *reply)
 KDSoapHeaders KDSoapClientInterface::lastResponseHeaders() const
 {
     return d->m_lastResponseHeaders;
+}
+
+void KDSoapClientInterface::setStyle(KDSoapClientInterface::Style style)
+{
+    d->m_style = style;
+}
+
+KDSoapClientInterface::Style KDSoapClientInterface::style() const
+{
+    return d->m_style;
 }
 
 #include "moc_KDSoapClientInterface_p.cpp"
