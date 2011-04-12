@@ -36,54 +36,13 @@ public:
         s_serverObjects.remove(QThread::currentThread());
     }
 
-    virtual void processRequest(const KDSoapMessage &request, KDSoapMessage &response)
-    {
+    virtual void processRequest(const KDSoapMessage &request, KDSoapMessage &response);
+public: // SOAP-accessible methods
+    QString getEmployeeCountry(const QString& employeeName) {
         // Should be called in same thread as constructor
         s_serverObjectsMutex.lock();
         Q_ASSERT(s_serverObjects.value(QThread::currentThread()) == this);
         s_serverObjectsMutex.unlock();
-        const QByteArray method = request.name().toLatin1();
-        if (method == "getEmployeeCountry") {
-            const QString employeeName = request.childValues().child(QLatin1String("employeeName")).value().toString();
-            const QString ret = this->getEmployeeCountry(employeeName);
-            if (!hasFault()) {
-                response.setValue(QLatin1String("getEmployeeCountryResponse"));
-                response.addArgument(QLatin1String("employeeCountry"), ret);
-            }
-        } else if (method == "getStuff") {
-            const KDSoapValueList& values = request.childValues();
-            const KDSoapValue valueFoo = values.child(QLatin1String("foo"));
-            const KDSoapValue valueBar = values.child(QLatin1String("bar"));
-            const KDSoapValue valueDateTime = values.child(QLatin1String("dateTime"));
-            if (valueFoo.isNull() || valueBar.isNull() || valueDateTime.isNull()) {
-                response.setFault(true);
-                response.addArgument(QLatin1String("faultcode"), QLatin1String("Server.RequiredArgumentMissing"));
-                return;
-            }
-            const int foo = valueFoo.value().toInt();
-            const float bar = valueBar.value().toFloat();
-            const QDateTime dateTime = valueDateTime.value().toDateTime();
-            const double ret = this->getStuff(foo, bar, dateTime);
-            if (!hasFault()) {
-                response.setValue(ret);
-            }
-        } else if (method == "hexBinaryTest") {
-            const KDSoapValueList& values = request.childValues();
-            const QByteArray input1 = QByteArray::fromBase64(values.child(QLatin1String("a")).value().toByteArray());
-            //qDebug() << "input1=" << input1;
-            const QByteArray input2 = QByteArray::fromHex(values.child(QLatin1String("b")).value().toByteArray());
-            //qDebug() << "input2=" << input2;
-            const QByteArray hex = this->hexBinaryTest(input1, input2);
-            if (!hasFault()) {
-                response.setValue(QVariant(hex));
-            }
-        } else {
-            KDSoapServerObjectInterface::processRequest(request, response);
-        }
-    }
-
-public: // SOAP-accessible methods
-    QString getEmployeeCountry(const QString& employeeName) {
         if (employeeName.isEmpty()) {
             setFault(QLatin1String("Client.Data"), QLatin1String("Empty employee name"),
                      QLatin1String("CountryServerObject"), tr("Employee name must not be empty"));
@@ -642,5 +601,49 @@ private:
 };
 
 QTEST_MAIN(ServerTest)
+
+// TODO: generate this method (needs a .wsdl file)
+void CountryServerObject::processRequest(const KDSoapMessage &request, KDSoapMessage &response)
+{
+    const QByteArray method = request.name().toLatin1();
+    if (method == "getEmployeeCountry") {
+        const QString employeeName = request.childValues().child(QLatin1String("employeeName")).value().toString();
+        const QString ret = this->getEmployeeCountry(employeeName);
+        if (!hasFault()) {
+            response.setValue(QLatin1String("getEmployeeCountryResponse"));
+            response.addArgument(QLatin1String("employeeCountry"), ret);
+        }
+    } else if (method == "getStuff") {
+        const KDSoapValueList& values = request.childValues();
+        const KDSoapValue valueFoo = values.child(QLatin1String("foo"));
+        const KDSoapValue valueBar = values.child(QLatin1String("bar"));
+        const KDSoapValue valueDateTime = values.child(QLatin1String("dateTime"));
+        if (valueFoo.isNull() || valueBar.isNull() || valueDateTime.isNull()) {
+            response.setFault(true);
+            response.addArgument(QLatin1String("faultcode"), QLatin1String("Server.RequiredArgumentMissing"));
+            return;
+        }
+        const int foo = valueFoo.value().toInt();
+        const float bar = valueBar.value().toFloat();
+        const QDateTime dateTime = valueDateTime.value().toDateTime();
+        const double ret = this->getStuff(foo, bar, dateTime);
+        if (!hasFault()) {
+            response.setValue(ret);
+        }
+    } else if (method == "hexBinaryTest") {
+        const KDSoapValueList& values = request.childValues();
+        const QByteArray input1 = QByteArray::fromBase64(values.child(QLatin1String("a")).value().toByteArray());
+        //qDebug() << "input1=" << input1;
+        const QByteArray input2 = QByteArray::fromHex(values.child(QLatin1String("b")).value().toByteArray());
+        //qDebug() << "input2=" << input2;
+        const QByteArray hex = this->hexBinaryTest(input1, input2);
+        if (!hasFault()) {
+            response.setValue(QVariant(hex));
+        }
+    } else {
+        KDSoapServerObjectInterface::processRequest(request, response);
+    }
+}
+
 
 #include "servertest.moc"
