@@ -46,11 +46,11 @@ void Creator::create( const KODE::Class::List &classes )
   printer.setLabelsDefineIndent( false );
   printer.setIndentLabels( false );
 
+  //qDebug() << "Create server=" << Settings::self()->generateServerCode() << "impl=" << Settings::self()->generateImplementation();
+
   KODE::File file;
 
-  if (Settings::self()->generateServerCode()) {
-      file.setImplementationFilename( Settings::self()->outputFileName() );
-  } else if (Settings::self()->generateImplementation()) {
+  if (Settings::self()->generateImplementation()) {
       file.setImplementationFilename( Settings::self()->outputFileName() );
       file.setHeaderFilename(Settings::self()->headerFile());
   } else {
@@ -62,9 +62,7 @@ void Creator::create( const KODE::Class::List &classes )
       file.insertClass( *it );
   }
 
-  if (Settings::self()->generateServerCode())
-      printer.printImplementation( file, false );
-  else if (Settings::self()->generateImplementation())
+  if (Settings::self()->generateImplementation())
       printer.printImplementation( file );
   else
       printer.printHeader( file );

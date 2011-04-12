@@ -64,6 +64,11 @@ XmlElement &XmlElement::operator=( const XmlElement &other )
   return *this;
 }
 
+bool XmlElement::isNull() const
+{
+  return d->mName.isEmpty();
+}
+
 void XmlElement::setName( const QString &name )
 {
   d->mName = name;

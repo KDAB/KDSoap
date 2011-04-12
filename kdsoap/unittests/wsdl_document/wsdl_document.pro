@@ -1,4 +1,5 @@
 KDSOAP_PATH = $$PWD/../..
+KDWSDL_OPTIONS = -server
 include( $$KDSOAP_PATH/unittests/unittests.pri )
 QT += network xml
 SOURCES = test_wsdl_document.cpp
@@ -7,5 +8,8 @@ test.commands = ./$(TARGET)
 test.depends = $(TARGET)
 QMAKE_EXTRA_TARGETS += test
 
-KDWSDL = mywsdl_document.wsdl thomas-bayer.wsdl
+KDWSDL = thomas-bayer.wsdl mywsdl_document.wsdl
+
 OTHER_FILES = $$KDWSDL
+LIBS        += -L$$KDSOAP_PATH/lib -l$$KDSOAPSERVERLIB
+

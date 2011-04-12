@@ -1,23 +1,45 @@
 #include "converter.h"
+#include <libkode/style.h>
 #include <QSet>
+#include <QDebug>
 
 using namespace KWSDL;
 
 void Converter::convertServerService()
 {
-    KODE::Class serverClass("KDWSDLServerClass");
-
-    KODE::Function processRequestMethod(QString::fromLatin1("processRequest"), QString::fromLatin1("void"));
-    processRequestMethod.addArgument("const KDSoapMessage &request");
-    processRequestMethod.addArgument("KDSoapMessage &response");
-
-    KODE::Code body;
-    body.addLine("const QByteArray method = request.name().toLatin1();");
+    const Service service = mWSDL.definitions().service();
+    Q_ASSERT(!service.name().isEmpty());
 
     bool first = true;
     QSet<QName> uniqueBindings = mWSDL.uniqueBindings();
     Q_FOREACH( const QName& bindingName, uniqueBindings ) {
+        //qDebug() << "binding" << bindingName;
         const Binding binding = mWSDL.findBinding( bindingName );
+
+        QString className = KODE::Style::className(service.name());
+        QString nameSpace;
+        if (uniqueBindings.count() > 1) {
+            nameSpace = className;
+            className = KODE::Style::className(bindingName.localName());
+        }
+        className += "ServerBase";
+
+        KODE::Class serverClass(className, nameSpace);
+        serverClass.addBaseClass(mQObject);
+        serverClass.addBaseClass(mKDSoapServerObjectInterface);
+        // Files included in the header
+        serverClass.addHeaderInclude("QObject");
+        serverClass.addHeaderInclude("KDSoapServerObjectInterface.h");
+
+        serverClass.addDeclarationMacro("Q_OBJECT");
+        serverClass.addDeclarationMacro("Q_INTERFACES(KDSoapServerObjectInterface)");
+
+        KODE::Function processRequestMethod(QString::fromLatin1("processRequest"), QString::fromLatin1("void"));
+        processRequestMethod.addArgument("const KDSoapMessage &request");
+        processRequestMethod.addArgument("KDSoapMessage &response");
+
+        KODE::Code body;
+        body.addLine("const QByteArray method = request.name().toLatin1();");
 
         PortType portType = mWSDL.findPortType( binding.portTypeName() );
         //qDebug() << portType.name();
@@ -34,22 +56,22 @@ void Converter::convertServerService()
             }
             first = false;
         }
-    }
 
-    if (!first) {
-        body += "else {";
-        body.indent();
-    }
-    body += "KDSoapServerObjectInterface::processRequest(request, response);";
-    if (!first) {
-        body.unindent();
-        body += "}";
-    }
-    processRequestMethod.setBody(body);
+        if (!first) {
+            body += "else {";
+            body.indent();
+        }
+        body += "KDSoapServerObjectInterface::processRequest(request, response);";
+        if (!first) {
+            body.unindent();
+            body += "}";
+        }
+        processRequestMethod.setBody(body);
 
-    serverClass.addFunction(processRequestMethod);
+        serverClass.addFunction(processRequestMethod);
 
-    mClasses += serverClass;
+        mClasses += serverClass;
+    }
 }
 
 void Converter::generateServerMethod(KODE::Code& code, const Binding& binding, const Operation& operation, KODE::Class &newClass, bool first)
@@ -58,6 +80,11 @@ void Converter::generateServerMethod(KODE::Code& code, const Binding& binding, c
     const Message outputMessage = mWSDL.findMessage( operation.output().message() );
 
     const QString operationName = operation.name();
+    const QString methodName = mNameMapper.escape( lowerlize( operationName ) );
+
+    KODE::Function virtualMethod(methodName);
+    virtualMethod.setVirtualMode(KODE::Function::PureVirtual);
+
     code += QString(first ? "" : "else ") + "if (method == \"" + operationName + "\") {";
     code.indent();
 
@@ -80,8 +107,10 @@ void Converter::generateServerMethod(KODE::Code& code, const Binding& binding, c
 
             inputVars += varName;
             newClass.addIncludes( mTypeMap.headerIncludes( part.type() ) );
+            virtualMethod.addArgument( mTypeMap.localInputType( part.type(), part.element() ) + ' ' + varName );
         }
     }
+
 
     const Part::List outParts = outputMessage.parts();
     if (outParts.count() > 1) {
@@ -99,17 +128,29 @@ void Converter::generateServerMethod(KODE::Code& code, const Binding& binding, c
             isComplex = mTypeMap.isComplexType( outPart.type(), outPart.element() );
             retPart = outPart;
         }
-        const QString methodName = lowerlize( operation.name() );
-        const QString functionName = mNameMapper.escape( methodName );
-        code += retType + " ret = " + functionName + '(' + inputVars.join(", ") + ");" COMMENT;
+        const QString methodCall = methodName + '(' + inputVars.join(", ") + ')';
+        if (retType == "void") {
+            code += methodCall + ";" COMMENT;
+        } else {
+            code += retType + " ret = " + methodCall + ";" COMMENT;
+        }
         code += "if (!hasFault()) {";
         code.indent();
         // basic type: response.setValue(ret);
-        // complex type: response.childValues() += ret.serialize(QString()).childValues();
-        addMessageArgument( code, soapStyle(binding), retPart, "ret", "response" );
+        // complex type:
+        //   response.setValue(QLatin1String("getEmployeeCountryResponse"));
+        //   response.childValues() += ret.serialize(QString()).childValues();
+        //      == response.setValue(ret.serialize("getEmployeeCountryResponse")) I think.
+        Q_UNUSED(binding); // need to make up fooResponse in RPC mode
+        Q_ASSERT(soapStyle(binding) == SoapBinding::DocumentStyle); // TODO implement RPC!
+        code.addBlock( serializeElementArg( retPart.type(), retPart.element(), elementNameForPart(retPart), "ret", "response", false ) );
+
         code.unindent();
         code += "}";
+        virtualMethod.setReturnType(retType);
     }
     code.unindent();
     code += "}";
+
+    newClass.addFunction(virtualMethod);
 }

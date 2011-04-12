@@ -319,6 +319,29 @@ private Q_SLOTS:
         Q_UNUSED(sessionId);
     }
 
+    void testDocumentStyle()
+    {
+        HttpServerThread server(countryResponse(), HttpServerThread::Public);
+
+        KDSoapClientInterface client(server.endPoint(), countryMessageNamespace());
+        client.setStyle(KDSoapClientInterface::DocumentStyle);
+        QByteArray expectedRequestXml = expectedCountryRequest();
+
+        KDSoapMessage message;
+        message = KDSoapValue(QLatin1String("getEmployeeCountry"), QVariant());
+        KDSoapValueList& args = message.childValues();
+        args.append(KDSoapValue(QLatin1String("employeeName"), QString::fromUtf8("David Ä Faure")));
+
+        {
+            KDSoapMessage ret = client.call(QLatin1String("UNUSED"), message);
+            // Check what we sent
+            QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
+            QVERIFY(!ret.isFault());
+            QCOMPARE(ret.arguments().child(QLatin1String("employeeCountry")).value().toString(), QString::fromLatin1("France"));
+        }
+    }
+
+
 private:
     static QByteArray countryResponse() {
         return QByteArray(xmlEnvBegin) + "><soap:Body>"

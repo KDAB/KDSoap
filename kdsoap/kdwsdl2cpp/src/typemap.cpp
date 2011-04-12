@@ -293,9 +293,10 @@ void TypeMap::addSchemaTypes( const XSD::Types &types )
 
     //qDebug() << "TypeMap: adding complex type" << entry.nameSpace << entry.typeName;
 
-    if ( (*complexIt).isEmpty() )
+    // Keep empty complex types, useful for document mode.
+    /*if ( (*complexIt).isEmpty() )
         entry.localType = "void";
-    else {
+    else*/ {
         entry.localType = mNSManager->prefix( entry.nameSpace ).toUpper() + "__" + adaptLocalTypeName( (*complexIt).name() );
         //entry.headers << (*complexIt).name().toLower() + ".h";
         entry.forwardDeclarations << entry.localType;

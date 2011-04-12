@@ -19,6 +19,7 @@ QString lowerlize( const QString &str )
 Converter::Converter()
 {    
   mQObject = KODE::Class( "QObject" );
+  mKDSoapServerObjectInterface = KODE::Class( "KDSoapServerObjectInterface" );
 }
 
 void Converter::setWSDL( const WSDL &wsdl )
@@ -252,13 +253,12 @@ KODE::Class::List Converter::classes() const
 
 void Converter::convert()
 {
+    convertTypes();
+    //  mNSManager.dump();
     if (Settings::self()->generateServerCode()) {
         convertServerService();
-    } else {
-        convertTypes();
-        //  mNSManager.dump();
-        convertClientService();
     }
+    convertClientService();
 }
 
 void Converter::convertTypes()

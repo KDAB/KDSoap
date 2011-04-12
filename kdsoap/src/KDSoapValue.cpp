@@ -200,6 +200,7 @@ void KDSoapValue::writeElement(KDSoapNamespacePrefixes& namespacePrefixes, QXmlS
 {
     const QString ns = d->m_nameNamespace.isEmpty() ? messageNamespace : d->m_nameNamespace;
     //qDebug() << "writeElement" << d->m_nameNamespace << name();
+    Q_ASSERT(!name().isEmpty());
     writer.writeStartElement(ns, name());
     writeElementContents(namespacePrefixes, writer, use, messageNamespace);
     writer.writeEndElement();

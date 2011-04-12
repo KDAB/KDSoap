@@ -146,6 +146,8 @@ void KDSoapServerSocket::slotReadyRead()
 
     KDSoapMessageWriter msgWriter;
     msgWriter.setMessageNamespace(messageNamespace);
+    // Note that the client parsing code doesn't care for the name (except if it's fault).
+    // So the "Response" can be made "FOOBAR" and everything still works fine, even in Document mode.
     const QString responseName = isFault ? QString::fromLatin1("Fault") : method + QString::fromLatin1("Response");
     const QByteArray xmlResponse = msgWriter.messageToXml(replyMsg, responseName, responseHeaders, QMap<QString, KDSoapMessage>());
     const QByteArray response = httpResponseHeaders(isFault, xmlResponse.size());

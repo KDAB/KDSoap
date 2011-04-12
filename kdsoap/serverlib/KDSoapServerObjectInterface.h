@@ -13,16 +13,14 @@
  * and from KDSoapServerObjectInterface.
  * The virtual method processRequest is called whenever a SOAP request is being made.
  * To handle the call, either reimplement processRequest and do the dispatching
- * manually (not recommended), or add the KDSOAP_OBJECT macro and use kdwsdl2cpp to
- * generate the code for processRequest.
+ * manually (not recommended), or use kdwsdl2cpp to generate the base class for your server object.
  *
- * Example:
+ * Example for manual handling:
   <code>
   class EmployeeServerObject : public QObject, public KDSoapServerObjectInterface
   {
     Q_OBJECT
     Q_INTERFACES(KDSoapServerObjectInterface)
-    KDSOAP_OBJECT
 
   public: // methods published to SOAP
     QString getEmployeeCountry(const QString& employeeName);
@@ -104,7 +102,5 @@ private:
 
 Q_DECLARE_INTERFACE(KDSoapServerObjectInterface,
                     "com.kdab.KDSoap.ServerObjectInterface/1.0")
-
-#define KDSOAP_OBJECT virtual void processRequest(const KDSoapMessage &request, KDSoapMessage &response);
 
 #endif // KDSOAPSERVEROBJECTINTERFACE_H

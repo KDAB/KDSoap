@@ -49,8 +49,12 @@ QByteArray KDSoapMessageWriter::messageToXml(const KDSoapMessage& message, const
 
     writer.writeStartElement(soapNS, QLatin1String("Body"));
 
-    writer.writeStartElement(m_messageNamespace, method);
+    if (!method.isEmpty())
+        writer.writeStartElement(m_messageNamespace, method);
+    else
+        writer.writeStartElement(m_messageNamespace, message.name());
     message.writeElementContents(namespacePrefixes, writer, message.use(), m_messageNamespace);
+
     writer.writeEndElement(); // <method>
 
     writer.writeEndElement(); // Body

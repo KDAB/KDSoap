@@ -26,6 +26,7 @@ public:
     KDSoapAuthentication m_authentication;
     QMap<QString, KDSoapMessage> m_persistentHeaders;
     SoapVersion m_version;
+    Style m_style;
     bool m_ignoreSslErrors;
     KDSoapHeaders m_lastResponseHeaders;
 

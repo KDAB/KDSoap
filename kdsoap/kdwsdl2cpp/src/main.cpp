@@ -38,7 +38,7 @@ static void showHelp(const char *appName)
             "  -s, -service              name of the service to generate\n"
             "  -o <file>                 generate the header file into <file>\n"
             "  -impl <headerfile>        generate the implementation file, and #include <headerfile>\n"
-            "  -server <file>            generate server-side processRequest into <file>\n"
+            "  -server                   generate server-side base class, instead of client service\n"
             "\n", appName);
 }
 
@@ -67,12 +67,6 @@ int main( int argc, char **argv )
             headerFile = QFile::decodeName(argv[arg]);
         } else if (opt == QLatin1String("-server")) {
             server = true;
-            ++arg;
-            if (!argv[arg]) {
-                showHelp(argv[0]);
-                return 1;
-            }
-            outputFile = QFile::decodeName(argv[arg]);
         } else if (opt == QLatin1String("-v") || opt == QLatin1String("-version")) {
             fprintf(stderr, "%s %s\n", WSDL2CPP_DESCRIPTION, WSDL2CPP_VERSION_STR);
             return 0;
@@ -107,10 +101,8 @@ int main( int argc, char **argv )
 
     QCoreApplication app( argc, argv );
 
-    if (server)
-        Settings::self()->setGenerateServerCode(true);
-    else
-        Settings::self()->setGenerateImplementation(impl, headerFile);
+    Settings::self()->setGenerateServerCode(server);
+    Settings::self()->setGenerateImplementation(impl, headerFile);
     Settings::self()->setOutputFileName(outputFile);
     Settings::self()->setWsdlFile(fileName);
     Settings::self()->setWantedService(serviceName);

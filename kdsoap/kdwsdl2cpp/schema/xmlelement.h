@@ -41,6 +41,8 @@ class SCHEMA_EXPORT XmlElement
 
     XmlElement &operator=( const XmlElement &other );
 
+    bool isNull() const;
+
     void setName( const QString &name );
     QString name() const;
 
