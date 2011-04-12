@@ -136,8 +136,8 @@
 
 
   <message name="Header">
-    <part element="kdab:LoginElement" name="LoginHeader"/>
-    <part element="kdab:SessionElement" name="SessionHeader"/>
+    <part type="kdab:LoginElement" name="LoginHeader"/>
+    <part type="kdab:SessionElement" name="SessionHeader"/>
   </message>
 
   <portType name='MyWsdlPortType'>
