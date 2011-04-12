@@ -34,6 +34,13 @@ KDSoapMessage &KDSoapMessage::operator =(const KDSoapMessage &other)
     return *this;
 }
 
+KDSoapMessage &KDSoapMessage::operator =(const KDSoapValue &other)
+{
+    KDSoapValue::operator=(other);
+    return *this;
+}
+
+
 KDSoapMessage::~KDSoapMessage()
 {
 }
@@ -234,15 +241,11 @@ void KDSoapMessage::parseSoapXml(const QByteArray& data, QString* pMessageNamesp
                 }
                 if (reader.name() == "Body" && reader.namespaceUri() == KDSoapNamespaceManager::soapEnvelope()) {
 
-                    if (readNextStartElement(reader)) { // the root element: request, response or fault
-                        //qDebug() << "toplevel element:" << reader.name();
-                        const bool isFault = (reader.name() == "Fault");
-
-                        //KDSoapValue::operator=(parseReplyElement(reader));
+                    if (reader.readNext() != QXmlStreamReader::Invalid) {
+                        *this = parseElement(reader, envNsDecls);
                         if (pMessageNamespace)
-                            *pMessageNamespace = reader.namespaceUri().toString();
-                        static_cast<KDSoapValue &>(*this) = parseElement(reader, envNsDecls);
-                        if (isFault)
+                            *pMessageNamespace = namespaceUri();
+                        if (name() == QLatin1String("Fault"))
                             setFault(true);
                     }
 

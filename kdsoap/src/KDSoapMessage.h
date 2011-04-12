@@ -33,6 +33,11 @@ public:
     KDSoapMessage &operator=(const KDSoapMessage &other);
 
     /**
+     * Fills in KDSoapMessage from a KDSoapValue.
+     */
+    KDSoapMessage &operator=(const KDSoapValue &other);
+
+    /**
      * Define the way the message should be serialized.
      * The default value is #LiteralUse.
      */
