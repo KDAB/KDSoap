@@ -24,6 +24,12 @@ static const char* xmlEnvBegin =
         " soap:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\"";
 static const char* xmlEnvEnd = "</soap:Envelope>";
 
+static const char* xmlBegin = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+static const char* xmlNamespaces = "xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\""
+    " xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\""
+    " xmlns:xsd=\"http://www.w3.org/1999/XMLSchema\""
+    " xmlns:xsi=\"http://www.w3.org/1999/XMLSchema-instance\"";
+
 class WsdlDocumentTest : public QObject
 {
     Q_OBJECT
@@ -413,7 +419,7 @@ private Q_SLOTS:
         MyWsdlDocument service;
         service.setEndPoint(server.endPoint());
 
-        const KDAB__Telegram ret = service.sendTelegram(KDAB__Telegram("Hello"));
+        const KDAB__TelegramType ret = service.sendRawTelegram(KDAB__TelegramType("Hello"));
         QCOMPARE(service.lastError(), QString());
         QCOMPARE(ret.value(), QByteArray("Foo"));
 
@@ -426,6 +432,7 @@ private Q_SLOTS:
     }
 
     void testServerAddEmployee();
+    void testSendTelegram();
 
 public slots:
     void slotFinished(KDSoapPendingCallWatcher* watcher)
@@ -496,17 +503,22 @@ public:
         return type;
     }
 
-    KDAB__Telegram sendTelegram( const KDAB__Telegram& telegram ) {
+    KDAB__TelegramType sendRawTelegram( const KDAB__TelegramType& telegram ) {
         return QByteArray("Got ") + telegram;
+    }
+
+    KDAB__TelegramResponse sendTelegram( const KDAB__TelegramRequest& parameters ) {
+        KDAB__TelegramResponse resp;
+        resp.setTelegram(QByteArray("Received ") + parameters.telegram());
+        return resp;
     }
 
     // Normally you don't reimplement this. This is just to store req and resp for the unittest.
     void processRequest( const KDSoapMessage &request, KDSoapMessage &response ) {
         m_request = request;
         MyWsdlDocumentServerBase::processRequest(request, response);
-        qDebug() << "processRequest: dispatching done, copying response (too late?)" << m_response.name();
         m_response = response;
-        qDebug() << "processRequest: done. " << this << "Response name=" << response.name();
+        //qDebug() << "processRequest: done. " << this << "Response name=" << response.name();
     }
 
     KDSoapMessage m_request;
@@ -581,18 +593,46 @@ void WsdlDocumentTest::testServerAddEmployee()
     service.setEndPoint(server->endPoint());
     QByteArray ret = service.addEmployee(addEmployeeParameters());
     QVERIFY(server->lastServerObject());
-    const QString expectedResponseXml = QString::fromLatin1(
+    const QByteArray expectedResponseXml =
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
                 "<addEmployeeMyResponse xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsd=\"http://www.w3.org/1999/XMLSchema\" xmlns:xsi=\"http://www.w3.org/1999/XMLSchema-instance\">"
                 "6164646564204461766964204661757265"
-                "</addEmployeeMyResponse>\n");
+                "</addEmployeeMyResponse>\n";
     qDebug() << server->lastServerObject() << "response name" << server->lastServerObject()->m_response.name();
     // Note: that's the response as sent by the generated code.
     // But then the server socket code will call messageToXml, possibly with a method name,
     // we can't debug that here.
-    QCOMPARE(QString::fromLatin1(server->lastServerObject()->m_response.toXml().constData()), expectedResponseXml);
+    QVERIFY(xmlBufferCompare(server->lastServerObject()->m_response.toXml(), expectedResponseXml));
     QCOMPARE(service.lastError(), QString());
     QCOMPARE(QString::fromLatin1(ret.constData()), QString::fromLatin1("added David Faure"));
+}
+
+void WsdlDocumentTest::testSendTelegram()
+{
+    DocServerThread serverThread;
+    DocServer* server = serverThread.startThread();
+
+    MyWsdlDocument service;
+    service.setEndPoint(server->endPoint());
+
+    KDAB__TelegramRequest req;
+    req.setTelegram(KDAB__TelegramType("Hello"));
+    const KDAB__TelegramResponse ret = service.sendTelegram(req);
+    QCOMPARE(service.lastError(), QString());
+    QCOMPARE(ret.telegram().value(), QByteArray("Received Hello"));
+
+    const QByteArray expectedRequestXml =
+        QByteArray(xmlBegin) + "<n1:TelegramRequest " + xmlNamespaces + " xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
+           "<n1:Telegram>48656c6c6f</n1:Telegram>"
+          "</n1:TelegramRequest>";
+    const QString msgNS = QString::fromLatin1("http://www.kdab.com/xml/MyWsdl/");
+    QVERIFY(xmlBufferCompare(server->lastServerObject()->m_request.toXml(KDSoapValue::LiteralUse, msgNS), expectedRequestXml));
+
+    const QByteArray expectedResponseXml =
+        QByteArray(xmlBegin) + "<n1:TelegramResponse " + xmlNamespaces + " xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
+            "<n1:Telegram>52656365697665642048656c6c6f</n1:Telegram>"
+          "</n1:TelegramResponse>";
+    QVERIFY(xmlBufferCompare(server->lastServerObject()->m_response.toXml(KDSoapValue::LiteralUse, msgNS), expectedResponseXml));
 }
 
 QTEST_MAIN(WsdlDocumentTest)

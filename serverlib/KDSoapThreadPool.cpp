@@ -59,7 +59,7 @@ KDSoapServerThread * KDSoapThreadPool::Private::chooseNextThread()
         // We look at the amount of sockets connected to each thread, and pick the less busy one.
         // Note that this isn't fully accurate, due to Keep-Alive: it's possible for long-term
         // idling clients to be all on one thread, and active clients on another one, and this
-        // wouldn't use CPU fully. But this is probably still beter than no keep-alive (much more
+        // wouldn't use CPU fully. But this is probably still better than no keep-alive (much more
         // connection overhead). Maybe we have to look at sockets who made a request in the last
         // N seconds... but the past is no indication of the future.
         const int sc = thr->socketCount();

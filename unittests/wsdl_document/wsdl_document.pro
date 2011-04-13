@@ -10,6 +10,6 @@ QMAKE_EXTRA_TARGETS += test
 
 KDWSDL = thomas-bayer.wsdl mywsdl_document.wsdl
 
-OTHER_FILES = $$KDWSDL
+OTHER_FILES = $$KDWSDL thomas-bayer.xsd
 LIBS        += -L$$KDSOAP_PATH/lib -l$$KDSOAPSERVERLIB
 
