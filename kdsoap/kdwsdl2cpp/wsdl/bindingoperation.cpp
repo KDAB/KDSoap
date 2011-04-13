@@ -68,7 +68,7 @@ void BindingOperation::loadXML( AbstractBinding *binding, ParserContext *context
       binding->parseOperationOutput( context, mName, child );
     } else if ( tagName.localName() == "fault" ) {
       binding->parseOperationFault( context, mName, child );
-    }
+    } // no fallback else here, some other tags (like soap:operation) are already parsed by parseOperation().
 
     child = child.nextSiblingElement();
   }

@@ -85,7 +85,15 @@ void Converter::generateServerMethod(KODE::Code& code, const Binding& binding, c
     KODE::Function virtualMethod(methodName);
     virtualMethod.setVirtualMode(KODE::Function::PureVirtual);
 
-    code += QString(first ? "" : "else ") + "if (method == \"" + operationName + "\") {";
+    QString condition = "method == \"" + operationName + "\"";
+    if ( binding.type() == Binding::SOAPBinding ) {
+        const SoapBinding soapBinding( binding.soapBinding() );
+        const SoapBinding::Operation op = soapBinding.operations().value( operation.name() );
+        if (!op.action().isEmpty()) {
+            condition += "|| soapAction() == \"" + op.action() + "\"";
+        }
+    }
+    code += QString(first ? "" : "else ") + "if (" + condition + ") {";
     code.indent();
 
     QStringList inputVars;
