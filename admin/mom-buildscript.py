@@ -12,7 +12,7 @@ from core.helpers.BoilerPlate import BuildProject
 from products.ProductBoilerPlate import ProductConfigurations
 from products.ProductPackager import ProductPackager
 
-build, project = BuildProject( name = 'KD SOAP', build = '1.0.0 Release', version = '1.0.0', url = 'svn+ssh://svn.kdab.com/home/SVN-klaralv/products/kdsoap' )
+build, project = BuildProject( name = 'KD SOAP', version = '1.0.0', url = 'svn+ssh://svn.kdab.com/home/SVN-klaralv/products/kdsoap' )
 
 configs = ProductConfigurations( project )
 
