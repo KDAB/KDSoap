@@ -59,6 +59,8 @@ private Q_SLOTS:
         lottoNumbers.setEntries(QList<int>() << 7 << 21 << 30 << 42);
         employeeType.setLottoNumbers(lottoNumbers);
         employeeType.setTeam(QString::fromLatin1("Minitel"));
+        KDAB__JeansSize jeansSize;
+        jeansSize.setValue(24);
 
         KDAB__LoginElement login;
         login.setUser(QLatin1String("foo"));
@@ -72,7 +74,8 @@ private Q_SLOTS:
         QString ret = service.addEmployee(employeeType,
                                           QString::fromLatin1("David Faure"),
                                           QString::fromLatin1("France"),
-                                          achievements);
+                                          achievements,
+                                          jeansSize);
         if (!service.lastError().isEmpty())
             qDebug() << service.lastError();
         QVERIFY(service.lastError().isEmpty());
@@ -116,7 +119,7 @@ private Q_SLOTS:
             ret = service.addEmployee(employeeType,
                                       QString::fromUtf8("Hervé"),
                                       QString::fromUtf8("фгн7"), // random russian letters
-                                      achievements);
+                                      achievements, jeansSize);
             QVERIFY(service.lastError().isEmpty());
             QCOMPARE(ret, QString::fromLatin1("Foo"));
             QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
@@ -130,7 +133,7 @@ private Q_SLOTS:
             ret = service.addEmployee(employeeType,
                                       QString::fromUtf8("Hervé"),
                                       QString::fromUtf8("фгн7"), // random russian letters
-                                      achievements);
+                                      achievements, jeansSize);
             QByteArray expectedRequestXml = requestXmlTemplate;
             expectedRequestXml.replace("%1", "<soap:Header/>");
             QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
@@ -159,6 +162,7 @@ private Q_SLOTS:
         QCOMPARE(employeeType.lottoNumbers().entries(), QList<int>() << 7 << 21 << 30 << 42);
         QCOMPARE(employee.employeeName().value().value(), QString::fromLatin1("David Faure"));
         QCOMPARE(employee.employeeCountry().value(), QString::fromLatin1("France"));
+        QCOMPARE(employee.employeeJeansSize().value().toInt(), 24);
     }
 
     // Test calls with 'simple type' arguments
@@ -253,7 +257,8 @@ private:
                 "<n1:type xsi:type=\"xsd:string\">Development</n1:type>"
                 "<n1:label xsi:type=\"xsd:string\">C++</n1:label>"
                 "</n1:item>"
-                "</n1:employeeAchievements>";
+                "</n1:employeeAchievements>"
+                "<n1:employeeJeansSize xsi:type=\"n1:JeansSize\">24</n1:employeeJeansSize>";
     }
 
     static QByteArray countryResponse() {

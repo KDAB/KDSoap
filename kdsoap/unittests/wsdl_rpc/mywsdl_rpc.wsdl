@@ -69,6 +69,7 @@
           <element name='employeeName' type='kdab:EmployeeName'/>
           <element name='employeeCountry' type='kdab:LimitedString'/>
           <element name='employeeAchievements' type='kdab:EmployeeAchievements'/>
+          <element name='employeeJeansSize' type='kdab:JeansSize'/>
         </sequence>
       </complexType>
       <simpleType name="Telegram">
@@ -77,6 +78,26 @@
           <maxLength value="255"></maxLength>
         </restriction>
       </simpleType>
+
+      <!-- Union example from http://www.w3schools.com/schema/el_union.asp -->
+      <xsd:simpleType name="JeansSize">
+         <xsd:union memberTypes="sizebyno sizebystring">
+           <!-- TODO add a simpleType child here to test the other way of specifying types -->
+         </xsd:union>
+      </xsd:simpleType>
+      <xsd:simpleType name="sizebyno">
+        <xsd:restriction base="xsd:positiveInteger">
+          <xsd:maxInclusive value="42"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="sizebystring">
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="small"/>
+          <xsd:enumeration value="medium"/>
+          <xsd:enumeration value="large"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+
 
       <element name="LoginElement">
         <complexType>
@@ -100,6 +121,7 @@
     <part name='employeeName' type='kdab:EmployeeName'/>
     <part name='employeeCountry' type='kdab:LimitedString'/>
     <part name='employeeAchievements' type='kdab:EmployeeAchievements'/>
+    <part name='employeeJeansSize' type='kdab:JeansSize'/>
   </message>
   <message name='addEmployeeResponse'>
     <part name='bstrReturn' type='xsd:string'/>
