@@ -1,7 +1,6 @@
 #include "KDSoapClientInterface.h"
 #include "KDSoapMessage.h"
 #include "KDSoapValue.h"
-#include "KDSoapPendingCallWatcher.h"
 #include "wsdl_sugarcrm.h"
 #include "httpserver_p.h"
 #include <QtTest/QtTest>

@@ -9,8 +9,6 @@
 #include <QDebug>
 #include <QMessageBox>
 
-#include "KDSoapPendingCallWatcher.h"
-
 MainWindow::MainWindow( QWidget *parent ) : QWidget( parent )
 {
    

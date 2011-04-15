@@ -1,7 +1,6 @@
 #include <QCoreApplication>
 #include "KDSoapClientInterface.h"
 #include "KDSoapMessage.h"
-#include "KDSoapPendingCallWatcher.h"
 
 #include <QDebug>
 

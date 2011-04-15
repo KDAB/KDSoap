@@ -518,6 +518,7 @@ void Converter::convertClientOutputMessage( const Operation &operation,
   slotCode += "emit " + doneSignal.name() + "( " + partNames.join( "," ) + " );";
   slotCode.unindent();
   slotCode += '}';
+  slotCode += "watcher->deleteLater();";
 
   finishedSlot.setBody(slotCode);
 

@@ -1,7 +1,6 @@
 #include "KDSoapClientInterface.h"
 #include "KDSoapMessage.h"
 #include "KDSoapValue.h"
-#include "KDSoapPendingCallWatcher.h"
 #include "KDSoapAuthentication.h"
 #include "wsdl_salesforce-partner.h"
 #include "httpserver_p.h"
