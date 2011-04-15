@@ -202,7 +202,7 @@ void KDSoapServerSocket::makeCall(const KDSoapMessage &requestMsg, KDSoapMessage
 
         serverObjectInterface->setRequestHeaders(requestHeaders, soapAction);
 
-        serverObjectInterface->processRequest(requestMsg, replyMsg);
+        serverObjectInterface->processRequest(requestMsg, replyMsg, soapAction);
 
         responseHeaders = serverObjectInterface->responseHeaders();
 

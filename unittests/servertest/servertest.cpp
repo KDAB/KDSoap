@@ -36,7 +36,7 @@ public:
         s_serverObjects.remove(QThread::currentThread());
     }
 
-    virtual void processRequest(const KDSoapMessage &request, KDSoapMessage &response);
+    virtual void processRequest(const KDSoapMessage &request, KDSoapMessage &response, const QByteArray& soapAction);
 public: // SOAP-accessible methods
     QString getEmployeeCountry(const QString& employeeName) {
         // Should be called in same thread as constructor
@@ -603,7 +603,7 @@ private:
 QTEST_MAIN(ServerTest)
 
 // TODO: generate this method (needs a .wsdl file)
-void CountryServerObject::processRequest(const KDSoapMessage &request, KDSoapMessage &response)
+void CountryServerObject::processRequest(const KDSoapMessage &request, KDSoapMessage &response, const QByteArray& soapAction)
 {
     const QByteArray method = request.name().toLatin1();
     if (method == "getEmployeeCountry") {
@@ -641,7 +641,7 @@ void CountryServerObject::processRequest(const KDSoapMessage &request, KDSoapMes
             response.setValue(QVariant(hex));
         }
     } else {
-        KDSoapServerObjectInterface::processRequest(request, response);
+        KDSoapServerObjectInterface::processRequest(request, response, soapAction);
     }
 }
 
