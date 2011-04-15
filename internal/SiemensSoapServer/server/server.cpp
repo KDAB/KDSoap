@@ -10,34 +10,9 @@
 #include <QDebug>
 #include <QCoreApplication>
 
-class IPGatewayServerObject : public QObject, public KDSoapServerObjectInterface
+class IPGatewayServerObject : public AmisTS_IPGatewayServerBase
 {
-    Q_OBJECT
-    Q_INTERFACES(KDSoapServerObjectInterface)
 public:
-    IPGatewayServerObject() : QObject(), KDSoapServerObjectInterface() {
-    }
-
-    virtual void processRequest(const KDSoapMessage &request, KDSoapMessage &response)
-    {
-        // This code will be generated in the future
-        const QByteArray method = request.name().toLatin1();
-        qDebug() << method;
-        if (method == "IPGatewayData") {
-            //if (values.isEmpty()) {
-            //    response.setFault(true);
-            //    response.addArgument(QLatin1String("faultcode"), QLatin1String("Server.RequiredArgumentMissing"));
-            //    return;
-            //}
-            AMIS__IPGatewayDataRequest parameters;
-            parameters.deserialize(request);
-            AMIS__IPGatewayDataResponse ret = iPGatewayData(parameters);
-            if (!hasFault()) {
-                response.childValues() += ret.serialize(QString()).childValues();
-            }
-        }
-    }
-
     AMIS__IPGatewayDataResponse iPGatewayData(const AMIS__IPGatewayDataRequest& parameters) {
         qDebug() << "iPGatewayData() called! Input=" << parameters.telegram();
         AMIS__IPGatewayDataResponse response;
@@ -59,11 +34,16 @@ int main(int argc, char **argv)
     QCoreApplication app(argc, argv);
 
     IPGatewayServer server;
-    server.listen(QHostAddress::LocalHost, 4245);
+    if (!server.listen(QHostAddress::LocalHost, 4245)) {
+        qWarning("Could not listen on port 4245, maybe another server is already running?");
+        return 1;
+    }
 
     qDebug() << "Server listening on" << server.endPoint();
 
     return app.exec();
 }
+
+// #include "swsdl_IPGW_V1.0.cpp"
 
 #include "server.moc"
