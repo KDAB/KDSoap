@@ -37,6 +37,7 @@ void Converter::convertServerService()
         KODE::Function processRequestMethod(QString::fromLatin1("processRequest"), QString::fromLatin1("void"));
         processRequestMethod.addArgument("const KDSoapMessage &request");
         processRequestMethod.addArgument("KDSoapMessage &response");
+        processRequestMethod.addArgument("const QByteArray& soapAction");
 
         KODE::Code body;
         body.addLine("const QByteArray method = request.name().toLatin1();");
@@ -61,7 +62,7 @@ void Converter::convertServerService()
             body += "else {";
             body.indent();
         }
-        body += "KDSoapServerObjectInterface::processRequest(request, response);";
+        body += "KDSoapServerObjectInterface::processRequest(request, response, soapAction);" COMMENT;
         if (!first) {
             body.unindent();
             body += "}";
@@ -90,7 +91,7 @@ void Converter::generateServerMethod(KODE::Code& code, const Binding& binding, c
         const SoapBinding soapBinding( binding.soapBinding() );
         const SoapBinding::Operation op = soapBinding.operations().value( operation.name() );
         if (!op.action().isEmpty()) {
-            condition += "|| soapAction() == \"" + op.action() + "\"";
+            condition += "|| soapAction == \"" + op.action() + "\"";
         }
     }
     code += QString(first ? "" : "else ") + "if (" + condition + ") {";

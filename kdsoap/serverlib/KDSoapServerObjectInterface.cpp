@@ -23,10 +23,10 @@ KDSoapServerObjectInterface::~KDSoapServerObjectInterface()
     delete d;
 }
 
-void KDSoapServerObjectInterface::processRequest(const KDSoapMessage &request, KDSoapMessage& response)
+void KDSoapServerObjectInterface::processRequest(const KDSoapMessage &request, KDSoapMessage& response, const QByteArray& soapAction)
 {
     const QString method = request.name();
-    qDebug() << "Slot not found:" << method /* << "in" << metaObject()->className()*/;
+    qDebug() << "Slot not found:" << method << "[soapAction =" << soapAction << "]" /* << "in" << metaObject()->className()*/;
     response.setFault(true);
     response.addArgument(QString::fromLatin1("faultcode"), QString::fromLatin1("Server.MethodNotFound"));
     response.addArgument(QString::fromLatin1("faultstring"), QString::fromLatin1("%1 not found").arg(method));

@@ -54,7 +54,7 @@ public:
      * a fault "method not found". Subclasses must implement the dispatching
      * to actual implementation methods.
      */
-    virtual void processRequest(const KDSoapMessage& request, KDSoapMessage& response);
+    virtual void processRequest(const KDSoapMessage& request, KDSoapMessage& response, const QByteArray& soapAction);
 
     /**
      * Returns the SOAP headers that were provided together with the SOAP request.

@@ -514,9 +514,9 @@ public:
     }
 
     // Normally you don't reimplement this. This is just to store req and resp for the unittest.
-    void processRequest( const KDSoapMessage &request, KDSoapMessage &response ) {
+    void processRequest( const KDSoapMessage &request, KDSoapMessage &response, const QByteArray& soapAction ) {
         m_request = request;
-        MyWsdlDocumentServerBase::processRequest(request, response);
+        MyWsdlDocumentServerBase::processRequest(request, response, soapAction);
         m_response = response;
         //qDebug() << "processRequest: done. " << this << "Response name=" << response.name();
     }
