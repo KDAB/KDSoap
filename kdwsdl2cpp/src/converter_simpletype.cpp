@@ -209,8 +209,27 @@ void Converter::convertSimpleType( const XSD::SimpleType *type, const XSD::Simpl
   }
   break;
   case XSD::SimpleType::TypeUnion:
-      classDocumentation = "This class encapsulates a union type. NOT IMPLEMENTED.";
-      qDebug() << "ERROR: cannot generate" << type->qualifiedName() << typeName << "because unions are not implemented";
+      classDocumentation = "This class encapsulates a union type.";
+      // Let's be lazy and let's just have a qvariant for storing the various
+      // possible simple types (int, QString).
+      newClass.addHeaderInclude( "QVariant" );
+
+      KODE::MemberVariable variable( "value", "QVariant" );
+      newClass.addMemberVariable( variable );
+
+      // setter method
+      KODE::Function setter( "setValue", "void" );
+      setter.addArgument( "const QVariant& val" );
+      setter.setBody( variable.name() + " = val;" );
+
+      // getter method
+      KODE::Function getter( "value", "QVariant" );
+      getter.setBody( "return " + variable.name() + ';' );
+      getter.setConst( true );
+
+      newClass.addFunction( setter );
+      newClass.addFunction( getter );
+
       break;
   };
 
@@ -242,7 +261,8 @@ void Converter::createSimpleTypeSerializer( KODE::Class& newClass, const XSD::Si
     KODE::Function deserializeFunc( "deserialize", "void" );
     deserializeFunc.addArgument( "const QVariant& value" );
 
-    if ( type->subType() == XSD::SimpleType::TypeRestriction ) {
+    switch ( type->subType() ) {
+    case XSD::SimpleType::TypeRestriction:
         // is an enumeration
         if ( type->facetType() & XSD::SimpleType::ENUM ) {
             const QStringList enums = type->facetEnums();
@@ -329,7 +349,8 @@ void Converter::createSimpleTypeSerializer( KODE::Class& newClass, const XSD::Si
             }
 
         }
-    } else {
+        break;
+    case XSD::SimpleType::TypeList: {
         const QName baseName = type->listTypeName();
         const QString itemTypeName = mTypeMap.localType( baseName );
         KODE::MemberVariable variable( "entries", "QList<" + itemTypeName + ">" ); // just for the name
@@ -374,6 +395,22 @@ void Converter::createSimpleTypeSerializer( KODE::Class& newClass, const XSD::Si
             code += "}";
             deserializeFunc.setBody(code);
         }
+    }
+    break;
+    case XSD::SimpleType::TypeUnion: {
+        KODE::MemberVariable variable( "value", "QVariant" ); // just for the naming
+        {
+            KODE::Code code;
+            code += "return " + variable.name() + ";" COMMENT;
+            serializeFunc.setBody( code );
+        }
+        {
+            KODE::Code code;
+            code += variable.name() + " = value;" COMMENT;
+            deserializeFunc.setBody( code );
+        }
+        break;
+    }
     }
 
     newClass.addFunction( serializeFunc );

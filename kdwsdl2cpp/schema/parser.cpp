@@ -602,8 +602,14 @@ SimpleType Parser::parseSimpleType( ParserContext *context, const QDomElement &e
       parseRestriction( context, childElement, st );
     } else if ( name.localName() == "union" ) {
       st.setSubType( SimpleType::TypeUnion );
-      qDebug( "simpletype::union not supported (%s)", qPrintable(st.name()) );
-      // It means "the contents can be either one of my child elements".
+      // It means "the contents can be either one of my child elements, or one of the types listed in memberTypes".
+      // For now we'll just use QVariant.
+      // For more compile-time checking we would need to actually parse and store
+      // the references to the possible types. And then generate methods for each;
+      // but we won't have a good name for these methods, just some type name...
+      // setSizebyno / setSizebystring reads weird.
+      st.setBaseTypeName( QName(XMLSchemaURI, QString::fromLatin1("anyType")) ); // to get QVariant
+
     } else if ( name.localName() == "list" ) {
       st.setSubType( SimpleType::TypeList );
       if ( childElement.hasAttribute( "itemType" ) ) {
