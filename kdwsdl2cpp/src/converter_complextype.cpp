@@ -91,6 +91,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
             continue;
         }
         QString typeName = mTypeMap.localType( elemIt.type() );
+        Q_ASSERT(!typeName.isEmpty());
 
         if (typeName != "void") // void means empty element, probably just here for later extensions (testcase: SetPasswordResult in salesforce)
         {
@@ -102,6 +103,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
             }
             if ( type->isArray() ) {
                 const QString arrayTypeName = mTypeMap.localType( type->arrayType() );
+                Q_ASSERT(!arrayTypeName.isEmpty());
                 //qDebug() << "array of" << attribute.arrayType() << "->" << arrayTypeName;
                 typeName = "QList<" + arrayTypeName + ">";
                 newClass.addInclude(QString(), arrayTypeName); // add forward declaration

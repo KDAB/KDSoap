@@ -59,6 +59,9 @@ private Q_SLOTS:
         lottoNumbers.setEntries(QList<int>() << 7 << 21 << 30 << 42);
         employeeType.setLottoNumbers(lottoNumbers);
         employeeType.setTeam(QString::fromLatin1("Minitel"));
+        KDAB__AnonListType anonList;
+        anonList.setEntries(QList<KDAB__AnonListTypeListItem>() << KDAB__AnonListTypeListItem::Detailed << KDAB__AnonListTypeListItem::DetailedMerged);
+        employeeType.setAnonList(anonList);
         KDAB__JeansSize jeansSize;
         jeansSize.setValue(24);
 
@@ -242,6 +245,7 @@ private:
                 "<n1:otherRoles xsi:type=\"n1:EmployeeTypeEnum\">TeamLeader</n1:otherRoles>"
                 "<n1:otherRolesAsList xsi:type=\"n1:EmployeeTypeEnumList\">TeamLeader Developer</n1:otherRolesAsList>"
                 "<n1:lottoNumbers xsi:type=\"n1:LottoNumbers\">7 21 30 42</n1:lottoNumbers>"
+                "<n1:anonList xsi:type=\"n1:AnonListType\">Detailed DetailedMerged</n1:anonList>"
                 "</n1:employeeType>");
     }
     static QByteArray serializedEmployee() {

@@ -29,7 +29,7 @@ class ComplexType::Private
 {
 public:
     Private()
-      : mAnonymous(false), mIsArray(false)
+      // : mAnonymous(false)
     {}
 
     QString mDocumentation;
@@ -38,8 +38,7 @@ public:
     Attribute::List mAttributes;
     AttributeGroup::List mAttributeGroups;
 
-    bool mAnonymous;
-    bool mIsArray;
+    //bool mAnonymous;
 
     Derivation mBaseDerivation;
     QName mBaseTypeName;
@@ -127,15 +126,15 @@ bool ComplexType::isArray() const
     return !arrayType().isEmpty();
 }
 
-void ComplexType::setAnonymous( bool anonymous )
-{
-  d->mAnonymous = anonymous;
-}
+//void ComplexType::setAnonymous( bool anonymous )
+//{
+//  d->mAnonymous = anonymous;
+//}
 
-bool ComplexType::isAnonymous() const
-{
-  return d->mAnonymous;
-}
+//bool ComplexType::isAnonymous() const
+//{
+//  return d->mAnonymous;
+//}
 
 void ComplexType::setElements( const Element::List &elements )
 {

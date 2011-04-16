@@ -46,6 +46,7 @@
             <sequence maxOccurs="3">
              <element name="team" type="kdab:TeamName"/>
             </sequence>
+            <element name="anonList" type="kdab:AnonListType"/>
           </sequence>
           <attribute name="type" type="kdab:EmployeeTypeEnum"/>
         </complexType>
@@ -98,6 +99,21 @@
         </xsd:restriction>
       </xsd:simpleType>
 
+      <!-- Test for anonymous type in list -->
+      <xsd:simpleType name="AnonListType">
+        <xsd:list>
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:enumeration value="None" />
+              <xsd:enumeration value="MergedOnly" />
+              <xsd:enumeration value="FreeBusy" />
+              <xsd:enumeration value="FreeBusyMerged" />
+              <xsd:enumeration value="Detailed" />
+              <xsd:enumeration value="DetailedMerged" />
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:list>
+      </xsd:simpleType>
 
       <element name="LoginElement">
         <complexType>

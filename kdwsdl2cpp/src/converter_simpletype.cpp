@@ -185,6 +185,7 @@ void Converter::convertSimpleType( const XSD::SimpleType *type, const XSD::Simpl
     newClass.addHeaderInclude( "QList" );
     const QName baseName = type->listTypeName();
     const QString itemTypeName = mTypeMap.localType( baseName );
+    Q_ASSERT(!itemTypeName.isEmpty());
 
     // include header
     newClass.addIncludes( QStringList(), mTypeMap.forwardDeclarations( baseName ) );
