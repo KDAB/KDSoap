@@ -512,6 +512,9 @@ void Parser::addAnyAttribute( ParserContext*, const QDomElement &element, Comple
 
   newAttribute.setNameSpace( element.attribute( "namespace" ) );
 
+  // ### Hmm, technically, this should be a list of anys, I think.
+  newAttribute.setType(QName(XMLSchemaURI, QString::fromLatin1("anyType")));
+
   complexType.addAttribute( newAttribute );
 }
 

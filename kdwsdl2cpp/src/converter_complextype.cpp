@@ -148,6 +148,9 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
         QString typeName, inputTypeName;
 
         typeName = mTypeMap.localType( attribute.type() );
+        if (typeName.isEmpty()) {
+            qDebug() << "ERROR: attribute with unknown type:" << attribute.name() << attribute.type() << "in" << typeName;
+        }
         inputTypeName = mTypeMap.localInputType( attribute.type(), QName() );
         //qDebug() << "Attribute" << attribute.name();
 
