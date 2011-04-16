@@ -56,6 +56,11 @@
          <element name="type" type="xsd:string"/>
          <element name="label" type="xsd:string"/>
         </all>
+        <anyAttribute namespace="http://schemas.xmlsoap.org/soap/envelope/">
+          <annotation>
+            <documentation>Allow attributes in the soap namespace to be used here</documentation>
+          </annotation>
+        </anyAttribute>
       </complexType>
       <complexType name="EmployeeAchievements">
         <complexContent>
