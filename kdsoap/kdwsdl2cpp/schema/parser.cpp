@@ -620,8 +620,25 @@ SimpleType Parser::parseSimpleType( ParserContext *context, const QDomElement &e
           typeName.setNameSpace( st.nameSpace() );
         st.setListTypeName( typeName );
       } else {
-        // TODO: add support for anonymous types
-        qDebug() << "parseSimpleType: unhandled: anonymous list";
+        // Anonymous type
+        QDomElement typeElement = childElement.firstChildElement();
+        for ( ; !typeElement.isNull() ; typeElement = typeElement.nextSiblingElement() ) {
+          const QName typeName = typeElement.tagName();
+          //qDebug() << "childName:" << childName.localName();
+          if ( typeName.localName() == "complexType" ) {
+            ComplexType ctItem = parseComplexType( context, typeElement );
+            ctItem.setName( st.name() + "ListItem" ); // need to make something up, so that the classname looks good
+            st.setListTypeName( ctItem.qualifiedName() );
+            d->mComplexTypes.append( ctItem );
+          } else if ( typeName.localName() == "simpleType" ) {
+            SimpleType stItem = parseSimpleType( context, typeElement );
+            stItem.setName( st.name() + "ListItem" ); // need to make something up, so that the classname looks good
+            st.setListTypeName( stItem.qualifiedName() );
+            d->mSimpleTypes.append( stItem );
+          } else {
+              qDebug() << "ERROR: parseSimpleType: unhandled: " << typeName.localName() << "in list" << d->mNameSpace << st.name();
+          }
+        }
       }
     } else if ( name.localName() == "annotation" ) {
       Annotation::List annotations = parseAnnotation( context, childElement );
