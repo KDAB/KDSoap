@@ -254,16 +254,10 @@ QString SoapBinding::Body::encodingStyle() const
 {
   return mEncodingStyle;
 }
-#endif
 
 void SoapBinding::Body::setPart( const QString &part )
 {
   mPart = part;
-}
-
-QString SoapBinding::Body::part() const
-{
-  return mPart;
 }
 
 void SoapBinding::Body::setUse( Use use )
@@ -271,14 +265,20 @@ void SoapBinding::Body::setUse( Use use )
   mUse = use;
 }
 
-SoapBinding::Use SoapBinding::Body::use() const
-{
-  return mUse;
-}
-
 void SoapBinding::Body::setNameSpace( const QString &nameSpace )
 {
   mNameSpace = nameSpace;
+}
+#endif
+
+QString SoapBinding::Body::part() const
+{
+  return mPart;
+}
+
+SoapBinding::Use SoapBinding::Body::use() const
+{
+  return mUse;
 }
 
 QString SoapBinding::Body::nameSpace() const
@@ -296,7 +296,7 @@ void SoapBinding::Body::loadXML( ParserContext *context, const QDomElement &elem
     mEncodingStyle = QString();
 #endif
 
-  mPart = element.attribute( "part" );
+  mPart = element.attribute( "parts" );
   mNameSpace = element.attribute( "namespace" );
 
   if ( element.hasAttribute( "use" ) ) {
