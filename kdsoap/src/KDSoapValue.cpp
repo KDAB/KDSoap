@@ -236,7 +236,7 @@ void KDSoapValue::writeChildren(KDSoapNamespacePrefixes& namespacePrefixes, QXml
 {
     const KDSoapValueList& args = childValues();
     Q_FOREACH(const KDSoapValue& attr, args.attributes()) {
-        Q_ASSERT(!attr.value().isNull());
+        //Q_ASSERT(!attr.value().isNull());
         writer.writeAttribute(messageNamespace, attr.name(), variantToTextValue(attr.value(), attr.typeNs(), attr.type()));
     }
     KDSoapValueListIterator it(args);

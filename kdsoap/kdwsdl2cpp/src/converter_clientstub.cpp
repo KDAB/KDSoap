@@ -232,6 +232,7 @@ void Converter::clientAddOneArgument( KODE::Function& callFunc, const Part& part
             const XSD::ComplexType ctype = mWSDL.findComplexType( element.type() );
             if ( !ctype.isNull() && ctype.isEmpty() ) {
                 def = mTypeMap.localType( part.type(), part.element() ) + "()";
+                //def += "/* " + element.type().qname() + " is empty */";
             }
         }
 
@@ -241,9 +242,30 @@ void Converter::clientAddOneArgument( KODE::Function& callFunc, const Part& part
     newClass.addHeaderIncludes( mTypeMap.headerIncludes( part.type() ) );
 }
 
-void Converter::clientAddArguments( KODE::Function& callFunc, const Message& message, KODE::Class &newClass )
+static Part::List selectedParts( const Binding& binding, const Message& message, const Operation& operation, bool input )
 {
-    const Part::List parts = message.parts();
+    QString selectedPart;
+    if ( binding.type() == Binding::SOAPBinding ) {
+        const SoapBinding soapBinding = binding.soapBinding();
+        const SoapBinding::Operation op = soapBinding.operations().value( operation.name() );
+        selectedPart = input ? op.input().part() : op.output().part();
+        if (!selectedPart.isEmpty()) {
+            Part::List selected;
+            Q_FOREACH( const Part& part, message.parts() ) {
+                if ( part.name() == selectedPart ) { // support for <soap:body parts="MoveFolderResult"/> (msexchange)
+                    selected << part;
+                }
+            }
+            return selected;
+        }
+    }
+
+    return message.parts();
+}
+
+void Converter::clientAddArguments( KODE::Function& callFunc, const Message& message, KODE::Class &newClass, const Operation &operation, const Binding &binding )
+{
+    const Part::List parts = selectedParts( binding, message, operation, true /*input*/ );
     Q_FOREACH( const Part& part, parts ) {
         clientAddOneArgument( callFunc, part, newClass );
     }
@@ -302,13 +324,12 @@ void Converter::clientGenerateMessage( KODE::Code& code, const Binding& binding,
         //qDebug() << "input headers:" << op.inputHeaders().count();
     }
 
-    const Part::List parts = message.parts();
-    Q_FOREACH( const Part& part, parts ) {
+    Q_FOREACH( const Part& part, selectedParts( binding, message, operation, true /*input*/ ) ) {
         addMessageArgument( code, soapStyle(binding), part, part.name(), "message" );
     }
 }
 
-KODE::Code Converter::deserializeRetVal(const KWSDL::Part& part, const QString& replyMsgName, const QString& qtRetType) const
+KODE::Code Converter::deserializeRetVal(const KWSDL::Part& part, const QString& replyMsgName, const QString& qtRetType, const QString& varName) const
 {
     // This is the opposite logic as appendElementArg, which does:
     // if builtin -> xml element with basic contents
@@ -319,12 +340,12 @@ KODE::Code Converter::deserializeRetVal(const KWSDL::Part& part, const QString& 
     const bool isBuiltin = mTypeMap.isBuiltinType( part.type(), part.element() );
     const bool isComplex = mTypeMap.isComplexType( part.type(), part.element() );
     if ( isBuiltin ) {
-        code += "ret = " + mTypeMap.deserializeBuiltin( part.type(), part.element(), replyMsgName + ".value()", qtRetType ) + ";" COMMENT;
+        code += varName + " = " + mTypeMap.deserializeBuiltin( part.type(), part.element(), replyMsgName + ".value()", qtRetType ) + ";" COMMENT;
     } else if ( isComplex ) {
-        code += "ret.deserialize(" + replyMsgName + ");" COMMENT;
+        code += varName + ".deserialize(" + replyMsgName + ");" COMMENT;
     } else {
         // testcase: MyWsdlDocument::sendTelegram
-        code += "ret.deserialize(" + replyMsgName + ".value());" COMMENT;
+        code += varName + ".deserialize(" + replyMsgName + ".value());" COMMENT;
     }
     return code;
 }
@@ -337,7 +358,7 @@ void Converter::convertClientCall( const Operation &operation, const Binding &bi
   callFunc.setDocs(QString("Blocking call to %1.\nNot recommended in a GUI thread.").arg(operation.name()));
   const Message inputMessage = mWSDL.findMessage( operation.input().message() );
   const Message outputMessage = mWSDL.findMessage( operation.output().message() );
-  clientAddArguments( callFunc, inputMessage, newClass );
+  clientAddArguments( callFunc, inputMessage, newClass, operation, binding );
   KODE::Code code;
   const bool hasAction = clientAddAction( code, binding, operation.name() );
   clientGenerateMessage( code, binding, inputMessage, operation );
@@ -349,54 +370,62 @@ void Converter::convertClientCall( const Operation &operation, const Binding &bi
   code += callLine;
 
   // Return value(s) :
-  const Part::List outParts = outputMessage.parts();
-  if (outParts.count() > 1) {
-      qWarning().nospace() << "ERROR: " << methodName << ": complex return types are not implemented yet in sync calls; use an async call";
-      // the async code (convertClientOutputMessage) actually supports it, since it can emit multiple values in the signal
-  }
-  QString retType;
-  Part retPart;
-  Q_FOREACH( const Part& outPart, outParts ) {
-      //const QString lowerName = lowerlize( outPart.name() );
+  const Part::List outParts = selectedParts( binding, outputMessage, operation, false /*output*/ );
+  const bool singleReturnValue = outParts.count() == 1;
 
-      retType = mTypeMap.localType( outPart.type(), outPart.element() );
-      retPart = outPart;
-
+  if (singleReturnValue) {
+      const Part retPart = outParts.first();
+      const QString retType = mTypeMap.localType( retPart.type(), retPart.element() );
       callFunc.setReturnType( retType );
-      break; // only one...
-  }
 
-  code += "if (d_ptr->m_lastReply.isFault())";
-  code.indent();
-  code += "return " + retType + "();"; // default-constructed value
-  code.unindent();
+      code += "if (d_ptr->m_lastReply.isFault())";
+      code.indent();
+      code += "return " + retType + "();"; // default-constructed value
+      code.unindent();
 
-  // WARNING: if you change the logic below, also adapt the result parsing for async calls
+      // WARNING: if you change the logic below, also adapt the result parsing for async calls
 
-  if ( retType != "void" )
-  {
+      if ( retType != "void" ) {
+          if ( soapStyle(binding) == SoapBinding::DocumentStyle /*no wrapper*/ ) {
+              code += retType + " ret;"; // local var
+              code.addBlock(deserializeRetVal(retPart, "d_ptr->m_lastReply", retType, "ret"));
+              code += "return ret;" COMMENT;
+          } else { // RPC style (adds a wrapper), or simple value
+              // Protect the call to .first() below
+              code += "if (d_ptr->m_lastReply.childValues().isEmpty()) {";
+              code.indent();
+              code += "d_ptr->m_lastReply.setFault(true);";
+              code += "d_ptr->m_lastReply.addArgument(QString::fromLatin1(\"faultcode\"), QString::fromLatin1(\"Server.EmptyResponse\"));";
+              code += "return " + retType + "();"; // default-constructed value
+              code.unindent();
+              code += "}";
 
-      if ( soapStyle(binding) == SoapBinding::DocumentStyle /*no wrapper*/ ) {
-          code += retType + " ret;"; // local var
-          code.addBlock(deserializeRetVal(retPart, "d_ptr->m_lastReply", retType));
-          code += "return ret;" COMMENT;
-      } else { // RPC style (adds a wrapper), or simple value
-
-          // Protect the call to .first() below
-          code += "if (d_ptr->m_lastReply.childValues().isEmpty()) {";
-          code.indent();
-          code += "d_ptr->m_lastReply.setFault(true);";
-          code += "d_ptr->m_lastReply.addArgument(QString::fromLatin1(\"faultcode\"), QString::fromLatin1(\"Server.EmptyResponse\"));";
-          code += "return " + retType + "();"; // default-constructed value
-          code.unindent();
-          code += "}";
-
-          code += retType + " ret;"; // local var
-          code += "const KDSoapValue val = d_ptr->m_lastReply.childValues().first();" COMMENT;
-          code += demarshalVar( retPart.type(), retPart.element(), "ret", retType );
-          code += "return ret;";
+              code += retType + " ret;"; // local var
+              code += "const KDSoapValue val = d_ptr->m_lastReply.childValues().first();" COMMENT;
+              code += demarshalVar( retPart.type(), retPart.element(), "ret", retType );
+              code += "return ret;";
+          }
       }
 
+  } else {
+      // Add each output argument as a non-const ref to the method. A bit ugly but no other way.
+
+      code += "if (d_ptr->m_lastReply.isFault())";
+      code.indent();
+      code += "return;" COMMENT;
+      code.unindent();
+      Q_ASSERT(soapStyle(binding) == SoapBinding::DocumentStyle); // RPC with multiple return values? impossible, we generate a single wrapper
+
+      Q_FOREACH(const Part& part, outParts) {
+          const QString argType = mTypeMap.localType( part.type(), part.element() );
+          Q_ASSERT(!argType.isEmpty());
+          const QString lowerName = lowerlize( part.name() );
+          KODE::Function::Argument arg( argType + "& " + mNameMapper.escape( lowerName ) );
+          callFunc.addArgument( arg );
+          newClass.addHeaderIncludes( mTypeMap.headerIncludes( part.type() ) );
+
+          code.addBlock(deserializeRetVal(part, "d_ptr->m_lastReply", argType, lowerName));
+      }
   }
 
   callFunc.setBody( code );
@@ -416,7 +445,7 @@ void Converter::convertClientInputMessage( const Operation &operation,
                     .arg(lowerlize(operationName) + "Done")
                     .arg(lowerlize(operationName) + "Error"));
   const Message message = mWSDL.findMessage( operation.input().message() );
-  clientAddArguments( asyncFunc, message, newClass );
+  clientAddArguments( asyncFunc, message, newClass, operation, binding );
   KODE::Code code;
   const bool hasAction = clientAddAction( code, binding, operation.name() );
   clientGenerateMessage( code, binding, message, operation );
@@ -476,7 +505,7 @@ void Converter::convertClientOutputMessage( const Operation &operation,
   const Message message = mWSDL.findMessage( operation.output().message() );
 
   QStringList partNames;
-  const Part::List parts = message.parts();
+  const Part::List parts = selectedParts( binding, message, operation, false /*output*/ );
   Q_FOREACH( const Part& part, parts ) {
     const QString partType = mTypeMap.localType( part.type(), part.element() );
     Q_ASSERT(!partType.isEmpty());
@@ -491,7 +520,7 @@ void Converter::convertClientOutputMessage( const Operation &operation,
 
     if ( soapStyle(binding) == SoapBinding::DocumentStyle /*no wrapper*/ ) {
         slotCode += partType + " ret;"; // local var
-        slotCode.addBlock(deserializeRetVal(part, "reply", partType));
+        slotCode.addBlock(deserializeRetVal(part, "reply", partType, "ret"));
         partNames << "ret";
     } else { // RPC style (adds a wrapper) or simple value
         QString value = "reply.childValues().child(QLatin1String(\"" + part.name() + "\"))";
@@ -536,6 +565,13 @@ void Converter::createHeader( const SoapBinding::Header& header, KODE::Class &ne
         QString methodName = "set" + upperlize( partName );
         if (!methodName.endsWith("Header"))
             methodName += "Header";
+
+        const QString argType = mTypeMap.localInputType( part.type(), part.element() );
+        const QString methodSig = methodName + '(' + argType + ')';
+        if (mHeaderMethods.contains(methodSig))
+            return; // already have it (testcase: Services.wsdl)
+
+        mHeaderMethods.insert(methodSig);
         KODE::Function headerSetter( methodName, "void", KODE::Function::Public );
         headerSetter.setDocs(QString("Sets the header '%1', for all subsequent method calls.").arg(partName));
         clientAddOneArgument( headerSetter, part, newClass );

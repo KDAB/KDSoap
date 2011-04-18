@@ -24,6 +24,7 @@
 #include <libkode/class.h>
 #include <schema/parser.h>
 #include <wsdl/wsdl.h>
+#include <QSet>
 
 #include "namemapper.h"
 #include "typemap.h"
@@ -63,7 +64,7 @@ class Converter
     void convertClientInputMessage( const Operation&, const Binding&, KODE::Class& );
     void convertClientOutputMessage( const Operation&, const Binding&, KODE::Class& );
     void clientAddOneArgument( KODE::Function& callFunc, const Part& part, KODE::Class &newClass );
-    void clientAddArguments( KODE::Function& callFunc, const Message& message, KODE::Class &newClass );
+    void clientAddArguments( KODE::Function& callFunc, const Message& message, KODE::Class &newClass, const Operation &operation, const Binding &binding );
     bool clientAddAction( KODE::Code& code, const Binding &binding, const QString& operationName );
     void clientGenerateMessage( KODE::Code& code, const Binding& binding, const Message& message, const Operation& operation );
     void addMessageArgument( KODE::Code& code, const SoapBinding::Style& bindingStyle, const Part& part, const QString& localVariableName, const QByteArray& messageName );
@@ -72,7 +73,7 @@ class Converter
     KODE::Code demarshalVar( const QName& type, const QName& elementType, const QString& variableName, const QString& typeName, const QString& soapValueVarName = "val" ) const;
     KODE::Code demarshalArrayVar( const QName& type, const QString& variableName, const QString& typeName ) const;
     void addVariableInitializer( KODE::MemberVariable& variable ) const;
-    KODE::Code deserializeRetVal(const KWSDL::Part& part, const QString& replyMsgName, const QString& qtRetType) const;
+    KODE::Code deserializeRetVal(const KWSDL::Part& part, const QString& replyMsgName, const QString& qtRetType, const QString& varName) const;
     QString elementNameForPart(const Part& part) const;
 
     // Server Stub
@@ -90,6 +91,7 @@ class Converter
     NameMapper mNameMapper;
     TypeMap mTypeMap;
     NSManager mNSManager;
+    QSet<QString> mHeaderMethods;
 };
 
 }

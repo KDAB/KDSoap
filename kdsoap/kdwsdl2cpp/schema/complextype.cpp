@@ -187,7 +187,7 @@ void ComplexType::addElement( const Element &element )
 
 bool ComplexType::isEmpty() const
 {
-  return d->mAttributeGroups.isEmpty() && d->mAttributes.isEmpty() && d->mElements.isEmpty();
+    return d->mAttributeGroups.isEmpty() && d->mAttributes.isEmpty() && d->mElements.isEmpty() && d->mBaseTypeName.isEmpty() && d->mArrayType.isEmpty();
 }
 
 }

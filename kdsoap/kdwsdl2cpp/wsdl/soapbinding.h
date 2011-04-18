@@ -85,13 +85,13 @@ class KWSDL_EXPORT SoapBinding : public AbstractBinding
         QString encodingStyle() const;
 #endif
 
-        void setPart( const QString &part );
+        //void setPart( const QString &part );
         QString part() const;
 
-        void setUse( Use use );
+        //void setUse( Use use );
         Use use() const;
 
-        void setNameSpace( const QString &nameSpace );
+        //void setNameSpace( const QString &nameSpace );
         QString nameSpace() const;
 
         void loadXML( ParserContext *context, const QDomElement &element );
