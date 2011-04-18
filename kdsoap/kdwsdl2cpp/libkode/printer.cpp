@@ -852,10 +852,14 @@ void Printer::printImplementation( const File &file, bool createHeaderInclude )
   }
 
   // Classes
+#ifdef KDAB_DELETED
   bool containsQObject = false;
+#endif
   for ( it = classes.constBegin(); it != classes.constEnd(); ++it ) {
+#ifdef KDAB_DELETED
     if ( (*it).isQObject() )
       containsQObject = true;
+#endif
 
     QString str = d->classImplementation( *it );
     if ( !str.isEmpty() )
