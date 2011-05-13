@@ -11,13 +11,8 @@
 
 from core.helpers.BoilerPlate import BuildProject
 from products.ProductBoilerPlate import ProductConfigurations
-from core.plugins.packagers.CPack import CPack
 
-build, project = BuildProject( 'KD SOAP', 'svn+ssh://svn.kdab.com/home/SVN-klaralv/products/kdsoap', '1.0.0',
-								branch = "kdsoap-1.0", minimumMomVersion = "0.5.0" )
-
-staticDebug, staticRelease, sharedDebug, sharedRelease = ProductConfigurations( project )
-
-sharedRelease.addPlugin( CPack( sourcePackage = True ) )
-
+build, project = BuildProject( 'KD SOAP', version = '1.0.0', url = 'svn+ssh://svn.kdab.com/home/SVN-klaralv/products/kdsoap',
+                               branch = "kdsoap-1.0", minimumMomVersion = "0.5.0" )
+configs = ProductConfigurations( project )
 build.build()
