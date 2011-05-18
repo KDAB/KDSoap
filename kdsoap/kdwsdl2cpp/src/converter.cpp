@@ -251,14 +251,14 @@ KODE::Class::List Converter::classes() const
   return mClasses;
 }
 
-void Converter::convert()
+bool Converter::convert()
 {
     convertTypes();
     //  mNSManager.dump();
     if (Settings::self()->generateServerCode()) {
         convertServerService();
     }
-    convertClientService();
+    return convertClientService();
 }
 
 void Converter::convertTypes()
