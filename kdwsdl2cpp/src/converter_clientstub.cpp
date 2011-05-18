@@ -1,6 +1,7 @@
 #include "converter.h"
 #include <libkode/style.h>
 #include <QDebug>
+#include <QCoreApplication>
 
 using namespace KWSDL;
 
@@ -24,7 +25,7 @@ static SoapBinding::Headers getHeaders( const Binding& binding, const QString& o
     return SoapBinding::Headers();
 }
 
-void Converter::convertClientService()
+bool Converter::convertClientService()
 {
   const Service service = mWSDL.definitions().service();
   Q_ASSERT(!service.name().isEmpty());
@@ -177,7 +178,9 @@ void Converter::convertClientService()
               break;
           case Operation::RequestResponseOperation: // the standard case
               // sync method
-              convertClientCall( operation, binding, newClass );
+              if (!convertClientCall( operation, binding, newClass )) {
+                  return false;
+              }
               // async method
               convertClientInputMessage( operation, binding, newClass );
               convertClientOutputMessage( operation, binding, newClass );
@@ -214,6 +217,7 @@ void Converter::convertClientService()
   // Then add the service, at the end
 
   mClasses += bindingClasses;
+  return true;
 }
 
 void Converter::clientAddOneArgument( KODE::Function& callFunc, const Part& part, KODE::Class &newClass )
@@ -351,7 +355,7 @@ KODE::Code Converter::deserializeRetVal(const KWSDL::Part& part, const QString& 
 }
 
 // Generate synchronous call
-void Converter::convertClientCall( const Operation &operation, const Binding &binding, KODE::Class &newClass )
+bool Converter::convertClientCall( const Operation &operation, const Binding &binding, KODE::Class &newClass )
 {
   const QString methodName = lowerlize( operation.name() );
   KODE::Function callFunc( mNameMapper.escape( methodName ), "void", KODE::Function::Public );
@@ -376,6 +380,10 @@ void Converter::convertClientCall( const Operation &operation, const Binding &bi
   if (singleReturnValue) {
       const Part retPart = outParts.first();
       const QString retType = mTypeMap.localType( retPart.type(), retPart.element() );
+      if ( retType.isEmpty() ) {
+          qWarning("Could not generate operation '%s'", qPrintable(operation.name()));
+          return false;
+      }
       callFunc.setReturnType( retType );
 
       code += "if (d_ptr->m_lastReply.isFault())";
@@ -431,6 +439,7 @@ void Converter::convertClientCall( const Operation &operation, const Binding &bi
   callFunc.setBody( code );
 
   newClass.addFunction( callFunc );
+  return true;
 }
 
 // Generate async call method
@@ -508,7 +517,10 @@ void Converter::convertClientOutputMessage( const Operation &operation,
   const Part::List parts = selectedParts( binding, message, operation, false /*output*/ );
   Q_FOREACH( const Part& part, parts ) {
     const QString partType = mTypeMap.localType( part.type(), part.element() );
-    Q_ASSERT(!partType.isEmpty());
+    if ( partType.isEmpty() ) {
+        qWarning("Skipping part '%s'", qPrintable(part.name()));
+        continue;
+    }
 
     if ( partType == "void" )
         continue;

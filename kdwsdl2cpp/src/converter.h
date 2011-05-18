@@ -44,7 +44,7 @@ class Converter
 
     void setWSDL( const WSDL &wsdl );
 
-    void convert();
+    bool convert();
 
     KODE::Class::List classes() const;
 
@@ -59,8 +59,8 @@ class Converter
     void createSimpleTypeSerializer( KODE::Class&, const XSD::SimpleType*, const XSD::SimpleType::List& simpleTypeList );
 
     // Client Stub
-    void convertClientService();
-    void convertClientCall( const Operation&, const Binding&, KODE::Class& );
+    bool convertClientService();
+    bool convertClientCall( const Operation&, const Binding&, KODE::Class& );
     void convertClientInputMessage( const Operation&, const Binding&, KODE::Class& );
     void convertClientOutputMessage( const Operation&, const Binding&, KODE::Class& );
     void clientAddOneArgument( KODE::Function& callFunc, const Part& part, KODE::Class &newClass );

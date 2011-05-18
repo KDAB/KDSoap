@@ -101,12 +101,13 @@ void Compiler::parse( const QDomElement &element )
       KWSDL::Converter converter;
       converter.setWSDL( wsdl );
 
-      converter.convert();
-
-      KWSDL::Creator creator;
-      creator.create( converter.classes() );
-
-      QCoreApplication::exit( 0 );
+      if ( !converter.convert() ) {
+          QCoreApplication::exit( 4 );
+      } else {
+          KWSDL::Creator creator;
+          creator.create( converter.classes() );
+          QCoreApplication::exit( 0 );
+      }
   } else {
       QCoreApplication::exit( 3 );
   }
