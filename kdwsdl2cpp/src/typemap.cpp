@@ -131,14 +131,22 @@ bool TypeMap::isComplexType( const QName &typeName ) const
 
 bool TypeMap::isBuiltinType( const QName &typeName, const QName& elementName ) const
 {
-    QList<Entry>::ConstIterator it = !typeName.isEmpty() ? typeEntry( typeName ) : elementEntry( elementName );
-    return it != mTypeMap.constEnd() ? (*it).builtinType : false;
+    if (!typeName.isEmpty()) {
+        return isBuiltinType( typeName );
+    } else {
+        QList<Entry>::ConstIterator it = elementEntry( elementName );
+        return it != mElementMap.constEnd() ? (*it).builtinType : false;
+    }
 }
 
 bool TypeMap::isComplexType( const QName &typeName, const QName& elementName ) const
 {
-    QList<Entry>::ConstIterator it = !typeName.isEmpty() ? typeEntry( typeName ) : elementEntry( elementName );
-    return it != mTypeMap.constEnd() ? (*it).complexType : false;
+    if (!typeName.isEmpty()) {
+        return isComplexType( typeName );
+    } else {
+        QList<Entry>::ConstIterator it = elementEntry( elementName );
+        return it != mElementMap.constEnd() ? (*it).complexType : false;
+    }
 }
 
 QString TypeMap::localType( const QName &typeName ) const
