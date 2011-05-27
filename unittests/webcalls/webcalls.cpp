@@ -108,7 +108,7 @@ private slots:
         message.addArgument(QLatin1String("bstrParam2"), QLatin1String("def"));
         KDSoapMessage ret = client.call(QLatin1String("Method1"), message);
         QVERIFY(ret.isFault());
-        QCOMPARE(ret.faultAsString(), QString::fromLatin1("Fault code 1: Connection refused ()"));
+        QCOMPARE(ret.faultAsString(), QString::fromLatin1("Fault code 1: Connection refused"));
     }
 
     void testOrteLookup()
