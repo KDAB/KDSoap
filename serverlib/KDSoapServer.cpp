@@ -36,6 +36,8 @@ public:
     QString m_logFileName;
     QFile m_logFile;
 
+    QString m_wsdlFile;
+
     QHostAddress m_addressBeforeSuspend;
     quint16 m_portBeforeSuspend;
 };
@@ -92,7 +94,7 @@ QString KDSoapServer::endPoint() const {
     if (address == QHostAddress::Null)
         return QString();
     const QString addressStr = address == QHostAddress::Any ? QString::fromLatin1("127.0.0.1") : address.toString();
-    return QString::fromLatin1("%1://%2:%3/path")
+    return QString::fromLatin1("%1://%2:%3/")
             .arg(QString::fromLatin1(/*(m_features & Ssl)?"https":*/"http"))
             .arg(addressStr)
             .arg(serverPort());
@@ -221,6 +223,18 @@ void KDSoapServer::resume()
             qWarning("KDSoapServer: failed to listen on %s port %d", qPrintable(d->m_addressBeforeSuspend.toString()), d->m_portBeforeSuspend);
         }
     }
+}
+
+void KDSoapServer::setWsdlFile(const QString &file)
+{
+    QMutexLocker lock(&d->m_logMutex);
+    d->m_wsdlFile = file;
+}
+
+QString KDSoapServer::wsdlFile() const
+{
+    QMutexLocker lock(&d->m_logMutex);
+    return d->m_wsdlFile;
 }
 
 #include "moc_KDSoapServer.cpp"

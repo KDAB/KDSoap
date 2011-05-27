@@ -8,6 +8,8 @@
 #include "KDSoapServerObjectInterface.h"
 #include <QtTest/QtTest>
 #include <QDebug>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
 
 class CountryServerObject;
 typedef QMap<QThread*, CountryServerObject*> ServerObjectsMap;
@@ -501,6 +503,30 @@ private Q_SLOTS:
         compareLines(expected, fileName);
 
         QFile::remove(fileName);
+    }
+
+    void testWsdlFile()
+    {
+        CountryServerThread serverThread;
+        CountryServer* server = serverThread.startThread();
+
+        const QString fileName = QString::fromLatin1("foo.wsdl");
+        QFile file(fileName);
+        QVERIFY(file.open(QIODevice::WriteOnly));
+        file.write("Hello world");
+        file.flush();
+        server->setWsdlFile(fileName);
+
+        const QString url = server->endPoint() + fileName;
+        QNetworkAccessManager manager;
+        QNetworkRequest request(url);
+        QNetworkReply* reply = manager.get(request);
+        QEventLoop loop;
+        connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+        loop.exec();
+
+        QCOMPARE((int)reply->error(), (int)QNetworkReply::NoError);
+        QCOMPARE(reply->readAll(), QByteArray("Hello world"));
     }
 
 public Q_SLOTS:

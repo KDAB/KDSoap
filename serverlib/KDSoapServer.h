@@ -131,6 +131,18 @@ public:
      */
     int numConnectedSockets() const;
 
+    /**
+     * Set the full path to the .wsdl file (including the filename), so that it can be
+     * downloaded by clients using endPoint() + the filename of the wsdl file.
+     * (For instance http://myserver.example.com/myservice.wsdl)
+     */
+    void setWsdlFile(const QString& file);
+
+    /**
+     * \returns the path given to setWsdlFile
+     */
+    QString wsdlFile() const;
+
 public Q_SLOTS:
     /**
      * Temporarily suspend (do not listen to incoming connections, and close all

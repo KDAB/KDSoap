@@ -8,6 +8,8 @@
 #include <QBuffer>
 #include <QThread>
 #include <QMetaMethod>
+#include <QFile>
+#include <QFileInfo>
 #include <QVarLengthArray>
 
 KDSoapServerSocket::KDSoapServerSocket(KDSoapSocketList* owner, QObject* serverObject)
@@ -75,7 +77,7 @@ static bool splitHeadersAndData(const QByteArray& request, QByteArray& header, Q
     return true;
 }
 
-static QByteArray httpResponseHeaders(bool fault, int responseDataSize)
+static QByteArray httpResponseHeaders(bool fault, const QByteArray& contentType, int responseDataSize)
 {
     QByteArray httpResponse;
     httpResponse.reserve(50);
@@ -85,7 +87,9 @@ static QByteArray httpResponseHeaders(bool fault, int responseDataSize)
     } else {
         httpResponse += "HTTP/1.1 200 OK\r\n";
     }
-    httpResponse += "Content-Type: text/xml\r\nContent-Length: ";
+    httpResponse += "Content-Type: ";
+    httpResponse += contentType;
+    httpResponse += "\r\nContent-Length: ";
     httpResponse += QByteArray::number(responseDataSize);
     httpResponse += "\r\n";
 
@@ -109,6 +113,28 @@ void KDSoapServerSocket::slotReadyRead()
         qDebug() << "headers received:" << m_receivedHttpHeaders;
         qDebug() << m_httpHeaders;
         qDebug() << "data received:" << m_receivedData;
+    }
+
+    KDSoapServer* server = m_owner->server();
+
+    const QByteArray path = m_httpHeaders.value("_path");
+    const QString wsdlFile = server->wsdlFile();
+    if (path != "/") {
+        const QString pathStr = QString::fromLatin1(path.constData());
+        QFileInfo wfi(wsdlFile);
+        qDebug() << "pathStr=" << pathStr;
+        qDebug() << "basename=" << QLatin1Char('/') + wfi.fileName();
+        if (QLatin1Char('/') + wfi.fileName() == pathStr) {
+            QFile wf(wsdlFile);
+            if (wf.open(QIODevice::ReadOnly)) {
+                qDebug() << "Returning wsdl file contents";
+                const QByteArray responseText = wf.readAll();
+                const QByteArray response = httpResponseHeaders(false, "text/plain", responseText.size());
+                write(response);
+                write(responseText);
+            }
+        }
+        return;
     }
 
     // check soap version and extract soapAction header
@@ -139,7 +165,6 @@ void KDSoapServerSocket::slotReadyRead()
     makeCall(requestMsg, replyMsg, requestHeaders, responseHeaders, soapAction);
 
     const bool isFault = replyMsg.isFault();
-    KDSoapServer* server = m_owner->server();
     replyMsg.setUse(server->use());
 
     // send replyMsg on socket
@@ -150,7 +175,7 @@ void KDSoapServerSocket::slotReadyRead()
     // So the "Response" can be made "FOOBAR" and everything still works fine, even in Document mode.
     const QString responseName = isFault ? QString::fromLatin1("Fault") : method + QString::fromLatin1("Response");
     const QByteArray xmlResponse = msgWriter.messageToXml(replyMsg, responseName, responseHeaders, QMap<QString, KDSoapMessage>());
-    const QByteArray response = httpResponseHeaders(isFault, xmlResponse.size());
+    const QByteArray response = httpResponseHeaders(isFault, "text/xml", xmlResponse.size());
     if (m_doDebug) {
         qDebug() << "HttpServerThread: writing" << response << xmlResponse;
     }
