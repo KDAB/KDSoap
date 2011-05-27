@@ -55,7 +55,7 @@ public: // SOAP-accessible methods
     }
 
     double getStuff(int foo, float bar, const QDateTime& dateTime) {
-        qDebug() << "getStuff called:" << foo << bar << dateTime.toTime_t();
+        //qDebug() << "getStuff called:" << foo << bar << dateTime.toTime_t();
         //qDebug() << "Request headers:" << requestHeaders();
         if (soapAction() != "MySoapAction") {
             qDebug() << "ERROR: SoapAction was" << soapAction();
@@ -92,10 +92,8 @@ Q_SIGNALS:
 
 public Q_SLOTS:
     void quit() { thread()->quit(); }
-#if 0
     void suspend() { KDSoapServer::suspend(); qDebug() << "server suspended"; emit releaseSemaphore(); }
     void resume() { KDSoapServer::resume(); emit releaseSemaphore(); }
-#endif
 };
 
 // We need to do the listening and socket handling in a separate thread,
@@ -120,7 +118,6 @@ public:
         m_semaphore.acquire(); // wait for init to be done
         return m_pServer;
     }
-#if 0
     void suspend() {
         QMetaObject::invokeMethod(m_pServer, "suspend");
         m_semaphore.acquire();
@@ -129,7 +126,6 @@ public:
         QMetaObject::invokeMethod(m_pServer, "resume");
         m_semaphore.acquire();
     }
-#endif
 
 protected:
     void run() {
@@ -248,7 +244,7 @@ private Q_SLOTS:
         message.addArgument(QLatin1String("foo"), 4);
         const KDSoapMessage response = client.call(QLatin1String("getStuff"), message);
         QVERIFY(response.isFault());
-        qDebug() << response.faultAsString();
+        QCOMPARE(response.faultAsString(), QString::fromLatin1("Fault code Server.RequiredArgumentMissing: bar,dateTime"));
     }
 
     void testThreadPoolBasic()
@@ -411,7 +407,6 @@ private Q_SLOTS:
         qDeleteAll(clients);
     }
 
-#if 0
     void testSuspend()
     {
         KDSoapThreadPool threadPool;
@@ -441,7 +436,7 @@ private Q_SLOTS:
         qDebug() << m_returnMessages.first().faultAsString();
         m_returnMessages.clear();
 #if 0
-        // -> and an existing connected client shouldn't be allowed to make new calls -- TODO
+        // -> and an existing connected client shouldn't be allowed to make new calls -- TODO: force disconnect
         makeAsyncCalls(client, 1);
         m_eventLoop.exec();
         QCOMPARE(m_returnMessages.count(), 1);
@@ -458,7 +453,6 @@ private Q_SLOTS:
         m_eventLoop.exec();
         QCOMPARE(m_returnMessages.count(), 1);
     }
-#endif
 
     void testServerFault() // fault returned by server
     {
@@ -621,6 +615,11 @@ void CountryServerObject::processRequest(const KDSoapMessage &request, KDSoapMes
         if (valueFoo.isNull() || valueBar.isNull() || valueDateTime.isNull()) {
             response.setFault(true);
             response.addArgument(QLatin1String("faultcode"), QLatin1String("Server.RequiredArgumentMissing"));
+            QStringList argNames;
+            if (valueFoo.isNull()) argNames << QLatin1String("foo");
+            if (valueBar.isNull()) argNames << QLatin1String("bar");
+            if (valueDateTime.isNull()) argNames << QLatin1String("dateTime");
+            response.addArgument(QLatin1String("faultstring"), argNames.join(QChar::fromLatin1(',')));
             return;
         }
         const int foo = valueFoo.value().toInt();

@@ -129,7 +129,6 @@ public:
      */
     int numConnectedSockets() const;
 
-#if 0
 public Q_SLOTS:
     /**
      * Temporarily suspend (do not listen to incoming connections, and close all
@@ -141,7 +140,6 @@ public Q_SLOTS:
      * Resume activity after suspend
      */
     void resume();
-#endif
 
 protected:
     /*! \reimp \internal */ void incomingConnection(int socketDescriptor);
