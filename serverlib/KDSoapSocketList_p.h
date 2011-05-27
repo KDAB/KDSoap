@@ -18,6 +18,7 @@ public:
     void socketDeleted(KDSoapServerSocket* socket);
 
     int socketCount() const;
+    void disconnectAll();
 
     KDSoapServer* server() const { return m_server; }
 

@@ -92,7 +92,7 @@ Q_SIGNALS:
 
 public Q_SLOTS:
     void quit() { thread()->quit(); }
-    void suspend() { KDSoapServer::suspend(); qDebug() << "server suspended"; emit releaseSemaphore(); }
+    void suspend() { KDSoapServer::suspend(); emit releaseSemaphore(); }
     void resume() { KDSoapServer::resume(); emit releaseSemaphore(); }
 };
 
@@ -413,7 +413,8 @@ private Q_SLOTS:
         threadPool.setMaxThreadCount(6);
         CountryServerThread serverThread(&threadPool);
         CountryServer* server = serverThread.startThread();
-        KDSoapClientInterface client(server->endPoint(), countryMessageNamespace());
+        const QString endPoint = server->endPoint();
+        KDSoapClientInterface client(endPoint, countryMessageNamespace());
         m_returnMessages.clear();
         m_expectedMessages = 2;
         makeAsyncCalls(client, m_expectedMessages);
@@ -427,23 +428,27 @@ private Q_SLOTS:
         m_returnMessages.clear();
         m_expectedMessages = 3;
         QCOMPARE(m_returnMessages.count(), 0);
+
         // -> a new client can't connect at all:
-        KDSoapClientInterface client2(server->endPoint(), countryMessageNamespace());
+        //qDebug() << "make call from new client";
+        QCOMPARE(server->endPoint(), QString()); // can't use that, it's not even listening anymore
+        KDSoapClientInterface client2(endPoint, countryMessageNamespace());
         makeAsyncCalls(client2, 3);
         m_eventLoop.exec();
         QCOMPARE(m_returnMessages.count(), 3);
         QCOMPARE(m_returnMessages.first().isFault(), true);
-        qDebug() << m_returnMessages.first().faultAsString();
+        QCOMPARE(m_returnMessages.first().faultAsString(), QString::fromLatin1("Fault code 1: Connection refused"));
         m_returnMessages.clear();
-#if 0
+
         // -> and an existing connected client shouldn't be allowed to make new calls -- TODO: force disconnect
+        //qDebug() << "make call from connected client";
+        m_expectedMessages = 1;
         makeAsyncCalls(client, 1);
         m_eventLoop.exec();
         QCOMPARE(m_returnMessages.count(), 1);
         QCOMPARE(m_returnMessages.first().isFault(), true);
-        qDebug() << m_returnMessages.first().faultAsString();
+        QCOMPARE(m_returnMessages.first().faultAsString(), QString::fromLatin1("Fault code 1: Connection refused"));
         m_returnMessages.clear();
-#endif
 
         // resume
         m_expectedMessages = 1;

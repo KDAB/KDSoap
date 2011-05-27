@@ -7,6 +7,7 @@ KDSoapServerThread::KDSoapServerThread(QObject *parent)
     : QThread(parent), d(0)
 {
     qRegisterMetaType<KDSoapServer *>("KDSoapServer*");
+    qRegisterMetaType<QSemaphore *>("QSemaphore*");
 }
 
 KDSoapServerThread::~KDSoapServerThread()
@@ -34,6 +35,13 @@ int KDSoapServerThread::socketCountForServer(const KDSoapServer* server) const
     if (d)
         return d->socketCountForServer(server);
     return 0;
+}
+
+void KDSoapServerThread::disconnectSocketsForServer(KDSoapServer *server, QSemaphore& semaphore)
+{
+    if (d) {
+        QMetaObject::invokeMethod(d, "disconnectSocketsForServer", Q_ARG(KDSoapServer*, server), Q_ARG(QSemaphore*, &semaphore));
+    }
 }
 
 void KDSoapServerThread::startThread()
@@ -115,4 +123,14 @@ int KDSoapServerThreadImpl::socketCountForServer(const KDSoapServer *server)
     QMutexLocker lock(&m_socketListMutex);
     KDSoapSocketList* sockets = m_socketLists.value(const_cast<KDSoapServer*>(server));
     return sockets ? sockets->socketCount() : 0;
+}
+
+void KDSoapServerThreadImpl::disconnectSocketsForServer(KDSoapServer *server, QSemaphore* semaphore)
+{
+    QMutexLocker lock(&m_socketListMutex);
+    KDSoapSocketList* sockets = m_socketLists.value(server);
+    if (sockets) {
+        sockets->disconnectAll();
+    }
+    semaphore->release();
 }
