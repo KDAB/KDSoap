@@ -107,4 +107,14 @@ int KDSoapThreadPool::numConnectedSockets(const KDSoapServer *server) const
     return sc;
 }
 
+void KDSoapThreadPool::disconnectSockets(KDSoapServer *server)
+{
+    QSemaphore readyThreads;
+    Q_FOREACH(KDSoapServerThread* thread, d->m_threads) {
+        thread->disconnectSocketsForServer(server, readyThreads);
+    }
+    // Wait for all threads to have disconnected their sockets
+    readyThreads.acquire(d->m_threads.count());
+}
+
 #include "moc_KDSoapThreadPool.cpp"

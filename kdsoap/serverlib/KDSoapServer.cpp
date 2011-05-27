@@ -89,6 +89,8 @@ KDSoapThreadPool * KDSoapServer::threadPool() const
 
 QString KDSoapServer::endPoint() const {
     const QHostAddress address = serverAddress();
+    if (address == QHostAddress::Null)
+        return QString();
     const QString addressStr = address == QHostAddress::Any ? QString::fromLatin1("127.0.0.1") : address.toString();
     return QString::fromLatin1("%1://%2:%3/path")
             .arg(QString::fromLatin1(/*(m_features & Ssl)?"https":*/"http"))
@@ -201,6 +203,13 @@ void KDSoapServer::suspend()
     d->m_portBeforeSuspend = serverPort();
     d->m_addressBeforeSuspend = serverAddress();
     close();
+
+    // Disconnect connected sockets, otherwise they could still make calls
+    if (d->m_threadPool) {
+        d->m_threadPool->disconnectSockets(this);
+    } else if (d->m_mainThreadSocketList) {
+        d->m_mainThreadSocketList->disconnectAll();
+    }
 }
 
 void KDSoapServer::resume()

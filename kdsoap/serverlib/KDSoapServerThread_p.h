@@ -17,6 +17,7 @@ public:
 
 public Q_SLOTS:
     void handleIncomingConnection(int socketDescriptor, KDSoapServer* server);
+    void disconnectSocketsForServer(KDSoapServer* server, QSemaphore* semaphore);
     void quit();
 
 public:
@@ -24,7 +25,6 @@ public:
     int socketCountForServer(const KDSoapServer* server);
 
     void addIncomingConnection();
-
 private:
     QMutex m_socketListMutex;
     KDSoapSocketList* socketListForServer(KDSoapServer* server);
@@ -46,6 +46,7 @@ public:
 
     int socketCount() const;
     int socketCountForServer(const KDSoapServer* server) const;
+    void disconnectSocketsForServer(KDSoapServer* server, QSemaphore& semaphore);
     void handleIncomingConnection(int socketDescriptor, KDSoapServer* server);
 
 protected:

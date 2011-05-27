@@ -24,7 +24,7 @@ public:
     KDSoapThreadPool(QObject* parent = 0);
 
     /**
-     * Destructs the thread pool
+     * Destructs the thread pool, after ensuring that all threads finish properly.
      */
     ~KDSoapThreadPool();
 
@@ -45,6 +45,11 @@ public:
      * Returns the number of connected sockets for a given server
      */
     int numConnectedSockets(const KDSoapServer* server) const;
+
+    /**
+     * Disconnect all connected sockets for a given server
+     */
+    void disconnectSockets(KDSoapServer* server);
 
 private:
     friend class KDSoapServer;

@@ -50,6 +50,8 @@ public:
     /**
      * Returns the HTTP URL which can be used to access this server.
      * For instance "http://127.0.0.1:8000".
+     *
+     * If the server is listening for connections yet, returns an empty string.
      */
     QString endPoint() const;
 
