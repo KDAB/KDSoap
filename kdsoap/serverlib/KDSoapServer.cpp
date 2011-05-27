@@ -196,7 +196,6 @@ bool KDSoapServer::setExpectedSocketCount(int sockets)
     return true;
 }
 
-#if 0
 void KDSoapServer::suspend()
 {
     d->m_portBeforeSuspend = serverPort();
@@ -214,6 +213,5 @@ void KDSoapServer::resume()
         }
     }
 }
-#endif
 
 #include "moc_KDSoapServer.cpp"
