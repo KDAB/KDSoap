@@ -35,12 +35,13 @@ if exist LICENSE.GPL.txt (
             echo.
             echo Please choose your license.
             echo.
-            echo Type 1 for the GNU General Public License (GPL).
+            echo Type 1 for the GNU General Public License ^(GPL^).
             echo Type 2 for the %Product_Space% Commercial License for USA/Canada.
             echo Type 3 for the %Product_Space% Commercial License for anywhere outside USA/Canada.
             echo Anything else cancels.
             echo.
             set /p license=Select:
+		)
     ) else (
         license=1
     )
