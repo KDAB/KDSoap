@@ -10,7 +10,7 @@ class KDSoapServerSocket;
 class KDSoapSocketList
 {
 public:
-    KDSoapSocketList(KDSoapServer* server);
+    explicit KDSoapSocketList(KDSoapServer* server);
     ~KDSoapSocketList();
 
     KDSoapServerSocket* handleIncomingConnection(int socketDescriptor);
