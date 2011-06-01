@@ -21,7 +21,7 @@ public:
     /**
      * Constructs a thread pool with the given \p parent.
      */
-    KDSoapThreadPool(QObject* parent = 0);
+    explicit KDSoapThreadPool(QObject* parent = 0);
 
     /**
      * Destructs the thread pool, after ensuring that all threads finish properly.
