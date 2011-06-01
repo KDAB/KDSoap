@@ -23,7 +23,7 @@ WARNINGS               = YES
 WARN_IF_UNDOCUMENTED   = NO
 WARN_IF_DOC_ERROR      = YES
 WARN_LOGFILE           = doxygen.log
-INPUT                  = src
+INPUT                  = src serverlib
 ALIASES                = "inv=\invariant" \
         "since_l=\nThis library was introduced in KD SOAP " \
 	"since_c=\nThis class was introduced in KD SOAP " \
