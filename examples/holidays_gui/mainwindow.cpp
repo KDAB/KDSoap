@@ -51,7 +51,7 @@ MainWindow::MainWindow( QWidget *parent ) : QWidget( parent )
 
 void MainWindow::done(const TNS__GetValentinesDayResponse& response)
 {
-    mLblResult->setText( response.getValentinesDayResult().toString());
+    mLblResult->setText(tr("Valentine's day: %1").arg(response.getValentinesDayResult().toString()));
 }
 
 void MainWindow::doneError(const KDSoapMessage& error)
@@ -62,7 +62,7 @@ void MainWindow::doneError(const KDSoapMessage& error)
 void MainWindow::syncCall()
 {
     TNS__GetValentinesDayResponse response = mHolidayDates->getValentinesDay(mParameters);
-    mLblResult->setText( response.getValentinesDayResult().toString());
+    mLblResult->setText( tr("Valentine's day: %1").arg(response.getValentinesDayResult().toString()));
     mParameters.setYear( mYear++ );
 }
 
