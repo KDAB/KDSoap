@@ -17,10 +17,10 @@ int main(int argc, char** argv)
     else
         std::cout << qPrintable(reply) << std::endl;
 
-    const QString reply = service.sayHelloAndGetAnError(QLatin1String("Hello!"));
+    const QString reply2 = service.sayHelloAndGetAnError(QLatin1String("Hello!"));
     if (!service.lastError().isEmpty())
         std::cerr << qPrintable(service.lastError()) << std::endl;
     else
-        std::cout << qPrintable(reply) << std::endl;
+        std::cout << qPrintable(reply2) << std::endl;
     return app.exec();
 }
