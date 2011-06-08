@@ -18,7 +18,7 @@ public:
     {
     if (msg.isEmpty()) {
             setFault(QLatin1String("Client.Data"), QLatin1String("Empty message"),
-                     QLatin1String("ServerObject"), tr("You must say something.") ;
+                     QLatin1String("ServerObject"), tr("You must say something."));
             return QString();
         }
         return tr("I'm helloworld_server and you said: %1").arg(msg);

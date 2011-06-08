@@ -18,6 +18,10 @@
          <input message="tns:SayHelloRequest"/>
          <output message="tns:SayHelloResponse"/>
       </operation>
+      <operation name="sayHelloAndGetAnError">
+         <input message="tns:SayHelloRequest"/>
+         <output message="tns:SayHelloResponse"/>
+      </operation>
    </portType>
    
    <binding name="Hello_Binding" type="tns:Hello_PortType">
