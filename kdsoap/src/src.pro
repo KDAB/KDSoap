@@ -16,7 +16,8 @@ INSTALLHEADERS = KDSoapMessage.h \
     KDSoapValue.h \
     KDSoapGlobal.h \
     KDSoapAuthentication.h \
-    KDSoapNamespaceManager.h
+    KDSoapNamespaceManager.h \
+    KDDateTime.h
 EXTENSIONLESSHEADERS = KDSoap
 PRIVATEHEADERS = KDSoapPendingCall_p.h \
     KDSoapPendingCallWatcher_p.h \
@@ -26,8 +27,7 @@ PRIVATEHEADERS = KDSoapPendingCall_p.h \
 HEADERS = $$INSTALLHEADERS \
     $$PRIVATEHEADERS \
     KDSoapMessageWriter_p.h \
-    KDSoapNamespacePrefixes_p.h \
-    KDDateTime.h
+    KDSoapNamespacePrefixes_p.h
 SOURCES = KDSoapMessage.cpp \
     KDSoapClientInterface.cpp \
     KDSoapPendingCall.cpp \
