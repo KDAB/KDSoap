@@ -154,3 +154,13 @@ bool Settings::generateServerCode() const
 {
     return mServer;
 }
+
+QString Settings::exportDeclaration() const
+{
+    return mExportDeclaration;
+}
+
+void Settings::setExportDeclaration( const QString& exportDeclaration )
+{
+    mExportDeclaration = exportDeclaration;
+}
