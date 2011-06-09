@@ -4,6 +4,24 @@
 #include "helloworld_server.h"
 #include <iostream>
 
+ServerObject::ServerObject()
+    : Hello_ServiceServerBase()
+{
+}
+
+ServerObject::~ServerObject() {
+}
+
+QString ServerObject::sayHello(const QString& msg)
+{
+    if (msg.isEmpty()) {
+        setFault(QLatin1String("Client.Data"), QLatin1String("Empty message"),
+                 QLatin1String("ServerObject"), tr("You must say something."));
+        return QString();
+    }
+    return tr("I'm helloworld_server and you said: %1").arg(msg);
+}
+
 class Server : public KDSoapServer {
 public:
     QObject* createServerObject() {

@@ -7,18 +7,14 @@
    xmlns:xsd="http://www.w3.org/2001/XMLSchema">
  
    <message name="SayHelloRequest">
-      <part name="firstName" type="xsd:string"/>
+      <part name="msg" type="xsd:string"/>
    </message>
    <message name="SayHelloResponse">
-      <part name="greeting" type="xsd:string"/>
+      <part name="reply" type="xsd:string"/>
    </message>
  
    <portType name="Hello_PortType">
       <operation name="sayHello">
-         <input message="tns:SayHelloRequest"/>
-         <output message="tns:SayHelloResponse"/>
-      </operation>
-      <operation name="sayHelloAndGetAnError">
          <input message="tns:SayHelloRequest"/>
          <output message="tns:SayHelloResponse"/>
       </operation>
@@ -29,21 +25,6 @@
          transport="http://schemas.xmlsoap.org/soap/http"/>
       <operation name="sayHello" style="document">
          <soap:operation soapAction="sayHello"/>
-         <input>
-            <soap:body
-               encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
-               namespace="urn:examples:helloservice"
-               use="encoded"/>
-         </input>
-         <output>
-            <soap:body
-               encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
-               namespace="urn:examples:helloservice"
-               use="encoded"/>
-         </output>
-      </operation>
-      <operation name="sayHelloAndGetAnError" style="document">
-         <soap:operation soapAction="sayHelloAndGetAnError"/>
          <input>
             <soap:body
                encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
