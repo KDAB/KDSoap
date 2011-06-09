@@ -11,6 +11,7 @@ win32:DLLDESTDIR = ../bin
 
 include(../variables.pri)
 INSTALLHEADERS = KDSoapServer.h \
+                 KDSoapServerObjectInterface.h
 
 EXTENSIONLESSHEADERS =
 PRIVATEHEADERS =
