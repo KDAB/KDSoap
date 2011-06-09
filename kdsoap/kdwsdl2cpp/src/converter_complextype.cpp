@@ -1,4 +1,5 @@
 #include "converter.h"
+#include "settings.h"
 #include <libkode/style.h>
 
 #include <QDebug>
@@ -18,6 +19,9 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
 
     const QString typeName( mTypeMap.localType( type->qualifiedName() ) );
     KODE::Class newClass( typeName );
+    if (!Settings::self()->exportDeclaration().isEmpty())
+      newClass.setExportDeclaration(Settings::self()->exportDeclaration());
+
     newClass.setUseSharedData( true, "d_ptr" /*avoid clash with possible d() method */ );
 
     const bool doDebug = (qgetenv("KDSOAP_TYPE_DEBUG").toInt());

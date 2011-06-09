@@ -1,4 +1,5 @@
 #include "converter.h"
+#include "settings.h"
 
 #include <QDebug>
 
@@ -35,6 +36,8 @@ void Converter::convertSimpleType( const XSD::SimpleType *type, const XSD::Simpl
   const QString typeName( mTypeMap.localType( type->qualifiedName() ) );
   //qDebug() << "convertSimpleType:" << type->qualifiedName() << typeName;
   KODE::Class newClass( typeName );
+  if (!Settings::self()->exportDeclaration().isEmpty())
+    newClass.setExportDeclaration(Settings::self()->exportDeclaration());
 
   QString classDocumentation;
 
