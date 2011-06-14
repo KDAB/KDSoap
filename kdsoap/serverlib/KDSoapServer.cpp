@@ -38,6 +38,7 @@ public:
     QFile m_logFile;
 
     QString m_wsdlFile;
+    QString m_wsdlPathInUrl;
     QString m_path;
 
     QHostAddress m_addressBeforeSuspend;
@@ -228,16 +229,23 @@ void KDSoapServer::resume()
     }
 }
 
-void KDSoapServer::setWsdlFile(const QString &file)
+void KDSoapServer::setWsdlFile(const QString &file, const QString& pathInUrl)
 {
     QMutexLocker lock(&d->m_logMutex);
     d->m_wsdlFile = file;
+    d->m_wsdlPathInUrl = pathInUrl;
 }
 
 QString KDSoapServer::wsdlFile() const
 {
     QMutexLocker lock(&d->m_logMutex);
     return d->m_wsdlFile;
+}
+
+QString KDSoapServer::wsdlPathInUrl() const
+{
+    QMutexLocker lock(&d->m_logMutex);
+    return d->m_wsdlPathInUrl;
 }
 
 void KDSoapServer::setPath(const QString &path)

@@ -146,16 +146,22 @@ public:
     int numConnectedSockets() const;
 
     /**
-     * Set the full path to the .wsdl file (including the filename), so that it can be
-     * downloaded by clients using endPoint() + the filename of the wsdl file.
-     * (For instance http://myserver.example.com/myservice.wsdl)
+     * Sets the .wsdl file that users can download from the soap server.
+     * \param file relative or absolute path to the .wsdl file (including the filename), on disk
+     * \param pathInUrl that clients can use in order to download the file:
+     *                  for instance "/files/myservice.wsdl" for "http://myserver.example.com/files/myservice.wsdl" as final URL.
      */
-    void setWsdlFile(const QString& file);
+    void setWsdlFile(const QString& file, const QString& pathInUrl);
+
+    /**
+     * \returns the path to the wsdl file on disk, as given to setWsdlFile
+     */
+    QString wsdlFile() const;
 
     /**
      * \returns the path given to setWsdlFile
      */
-    QString wsdlFile() const;
+    QString wsdlPathInUrl() const;
 
 public Q_SLOTS:
     /**
