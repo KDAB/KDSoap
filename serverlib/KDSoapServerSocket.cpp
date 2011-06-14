@@ -119,14 +119,13 @@ void KDSoapServerSocket::slotReadyRead()
     KDSoapMessage replyMsg;
     replyMsg.setUse(server->use());
 
-    const QByteArray path = m_httpHeaders.value("_path");
-    const QString wsdlFile = server->wsdlFile();
-    if (path != "/") {
-        const QString pathStr = QString::fromLatin1(path.constData());
+    const QString path = QString::fromLatin1(m_httpHeaders.value("_path").constData());
+    if (path != server->path()) {
+        const QString wsdlFile = server->wsdlFile();
         QFileInfo wfi(wsdlFile);
-        qDebug() << "pathStr=" << pathStr;
+        qDebug() << "pathStr=" << path;
         qDebug() << "basename=" << QLatin1Char('/') + wfi.fileName();
-        if (QLatin1Char('/') + wfi.fileName() == pathStr) {
+        if (QLatin1Char('/') + wfi.fileName() == path) {
             QFile wf(wsdlFile);
             if (wf.open(QIODevice::ReadOnly)) {
                 qDebug() << "Returning wsdl file contents";
@@ -137,7 +136,7 @@ void KDSoapServerSocket::slotReadyRead()
                 return;
             }
         }
-        handleError(replyMsg, "Client.Data", QString::fromLatin1("Invalid path '%1'").arg(QLatin1String(path.constData())));
+        handleError(replyMsg, "Client.Data", QString::fromLatin1("Invalid path '%1'").arg(path));
     }
 
     // check soap version and extract soapAction header
