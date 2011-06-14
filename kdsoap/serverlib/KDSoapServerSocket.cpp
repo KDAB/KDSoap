@@ -116,6 +116,8 @@ void KDSoapServerSocket::slotReadyRead()
     }
 
     KDSoapServer* server = m_owner->server();
+    KDSoapMessage replyMsg;
+    replyMsg.setUse(server->use());
 
     const QByteArray path = m_httpHeaders.value("_path");
     const QString wsdlFile = server->wsdlFile();
@@ -132,9 +134,10 @@ void KDSoapServerSocket::slotReadyRead()
                 const QByteArray response = httpResponseHeaders(false, "text/plain", responseText.size());
                 write(response);
                 write(responseText);
+                return;
             }
         }
-        return;
+        handleError(replyMsg, "Client.Data", QString::fromLatin1("Invalid path '%1'").arg(QLatin1String(path.constData())));
     }
 
     // check soap version and extract soapAction header
@@ -160,12 +163,12 @@ void KDSoapServerSocket::slotReadyRead()
     requestMsg.parseSoapXml(m_receivedData, &messageNamespace, &requestHeaders);
     const QString method = requestMsg.name();
 
-    KDSoapMessage replyMsg;
     KDSoapHeaders responseHeaders;
-    makeCall(requestMsg, replyMsg, requestHeaders, responseHeaders, soapAction);
+    if (!replyMsg.isFault()) {
+        makeCall(requestMsg, replyMsg, requestHeaders, responseHeaders, soapAction);
+    }
 
     const bool isFault = replyMsg.isFault();
-    replyMsg.setUse(server->use());
 
     // send replyMsg on socket
 
@@ -214,8 +217,7 @@ void KDSoapServerSocket::makeCall(const KDSoapMessage &requestMsg, KDSoapMessage
         // reply with a fault, but we don't even know what main element name to use
         // Oh well, just use the incoming fault :-)
         replyMsg = requestMsg;
-        replyMsg.addArgument(QString::fromLatin1("faultcode"), QString::fromLatin1("Client.Data"));
-        replyMsg.addArgument(QString::fromLatin1("faultstring"), QString::fromLatin1("Request was a fault"));
+        handleError(replyMsg, "Client.Data", QString::fromLatin1("Request was a fault"));
     } else {
         // Call method on m_serverObject
         KDSoapServerObjectInterface* serverObjectInterface = qobject_cast<KDSoapServerObjectInterface *>(m_serverObject);
