@@ -48,6 +48,20 @@ public:
     KDSoapThreadPool* threadPool() const;
 
     /**
+     * Sets the path that the server expects in client requests.
+     * By default the path is '/', but this can be changed here.
+     *
+     * The path is returned in endPoint(), and is checked when handling incoming requests.
+     */
+    void setPath(const QString& path);
+
+    /**
+     * Returns the path set by setPath()
+     */
+    QString path() const;
+
+
+    /**
      * Returns the HTTP URL which can be used to access this server.
      * For instance "http://127.0.0.1:8000/".
      *

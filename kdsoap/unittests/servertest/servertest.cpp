@@ -529,16 +529,34 @@ private Q_SLOTS:
         QCOMPARE(reply->readAll(), QByteArray("Hello world"));
     }
 
-    void testErroneousPath()
+    void testSetPath_data()
     {
+        QTest::addColumn<QString>("serverPath");
+        QTest::addColumn<QString>("requestPath");
+        QTest::addColumn<bool>("expectedSuccess");
+
+        QTest::newRow("success on /foo") << "/foo" << "/foo" << true;
+        QTest::newRow("mismatching paths") << "/foo" << "/bar" << false;
+    }
+
+    void testSetPath()
+    {
+        QFETCH(QString, serverPath);
+        QFETCH(QString, requestPath);
+        QFETCH(bool, expectedSuccess);
+
         CountryServerThread serverThread;
         CountryServer* server = serverThread.startThread();
-        const QString url = server->endPoint() + QString::fromLatin1("doesNotExist");
+        server->setPath(serverPath);
+        QVERIFY(server->endPoint().endsWith(serverPath));
+        const QString url = server->endPoint().remove(serverPath).append(requestPath);
         KDSoapClientInterface client(url, countryMessageNamespace());
         const KDSoapMessage response = client.call(QLatin1String("getEmployeeCountry"), countryMessage());
-        QVERIFY(response.isFault());
-        QCOMPARE(response.arguments().child(QLatin1String("faultcode")).value().toString(), QString::fromLatin1("Client.Data"));
-        QCOMPARE(response.arguments().child(QLatin1String("faultstring")).value().toString(), QString::fromLatin1("Invalid path '/doesNotExist'"));
+        QCOMPARE(response.isFault(), !expectedSuccess);
+        if (!expectedSuccess) {
+            QCOMPARE(response.arguments().child(QLatin1String("faultcode")).value().toString(), QString::fromLatin1("Client.Data"));
+            QCOMPARE(response.arguments().child(QLatin1String("faultstring")).value().toString(), QString::fromLatin1("Invalid path '%1'").arg(requestPath));
+        }
     }
 
 public Q_SLOTS:

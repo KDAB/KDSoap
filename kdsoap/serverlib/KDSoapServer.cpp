@@ -18,6 +18,7 @@ public:
           m_mainThreadSocketList(0),
           m_use(KDSoapMessage::LiteralUse),
           m_logLevel(KDSoapServer::LogNothing),
+          m_path(QString::fromLatin1("/")),
           m_portBeforeSuspend(0)
     {
     }
@@ -37,6 +38,7 @@ public:
     QFile m_logFile;
 
     QString m_wsdlFile;
+    QString m_path;
 
     QHostAddress m_addressBeforeSuspend;
     quint16 m_portBeforeSuspend;
@@ -94,10 +96,11 @@ QString KDSoapServer::endPoint() const {
     if (address == QHostAddress::Null)
         return QString();
     const QString addressStr = address == QHostAddress::Any ? QString::fromLatin1("127.0.0.1") : address.toString();
-    return QString::fromLatin1("%1://%2:%3/")
+    return QString::fromLatin1("%1://%2:%3%4")
             .arg(QString::fromLatin1(/*(m_features & Ssl)?"https":*/"http"))
             .arg(addressStr)
-            .arg(serverPort());
+            .arg(serverPort())
+            .arg(d->m_path);
 }
 
 void KDSoapServer::setUse(KDSoapMessage::Use use)
@@ -235,6 +238,18 @@ QString KDSoapServer::wsdlFile() const
 {
     QMutexLocker lock(&d->m_logMutex);
     return d->m_wsdlFile;
+}
+
+void KDSoapServer::setPath(const QString &path)
+{
+    QMutexLocker lock(&d->m_logMutex);
+    d->m_path = path;
+}
+
+QString KDSoapServer::path() const
+{
+    QMutexLocker lock(&d->m_logMutex);
+    return d->m_path;
 }
 
 #include "moc_KDSoapServer.cpp"
