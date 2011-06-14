@@ -515,9 +515,12 @@ private Q_SLOTS:
         QVERIFY(file.open(QIODevice::WriteOnly));
         file.write("Hello world");
         file.flush();
-        server->setWsdlFile(fileName);
+        const QString pathInUrl = QString::fromLatin1("/path/to/file.wsdl");
+        server->setWsdlFile(fileName, pathInUrl);
 
-        const QString url = server->endPoint() + fileName;
+        QString url = server->endPoint();
+        url.chop(1) /*trailing slash*/;
+        url += pathInUrl;
         QNetworkAccessManager manager;
         QNetworkRequest request(url);
         QNetworkReply* reply = manager.get(request);

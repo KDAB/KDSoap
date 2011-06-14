@@ -121,11 +121,8 @@ void KDSoapServerSocket::slotReadyRead()
 
     const QString path = QString::fromLatin1(m_httpHeaders.value("_path").constData());
     if (path != server->path()) {
-        const QString wsdlFile = server->wsdlFile();
-        QFileInfo wfi(wsdlFile);
-        qDebug() << "pathStr=" << path;
-        qDebug() << "basename=" << QLatin1Char('/') + wfi.fileName();
-        if (QLatin1Char('/') + wfi.fileName() == path) {
+        if (path == server->wsdlPathInUrl()) {
+            const QString wsdlFile = server->wsdlFile();
             QFile wf(wsdlFile);
             if (wf.open(QIODevice::ReadOnly)) {
                 qDebug() << "Returning wsdl file contents";
