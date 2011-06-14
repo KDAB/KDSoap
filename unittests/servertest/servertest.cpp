@@ -529,6 +529,18 @@ private Q_SLOTS:
         QCOMPARE(reply->readAll(), QByteArray("Hello world"));
     }
 
+    void testErroneousPath()
+    {
+        CountryServerThread serverThread;
+        CountryServer* server = serverThread.startThread();
+        const QString url = server->endPoint() + QString::fromLatin1("doesNotExist");
+        KDSoapClientInterface client(url, countryMessageNamespace());
+        const KDSoapMessage response = client.call(QLatin1String("getEmployeeCountry"), countryMessage());
+        QVERIFY(response.isFault());
+        QCOMPARE(response.arguments().child(QLatin1String("faultcode")).value().toString(), QString::fromLatin1("Client.Data"));
+        QCOMPARE(response.arguments().child(QLatin1String("faultstring")).value().toString(), QString::fromLatin1("Invalid path '/doesNotExist'"));
+    }
+
 public Q_SLOTS:
     void slotFinished(KDSoapPendingCallWatcher* watcher)
     {
