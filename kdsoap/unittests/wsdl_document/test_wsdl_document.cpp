@@ -529,7 +529,9 @@ class DocServer : public KDSoapServer
 {
     Q_OBJECT
 public:
-    DocServer() : KDSoapServer(), m_lastServerObject(0) {}
+    DocServer() : KDSoapServer(), m_lastServerObject(0) {
+        setPath(QLatin1String("/xml"));
+    }
     virtual QObject* createServerObject() { m_lastServerObject = new DocServerObject; return m_lastServerObject; }
 
     DocServerObject* lastServerObject() { return m_lastServerObject; }
