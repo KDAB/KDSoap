@@ -225,12 +225,7 @@ static bool readNextStartElement(QXmlStreamReader& reader)
 #endif
 }
 
-void KDSoapMessage::parseSoapXml(const QByteArray& data, QString* pMessageNamespace, KDSoapHeaders* pRequestHeaders)
-{
-    parseSoapXmlReturnError(data, pMessageNamespace, pRequestHeaders);
-}
-
-KDSoapMessage::XmlError KDSoapMessage::parseSoapXmlReturnError(const QByteArray& data, QString* pMessageNamespace, KDSoapHeaders* pRequestHeaders)
+KDSoapMessage::XmlError KDSoapMessage::parseSoapXml(const QByteArray& data, QString* pMessageNamespace, KDSoapHeaders* pRequestHeaders)
 {
     QXmlStreamReader reader(data);
     if (readNextStartElement(reader)) {

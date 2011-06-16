@@ -119,8 +119,7 @@ private:
         PrematureEndOfDocumentError
     };
 
-    void parseSoapXml(const QByteArray& data, QString* pMessageNamespace, KDSoapHeaders* pRequestHeaders);
-    XmlError parseSoapXmlReturnError(const QByteArray& data, QString* pMessageNamespace, KDSoapHeaders* pRequestHeaders);
+    XmlError parseSoapXml(const QByteArray& data, QString* pMessageNamespace, KDSoapHeaders* pRequestHeaders);
     QSharedDataPointer<KDSoapMessageData> d;
 };
 

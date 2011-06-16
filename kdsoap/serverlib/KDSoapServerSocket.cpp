@@ -157,7 +157,7 @@ void KDSoapServerSocket::slotReadyRead()
     KDSoapMessage requestMsg;
     QString messageNamespace;
     KDSoapHeaders requestHeaders;
-    KDSoapMessage::XmlError err = requestMsg.parseSoapXmlReturnError(receivedData, &messageNamespace, &requestHeaders);
+    KDSoapMessage::XmlError err = requestMsg.parseSoapXml(receivedData, &messageNamespace, &requestHeaders);
     if (err == KDSoapMessage::PrematureEndOfDocumentError) {
         //qDebug() << "Incomplete SOAP message, wait for more data";
         //incomplete request, wait for more data
