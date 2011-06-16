@@ -100,13 +100,26 @@ static QByteArray httpResponseHeaders(bool fault, const QByteArray& contentType,
 void KDSoapServerSocket::slotReadyRead()
 {
     //qDebug() << QThread::currentThread() << "slotReadyRead!";
-    const QByteArray request = this->readAll(); // ## TODO what if it's not all available?
+    QByteArray buf(2048, ' ');
+    qint64 nread = -1;
+    while (nread != 0) {
+        nread = read(buf.data(), buf.size());
+        if (nread < 0) {
+            qDebug() << "Error reading from server socket:" << errorString();
+            return;
+        }
+        m_requestBuffer += buf.mid(nread);
+    }
 
-    //qDebug() << "KDSoapServerSocket: request:" << request;
+    //qDebug() << "KDSoapServerSocket: request:" << m_requestBuffer;
 
-    const bool splitOK = splitHeadersAndData(request, m_receivedHttpHeaders, m_receivedData);
-    Q_ASSERT(splitOK);
-    Q_UNUSED(splitOK); // To avoid a warning if Q_ASSERT doesn't expand to anything.
+    const bool splitOK = splitHeadersAndData(m_requestBuffer, m_receivedHttpHeaders, m_receivedData);
+
+    if ( !splitOK ) {
+        //incomplete request, wait for more data
+        return;
+    }
+    m_requestBuffer.clear();
     m_httpHeaders = parseHeaders(m_receivedHttpHeaders);
 
     if (m_doDebug) {
