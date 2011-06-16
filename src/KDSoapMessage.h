@@ -113,8 +113,14 @@ public:
 private:
     friend class KDSoapPendingCall;
     friend class KDSoapServerSocket;
-    void parseSoapXml(const QByteArray& data, QString* pMessageNamespace, KDSoapHeaders* pRequestHeaders);
+    enum XmlError {
+        NoError=0,
+        ParseError,
+        PrematureEndOfDocumentError
+    };
 
+    void parseSoapXml(const QByteArray& data, QString* pMessageNamespace, KDSoapHeaders* pRequestHeaders);
+    XmlError parseSoapXmlReturnError(const QByteArray& data, QString* pMessageNamespace, KDSoapHeaders* pRequestHeaders);
     QSharedDataPointer<KDSoapMessageData> d;
 };
 

@@ -227,6 +227,11 @@ static bool readNextStartElement(QXmlStreamReader& reader)
 
 void KDSoapMessage::parseSoapXml(const QByteArray& data, QString* pMessageNamespace, KDSoapHeaders* pRequestHeaders)
 {
+    parseSoapXmlReturnError(data, pMessageNamespace, pRequestHeaders);
+}
+
+KDSoapMessage::XmlError KDSoapMessage::parseSoapXmlReturnError(const QByteArray& data, QString* pMessageNamespace, KDSoapHeaders* pRequestHeaders)
+{
     QXmlStreamReader reader(data);
     if (readNextStartElement(reader)) {
         if (reader.name() == "Envelope" && reader.namespaceUri() == KDSoapNamespaceManager::soapEnvelope()) {
@@ -264,7 +269,10 @@ void KDSoapMessage::parseSoapXml(const QByteArray& data, QString* pMessageNamesp
         setFault(true);
         addArgument(QString::fromLatin1("faultcode"), QString::number(reader.error()));
         addArgument(QString::fromLatin1("faultstring"), QString::fromLatin1("XML error line %1: %2").arg(reader.lineNumber()).arg(reader.errorString()));
+        return reader.error() == QXmlStreamReader::PrematureEndOfDocumentError ? PrematureEndOfDocumentError : ParseError;
     }
+
+    return NoError;
 }
 
 KDSoapMessage KDSoapHeaders::header(const QString &name) const

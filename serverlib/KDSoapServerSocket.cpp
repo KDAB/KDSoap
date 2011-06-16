@@ -115,11 +115,12 @@ void KDSoapServerSocket::slotReadyRead()
 
     const bool splitOK = splitHeadersAndData(m_requestBuffer, m_receivedHttpHeaders, m_receivedData);
 
-    if ( !splitOK ) {
+    if (!splitOK) {
+        //qDebug() << "Incomplete SOAP request, wait for more data";
         //incomplete request, wait for more data
         return;
     }
-    m_requestBuffer.clear();
+
     m_httpHeaders = parseHeaders(m_receivedHttpHeaders);
 
     if (m_doDebug) {
@@ -134,6 +135,7 @@ void KDSoapServerSocket::slotReadyRead()
 
     const QString path = QString::fromLatin1(m_httpHeaders.value("_path").constData());
     if (path != server->path()) {
+        m_requestBuffer.clear();
         if (path == server->wsdlPathInUrl()) {
             const QString wsdlFile = server->wsdlFile();
             QFile wf(wsdlFile);
@@ -148,6 +150,19 @@ void KDSoapServerSocket::slotReadyRead()
         }
         handleError(replyMsg, "Client.Data", QString::fromLatin1("Invalid path '%1'").arg(path));
     }
+
+    //parse message
+    KDSoapMessage requestMsg;
+    QString messageNamespace;
+    KDSoapHeaders requestHeaders;
+    KDSoapMessage::XmlError err = requestMsg.parseSoapXmlReturnError(m_receivedData, &messageNamespace, &requestHeaders);
+    if (err == KDSoapMessage::PrematureEndOfDocumentError) {
+        //qDebug() << "Incomplete SOAP message, wait for more data";
+        //incomplete request, wait for more data
+        return;
+    } //TODO handle parse errors?
+
+    m_requestBuffer.clear();
 
     // check soap version and extract soapAction header
     QByteArray soapAction;
@@ -166,10 +181,6 @@ void KDSoapServerSocket::slotReadyRead()
         }
     }
 
-    KDSoapMessage requestMsg;
-    QString messageNamespace;
-    KDSoapHeaders requestHeaders;
-    requestMsg.parseSoapXml(m_receivedData, &messageNamespace, &requestHeaders);
     const QString method = requestMsg.name();
 
     KDSoapHeaders responseHeaders;
