@@ -28,7 +28,6 @@ private:
     QObject* m_serverObject;
     bool m_doDebug;
     QByteArray m_requestBuffer;
-    //QMap<QByteArray, QByteArray> m_httpHeaders;
 };
 
 #endif // KDSOAPSERVERSOCKET_P_H
