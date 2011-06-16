@@ -5,6 +5,7 @@ include (../examples/examples.pri)
 DESTDIR=.
 
 CONFIG += qtestlib
+QT += xml
 
 INCLUDEPATH += $$KDSOAP_PATH/testtools
 DEPENDPATH += $$KDSOAP_PATH/testtools
