@@ -108,7 +108,7 @@ void KDSoapServerSocket::slotReadyRead()
             qDebug() << "Error reading from server socket:" << errorString();
             return;
         }
-        m_requestBuffer += buf.mid(nread);
+        m_requestBuffer += buf.left(nread);
     }
 
     //qDebug() << "KDSoapServerSocket: request:" << m_requestBuffer;
