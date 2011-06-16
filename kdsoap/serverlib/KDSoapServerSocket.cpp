@@ -113,7 +113,8 @@ void KDSoapServerSocket::slotReadyRead()
 
     //qDebug() << "KDSoapServerSocket: request:" << m_requestBuffer;
 
-    const bool splitOK = splitHeadersAndData(m_requestBuffer, m_receivedHttpHeaders, m_receivedData);
+    QByteArray receivedHttpHeaders, receivedData;
+    const bool splitOK = splitHeadersAndData(m_requestBuffer, receivedHttpHeaders, receivedData);
 
     if (!splitOK) {
         //qDebug() << "Incomplete SOAP request, wait for more data";
@@ -121,19 +122,20 @@ void KDSoapServerSocket::slotReadyRead()
         return;
     }
 
-    m_httpHeaders = parseHeaders(m_receivedHttpHeaders);
+    QMap<QByteArray, QByteArray> httpHeaders;
+    httpHeaders = parseHeaders(receivedHttpHeaders);
 
     if (m_doDebug) {
-        qDebug() << "headers received:" << m_receivedHttpHeaders;
-        qDebug() << m_httpHeaders;
-        qDebug() << "data received:" << m_receivedData;
+        qDebug() << "headers received:" << receivedHttpHeaders;
+        qDebug() << httpHeaders;
+        qDebug() << "data received:" << receivedData;
     }
 
     KDSoapServer* server = m_owner->server();
     KDSoapMessage replyMsg;
     replyMsg.setUse(server->use());
 
-    const QString path = QString::fromLatin1(m_httpHeaders.value("_path").constData());
+    const QString path = QString::fromLatin1(httpHeaders.value("_path").constData());
     if (path != server->path()) {
         m_requestBuffer.clear();
         if (path == server->wsdlPathInUrl()) {
@@ -155,7 +157,7 @@ void KDSoapServerSocket::slotReadyRead()
     KDSoapMessage requestMsg;
     QString messageNamespace;
     KDSoapHeaders requestHeaders;
-    KDSoapMessage::XmlError err = requestMsg.parseSoapXmlReturnError(m_receivedData, &messageNamespace, &requestHeaders);
+    KDSoapMessage::XmlError err = requestMsg.parseSoapXmlReturnError(receivedData, &messageNamespace, &requestHeaders);
     if (err == KDSoapMessage::PrematureEndOfDocumentError) {
         //qDebug() << "Incomplete SOAP message, wait for more data";
         //incomplete request, wait for more data
@@ -166,10 +168,10 @@ void KDSoapServerSocket::slotReadyRead()
 
     // check soap version and extract soapAction header
     QByteArray soapAction;
-    const QByteArray contentType = m_httpHeaders.value("Content-Type");
+    const QByteArray contentType = httpHeaders.value("Content-Type");
     if (contentType.startsWith("text/xml")) {
         // SOAP 1.1
-        soapAction = m_httpHeaders.value("SoapAction");
+        soapAction = httpHeaders.value("SoapAction");
     } else if (contentType.startsWith("application/soap+xml")) {
         // SOAP 1.2
         // Example: application/soap+xml;charset=utf-8;action=ActionHex
