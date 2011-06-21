@@ -10,6 +10,7 @@
 #include <KDSoapNamespaceManager.h>
 #ifndef QT_NO_OPENSSL
 #include <QSslSocket>
+#include <QSslConfiguration>
 #endif
 
 using namespace KDSoapUnitTestHelpers;
@@ -184,6 +185,19 @@ private Q_SLOTS:
         if (!QSslSocket::supportsSsl()) {
             QSKIP("No SSL support on this machine, check that ssleay.so/ssleay32.dll is installed", SkipAll);
         }
+
+#ifndef QT_NO_SSLSOCKET
+        //service.ignoreSslErrors();
+        // To make SSL work, we need to tell Qt about our local certificate
+        QSslConfiguration defaultConfig = QSslConfiguration::defaultConfiguration();
+        QFile certFile(QString::fromLatin1("../certs/cacert.pem"));
+        QVERIFY(certFile.open(QIODevice::ReadOnly));
+        QSslCertificate cert(&certFile);
+        QVERIFY(cert.isValid());
+        defaultConfig.setCaCertificates(QList<QSslCertificate>() << cert);
+        QSslConfiguration::setDefaultConfiguration(defaultConfig);
+#endif
+
         HttpServerThread server(addEmployeeResponse(), HttpServerThread::Ssl);
 
         // For testing the http server with telnet or wget:
@@ -194,11 +208,7 @@ private Q_SLOTS:
 
         MyWsdlDocument service;
         service.setEndPoint(server.endPoint());
-        // Our test certificate fails because:
-        // ERROR: cannot verify 127.0.0.1's certificate, issued by `/C=NO/ST=Oslo/L=Nydalen/O=Trolltech ASA/OU=Development/CN=fluke.troll.no/emailAddress=ahanssen@trolltech.com':
-        // Unable to locally verify the issuer's authority.
-        // ERROR: certificate common name `fluke.troll.no' doesn't match requested host name `127.0.0.1'.
-        service.ignoreSslErrors();
+        QVERIFY(server.endPoint().startsWith(QLatin1String("https")));
 
         KDAB__LoginElement login;
         login.setUser(QLatin1String("foo"));
