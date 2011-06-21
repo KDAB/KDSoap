@@ -1,0 +1,3 @@
+SwitchQtDir /d/qt/4/kde-qt-4.7
+export KDSOAPDIR=/d/kdab/src/kdsoap-trunk/kdsoap-qt-4.7
+
