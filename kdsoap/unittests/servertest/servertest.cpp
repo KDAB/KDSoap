@@ -502,6 +502,26 @@ private Q_SLOTS:
         server->flushLogFile();
         compareLines(expected, fileName);
 
+        // Now make too many connections
+        server->setMaxConnections(2);
+        const int numClients = 4;
+        QVector<KDSoapClientInterface *> clients;
+        m_expectedMessages = 2;
+        m_returnMessages.clear();
+        clients.resize(numClients);
+        for (int i = 0; i < numClients; ++i) {
+            KDSoapClientInterface* client = new KDSoapClientInterface(server->endPoint(), countryMessageNamespace());
+            clients[i] = client;
+            makeAsyncCalls(*client, 1);
+        }
+        m_eventLoop.exec();
+        QTest::qWait(1000);
+        QCOMPARE(m_returnMessages.count(), 2);
+        expected << "ERROR Too many connections (2), incoming connection rejected";
+        expected << "ERROR Too many connections (2), incoming connection rejected";
+        server->flushLogFile();
+        compareLines(expected, fileName);
+        
         QFile::remove(fileName);
     }
 

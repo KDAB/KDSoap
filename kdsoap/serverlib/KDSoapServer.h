@@ -129,7 +129,23 @@ public:
     void flushLogFile();
 
     /**
-     * Sets the number of expected sockets in this process.
+     * Sets a maximum number of concurrent connections to this server.
+     * When this number is reached, connections are rejected, and the signal
+     * clientConnectionRejected is emitted for each rejected connection.
+     *
+     * The special value -1 means unlimited.
+     */
+    void setMaxConnections(int sockets);
+
+    /**
+     * Returns the maximum of concurrent connections as set by setMaxConnections.
+     * 
+     * The special value -1 means unlimited.
+     */
+    int maxConnections() const;
+
+    /**
+     * Sets the number of expected sockets (connections) in this process.
      * This is necessary in order to increase system limits when a large number of clients
      * is expected.
      *
@@ -142,6 +158,8 @@ public:
      * Returns the number of connected sockets.
      * This information can change at any time, and is therefore only useful
      * for statistical purposes.
+     *
+     * It will always be less than maxConnections(), if maxConnections was set.
      */
     int numConnectedSockets() const;
 
@@ -174,6 +192,13 @@ public Q_SLOTS:
      * Resume activity after suspend
      */
     void resume();
+
+Q_SIGNALS:
+    /**
+     * Emitted when the maximum number of connections has been reached,
+     * and a client connection was just rejected.
+     */
+    void connectionRejected();
 
 protected:
     /*! \reimp \internal */ void incomingConnection(int socketDescriptor);
