@@ -20,6 +20,7 @@ int main(int argc, char *argv[])
     KDSoapThreadPool * threadPool=new KDSoapThreadPool();
 
     server.setThreadPool(threadPool);
+    server.setPath("/path");
 
     qDebug()<<"StartServer";
     //server.setThreadPool(QThreadPool ::globalInstance());
