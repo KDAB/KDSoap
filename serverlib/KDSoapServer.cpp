@@ -19,6 +19,7 @@ public:
           m_use(KDSoapMessage::LiteralUse),
           m_logLevel(KDSoapServer::LogNothing),
           m_path(QString::fromLatin1("/")),
+          m_maxConnections(-1),
           m_portBeforeSuspend(0)
     {
     }
@@ -37,9 +38,11 @@ public:
     QString m_logFileName;
     QFile m_logFile;
 
+    QMutex m_serverDataMutex;
     QString m_wsdlFile;
     QString m_wsdlPathInUrl;
     QString m_path;
+    int m_maxConnections;
 
     QHostAddress m_addressBeforeSuspend;
     quint16 m_portBeforeSuspend;
@@ -60,7 +63,11 @@ KDSoapServer::~KDSoapServer()
 
 void KDSoapServer::incomingConnection(int socketDescriptor)
 {
-    if (d->m_threadPool) {
+    const int max = maxConnections();
+    if (max > -1 && numConnectedSockets() >= max) {
+        emit connectionRejected();
+        log(QByteArray("ERROR Too many connections (") + QByteArray::number(numConnectedSockets()) + "), incoming connection rejected\n");
+    } else if (d->m_threadPool) {
         //qDebug() << "incomingConnection: using thread pool";
         d->m_threadPool->handleIncomingConnection(socketDescriptor, this);
     } else {
@@ -231,33 +238,45 @@ void KDSoapServer::resume()
 
 void KDSoapServer::setWsdlFile(const QString &file, const QString& pathInUrl)
 {
-    QMutexLocker lock(&d->m_logMutex);
+    QMutexLocker lock(&d->m_serverDataMutex);
     d->m_wsdlFile = file;
     d->m_wsdlPathInUrl = pathInUrl;
 }
 
 QString KDSoapServer::wsdlFile() const
 {
-    QMutexLocker lock(&d->m_logMutex);
+    QMutexLocker lock(&d->m_serverDataMutex);
     return d->m_wsdlFile;
 }
 
 QString KDSoapServer::wsdlPathInUrl() const
 {
-    QMutexLocker lock(&d->m_logMutex);
+    QMutexLocker lock(&d->m_serverDataMutex);
     return d->m_wsdlPathInUrl;
 }
 
 void KDSoapServer::setPath(const QString &path)
 {
-    QMutexLocker lock(&d->m_logMutex);
+    QMutexLocker lock(&d->m_serverDataMutex);
     d->m_path = path;
 }
 
 QString KDSoapServer::path() const
 {
-    QMutexLocker lock(&d->m_logMutex);
+    QMutexLocker lock(&d->m_serverDataMutex);
     return d->m_path;
+}
+
+void KDSoapServer::setMaxConnections(int sockets)
+{
+    QMutexLocker lock(&d->m_serverDataMutex);
+    d->m_maxConnections = sockets;
+}
+
+int KDSoapServer::maxConnections() const
+{
+    QMutexLocker lock(&d->m_serverDataMutex);
+    return d->m_maxConnections;
 }
 
 #include "moc_KDSoapServer.cpp"
