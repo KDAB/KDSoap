@@ -10,7 +10,6 @@
 #include <KDSoapNamespaceManager.h>
 #ifndef QT_NO_OPENSSL
 #include <QSslSocket>
-#include <QSslConfiguration>
 #endif
 
 using namespace KDSoapUnitTestHelpers;
@@ -187,15 +186,7 @@ private Q_SLOTS:
         }
 
 #ifndef QT_NO_SSLSOCKET
-        //service.ignoreSslErrors();
-        // To make SSL work, we need to tell Qt about our local certificate
-        QSslConfiguration defaultConfig = QSslConfiguration::defaultConfiguration();
-        QFile certFile(QString::fromLatin1("../certs/cacert.pem"));
-        QVERIFY(certFile.open(QIODevice::ReadOnly));
-        QSslCertificate cert(&certFile);
-        QVERIFY(cert.isValid());
-        defaultConfig.setCaCertificates(QList<QSslCertificate>() << cert);
-        QSslConfiguration::setDefaultConfiguration(defaultConfig);
+        QVERIFY(KDSoapUnitTestHelpers::setSslConfiguration());
 #endif
 
         HttpServerThread server(addEmployeeResponse(), HttpServerThread::Ssl);
