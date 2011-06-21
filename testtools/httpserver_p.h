@@ -18,6 +18,7 @@ namespace KDSoapUnitTestHelpers
 {
     bool xmlBufferCompare(const QByteArray& source, const QByteArray& dest);
     void httpGet(const QUrl& url);
+    bool setSslConfiguration();
 }
 
 class HttpServerThread : public QThread
@@ -67,6 +68,7 @@ public:
     QByteArray header(const QByteArray& value) const {
         return m_headers.value(value);
     }
+
 protected:
     /* \reimp */ void run();
 
