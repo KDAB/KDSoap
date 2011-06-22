@@ -8,7 +8,7 @@ test.commands = ./$(TARGET)
 test.depends = $(TARGET)
 QMAKE_EXTRA_TARGETS += test
 
-PRE_TARGETDEPS = $$KDSOAP_PATH/lib/libtesttools.a
+unix:PRE_TARGETDEPS = $$KDSOAP_PATH/lib/libtesttools.a
 
 KDWSDL = thomas-bayer.wsdl mywsdl_document.wsdl
 
