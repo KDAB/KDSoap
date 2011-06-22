@@ -13,7 +13,11 @@
 #include <QVarLengthArray>
 
 KDSoapServerSocket::KDSoapServerSocket(KDSoapSocketList* owner, QObject* serverObject)
+#ifndef QT_NO_OPENSSL
+    : QSslSocket(),
+#else
     : QTcpSocket(),
+#endif
       m_owner(owner),
       m_serverObject(serverObject)
 {
@@ -27,7 +31,6 @@ KDSoapServerSocket::~KDSoapServerSocket()
 {
     m_owner->socketDeleted(this);
 }
-
 
 typedef QMap<QByteArray, QByteArray> HeadersMap;
 static HeadersMap parseHeaders(const QByteArray& headerData)

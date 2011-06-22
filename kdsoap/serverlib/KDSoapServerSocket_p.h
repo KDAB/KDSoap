@@ -1,14 +1,26 @@
 #ifndef KDSOAPSERVERSOCKET_P_H
 #define KDSOAPSERVERSOCKET_P_H
 
+#include <QtGlobal>
+
+#ifndef QT_NO_OPENSSL
+#include <QSslSocket>
+#else
 #include <QTcpSocket>
+#endif
+
 #include <QMap>
 class QObject;
 class KDSoapSocketList;
 class KDSoapMessage;
 class KDSoapHeaders;
 
-class KDSoapServerSocket : public QTcpSocket
+class KDSoapServerSocket
+#ifndef QT_NO_OPENSSL
+        : public QSslSocket
+#else
+        : public QTcpSocket
+#endif
 {
     Q_OBJECT
 public:

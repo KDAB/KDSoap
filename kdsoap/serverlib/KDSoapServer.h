@@ -33,6 +33,25 @@ public:
      */
     ~KDSoapServer();
 
+    enum Feature {
+        Public = 0,       ///< HTTP with no ssl and no authentication needed (default)
+        Ssl = 1,          ///< HTTPS
+        AuthRequired = 2  ///< Requires authentication
+        // bitfield, next item is 4
+    };
+    Q_DECLARE_FLAGS(Features, Feature)
+
+    /**
+     * Set all the features of the server that should be enabled.
+     * For instance, the use of SSL, or the use of authentication.
+     */
+    void setFeatures(Features features);
+
+    /**
+     * Returns the features of the server that were enabled.
+     */
+    Features features() const;
+
     /**
      * Sets the thread pool for this server.
      * This is useful if you want to share a thread pool between multiple server instances,

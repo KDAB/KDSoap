@@ -6,10 +6,14 @@
 #include "KDSoapServer.h"
 #include "KDSoapThreadPool.h"
 #include "KDSoapServerObjectInterface.h"
+#include "httpserver_p.h" // KDSoapUnitTestHelpers
 #include <QtTest/QtTest>
 #include <QDebug>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
+#ifndef QT_NO_OPENSSL
+#include <QSslConfiguration>
+#endif
 
 class CountryServerObject;
 typedef QMap<QThread*, CountryServerObject*> ServerObjectsMap;
@@ -157,6 +161,21 @@ class ServerTest : public QObject
     Q_OBJECT
 
 private Q_SLOTS:
+    void initTestCase()
+    {
+#ifndef QT_NO_SSLSOCKET
+        QVERIFY(KDSoapUnitTestHelpers::setSslConfiguration());
+        QSslConfiguration defaultConfig = QSslConfiguration::defaultConfiguration();
+        QFile certFile(QString::fromLatin1("../certs/test-127.0.0.1-cert.pem"));
+        if (certFile.open(QIODevice::ReadOnly))
+            defaultConfig.setLocalCertificate(QSslCertificate(certFile.readAll()));
+        QFile keyFile(QString::fromLatin1("../certs/test-127.0.0.1-key.pem"));
+        if (keyFile.open(QIODevice::ReadOnly))
+            defaultConfig.setPrivateKey(QSslKey(keyFile.readAll(), QSsl::Rsa));
+        QSslConfiguration::setDefaultConfiguration(defaultConfig);
+#endif
+    }
+
     void testCall()
     {
         {
@@ -468,6 +487,14 @@ private Q_SLOTS:
         makeFaultyCall(server->endPoint());
     }
 
+    void testSsl()
+    {
+        CountryServerThread serverThread;
+        CountryServer* server = serverThread.startThread();
+        server->setFeatures(KDSoapServer::Ssl);
+        QVERIFY(server->endPoint().startsWith(QLatin1String("https")));
+        makeSimpleCall(server->endPoint());
+    }
 
     void testLogging()
     {
@@ -607,6 +634,7 @@ private:
     {
         KDSoapClientInterface client(endPoint, countryMessageNamespace());
         const KDSoapMessage response = client.call(QLatin1String("getEmployeeCountry"), countryMessage());
+        QVERIFY(!response.isFault());
         QCOMPARE(response.childValues().first().value().toString(), QString::fromLatin1("France"));
     }
 
