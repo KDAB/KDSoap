@@ -102,14 +102,14 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
             QString inputTypeName = mTypeMap.localInputType( elemIt.type(), QName() );
 
             if ( elemIt.maxOccurs() > 1 ) {
-                typeName = "QList<" + typeName + ">";
+                typeName = listTypeFor(typeName, newClass);
                 inputTypeName = "const " + typeName + "&";
             }
             if ( type->isArray() ) {
                 const QString arrayTypeName = mTypeMap.localType( type->arrayType() );
                 Q_ASSERT(!arrayTypeName.isEmpty());
                 //qDebug() << "array of" << attribute.arrayType() << "->" << arrayTypeName;
-                typeName = "QList<" + arrayTypeName + ">";
+                typeName = listTypeFor(arrayTypeName, newClass);
                 newClass.addInclude(QString(), arrayTypeName); // add forward declaration
                 newClass.addHeaderIncludes( QStringList() << "QList" );
                 inputTypeName = "const " + typeName + '&';
