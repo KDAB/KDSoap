@@ -21,6 +21,15 @@ KDSoapServerSocket* KDSoapSocketList::handleIncomingConnection(int socketDescrip
 {
     KDSoapServerSocket* socket = new KDSoapServerSocket(this, m_serverObject);
     socket->setSocketDescriptor(socketDescriptor);
+
+#ifndef QT_NO_OPENSSL
+    if (m_server->features() & KDSoapServer::Ssl) {
+        // We could call a virtual "m_server->setSslConfiguration(socket)" here,
+        // if we don't want to rely on everyone using QSslConfiguration::setDefaultConfiguration.
+        socket->startServerEncryption();
+    }
+#endif
+
     QObject::connect(socket, SIGNAL(disconnected()),
                      socket, SLOT(deleteLater()));
     m_sockets.insert(socket);

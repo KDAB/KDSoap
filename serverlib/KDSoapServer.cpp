@@ -32,6 +32,7 @@ public:
     KDSoapThreadPool* m_threadPool;
     KDSoapSocketList* m_mainThreadSocketList;
     KDSoapMessage::Use m_use;
+    KDSoapServer::Features m_features;
 
     QMutex m_logMutex;
     KDSoapServer::LogLevel m_logLevel;
@@ -105,7 +106,7 @@ QString KDSoapServer::endPoint() const {
         return QString();
     const QString addressStr = address == QHostAddress::Any ? QString::fromLatin1("127.0.0.1") : address.toString();
     return QString::fromLatin1("%1://%2:%3%4")
-            .arg(QString::fromLatin1(/*(m_features & Ssl)?"https":*/"http"))
+            .arg(QString::fromLatin1((d->m_features & Ssl)?"https":"http"))
             .arg(addressStr)
             .arg(serverPort())
             .arg(d->m_path);
@@ -277,6 +278,16 @@ int KDSoapServer::maxConnections() const
 {
     QMutexLocker lock(&d->m_serverDataMutex);
     return d->m_maxConnections;
+}
+
+void KDSoapServer::setFeatures(Features features)
+{
+    d->m_features = features;
+}
+
+KDSoapServer::Features KDSoapServer::features() const
+{
+    return d->m_features;
 }
 
 #include "moc_KDSoapServer.cpp"
