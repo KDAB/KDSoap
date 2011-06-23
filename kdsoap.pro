@@ -69,4 +69,8 @@ readme.files = README.KDSoap
 readme.path = $$INSTALL_PREFIX
 INSTALLS += readme
 
+prifiles.files = kdsoap.pri
+prifiles.path = $$INSTALL_PREFIX
+INSTALLS += prifiles
+
 OTHER_FILES += configure.sh configure.bat kdsoap.pri kdwsdl2cpp.pri
