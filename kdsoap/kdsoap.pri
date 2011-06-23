@@ -35,8 +35,8 @@
     }
     QT += network
 
-    INCLUDEPATH += $$KDSOAPDIR/include $$KDSOAPDIR/src $$KDSOAPDIR/serverlib
-    DEPENDPATH += $$KDSOAPDIR/include $$KDSOAPDIR/src $$KDSOAPDIR/serverlib
+    INCLUDEPATH += $$KDSOAPDIR/include #$$KDSOAPDIR/src $$KDSOAPDIR/serverlib
+    DEPENDPATH += $$KDSOAPDIR/include #$$KDSOAPDIR/src $$KDSOAPDIR/serverlib
 
     CONFIG += have_kdsoap
     DEFINES += HAVE_KDSOAP

@@ -6,8 +6,8 @@ QT -= gui
 QT += network
 
 # Workaround for visual studio integration
-DESTDIR = ../lib
-win32:DLLDESTDIR = ../bin
+DESTDIR = ../../lib
+win32:DLLDESTDIR = ../../bin
 
 include(../variables.pri)
 INSTALLHEADERS = KDSoapServer.h \
@@ -33,15 +33,15 @@ SOURCES = KDSoapServer.cpp \
 DEFINES += KDSOAP_BUILD_KDSOAPSERVER_LIB
 
 # We use the soap client library, for xml parsing
-INCLUDEPATH += ../src
-DEPENDPATH += ../src
-LIBS        += -L../lib -l$$KDSOAPLIB
+INCLUDEPATH += . ../KDSoapClient
+DEPENDPATH += . ../KDSoapClient
+LIBS        += -L$$DESTDIR -l$$KDSOAPLIB
 
 # installation targets:
 headers.files = $$INSTALLHEADERS \
     $$EXTENSIONLESSHEADERS
 headers.path = $$INSTALL_PREFIX/include
-INSTALLS += headers
+#INSTALLS += headers
 
 target.path = $$INSTALL_PREFIX/lib
 INSTALLS += target

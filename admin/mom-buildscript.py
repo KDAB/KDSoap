@@ -11,6 +11,8 @@
 from core.helpers.BoilerPlate import BuildProject
 from products.ProductBoilerPlate import ProductConfigurations
 
-build, project = BuildProject( name = 'KD SOAP', version = '1.1.0-trunk', url = 'svn+ssh://svn.kdab.com/home/SVN-klaralv/products/kdsoap' )
+#build, project = BuildProject( name = 'KD SOAP', version = '1.1.0-trunk', url = 'svn+ssh://svn.kdab.com/home/SVN-klaralv/products/kdsoap' )
+build, project = BuildProject( name = 'KD SOAP', version = '1.1.0-trunk', url = 'git:/home/bjoern/projects/products/kdsoap_release' )
 configs = ProductConfigurations( project )
+configs.addForwardHeaderGenerator( "KDSoap", ["KDSoapClient","KDSoapServer"], "INSTALL_PREFIX", True )
 build.build()
