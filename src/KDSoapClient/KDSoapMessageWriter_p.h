@@ -14,7 +14,7 @@ class KDSoapValueList;
 
 /// Internal class -- only exported for the server lib
 
-class KDSOAP_EXPORT KDSoapMessageWriter
+class KDSOAPCLIENT_EXPORT KDSoapMessageWriter
 {
 public:
     KDSoapMessageWriter();

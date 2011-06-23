@@ -11,7 +11,7 @@ class KDSoapHeaders;
 /**
  * The KDSoapMessage class represents one message sent or received via SOAP.
  */
-class KDSOAP_EXPORT KDSoapMessage : public KDSoapValue
+class KDSOAPCLIENT_EXPORT KDSoapMessage : public KDSoapValue
 {
 public:
     /**
@@ -122,7 +122,7 @@ private:
  * Set of headers that can be provided when making a SOAP call.
  * \see KDSoapClientInterface
  */
-class KDSOAP_EXPORT KDSoapHeaders : public QList<KDSoapMessage>
+class KDSOAPCLIENT_EXPORT KDSoapHeaders : public QList<KDSoapMessage>
 {
 public:
     /**
@@ -134,6 +134,6 @@ public:
 /**
  * Support for debugging KDSoapMessage objects via qDebug() << msg;
  */
-KDSOAP_EXPORT QDebug operator<<(QDebug dbg, const KDSoapMessage &msg);
+KDSOAPCLIENT_EXPORT QDebug operator<<(QDebug dbg, const KDSoapMessage &msg);
 
 #endif // KDSOAPMESSAGE_H

@@ -15,7 +15,7 @@ class KDDateTimeData;
  * As specified in http://www.w3.org/TR/xmlschema-2/#dateTime, the timezone
  * can be empty (local time), "Z" (for UTC) or an offset from UTC like "+05:00" or "-03:00"
  */
-class KDSOAP_EXPORT KDDateTime : public QDateTime
+class KDSOAPCLIENT_EXPORT KDDateTime : public QDateTime
 {
 public:
     KDDateTime();
