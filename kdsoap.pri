@@ -16,7 +16,7 @@
           error( "Cannot find libkdsoap.$$QMAKE_EXTENSION_SHLIB or libkdsoap.a in $KDSOAPDIR/lib" )
         }
       }
-      !exists( $$KDSOAPDIR/include/KDSoapClientInterface.h ):error( "Cannot find KDSoapClientInterface.h in $KDSOAPDIR/include" )
+      !exists( $$KDSOAPDIR/src/KDSoapClient/KDSoapClientInterface.h ):error( "Cannot find KDSoapClientInterface.h in $KDSOAPDIR/include" )
     }
     #win32:!exists( $$KDSOAPDIR/lib/kdsoap.lib ):error( "Cannot find kdsoap.lib in $KDSOAPDIR/lib" )
 
@@ -35,8 +35,8 @@
     }
     QT += network
 
-    INCLUDEPATH += $$KDSOAPDIR/include #$$KDSOAPDIR/src $$KDSOAPDIR/serverlib
-    DEPENDPATH += $$KDSOAPDIR/include #$$KDSOAPDIR/src $$KDSOAPDIR/serverlib
+    INCLUDEPATH += $$KDSOAPDIR/include $$KDSOAPDIR/src/KDSoapClient $$KDSOAPDIR/src/KDSoapServer
+    DEPENDPATH += $$KDSOAPDIR/include $$KDSOAPDIR/src/KDSoapClient $$KDSOAPDIR/src/KDSoapServer
 
     CONFIG += have_kdsoap
     DEFINES += HAVE_KDSOAP
