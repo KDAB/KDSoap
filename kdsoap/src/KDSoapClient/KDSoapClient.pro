@@ -8,7 +8,7 @@ QT += network
 # Workaround for visual studio integration
 DESTDIR = ../../lib
 win32:DLLDESTDIR = ../../bin
-include(../variables.pri)
+include(../../variables.pri)
 INSTALLHEADERS = KDSoapMessage.h \
     KDSoapClientInterface.h \
     KDSoapPendingCall.h \
