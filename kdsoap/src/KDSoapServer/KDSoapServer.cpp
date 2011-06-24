@@ -18,6 +18,8 @@ public:
           m_mainThreadSocketList(0),
           m_use(KDSoapMessage::LiteralUse),
           m_logLevel(KDSoapServer::LogNothing),
+          m_path(QString::fromLatin1("/")),
+          m_maxConnections(-1),
           m_portBeforeSuspend(0)
     {
     }
@@ -30,13 +32,18 @@ public:
     KDSoapThreadPool* m_threadPool;
     KDSoapSocketList* m_mainThreadSocketList;
     KDSoapMessage::Use m_use;
+    KDSoapServer::Features m_features;
 
     QMutex m_logMutex;
     KDSoapServer::LogLevel m_logLevel;
     QString m_logFileName;
     QFile m_logFile;
 
+    QMutex m_serverDataMutex;
     QString m_wsdlFile;
+    QString m_wsdlPathInUrl;
+    QString m_path;
+    int m_maxConnections;
 
     QHostAddress m_addressBeforeSuspend;
     quint16 m_portBeforeSuspend;
@@ -57,7 +64,11 @@ KDSoapServer::~KDSoapServer()
 
 void KDSoapServer::incomingConnection(int socketDescriptor)
 {
-    if (d->m_threadPool) {
+    const int max = maxConnections();
+    if (max > -1 && numConnectedSockets() >= max) {
+        emit connectionRejected();
+        log(QByteArray("ERROR Too many connections (") + QByteArray::number(numConnectedSockets()) + "), incoming connection rejected\n");
+    } else if (d->m_threadPool) {
         //qDebug() << "incomingConnection: using thread pool";
         d->m_threadPool->handleIncomingConnection(socketDescriptor, this);
     } else {
@@ -94,10 +105,11 @@ QString KDSoapServer::endPoint() const {
     if (address == QHostAddress::Null)
         return QString();
     const QString addressStr = address == QHostAddress::Any ? QString::fromLatin1("127.0.0.1") : address.toString();
-    return QString::fromLatin1("%1://%2:%3/")
-            .arg(QString::fromLatin1(/*(m_features & Ssl)?"https":*/"http"))
+    return QString::fromLatin1("%1://%2:%3%4")
+            .arg(QString::fromLatin1((d->m_features & Ssl)?"https":"http"))
             .arg(addressStr)
-            .arg(serverPort());
+            .arg(serverPort())
+            .arg(d->m_path);
 }
 
 void KDSoapServer::setUse(KDSoapMessage::Use use)
@@ -225,16 +237,57 @@ void KDSoapServer::resume()
     }
 }
 
-void KDSoapServer::setWsdlFile(const QString &file)
+void KDSoapServer::setWsdlFile(const QString &file, const QString& pathInUrl)
 {
-    QMutexLocker lock(&d->m_logMutex);
+    QMutexLocker lock(&d->m_serverDataMutex);
     d->m_wsdlFile = file;
+    d->m_wsdlPathInUrl = pathInUrl;
 }
 
 QString KDSoapServer::wsdlFile() const
 {
-    QMutexLocker lock(&d->m_logMutex);
+    QMutexLocker lock(&d->m_serverDataMutex);
     return d->m_wsdlFile;
+}
+
+QString KDSoapServer::wsdlPathInUrl() const
+{
+    QMutexLocker lock(&d->m_serverDataMutex);
+    return d->m_wsdlPathInUrl;
+}
+
+void KDSoapServer::setPath(const QString &path)
+{
+    QMutexLocker lock(&d->m_serverDataMutex);
+    d->m_path = path;
+}
+
+QString KDSoapServer::path() const
+{
+    QMutexLocker lock(&d->m_serverDataMutex);
+    return d->m_path;
+}
+
+void KDSoapServer::setMaxConnections(int sockets)
+{
+    QMutexLocker lock(&d->m_serverDataMutex);
+    d->m_maxConnections = sockets;
+}
+
+int KDSoapServer::maxConnections() const
+{
+    QMutexLocker lock(&d->m_serverDataMutex);
+    return d->m_maxConnections;
+}
+
+void KDSoapServer::setFeatures(Features features)
+{
+    d->m_features = features;
+}
+
+KDSoapServer::Features KDSoapServer::features() const
+{
+    return d->m_features;
 }
 
 #include "moc_KDSoapServer.cpp"

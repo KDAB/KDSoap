@@ -11,7 +11,7 @@ class KDSoapHeaders;
 /**
  * The KDSoapMessage class represents one message sent or received via SOAP.
  */
-class KDSOAPCLIENT_EXPORT KDSoapMessage : public KDSoapValue
+class KDSOAP_EXPORT KDSoapMessage : public KDSoapValue
 {
 public:
     /**
@@ -113,8 +113,13 @@ public:
 private:
     friend class KDSoapPendingCall;
     friend class KDSoapServerSocket;
-    void parseSoapXml(const QByteArray& data, QString* pMessageNamespace, KDSoapHeaders* pRequestHeaders);
+    enum XmlError {
+        NoError=0,
+        ParseError,
+        PrematureEndOfDocumentError
+    };
 
+    XmlError parseSoapXml(const QByteArray& data, QString* pMessageNamespace, KDSoapHeaders* pRequestHeaders);
     QSharedDataPointer<KDSoapMessageData> d;
 };
 
@@ -122,7 +127,7 @@ private:
  * Set of headers that can be provided when making a SOAP call.
  * \see KDSoapClientInterface
  */
-class KDSOAPCLIENT_EXPORT KDSoapHeaders : public QList<KDSoapMessage>
+class KDSOAP_EXPORT KDSoapHeaders : public QList<KDSoapMessage>
 {
 public:
     /**
@@ -134,6 +139,6 @@ public:
 /**
  * Support for debugging KDSoapMessage objects via qDebug() << msg;
  */
-KDSOAPCLIENT_EXPORT QDebug operator<<(QDebug dbg, const KDSoapMessage &msg);
+KDSOAP_EXPORT QDebug operator<<(QDebug dbg, const KDSoapMessage &msg);
 
 #endif // KDSOAPMESSAGE_H

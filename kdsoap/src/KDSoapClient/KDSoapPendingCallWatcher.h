@@ -23,7 +23,7 @@
  * \note It is not necessary to keep the original KDSoapPendingCall object
  * around since KDSoapPendingCallWatcher inherits from that class too.
  */
-class KDSOAPCLIENT_EXPORT KDSoapPendingCallWatcher : public QObject, public KDSoapPendingCall
+class KDSOAP_EXPORT KDSoapPendingCallWatcher : public QObject, public KDSoapPendingCall
 {
     Q_OBJECT
 public:

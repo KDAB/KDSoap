@@ -30,7 +30,7 @@ class KDSoapAuthentication;
  *  qDebug("%s", qPrintable(response.arguments()[0].value().toString()));
  * \endcode
  */
-class KDSOAPCLIENT_EXPORT KDSoapClientInterface
+class KDSOAP_EXPORT KDSoapClientInterface
 {
 public:
     /**

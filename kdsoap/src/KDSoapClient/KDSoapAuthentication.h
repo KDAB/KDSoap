@@ -13,7 +13,7 @@ class QNetworkReply;
  *
  * \see KDSoapClientInterface::setAuthentication()
  */
-class KDSOAPCLIENT_EXPORT KDSoapAuthentication
+class KDSOAP_EXPORT KDSoapAuthentication
 {
 public:
     /**
