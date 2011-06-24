@@ -33,6 +33,25 @@ public:
      */
     ~KDSoapServer();
 
+    enum Feature {
+        Public = 0,       ///< HTTP with no ssl and no authentication needed (default)
+        Ssl = 1,          ///< HTTPS
+        AuthRequired = 2  ///< Requires authentication
+        // bitfield, next item is 4
+    };
+    Q_DECLARE_FLAGS(Features, Feature)
+
+    /**
+     * Set all the features of the server that should be enabled.
+     * For instance, the use of SSL, or the use of authentication.
+     */
+    void setFeatures(Features features);
+
+    /**
+     * Returns the features of the server that were enabled.
+     */
+    Features features() const;
+
     /**
      * Sets the thread pool for this server.
      * This is useful if you want to share a thread pool between multiple server instances,
@@ -48,8 +67,22 @@ public:
     KDSoapThreadPool* threadPool() const;
 
     /**
+     * Sets the path that the server expects in client requests.
+     * By default the path is '/', but this can be changed here.
+     *
+     * The path is returned in endPoint(), and is checked when handling incoming requests.
+     */
+    void setPath(const QString& path);
+
+    /**
+     * Returns the path set by setPath()
+     */
+    QString path() const;
+
+
+    /**
      * Returns the HTTP URL which can be used to access this server.
-     * For instance "http://127.0.0.1:8000".
+     * For instance "http://127.0.0.1:8000/".
      *
      * If the server is listening for connections yet, returns an empty string.
      */
@@ -115,7 +148,23 @@ public:
     void flushLogFile();
 
     /**
-     * Sets the number of expected sockets in this process.
+     * Sets a maximum number of concurrent connections to this server.
+     * When this number is reached, connections are rejected, and the signal
+     * clientConnectionRejected is emitted for each rejected connection.
+     *
+     * The special value -1 means unlimited.
+     */
+    void setMaxConnections(int sockets);
+
+    /**
+     * Returns the maximum of concurrent connections as set by setMaxConnections.
+     * 
+     * The special value -1 means unlimited.
+     */
+    int maxConnections() const;
+
+    /**
+     * Sets the number of expected sockets (connections) in this process.
      * This is necessary in order to increase system limits when a large number of clients
      * is expected.
      *
@@ -128,20 +177,28 @@ public:
      * Returns the number of connected sockets.
      * This information can change at any time, and is therefore only useful
      * for statistical purposes.
+     *
+     * It will always be less than maxConnections(), if maxConnections was set.
      */
     int numConnectedSockets() const;
 
     /**
-     * Set the full path to the .wsdl file (including the filename), so that it can be
-     * downloaded by clients using endPoint() + the filename of the wsdl file.
-     * (For instance http://myserver.example.com/myservice.wsdl)
+     * Sets the .wsdl file that users can download from the soap server.
+     * \param file relative or absolute path to the .wsdl file (including the filename), on disk
+     * \param pathInUrl that clients can use in order to download the file:
+     *                  for instance "/files/myservice.wsdl" for "http://myserver.example.com/files/myservice.wsdl" as final URL.
      */
-    void setWsdlFile(const QString& file);
+    void setWsdlFile(const QString& file, const QString& pathInUrl);
+
+    /**
+     * \returns the path to the wsdl file on disk, as given to setWsdlFile
+     */
+    QString wsdlFile() const;
 
     /**
      * \returns the path given to setWsdlFile
      */
-    QString wsdlFile() const;
+    QString wsdlPathInUrl() const;
 
 public Q_SLOTS:
     /**
@@ -154,6 +211,13 @@ public Q_SLOTS:
      * Resume activity after suspend
      */
     void resume();
+
+Q_SIGNALS:
+    /**
+     * Emitted when the maximum number of connections has been reached,
+     * and a client connection was just rejected.
+     */
+    void connectionRejected();
 
 protected:
     /*! \reimp \internal */ void incomingConnection(int socketDescriptor);

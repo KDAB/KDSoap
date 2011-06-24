@@ -9,7 +9,6 @@ isEmpty(KDSOAPLIB): error("KDSOAPLIB is empty. This should not happen, please ch
 INCLUDEPATH += \
             $$KDSOAP_PATH/src/KDSoapClient \
             $$KDSOAP_PATH/src/KDSoapServer \
-            $$KDSOAP_PATH/include \
             $$KDSOAP_PATH/examples/tools
 DEPENDPATH += \
             $$KDSOAP_PATH/src/KDSoapClient \

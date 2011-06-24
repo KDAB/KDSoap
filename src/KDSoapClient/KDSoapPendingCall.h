@@ -24,7 +24,7 @@ class KDSoapPendingCallWatcher;
  *
  * \see KDSoapClientInterface::asyncCall()
  */
-class KDSOAPCLIENT_EXPORT KDSoapPendingCall
+class KDSOAP_EXPORT KDSoapPendingCall
 {
 public:
     /**

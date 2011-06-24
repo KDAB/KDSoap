@@ -13,7 +13,11 @@
 #include <QVarLengthArray>
 
 KDSoapServerSocket::KDSoapServerSocket(KDSoapSocketList* owner, QObject* serverObject)
+#ifndef QT_NO_OPENSSL
+    : QSslSocket(),
+#else
     : QTcpSocket(),
+#endif
       m_owner(owner),
       m_serverObject(serverObject)
 {
@@ -27,7 +31,6 @@ KDSoapServerSocket::~KDSoapServerSocket()
 {
     m_owner->socketDeleted(this);
 }
-
 
 typedef QMap<QByteArray, QByteArray> HeadersMap;
 static HeadersMap parseHeaders(const QByteArray& headerData)
@@ -100,31 +103,46 @@ static QByteArray httpResponseHeaders(bool fault, const QByteArray& contentType,
 void KDSoapServerSocket::slotReadyRead()
 {
     //qDebug() << QThread::currentThread() << "slotReadyRead!";
-    const QByteArray request = this->readAll(); // ## TODO what if it's not all available?
+    QByteArray buf(2048, ' ');
+    qint64 nread = -1;
+    while (nread != 0) {
+        nread = read(buf.data(), buf.size());
+        if (nread < 0) {
+            qDebug() << "Error reading from server socket:" << errorString();
+            return;
+        }
+        m_requestBuffer += buf.left(nread);
+    }
 
-    //qDebug() << "KDSoapServerSocket: request:" << request;
+    //qDebug() << "KDSoapServerSocket: request:" << m_requestBuffer;
 
-    const bool splitOK = splitHeadersAndData(request, m_receivedHttpHeaders, m_receivedData);
-    Q_ASSERT(splitOK);
-    Q_UNUSED(splitOK); // To avoid a warning if Q_ASSERT doesn't expand to anything.
-    m_httpHeaders = parseHeaders(m_receivedHttpHeaders);
+    QByteArray receivedHttpHeaders, receivedData;
+    const bool splitOK = splitHeadersAndData(m_requestBuffer, receivedHttpHeaders, receivedData);
+
+    if (!splitOK) {
+        //qDebug() << "Incomplete SOAP request, wait for more data";
+        //incomplete request, wait for more data
+        return;
+    }
+
+    QMap<QByteArray, QByteArray> httpHeaders;
+    httpHeaders = parseHeaders(receivedHttpHeaders);
 
     if (m_doDebug) {
-        qDebug() << "headers received:" << m_receivedHttpHeaders;
-        qDebug() << m_httpHeaders;
-        qDebug() << "data received:" << m_receivedData;
+        qDebug() << "headers received:" << receivedHttpHeaders;
+        qDebug() << httpHeaders;
+        qDebug() << "data received:" << receivedData;
     }
 
     KDSoapServer* server = m_owner->server();
+    KDSoapMessage replyMsg;
+    replyMsg.setUse(server->use());
 
-    const QByteArray path = m_httpHeaders.value("_path");
-    const QString wsdlFile = server->wsdlFile();
-    if (path != "/") {
-        const QString pathStr = QString::fromLatin1(path.constData());
-        QFileInfo wfi(wsdlFile);
-        qDebug() << "pathStr=" << pathStr;
-        qDebug() << "basename=" << QLatin1Char('/') + wfi.fileName();
-        if (QLatin1Char('/') + wfi.fileName() == pathStr) {
+    const QString path = QString::fromLatin1(httpHeaders.value("_path").constData());
+    if (path != server->path()) {
+        m_requestBuffer.clear();
+        if (path == server->wsdlPathInUrl()) {
+            const QString wsdlFile = server->wsdlFile();
             QFile wf(wsdlFile);
             if (wf.open(QIODevice::ReadOnly)) {
                 qDebug() << "Returning wsdl file contents";
@@ -132,17 +150,31 @@ void KDSoapServerSocket::slotReadyRead()
                 const QByteArray response = httpResponseHeaders(false, "text/plain", responseText.size());
                 write(response);
                 write(responseText);
+                return;
             }
         }
-        return;
+        handleError(replyMsg, "Client.Data", QString::fromLatin1("Invalid path '%1'").arg(path));
     }
+
+    //parse message
+    KDSoapMessage requestMsg;
+    QString messageNamespace;
+    KDSoapHeaders requestHeaders;
+    KDSoapMessage::XmlError err = requestMsg.parseSoapXml(receivedData, &messageNamespace, &requestHeaders);
+    if (err == KDSoapMessage::PrematureEndOfDocumentError) {
+        //qDebug() << "Incomplete SOAP message, wait for more data";
+        //incomplete request, wait for more data
+        return;
+    } //TODO handle parse errors?
+
+    m_requestBuffer.clear();
 
     // check soap version and extract soapAction header
     QByteArray soapAction;
-    const QByteArray contentType = m_httpHeaders.value("Content-Type");
+    const QByteArray contentType = httpHeaders.value("Content-Type");
     if (contentType.startsWith("text/xml")) {
         // SOAP 1.1
-        soapAction = m_httpHeaders.value("SoapAction");
+        soapAction = httpHeaders.value("SoapAction");
     } else if (contentType.startsWith("application/soap+xml")) {
         // SOAP 1.2
         // Example: application/soap+xml;charset=utf-8;action=ActionHex
@@ -154,18 +186,14 @@ void KDSoapServerSocket::slotReadyRead()
         }
     }
 
-    KDSoapMessage requestMsg;
-    QString messageNamespace;
-    KDSoapHeaders requestHeaders;
-    requestMsg.parseSoapXml(m_receivedData, &messageNamespace, &requestHeaders);
     const QString method = requestMsg.name();
 
-    KDSoapMessage replyMsg;
     KDSoapHeaders responseHeaders;
-    makeCall(requestMsg, replyMsg, requestHeaders, responseHeaders, soapAction);
+    if (!replyMsg.isFault()) {
+        makeCall(requestMsg, replyMsg, requestHeaders, responseHeaders, soapAction);
+    }
 
     const bool isFault = replyMsg.isFault();
-    replyMsg.setUse(server->use());
 
     // send replyMsg on socket
 
@@ -214,8 +242,7 @@ void KDSoapServerSocket::makeCall(const KDSoapMessage &requestMsg, KDSoapMessage
         // reply with a fault, but we don't even know what main element name to use
         // Oh well, just use the incoming fault :-)
         replyMsg = requestMsg;
-        replyMsg.addArgument(QString::fromLatin1("faultcode"), QString::fromLatin1("Client.Data"));
-        replyMsg.addArgument(QString::fromLatin1("faultstring"), QString::fromLatin1("Request was a fault"));
+        handleError(replyMsg, "Client.Data", QString::fromLatin1("Request was a fault"));
     } else {
         // Call method on m_serverObject
         KDSoapServerObjectInterface* serverObjectInterface = qobject_cast<KDSoapServerObjectInterface *>(m_serverObject);

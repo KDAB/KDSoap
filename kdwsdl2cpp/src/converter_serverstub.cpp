@@ -1,4 +1,5 @@
 #include "converter.h"
+#include "settings.h"
 #include <libkode/style.h>
 #include <QSet>
 #include <QDebug>
@@ -27,6 +28,9 @@ void Converter::convertServerService()
         KODE::Class serverClass(className, nameSpace);
         serverClass.addBaseClass(mQObject);
         serverClass.addBaseClass(mKDSoapServerObjectInterface);
+        if (!Settings::self()->exportDeclaration().isEmpty())
+            serverClass.setExportDeclaration(Settings::self()->exportDeclaration());
+
         // Files included in the header
         serverClass.addHeaderInclude("QObject");
         serverClass.addHeaderInclude("KDSoapServerObjectInterface.h");

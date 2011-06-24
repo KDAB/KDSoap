@@ -9,8 +9,10 @@ QT += network
 DESTDIR = ../../lib
 win32:DLLDESTDIR = ../../bin
 
-include(../variables.pri)
+include(../../variables.pri)
 INSTALLHEADERS = KDSoapServer.h \
+                 KDSoapServerObjectInterface.h \
+                 KDSoapServerGlobal.h
 
 EXTENSIONLESSHEADERS =
 PRIVATEHEADERS =

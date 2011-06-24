@@ -1,5 +1,5 @@
 TEMPLATE = subdirs
-SUBDIRS  = src kdwsdl2cpp features include/KDSoap.pro
+SUBDIRS  = src kdwsdl2cpp features #include/KDSoap.pro
 unittests: SUBDIRS += testtools unittests
 SUBDIRS += examples
 CONFIG   += ordered
@@ -68,5 +68,9 @@ INSTALLS += licenses
 readme.files = README.KDSoap
 readme.path = $$INSTALL_PREFIX
 INSTALLS += readme
+
+prifiles.files = kdsoap.pri kdwsdl2cpp.pri
+prifiles.path = $$INSTALL_PREFIX
+INSTALLS += prifiles
 
 OTHER_FILES += configure.sh configure.bat kdsoap.pri kdwsdl2cpp.pri

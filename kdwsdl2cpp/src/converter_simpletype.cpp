@@ -1,4 +1,5 @@
 #include "converter.h"
+#include "settings.h"
 
 #include <QDebug>
 
@@ -25,6 +26,16 @@ void Converter::addVariableInitializer( KODE::MemberVariable& variable ) const
     }
 }
 
+QString Converter::listTypeFor(const QString& itemTypeName, KODE::Class& newClass)
+{
+    if (itemTypeName == QLatin1String("QString")) {
+        newClass.addHeaderInclude( "QStringList" );
+        return "QStringList";
+    }
+    return "QList<" + itemTypeName + ">";
+}
+
+
 // Overall logic:
 // if ENUM -> define "Type" and "type" variable
 // if restricts a basic type or another simple type -> "value" variable
@@ -35,6 +46,8 @@ void Converter::convertSimpleType( const XSD::SimpleType *type, const XSD::Simpl
   const QString typeName( mTypeMap.localType( type->qualifiedName() ) );
   //qDebug() << "convertSimpleType:" << type->qualifiedName() << typeName;
   KODE::Class newClass( typeName );
+  if (!Settings::self()->exportDeclaration().isEmpty())
+    newClass.setExportDeclaration(Settings::self()->exportDeclaration());
 
   QString classDocumentation;
 
@@ -191,17 +204,19 @@ void Converter::convertSimpleType( const XSD::SimpleType *type, const XSD::Simpl
     newClass.addIncludes( QStringList(), mTypeMap.forwardDeclarations( baseName ) );
     newClass.addHeaderIncludes( mTypeMap.headerIncludes( baseName ) );
 
+    const QString listType = listTypeFor(itemTypeName, newClass);
+
     // member variables
-    KODE::MemberVariable variable( "entries", "QList<" + itemTypeName + ">" );
+    KODE::MemberVariable variable( "entries", listType );
     newClass.addMemberVariable( variable );
 
     // setter method
     KODE::Function setter( "setEntries", "void" );
-    setter.addArgument( "const QList<" + itemTypeName + ">& entries" );
+    setter.addArgument( "const " + listType + "& entries" );
     setter.setBody( variable.name() + " = entries;" );
 
     // getter method
-    KODE::Function getter( "entries", "QList<" + itemTypeName + ">" );
+    KODE::Function getter( "entries", listType );
     getter.setBody( "return " + variable.name() + ';' );
     getter.setConst( true );
 

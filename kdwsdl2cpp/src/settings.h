@@ -57,6 +57,9 @@ class Settings
     void setWantedService( const QString& service );
     QString wantedService() const;
 
+    QString exportDeclaration() const;
+    void setExportDeclaration( const QString& exportDeclaration );
+
   private:
     friend class SettingsSingleton;
     Settings();
@@ -66,6 +69,7 @@ class Settings
     QString mOutputDirectory;
     QString mHeaderFile;
     QString mWantedService;
+    QString mExportDeclaration;
     NSMapping mNamespaceMapping;
     bool mImpl;
     bool mServer;

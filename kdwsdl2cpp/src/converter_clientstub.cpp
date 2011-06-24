@@ -1,5 +1,6 @@
 #include "converter.h"
 #include <libkode/style.h>
+#include "settings.h"
 #include <QDebug>
 #include <QCoreApplication>
 
@@ -45,6 +46,8 @@ bool Converter::convertClientService()
       }
 
       KODE::Class newClass( className, nameSpace );
+      if (!Settings::self()->exportDeclaration().isEmpty())
+        newClass.setExportDeclaration(Settings::self()->exportDeclaration());
       newClass.setUseDPointer( true, "d_ptr" /*avoid clash with possible d() method*/ );
       newClass.addBaseClass( mQObject );
       newClass.setDocs(service.documentation());

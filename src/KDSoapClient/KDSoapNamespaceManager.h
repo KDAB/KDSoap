@@ -7,7 +7,7 @@
 /**
  * Repository of namespaces
  */
-class KDSOAPCLIENT_EXPORT KDSoapNamespaceManager
+class KDSOAP_EXPORT KDSoapNamespaceManager
 {
 public:
     static QString xmlSchema1999();

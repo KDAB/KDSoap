@@ -89,6 +89,9 @@ private Q_SLOTS:
         const TNS__Select_fields fields = modules.modules();
         const QStringList items = fields.items();
         QCOMPARE(items.count(), 4);
+        // Check that it's a QStringList, not a QList<QString>
+        const QString itemsJoined = fields.items().join(QString(QLatin1Char(',')));
+        QCOMPARE(itemsJoined, QString::fromLatin1("Home,Dashboard,Calendar,Activities"));
     }
 
     static QByteArray arrayResponse() {

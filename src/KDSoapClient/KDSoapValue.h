@@ -29,7 +29,7 @@ class QXmlStreamWriter;
  * or one XML attribute.
  * childValues() contains the child XML elements of this XML element.
  */
-class KDSOAPCLIENT_EXPORT KDSoapValue
+class KDSOAP_EXPORT KDSoapValue
 {
 public:
     /**
@@ -183,9 +183,9 @@ private:
 
 Q_DECLARE_TYPEINFO( KDSoapValue, Q_MOVABLE_TYPE );
 
-KDSOAPCLIENT_EXPORT QDebug operator <<(QDebug dbg, const KDSoapValue &value);
+KDSOAP_EXPORT QDebug operator <<(QDebug dbg, const KDSoapValue &value);
 
-KDSOAPCLIENT_EXPORT uint qHash( const KDSoapValue& value );
+KDSOAP_EXPORT uint qHash( const KDSoapValue& value );
 inline void qSwap( KDSoapValue & lhs, KDSoapValue & rhs ) { lhs.swap( rhs ); }
 
 #ifndef QT_NO_STL
@@ -202,7 +202,7 @@ namespace std {
  * In other words, it corresponds to a list of XML elements in a SOAP
  * message. It also supports XML attributes.
  */
-class KDSOAPCLIENT_EXPORT KDSoapValueList : public QList<KDSoapValue>
+class KDSOAP_EXPORT KDSoapValueList : public QList<KDSoapValue>
 {
 public:
     /**
