@@ -7,11 +7,12 @@ isEmpty(KDSOAPLIB): error("KDSOAPLIB is empty. This should not happen, please ch
 #    Note: KDSOAP_PATH is set in the calling .pro file,
 #          before examples.pri is included
 INCLUDEPATH += \
-            $$KDSOAP_PATH/include \
+            $$KDSOAP_PATH/src/KDSoapClient \
+            $$KDSOAP_PATH/src/KDSoapServer \
             $$KDSOAP_PATH/examples/tools
 DEPENDPATH += \
-            $$KDSOAP_PATH/KDSoapClient \
-            $$KDSOAP_PATH/KDSoapServer \
+            $$KDSOAP_PATH/src/KDSoapClient \
+            $$KDSOAP_PATH/src/KDSoapServer \
             $$KDSOAP_PATH/examples/tools
 LIBS        += -L$$KDSOAP_PATH/lib -l$$KDSOAPLIB
 !isEmpty(QMAKE_LFLAGS_RPATH):LIBS += $$QMAKE_LFLAGS_RPATH$$KDSOAP_PATH/lib
