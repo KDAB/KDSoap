@@ -42,6 +42,7 @@ TypeMap::TypeMap()
   // see http://www.w3.org/TR/xmlschema-2
   addBuiltinType("any", "KDSoapValue");
   addBuiltinType("anyType", "KDSoapValue");
+  addBuiltinType("anySimpleType", "QVariant");
   addBuiltinType("anyURI", "QString");
   addBuiltinType("base64Binary", "QByteArray");
   addBuiltinType("binary", "QByteArray");
@@ -434,9 +435,11 @@ QString TypeMap::localInputType( const QName &typeName, const QName& elementName
     return argType;
 }
 
+// If the type is represented as a KDSoapValue already, no need to serialize/deserialize it
 bool KWSDL::TypeMap::isTypeAny(const QName &typeName) const
 {
-    return (typeName.nameSpace() == XMLSchemaURI && (typeName.localName() == "any" || typeName.localName() == "anyType"));
+    return (typeName.nameSpace() == XMLSchemaURI &&
+            (typeName.localName() == "any" || typeName.localName() == "anyType"));
 }
 
 QString KWSDL::TypeMap::Entry::dumpBools() const
@@ -461,6 +464,8 @@ QString KWSDL::TypeMap::deserializeBuiltin( const QName &typeName, const QName& 
     } else if (type.nameSpace() == XMLSchemaURI && type.localName() == "dateTime") {
         Q_ASSERT(qtTypeName == QLatin1String("KDDateTime"));
         return "KDDateTime::fromDateString(" + var + ".toString())";
+    } else if (type.nameSpace() == XMLSchemaURI && type.localName() == "anySimpleType") {
+        return var;
     } else {
         return var + ".value<" + qtTypeName + ">()";
     }
@@ -478,6 +483,8 @@ QString KWSDL::TypeMap::serializeBuiltin( const QName &typeName, const QName& el
         return "QString::fromLatin1(" + var + ".toBase64().constData())";
     } else if (type.nameSpace() == XMLSchemaURI && type.localName() == "dateTime") {
         return var + ".toDateString()";
+    } else if (type.nameSpace() == XMLSchemaURI && type.localName() == "anySimpleType") {
+        return var;
     } else {
         return "QVariant::fromValue(" + var + ")";
     }
