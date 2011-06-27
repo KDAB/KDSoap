@@ -42,10 +42,12 @@ private:
         KDAB__EmployeeAchievement achievement1;
         achievement1.setType(QByteArray("Project"));
         achievement1.setLabel(QString::fromLatin1("Management"));
+        achievement1.setTime(QDate(2011, 06, 27));
         lst.append(achievement1);
         KDAB__EmployeeAchievement achievement2;
         achievement2.setType(QByteArray("Development"));
         achievement2.setLabel(QString::fromLatin1("C++"));
+        achievement2.setTime(QString::fromLatin1("today"));
         lst.append(achievement2);
         achievements.setItems(lst);
         KDAB__EmployeeType employeeType;
@@ -80,10 +82,12 @@ private:
                 "<n1:item>"
                 "<n1:type>50726f6a656374</n1:type>" // Project
                 "<n1:label>Management</n1:label>"
+                "<n1:time>2011-06-27</n1:time>"
                 "</n1:item>"
                 "<n1:item>"
                 "<n1:type>446576656c6f706d656e74</n1:type>" // Development
                 "<n1:label>C++</n1:label>"
+                "<n1:time>today</n1:time>"
                 "</n1:item>"
                 "</n1:employeeAchievements>"
                 "<n1:employeeId>"
@@ -476,7 +480,7 @@ public:
     // TODO add a method that returns void
 
     QByteArray addEmployee( const KDAB__AddEmployee& parameters ) {
-        qDebug() << "addEmployee called";
+        //qDebug() << "addEmployee called";
         return "added " + parameters.employeeName().value().value().toLatin1();
     }
 
@@ -601,7 +605,7 @@ void WsdlDocumentTest::testServerAddEmployee()
                 "<addEmployeeMyResponse xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsd=\"http://www.w3.org/1999/XMLSchema\" xmlns:xsi=\"http://www.w3.org/1999/XMLSchema-instance\">"
                 "6164646564204461766964204661757265"
                 "</addEmployeeMyResponse>\n";
-    qDebug() << server->lastServerObject() << "response name" << server->lastServerObject()->m_response.name();
+    //qDebug() << server->lastServerObject() << "response name" << server->lastServerObject()->m_response.name();
     // Note: that's the response as sent by the generated code.
     // But then the server socket code will call messageToXml, possibly with a method name,
     // we can't debug that here.

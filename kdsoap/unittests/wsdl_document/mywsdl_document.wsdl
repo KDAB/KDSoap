@@ -75,6 +75,7 @@
         <all>
          <element name="type" type="xsd:hexBinary"/>
          <element name="label" type="xsd:string"/>
+         <element name="time" type="xsd:anySimpleType"/>
         </all>
       </complexType>
       <complexType name="EmployeeAchievements">
