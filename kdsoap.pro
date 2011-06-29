@@ -61,7 +61,7 @@ test.depends = first
 QMAKE_EXTRA_TARGETS += test
 
 # install licenses: 
-licenses.files = Licenses
+licenses.files = LICENSE.GPL.txt LICENSE.US.txt LICENSE.txt
 licenses.path = $$INSTALL_PREFIX
 INSTALLS += licenses
 
