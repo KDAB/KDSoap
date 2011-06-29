@@ -1,6 +1,6 @@
 KDSOAP_PATH = $$PWD/../..
 include( $$KDSOAP_PATH/unittests/unittests.pri )
-QT += network
+QT += network xml
 SOURCES = webcalls_wsdl.cpp
 test.target = test
 test.commands = ./$(TARGET)

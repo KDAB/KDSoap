@@ -73,6 +73,7 @@ class Converter
     KODE::Code demarshalVar( const QName& type, const QName& elementType, const QString& variableName, const QString& typeName, const QString& soapValueVarName = "val" ) const;
     KODE::Code demarshalArrayVar( const QName& type, const QString& variableName, const QString& typeName ) const;
     void addVariableInitializer( KODE::MemberVariable& variable ) const;
+    QString listTypeFor(const QString& itemTypeName, KODE::Class& newClass);
     KODE::Code deserializeRetVal(const KWSDL::Part& part, const QString& replyMsgName, const QString& qtRetType, const QString& varName) const;
     QString elementNameForPart(const Part& part) const;
 

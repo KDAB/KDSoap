@@ -4,6 +4,10 @@
 #include <QNetworkAccessManager>
 #include <QDomDocument>
 #include <QEventLoop>
+#include <QFile>
+#ifndef QT_NO_OPENSSL
+#include <QSslConfiguration>
+#endif
 
 // Helper for xmlBufferCompare
 static bool textBufferCompare(
@@ -77,7 +81,7 @@ void KDSoapUnitTestHelpers::httpGet(const QUrl& url)
     QNetworkRequest request(url);
     QNetworkAccessManager manager;
     QNetworkReply* reply = manager.get(request);
-    QObject::connect(reply, SIGNAL(sslErrors(const QList<QSslError>&)), reply, SLOT(ignoreSslErrors()));
+    //QObject::connect(reply, SIGNAL(sslErrors(const QList<QSslError>&)), reply, SLOT(ignoreSslErrors()));
 
     QEventLoop ev;
     QObject::connect(reply, SIGNAL(finished()), &ev, SLOT(quit()));
@@ -86,17 +90,54 @@ void KDSoapUnitTestHelpers::httpGet(const QUrl& url)
     //QObject::connect(reply, SIGNAL(finished()), &QTestEventLoop::instance(), SLOT(exitLoop()));
     //QTestEventLoop::instance().enterLoop(11);
 
+    //qDebug() << "httpGet:" << reply->readAll();
     delete reply;
 }
 
 #ifndef QT_NO_OPENSSL
+
+// To debug this:  openssl s_client -connect 127.0.0.1:443
+
 static void setupSslServer(QSslSocket* serverSocket)
 {
+    //qDebug() << "setupSslServer";
     serverSocket->setProtocol(QSsl::AnyProtocol);
-    serverSocket->setLocalCertificate(QString::fromLatin1("certs/server.pem"));
-    serverSocket->setPrivateKey(QString::fromLatin1("certs/server.key"));
+    serverSocket->setLocalCertificate(QString::fromLatin1("../certs/test-127.0.0.1-cert.pem"));
+    serverSocket->setPrivateKey(QString::fromLatin1("../certs/test-127.0.0.1-key.pem"));
 }
 #endif
+
+bool KDSoapUnitTestHelpers::setSslConfiguration()
+{
+    // To make SSL work, we need to tell Qt about our local certificate
+
+    // Both ways work:
+#if 0
+    QSslConfiguration defaultConfig = QSslConfiguration::defaultConfiguration();
+    QFile certFile(QString::fromLatin1("../certs/cacert.pem"));
+    if (!certFile.open(QIODevice::ReadOnly)) {
+        qDebug() << "Could not open cacert.pem";
+        return false;
+    }
+    QSslCertificate cert(&certFile);
+    if (!cert.isValid())
+        return false;
+    defaultConfig.setCaCertificates(QList<QSslCertificate>() << cert);
+    QSslConfiguration::setDefaultConfiguration(defaultConfig);
+#endif
+
+    QFile certFile(QString::fromLatin1("../certs/cacert.pem"));
+    if (!certFile.open(QIODevice::ReadOnly)) {
+        qDebug() << "Could not open cacert.pem";
+        return false;
+    }
+    QSslCertificate cert(&certFile);
+    if (!cert.isValid())
+        return false;
+    QSslSocket::addDefaultCaCertificate(cert);
+
+    return true;
+}
 
 // A blocking http server (must be used in a thread) which supports SSL.
 class BlockingHttpServer : public QTcpServer

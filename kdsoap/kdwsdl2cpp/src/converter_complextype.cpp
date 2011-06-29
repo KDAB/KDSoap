@@ -1,4 +1,5 @@
 #include "converter.h"
+#include "settings.h"
 #include <libkode/style.h>
 
 #include <QDebug>
@@ -18,6 +19,9 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
 
     const QString typeName( mTypeMap.localType( type->qualifiedName() ) );
     KODE::Class newClass( typeName );
+    if (!Settings::self()->exportDeclaration().isEmpty())
+      newClass.setExportDeclaration(Settings::self()->exportDeclaration());
+
     newClass.setUseSharedData( true, "d_ptr" /*avoid clash with possible d() method */ );
 
     const bool doDebug = (qgetenv("KDSOAP_TYPE_DEBUG").toInt());
@@ -98,14 +102,14 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
             QString inputTypeName = mTypeMap.localInputType( elemIt.type(), QName() );
 
             if ( elemIt.maxOccurs() > 1 ) {
-                typeName = "QList<" + typeName + ">";
+                typeName = listTypeFor(typeName, newClass);
                 inputTypeName = "const " + typeName + "&";
             }
             if ( type->isArray() ) {
                 const QString arrayTypeName = mTypeMap.localType( type->arrayType() );
                 Q_ASSERT(!arrayTypeName.isEmpty());
                 //qDebug() << "array of" << attribute.arrayType() << "->" << arrayTypeName;
-                typeName = "QList<" + arrayTypeName + ">";
+                typeName = listTypeFor(arrayTypeName, newClass);
                 newClass.addInclude(QString(), arrayTypeName); // add forward declaration
                 newClass.addHeaderIncludes( QStringList() << "QList" );
                 inputTypeName = "const " + typeName + '&';

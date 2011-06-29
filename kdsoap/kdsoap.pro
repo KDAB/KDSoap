@@ -1,5 +1,5 @@
 TEMPLATE = subdirs
-SUBDIRS  = src serverlib kdwsdl2cpp features
+SUBDIRS  = src kdwsdl2cpp features include/KDSoap.pro
 unittests: SUBDIRS += testtools unittests
 SUBDIRS += examples
 CONFIG   += ordered
@@ -61,12 +61,16 @@ test.depends = first
 QMAKE_EXTRA_TARGETS += test
 
 # install licenses: 
-licenses.files = Licenses
+licenses.files = LICENSE.GPL.txt LICENSE.US.txt LICENSE.txt
 licenses.path = $$INSTALL_PREFIX
 INSTALLS += licenses
 
 readme.files = README.KDSoap
 readme.path = $$INSTALL_PREFIX
 INSTALLS += readme
+
+prifiles.files = kdsoap.pri kdwsdl2cpp.pri
+prifiles.path = $$INSTALL_PREFIX
+INSTALLS += prifiles
 
 OTHER_FILES += configure.sh configure.bat kdsoap.pri kdwsdl2cpp.pri

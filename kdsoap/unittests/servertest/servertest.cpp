@@ -6,10 +6,14 @@
 #include "KDSoapServer.h"
 #include "KDSoapThreadPool.h"
 #include "KDSoapServerObjectInterface.h"
+#include "httpserver_p.h" // KDSoapUnitTestHelpers
 #include <QtTest/QtTest>
 #include <QDebug>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
+#ifndef QT_NO_OPENSSL
+#include <QSslConfiguration>
+#endif
 
 class CountryServerObject;
 typedef QMap<QThread*, CountryServerObject*> ServerObjectsMap;
@@ -157,6 +161,21 @@ class ServerTest : public QObject
     Q_OBJECT
 
 private Q_SLOTS:
+    void initTestCase()
+    {
+#ifndef QT_NO_SSLSOCKET
+        QVERIFY(KDSoapUnitTestHelpers::setSslConfiguration());
+        QSslConfiguration defaultConfig = QSslConfiguration::defaultConfiguration();
+        QFile certFile(QString::fromLatin1("../certs/test-127.0.0.1-cert.pem"));
+        if (certFile.open(QIODevice::ReadOnly))
+            defaultConfig.setLocalCertificate(QSslCertificate(certFile.readAll()));
+        QFile keyFile(QString::fromLatin1("../certs/test-127.0.0.1-key.pem"));
+        if (keyFile.open(QIODevice::ReadOnly))
+            defaultConfig.setPrivateKey(QSslKey(keyFile.readAll(), QSsl::Rsa));
+        QSslConfiguration::setDefaultConfiguration(defaultConfig);
+#endif
+    }
+
     void testCall()
     {
         {
@@ -468,6 +487,14 @@ private Q_SLOTS:
         makeFaultyCall(server->endPoint());
     }
 
+    void testSsl()
+    {
+        CountryServerThread serverThread;
+        CountryServer* server = serverThread.startThread();
+        server->setFeatures(KDSoapServer::Ssl);
+        QVERIFY(server->endPoint().startsWith(QLatin1String("https")));
+        makeSimpleCall(server->endPoint());
+    }
 
     void testLogging()
     {
@@ -502,6 +529,26 @@ private Q_SLOTS:
         server->flushLogFile();
         compareLines(expected, fileName);
 
+        // Now make too many connections
+        server->setMaxConnections(2);
+        const int numClients = 4;
+        QVector<KDSoapClientInterface *> clients;
+        m_expectedMessages = 2;
+        m_returnMessages.clear();
+        clients.resize(numClients);
+        for (int i = 0; i < numClients; ++i) {
+            KDSoapClientInterface* client = new KDSoapClientInterface(server->endPoint(), countryMessageNamespace());
+            clients[i] = client;
+            makeAsyncCalls(*client, 1);
+        }
+        m_eventLoop.exec();
+        QTest::qWait(1000);
+        QCOMPARE(m_returnMessages.count(), 2);
+        expected << "ERROR Too many connections (2), incoming connection rejected";
+        expected << "ERROR Too many connections (2), incoming connection rejected";
+        server->flushLogFile();
+        compareLines(expected, fileName);
+        
         QFile::remove(fileName);
     }
 
@@ -515,9 +562,12 @@ private Q_SLOTS:
         QVERIFY(file.open(QIODevice::WriteOnly));
         file.write("Hello world");
         file.flush();
-        server->setWsdlFile(fileName);
+        const QString pathInUrl = QString::fromLatin1("/path/to/file.wsdl");
+        server->setWsdlFile(fileName, pathInUrl);
 
-        const QString url = server->endPoint() + fileName;
+        QString url = server->endPoint();
+        url.chop(1) /*trailing slash*/;
+        url += pathInUrl;
         QNetworkAccessManager manager;
         QNetworkRequest request(url);
         QNetworkReply* reply = manager.get(request);
@@ -527,6 +577,36 @@ private Q_SLOTS:
 
         QCOMPARE((int)reply->error(), (int)QNetworkReply::NoError);
         QCOMPARE(reply->readAll(), QByteArray("Hello world"));
+    }
+
+    void testSetPath_data()
+    {
+        QTest::addColumn<QString>("serverPath");
+        QTest::addColumn<QString>("requestPath");
+        QTest::addColumn<bool>("expectedSuccess");
+
+        QTest::newRow("success on /foo") << "/foo" << "/foo" << true;
+        QTest::newRow("mismatching paths") << "/foo" << "/bar" << false;
+    }
+
+    void testSetPath()
+    {
+        QFETCH(QString, serverPath);
+        QFETCH(QString, requestPath);
+        QFETCH(bool, expectedSuccess);
+
+        CountryServerThread serverThread;
+        CountryServer* server = serverThread.startThread();
+        server->setPath(serverPath);
+        QVERIFY(server->endPoint().endsWith(serverPath));
+        const QString url = server->endPoint().remove(serverPath).append(requestPath);
+        KDSoapClientInterface client(url, countryMessageNamespace());
+        const KDSoapMessage response = client.call(QLatin1String("getEmployeeCountry"), countryMessage());
+        QCOMPARE(response.isFault(), !expectedSuccess);
+        if (!expectedSuccess) {
+            QCOMPARE(response.arguments().child(QLatin1String("faultcode")).value().toString(), QString::fromLatin1("Client.Data"));
+            QCOMPARE(response.arguments().child(QLatin1String("faultstring")).value().toString(), QString::fromLatin1("Invalid path '%1'").arg(requestPath));
+        }
     }
 
 public Q_SLOTS:
@@ -554,6 +634,7 @@ private:
     {
         KDSoapClientInterface client(endPoint, countryMessageNamespace());
         const KDSoapMessage response = client.call(QLatin1String("getEmployeeCountry"), countryMessage());
+        QVERIFY(!response.isFault());
         QCOMPARE(response.childValues().first().value().toString(), QString::fromLatin1("France"));
     }
 

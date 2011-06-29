@@ -184,6 +184,11 @@ private Q_SLOTS:
         if (!QSslSocket::supportsSsl()) {
             QSKIP("No SSL support on this machine, check that ssleay.so/ssleay32.dll is installed", SkipAll);
         }
+
+#ifndef QT_NO_SSLSOCKET
+        QVERIFY(KDSoapUnitTestHelpers::setSslConfiguration());
+#endif
+
         HttpServerThread server(addEmployeeResponse(), HttpServerThread::Ssl);
 
         // For testing the http server with telnet or wget:
@@ -194,11 +199,7 @@ private Q_SLOTS:
 
         MyWsdlDocument service;
         service.setEndPoint(server.endPoint());
-        // Our test certificate fails because:
-        // ERROR: cannot verify 127.0.0.1's certificate, issued by `/C=NO/ST=Oslo/L=Nydalen/O=Trolltech ASA/OU=Development/CN=fluke.troll.no/emailAddress=ahanssen@trolltech.com':
-        // Unable to locally verify the issuer's authority.
-        // ERROR: certificate common name `fluke.troll.no' doesn't match requested host name `127.0.0.1'.
-        service.ignoreSslErrors();
+        QVERIFY(server.endPoint().startsWith(QLatin1String("https")));
 
         KDAB__LoginElement login;
         login.setUser(QLatin1String("foo"));
@@ -529,7 +530,9 @@ class DocServer : public KDSoapServer
 {
     Q_OBJECT
 public:
-    DocServer() : KDSoapServer(), m_lastServerObject(0) {}
+    DocServer() : KDSoapServer(), m_lastServerObject(0) {
+        setPath(QLatin1String("/xml"));
+    }
     virtual QObject* createServerObject() { m_lastServerObject = new DocServerObject; return m_lastServerObject; }
 
     DocServerObject* lastServerObject() { return m_lastServerObject; }
