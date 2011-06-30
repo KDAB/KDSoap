@@ -140,7 +140,7 @@ private Q_SLOTS:
             QVERIFY(!ret.isFault());
 
             QCOMPARE(server.header("Content-Type").constData(), "text/xml;charset=utf-8");
-            QCOMPARE(server.header("SoapAction").constData(), "http://www.kdab.com/xml/MyWsdl/getEmployeeCountry");
+            QCOMPARE(server.header("SoapAction").constData(), "\"http://www.kdab.com/xml/MyWsdl/getEmployeeCountry\"");
             QCOMPARE(ret.arguments().child(QLatin1String("employeeCountry")).value().toString(), QString::fromLatin1("France"));
 
         }        
