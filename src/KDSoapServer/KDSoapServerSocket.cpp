@@ -60,7 +60,7 @@ static HeadersMap parseHeaders(const QByteArray& headerData)
         const int pos = line.indexOf(':');
         if (pos == -1)
             qDebug() << "Malformed HTTP header:" << line;
-        const QByteArray header = line.left(pos);
+        const QByteArray header = line.left(pos).toLower(); // RFC2616 section 4.2 "Field names are case-insensitive"
         const QByteArray value = line.mid(pos+1).trimmed(); // remove space before and \r\n after
         //qDebug() << "HEADER" << header << "VALUE" << value;
         headersMap.insert(header, value);
@@ -171,10 +171,14 @@ void KDSoapServerSocket::slotReadyRead()
 
     // check soap version and extract soapAction header
     QByteArray soapAction;
-    const QByteArray contentType = httpHeaders.value("Content-Type");
+    const QByteArray contentType = httpHeaders.value("content-type");
     if (contentType.startsWith("text/xml")) {
         // SOAP 1.1
-        soapAction = httpHeaders.value("SoapAction");
+        soapAction = httpHeaders.value("soapaction");
+        // The SOAP standard allows quotation marks around the SoapAction, so we have to get rid of these.
+        if (soapAction.startsWith('\"'))
+            soapAction = soapAction.mid(1, soapAction.length() - 2);
+
     } else if (contentType.startsWith("application/soap+xml")) {
         // SOAP 1.2
         // Example: application/soap+xml;charset=utf-8;action=ActionHex
