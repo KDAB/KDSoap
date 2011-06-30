@@ -713,6 +713,10 @@ void CountryServerObject::processRequest(const KDSoapMessage &request, KDSoapMes
 {
     const QByteArray method = request.name().toLatin1();
     if (method == "getEmployeeCountry") {
+        if (soapAction != "http://www.kdab.com/xml/MyWsdl/getEmployeeCountry") {
+            setFault(QLatin1String("Server.UnknownSoapAction"), QLatin1String("Unknown soap action"), QLatin1String(""), QLatin1String(soapAction.constData()));
+            return;
+        }
         const QString employeeName = request.childValues().child(QLatin1String("employeeName")).value().toString();
         const QString ret = this->getEmployeeCountry(employeeName);
         if (!hasFault()) {

@@ -78,7 +78,7 @@ QNetworkRequest KDSoapClientInterface::Private::prepareRequest(const QString &me
     QString soapHeader;
     if (m_version == SOAP1_1) {
         soapHeader += QString::fromLatin1("text/xml;charset=utf-8");
-        request.setRawHeader("SoapAction", soapAction.toUtf8());
+        request.setRawHeader("SoapAction", '\"' + soapAction.toUtf8() + '\"');
     } else if (m_version == SOAP1_2) {
         soapHeader += QString::fromLatin1("application/soap+xml;charset=utf-8;action=") + soapAction;
     }
