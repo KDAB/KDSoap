@@ -46,3 +46,10 @@ kdwsdl_moc.variable_out = GENERATED_SOURCES
 kdwsdl_moc.name = $$moc_header.name
 QMAKE_EXTRA_COMPILERS += kdwsdl_moc
 
+
+# make sure we can include the generated header (taken from moc.prf)
+wsdl_dir_short = $$WSDL_DIR
+contains(QMAKE_HOST.os,Windows):wsdl_dir_short ~= s,^.:,/,
+contains(wsdl_dir_short, ^[/\\\\].*):INCLUDEPATH += $$WSDL_DIR
+else:INCLUDEPATH += $$OUT_PWD/$$WSDL_DIR
+
