@@ -1,7 +1,0 @@
-- correct namespace handling
-- SOAPFault/Error Handling
-
-Port to Qt4
-- Qt-Only support
-- ServerStub support
-- implement 'list' and 'union' properties of SimpleType
