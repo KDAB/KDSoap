@@ -1,5 +1,7 @@
 KDSOAP_PATH = $$PWD/../..
 
+WSDL_DIR = generated
+
 include( $$KDSOAP_PATH/examples/examples.pri )
 
 SOURCES = main.cpp

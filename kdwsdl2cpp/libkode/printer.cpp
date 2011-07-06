@@ -23,6 +23,7 @@
 #include <QtCore/QFile>
 #include <QtCore/QStringList>
 #include <QtCore/QTextStream>
+#include <QtCore/QFileInfo>
 #include <QDebug>
 
 #include "printer.h"
@@ -655,6 +656,8 @@ void Printer::printHeader( const File &file )
 
   // Create include guard
   QString className = file.filenameHeader();
+  QFileInfo headerInfo(className);
+  className = headerInfo.fileName(); // remove path, keep only filename
   className.replace( '-', "_" );
 
   QString includeGuard;
