@@ -4,6 +4,7 @@
 #include "KDSoapServer.h"
 #include <KDSoapMessage.h>
 #include <KDSoapNamespaceManager.h>
+#include <KDSoapMessageReader_p.h>
 #include <KDSoapMessageWriter_p.h>
 #include <QBuffer>
 #include <QThread>
@@ -160,8 +161,9 @@ void KDSoapServerSocket::slotReadyRead()
     KDSoapMessage requestMsg;
     QString messageNamespace;
     KDSoapHeaders requestHeaders;
-    KDSoapMessage::XmlError err = requestMsg.parseSoapXml(receivedData, &messageNamespace, &requestHeaders);
-    if (err == KDSoapMessage::PrematureEndOfDocumentError) {
+    KDSoapMessageReader reader;
+    KDSoapMessageReader::XmlError err = reader.xmlToMessage(receivedData, &requestMsg, &messageNamespace, &requestHeaders);
+    if (err == KDSoapMessageReader::PrematureEndOfDocumentError) {
         //qDebug() << "Incomplete SOAP message, wait for more data";
         //incomplete request, wait for more data
         return;
