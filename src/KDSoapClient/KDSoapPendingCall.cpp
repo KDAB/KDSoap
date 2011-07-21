@@ -1,6 +1,7 @@
 #include "KDSoapPendingCall.h"
 #include "KDSoapPendingCall_p.h"
 #include "KDSoapNamespaceManager.h"
+#include "KDSoapMessageReader_p.h"
 #include <QNetworkReply>
 #include <QDebug>
 
@@ -88,5 +89,6 @@ void KDSoapPendingCall::Private::parseReply()
     if (doDebug)
         qDebug() << data;
 
-    replyMessage.parseSoapXml(data, 0, &replyHeaders);
+    KDSoapMessageReader reader;
+    reader.xmlToMessage(data, &replyMessage, 0, &replyHeaders);
 }
