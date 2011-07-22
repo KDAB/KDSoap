@@ -47,7 +47,7 @@ private Q_SLOTS:
         QCOMPARE( err2, KDSoapMessageReader::NoError );
         QCOMPARE( msg2.name(), QLatin1String("GetEaster") );
 
-        if ( !( msg == msg2 ) ) {
+        if ( msg != msg2 ) {
             QEXPECT_FAIL( "", "There is different whitespace in the (unused) value of getEaster", Continue );
             qDebug() << msg;
             qDebug() << msg2;

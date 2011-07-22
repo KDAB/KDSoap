@@ -38,6 +38,16 @@ public:
     KDSoapMessage &operator=(const KDSoapValue &other);
 
     /**
+     * Compares two KDSoapMessages
+     */
+     bool operator==(const KDSoapMessage &other) const;
+
+     /**
+      * Compares two KDSoapMessages
+      */
+     bool operator!=(const KDSoapMessage &other) const;
+
+    /**
      * Define the way the message should be serialized.
      * The default value is #LiteralUse.
      */
