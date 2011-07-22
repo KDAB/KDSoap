@@ -2,19 +2,6 @@
 #include "KDSoapMessageReader_p.h"
 #include <QtTest/QtTest>
 
-#include <iostream>
-
-void printValue( const KDSoapValue& v, int ident=0 ) {
-    const QString tab( ident, QLatin1Char(' ') );
-    std::cout << qPrintable(tab) << "Value=" << qPrintable(v.name()) << " # " << qPrintable(v.value().toString()) << " # " << std::endl;
-    std::cout << qPrintable(tab) << "Children:" << std::endl;
-    const KDSoapValueList c = v.childValues();
-    if ( !c.isEmpty() )
-        return;
-    Q_FOREACH( const KDSoapValue& i, c )
-        printValue( i, ident+2 );
-}
-
 class TestMessageReader : public QObject
 {
     Q_OBJECT
@@ -61,9 +48,9 @@ private Q_SLOTS:
         QCOMPARE( msg2.name(), QLatin1String("GetEaster") );
 
         if ( !( msg == msg2 ) ) {
-            QEXPECT_FAIL( "", "Whitespace in the XML causes whitespace differences in (unused) text values in the message", Continue );
-            printValue( msg );
-            printValue( msg2 );
+            QEXPECT_FAIL( "", "There is different whitespace in the (unused) value of getEaster", Continue );
+            qDebug() << msg;
+            qDebug() << msg2;
         }
     }
 };
