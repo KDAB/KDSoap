@@ -1,5 +1,5 @@
 TEMPLATE = subdirs
-SUBDIRS = basic builtinhttp wsdl_document wsdl_rpc sugar_wsdl salesforce_wsdl groupwise_wsdl logbook_wsdl messagereader servertest msexchange_wsdl
+SUBDIRS = basic builtinhttp wsdl_rpc sugar_wsdl salesforce_wsdl groupwise_wsdl logbook_wsdl messagereader servertest msexchange_wsdl
 # These need internet access
 SUBDIRS += webcalls webcalls_wsdl
 
