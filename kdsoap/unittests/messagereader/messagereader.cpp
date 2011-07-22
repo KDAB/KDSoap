@@ -48,8 +48,6 @@ private Q_SLOTS:
         const KDSoapMessageReader::XmlError err2 = reader.xmlToMessage( xmlWithWhitespace, &msg2, &ns2, &headers2 );
         QCOMPARE( err2, KDSoapMessageReader::NoError );
         QCOMPARE( msg2.name(), QLatin1String("GetEaster") );
-
-        QCOMPARE( msg, msg2 );
     }
 };
 
