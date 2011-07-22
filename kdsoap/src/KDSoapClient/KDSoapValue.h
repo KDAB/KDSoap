@@ -131,6 +131,11 @@ public:
     bool operator==(const KDSoapValue& other) const;
 
     /**
+     * Compares two KDSoapValues.
+     */
+    bool operator!=(const KDSoapValue& other) const;
+
+    /**
      * Sets the type information for this KDSoapValue, so that it can be sent
      * in the \c xsi:type attribute.
      * This is only useful if using KDSoapMessage::EncodedUse.

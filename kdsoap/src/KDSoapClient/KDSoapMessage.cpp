@@ -40,6 +40,17 @@ KDSoapMessage &KDSoapMessage::operator =(const KDSoapValue &other)
     return *this;
 }
 
+bool KDSoapMessage::operator==(const KDSoapMessage &other) const
+{
+    return KDSoapValue::operator ==(other)
+        && d->use == other.d->use
+        && d->isFault == other.d->isFault;
+}
+
+bool KDSoapMessage::operator !=(const KDSoapMessage &other) const
+{
+    return ! ( *this == other );
+}
 
 KDSoapMessage::~KDSoapMessage()
 {

@@ -81,6 +81,12 @@ bool KDSoapValue::operator ==(const KDSoapValue &other) const
     return d == other.d;
 }
 
+bool KDSoapValue::operator !=(const KDSoapValue &other) const
+{
+    return d != other.d;
+}
+
+
 static QString variantToTextValue(const QVariant& value, const QString& typeNs, const QString& type)
 {
     switch (value.userType())
