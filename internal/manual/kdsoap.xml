@@ -115,7 +115,7 @@
         different purposes. For example, one application uses &kdsoap; to
         access data from a CRM system such as SugarCRM or Salesforce.
         For other examples, visit our web site at <ulink
-        url="http://www.kdab.com/kdsoap/"><filename>http://www.kdab.com/kdsoap/</filename></ulink></para>
+        url="http://www.kdab.com/kd-soap/"><filename>http://www.kdab.com/kd-soap/</filename></ulink></para>
       </listitem>
     </itemizedlist>
 
@@ -127,7 +127,7 @@
       mentioned in this Programmer's Manual works, please check the Qt
       reference documentation or a good book about Qt. Also to browse
       &kdsoap; API Reference start with the file
-      <filename>doc/html/index.html</filename> or <ulink url="http://www.kdab.com/kdsoap/"><filename>http://docs.kdab.com/kdsoap/</filename></ulink>.</para>
+      <filename>doc/html/index.html</filename> or <ulink url="http://docs.kdab.com/kdsoap/"><filename>http://docs.kdab.com/kdsoap/</filename></ulink>.</para>
     </sect1>
 
     <sect1>
