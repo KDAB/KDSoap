@@ -16,13 +16,13 @@
 
     <corpauthor>The &kdsoap; Team</corpauthor>
 
-    <corpname>Klarälvdalens Datakonsult AB</corpname>
+    <corpname>Klar&auml;lvdalens Datakonsult AB</corpname>
 
     <releaseinfo>Version &kdsoap_cur_version;</releaseinfo>
 
     <legalnotice>
       <para>The contents of this manual and the associated &kdsoap; software
-      are the property of Klarälvdalens Datakonsult AB and are copyrighted.
+      are the property of Klar&auml;lvdalens Datakonsult AB and are copyrighted.
       &kdsoap; is available under two different licenses, depending on the
       intended use of this product:</para>
 
@@ -30,7 +30,7 @@
         <listitem>
           <para>Commercial users (i.e. people intending to develop a
           commercial product using &kdsoap;) need to order a commercial
-          license from Klarälvdalens Datakonsult AB.</para>
+          license from Klar&auml;lvdalens Datakonsult AB.</para>
         </listitem>
 
         <listitem>
@@ -45,10 +45,10 @@
       appropriate for your intended use of &kdsoap;. Any reproduction of this
       manual and the associated &kdsoap; software in whole or in part that is
       not allowed by the applicable license is strictly prohibited without
-      prior written permission by Klarälvdalens Datakonsult AB.</para>
+      prior written permission by Klar&auml;lvdalens Datakonsult AB.</para>
 
       <para>&kdsoap; and the &kdsoap; logo are trademarks or registered
-      trademarks of Klarälvdalens Datakonsult AB in the European Union, the
+      trademarks of Klar&auml;lvdalens Datakonsult AB in the European Union, the
       United States, and/or other countries. Other product and company names
       and logos may be trademarks or registered trademarks of their respective
       companies.</para>
@@ -57,7 +57,7 @@
     <copyright>
       <year>2009-2010</year>
 
-      <holder>Klarälvdalens Datakonsult AB</holder>
+      <holder>Klar&auml;lvdalens Datakonsult AB</holder>
     </copyright>
   </bookinfo>
 
@@ -69,7 +69,7 @@
     <titleabbrev id="chnum_introduction">Chapter 1</titleabbrev>
 
     <para>Welcome to the &kdsoap; Programmer's Manual. &kdsoap; is
-    Klarälvdalens Datakonsult AB's web service access package for Qt applications. This
+    Klar&auml;lvdalens Datakonsult AB's web service access package for Qt applications. This
     manual will get you started creating your own web service clients. It covers the
     fundamentals of coding with &kdsoap; and provides plenty of tips for
     advanced programmers.</para>
