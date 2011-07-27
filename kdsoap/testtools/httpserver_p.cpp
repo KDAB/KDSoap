@@ -3,6 +3,7 @@
 #include <QNetworkReply>
 #include <QNetworkAccessManager>
 #include <QDomDocument>
+#include <QDateTime>
 #include <QEventLoop>
 #include <QFile>
 #ifndef QT_NO_OPENSSL
@@ -132,8 +133,11 @@ bool KDSoapUnitTestHelpers::setSslConfiguration()
         return false;
     }
     QSslCertificate cert(&certFile);
-    if (!cert.isValid())
+    if (!cert.isValid()) {
+        qDebug() << "Certificate" << certFile.fileName() << "is not valid";
+        qDebug() << "It is valid from" << cert.effectiveDate() << "to" << cert.expiryDate();
         return false;
+    }
     QSslSocket::addDefaultCaCertificate(cert);
 
     return true;
