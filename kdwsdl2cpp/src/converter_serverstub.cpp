@@ -132,11 +132,13 @@ void Converter::generateServerMethod(KODE::Code& code, const Binding& binding, c
         code += operationName + '(' + inputVars.join(", ") + ");";
     } else {
         QString retType;
+        QString retInputType;
         bool isBuiltin = false;
         bool isComplex = false;
         Part retPart;
-        Q_FOREACH( const Part& outPart, outParts ) {
+        Q_FOREACH( const Part& outPart, outParts /* only one */ ) {
             retType = mTypeMap.localType( outPart.type(), outPart.element() );
+            retInputType = mTypeMap.localInputType( outPart.type(), outPart.element() );
             isBuiltin = mTypeMap.isBuiltinType( outPart.type(), outPart.element() );
             isComplex = mTypeMap.isComplexType( outPart.type(), outPart.element() );
             retPart = outPart;
@@ -154,16 +156,38 @@ void Converter::generateServerMethod(KODE::Code& code, const Binding& binding, c
         //   response.setValue(QLatin1String("getEmployeeCountryResponse"));
         //   response.childValues() += ret.serialize(QString()).childValues();
         //      == response.setValue(ret.serialize("getEmployeeCountryResponse")) I think.
-        Q_UNUSED(binding); // need to make up fooResponse in RPC mode
-        Q_ASSERT(soapStyle(binding) == SoapBinding::DocumentStyle); // TODO implement RPC!
+        if (soapStyle(binding) == SoapBinding::RPCStyle) {
+            // TODO implement RPC!
+            // We need to make up fooResponse in RPC mode
+            qCritical("ERROR: RPC mode is not supported on the server-side yet, for lack of a good example - please report this with your wsdl file to kdsoap-support@kdab.com");
+        }
         code.addBlock( serializeElementArg( retPart.type(), retPart.element(), elementNameForPart(retPart), "ret", "response", false ) );
 
         code.unindent();
         code += "}";
         virtualMethod.setReturnType(retType);
+
+        generateDelayedReponseMethod(methodName, retInputType, retPart, newClass);
     }
     code.unindent();
     code += "}";
 
     newClass.addFunction(virtualMethod);
+}
+
+void Converter::generateDelayedReponseMethod(const QString& methodName, const QString& retInputType, const Part &retPart, KODE::Class &newClass)
+{
+    const QString delayedMethodName = methodName + "Response";
+    KODE::Function delayedMethod(delayedMethodName);
+    delayedMethod.addArgument("const KDSoapDelayedResponseHandle& responseHandle");
+    delayedMethod.addArgument(retInputType + " ret");
+    delayedMethod.setReturnType("void");
+
+    KODE::Code code;
+    code.addLine("KDSoapMessage response;");
+    code.addBlock(serializeElementArg(retPart.type(), retPart.element(), elementNameForPart(retPart), "ret", "response", false));
+    code.addLine("sendDelayedResponse(responseHandle, response);");
+    delayedMethod.setBody(code);
+
+    newClass.addFunction(delayedMethod);
 }

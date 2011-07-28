@@ -20,7 +20,8 @@ KDSoapServerSocket::KDSoapServerSocket(KDSoapSocketList* owner, QObject* serverO
     : QTcpSocket(),
 #endif
       m_owner(owner),
-      m_serverObject(serverObject)
+      m_serverObject(serverObject),
+      m_socketEnabled(true)
 {
     connect(this, SIGNAL(readyRead()),
             this, SLOT(slotReadyRead()));
@@ -103,7 +104,10 @@ static QByteArray httpResponseHeaders(bool fault, const QByteArray& contentType,
 
 void KDSoapServerSocket::slotReadyRead()
 {
-    //qDebug() << QThread::currentThread() << "slotReadyRead!";
+    if (!m_socketEnabled)
+        return;
+
+    //qDebug() << this << QThread::currentThread() << "slotReadyRead!";
     QByteArray buf(2048, ' ');
     qint64 nread = -1;
     while (nread != 0) {
@@ -159,10 +163,9 @@ void KDSoapServerSocket::slotReadyRead()
 
     //parse message
     KDSoapMessage requestMsg;
-    QString messageNamespace;
     KDSoapHeaders requestHeaders;
     KDSoapMessageReader reader;
-    KDSoapMessageReader::XmlError err = reader.xmlToMessage(receivedData, &requestMsg, &messageNamespace, &requestHeaders);
+    KDSoapMessageReader::XmlError err = reader.xmlToMessage(receivedData, &requestMsg, &m_messageNamespace, &requestHeaders);
     if (err == KDSoapMessageReader::PrematureEndOfDocumentError) {
         //qDebug() << "Incomplete SOAP message, wait for more data";
         //incomplete request, wait for more data
@@ -192,22 +195,40 @@ void KDSoapServerSocket::slotReadyRead()
         }
     }
 
-    const QString method = requestMsg.name();
+    m_method = requestMsg.name();
 
-    KDSoapHeaders responseHeaders;
-    if (!replyMsg.isFault()) {
-        makeCall(requestMsg, replyMsg, requestHeaders, responseHeaders, soapAction);
+    KDSoapServerObjectInterface* serverObjectInterface = qobject_cast<KDSoapServerObjectInterface *>(m_serverObject);
+    if (!serverObjectInterface) {
+        const QString error = QString::fromLatin1("Server object %1 does not implement KDSoapServerObjectInterface!").arg(QString::fromLatin1(m_serverObject->metaObject()->className()));
+        handleError(replyMsg, "Server.ImplementationError", error);
+    } else {
+        serverObjectInterface->setServerSocket(this);
     }
 
+    if (!replyMsg.isFault()) {
+        makeCall(serverObjectInterface, requestMsg, replyMsg, requestHeaders, soapAction);
+    }
+
+    if (serverObjectInterface && serverObjectInterface->isDelayedResponse()) {
+        // Delayed response. Disable the socket to make sure we don't handle another call at the same time.
+        setSocketEnabled(false);
+    } else {
+        sendReply(serverObjectInterface, replyMsg);
+    }
+}
+
+void KDSoapServerSocket::sendReply(KDSoapServerObjectInterface* serverObjectInterface, const KDSoapMessage& replyMsg)
+{
     const bool isFault = replyMsg.isFault();
 
-    // send replyMsg on socket
-
     KDSoapMessageWriter msgWriter;
-    msgWriter.setMessageNamespace(messageNamespace);
+    msgWriter.setMessageNamespace(m_messageNamespace);
     // Note that the kdsoap client parsing code doesn't care for the name (except if it's fault), even in
     // Document mode. Other implementations do, though.
-    const QString responseName = isFault ? QString::fromLatin1("Fault") : method;
+    const QString responseName = isFault ? QString::fromLatin1("Fault") : m_method;
+    KDSoapHeaders responseHeaders;
+    if (serverObjectInterface)
+        responseHeaders = serverObjectInterface->responseHeaders();
     const QByteArray xmlResponse = msgWriter.messageToXml(replyMsg, responseName, responseHeaders, QMap<QString, KDSoapMessage>());
     const QByteArray response = httpResponseHeaders(isFault, "text/xml", xmlResponse.size());
     if (m_doDebug) {
@@ -218,17 +239,24 @@ void KDSoapServerSocket::slotReadyRead()
     // flush() ?
 
     // All done, check if we should log this
+    KDSoapServer* server = m_owner->server();
     const KDSoapServer::LogLevel logLevel = server->logLevel(); // we do this here in order to support dynamic settings changes (at the price of a mutex)
     if (logLevel != KDSoapServer::LogNothing) {
         if (logLevel == KDSoapServer::LogEveryCall ||
                 (logLevel == KDSoapServer::LogFaults && isFault)) {
 
             if (isFault)
-                server->log("FAULT " + method.toLatin1() + " -- " + replyMsg.faultAsString().toUtf8() + '\n');
+                server->log("FAULT " + m_method.toLatin1() + " -- " + replyMsg.faultAsString().toUtf8() + '\n');
             else
-                server->log("CALL " + method.toLatin1() + '\n');
+                server->log("CALL " + m_method.toLatin1() + '\n');
         }
     }
+}
+
+void KDSoapServerSocket::sendDelayedReply(KDSoapServerObjectInterface *serverObjectInterface, const KDSoapMessage &replyMsg)
+{
+    sendReply(serverObjectInterface, replyMsg);
+    setSocketEnabled(true);
 }
 
 void KDSoapServerSocket::handleError(KDSoapMessage &replyMsg, const char *errorCode, const QString &error)
@@ -239,7 +267,7 @@ void KDSoapServerSocket::handleError(KDSoapMessage &replyMsg, const char *errorC
     replyMsg.addArgument(QString::fromLatin1("faultstring"), error);
 }
 
-void KDSoapServerSocket::makeCall(const KDSoapMessage &requestMsg, KDSoapMessage& replyMsg, const KDSoapHeaders& requestHeaders, KDSoapHeaders& responseHeaders, const QByteArray& soapAction)
+void KDSoapServerSocket::makeCall(KDSoapServerObjectInterface* serverObjectInterface, const KDSoapMessage &requestMsg, KDSoapMessage& replyMsg, const KDSoapHeaders& requestHeaders, const QByteArray& soapAction)
 {
     //const QString method = requestMsg.name();
 
@@ -250,25 +278,30 @@ void KDSoapServerSocket::makeCall(const KDSoapMessage &requestMsg, KDSoapMessage
         replyMsg = requestMsg;
         handleError(replyMsg, "Client.Data", QString::fromLatin1("Request was a fault"));
     } else {
-        // Call method on m_serverObject
-        KDSoapServerObjectInterface* serverObjectInterface = qobject_cast<KDSoapServerObjectInterface *>(m_serverObject);
-        if (!serverObjectInterface) {
-            const QString error = QString::fromLatin1("Server object %1 does not implement KDSoapServerObjectInterface!").arg(QString::fromLatin1(m_serverObject->metaObject()->className()));
-            handleError(replyMsg, "Server.ImplementationError", error);
-            return;
-        }
 
+        // Call method on m_serverObject
         serverObjectInterface->setRequestHeaders(requestHeaders, soapAction);
 
         serverObjectInterface->processRequest(requestMsg, replyMsg, soapAction);
-
-        responseHeaders = serverObjectInterface->responseHeaders();
 
         if (serverObjectInterface->hasFault()) {
             //qDebug() << "Got fault!";
             replyMsg.setFault(true);
             serverObjectInterface->storeFaultAttributes(replyMsg);
         }
+    }
+}
+
+// Prevention against concurrent requests without waiting for a (delayed) reply,
+// but untestable with QNAM on the client side, since it doesn't do that.
+void KDSoapServerSocket::setSocketEnabled(bool enabled)
+{
+    if (m_socketEnabled == enabled)
+        return;
+
+    m_socketEnabled = enabled;
+    if (enabled) {
+        slotReadyRead();
     }
 }
 

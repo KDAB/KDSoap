@@ -23,14 +23,16 @@ HEADERS = $$INSTALLHEADERS \
     KDSoapServerSocket_p.h \
     KDSoapServerThread_p.h \
     KDSoapSocketList_p.h \
-    KDSoapServerObjectInterface.h
+    KDSoapServerObjectInterface.h \
+    KDSoapDelayedResponseHandle.h
 
 SOURCES = KDSoapServer.cpp \
     KDSoapThreadPool.cpp \
     KDSoapServerSocket.cpp \
     KDSoapServerThread.cpp \
     KDSoapSocketList.cpp \
-    KDSoapServerObjectInterface.cpp
+    KDSoapServerObjectInterface.cpp \
+    KDSoapDelayedResponseHandle.cpp
 
 DEFINES += KDSOAP_BUILD_KDSOAPSERVER_LIB
 
@@ -56,3 +58,5 @@ macx:lib_bundle: {
     FRAMEWORK_HEADERS.path = Headers
     QMAKE_BUNDLE_DATA += FRAMEWORK_HEADERS
 }
+
+

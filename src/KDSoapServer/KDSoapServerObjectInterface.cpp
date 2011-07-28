@@ -1,9 +1,16 @@
 #include "KDSoapServerObjectInterface.h"
+#include "KDSoapServerSocket_p.h"
 #include <QDebug>
 
 class KDSoapServerObjectInterface::Private
 {
 public:
+    Private() :
+        m_delayedResponse(false),
+        m_serverSocket(0)
+    {
+    }
+
     KDSoapHeaders m_requestHeaders;
     KDSoapHeaders m_responseHeaders;
     QString m_faultCode;
@@ -11,6 +18,8 @@ public:
     QString m_faultActor;
     QString m_detail;
     QByteArray m_soapAction;
+    bool m_delayedResponse;
+    KDSoapServerSocket* m_serverSocket;
 };
 
 KDSoapServerObjectInterface::KDSoapServerObjectInterface()
@@ -83,3 +92,23 @@ QByteArray KDSoapServerObjectInterface::soapAction() const
     return d->m_soapAction;
 }
 
+KDSoapDelayedResponseHandle KDSoapServerObjectInterface::prepareDelayedResponse()
+{
+    d->m_delayedResponse = true;
+    return KDSoapDelayedResponseHandle(d->m_serverSocket);
+}
+
+bool KDSoapServerObjectInterface::isDelayedResponse() const
+{
+    return d->m_delayedResponse;
+}
+
+void KDSoapServerObjectInterface::setServerSocket(KDSoapServerSocket *serverSocket)
+{
+    d->m_serverSocket = serverSocket;
+}
+
+void KDSoapServerObjectInterface::sendDelayedResponse(const KDSoapDelayedResponseHandle& responseHandle, const KDSoapMessage &response)
+{
+    responseHandle.serverSocket()->sendDelayedReply(this, response);
+}
