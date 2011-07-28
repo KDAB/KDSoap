@@ -79,7 +79,10 @@ class Converter
 
     // Server Stub
     void convertServerService();
-    void generateServerMethod(KODE::Code& code, const Binding& binding, const Operation& operation, KODE::Class &newClass, bool first);
+    void generateServerMethod(KODE::Code& code, const Binding& binding, const Operation& operation,
+                              KODE::Class &newClass, bool first);
+    void generateDelayedReponseMethod(const QString& methodName, const QString& retInputType,
+                                      const Part &retPart, KODE::Class &newClass);
 
     SoapBinding::Style soapStyle( const Binding& binding ) const;
 

@@ -94,18 +94,20 @@
           </restriction>
         </complexContent>
       </complexType>
-      <element name="addEmployee">
-        <complexType>
-          <sequence>
-           <element name='employeeType' type='kdab:EmployeeType'/>
-           <element name='employeeName' type='kdab:EmployeeName'/>
-           <element name='employeeCountry' type='kdab:LimitedString'/>
-           <element name='employeeAchievements' type='kdab:EmployeeAchievements'/>
-           <element name='employeeId' type='kdab:EmployeeId'/>
-          </sequence>
-         </complexType>
-      </element>
+      <complexType name="AddEmployee">
+        <sequence>
+         <element name='employeeType' type='kdab:EmployeeType'/>
+         <element name='employeeName' type='kdab:EmployeeName'/>
+         <element name='employeeCountry' type='kdab:LimitedString'/>
+         <element name='employeeAchievements' type='kdab:EmployeeAchievements'/>
+         <element name='employeeId' type='kdab:EmployeeId'/>
+        </sequence>
+       </complexType>
+
+      <element name="addEmployee" type="kdab:AddEmployee"/>
+      <element name="delayedAddEmployee" type="kdab:AddEmployee"/>
       <element name="addEmployeeMyResponse" type="xsd:hexBinary"/>
+      <element name="delayedAddEmployeeMyResponse" type="xsd:hexBinary"/>
       <element name="EmployeeNameParams">
         <complexType>
           <sequence>
@@ -165,6 +167,13 @@
     <part element="kdab:addEmployeeMyResponse" name="parameters"/>
   </message>
 
+  <message name='delayedAddEmployee'>
+    <part element="kdab:delayedAddEmployee" name="parameters"/>
+  </message>
+  <message name='delayedAddEmployeeResponse'>
+    <part element="kdab:delayedAddEmployeeMyResponse" name="parameters"/>
+  </message>
+
   <message name='testAnyType'>
     <part element="kdab:AnyType" name="parameters"/>
   </message>
@@ -212,6 +221,10 @@
       <input message='kdab:addEmployee' />
       <output message='kdab:addEmployeeResponse' />
     </operation>
+    <operation name='delayedAddEmployee'>
+      <input message='kdab:delayedAddEmployee' />
+      <output message='kdab:delayedAddEmployeeResponse' />
+    </operation>
     <operation name='testAnyType'>
       <input message='kdab:testAnyType' />
       <output message='kdab:testAnyTypeResponse' />
@@ -237,6 +250,17 @@
     <soap:binding style='document' transport='http://schemas.xmlsoap.org/soap/http' />
     <operation name='addEmployee' >
       <soap:operation soapAction='http://www.kdab.com/AddEmployee' />
+      <input>
+        <soap:header use="literal" message="kdab:Header" part="LoginHeader"/>
+        <soap:header use="literal" message="kdab:Header" part="SessionHeader"/>
+        <soap:body use='literal'/>
+      </input>
+      <output>
+        <soap:body use='literal'/>
+      </output>
+    </operation>
+    <operation name='delayedAddEmployee' >
+      <soap:operation soapAction='http://www.kdab.com/DelayedAddEmployee' />
       <input>
         <soap:header use="literal" message="kdab:Header" part="LoginHeader"/>
         <soap:header use="literal" message="kdab:Header" part="SessionHeader"/>

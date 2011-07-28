@@ -436,8 +436,12 @@ private Q_SLOTS:
             QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
     }
 
+    // Client+server tests
+
     void testServerAddEmployee();
     void testSendTelegram();
+    void testServerDelayedCall();
+    void testServerTwoDelayedCalls();
 
 public slots:
     void slotFinished(KDSoapPendingCallWatcher* watcher)
@@ -446,9 +450,21 @@ public slots:
         m_eventLoop.quit();
     }
 
+    void slotDelayedAddEmployeeDone(const QByteArray& data)
+    {
+        //qDebug() << Q_FUNC_INFO << data;
+        m_delayedData << data;
+        if (--m_expectedDelayedCalls == 0) {
+            m_eventLoop.quit();
+        }
+    }
+
 private:
     QEventLoop m_eventLoop;
     KDSoapMessage m_returnMessage;
+
+    int m_expectedDelayedCalls;
+    QList<QByteArray> m_delayedData;
 
     static QByteArray emptyResponse() {
         return QByteArray(xmlEnvBegin) + "><soap:Body/>" + xmlEnvEnd;
@@ -474,14 +490,45 @@ private:
 #include "KDSoapServerObjectInterface.h"
 #include "KDSoapServer.h"
 
-class DocServerObject : public MyWsdlDocumentServerBase
+class MyJob : public QObject
 {
+    Q_OBJECT
+public:
+    MyJob(const KDSoapDelayedResponseHandle& handle)
+        : m_handle(handle)
+    {
+        QTimer::singleShot(20, this, SLOT(slotDone()));
+    }
+    KDSoapDelayedResponseHandle responseHandle() const { return m_handle; }
+Q_SIGNALS:
+    void done(MyJob*);
+private Q_SLOTS:
+    void slotDone() {
+        emit done(this);
+    }
+private:
+    KDSoapDelayedResponseHandle m_handle;
+};
+
+class DocServerObject : public MyWsdlDocumentServerBase /* generated from mywsdl_document.wsdl */
+{
+    Q_OBJECT
 public:
     // TODO add a method that returns void
 
     QByteArray addEmployee( const KDAB__AddEmployee& parameters ) {
         //qDebug() << "addEmployee called";
-        return "added " + parameters.employeeName().value().value().toLatin1();
+        return "added " + KDAB__LimitedString(parameters.employeeName()).value().toLatin1();
+    }
+
+    QByteArray delayedAddEmployee( const KDAB__AddEmployee& parameters ) {
+        //qDebug() << "delayedAddEmployee called";
+        Q_UNUSED(parameters);
+
+        KDSoapDelayedResponseHandle handle = prepareDelayedResponse();
+        MyJob* job = new MyJob(handle);
+        connect(job, SIGNAL(done(MyJob*)), this, SLOT(slotDelayedResponse(MyJob*)));
+        return "THIS VALUE IS IGNORED";
     }
 
     KDAB__AnyTypeResponse testAnyType( const KDAB__AnyType& parameters ) {
@@ -528,6 +575,14 @@ public:
 
     KDSoapMessage m_request;
     KDSoapMessage m_response;
+
+private Q_SLOTS:
+    void slotDelayedResponse(MyJob* job)
+    {
+        delayedAddEmployeeResponse(job->responseHandle(), QByteArray("delayed reply works"));
+        job->deleteLater();
+        // TODO test delayed fault.
+    }
 };
 
 class DocServer : public KDSoapServer
@@ -640,6 +695,46 @@ void WsdlDocumentTest::testSendTelegram()
             "<n1:Telegram>52656365697665642048656c6c6f</n1:Telegram>"
           "</n1:TelegramResponse>";
     QVERIFY(xmlBufferCompare(server->lastServerObject()->m_response.toXml(KDSoapValue::LiteralUse, msgNS), expectedResponseXml));
+}
+
+void WsdlDocumentTest::testServerDelayedCall()
+{
+    DocServerThread serverThread;
+    DocServer* server = serverThread.startThread();
+    MyWsdlDocument service;
+    service.setEndPoint(server->endPoint());
+
+    const QByteArray ret = service.delayedAddEmployee(addEmployeeParameters());
+    QCOMPARE(service.lastError(), QString());
+    QCOMPARE(QString::fromLatin1(ret.constData()), QString::fromLatin1("delayed reply works"));
+}
+
+void WsdlDocumentTest::testServerTwoDelayedCalls()
+{
+    DocServerThread serverThread;
+    DocServer* server = serverThread.startThread();
+    MyWsdlDocument service;
+    service.setEndPoint(server->endPoint());
+
+    connect(&service, SIGNAL(delayedAddEmployeeDone(QByteArray)),
+            this, SLOT(slotDelayedAddEmployeeDone(QByteArray)));
+    m_expectedDelayedCalls = 2;
+
+    // Interestingly, this doesn't test what I thought it would test.
+    // Making two async calls means QNAM will connect two different client sockets to the server,
+    // which means we have two different KDSoapServerSockets, not one.
+    // So basically we can't test "disable socket while waiting for delayed response"
+    // in KDSoapServerSocket, because QNAM already protects us from the old mistake of
+    // "sending two requests without waiting for the response of the first request".
+    service.asyncDelayedAddEmployee(addEmployeeParameters());
+    service.asyncDelayedAddEmployee(addEmployeeParameters());
+
+    m_eventLoop.exec();
+
+    QCOMPARE(service.lastError(), QString());
+    const QString expected = QString::fromLatin1("delayed reply works");
+    QCOMPARE(QString::fromLatin1(m_delayedData.at(0).constData()), expected);
+    QCOMPARE(QString::fromLatin1(m_delayedData.at(1).constData()), expected);
 }
 
 QTEST_MAIN(WsdlDocumentTest)
