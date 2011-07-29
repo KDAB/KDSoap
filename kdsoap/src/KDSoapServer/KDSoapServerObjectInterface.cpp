@@ -110,5 +110,7 @@ void KDSoapServerObjectInterface::setServerSocket(KDSoapServerSocket *serverSock
 
 void KDSoapServerObjectInterface::sendDelayedResponse(const KDSoapDelayedResponseHandle& responseHandle, const KDSoapMessage &response)
 {
+    d->m_delayedResponse = false;
     responseHandle.serverSocket()->sendDelayedReply(this, response);
 }
+
