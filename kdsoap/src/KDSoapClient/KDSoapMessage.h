@@ -144,4 +144,6 @@ public:
  */
 KDSOAP_EXPORT QDebug operator<<(QDebug dbg, const KDSoapMessage &msg);
 
+Q_DECLARE_METATYPE(KDSoapMessage)
+
 #endif // KDSOAPMESSAGE_H

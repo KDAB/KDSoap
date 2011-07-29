@@ -134,6 +134,14 @@ bool Converter::convertClientService()
           lastError.setDocs("Return the error from the last blocking call.\nEmpty if no error.");
           newClass.addFunction(lastError);
       }
+      //soapError() signal
+      {
+          KODE::Function errorSignal( "soapError", "void", KODE::Function::Signal );
+          errorSignal.addArgument( "const QString& method" );
+          errorSignal.addArgument( "const KDSoapMessage& fault" );
+          errorSignal.setDocs( "This signal is emitted whenever a SOAP call failed, for a central processing of all SOAP errors.\nmethod is the name of the method (or operation) that returned the fault, for instance \"addContact\"." );
+          newClass.addFunction(errorSignal);
+      }
 
       QUrl webserviceLocation;
 
@@ -509,7 +517,8 @@ void Converter::convertClientOutputMessage( const Operation &operation,
   slotCode += "const KDSoapMessage reply = watcher->returnMessage();";
   slotCode += "if (reply.isFault()) {";
   slotCode.indent();
-  slotCode += "emit " + errorSignal.name() + "(reply);";
+  slotCode += "emit " + errorSignal.name() + "(reply);" COMMENT;
+  slotCode += "emit soapError(QLatin1String(\"" + operationName + "\"), reply);";
   slotCode.unindent();
   slotCode += "} else {";
   slotCode.indent();

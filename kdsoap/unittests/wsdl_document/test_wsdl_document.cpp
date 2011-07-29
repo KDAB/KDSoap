@@ -115,6 +115,12 @@ private:
     }
 
 private Q_SLOTS:
+
+    void initTestCase()
+    {
+        qRegisterMetaType<KDSoapMessage>();
+    }
+
     // Using wsdl-generated code, make a call, and check the xml that was sent,
     // and check that the server's response was correctly parsed.
     void testMyWsdlPublic()
@@ -439,6 +445,7 @@ private Q_SLOTS:
     // Client+server tests
 
     void testServerAddEmployee();
+    void testServerFault();
     void testSendTelegram();
     void testServerDelayedCall();
     void testSyncCallAfterServerDelayedCall();
@@ -519,7 +526,13 @@ public:
 
     QByteArray addEmployee( const KDAB__AddEmployee& parameters ) {
         //qDebug() << "addEmployee called";
-        return "added " + KDAB__LimitedString(parameters.employeeName()).value().toLatin1();
+        const QString name = KDAB__LimitedString(parameters.employeeName()).value();
+        if (name.isEmpty()) {
+            setFault(QLatin1String("Client.Data"), QLatin1String("Empty employee name"),
+                     QLatin1String("DocServerObject"), tr("Employee name must not be empty"));
+            return QByteArray();
+        }
+        return "added " + name.toLatin1();
     }
 
     QByteArray delayedAddEmployee( const KDAB__AddEmployee& parameters ) {
@@ -668,6 +681,27 @@ void WsdlDocumentTest::testServerAddEmployee()
     QVERIFY(xmlBufferCompare(server->lastServerObject()->m_response.toXml(), expectedResponseXml));
     QCOMPARE(service.lastError(), QString());
     QCOMPARE(QString::fromLatin1(ret.constData()), QString::fromLatin1("added David Faure"));
+}
+
+void WsdlDocumentTest::testServerFault() // test the error signals emitted on error, in async calls
+{
+    DocServerThread serverThread;
+    DocServer* server = serverThread.startThread();
+
+    MyWsdlDocument service;
+    service.setEndPoint(server->endPoint());
+    QSignalSpy addEmployeeErrorSpy(&service, SIGNAL(addEmployeeError(KDSoapMessage)));
+    QSignalSpy soapErrorSpy(&service, SIGNAL(soapError(QString, KDSoapMessage)));
+    service.asyncAddEmployee(KDAB__AddEmployee());
+
+    connect(&service, SIGNAL(soapError(KDSoapMessage)), &m_eventLoop, SLOT(quit()));
+    m_eventLoop.exec();
+
+    QCOMPARE(soapErrorSpy.count(), 1);
+    QCOMPARE(addEmployeeErrorSpy.count(), 1);
+    QCOMPARE(soapErrorSpy[0][0].toString(), QString::fromLatin1("addEmployee"));
+    KDSoapMessage msg = soapErrorSpy[0][1].value<KDSoapMessage>();
+    QCOMPARE(msg.faultAsString(), QString::fromLatin1("Fault code Client.Data: Empty employee name (DocServerObject)"));
 }
 
 void WsdlDocumentTest::testSendTelegram()
