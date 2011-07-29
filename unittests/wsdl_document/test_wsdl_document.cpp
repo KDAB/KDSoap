@@ -441,6 +441,7 @@ private Q_SLOTS:
     void testServerAddEmployee();
     void testSendTelegram();
     void testServerDelayedCall();
+    void testSyncCallAfterServerDelayedCall();
     void testServerTwoDelayedCalls();
 
 public slots:
@@ -707,6 +708,22 @@ void WsdlDocumentTest::testServerDelayedCall()
     const QByteArray ret = service.delayedAddEmployee(addEmployeeParameters());
     QCOMPARE(service.lastError(), QString());
     QCOMPARE(QString::fromLatin1(ret.constData()), QString::fromLatin1("delayed reply works"));
+}
+
+void WsdlDocumentTest::testSyncCallAfterServerDelayedCall()
+{
+    DocServerThread serverThread;
+    DocServer* server = serverThread.startThread();
+    MyWsdlDocument service;
+    service.setEndPoint(server->endPoint());
+
+    const QByteArray ret = service.delayedAddEmployee(addEmployeeParameters());
+    QCOMPARE(service.lastError(), QString());
+    QCOMPARE(QString::fromLatin1(ret.constData()), QString::fromLatin1("delayed reply works"));
+
+    const QByteArray ret2 = service.addEmployee(addEmployeeParameters());
+    QCOMPARE(service.lastError(), QString());
+    QCOMPARE(QString::fromLatin1(ret2.constData()), QString::fromLatin1("added David Faure"));
 }
 
 void WsdlDocumentTest::testServerTwoDelayedCalls()
