@@ -263,7 +263,7 @@ KDSoapMessage::XmlError KDSoapMessage::parseSoapXml(const QByteArray& data, QStr
                 }
                 if (reader.name() == "Body" && reader.namespaceUri() == KDSoapNamespaceManager::soapEnvelope()) {
 
-                    if (reader.readNext() != QXmlStreamReader::Invalid) {
+                    if (readNextStartElement(reader)) {
                         *this = parseElement(reader, envNsDecls);
                         if (pMessageNamespace)
                             *pMessageNamespace = namespaceUri();
