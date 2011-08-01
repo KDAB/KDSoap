@@ -694,7 +694,7 @@ void WsdlDocumentTest::testServerFault() // test the error signals emitted on er
     QSignalSpy soapErrorSpy(&service, SIGNAL(soapError(QString, KDSoapMessage)));
     service.asyncAddEmployee(KDAB__AddEmployee());
 
-    connect(&service, SIGNAL(soapError(KDSoapMessage)), &m_eventLoop, SLOT(quit()));
+    connect(&service, SIGNAL(soapError(QString, KDSoapMessage)), &m_eventLoop, SLOT(quit()));
     m_eventLoop.exec();
 
     QCOMPARE(soapErrorSpy.count(), 1);
