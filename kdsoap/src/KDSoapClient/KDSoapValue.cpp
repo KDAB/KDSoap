@@ -70,7 +70,7 @@ void KDSoapValue::setValue(const QVariant &value)
     d->m_value = value;
 }
 
-bool KDSoapValue::qualified() const
+bool KDSoapValue::isQualified() const
 {
     return d->m_qualified;
 }
