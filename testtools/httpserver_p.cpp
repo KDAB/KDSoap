@@ -106,7 +106,7 @@ static void setupSslServer(QSslSocket* serverSocket)
     serverSocket->setLocalCertificate(QString::fromLatin1("../certs/test-127.0.0.1-cert.pem"));
     serverSocket->setPrivateKey(QString::fromLatin1("../certs/test-127.0.0.1-key.pem"));
 }
-#endif
+
 
 bool KDSoapUnitTestHelpers::setSslConfiguration()
 {
@@ -142,6 +142,7 @@ bool KDSoapUnitTestHelpers::setSslConfiguration()
 
     return true;
 }
+#endif
 
 // A blocking http server (must be used in a thread) which supports SSL.
 class BlockingHttpServer : public QTcpServer

@@ -44,6 +44,7 @@ class Parser::Private
 {
 public:
     QString mNameSpace;
+    bool mDefaultQualified;
 
     SimpleType::List mSimpleTypes;
     ComplexType::List mComplexTypes;
@@ -61,6 +62,7 @@ Parser::Parser( ParserContext *context, const QString &nameSpace )
   : d(new Private)
 {
   d->mNameSpace = nameSpace;
+  d->mDefaultQualified = false;
   init(context);
 }
 
@@ -197,6 +199,10 @@ bool Parser::parseSchemaTag( ParserContext *context, const QDomElement &root )
   QString oldNamespace = d->mNameSpace;
   if ( root.hasAttribute( QLatin1String("targetNamespace") ) )
     d->mNameSpace = root.attribute( QLatin1String("targetNamespace") );
+
+  if ( root.hasAttribute( QLatin1String("elementFormDefault") ) )
+      if (root.attribute( QLatin1String("elementFormDefault") ) == "qualified")
+          d->mDefaultQualified = true;
 
  // mTypesTable.setTargetNamespace( mNameSpace );
 
@@ -418,6 +424,7 @@ Element Parser::parseElement( ParserContext *context,
   if (debugParsing())
       qDebug() << "newElement namespace=" << nameSpace << "name=" << newElement.name();
 
+  newElement.setIsQualified(d->mDefaultQualified);
   if ( element.hasAttribute( "form" ) ) {
     if ( element.attribute( "form" ) == "qualified" )
       newElement.setIsQualified( true );

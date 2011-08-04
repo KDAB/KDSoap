@@ -345,6 +345,9 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
 
     if ( !elements.isEmpty() ) {
         marshalCode += "KDSoapValueList& args = mainValue.childValues();" COMMENT;
+        if (elements.at(0).isQualified()) {
+            marshalCode += "mainValue.setQualified(true);" COMMENT;
+        }
         demarshalCode += "for (int argNr = 0; argNr < args.count(); ++argNr) {";
         demarshalCode.indent();
         demarshalCode += "const KDSoapValue& val = args.at(argNr);";

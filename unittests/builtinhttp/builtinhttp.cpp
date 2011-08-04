@@ -254,14 +254,14 @@ private Q_SLOTS:
         const QByteArray expectedRequestBody =
             QByteArray("<soap:Body>"
             "<n1:test>"
-            "<n1:testString xsi:type=\"xsd:string\">Hello Klarälvdalens</n1:testString>"
-            "<n1:val xsi:type=\"n1:MyVal\" n1:attr=\"attrValue\">5</n1:val>"
-            "<n1:order xsi:type=\"n1:MyOrder\" n1:attr=\"attrValue\"><n1:orderperson xsi:type=\"n1:Person\">someone</n1:orderperson></n1:order>"
-            "<n1:rect><n1:x xsi:type=\"xsd:int\">0</n1:x><n1:y xsi:type=\"xsd:int\">0</n1:y><n1:width xsi:type=\"xsd:int\">100</n1:width><n1:height xsi:type=\"xsd:int\">200</n1:height></n1:rect>"
-            "<n1:testArray xsi:type=\"soap-enc:Array\" soap-enc:arrayType=\"xsd:string[2]\">"
-             "<n1:item xsi:type=\"xsd:string\">kdab</n1:item>"
-             "<n1:item xsi:type=\"xsd:string\">rocks</n1:item>"
-            "</n1:testArray>"
+            "<testString xsi:type=\"xsd:string\">Hello Klarälvdalens</testString>"
+            "<val xsi:type=\"n1:MyVal\" attr=\"attrValue\">5</val>"
+            "<order xsi:type=\"n1:MyOrder\" attr=\"attrValue\"><orderperson xsi:type=\"n1:Person\">someone</orderperson></order>"
+            "<rect><x xsi:type=\"xsd:int\">0</x><y xsi:type=\"xsd:int\">0</y><width xsi:type=\"xsd:int\">100</width><height xsi:type=\"xsd:int\">200</height></rect>"
+            "<testArray xsi:type=\"soap-enc:Array\" soap-enc:arrayType=\"xsd:string[2]\">"
+             "<item xsi:type=\"xsd:string\">kdab</item>"
+             "<item xsi:type=\"xsd:string\">rocks</item>"
+            "</testArray>"
             "</n1:test>"
             "</soap:Body>") + xmlEnvEnd
             + '\n'; // added by QXmlStreamWriter::writeEndDocument
@@ -352,7 +352,7 @@ private:
         return QByteArray(xmlEnvBegin) +
                 "><soap:Body>"
                 "<n1:getEmployeeCountry xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
-                "<n1:employeeName>David Ä Faure</n1:employeeName>"
+                "<employeeName>David Ä Faure</employeeName>"
                 "</n1:getEmployeeCountry>"
                 "</soap:Body>" + xmlEnvEnd;
     }

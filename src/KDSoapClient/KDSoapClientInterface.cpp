@@ -135,6 +135,7 @@ void KDSoapClientInterface::setAuthentication(const KDSoapAuthentication &authen
 void KDSoapClientInterface::setHeader(const QString& name, const KDSoapMessage &header)
 {
     d->m_persistentHeaders[name] = header;
+    d->m_persistentHeaders[name].setQualified(true);
 }
 
 void KDSoapClientInterface::ignoreSslErrors()

@@ -72,27 +72,27 @@ private:
                 " xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">%1"
                 "<soap:Body>"
                 "<n1:addEmployee>"
-                "<n1:employeeType n1:type=\"Developer\">"
-                "<n1:team>Minitel</n1:team>"
-                "<n1:otherRoles>TeamLeader</n1:otherRoles>"
-                "</n1:employeeType>"
-                "<n1:employeeName>David Faure</n1:employeeName>"
-                "<n1:employeeCountry>France</n1:employeeCountry>"
-                "<n1:employeeAchievements>"
-                "<n1:item>"
-                "<n1:type>50726f6a656374</n1:type>" // Project
-                "<n1:label>Management</n1:label>"
-                "<n1:time>2011-06-27</n1:time>"
-                "</n1:item>"
-                "<n1:item>"
-                "<n1:type>446576656c6f706d656e74</n1:type>" // Development
-                "<n1:label>C++</n1:label>"
-                "<n1:time>today</n1:time>"
-                "</n1:item>"
-                "</n1:employeeAchievements>"
-                "<n1:employeeId>"
-                "<n1:id>5</n1:id>"
-                "</n1:employeeId>"
+                "<employeeType type=\"Developer\">"
+                "<team>Minitel</team>"
+                "<otherRoles>TeamLeader</otherRoles>"
+                "</employeeType>"
+                "<employeeName>David Faure</employeeName>"
+                "<employeeCountry>France</employeeCountry>"
+                "<employeeAchievements>"
+                "<item>"
+                "<type>50726f6a656374</type>" // Project
+                "<label>Management</label>"
+                "<time>2011-06-27</time>"
+                "</item>"
+                "<item>"
+                "<type>446576656c6f706d656e74</type>" // Development
+                "<label>C++</label>"
+                "<time>today</time>"
+                "</item>"
+                "</employeeAchievements>"
+                "<employeeId>"
+                "<id>5</id>"
+                "</employeeId>"
                 "</n1:addEmployee>"
                 "</soap:Body>" + xmlEnvEnd
                 + '\n'; // added by QXmlStreamWriter::writeEndDocument
@@ -100,11 +100,11 @@ private:
     static QByteArray expectedHeader() {
         return QByteArray("<soap:Header>"
                           "<n1:LoginElement>"
-                          "<n1:user>foo</n1:user>"
-                          "<n1:pass>bar</n1:pass>"
+                          "<user>foo</user>"
+                          "<pass>bar</pass>"
                           "</n1:LoginElement>"
                           "<n1:SessionElement>"
-                          "<n1:sessionId>id</n1:sessionId>"
+                          "<sessionId>id</sessionId>"
                           "</n1:SessionElement>"
                           "</soap:Header>");
     }
@@ -398,7 +398,7 @@ private Q_SLOTS:
             "<soap:Body>"
             "<n1:AnyType xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
             "<xsd:schema><xsd:test>input</xsd:test></xsd:schema>"
-            "<n1:foo>Value</n1:foo>"
+            "<foo>Value</foo>"
             "</n1:AnyType>"
             "</soap:Body>" + xmlEnvEnd;
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
@@ -486,9 +486,9 @@ private:
         return QByteArray(xmlEnvBegin) +
                 "><soap:Body>"
                 "<n1:EmployeeNameParams xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
-                "<n1:employeeName>"
+                "<employeeName>"
                 "David Ä Faure"
-                "</n1:employeeName>"
+                "</employeeName>"
                 "</n1:EmployeeNameParams>"
                 "</soap:Body>" + xmlEnvEnd
                 + '\n'; // added by QXmlStreamWriter::writeEndDocument
@@ -720,14 +720,14 @@ void WsdlDocumentTest::testSendTelegram()
 
     const QByteArray expectedRequestXml =
         QByteArray(xmlBegin) + "<n1:TelegramRequest " + xmlNamespaces + " xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
-           "<n1:Telegram>48656c6c6f</n1:Telegram>"
+           "<Telegram>48656c6c6f</Telegram>"
           "</n1:TelegramRequest>";
     const QString msgNS = QString::fromLatin1("http://www.kdab.com/xml/MyWsdl/");
     QVERIFY(xmlBufferCompare(server->lastServerObject()->m_request.toXml(KDSoapValue::LiteralUse, msgNS), expectedRequestXml));
 
     const QByteArray expectedResponseXml =
         QByteArray(xmlBegin) + "<n1:TelegramResponse " + xmlNamespaces + " xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
-            "<n1:Telegram>52656365697665642048656c6c6f</n1:Telegram>"
+            "<Telegram>52656365697665642048656c6c6f</Telegram>"
           "</n1:TelegramResponse>";
     QVERIFY(xmlBufferCompare(server->lastServerObject()->m_response.toXml(KDSoapValue::LiteralUse, msgNS), expectedResponseXml));
 }
