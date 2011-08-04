@@ -76,6 +76,7 @@ class Converter
     QString listTypeFor(const QString& itemTypeName, KODE::Class& newClass);
     KODE::Code deserializeRetVal(const KWSDL::Part& part, const QString& replyMsgName, const QString& qtRetType, const QString& varName) const;
     QString elementNameForPart(const Part& part) const;
+    bool isQualifiedPart(const Part& part) const;
 
     // Server Stub
     void convertServerService();

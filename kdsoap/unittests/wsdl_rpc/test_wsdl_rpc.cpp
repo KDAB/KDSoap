@@ -86,11 +86,11 @@ private Q_SLOTS:
         const QByteArray expectedHeader =
                 "<soap:Header>"
                 "<n1:LoginHeader xsi:type=\"n1:LoginElement\">"
-                "<n1:user xsi:type=\"xsd:string\">foo</n1:user>"
-                "<n1:pass xsi:type=\"xsd:string\">bar</n1:pass>"
+                "<user xsi:type=\"xsd:string\">foo</user>"
+                "<pass xsi:type=\"xsd:string\">bar</pass>"
                 "</n1:LoginHeader>"
                 "<n1:SessionHeader xsi:type=\"n1:SessionElement\">"
-                "<n1:sessionId xsi:type=\"xsd:string\">id</n1:sessionId>"
+                "<sessionId xsi:type=\"xsd:string\">id</sessionId>"
                 "</n1:SessionHeader>"
                 "</soap:Header>";
         // Check what we sent
@@ -231,7 +231,7 @@ private Q_SLOTS:
             QByteArray(xmlEnvBegin) + ">"
             "<soap:Body>"
             "<n1:sendTelegram xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
-               "<n1:telegram>48656c6c6f</n1:telegram>"
+               "<telegram>48656c6c6f</telegram>"
             "</n1:sendTelegram>"
             "</soap:Body>" + xmlEnvEnd;
             QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
@@ -240,29 +240,29 @@ private Q_SLOTS:
 private:
     static QByteArray serializedEmployeeType() {
         return QByteArray(
-                "<n1:employeeType xsi:type=\"n1:EmployeeType\" n1:type=\"Developer\">"
-                "<n1:team xsi:type=\"n1:TeamName\">Minitel</n1:team>"
-                "<n1:otherRoles xsi:type=\"n1:EmployeeTypeEnum\">TeamLeader</n1:otherRoles>"
-                "<n1:otherRolesAsList xsi:type=\"n1:EmployeeTypeEnumList\">TeamLeader Developer</n1:otherRolesAsList>"
-                "<n1:lottoNumbers xsi:type=\"n1:LottoNumbers\">7 21 30 42</n1:lottoNumbers>"
-                "<n1:anonList xsi:type=\"n1:AnonListType\">Detailed DetailedMerged</n1:anonList>"
-                "</n1:employeeType>");
+                "<employeeType xsi:type=\"n1:EmployeeType\" type=\"Developer\">"
+                "<team xsi:type=\"n1:TeamName\">Minitel</team>"
+                "<otherRoles xsi:type=\"n1:EmployeeTypeEnum\">TeamLeader</otherRoles>"
+                "<otherRolesAsList xsi:type=\"n1:EmployeeTypeEnumList\">TeamLeader Developer</otherRolesAsList>"
+                "<lottoNumbers xsi:type=\"n1:LottoNumbers\">7 21 30 42</lottoNumbers>"
+                "<anonList xsi:type=\"n1:AnonListType\">Detailed DetailedMerged</anonList>"
+                "</employeeType>");
     }
     static QByteArray serializedEmployee() {
         return serializedEmployeeType() +
-                "<n1:employeeName xsi:type=\"n1:EmployeeName\">David Faure</n1:employeeName>"
-                "<n1:employeeCountry xsi:type=\"n1:LimitedString\">France</n1:employeeCountry>"
-                "<n1:employeeAchievements xsi:type=\"n1:EmployeeAchievements\" soap-enc:arrayType=\"n1:EmployeeAchievement[2]\">"
-                "<n1:item xsi:type=\"n1:EmployeeAchievement\">"
-                "<n1:type xsi:type=\"xsd:string\">Project</n1:type>"
-                "<n1:label xsi:type=\"xsd:string\">Management</n1:label>"
-                "</n1:item>"
-                "<n1:item xsi:type=\"n1:EmployeeAchievement\">"
-                "<n1:type xsi:type=\"xsd:string\">Development</n1:type>"
-                "<n1:label xsi:type=\"xsd:string\">C++</n1:label>"
-                "</n1:item>"
-                "</n1:employeeAchievements>"
-                "<n1:employeeJeansSize xsi:type=\"n1:JeansSize\">24</n1:employeeJeansSize>";
+                "<employeeName xsi:type=\"n1:EmployeeName\">David Faure</employeeName>"
+                "<employeeCountry xsi:type=\"n1:LimitedString\">France</employeeCountry>"
+                "<employeeAchievements xsi:type=\"n1:EmployeeAchievements\" soap-enc:arrayType=\"n1:EmployeeAchievement[2]\">"
+                "<item xsi:type=\"n1:EmployeeAchievement\">"
+                "<type xsi:type=\"xsd:string\">Project</type>"
+                "<label xsi:type=\"xsd:string\">Management</label>"
+                "</item>"
+                "<item xsi:type=\"n1:EmployeeAchievement\">"
+                "<type xsi:type=\"xsd:string\">Development</type>"
+                "<label xsi:type=\"xsd:string\">C++</label>"
+                "</item>"
+                "</employeeAchievements>"
+                "<employeeJeansSize xsi:type=\"n1:JeansSize\">24</employeeJeansSize>";
     }
 
     static QByteArray countryResponse() {
@@ -276,9 +276,9 @@ private:
         return QByteArray(xmlEnvBegin) +
                 "><soap:Body>"
                 "<n1:getEmployeeCountry xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
-                "<n1:employeeName>"
+                "<employeeName>"
                 "David Ä Faure"
-                "</n1:employeeName>"
+                "</employeeName>"
                 "</n1:getEmployeeCountry>"
                 "</soap:Body>" + xmlEnvEnd
                 + '\n'; // added by QXmlStreamWriter::writeEndDocument

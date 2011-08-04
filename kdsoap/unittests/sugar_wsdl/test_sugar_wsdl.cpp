@@ -45,12 +45,12 @@ private Q_SLOTS:
             QByteArray(xmlEnvBegin) +
             "><soap:Body>"
             "<n1:login xmlns:n1=\"http://www.sugarcrm.com/sugarcrm\">"
-              "<n1:user_auth xsi:type=\"n1:user_auth\">"
-                "<n1:user_name xsi:type=\"xsd:string\">user å</n1:user_name>"
-                "<n1:password xsi:type=\"xsd:string\">pass</n1:password>"
-                "<n1:version xsi:type=\"xsd:string\"></n1:version>"
-              "</n1:user_auth>"
-              "<n1:application_name xsi:type=\"xsd:string\">application</n1:application_name>"
+              "<user_auth xsi:type=\"n1:user_auth\">"
+                "<user_name xsi:type=\"xsd:string\">user å</user_name>"
+                "<password xsi:type=\"xsd:string\">pass</password>"
+                "<version xsi:type=\"xsd:string\"></version>"
+              "</user_auth>"
+              "<application_name xsi:type=\"xsd:string\">application</application_name>"
             "</n1:login>"
             "</soap:Body>" + xmlEnvEnd
             + '\n'; // added by QXmlStreamWriter::writeEndDocument

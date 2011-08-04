@@ -9,9 +9,9 @@
 class KDSoapValue::Private : public QSharedData
 {
 public:
-    Private() {}
+    Private(): m_qualified(false) {}
     Private(const QString& n, const QVariant& v, const QString& typeNameSpace, const QString& typeName)
-        : m_name(n), m_value(v), m_typeNamespace(typeNameSpace), m_typeName(typeName) {}
+        : m_name(n), m_value(v), m_typeNamespace(typeNameSpace), m_typeName(typeName), m_qualified(false) {}
 
     QString m_name;
     QString m_nameNamespace;
@@ -19,6 +19,7 @@ public:
     QString m_typeNamespace;
     QString m_typeName;
     KDSoapValueList m_childValues;
+    bool m_qualified;
 };
 
 uint qHash( const KDSoapValue& value ) { return qHash( value.name() ); }
@@ -67,6 +68,16 @@ QVariant KDSoapValue::value() const
 void KDSoapValue::setValue(const QVariant &value)
 {
     d->m_value = value;
+}
+
+bool KDSoapValue::qualified() const
+{
+    return d->m_qualified;
+}
+
+void KDSoapValue::setQualified(bool qualified)
+{
+    d->m_qualified = qualified;
 }
 
 KDSoapValueList & KDSoapValue::childValues() const
@@ -248,7 +259,7 @@ void KDSoapValue::writeChildren(KDSoapNamespacePrefixes& namespacePrefixes, QXml
     KDSoapValueListIterator it(args);
     while (it.hasNext()) {
         const KDSoapValue& element = it.next();
-        element.writeElement(namespacePrefixes, writer, use, messageNamespace);
+        element.writeElement(namespacePrefixes, writer, use, d->m_qualified?messageNamespace:QString());
     }
 }
 

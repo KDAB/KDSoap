@@ -163,7 +163,7 @@ class ServerTest : public QObject
 private Q_SLOTS:
     void initTestCase()
     {
-#ifndef QT_NO_SSLSOCKET
+#ifndef QT_NO_OPENSSL
         QVERIFY(KDSoapUnitTestHelpers::setSslConfiguration());
         QSslConfiguration defaultConfig = QSslConfiguration::defaultConfiguration();
         QFile certFile(QString::fromLatin1("../certs/test-127.0.0.1-cert.pem"));
@@ -487,6 +487,7 @@ private Q_SLOTS:
         makeFaultyCall(server->endPoint());
     }
 
+#ifndef QT_NO_OPENSSL
     void testSsl()
     {
         CountryServerThread serverThread;
@@ -495,6 +496,7 @@ private Q_SLOTS:
         QVERIFY(server->endPoint().startsWith(QLatin1String("https")));
         makeSimpleCall(server->endPoint());
     }
+#endif
 
     void testLogging()
     {
@@ -548,7 +550,7 @@ private Q_SLOTS:
         expected << "ERROR Too many connections (2), incoming connection rejected";
         server->flushLogFile();
         compareLines(expected, fileName);
-        
+
         QFile::remove(fileName);
     }
 

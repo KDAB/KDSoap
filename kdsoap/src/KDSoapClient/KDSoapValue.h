@@ -120,6 +120,18 @@ public:
     void setValue(const QVariant& value);
 
     /**
+     * Should element be qualified?
+     */
+    bool isQualified() const;
+
+    /**
+     * Set whether the element should be qualified. Qualified means, that
+     * locally declared elements and attributes are qualified by a namespace,
+     * using an explicit prefix. Default is unqualified.
+     */
+    void setQualified(bool isQualified);
+
+    /**
      * Returns the list of child values (elements and attributes).
      * The list is a reference, and can therefore be modified.
      */

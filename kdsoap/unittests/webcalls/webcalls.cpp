@@ -30,6 +30,7 @@ private slots:
         const QString messageNamespace = QString::fromLatin1("http://www.mathertel.de/CalcFactors/");
         KDSoapClientInterface client(endPoint, messageNamespace);
         KDSoapMessage message;
+        message.setQualified(true);
         message.addArgument(QLatin1String("number1"), 42);
         message.addArgument(QLatin1String("number2"), 43);
         KDSoapPendingCall pendingCall = client.asyncCall(QLatin1String("AddInteger"), message/*, action*/);
@@ -50,6 +51,7 @@ private slots:
         const QString messageNamespace = QString::fromLatin1("http://www.mathertel.de/CalcFactors/");
         KDSoapClientInterface client(endPoint, messageNamespace);
         KDSoapMessage message;
+        message.setQualified(true);
         message.addArgument(QLatin1String("number1"), 42);
         message.addArgument(QLatin1String("number2"), 43);
         KDSoapMessage ret = client.call(QLatin1String("AddInteger"), message);
@@ -63,6 +65,7 @@ private slots:
         const QString messageNamespace = QString::fromLatin1("http://www.27seconds.com/Holidays/US/Dates/");
         KDSoapClientInterface client(endPoint, messageNamespace);
         KDSoapMessage message;
+        message.setQualified(true);
         message.addArgument(QLatin1String("year"), year);
         KDSoapPendingCall pendingCall = client.asyncCall(QLatin1String("GetValentinesDay"), message/*, action*/);
         KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);
@@ -83,6 +86,7 @@ private slots:
         const QString messageNamespace = QString::fromLatin1("http://www.holidaywebservice.com/HolidayService_v2/");
         KDSoapClientInterface client(endPoint, messageNamespace);
         KDSoapMessage message;
+        message.setQualified(true);
         message.addArgument(QLatin1String("countryCode"), QLatin1String("UnitedStates")); // http://www.holidaywebservice.com/ServicesAvailable_HolidayService2_Country-Enum.aspx
         message.addArgument(QLatin1String("holidayCode"), QLatin1String("VALENTINES-DAY"));          // http://www.holidaywebservice.com/ServicesAvailable_HolidayService2_HolidayCode-Object.aspx
         message.addArgument(QLatin1String("year"), year);
@@ -118,6 +122,7 @@ private slots:
         const QString action = QString::fromLatin1("");
         KDSoapClientInterface client(endPoint, messageNamespace);
         KDSoapMessage message;
+        message.setQualified(true);
         message.addArgument(QLatin1String("prefix"), QLatin1String("Berl"));
         KDSoapPendingCall pendingCall = client.asyncCall(QLatin1String("OrteStartWith"), message, action);
         KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);

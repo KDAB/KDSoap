@@ -54,6 +54,11 @@ void KDSoapThreadTask::process(QNetworkAccessManager& accessManager)
     // Can't use m_iface->asyncCall, it would use the accessmanager from the main thread
     //KDSoapPendingCall pendingCall = m_iface->asyncCall(m_method, m_message, m_action);
 
+    //Headers should be always qualified
+    for (KDSoapHeaders::Iterator it = m_data->m_headers.begin(); it != m_data->m_headers.end(); ++it) {
+        it->setQualified(true);
+    }
+
     QBuffer* buffer = m_data->m_iface->d->prepareRequestBuffer(m_data->m_method, m_data->m_message, m_data->m_headers);
     QNetworkRequest request = m_data->m_iface->d->prepareRequest(m_data->m_method, m_data->m_action);
     QNetworkReply* reply = accessManager.post(request, buffer);
