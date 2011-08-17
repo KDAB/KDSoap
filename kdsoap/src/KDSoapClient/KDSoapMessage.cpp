@@ -1,5 +1,5 @@
 /****************************************************************************
-** Copyright (C) 2001-2011 Klaralvdalens Datakonsult AB.  All rights reserved.
+** Copyright (C) 2010-2011 Klaralvdalens Datakonsult AB.  All rights reserved.
 **
 ** This file is part of the KD Soap library.
 **
@@ -263,7 +263,7 @@ KDSoapMessage::XmlError KDSoapMessage::parseSoapXml(const QByteArray& data, QStr
                 }
                 if (reader.name() == "Body" && reader.namespaceUri() == KDSoapNamespaceManager::soapEnvelope()) {
 
-                    if (readNextStartElement(reader)) {
+                    if (reader.readNext() != QXmlStreamReader::Invalid) {
                         *this = parseElement(reader, envNsDecls);
                         if (pMessageNamespace)
                             *pMessageNamespace = namespaceUri();

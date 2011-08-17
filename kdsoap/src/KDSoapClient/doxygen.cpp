@@ -2,7 +2,6 @@
 
   \mainpage KD Soap Reference Documentation
 
-  \image html kdsoap.png
   \image html xmldiagram2.png
 
 KD SOAP is a tool for creating client applications for web services. It makes it possible to interact with applications which have APIs that can be exported as SOAP objects. The web service then provides a machine-accessible interface to its functionality via HTTP. The remote method calls are handled with the SOAP standard, which describes method calls, their parameters and return values as XML documents.
