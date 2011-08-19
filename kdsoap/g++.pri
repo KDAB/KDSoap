@@ -1,5 +1,9 @@
 *-g++* {
   NORMAL_CFLAGS = -Wno-long-long -ansi
+  win32-g++ {
+    NORMAL_CFLAGS += -U__STRICT_ANSI__
+  }
+
   NORMAL_CXXFLAGS = \
 	-Wnon-virtual-dtor -Wundef -Wcast-align \
 	-Wchar-subscripts -Wpointer-arith \
