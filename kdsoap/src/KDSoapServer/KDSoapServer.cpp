@@ -255,6 +255,7 @@ void KDSoapServer::resume()
         if (!listen(d->m_addressBeforeSuspend, d->m_portBeforeSuspend)) {
             qWarning("KDSoapServer: failed to listen on %s port %d", qPrintable(d->m_addressBeforeSuspend.toString()), d->m_portBeforeSuspend);
         }
+        d->m_portBeforeSuspend = 0;
     }
 }
 
