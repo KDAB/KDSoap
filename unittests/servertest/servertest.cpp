@@ -249,6 +249,7 @@ private Q_SLOTS:
 
         KDSoapClientInterface client(server->endPoint(), countryMessageNamespace());
         KDSoapMessage message;
+        //QTest::ignoreMessage(QtDebugMsg, "Slot not found: \"doesNotExist\" [soapAction = \"http://www.kdab.com/xml/MyWsdl/doesNotExist\" ]");
         const KDSoapMessage response = client.call(QLatin1String("doesNotExist"), message);
         QVERIFY(response.isFault());
         QCOMPARE(response.arguments().child(QLatin1String("faultcode")).value().toString(), QString::fromLatin1("Server.MethodNotFound"));
@@ -478,6 +479,10 @@ private Q_SLOTS:
         makeAsyncCalls(client, 1);
         m_eventLoop.exec();
         QCOMPARE(m_returnMessages.count(), 1);
+
+        // Test calling resume again, should warn
+        QTest::ignoreMessage(QtWarningMsg, "KDSoapServer: resume() called without calling suspend() first");
+        serverThread.resume();
     }
 
     void testServerFault() // fault returned by server
@@ -603,6 +608,10 @@ private Q_SLOTS:
         QVERIFY(server->endPoint().endsWith(serverPath));
         const QString url = server->endPoint().remove(serverPath).append(requestPath);
         KDSoapClientInterface client(url, countryMessageNamespace());
+        if (serverPath != requestPath) {
+            QTest::ignoreMessage(QtWarningMsg, "Invalid path '/bar'");
+        }
+
         const KDSoapMessage response = client.call(QLatin1String("getEmployeeCountry"), countryMessage());
         QCOMPARE(response.isFault(), !expectedSuccess);
         if (!expectedSuccess) {

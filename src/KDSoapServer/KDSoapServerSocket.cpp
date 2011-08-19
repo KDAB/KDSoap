@@ -171,7 +171,7 @@ void KDSoapServerSocket::slotReadyRead()
             const QString wsdlFile = server->wsdlFile();
             QFile wf(wsdlFile);
             if (wf.open(QIODevice::ReadOnly)) {
-                qDebug() << "Returning wsdl file contents";
+                //qDebug() << "Returning wsdl file contents";
                 const QByteArray responseText = wf.readAll();
                 const QByteArray response = httpResponseHeaders(false, "text/plain", responseText.size());
                 write(response);
