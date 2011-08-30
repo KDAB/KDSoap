@@ -993,7 +993,7 @@ if __name__ == "__main__":
 	isOk = call_handler( out[0] )
 	if not isOk:
 		print_stderr( "Warning. No handler for this repository!" )
-		sys.exit( 0 )
+		sys.exit( 1 )
 
 	# give feedback
 	print( "Finished.", file = sys.stderr )
