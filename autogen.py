@@ -9,7 +9,7 @@ import re
 import sys
 
 
-CONFIGURE_SH_IN = """
+CONFIGURE_SH_IN = """\
 #!/bin/bash
 # This file was generated automatically.
 # Please edit generate-configure.sh rather than this file.
@@ -320,7 +320,7 @@ else
 fi 
 """
 
-CONFIGURE_BAT_IN = """
+CONFIGURE_BAT_IN = """\
 @echo off
 rem This file was generated automatically.
 rem Please edit generate-configure.sh rather than this file.
