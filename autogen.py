@@ -916,6 +916,40 @@ class ForwardHeaderGenerator( Action ):
 BUILD_DIRECTORY = os.getcwd()
 SOURCE_DIRECTORY = os.path.dirname( os.path.abspath( __file__ ) )
 
+def kdreports_autogen():
+	PROJECT = "KDReports"
+	VERSION = "1.3.0"
+	SUBPROJECTS = "KDReports".split( " " )
+	PREFIX = "$$INSTALL_PREFIX/KDReports"
+
+	configureScriptGenerator = ConfigureScriptGenerator( project = PROJECT, path = BUILD_DIRECTORY, version = VERSION )
+	assert( configureScriptGenerator.run() == 0 )
+
+	includePath = os.path.join( SOURCE_DIRECTORY, "include" )
+	srcPath = os.path.join( SOURCE_DIRECTORY, "src" )
+	forwardHeaderGenerator = ForwardHeaderGenerator( 
+			copy = True, path = SOURCE_DIRECTORY, includepath = includePath, srcpath = srcPath,
+			project = PROJECT, subprojects = SUBPROJECTS, prefix = PREFIX, prefixed = True
+	 )
+	assert( forwardHeaderGenerator.run() == 0 )
+
+def kdchart_autogen():
+	PROJECT = "KDChart"
+	VERSION = "2.4.0"
+	SUBPROJECTS = "KDChart KDGantt".split( " " )
+	PREFIX = "$$INSTALL_PREFIX/KDChart"
+
+	configureScriptGenerator = ConfigureScriptGenerator( project = PROJECT, path = BUILD_DIRECTORY, version = VERSION )
+	assert( configureScriptGenerator.run() == 0 )
+
+	includePath = os.path.join( SOURCE_DIRECTORY, "include" )
+	srcPath = os.path.join( SOURCE_DIRECTORY, "src" )
+	forwardHeaderGenerator = ForwardHeaderGenerator( 
+			copy = True, path = SOURCE_DIRECTORY, includepath = includePath, srcpath = srcPath,
+			project = "KDChart", subprojects = SUBPROJECTS, prefix = PREFIX, prefixed = True
+	 )
+	assert( forwardHeaderGenerator.run() == 0 )
+
 def kdsoap_autogen():
 	PROJECT = "KDSoap"
 	VERSION = "1.1.0"
@@ -938,6 +972,10 @@ def call_handler( svnInfoMessage ):
 
 	if "products/kdsoap" in out[0]:
 		kdsoap_autogen()
+	elif "products/kdchart" in out[0]:
+		kdchart_autogen()
+	elif "products/kdreports" in out[0]:
+		kdreports_autogen()
 	else:
 		return False
 
