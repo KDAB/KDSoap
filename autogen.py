@@ -12,7 +12,7 @@ import sys
 CONFIGURE_SH_IN = """\
 #!/bin/bash
 # This file was generated automatically.
-# Please edit generate-configure.sh rather than this file.
+# Please edit buildsystem/autotools/autogen.py rather than this file.
 
 PRODUCT=@PRODUCT_UPPERCASE@
 Product=@PRODUCT_MIXEDCASE@
@@ -323,7 +323,7 @@ fi
 CONFIGURE_BAT_IN = """\
 @echo off
 rem This file was generated automatically.
-rem Please edit generate-configure.sh rather than this file.
+rem Please edit buildsystem/autotools/autogen.py rather than this file.
 
 set PRODUCT_CAP=@PRODUCT_UPPERCASE@
 set product_low=@PRODUCT_LOWERCASE@
