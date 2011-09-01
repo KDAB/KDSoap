@@ -30,10 +30,12 @@ export LD_LIBRARY_PATH
 The above has to be added into your .bashrc or similar to remain. It may also of course be run from a shell just before building software using KD SOAP, but in this case your settings will only be available for this shell.
 
 2) MacOS
+
 Proceed as described above, but using DYLD_LIBRARY_PATH instead
 of LD_LIBRARY_PATH
 
 3) Windows
+
 Add the path to KD SOAP lib into your LIB environment variable and the path
 to KD SOAP bin into your PATH environment variable.
 
@@ -59,6 +61,46 @@ nmake install  # Windows
    your installation path:
    For Unix/Linux, Mac: /usr/local/KDAB/KDSoap-VERSION/
    For Windows that is: C:\KDAB\KDSoap-VERSION\
+
+
+6) Symbian
+
+Here is a step by step introduction how to compile KD Soap with the Symbian-Toolchain on Windows.
+
+1. Open a command prompt.
+2. Setup environment
+   set QTDIR=c:\Qt\NokiaQtSDK_1_0_2\Symbian\SDK\
+   set PATH=c:\Qt\NokiaQtSDK_1_0_2\Symbian\SDK\bin\;%PATH%
+   set QMAKESPEC=symbian-abld
+3. Chanhge to your KD Soap source-directory
+   cd c:\src\kdsoap\
+4. Run configuration
+   configure.bat -static -debug
+5. Compile with
+   make release-gcce
+   make installer_sis
+6. Depending on the Qt and Symbian^3 version you are using you maybe
+   get an error like
+   BLDMAKE ERROR: Can't find any RVCT installation.
+   This is a known qmake@Symbian^3 bug. You can workaround that bug
+   by installing python, saving following script in a file like e.g.
+   c:\fix.py and executing that script using "c:\fix.py c:\src\kdsoap\"
+
+import os, sys, re
+for root, subFolders, files in os.walk(sys.argv[1]):
+    for file in files:
+        if file == 'bld.inf':
+            path = os.path.join(root,file)
+            i = open(path).read()
+            o = open(path,"w")
+            o.write( re.sub("WINSCW GCCE ARMV5 ARMV6","WINSCW GCCE",i) )
+            o.close()
+
+   This will replace in all generated bld.inf files the line
+     WINSCW GCCE ARMV5 ARMV6
+   with
+     WINSCW GCCE
+   to workaround that known qmake+Symbian^3 bug. 
 
 
 6) Have a look at the examples applications. They will get you started with KD SOAP 1.x.
