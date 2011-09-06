@@ -445,9 +445,9 @@ Element Parser::parseElement( ParserContext *context,
   newElement.setDefaultValue( element.attribute( "default" ) );
   newElement.setFixedValue( element.attribute( "fixed" ) );
 
-  bool nill = false;
-  if ( element.hasAttribute( "nillable" ) )
-    nill = true;
+  //bool nill = false;
+  //if ( element.hasAttribute( "nillable" ) )
+    //nill = true;
 
   if ( element.hasAttribute( "type" ) ) {
     QName typeName = element.attribute( "type" );
