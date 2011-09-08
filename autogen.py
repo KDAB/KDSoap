@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from __future__ import print_function
+from datetime import datetime
 from shutil import copyfile, rmtree
 from string import Template
 from subprocess import Popen, PIPE
@@ -648,6 +649,9 @@ class Action( object ):
 def data_dir():
 	return os.path.dirname( __file__ )
 
+# BEGIN: Actions
+
+# Configure script generation support
 
 class ConfigureScriptGenerator( Action ):
 
@@ -701,6 +705,7 @@ class ConfigureScriptGenerator( Action ):
 			fOutput.write( self.__replaceValues( line.rstrip() ) + lineSep )
 		fOutput.close()
 
+# Forward Header Support
 
 def print_stderr( message ):
 	print( message, file = sys.stderr )
@@ -911,7 +916,171 @@ class ForwardHeaderGenerator( Action ):
 				continue
 
 
-# SCRIPTS
+# CPack support
+
+_CPackConfig = '''SET(CPACK_PACKAGE_NAME "@CPACK_PACKAGE_NAME@")
+SET(CPACK_PACKAGE_NAME_SIMPLIFIED "@CPACK_PACKAGE_NAME_SIMPLIFIED@")
+SET(CPACK_PACKAGE_VERSION_MAJOR "@CPACK_PACKAGE_VERSION_MAJOR@")
+SET(CPACK_PACKAGE_VERSION_MINOR "@CPACK_PACKAGE_VERSION_MINOR@")
+SET(CPACK_PACKAGE_VERSION_PATCH "@CPACK_PACKAGE_VERSION_PATCH@")
+SET(CPACK_INSTALL_DIRECTORY "@CPACK_INSTALL_DIRECTORY@")
+SET(CPACK_PACKAGE_SOURCE @CPACK_PACKAGE_SOURCE@)
+
+SET(CPACK_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}")
+GET_FILENAME_COMPONENT(CPACK_INSTALLED_DIRECTORIES "${CPACK_INSTALL_DIRECTORY}" REALPATH)
+LIST(APPEND CPACK_INSTALLED_DIRECTORIES ".")
+
+SET(CPACK_PACKAGE_NAME_AND_VERSION "${CPACK_PACKAGE_NAME} ${CPACK_PACKAGE_VERSION}")
+IF(CPACK_PACKAGE_SOURCE)
+	SET(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME_SIMPLIFIED}-${CPACK_PACKAGE_VERSION}-source")
+	SET(CPACK_PACKAGE_NAME_AND_VERSION "${CPACK_PACKAGE_NAME_AND_VERSION} Source Code")
+ENDIF()
+
+IF(WIN32)
+	IF(NOT CPACK_PACKAGE_SOURCE)
+		SET(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME_AND_VERSION}")
+	ENDIF()
+	SET(CPACK_GENERATOR "@CPACK_GENERATOR_WINDOWS@")
+	SET(CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_NAME_AND_VERSION}")
+	SET(CPACK_NSIS_PACKAGE_NAME "${CPACK_PACKAGE_NAME_AND_VERSION}")
+	SET(CPACK_PACKAGE_INSTALL_REGISTRY_KEY "${CPACK_PACKAGE_NAME_AND_VERSION}")
+ELSEIF(APPLE)
+	IF(NOT CPACK_PACKAGE_SOURCE)
+		SET(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}")
+	ENDIF()
+	SET(CPACK_GENERATOR "@CPACK_GENERATOR_APPLE@")
+	SET(CPACK_SYSTEM_NAME "OSX")
+ELSE()
+	IF(NOT CPACK_PACKAGE_SOURCE)
+		SET(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME_SIMPLIFIED}-${CPACK_PACKAGE_VERSION}")
+	ENDIF()
+	SET(CPACK_GENERATOR "@CPACK_GENERATOR_ELSE@")
+ENDIF()
+
+SET(CPACK_TOPLEVEL_TAG "${CPACK_SYSTEM_NAME}")
+SET(CPACK_PACKAGE_INSTALL_DIRECTORY "${CPACK_PACKAGE_FILE_NAME}")
+SET(CPACK_RESOURCE_FILE_LICENSE "@CPACK_RESOURCE_FILE_LICENSE@")
+SET(CPACK_IGNORE_FILES "/\\\\.svn/;/\\\\.git/")
+SET(CPACK_PACKAGE_DESCRIPTION "")
+@CPACK_OPTIONAL_EXTRA_LOGIC@
+'''
+
+def fixCMakeWindowsPaths( path ):
+	return path.replace( '\\', '\\\\' )
+
+def sourceGenerators():
+	return { 'WINDOWS':'ZIP',
+	         'APPLE':  'TBZ2',
+	         'ELSE':   'TBZ2' }
+
+def binaryGenerators():
+	return { 'WINDOWS':'NSIS;ZIP',
+	         'APPLE':  'DragNDrop;TBZ2',
+	         'ELSE':   'STGZ;TBZ2' }
+
+class CPackGenerateConfigurationAction( Action ):
+
+	def __init__( self, projectName, versionList, directory,
+				sourceGenerators = sourceGenerators(), binaryGenerators = binaryGenerators(),
+				config = _CPackConfig, sourcePackage = False, licenseFile = None, extraCPackLogic = None ):
+
+		Action.__init__( self )
+
+		self._projectName = projectName
+		self._directory = directory
+		self._sourcePackage = sourcePackage
+		self._licenseFile = licenseFile
+
+		if sourcePackage:
+			self._configFile = "CPackSourceConfig.cmake"
+		else:
+			self._configFile = "CPackConfig.cmake"
+
+		self._sourceGenerators = sourceGenerators
+		self._binaryGenerators = binaryGenerators
+		self._extraCPackLogic = extraCPackLogic
+
+		self._setVersionInformation( versionList )
+
+	def getLogDescription( self ):
+		return "CPack configuration generation"
+
+	def _setVersionInformation( self, versionList ):
+		assert( isinstance( versionList, list ) and len( versionList ) == 3 )
+		self._versionList = versionList
+
+	def _getVersionInformation( self ):
+		"""Get the version information from this project
+
+		\return A list in the form of [str1, str2, str3] containing major, minor and patch version resp."""
+
+		return self._versionList
+
+	def getWorkingDirectory( self ):
+		return self._directory
+
+	def _formattedConfiguration( self ):
+		config = _CPackConfig
+		# Can't do this with str.format because of CMake's variable escaping conflicting
+		# with Python's format escaping
+
+		packageName = self._projectName
+		packageNameSimplified = packageName.lower().replace( ' ', '_' )
+		config = config.replace( "@CPACK_PACKAGE_NAME@", packageName, 1 )
+		config = config.replace( "@CPACK_PACKAGE_NAME_SIMPLIFIED@", packageNameSimplified, 1 )
+
+		versionList = self._getVersionInformation()
+		config = config.replace( "@CPACK_PACKAGE_VERSION_MAJOR@", versionList[0] or 1, 1 )
+		config = config.replace( "@CPACK_PACKAGE_VERSION_MINOR@", versionList[1] or 0, 1 )
+		config = config.replace( "@CPACK_PACKAGE_VERSION_PATCH@", versionList[2] or 0, 1 )
+		installDirectory = fixCMakeWindowsPaths( self.getWorkingDirectory() )
+		config = config.replace( "@CPACK_INSTALL_DIRECTORY@", installDirectory, 1 )
+
+		if self._extraCPackLogic:
+			config = config.replace( "@CPACK_OPTIONAL_EXTRA_LOGIC@\n", self._extraCPackLogic )
+		else:
+			config = config.replace( "@CPACK_OPTIONAL_EXTRA_LOGIC@\n", '' )
+
+		licenseFile = self._licenseFile
+
+		if not licenseFile:
+			licenseFile = os.path.join( self.getWorkingDirectory(), "CPackGeneratedLicense.txt" )
+			with open( licenseFile, 'w' ) as license:
+				license.write( '{0} - Copyright {1}, All Rights Reserved.'.format( packageName, datetime.now().year ) )
+		else:
+			licenseFile = os.path.abspath( licenseFile ) # NSIS apparently requires an absolute path to find the license file
+		licenseFile = fixCMakeWindowsPaths( licenseFile )
+
+		config = config.replace( "@CPACK_RESOURCE_FILE_LICENSE@", licenseFile )
+
+		for platform in ( 'WINDOWS', 'APPLE', 'ELSE' ):
+			if self._sourcePackage:
+				generator = self._sourceGenerators[ platform ]
+			else:
+				generator = self._binaryGenerators[ platform ]
+			config = config.replace( "@CPACK_GENERATOR_%s@" % platform, generator )
+
+		if self._sourcePackage:
+			cpackSource = "TRUE"
+		else:
+			cpackSource = "FALSE"
+		config = config.replace( "@CPACK_PACKAGE_SOURCE@", cpackSource, 1 )
+		return config
+
+	def run( self ):
+		"""Generates a CPack configuration file if needed."""
+		config = os.path.join( self.getWorkingDirectory(), self._configFile )
+		if ( os.path.exists( config ) ):
+			return 0
+
+		with open( config, 'w' ) as configFile:
+			configFile.write( self._formattedConfiguration() )
+
+		return 0
+
+# END: Actions
+
+# BEGIN: SCRIPTS
 
 BUILD_DIRECTORY = os.getcwd()
 SOURCE_DIRECTORY = os.path.dirname( os.path.abspath( __file__ ) )
@@ -921,6 +1090,9 @@ def kdreports_autogen():
 	VERSION = "1.3.0"
 	SUBPROJECTS = "KDReports".split( " " )
 	PREFIX = "$$INSTALL_PREFIX/KDReports"
+
+	cpackConfigurationGenerator = CPackGenerateConfigurationAction( projectName = PROJECT, versionList = VERSION.split( "." ), directory = BUILD_DIRECTORY )
+	assert( cpackConfigurationGenerator.run() == 0 )
 
 	configureScriptGenerator = ConfigureScriptGenerator( project = PROJECT, path = BUILD_DIRECTORY, version = VERSION )
 	assert( configureScriptGenerator.run() == 0 )
@@ -939,6 +1111,9 @@ def kdchart_autogen():
 	SUBPROJECTS = "KDChart KDGantt".split( " " )
 	PREFIX = "$$INSTALL_PREFIX/KDChart"
 
+	cpackConfigurationGenerator = CPackGenerateConfigurationAction( projectName = PROJECT, versionList = VERSION.split( "." ), directory = BUILD_DIRECTORY )
+	assert( cpackConfigurationGenerator.run() == 0 )
+
 	configureScriptGenerator = ConfigureScriptGenerator( project = PROJECT, path = BUILD_DIRECTORY, version = VERSION )
 	assert( configureScriptGenerator.run() == 0 )
 
@@ -956,6 +1131,9 @@ def kdsoap_autogen():
 	SUBPROJECTS = "KDSoapClient KDSoapServer".split( " " )
 	PREFIX = "$$INSTALL_PREFIX/{0}".format( PROJECT )
 
+	cpackConfigurationGenerator = CPackGenerateConfigurationAction( projectName = PROJECT, versionList = VERSION.split( "." ), directory = BUILD_DIRECTORY )
+	assert( cpackConfigurationGenerator.run() == 0 )
+
 	configureScriptGenerator = ConfigureScriptGenerator( project = PROJECT, path = BUILD_DIRECTORY, version = VERSION )
 	assert( configureScriptGenerator.run() == 0 )
 
@@ -966,6 +1144,10 @@ def kdsoap_autogen():
 			project = PROJECT, subprojects = SUBPROJECTS, prefix = PREFIX, prefixed = True
 	 )
 	assert( forwardHeaderGenerator.run() == 0 )
+
+# END: SCRIPTS
+
+# BEGIN: MAIN
 
 def call_handler( svnInfoMessage ):
 	"""\return True if handler found, else False"""
@@ -998,3 +1180,5 @@ if __name__ == "__main__":
 	# give feedback
 	print( "Finished.", file = sys.stderr )
 	sys.exit( 0 )
+
+# END: MAIN
