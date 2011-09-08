@@ -133,14 +133,14 @@ void Converter::generateServerMethod(KODE::Code& code, const Binding& binding, c
     } else {
         QString retType;
         QString retInputType;
-        bool isBuiltin = false;
-        bool isComplex = false;
+        //bool isBuiltin = false;
+        //bool isComplex = false;
         Part retPart;
         Q_FOREACH( const Part& outPart, outParts /* only one */ ) {
             retType = mTypeMap.localType( outPart.type(), outPart.element() );
             retInputType = mTypeMap.localInputType( outPart.type(), outPart.element() );
-            isBuiltin = mTypeMap.isBuiltinType( outPart.type(), outPart.element() );
-            isComplex = mTypeMap.isComplexType( outPart.type(), outPart.element() );
+            //isBuiltin = mTypeMap.isBuiltinType( outPart.type(), outPart.element() );
+            //isComplex = mTypeMap.isComplexType( outPart.type(), outPart.element() );
             retPart = outPart;
         }
         const QString methodCall = methodName + '(' + inputVars.join(", ") + ')';
