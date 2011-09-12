@@ -1167,8 +1167,11 @@ if __name__ == "__main__":
 	# check repository, call corresponding autogen script for our products
 	# see "# SCRIPTS" section
 
+	sourceDirectory = os.path.dirname( __file__ )
+	buildDirectory = os.getcwd()
+
 	# check repository URL
-	p = Popen( ["svn", "info"], stdout = PIPE, stderr = PIPE )
+	p = Popen( ["svn", "info"], cwd = sourceDirectory, stdout = PIPE, stderr = PIPE )
 	out = p.communicate()
 
 	# call handler, check return code
@@ -1182,3 +1185,5 @@ if __name__ == "__main__":
 	sys.exit( 0 )
 
 # END: MAIN
+
+# vim: set noexpandtab :
