@@ -1149,14 +1149,18 @@ def kdsoap_autogen():
 
 # BEGIN: MAIN
 
-def call_handler( svnInfoMessage ):
+def touch(fname, times = None):
+    with file(fname, 'a'):
+        os.utime(fname, times)
+
+def call_handler( url ):
 	"""\return True if handler found, else False"""
 
-	if "products/kdsoap" in out[0]:
+	if "products/kdsoap" in url:
 		kdsoap_autogen()
-	elif "products/kdchart" in out[0]:
+	elif "products/kdchart" in url:
 		kdchart_autogen()
-	elif "products/kdreports" in out[0]:
+	elif "products/kdreports" in url:
 		kdreports_autogen()
 	else:
 		return False
@@ -1167,22 +1171,39 @@ if __name__ == "__main__":
 	# check repository, call corresponding autogen script for our products
 	# see "# SCRIPTS" section
 
-	sourceDirectory = os.path.dirname( __file__ )
+	sourceDirectory = os.path.realpath( os.path.dirname( __file__ ) )
 	buildDirectory = os.getcwd()
 
 	# check repository URL
 	p = Popen( ["svn", "info"], cwd = sourceDirectory, stdout = PIPE, stderr = PIPE )
-	out = p.communicate()
+	(stdout, stderr) = p.communicate()
+	if p.returncode != 0:
+		print_stderr( "Error: Not a SVN repository: {0}".format( sourceDirectory ) )
+		sys.exit( 1 )
 
 	# call handler, check return code
-	isOk = call_handler( out[0] )
+	repositoryUrl = stdout.splitlines()[1].split(':', 1)[1]
+	isOk = call_handler( repositoryUrl )
 	if not isOk:
-		print_stderr( "Warning. No handler for this repository!" )
+		print_stderr( "Error: No handler for this repository: {0}".format( repositoryUrl ) )
 		sys.exit( 1 )
 
 	# give feedback
-	print( "Finished.", file = sys.stderr )
-	sys.exit( 0 )
+	print( "-- Using source directory: {0}".format( sourceDirectory ) )
+	print( "-- Auto-generation done." )
+
+	# touch license file
+	touch( ".license.accepted" )
+	print( "-- License marked as accepted." )
+
+	# execute configure script
+	print( "-- Wrote build files to: {0}".format( buildDirectory ) )
+	print( "-- Now running configure script." )
+	print()
+	if sys.platform == 'win32':
+		os.execvp( './configure.bat', sys.argv )
+	else:
+		os.execvp( './configure.sh', sys.argv )
 
 # END: MAIN
 
