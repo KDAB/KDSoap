@@ -10,6 +10,7 @@ import re
 import sys
 
 
+DEBUG_ENABLED = True
 CONFIGURE_SH_IN = """\
 #!/bin/bash
 # This file was generated automatically.
@@ -638,6 +639,14 @@ del .qmake.cache
 """
 
 
+def print_stderr( message ):
+	print( message, file = sys.stderr )
+
+def debug( obj, message ):
+	if not DEBUG_ENABLED:
+		return
+	print( "{0}: {1}".format( obj.__class__.__name__, message ) )
+
 class Action( object ):
 
 	def __init__( self, name = None ):
@@ -670,6 +679,7 @@ class ConfigureScriptGenerator( Action ):
 
 	def run( self ):
 		self.__generate()
+		debug( self, "Configure script generator finished." )
 		return 0
 
 	def __replaceValues( self, value ):
@@ -707,9 +717,6 @@ class ConfigureScriptGenerator( Action ):
 
 # Forward Header Support
 
-def print_stderr( message ):
-	print( message, file = sys.stderr )
-
 def my_copyfile( src, dest ):
 	#print_stderr( "Copying file: {0} -> {1}".format( src, dest ) )
 	copyfile( src, dest )
@@ -730,6 +737,7 @@ class ForwardHeaderGenerator( Action ):
 
 	def run( self ):
 		self.createProject()
+		debug( self, "Forward header generation finished." )
 		return 0
 
 	def getLogDescription( self ):
@@ -791,7 +799,7 @@ class ForwardHeaderGenerator( Action ):
 		classNames = self._suggestedHeaderNames( project, header )
 		path = os.path.dirname( header )
 
-		print_stderr( "Parsing file: {0} (Project: {1})".format( header, project ) )
+		debug( self, "Parsing file: {0} (Project: {1})".format( header, project ) )
 		for classname in classNames:
 			if ( self.prefixed ):
 				localPath = self.includepath + "/" + os.path.basename( header )
@@ -814,10 +822,10 @@ class ForwardHeaderGenerator( Action ):
 			newHeader.write( input + os.linesep )
 			newHeader.close()
 
-			print_stderr( "  Forward header generated for {0}".format( classname ) )
+			debug( self, "Forward header generated for {0}".format( classname ) )
 
 		if len( classNames ) == 0:
-			print_stderr( "  No input classes found. No forward header generated." )
+			debug( self, "No input classes found. No forward header generated." )
 
 			if ( self.prefixed ):
 				localPath = self.includepath + "/" + os.path.basename( header )
@@ -1076,6 +1084,8 @@ class CPackGenerateConfigurationAction( Action ):
 		with open( config, 'w' ) as configFile:
 			configFile.write( self._formattedConfiguration() )
 
+		debug( self, "CPack generator finished." )
+
 		return 0
 
 # END: Actions
@@ -1174,6 +1184,8 @@ if __name__ == "__main__":
 	sourceDirectory = os.path.realpath( os.path.dirname( __file__ ) )
 	buildDirectory = os.getcwd()
 
+	print( "-- Using source directory: {0}".format( sourceDirectory ) )
+
 	# check repository URL
 	p = Popen( ["svn", "info"], cwd = sourceDirectory, stdout = PIPE, stderr = PIPE )
 	(stdout, stderr) = p.communicate()
@@ -1189,7 +1201,6 @@ if __name__ == "__main__":
 		sys.exit( 1 )
 
 	# give feedback
-	print( "-- Using source directory: {0}".format( sourceDirectory ) )
 	print( "-- Auto-generation done." )
 
 	# touch license file
