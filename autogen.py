@@ -1207,10 +1207,13 @@ if __name__ == "__main__":
 	touch( ".license.accepted" )
 	print( "-- License marked as accepted." )
 
-	# execute configure script
+	# print footer
 	print( "-- Wrote build files to: {0}".format( buildDirectory ) )
 	print( "-- Now running configure script." )
 	print()
+	sys.stdout.flush()
+
+	# execute configure script
 	if sys.platform == 'win32':
 		os.execvp( './configure.bat', sys.argv )
 	else:
