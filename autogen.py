@@ -1215,9 +1215,9 @@ if __name__ == "__main__":
 
 	# execute configure script
 	if sys.platform == 'win32':
-		os.execvp( 'configure.bat', sys.argv[1:] )
+		os.execvp( './configure.bat', ['configure.bat'] + sys.argv[1:] )
 	else:
-		os.execvp( './configure.sh', sys.argv[1:] )
+		os.execvp( './configure.sh', ['configure.sh'] + sys.argv[1:] )
 
 # END: MAIN
 
