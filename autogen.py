@@ -715,7 +715,8 @@ def my_copyfile( src, dest ):
 
 class ForwardHeaderGenerator( Action ):
 
-	def __init__( self, copy, path, includepath, srcpath, project, subprojects, prefix, prefixed = False, name = None ):
+	def __init__( self, copy, path, includepath, srcpath, project, subprojects, prefix,
+				prefixed = False, cleanIncludeDir = True, name = None ):
 		Action.__init__( self, name )
 		self.copy = copy
 		self.path = path
@@ -725,6 +726,7 @@ class ForwardHeaderGenerator( Action ):
 		self.subprojects = subprojects
 		self.prefix = prefix
 		self.prefixed = prefixed
+		self.cleanIncludeDir = cleanIncludeDir
 		self.__projectFile = ""
 
 	def run( self ):
@@ -814,7 +816,7 @@ class ForwardHeaderGenerator( Action ):
 			newHeader.write( input + os.linesep )
 			newHeader.close()
 
-			debug( self, "Forward header generated for {0}".format( classname ) )
+			debug( self, "Forward header generated: {0}".format( fHeaderName ) )
 
 		if len( classNames ) == 0:
 			debug( self, "No input classes found. No forward header generated." )
@@ -848,9 +850,9 @@ class ForwardHeaderGenerator( Action ):
 			errStr = Template( "Error, the directory $DIR does not exist!" )
 			errStr = errStr.substitute( DIR = self.path )
 			raise BaseException( errStr )
-		if ( os.path.exists( self.includepath ) ):
+		if self.cleanIncludeDir and os.path.exists( self.includepath ):
 			rmtree( self.includepath )
-		os.mkdir( self.includepath )
+			os.mkdir( self.includepath )
 		profilename = os.path.abspath( self.includepath ) + "/" + self.project + ".pro"
 		projectFile = open( profilename, "wb" )
 		self.__projectFile = projectFile
@@ -1147,13 +1149,39 @@ def kdsoap_autogen():
 	 )
 	assert( forwardHeaderGenerator.run() == 0 )
 
+def kdtools_autogen():
+	PROJECT = "KDTools"
+	VERSION = "2.3.0"
+	#SUBPROJECTS = "KDToolsCore KDToolsGui KDUnitTest KDUpdater".split( " " )
+	PREFIX = "$$INSTALL_PREFIX/{0}".format( PROJECT )
+
+	cpackConfigurationGenerator = CPackGenerateConfigurationAction( projectName = PROJECT, versionList = VERSION.split( "." ), directory = BUILD_DIRECTORY )
+	assert( cpackConfigurationGenerator.run() == 0 )
+
+	configureScriptGenerator = ConfigureScriptGenerator( project = PROJECT, path = BUILD_DIRECTORY, version = VERSION )
+	assert( configureScriptGenerator.run() == 0 )
+
+	includePath = os.path.join( SOURCE_DIRECTORY, "include" )
+	srcPath = os.path.join( SOURCE_DIRECTORY, "src" )
+	forwardHeaderGenerator = ForwardHeaderGenerator( 
+			copy = True, path = SOURCE_DIRECTORY, includepath = includePath, srcpath = srcPath,
+			project = PROJECT, subprojects = "KDToolsCore KDToolsGui KDUnitTest".split( " " ), prefix = PREFIX, prefixed = False
+	 )
+	assert( forwardHeaderGenerator.run() == 0 )
+
+	forwardHeaderGenerator = ForwardHeaderGenerator( 
+			copy = True, path = SOURCE_DIRECTORY, includepath = includePath, srcpath = srcPath,
+			project = PROJECT, subprojects = ["KDUpdater"], prefix = PREFIX, prefixed = True, cleanIncludeDir = False
+	 )
+	assert( forwardHeaderGenerator.run() == 0 )
+
 # END: SCRIPTS
 
 # BEGIN: MAIN
 
-def touch(fname, times = None):
-    with file(fname, 'a'):
-        os.utime(fname, times)
+def touch( fname, times = None ):
+	with file( fname, 'a' ):
+		os.utime( fname, times )
 
 def call_handler( url ):
 	"""\return True if handler found, else False"""
@@ -1164,6 +1192,8 @@ def call_handler( url ):
 		kdchart_autogen()
 	elif "products/kdreports" in url:
 		kdreports_autogen()
+	elif "products/kdtools" in url:
+		kdtools_autogen()
 	else:
 		return False
 
@@ -1180,13 +1210,13 @@ if __name__ == "__main__":
 
 	# check repository URL
 	p = Popen( ["svn", "info"], cwd = sourceDirectory, stdout = PIPE, stderr = PIPE )
-	(stdout, stderr) = p.communicate()
+	( stdout, stderr ) = p.communicate()
 	if p.returncode != 0:
 		print_stderr( "Error: Not a SVN repository: {0}".format( sourceDirectory ) )
 		sys.exit( 1 )
 
 	# call handler, check return code
-	repositoryUrl = stdout.splitlines()[1].split(':', 1)[1]
+	repositoryUrl = stdout.splitlines()[1].split( ':', 1 )[1]
 	isOk = call_handler( repositoryUrl )
 	if not isOk:
 		print_stderr( "Error: No handler for this repository: {0}".format( repositoryUrl ) )
