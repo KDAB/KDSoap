@@ -850,15 +850,19 @@ class ForwardHeaderGenerator( Action ):
 			errStr = Template( "Error, the directory $DIR does not exist!" )
 			errStr = errStr.substitute( DIR = self.path )
 			raise BaseException( errStr )
+
 		if self.cleanIncludeDir and os.path.exists( self.includepath ):
 			rmtree( self.includepath )
+		if not os.path.exists( self.includepath ):
 			os.mkdir( self.includepath )
+
 		profilename = os.path.abspath( self.includepath ) + "/" + self.project + ".pro"
 		projectFile = open( profilename, "wb" )
 		self.__projectFile = projectFile
 		lines = []
 		lines.append( "TEMPLATE = subdirs" + os.linesep )
 		lines.append( "SUBDIRS = " )
+
 		for subProject in self.subprojects:
 			line = subProject
 			if ( subProject != self.subprojects[ -1 ] ):
