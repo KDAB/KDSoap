@@ -1087,7 +1087,7 @@ def kdreports_autogen():
 	PROJECT = "KDReports"
 	VERSION = "1.3.0"
 	SUBPROJECTS = "KDReports".split( " " )
-	PREFIX = "$$INSTALL_PREFIX/KDReports"
+	PREFIX = "$$INSTALL_PREFIX"
 
 	cpackConfigurationGenerator = CPackGenerateConfigurationAction( projectName = PROJECT, versionList = VERSION.split( "." ), directory = BUILD_DIRECTORY )
 	assert( cpackConfigurationGenerator.run() == 0 )
@@ -1107,7 +1107,7 @@ def kdchart_autogen():
 	PROJECT = "KDChart"
 	VERSION = "2.4.0"
 	SUBPROJECTS = "KDChart KDGantt".split( " " )
-	PREFIX = "$$INSTALL_PREFIX/KDChart"
+	PREFIX = "$$INSTALL_PREFIX"
 
 	cpackConfigurationGenerator = CPackGenerateConfigurationAction( projectName = PROJECT, versionList = VERSION.split( "." ), directory = BUILD_DIRECTORY )
 	assert( cpackConfigurationGenerator.run() == 0 )
@@ -1127,7 +1127,7 @@ def kdsoap_autogen():
 	PROJECT = "KDSoap"
 	VERSION = "1.1.0"
 	SUBPROJECTS = "KDSoapClient KDSoapServer".split( " " )
-	PREFIX = "$$INSTALL_PREFIX/{0}".format( PROJECT )
+	PREFIX = "$$INSTALL_PREFIX"
 
 	cpackConfigurationGenerator = CPackGenerateConfigurationAction( projectName = PROJECT, versionList = VERSION.split( "." ), directory = BUILD_DIRECTORY )
 	assert( cpackConfigurationGenerator.run() == 0 )
@@ -1147,7 +1147,7 @@ def kdtools_autogen():
 	PROJECT = "KDTools"
 	VERSION = "2.3.0"
 	#SUBPROJECTS = "KDToolsCore KDToolsGui KDUnitTest KDUpdater".split( " " )
-	PREFIX = "$$INSTALL_PREFIX/{0}".format( PROJECT )
+	PREFIX = "$$INSTALL_PREFIX"
 
 	cpackConfigurationGenerator = CPackGenerateConfigurationAction( projectName = PROJECT, versionList = VERSION.split( "." ), directory = BUILD_DIRECTORY )
 	assert( cpackConfigurationGenerator.run() == 0 )
