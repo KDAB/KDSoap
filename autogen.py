@@ -11,7 +11,7 @@ import sys
 
 
 DEBUG_ENABLED = True
-CONFIGURE_SH_IN = """\
+CONFIGURE_SH_IN = r"""\
 #!/bin/bash
 # This file was generated automatically.
 # Please edit buildsystem/autotools/autogen.py rather than this file.
@@ -322,7 +322,7 @@ else
 fi 
 """
 
-CONFIGURE_BAT_IN = """\
+CONFIGURE_BAT_IN = r"""\
 @echo off
 rem This file was generated automatically.
 rem Please edit buildsystem/autotools/autogen.py rather than this file.
