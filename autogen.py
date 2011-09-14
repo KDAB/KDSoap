@@ -635,9 +635,15 @@ def print_stderr( message ):
 	print( message, file = sys.stderr )
 
 def debug( obj, message ):
+	"""\param obj Either class instance or basestring"""
+
 	if not DEBUG_ENABLED:
 		return
-	print( "{0}: {1}".format( obj.__class__.__name__, message ) )
+
+	sender = obj
+	if not isinstance( obj, basestring ):
+		sender = obj.__class__.__name__
+	print( "{0}: {1}".format( sender, message ) )
 
 class Action( object ):
 
@@ -710,7 +716,7 @@ class ConfigureScriptGenerator( Action ):
 # Forward Header Support
 
 def my_copyfile( src, dest ):
-	#print_stderr( "Copying file: {0} -> {1}".format( src, dest ) )
+	#debug( __name__, "Copying file: {0} -> {1}".format( src, dest ) )
 	copyfile( src, dest )
 
 class ForwardHeaderGenerator( Action ):
@@ -727,7 +733,7 @@ class ForwardHeaderGenerator( Action ):
 		self.prefix = prefix
 		self.prefixed = prefixed
 		self.cleanIncludeDir = cleanIncludeDir
-		self.additionalHeaders = {}
+		self.additionalHeaders = additionalHeaders
 		self.__projectFile = ""
 
 	def run( self ):
@@ -790,17 +796,18 @@ class ForwardHeaderGenerator( Action ):
 
 		return classNames
 
-	def _addForwardHeader( self, targetPath, content, projectFile ):
+	def _addForwardHeader( self, targetPath, fileName, projectFile ):
+		INCLUDE_STR = "#include \"{0}\""
 		newHeader = open( targetPath, "wb" )
-		newHeader.write( content + os.linesep )
+		newHeader.write( INCLUDE_STR.format( fileName ) + os.linesep )
 		newHeader.close()
+
+		debug( self, "Forward header generated: {0}".format( targetPath ) )
 
 		basename = os.path.basename( targetPath )
 		projectFile.write( basename + " \\" + os.linesep )
 
 	def _createForwardHeader( self, header, projectFile, project ):
-		INCLUDE_STR = "#include \"{0}\""
-
 		path = os.path.dirname( header )
 		basename = os.path.basename( header )
 		classNames = self._suggestedHeaderNames( project, header )
@@ -811,12 +818,10 @@ class ForwardHeaderGenerator( Action ):
 				localPath = self.includepath + "/" + basename
 				my_copyfile( header, localPath )
 				fHeaderName = os.path.abspath( self.includepath + "/" + classname )
-				self._addForwardHeader( fHeaderName, INCLUDE_STR.format( basename ), self.__projectFile )
+				self._addForwardHeader( fHeaderName, basename, self.__projectFile )
 
 			fHeaderName = os.path.abspath( path + "/" + classname )
-			self._addForwardHeader( fHeaderName, INCLUDE_STR.format( basename ), projectFile )
-
-			debug( self, "Forward header generated: {0}".format( fHeaderName ) )
+			self._addForwardHeader( fHeaderName, basename, projectFile )
 
 		if len( classNames ) == 0:
 			debug( self, "No input classes found. No forward header generated." )
@@ -829,11 +834,10 @@ class ForwardHeaderGenerator( Action ):
 			sanitizedBasename = basename.replace( ".h", "" )
 
 			fHeaderName = os.path.abspath( self.includepath + "/" + sanitizedBasename )
-			self._addForwardHeader( fHeaderName, INCLUDE_STR.format( basename ), self.__projectFile )
+			self._addForwardHeader( fHeaderName, basename, self.__projectFile )
 
 			fHeaderNameProjectDir = os.path.dirname( os.path.abspath( header ) ) + "/" + sanitizedBasename;
-			input = "../{0}".format( os.path.basename( header ) )
-			self._addForwardHeader( fHeaderNameProjectDir, INCLUDE_STR.format( input ), projectFile )
+			self._addForwardHeader( fHeaderNameProjectDir, "../{0}".format( basename ), projectFile )
 
 	def createProject( self ):
 		if ( not os.path.exists( self.path ) ):
@@ -868,6 +872,10 @@ class ForwardHeaderGenerator( Action ):
 
 		for subProject in self.subprojects:
 			self._createSubproject( subProject )
+
+		for fileName, includePath in self.additionalHeaders.items():
+			targetPath = os.path.join( self.includepath, fileName )
+			self._addForwardHeader( targetPath , includePath, projectFile )
 
 		self._copyHeaders( self.srcpath, self.includepath, projectFile, self.project, self.prefixed )
 		installPath = "{0}/include".format( self.prefix )
@@ -1163,9 +1171,12 @@ def kdtools_autogen():
 	 )
 	assert( forwardHeaderGenerator.run() == 0 )
 
+	# TODO: KDTools depends on KDUpdater/KDUpdater to be in the include path
+	# This is weird since kdupdater.h only contains constants, we might want to fix KDTools to use kdupdater.h directly.
 	forwardHeaderGenerator = ForwardHeaderGenerator( 
 			copy = True, path = SOURCE_DIRECTORY, includepath = includePath, srcpath = srcPath,
-			project = PROJECT, subprojects = ["KDUpdater"], prefix = PREFIX, prefixed = True, cleanIncludeDir = False
+			project = PROJECT, subprojects = ["KDUpdater"], prefix = PREFIX, prefixed = False, cleanIncludeDir = False,
+			additionalHeaders = { "KDUpdater/KDUpdater" : "kdupdater.h" }
 	 )
 	assert( forwardHeaderGenerator.run() == 0 )
 
