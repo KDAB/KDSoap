@@ -716,7 +716,7 @@ def my_copyfile( src, dest ):
 class ForwardHeaderGenerator( Action ):
 
 	def __init__( self, copy, path, includepath, srcpath, project, subprojects, prefix,
-				prefixed = False, cleanIncludeDir = True, name = None ):
+				prefixed = False, cleanIncludeDir = True, additionalHeaders = {}, name = None ):
 		Action.__init__( self, name )
 		self.copy = copy
 		self.path = path
@@ -727,6 +727,7 @@ class ForwardHeaderGenerator( Action ):
 		self.prefix = prefix
 		self.prefixed = prefixed
 		self.cleanIncludeDir = cleanIncludeDir
+		self.additionalHeaders = {}
 		self.__projectFile = ""
 
 	def run( self ):
@@ -789,61 +790,50 @@ class ForwardHeaderGenerator( Action ):
 
 		return classNames
 
+	def _addForwardHeader( self, targetPath, content, projectFile ):
+		newHeader = open( targetPath, "wb" )
+		newHeader.write( content + os.linesep )
+		newHeader.close()
+
+		basename = os.path.basename( targetPath )
+		projectFile.write( basename + " \\" + os.linesep )
+
 	def _createForwardHeader( self, header, projectFile, project ):
-		classNames = self._suggestedHeaderNames( project, header )
+		INCLUDE_STR = "#include \"{0}\""
+
 		path = os.path.dirname( header )
+		basename = os.path.basename( header )
+		classNames = self._suggestedHeaderNames( project, header )
 
 		debug( self, "Parsing file: {0} (Project: {1})".format( header, project ) )
 		for classname in classNames:
-			if ( self.prefixed ):
-				localPath = self.includepath + "/" + os.path.basename( header )
+			if self.prefixed:
+				localPath = self.includepath + "/" + basename
 				my_copyfile( header, localPath )
-				self.__projectFile.write( os.path.basename( header ) + " \\" + os.linesep )
-				self.__projectFile.write( classname + " \\" + os.linesep )
 				fHeaderName = os.path.abspath( self.includepath + "/" + classname )
-				newHeader = open( fHeaderName, "wb" )
-				input = "#include \"REPLACE\""
-				input = input.replace( "REPLACE", os.path.basename( header ) )
-				newHeader.write( input + os.linesep )
-				newHeader.close()
+				self._addForwardHeader( fHeaderName, INCLUDE_STR.format( basename ), self.__projectFile )
 
 			fHeaderName = os.path.abspath( path + "/" + classname )
-			projectFile.write( os.path.basename( header ) + " \\" + os.linesep )
-			projectFile.write( classname + " \\" + os.linesep )
-			newHeader = open( fHeaderName, "wb" )
-			input = "#include \"REPLACE\""
-			input = input.replace( "REPLACE", os.path.basename( header ) )
-			newHeader.write( input + os.linesep )
-			newHeader.close()
+			self._addForwardHeader( fHeaderName, INCLUDE_STR.format( basename ), projectFile )
 
 			debug( self, "Forward header generated: {0}".format( fHeaderName ) )
 
 		if len( classNames ) == 0:
 			debug( self, "No input classes found. No forward header generated." )
 
-			if ( self.prefixed ):
-				localPath = self.includepath + "/" + os.path.basename( header )
+			if self.prefixed:
+				localPath = self.includepath + "/" + basename
 				my_copyfile( header, localPath )
-				self.__projectFile.write( os.path.basename( header ) + " \\" + os.linesep )
+				self.__projectFile.write( basename + " \\" + os.linesep )
 
-			basename = os.path.basename( header )
-			basename = basename[ 0: basename.rfind( '.h' ) ]
-			fHeaderName = os.path.abspath( self.includepath + "/" + basename )
-			newHeader = open( fHeaderName, "wb" )
-			input = "#include \"REPLACE\""
-			input = input.replace( "REPLACE", os.path.basename( header ) )
-			newHeader.write( input + os.linesep )
-			newHeader.close()
+			sanitizedBasename = basename.replace( ".h", "" )
 
-			fHeaderNameProjectDir = os.path.dirname( os.path.abspath( header ) ) + "/" + basename;
-			newHeader = open( fHeaderNameProjectDir, "wb" )
-			input = "#include \"../REPLACE\""
-			input = input.replace( "REPLACE", os.path.basename( header ) )
-			newHeader.write( input + os.linesep )
-			newHeader.close()
+			fHeaderName = os.path.abspath( self.includepath + "/" + sanitizedBasename )
+			self._addForwardHeader( fHeaderName, INCLUDE_STR.format( basename ), self.__projectFile )
 
-			projectFile.write( os.path.basename( fHeaderName ) + " \\" + os.linesep )
-			self.__projectFile.write( os.path.basename( fHeaderName ) + " \\" + os.linesep )
+			fHeaderNameProjectDir = os.path.dirname( os.path.abspath( header ) ) + "/" + sanitizedBasename;
+			input = "../{0}".format( os.path.basename( header ) )
+			self._addForwardHeader( fHeaderNameProjectDir, INCLUDE_STR.format( input ), projectFile )
 
 	def createProject( self ):
 		if ( not os.path.exists( self.path ) ):
