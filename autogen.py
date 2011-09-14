@@ -562,7 +562,7 @@ if "%unittests%" == "yes" (
     echo CONFIG += unittests >> .qmake.cache
 )
 
-set default_prefix=C:\KDAB\%Product_mix%-%VERSION%
+set default_prefix=C:\\KDAB\\%Product_mix%-%VERSION%
 
 if "%prefix%" == "" (
     set prefix="%default_prefix%"
