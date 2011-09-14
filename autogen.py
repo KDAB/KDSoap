@@ -11,8 +11,7 @@ import sys
 
 
 DEBUG_ENABLED = True
-CONFIGURE_SH_IN = r"""\
-#!/bin/bash
+CONFIGURE_SH_IN = r"""#!/bin/bash
 PRODUCT=@PRODUCT_UPPERCASE@
 Product=@PRODUCT_MIXEDCASE@
 product=@PRODUCT_LOWERCASE@
@@ -319,8 +318,7 @@ else
 fi 
 """
 
-CONFIGURE_BAT_IN = r"""\
-@echo off
+CONFIGURE_BAT_IN = r"""@echo off
 set PRODUCT_CAP=@PRODUCT_UPPERCASE@
 set product_low=@PRODUCT_LOWERCASE@
 set Product_mix=@PRODUCT_MIXEDCASE@
