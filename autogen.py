@@ -13,9 +13,6 @@ import sys
 DEBUG_ENABLED = True
 CONFIGURE_SH_IN = r"""\
 #!/bin/bash
-# This file was generated automatically.
-# Please edit buildsystem/autotools/autogen.py rather than this file.
-
 PRODUCT=@PRODUCT_UPPERCASE@
 Product=@PRODUCT_MIXEDCASE@
 product=@PRODUCT_LOWERCASE@
@@ -324,9 +321,6 @@ fi
 
 CONFIGURE_BAT_IN = r"""\
 @echo off
-rem This file was generated automatically.
-rem Please edit buildsystem/autotools/autogen.py rather than this file.
-
 set PRODUCT_CAP=@PRODUCT_UPPERCASE@
 set product_low=@PRODUCT_LOWERCASE@
 set Product_mix=@PRODUCT_MIXEDCASE@
