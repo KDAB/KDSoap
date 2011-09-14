@@ -1145,7 +1145,7 @@ def kdsoap_autogen():
 	srcPath = os.path.join( SOURCE_DIRECTORY, "src" )
 	forwardHeaderGenerator = ForwardHeaderGenerator( 
 			copy = True, path = SOURCE_DIRECTORY, includepath = includePath, srcpath = srcPath,
-			project = PROJECT, subprojects = SUBPROJECTS, prefix = PREFIX, prefixed = True
+			project = PROJECT, subprojects = SUBPROJECTS, prefix = PREFIX, prefixed = False
 	 )
 	assert( forwardHeaderGenerator.run() == 0 )
 
