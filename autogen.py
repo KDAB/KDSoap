@@ -713,6 +713,10 @@ class ConfigureScriptGenerator( Action ):
 			fOutput.write( self.__replaceValues( line.rstrip() ) + lineSep )
 		fOutput.close()
 
+		# make file executable for Unix
+		if platformString != "win32":
+			os.chmod( outputFile, 0755 )
+
 # Forward Header Support
 
 def my_copyfile( src, dest ):
