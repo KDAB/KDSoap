@@ -3,6 +3,7 @@
 //#include "KDSoapValue.h"
 #include "wsdl_soapresponder.h"
 #include "wsdl_holidays.h"
+#include "wsdl_BFGlobalService.h"
 #include <QtTest/QtTest>
 #include <QEventLoop>
 #include <QDebug>
@@ -71,6 +72,29 @@ private slots:
         // Order of the replies is undefined.
         m_resultsReceived.sort();
         QCOMPARE(m_resultsReceived, expectedResults);
+    }
+
+    void testBetFair() // SOAP-14
+    {
+        TYPES__LoginReq loginReq;
+        TYPES__LoginResp loginResp;
+        BFGlobalService globalService;
+        loginReq.setUsername(QLatin1String("user"));
+        loginReq.setPassword(QLatin1String("pass"));
+        loginReq.setProductId(82);
+        loginReq.setIpAddress(QLatin1String("0"));
+        loginReq.setVendorSoftwareId(0);
+
+        TNS__Login loginParam;
+        loginParam.setRequest(loginReq);
+        TNS__LoginResponse lResp;
+        lResp.setResult(loginResp);
+
+        // Don't make the call, it errors out (invalid login/pass, but also restricted country)
+        if (false) {
+            lResp = globalService.login(loginParam);
+            qDebug() << globalService.lastError();
+        }
     }
 
     // TODO: a great example for complex returned structures:
