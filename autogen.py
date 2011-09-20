@@ -989,7 +989,7 @@ class CPackGenerateConfiguration():
 		config = config.replace( "@CPACK_RESOURCE_FILE_LICENSE@", licenseFile )
 
 		for platform in ( 'WINDOWS', 'APPLE', 'ELSE' ):
-                        generator = generators()[ platform ]
+			generator = generators()[ platform ]
 			config = config.replace( "@CPACK_GENERATOR_%s@" % platform, generator )
 
 		return config
