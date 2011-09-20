@@ -1031,7 +1031,7 @@ def kdreports_autogen():
 
 def kdchart_autogen():
 	PROJECT = "KDChart"
-	VERSION = "2.4.0"
+	VERSION = "2.5.0"
 	SUBPROJECTS = "KDChart KDGantt".split( " " )
 	PREFIX = "$$INSTALL_PREFIX"
 
