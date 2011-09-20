@@ -1135,6 +1135,9 @@ if __name__ == "__main__":
 	p = Popen( ["svn", "info"], cwd = sourceDirectory, stdout = PIPE, stderr = PIPE )
 	( stdout, stderr ) = p.communicate()
 	if p.returncode != 0:
+		p = Popen( ["git", "svn", "info"], cwd = sourceDirectory, stdout = PIPE, stderr = PIPE )
+		( stdout, stderr ) = p.communicate()
+	if p.returncode != 0:
 		print_stderr( "Error: Not a SVN repository: {0}".format( sourceDirectory ) )
 		sys.exit( 1 )
 
