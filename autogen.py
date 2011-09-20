@@ -948,10 +948,11 @@ def generators():
 	         'ELSE':   'TBZ2' }
 
 class CPackGenerateConfiguration():
-	def __init__( self, projectName, versionList, directory,
-                      licenseFile = "LICENSE.txt" ):
+	def __init__( self, projectName, versionList, directory, revision,
+	              licenseFile = "LICENSE.txt" ):
 		self._projectName = projectName
 		self._directory = directory
+		self._revision = revision 
 		self._licenseFile = licenseFile
 		self._setVersionInformation( versionList )
 
@@ -972,7 +973,9 @@ class CPackGenerateConfiguration():
 		versionList = self._versionList
 		config = config.replace( "@CPACK_PACKAGE_VERSION_MAJOR@", versionList[0] or 1, 1 )
 		config = config.replace( "@CPACK_PACKAGE_VERSION_MINOR@", versionList[1] or 0, 1 )
-		config = config.replace( "@CPACK_PACKAGE_VERSION_PATCH@", versionList[2] or 0, 1 )
+		patchVersion = versionList[2] or 0
+		patchVersion += '-r' + self._revision
+		config = config.replace( "@CPACK_PACKAGE_VERSION_PATCH@", patchVersion, 1 )
 		installDirectory = fixCMakeWindowsPaths( self._directory )
 		config = config.replace( "@CPACK_INSTALL_DIRECTORY@", installDirectory, 1 )
 
@@ -1009,13 +1012,13 @@ class CPackGenerateConfiguration():
 BUILD_DIRECTORY = os.getcwd()
 SOURCE_DIRECTORY = os.path.dirname( os.path.abspath( __file__ ) )
 
-def kdreports_autogen():
+def kdreports_autogen(revision):
 	PROJECT = "KDReports"
 	VERSION = "1.3.0"
 	SUBPROJECTS = "KDReports".split( " " )
 	PREFIX = "$$INSTALL_PREFIX"
 
-	cpackConfigurationGenerator = CPackGenerateConfiguration( projectName = PROJECT, versionList = VERSION.split( "." ), directory = BUILD_DIRECTORY )
+	cpackConfigurationGenerator = CPackGenerateConfiguration( projectName = PROJECT, versionList = VERSION.split( "." ), directory = BUILD_DIRECTORY, revision=revision )
 	assert( cpackConfigurationGenerator.run() == 0 )
 
 	configureScriptGenerator = ConfigureScriptGenerator( project = PROJECT, path = BUILD_DIRECTORY, version = VERSION )
@@ -1029,13 +1032,13 @@ def kdreports_autogen():
 	 )
 	assert( forwardHeaderGenerator.run() == 0 )
 
-def kdchart_autogen():
+def kdchart_autogen(revision):
 	PROJECT = "KDChart"
 	VERSION = "2.5.0"
 	SUBPROJECTS = "KDChart KDGantt".split( " " )
 	PREFIX = "$$INSTALL_PREFIX"
 
-	cpackConfigurationGenerator = CPackGenerateConfiguration( projectName = PROJECT, versionList = VERSION.split( "." ), directory = BUILD_DIRECTORY )
+	cpackConfigurationGenerator = CPackGenerateConfiguration( projectName = PROJECT, versionList = VERSION.split( "." ), directory = BUILD_DIRECTORY, revision=revision )
 	assert( cpackConfigurationGenerator.run() == 0 )
 
 	configureScriptGenerator = ConfigureScriptGenerator( project = PROJECT, path = BUILD_DIRECTORY, version = VERSION )
@@ -1049,13 +1052,13 @@ def kdchart_autogen():
 	 )
 	assert( forwardHeaderGenerator.run() == 0 )
 
-def kdsoap_autogen():
+def kdsoap_autogen(revision):
 	PROJECT = "KDSoap"
 	VERSION = "1.1.0"
 	SUBPROJECTS = "KDSoapClient KDSoapServer".split( " " )
 	PREFIX = "$$INSTALL_PREFIX"
 
-	cpackConfigurationGenerator = CPackGenerateConfiguration( projectName = PROJECT, versionList = VERSION.split( "." ), directory = BUILD_DIRECTORY )
+	cpackConfigurationGenerator = CPackGenerateConfiguration( projectName = PROJECT, versionList = VERSION.split( "." ), directory = BUILD_DIRECTORY, revision=revision )
 	assert( cpackConfigurationGenerator.run() == 0 )
 
 	configureScriptGenerator = ConfigureScriptGenerator( project = PROJECT, path = BUILD_DIRECTORY, version = VERSION )
@@ -1069,13 +1072,13 @@ def kdsoap_autogen():
 	 )
 	assert( forwardHeaderGenerator.run() == 0 )
 
-def kdtools_autogen():
+def kdtools_autogen(revision):
 	PROJECT = "KDTools"
 	VERSION = "2.3.0"
 	#SUBPROJECTS = "KDToolsCore KDToolsGui KDUnitTest KDUpdater".split( " " )
 	PREFIX = "$$INSTALL_PREFIX"
 
-	cpackConfigurationGenerator = CPackGenerateConfiguration( projectName = PROJECT, versionList = VERSION.split( "." ), directory = BUILD_DIRECTORY )
+	cpackConfigurationGenerator = CPackGenerateConfiguration( projectName = PROJECT, versionList = VERSION.split( "." ), directory = BUILD_DIRECTORY, revision=revision )
 	assert( cpackConfigurationGenerator.run() == 0 )
 
 	configureScriptGenerator = ConfigureScriptGenerator( project = PROJECT, path = BUILD_DIRECTORY, version = VERSION )
@@ -1106,17 +1109,17 @@ def touch( fname, times = None ):
 	with file( fname, 'a' ):
 		os.utime( fname, times )
 
-def call_handler( url ):
+def call_handler( url, revision ):
 	"""\return True if handler found, else False"""
 
 	if "products/kdsoap" in url:
-		kdsoap_autogen()
+		kdsoap_autogen(revision)
 	elif "products/kdchart" in url:
-		kdchart_autogen()
+		kdchart_autogen(revision)
 	elif "products/kdreports" in url:
-		kdreports_autogen()
+		kdreports_autogen(revision)
 	elif "products/kdtools" in url:
-		kdtools_autogen()
+		kdtools_autogen(revision)
 	else:
 		return False
 
@@ -1143,7 +1146,8 @@ if __name__ == "__main__":
 
 	# call handler, check return code
 	repositoryUrl = stdout.splitlines()[1].split( ':', 1 )[1]
-	isOk = call_handler( repositoryUrl )
+	repositoryRevision = stdout.splitlines()[4].split( ':', 1 )[1].strip()
+	isOk = call_handler( repositoryUrl, repositoryRevision )
 	if not isOk:
 		print_stderr( "Error: No handler for this repository: {0}".format( repositoryUrl ) )
 		sys.exit( 1 )
