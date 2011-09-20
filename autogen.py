@@ -935,7 +935,7 @@ ENDIF()
 SET(CPACK_TOPLEVEL_TAG "${CPACK_SYSTEM_NAME}")
 SET(CPACK_PACKAGE_INSTALL_DIRECTORY "${CPACK_PACKAGE_FILE_NAME}")
 SET(CPACK_RESOURCE_FILE_LICENSE "@CPACK_RESOURCE_FILE_LICENSE@")
-SET(CPACK_IGNORE_FILES "/\\\\.svn/;/\\\\.git/;/\\\\.moc/;/\\\\.obj/;\\\\.zip$;\\\\.tar.bz2$;Makefile;CPack;autogen.py$;/bin/;/lib/;-source/")
+SET(CPACK_IGNORE_FILES "/\\\\.svn/;/\\\\.git/;/[\\\\._]moc/;/[\\\\._]obj/;[\\\\._]ui/;\\\\.zip$;\\\\.exe$;\\\\.tar;Makefile;CPack;autogen.py$;/bin/;/lib/;/debug/;/release/;-source/")
 SET(CPACK_PACKAGE_DESCRIPTION "")
 '''
 
