@@ -14,7 +14,7 @@ def autogen(project, version, subprojects, prefixed):
 	p = subprocess.Popen( ["svn", "info"], cwd = sourceDirectory, stdout = subprocess.PIPE, stderr = subprocess.PIPE )
 	( stdout, stderr ) = p.communicate()
 	if p.returncode != 0:
-		p = subprocess.Popen( ["git", "svn", "info"], cwd = sourceDirectory, stdout = subprocess.PIPE, stderr = subcprocess.PIPE )
+		p = subprocess.Popen( ["git", "svn", "info"], cwd = sourceDirectory, stdout = subprocess.PIPE, stderr = subprocess.PIPE )
 		( stdout, stderr ) = p.communicate()
 	if p.returncode != 0:
 		print_stderr( "Error: Not a SVN repository: {0}".format( sourceDirectory ) )
