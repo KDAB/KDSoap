@@ -195,6 +195,13 @@
      <part name='parameters' element='kdab:EmployeeType'/>
   </message>
 
+  <!-- no parameters -->
+  <message name='listEmployees'>
+  </message>
+  <message name='listEmployeesResponse'>
+     <!-- todo -->
+  </message>
+
   <!-- Document/literal not wrapped -->
   <message name='sendRawTelegramRequest'>
      <part element='kdab:Telegram' name='telegram'/>
@@ -236,6 +243,10 @@
     <operation name='getEmployeeType'>
       <input message='kdab:getEmployeeType' />
       <output message='kdab:getEmployeeTypeResponse' />
+    </operation>
+    <operation name='listEmployees'>
+      <input message='kdab:listEmployees' />
+      <output message='kdab:listEmployeesResponse' />
     </operation>
     <operation name='sendRawTelegram'>
       <input message='kdab:sendRawTelegramRequest' />
@@ -282,6 +293,15 @@
       </output>
     </operation>
     <operation name='getEmployeeType'>
+      <input>
+        <soap:body use='literal'/>
+      </input>
+      <output>
+        <soap:body use='literal'/>
+      </output>
+    </operation>
+    <operation name='listEmployees'>
+      <soap:operation soapAction='http://www.kdab.com/PleaseListEmployees' />
       <input>
         <soap:body use='literal'/>
       </input>
