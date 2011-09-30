@@ -5,4 +5,4 @@ Client-side:
 Server-side:
 ============
 * Support for delayed responses
-
+* Fix support for messages with no input or output arguments

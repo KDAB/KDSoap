@@ -70,13 +70,19 @@ QByteArray KDSoapMessageWriter::messageToXml(const KDSoapMessage& message, const
 
     writer.writeStartElement(soapNS, QLatin1String("Body"));
 
-    if (!method.isEmpty())
-        writer.writeStartElement(m_messageNamespace, method);
-    else
-        writer.writeStartElement(m_messageNamespace, message.name());
-    message.writeElementContents(namespacePrefixes, writer, message.use(), m_messageNamespace);
-
-    writer.writeEndElement(); // <method>
+    const QString elementName = !method.isEmpty() ? method : message.name();
+    if (elementName.isEmpty()) {
+        if (message.isNull()) {
+            // null message, ok (e.g. no arguments, in document/literal mode)
+        } else {
+            qWarning("ERROR: Non-empty message with an empty name!");
+            qDebug() << message;
+        }
+    } else {
+        writer.writeStartElement(m_messageNamespace, elementName);
+        message.writeElementContents(namespacePrefixes, writer, message.use(), m_messageNamespace);
+        writer.writeEndElement();
+    }
 
     writer.writeEndElement(); // Body
     writer.writeEndElement(); // Envelope

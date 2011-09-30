@@ -445,6 +445,7 @@ private Q_SLOTS:
     // Client+server tests
 
     void testServerAddEmployee();
+    void testServerEmptyArgs();
     void testServerFault();
     void testSendTelegram();
     void testServerDelayedCall();
@@ -522,8 +523,6 @@ class DocServerObject : public MyWsdlDocumentServerBase /* generated from mywsdl
 {
     Q_OBJECT
 public:
-    // TODO add a method that returns void
-
     QByteArray addEmployee( const KDAB__AddEmployee& parameters ) {
         //qDebug() << "addEmployee called";
         const QString name = KDAB__LimitedString(parameters.employeeName()).value();
@@ -543,6 +542,10 @@ public:
         MyJob* job = new MyJob(handle);
         connect(job, SIGNAL(done(MyJob*)), this, SLOT(slotDelayedResponse(MyJob*)));
         return "THIS VALUE IS IGNORED";
+    }
+
+    void listEmployees() {
+        m_lastMethodCalled = QLatin1String("listEmployees");
     }
 
     KDAB__AnyTypeResponse testAnyType( const KDAB__AnyType& parameters ) {
@@ -589,6 +592,7 @@ public:
 
     KDSoapMessage m_request;
     KDSoapMessage m_response;
+    QString m_lastMethodCalled;
 
 private Q_SLOTS:
     void slotDelayedResponse(MyJob* job)
@@ -681,6 +685,19 @@ void WsdlDocumentTest::testServerAddEmployee()
     QVERIFY(xmlBufferCompare(server->lastServerObject()->m_response.toXml(), expectedResponseXml));
     QCOMPARE(service.lastError(), QString());
     QCOMPARE(QString::fromLatin1(ret.constData()), QString::fromLatin1("added David Faure"));
+}
+
+void WsdlDocumentTest::testServerEmptyArgs()
+{
+    DocServerThread serverThread;
+    DocServer* server = serverThread.startThread();
+
+    MyWsdlDocument service;
+    service.setEndPoint(server->endPoint());
+    service.listEmployees();
+    QVERIFY(server->lastServerObject());
+    QCOMPARE(server->lastServerObject()->m_lastMethodCalled, QString::fromLatin1("listEmployees"));
+    QCOMPARE(service.lastError(), QString());
 }
 
 void WsdlDocumentTest::testServerFault() // test the error signals emitted on error, in async calls

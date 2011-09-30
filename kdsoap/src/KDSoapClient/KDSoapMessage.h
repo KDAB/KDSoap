@@ -142,8 +142,10 @@ public:
     void setFault(bool fault);
 
 private:
+    bool isNull() const;
     friend class KDSoapPendingCall;
     friend class KDSoapServerSocket;
+    friend class KDSoapMessageWriter;
     QSharedDataPointer<KDSoapMessageData> d;
 };
 

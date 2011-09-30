@@ -130,6 +130,7 @@ void Converter::generateServerMethod(KODE::Code& code, const Binding& binding, c
         qWarning("ERROR: multiple output parameters are not supported - please report this with your wsdl file to kdsoap-support@kdab.com");
     } else if (outParts.isEmpty()) {
         code += operationName + '(' + inputVars.join(", ") + ");";
+        virtualMethod.setReturnType("void");
     } else {
         QString retType;
         QString retInputType;
@@ -165,6 +166,7 @@ void Converter::generateServerMethod(KODE::Code& code, const Binding& binding, c
 
         code.unindent();
         code += "}";
+        Q_ASSERT(!retType.isEmpty());
         virtualMethod.setReturnType(retType);
 
         generateDelayedReponseMethod(methodName, retInputType, retPart, newClass);
