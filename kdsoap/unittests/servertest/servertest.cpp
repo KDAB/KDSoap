@@ -114,7 +114,7 @@ public:
         : m_threadPool(pool)
     {}
     ~CountryServerThread() {
-        // helgrind says don't call quit() here (Qt bug?)
+        // helgrind says don't call quit() here, it races with exec()
         if (m_pServer)
             QMetaObject::invokeMethod(m_pServer, "quit");
         wait();
@@ -483,6 +483,45 @@ private Q_SLOTS:
         // Test calling resume again, should warn
         QTest::ignoreMessage(QtWarningMsg, "KDSoapServer: resume() called without calling suspend() first");
         serverThread.resume();
+    }
+
+    void testSuspendUnderLoad()
+    {
+        const int numRequests = 5;
+        const int numClients = 100;
+        const int maxThreads = 5;
+
+        KDSoapThreadPool threadPool;
+        threadPool.setMaxThreadCount(maxThreads);
+        CountryServerThread serverThread(&threadPool);
+        CountryServer* server = serverThread.startThread();
+        QVector<KDSoapClientInterface *> clients;
+        clients.resize(numClients);
+        m_returnMessages.clear();
+        m_expectedMessages = numRequests * numClients;
+        for (int i = 0; i < numClients; ++i) {
+            KDSoapClientInterface* client = new KDSoapClientInterface(server->endPoint(), countryMessageNamespace());
+            clients[i] = client;
+            makeAsyncCalls(*client, numRequests);
+        }
+        m_server = server;
+
+        // Testing suspend/resume under load
+        for (int n = 0; n < 4; ++n) {
+            QTest::qWait(100);
+            qDebug() << "suspend (" << n << ")";
+            serverThread.suspend();
+            QTest::qWait(100);
+            qDebug() << "resume (" << n << ")";
+            serverThread.resume();
+        }
+
+        if (m_returnMessages.count() < m_expectedMessages)
+            m_eventLoop.exec();
+        // Don't look at m_returnMessages or numConnectedSockets here,
+        // some of them got an error, trying to connect while server was suspended.
+
+        qDeleteAll(clients);
     }
 
     void testServerFault() // fault returned by server
