@@ -109,9 +109,9 @@ public:
      *
      * \param faultCode A code for identifying the fault. Example: "Server.EntryNotFound", or
      *                  "Client.Authentication". Must not be empty.
-     * \param faultString A human readable explanation of the fault
+     * \param faultString A human-readable explanation of the fault
      * \param faultActor Information about who caused the fault to happen
-     * \param Holds application specific error information related to the Body element
+     * \param detail Holds application-specific error information related to the Body element
      *
      * See http://www.w3.org/TR/2000/NOTE-SOAP-20000508/#_Toc478383507 for more details.
      */
