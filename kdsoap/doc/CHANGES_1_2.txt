@@ -1,6 +1,7 @@
 Client-side:
 ============
 * Generic soapError() signal, for central processing of all SOAP errors (faults) [Jira SOAP-6]
+* Fix support for the "short" and "unsignedShort" data types
 
 Server-side:
 ============

@@ -61,11 +61,11 @@ TypeMap::TypeMap()
   addBuiltinType("nonPositiveInteger", "qint64");
   addBuiltinType("language", "QString");
   addBuiltinType("long", "qint64"); // 64 bits
-  addBuiltinType("short", "short"); // 16 bits
+  addBuiltinType("short", "int"); // 16 bits. But QVariant doesn't support short.
   addBuiltinType("string", "QString");
   addBuiltinType("time", "QTime");
   addBuiltinType("unsignedByte", "unsigned char");
-  addBuiltinType("unsignedShort", "unsigned short"); // 16 bits, 0-65535
+  addBuiltinType("unsignedShort", "unsigned int"); // 16 bits, 0-65535. But QVariant doesn't support short.
   addBuiltinType("unsignedLong", "quint64"); // 64 bits
   addBuiltinType("positiveInteger", "quint64"); // unbounded (1 to inf)
   addBuiltinType("nonPositiveInteger", "qint64"); // unbounded (-inf to 0)
