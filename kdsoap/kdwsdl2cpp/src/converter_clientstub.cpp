@@ -105,6 +105,10 @@ bool Converter::convertClientService()
           setEndPoint.addArgument( "const QString& endPoint" );
           KODE::Code code;
           code += "d_ptr->m_endPoint = endPoint;";
+          code += "if (d_ptr->m_clientInterface)";
+          code.indent();
+          code += "d_ptr->m_clientInterface->setEndPoint( endPoint );";
+          code.unindent();
           setEndPoint.setBody(code);
           setEndPoint.setDocs("Overwrite the end point defined in the .wsdl file, with another http/https URL.");
           newClass.addFunction(setEndPoint);
