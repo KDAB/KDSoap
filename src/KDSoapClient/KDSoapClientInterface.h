@@ -185,6 +185,20 @@ public:
     SoapVersion soapVersion();
 
     /**
+     * returns the end point of the SOAP service.
+     * \since 1.2
+     */
+    QString endPoint() const;
+
+    /**
+     * Sets the end point of the SOAP service.
+     * \param endPoint the URL of the SOAP service, including http or https scheme, port number
+     *                 if needed, and path. Example: http://server/path/soap.php
+     * \since 1.2
+     */
+    void setEndPoint(const QString& endPoint);
+
+    /**
      * WSDL style. See the "style" attribute for soap:binding, in the WSDL file.
      * See http://www.ibm.com/developerworks/webservices/library/ws-whichwsdl/ for a discussion
      * on the pros and cons of both styles.

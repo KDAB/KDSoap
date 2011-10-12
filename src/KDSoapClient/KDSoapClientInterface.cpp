@@ -153,6 +153,16 @@ void KDSoapClientInterface::setAuthentication(const KDSoapAuthentication &authen
     d->m_authentication = authentication;
 }
 
+QString KDSoapClientInterface::endPoint() const
+{
+    return d->m_endPoint;
+}
+
+void KDSoapClientInterface::setEndPoint(const QString &endPoint)
+{
+    d->m_endPoint = endPoint;
+}
+
 void KDSoapClientInterface::setHeader(const QString& name, const KDSoapMessage &header)
 {
     d->m_persistentHeaders[name] = header;
