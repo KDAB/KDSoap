@@ -65,7 +65,7 @@ licenses.files = LICENSE.GPL.txt LICENSE.US.txt LICENSE.txt
 licenses.path = $$INSTALL_PREFIX
 INSTALLS += licenses
 
-readme.files = README.KDSoap
+readme.files = README.txt
 readme.path = $$INSTALL_PREFIX
 INSTALLS += readme
 
