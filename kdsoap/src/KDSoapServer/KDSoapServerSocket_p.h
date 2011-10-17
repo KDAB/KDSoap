@@ -49,6 +49,7 @@ public:
     KDSoapServerSocket(KDSoapSocketList* owner, QObject* serverObject);
     ~KDSoapServerSocket();
 
+    void setResponseDelayed();
     void sendDelayedReply(KDSoapServerObjectInterface* serverObjectInterface, const KDSoapMessage& replyMsg);
     void sendReply(KDSoapServerObjectInterface* serverObjectInterface, const KDSoapMessage& replyMsg);
 
@@ -65,6 +66,7 @@ private:
 
     KDSoapSocketList* m_owner;
     QObject* m_serverObject;
+    bool m_delayedResponse;
     bool m_doDebug;
     bool m_socketEnabled;
     QByteArray m_requestBuffer;

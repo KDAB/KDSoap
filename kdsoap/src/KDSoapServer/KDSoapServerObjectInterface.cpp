@@ -27,7 +27,6 @@ class KDSoapServerObjectInterface::Private
 {
 public:
     Private() :
-        m_delayedResponse(false),
         m_serverSocket(0)
     {
     }
@@ -39,7 +38,6 @@ public:
     QString m_faultActor;
     QString m_detail;
     QByteArray m_soapAction;
-    bool m_delayedResponse;
     KDSoapServerSocket* m_serverSocket;
 };
 
@@ -115,13 +113,7 @@ QByteArray KDSoapServerObjectInterface::soapAction() const
 
 KDSoapDelayedResponseHandle KDSoapServerObjectInterface::prepareDelayedResponse()
 {
-    d->m_delayedResponse = true;
     return KDSoapDelayedResponseHandle(d->m_serverSocket);
-}
-
-bool KDSoapServerObjectInterface::isDelayedResponse() const
-{
-    return d->m_delayedResponse;
 }
 
 void KDSoapServerObjectInterface::setServerSocket(KDSoapServerSocket *serverSocket)
@@ -131,7 +123,6 @@ void KDSoapServerObjectInterface::setServerSocket(KDSoapServerSocket *serverSock
 
 void KDSoapServerObjectInterface::sendDelayedResponse(const KDSoapDelayedResponseHandle& responseHandle, const KDSoapMessage &response)
 {
-    d->m_delayedResponse = false;
     responseHandle.serverSocket()->sendDelayedReply(this, response);
 }
 

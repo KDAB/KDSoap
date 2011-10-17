@@ -31,6 +31,7 @@ KDSoapDelayedResponseHandle::~KDSoapDelayedResponseHandle()
 KDSoapDelayedResponseHandle::KDSoapDelayedResponseHandle(KDSoapServerSocket* socket)
     : data(new KDSoapDelayedResponseHandleData(socket))
 {
+    socket->setResponseDelayed();
 }
 
 KDSoapServerSocket * KDSoapDelayedResponseHandle::serverSocket() const

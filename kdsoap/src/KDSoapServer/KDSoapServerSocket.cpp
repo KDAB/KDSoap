@@ -42,6 +42,7 @@ KDSoapServerSocket::KDSoapServerSocket(KDSoapSocketList* owner, QObject* serverO
 #endif
       m_owner(owner),
       m_serverObject(serverObject),
+      m_delayedResponse(false),
       m_socketEnabled(true)
 {
     connect(this, SIGNAL(readyRead()),
@@ -230,7 +231,7 @@ void KDSoapServerSocket::slotReadyRead()
         makeCall(serverObjectInterface, requestMsg, replyMsg, requestHeaders, soapAction);
     }
 
-    if (serverObjectInterface && serverObjectInterface->isDelayedResponse()) {
+    if (serverObjectInterface && m_delayedResponse) {
         // Delayed response. Disable the socket to make sure we don't handle another call at the same time.
         setSocketEnabled(false);
     } else {
@@ -277,7 +278,13 @@ void KDSoapServerSocket::sendReply(KDSoapServerObjectInterface* serverObjectInte
 void KDSoapServerSocket::sendDelayedReply(KDSoapServerObjectInterface *serverObjectInterface, const KDSoapMessage &replyMsg)
 {
     sendReply(serverObjectInterface, replyMsg);
+    m_delayedResponse = false;
     setSocketEnabled(true);
+}
+
+void KDSoapServerSocket::setResponseDelayed()
+{
+    m_delayedResponse = true;
 }
 
 void KDSoapServerSocket::handleError(KDSoapMessage &replyMsg, const char *errorCode, const QString &error)
