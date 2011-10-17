@@ -56,10 +56,13 @@ KDSoapClientInterface::SoapVersion KDSoapClientInterface::soapVersion()
 
 
 KDSoapClientInterface::Private::Private()
-    : m_authentication(), m_style(RPCStyle), m_ignoreSslErrors(false)
+    : m_authentication(),
+      m_style(RPCStyle),
+      m_ignoreSslErrors(false)
 {
     connect(&m_accessManager, SIGNAL(authenticationRequired(QNetworkReply*,QAuthenticator*)),
             this, SLOT(_kd_slotAuthenticationRequired(QNetworkReply*,QAuthenticator*)));
+    m_accessManager.cookieJar(); // create it in the right thread...
 }
 
 QNetworkRequest KDSoapClientInterface::Private::prepareRequest(const QString &method, const QString& action)
@@ -194,6 +197,18 @@ void KDSoapClientInterface::setStyle(KDSoapClientInterface::Style style)
 KDSoapClientInterface::Style KDSoapClientInterface::style() const
 {
     return d->m_style;
+}
+
+QNetworkCookieJar * KDSoapClientInterface::cookieJar() const
+{
+    return d->m_accessManager.cookieJar();
+}
+
+void KDSoapClientInterface::setCookieJar(QNetworkCookieJar *jar)
+{
+    QObject* oldParent = jar->parent();
+    d->m_accessManager.setCookieJar(jar);
+    jar->setParent(oldParent); // see comment in QNAM::setCookieJar...
 }
 
 #include "moc_KDSoapClientInterface_p.cpp"

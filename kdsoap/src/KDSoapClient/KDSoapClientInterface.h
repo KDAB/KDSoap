@@ -28,6 +28,7 @@
 #include "KDSoapPendingCall.h"
 
 class KDSoapAuthentication;
+class QNetworkCookieJar;
 
 /**
  * KDSoapClientInterface is a generic accessor class that is used to place
@@ -185,7 +186,7 @@ public:
     SoapVersion soapVersion();
 
     /**
-     * returns the end point of the SOAP service.
+     * Returns the end point of the SOAP service.
      * \since 1.2
      */
     QString endPoint() const;
@@ -197,6 +198,22 @@ public:
      * \since 1.2
      */
     void setEndPoint(const QString& endPoint);
+
+    /**
+     * Returns the cookie jar to use for the HTTP requests.
+     * If no cookie jar was set by setCookieJar previously, a default
+     * one will be returned, which belongs to the client interface (no need to delete it).
+     * \since 1.2
+     */
+    QNetworkCookieJar* cookieJar() const;
+
+    /**
+     * Sets the cookie jar to use for the HTTP requests.
+     * The ownership of the cookie jar is NOT transferred, so that it is possible
+     * to share the same cookie jar between multiple client interfaces.
+     * \since 1.2
+     */
+    void setCookieJar(QNetworkCookieJar* jar);
 
     /**
      * WSDL style. See the "style" attribute for soap:binding, in the WSDL file.

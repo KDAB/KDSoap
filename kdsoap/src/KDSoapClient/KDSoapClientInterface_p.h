@@ -23,6 +23,7 @@
 #define KDSOAPCLIENTINTERFACE_P_H
 
 #include <QNetworkAccessManager>
+#include <QNetworkCookieJar>
 #include <QXmlStreamWriter>
 
 #include "KDSoapClientInterface.h"
