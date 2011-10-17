@@ -9,6 +9,7 @@
 #include "httpserver_p.h"
 #include <QtTest/QtTest>
 #include <QEventLoop>
+#include <QNetworkCookieJar>
 #include <QDebug>
 
 using namespace KDSoapUnitTestHelpers;
@@ -131,6 +132,12 @@ private Q_SLOTS:
         auth.setPassword(QLatin1String("unused"));
         client.setAuthentication(auth); // unused...
 
+        QNetworkCookieJar myJar;
+        QList<QNetworkCookie> myCookies;
+        myCookies.append(QNetworkCookie("biscuits", "are good"));
+        myJar.setCookiesFromUrl(myCookies, QUrl(server.endPoint()));
+        client.setCookieJar(&myJar);
+
         QByteArray expectedRequestXml = expectedCountryRequest();
         client.setSoapVersion(KDSoapClientInterface::SOAP1_1);
         {
@@ -141,6 +148,9 @@ private Q_SLOTS:
 
             QCOMPARE(server.header("Content-Type").constData(), "text/xml;charset=utf-8");
             QCOMPARE(server.header("SoapAction").constData(), "\"http://www.kdab.com/xml/MyWsdl/getEmployeeCountry\"");
+#if QT_VERSION >= 0x040700
+            QCOMPARE(server.header("Cookie").constData(), "biscuits=\"are good\"");
+#endif
             QCOMPARE(ret.arguments().child(QLatin1String("employeeCountry")).value().toString(), QString::fromLatin1("France"));
 
         }        
@@ -152,6 +162,9 @@ private Q_SLOTS:
             QVERIFY(!ret.isFault());
             QCOMPARE(server.header("Content-Type").constData(), "application/soap+xml;charset=utf-8;action=http://www.kdab.com/xml/MyWsdl/getEmployeeCountry");
             QCOMPARE(ret.arguments().child(QLatin1String("employeeCountry")).value().toString(), QString::fromLatin1("France"));
+#if QT_VERSION >= 0x040700
+            QCOMPARE(server.header("Cookie").constData(), "biscuits=\"are good\"");
+#endif
         }
     }
     // Using direct call(), check the xml we send, the response parsing.

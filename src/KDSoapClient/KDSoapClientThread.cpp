@@ -59,6 +59,13 @@ void KDSoapThreadTask::process(QNetworkAccessManager& accessManager)
         it->setQualified(true);
     }
 
+#if QT_VERSION >= 0x040700
+    QNetworkCookieJar* jar = m_data->m_iface->d->m_accessManager.cookieJar();
+    // Qt-4.6: this aborts in setParent(this) because the jar is from another thread
+    // Qt-4.7: it's from a different thread, so this won't change the parent object
+    accessManager.setCookieJar(jar);
+#endif
+
     QBuffer* buffer = m_data->m_iface->d->prepareRequestBuffer(m_data->m_method, m_data->m_message, m_data->m_headers);
     QNetworkRequest request = m_data->m_iface->d->prepareRequest(m_data->m_method, m_data->m_action);
     QNetworkReply* reply = accessManager.post(request, buffer);
