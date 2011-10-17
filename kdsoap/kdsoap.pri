@@ -16,7 +16,7 @@
           error( "Cannot find libkdsoap.$$QMAKE_EXTENSION_SHLIB or libkdsoap.a in $KDSOAPDIR/lib" )
         }
       }
-      !exists( $$KDSOAPDIR/src/KDSoapClient/KDSoapClientInterface.h ):error( "Cannot find KDSoapClientInterface.h in $KDSOAPDIR/include" )
+      !exists( $$KDSOAPDIR/include/KDSoapClientInterface.h ):error( "Cannot find KDSoapClientInterface.h in $KDSOAPDIR/include" )
     }
     #win32:!exists( $$KDSOAPDIR/lib/kdsoap.lib ):error( "Cannot find kdsoap.lib in $KDSOAPDIR/lib" )
 
