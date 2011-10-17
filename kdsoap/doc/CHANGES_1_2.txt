@@ -4,6 +4,7 @@ Client-side:
 * Fix support for the "short" and "unsignedShort" data types
 * Apply end point configuration changes also if interface was already used
 * Support for network cookies, see setCookieJar(). Requires Qt >= 4.7.0
+* Generated code: make clientInterface() public.
 
 Server-side:
 ============

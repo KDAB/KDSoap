@@ -159,9 +159,9 @@ bool Converter::convertClientService()
           continue;
       }
 
-      // clientInterface() private method
+      // clientInterface() method
       {
-          KODE::Function clientInterface("clientInterface", "KDSoapClientInterface*", KODE::Function::Private);
+          KODE::Function clientInterface("clientInterface", "KDSoapClientInterface*");
           KODE::Code code;
           code += "if (!d_ptr->m_clientInterface) {";
           code.indent();
