@@ -66,8 +66,8 @@ class Converter
     void clientAddOneArgument( KODE::Function& callFunc, const Part& part, KODE::Class &newClass );
     void clientAddArguments( KODE::Function& callFunc, const Message& message, KODE::Class &newClass, const Operation &operation, const Binding &binding );
     bool clientAddAction( KODE::Code& code, const Binding &binding, const QString& operationName );
-    void clientGenerateMessage( KODE::Code& code, const Binding& binding, const Message& message, const Operation& operation );
-    void addMessageArgument( KODE::Code& code, const SoapBinding::Style& bindingStyle, const Part& part, const QString& localVariableName, const QByteArray& messageName );
+    void clientGenerateMessage( KODE::Code& code, const Binding& binding, const Message& message, const Operation& operation, bool varsAreMembers=false );
+    void addMessageArgument( KODE::Code& code, const SoapBinding::Style& bindingStyle, const Part& part, const QString& localVariableName, const QByteArray& messageName, bool varIsMember=false );
     void createHeader( const SoapBinding::Header& header, KODE::Class& newClass );
     KODE::Code serializeElementArg( const QName& type, const QName& elementType, const QString& name, const QString& localVariableName, const QByteArray& varName, bool append );
     KODE::Code demarshalVar( const QName& type, const QName& elementType, const QString& variableName, const QString& typeName, const QString& soapValueVarName = "val" ) const;

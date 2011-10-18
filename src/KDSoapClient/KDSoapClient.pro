@@ -15,6 +15,7 @@ INSTALLHEADERS = KDSoapMessage.h \
     KDSoapPendingCallWatcher.h \
     KDSoapValue.h \
     KDSoapGlobal.h \
+    KDSoapJob.h \
     KDSoapAuthentication.h \
     KDSoapNamespaceManager.h \
     KDDateTime.h
@@ -29,6 +30,7 @@ HEADERS = $$INSTALLHEADERS \
     KDSoapMessageReader_p.h \
     KDSoapMessageWriter_p.h \
     KDSoapNamespacePrefixes_p.h
+
 SOURCES = KDSoapMessage.cpp \
     KDSoapClientInterface.cpp \
     KDSoapPendingCall.cpp \
@@ -40,7 +42,8 @@ SOURCES = KDSoapMessage.cpp \
     KDSoapMessageReader.cpp \
     KDSoapMessageWriter.cpp \
     KDSoapNamespacePrefixes.cpp \
-    KDDateTime.cpp
+    KDDateTime.cpp \
+    KDSoapJob.cpp
 DEFINES += KDSOAP_BUILD_KDSOAP_LIB
 
 # installation targets:
