@@ -645,6 +645,17 @@ QString Printer::licenseHeader( const File &file ) const
   return code.text();
 }
 
+static QStringList commonLeft(const QStringList& l1, const QStringList& l2) {
+    QStringList r;
+    const int l = qMin(l1.size(), l2.size());
+    for ( int i = 0; i < l; ++i )
+        if (l1.at(i) == l2.at(i))
+            r.append(l1.at(i));
+        else
+            return r;
+    return r;
+}
+
 void Printer::printHeader( const File &file )
 {
   Code out;
@@ -711,8 +722,30 @@ void Printer::printHeader( const File &file )
   }
   QStringList fwdClasses = processed.toList();
   fwdClasses.sort();
-  Q_FOREACH( const QString& cl, fwdClasses ) {
-    out += "class " + cl + ';';
+  fwdClasses += QString(); //for proper closing of the namespace blocks below
+
+  QStringList prevNS;
+
+  Q_FOREACH( const QString& fwd, fwdClasses ) {
+    //handle namespaces by opening and closing namespace blocks accordingly
+    //the sorting will ensure sensible grouping
+    const QStringList seg = fwd.split(QLatin1String("::"));
+    const QStringList ns = seg.mid(0, seg.size() - 1);
+    const QString clas = seg.isEmpty() ? QString() : seg.last();
+    const QStringList common = commonLeft(ns, prevNS);
+    for (int i = common.size(); i < prevNS.size(); ++i) {
+      out.unindent();
+      out += "}";
+      out.newLine();
+    }
+    for (int i = common.size(); i < ns.size(); ++i) {
+      out += "namespace " + ns.at(i) + " {";
+      out.indent();
+    }
+
+    if (!clas.isNull())
+      out += "class " + clas + ';';
+    prevNS = ns;
   }
 
   if ( !processed.isEmpty() )
