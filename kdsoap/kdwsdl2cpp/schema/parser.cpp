@@ -710,7 +710,7 @@ void Parser::parseComplexContent( ParserContext *context, const QDomElement &ele
         const QDomElement arrayElement = childElement.firstChildElement();
         if ( !arrayElement.isNull() ) {
           const QString prefix = context->namespaceManager()->prefix( WSDLSchemaURI );
-          const QString attributeName = ( prefix.isEmpty() ? "arrayType" : prefix + ":arrayType" );
+          const QString attributeName = ( prefix.isEmpty() ? QString::fromLatin1("arrayType") : prefix + ":arrayType" );
 
           QString typeStr = arrayElement.attribute( attributeName );
           if ( typeStr.endsWith( "[]" ) )
