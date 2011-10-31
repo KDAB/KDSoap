@@ -22,6 +22,7 @@
 
 #include <QDir>
 #include <QFile>
+#include <QFileInfo>
 #include <QTimer>
 #include <QCoreApplication>
 #include <QDebug>
@@ -46,7 +47,7 @@ static void showHelp(const char *appName)
 int main( int argc, char **argv )
 {
     const char *fileName = 0;
-    QString outputFile;
+    QFileInfo outputFile;
     bool impl = false;
     bool server = false;
     QString headerFile;
@@ -78,7 +79,7 @@ int main( int argc, char **argv )
                 showHelp(argv[0]);
                 return 1;
             }
-            outputFile = QFile::decodeName(argv[arg]);
+            outputFile.setFile(QFile::decodeName(argv[arg]));
         } else if (opt == QLatin1String("-s") || opt == QLatin1String("-service")) {
             ++arg;
             if (!argv[arg]) {
@@ -112,7 +113,8 @@ int main( int argc, char **argv )
 
     Settings::self()->setGenerateServerCode(server);
     Settings::self()->setGenerateImplementation(impl, headerFile);
-    Settings::self()->setOutputFileName(outputFile);
+    Settings::self()->setOutputFileName(outputFile.fileName());
+    Settings::self()->setOutputDirectory(outputFile.absolutePath());
     Settings::self()->setWsdlFile(fileName);
     Settings::self()->setWantedService(serviceName);
     Settings::self()->setExportDeclaration(exportMacro);
