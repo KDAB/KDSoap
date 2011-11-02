@@ -6,7 +6,6 @@ ProductSpace="@PRODUCT_MIXEDCASE_SPACED@"
 
 VERSION=@VERSION@
 
-INSTALLATION_SUPPORTED=@INSTALLATION_SUPPORTED@
 STATIC_BUILD_SUPPORTED=@STATIC_BUILD_SUPPORTED@
 
 PACKSCRIPTS_DIR=../admin/packscripts
@@ -100,12 +99,10 @@ function usage {
 where options include:
 
 EOF
-if [ "$INSTALLATION_SUPPORTED" = "true" ]; then
-    cat <<EOF 1>&2
+cat <<EOF 1>&2
   -prefix <path>
       install $ProductSpace into <path>
 EOF
-fi  
 cat <<EOF 1>&2
 
   -release / -debug
@@ -145,10 +142,6 @@ fi
 while [ $# -ne 0 ] ; do
     case "$1" in
 	-prefix)
-            if [ "$INSTALLATION_SUPPORTED" != "true" ]; then
-	      echo "Installation not supported, -prefix option ignored" 2>&1
-#	      usage
-	    fi
 	    shift
             if [ $# -eq 0 ] ; then
 		    echo "-prefix needs an argument" 2>&1
@@ -257,7 +250,7 @@ echo -n > ".qmake.cache"
         #echo "QTDIR must point to an installation that has private headers installed."
         #echo "Some features will not be available."    
     fi
-[ "$INSTALLATION_SUPPORTED" = "true" ] && echo "${PRODUCT}_INSTALL_PREFIX = $prefix"
+echo "${PRODUCT}_INSTALL_PREFIX = $prefix"
 
 ) >> ".qmake.cache"
 
@@ -265,12 +258,10 @@ cat <<EOF 1>&2
 $ProductSpace v$VERSION configuration:
 EOF
 
-if [ "$INSTALLATION_SUPPORTED" = "true" ]; then
 cat <<EOF 1>&2
   Install Prefix.............: $prefix
     (default: $default_prefix)
 EOF
-fi
 
 cat <<EOF 1>&2
   Debug......................: $debug (default: no)
@@ -298,8 +289,4 @@ cp -f .qmake.cache .confqmake.cache
 
 $QTDIR/bin/qmake ${SPEC} $product.pro -recursive "${PRODUCT}_BASE=`pwd`" || die "qmake failed"
 
-if [ "$INSTALLATION_SUPPORTED" = "true" ]; then
-  echo "Ok, now run make, then make install to install into $prefix"
-else
-  echo "Ok, now run make to build the framework."
-fi
+echo "Ok, now run make, then make install to install into $prefix"

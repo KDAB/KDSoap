@@ -6,9 +6,6 @@ set Product_Space="@PRODUCT_MIXEDCASE_SPACED@"
 
 set VERSION=@VERSION@
 
-set INSTALLATION_SUPPORTED=@INSTALLATION_SUPPORTED@
-set STATIC_BUILD_SUPPORTED=@STATIC_BUILD_SUPPORTED@
-
 set PACKSCRIPTS_DIR=../admin/packscripts
 
 set shared=yes
@@ -167,14 +164,11 @@ shift
 goto :Options
 
 :Prefix
-    if "%INSTALLATION_SUPPORTED%" == "true" (
       set prefix="%2"
       goto :OptionWithArg
-    ) else (
       echo Installation not supported, -prefix option ignored
       goto :OptionWithArg
 rem   goto :usage
-    )
 :OverrideVersion
     set VERSION=%2
     goto :OptionWithArg
@@ -188,13 +182,8 @@ rem   goto :usage
     set shared=yes
     goto :OptionNoArg
 :Static
-if "%STATIC_BUILD_SUPPORTED%" == "true" (
     set shared=no
     goto :OptionNoArg
-) else (
-  echo Static build not supported, -static option not allowed
-  goto :usage
-)
 :Release
     set release=yes
     goto :OptionNoArg
@@ -263,9 +252,7 @@ echo %Product_mix% v%VERSION% configuration:
 echo.
 echo   Debug...................: %debug% (default: combined)
 echo   Release.................: %release% (default: combined)
-if "%STATIC_BUILD_SUPPORTED%" == "true" (
-  echo   Shared build............: %shared% (default: yes)
-)
+echo   Shared build............: %shared% (default: yes)
 echo   Compiled-In Unit Tests..: %unittests% (default: no)
 echo.
 
@@ -286,19 +273,15 @@ goto :end
 IF "%1" NEQ "" echo %0: unknown option "%1"
 echo usage: %0 [options]
 echo where options include:
-if "%INSTALLATION_SUPPORTED%" == "true" (
-  echo.
-  echo   -prefix <dir> 
-  echo       set installation prefix to <dir>, used by make install
-)
+echo.
+echo   -prefix <dir>
+echo       set installation prefix to <dir>, used by make install
 echo.
 echo   -release / -debug
 echo       build in debug/release mode
-if "%STATIC_BUILD_SUPPORTED%" == "true" (
-  echo.
-  echo   -static / -shared
-  echo       build static/shared libraries
-)
+echo.
+echo   -static / -shared
+echo       build static/shared libraries
 echo.
 echo   -unittests / -no-unittests
 echo       enable/disable compiled-in unittests
