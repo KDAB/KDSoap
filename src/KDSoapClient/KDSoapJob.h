@@ -35,6 +35,7 @@ public:
     ~KDSoapJob();
 
     bool isFault() const;
+    QString faultAsString() const;
     KDSoapMessage reply() const;
 
     void start();
