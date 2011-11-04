@@ -61,3 +61,11 @@ bool KDSoapJob::isFault() const
 {
     return d->reply.isFault();
 }
+
+QString KDSoapJob::faultAsString() const
+{
+    if (d->reply.isFault())
+        return d->reply.faultAsString();
+    else
+        return QString();
+}
