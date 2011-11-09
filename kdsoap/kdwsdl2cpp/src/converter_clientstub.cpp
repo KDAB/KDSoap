@@ -333,8 +333,8 @@ bool Converter::convertClientService()
           doStartCode += callLine;
 
           doStartCode += "KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);";
-          doStartCode += "connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher*)),\n"
-                  "        this, SLOT(slotFinished(KDSoapPendingCallWatcher*)));";
+          doStartCode += "QObject::connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher*)),\n"
+                         "                 this, SLOT(slotFinished(KDSoapPendingCallWatcher*)));";
           doStart.setBody( doStartCode );
           jobClass.addFunction( doStart );
 
@@ -601,8 +601,8 @@ void Converter::convertClientInputMessage( const Operation &operation,
       const QString finishedSlotName = "_kd_slot" + upperlize(operationName) + "Finished";
 
       code += "KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);";
-      code += "connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher*)),\n"
-              "        this, SLOT(" + finishedSlotName + "(KDSoapPendingCallWatcher*)));";
+      code += "QObject::connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher*)),\n"
+              "                 this, SLOT(" + finishedSlotName + "(KDSoapPendingCallWatcher*)));";
       asyncFunc.setBody( code );
       newClass.addFunction( asyncFunc );
   }
