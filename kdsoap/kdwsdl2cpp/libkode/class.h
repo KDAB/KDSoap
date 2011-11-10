@@ -78,6 +78,15 @@ class KODE_EXPORT Class
     bool isValid() const;
 
     /**
+     * Sets the name of the class object, possibly splitting out the namespace part of it.
+     * E.g. Foo::Bar will set namespace = Bar, class name = Foo.
+     *
+     * This will treat anything except the last substring, as a namespace.
+     * So this is not suited for nested classes. Use Class(A::B, NS) for nested classes.
+     */
+    void setNamespaceAndName( const QString& name );
+
+    /**
      * Sets the @param name of the class object.
      */
     void setName( const QString &name );
@@ -98,11 +107,16 @@ class KODE_EXPORT Class
     QString nameSpace() const;
 
     /**
+     * Returns the fully qualified class name including namespaces, e.g. NS1::NS2::ClassName
+     */
+    QString qualifiedName() const;
+
+    /**
       Set export declaration with given name. This adds an include of a file
       name_export.h and a prefix to class declaration of NAME_EXPORT.
     */
     void setExportDeclaration( const QString &name );
-    
+
     /**
       Return name of export declaration.
     */

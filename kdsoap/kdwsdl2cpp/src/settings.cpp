@@ -164,3 +164,13 @@ void Settings::setExportDeclaration( const QString& exportDeclaration )
 {
     mExportDeclaration = exportDeclaration;
 }
+
+QString Settings::nameSpace() const
+{
+    return mNameSpace;
+}
+
+void Settings::setNameSpace( const QString& ns )
+{
+    mNameSpace = ns;
+}

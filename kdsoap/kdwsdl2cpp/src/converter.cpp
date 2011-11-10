@@ -51,14 +51,15 @@ void Converter::setWSDL( const WSDL &wsdl )
   for ( it = mapping.begin(); it != mapping.end(); ++it )
     mNSManager.setPrefix( it.value(), it.key() );
 
-//  mNSManager.dump();
+  if (qgetenv("KDSOAP_TYPE_DEBUG").toInt())
+      mNSManager.dump();
 
   mTypeMap.setNSManager( &mNSManager );
 
   cleanupUnusedTypes();
 
   // set the xsd types
-  mTypeMap.addSchemaTypes( mWSDL.definitions().type().types() );
+  mTypeMap.addSchemaTypes( mWSDL.definitions().type().types(), Settings::self()->nameSpace() );
 
   if (qgetenv("KDSOAP_TYPE_DEBUG").toInt())
     mTypeMap.dump();

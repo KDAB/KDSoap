@@ -188,8 +188,6 @@ QStringList TypeMap::headerIncludes( const QName &typeName ) const
   return it != mTypeMap.constEnd() ? (*it).headerIncludes : QStringList();
 }
 
-
-
 QString TypeMap::localTypeForAttribute( const QName &typeName ) const
 {
   QList<Entry>::ConstIterator it;
@@ -269,7 +267,14 @@ QStringList TypeMap::forwardDeclarationsForElement( const QName &typeName ) cons
   return it != mElementMap.constEnd() ? (*it).forwardDeclarations : QStringList();
 }
 
-void TypeMap::addSchemaTypes( const XSD::Types &types )
+static QString prefixNamespace( const QString& input, const QString& ns )
+{
+  if (ns.isEmpty())
+      return input;
+  return ns + QLatin1String("::") + input;
+}
+
+void TypeMap::addSchemaTypes( const XSD::Types &types, const QString& ns )
 {
   Q_ASSERT( mNSManager );
 
@@ -281,7 +286,7 @@ void TypeMap::addSchemaTypes( const XSD::Types &types )
     entry.builtinType = false;
     entry.nameSpace = (*simpleIt).nameSpace();
     entry.typeName = (*simpleIt).name();
-    entry.localType = mNSManager->prefix( entry.nameSpace ).toUpper() + "__" + adaptLocalTypeName( (*simpleIt).name() );
+    entry.localType = prefixNamespace( mNSManager->prefix( entry.nameSpace ).toUpper() + "__" + adaptLocalTypeName( (*simpleIt).name() ), ns );
     entry.baseType = (*simpleIt).baseTypeName();
     //qDebug() << entry.baseType.nameSpace() << entry.baseType.localName() << entry.baseType;
     //entry.headers << (*simpleIt).name().toLower() + ".h";
@@ -306,7 +311,7 @@ void TypeMap::addSchemaTypes( const XSD::Types &types )
     /*if ( (*complexIt).isEmpty() )
         entry.localType = "void";
     else*/ {
-        entry.localType = mNSManager->prefix( entry.nameSpace ).toUpper() + "__" + adaptLocalTypeName( (*complexIt).name() );
+        entry.localType = prefixNamespace( mNSManager->prefix( entry.nameSpace ).toUpper() + "__" + adaptLocalTypeName( (*complexIt).name() ), ns );
         //entry.headers << (*complexIt).name().toLower() + ".h";
         entry.forwardDeclarations << entry.localType;
     }
@@ -322,7 +327,7 @@ void TypeMap::addSchemaTypes( const XSD::Types &types )
     entry.builtinType = false;
     entry.nameSpace = (*attrIt).nameSpace();
     entry.typeName = (*attrIt).name();
-    entry.localType = mNSManager->prefix( entry.nameSpace ).toUpper() + "__" + adaptLocalTypeName( (*attrIt).name() + "Attribute" );
+    entry.localType = prefixNamespace( mNSManager->prefix( entry.nameSpace ).toUpper() + "__" + adaptLocalTypeName( (*attrIt).name() + "Attribute" ), ns );
     entry.headers << (*attrIt).name().toLower() + "attribute.h";
     entry.forwardDeclarations << entry.localType;
 

@@ -29,14 +29,14 @@ private Q_SLOTS:
     void testGeneratedMethods()
     {
         HttpServerThread server(loginResponse(), HttpServerThread::Public);
-        DWService service;
+        KDAB::DWService service;
         service.setEndPoint(server.endPoint());
 
-        TNS__Login loginParams;
+        KDAB::TNS__Login loginParams;
         loginParams.setUserName(QString::fromLatin1("Foo"));
         loginParams.setPassword(QString::fromLatin1("Bar"));
         loginParams.setOrganization(QString::fromLatin1("KDAB"));
-        const TNS__LoginResponse resp = service.login(loginParams);
+        const KDAB::TNS__LoginResponse resp = service.login(loginParams);
 
         // Check what we sent
         QByteArray expectedRequestXml =
@@ -51,9 +51,9 @@ private Q_SLOTS:
             + '\n'; // added by QXmlStreamWriter::writeEndDocument
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
 
-        const __ClientServiceSession session = resp.loginResult();
-        const __SessionBase sessionBase = session.value();
-        const __Guid sessionId = sessionBase.sessionID();
+        const KDAB::__ClientServiceSession session = resp.loginResult();
+        const KDAB::__SessionBase sessionBase = session.value();
+        const KDAB::__Guid sessionId = sessionBase.sessionID();
         QCOMPARE(sessionId.value(), QString::fromLatin1("session-id"));
     }
 

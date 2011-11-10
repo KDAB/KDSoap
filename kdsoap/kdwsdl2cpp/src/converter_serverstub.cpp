@@ -30,6 +30,7 @@ void Converter::convertServerService()
         serverClass.addBaseClass(mKDSoapServerObjectInterface);
         if (!Settings::self()->exportDeclaration().isEmpty())
             serverClass.setExportDeclaration(Settings::self()->exportDeclaration());
+        serverClass.setNameSpace( Settings::self()->nameSpace() );
 
         // Files included in the header
         serverClass.addHeaderInclude("QObject");

@@ -17,8 +17,9 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
     if ( type->nameSpace() == soapEncNs )
         return;
 
-    const QString typeName( mTypeMap.localType( type->qualifiedName() ) );
-    KODE::Class newClass( typeName );
+    const QString className( mTypeMap.localType( type->qualifiedName() ) );
+    KODE::Class newClass;
+    newClass.setNamespaceAndName( className );
     if (!Settings::self()->exportDeclaration().isEmpty())
       newClass.setExportDeclaration(Settings::self()->exportDeclaration());
 
@@ -26,7 +27,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
 
     const bool doDebug = (qgetenv("KDSOAP_TYPE_DEBUG").toInt());
     if (doDebug)
-        qDebug() << "Generating complex type" << typeName;
+        qDebug() << "Generating complex type" << className;
 
     // subclass handling
     if ( !type->baseTypeName().isEmpty() ) { // this class extends something
