@@ -19,11 +19,12 @@
     Boston, MA 02110-1301, USA.
 */
 
+#include "message.h"
+
 #include <common/messagehandler.h>
 #include <common/parsercontext.h>
+#include <common/nsmanager.h>
 #include <QDebug>
-
-#include "message.h"
 
 using namespace KWSDL;
 
@@ -78,6 +79,7 @@ void Message::loadXML( ParserContext *context, const QDomElement &element )
 
   QDomElement child = element.firstChildElement();
   while ( !child.isNull() ) {
+    NSManager namespaceManager( context, child );
     QName tagName = child.tagName();
     if ( tagName.localName() == "part" ) {
       Part part( nameSpace() );

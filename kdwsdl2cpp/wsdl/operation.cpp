@@ -19,10 +19,11 @@
     Boston, MA 02110-1301, USA.
 */
 
+#include "operation.h"
+
 #include <common/messagehandler.h>
 #include <common/parsercontext.h>
-
-#include "operation.h"
+#include <common/nsmanager.h>
 
 using namespace KWSDL;
 
@@ -110,6 +111,7 @@ void Operation::loadXML( ParserContext *context, const QDomElement &element )
     bool first = true;
     QDomElement child = element.firstChildElement();
     while ( !child.isNull() ) {
+      NSManager namespaceManager( context, child );
       QName tagName = child.tagName();
       if ( tagName.localName() == "input" ) {
         if ( first ) {

@@ -60,6 +60,7 @@ void Binding::loadXML( ParserContext *context, const QDomElement &element )
 
   QDomElement child = element.firstChildElement();
   while ( !child.isNull() ) {
+    NSManager namespaceManager( context, child );
     QName tagName = child.tagName();
     if ( tagName.localName() == "operation" ) {
       BindingOperation operation( nameSpace() );

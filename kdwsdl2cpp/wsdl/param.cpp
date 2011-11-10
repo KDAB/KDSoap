@@ -24,6 +24,7 @@
 #include <common/parsercontext.h>
 
 #include "param.h"
+#include <QDebug>
 
 using namespace KWSDL;
 
@@ -67,10 +68,11 @@ void Param::loadXML( ParserContext *context, const QDomElement &element )
   if ( mMessage.isEmpty() )
     context->messageHandler()->warning( "Param: 'message' required" );
   else {
-    if ( mMessage.prefix().isEmpty() )
+    if ( mMessage.prefix().isEmpty() ) {
       mMessage.setNameSpace( nameSpace() );
-    else
+    } else {
       mMessage.setNameSpace( context->namespaceManager()->uri( mMessage.prefix() ) );
+    }
   }
 }
 
