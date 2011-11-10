@@ -441,6 +441,13 @@ static QString escapeEnum( const QString &str )
   return enumStr;
 }
 
+static QString escapeRegExp( const QString &str )
+{
+    QString reg = str;
+    reg.replace( '\\', "\\\\" );
+    return reg;
+}
+
 static KODE::Code createRangeCheckCode( const XSD::SimpleType *type, const QString &variableName, KODE::Class &parentClass )
 {
   KODE::Code code;
@@ -470,7 +477,7 @@ static KODE::Code createRangeCheckCode( const XSD::SimpleType *type, const QStri
   if ( type->facetType() & XSD::SimpleType::MAXLEN )
     code += "rangeOk = rangeOk && (" + variableName + ".length() <= " + QString::number( type->facetMaximumLength() ) + ");";
   if ( type->facetType() & XSD::SimpleType::PATTERN ) {
-      code += "QRegExp exp( QString::fromLatin1(\"" + type->facetPattern() + "\") );";
+      code += "QRegExp exp( QString::fromLatin1(\"" + escapeRegExp(type->facetPattern()) + "\") );";
     code += "rangeOk = rangeOk && exp.exactMatch( " + variableName + " );";
 
     parentClass.addInclude( "QRegExp" );
