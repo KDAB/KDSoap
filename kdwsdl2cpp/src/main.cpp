@@ -40,7 +40,8 @@ static void showHelp(const char *appName)
             "  -o <file>                 generate the header file into <file>\n"
             "  -impl <headerfile>        generate the implementation file, and #include <headerfile>\n"
             "  -server                   generate server-side base class, instead of client service\n"
-            "  -exportMacro <macroname>  set the export declaration to use for generated classes"
+            "  -exportMacro <macroname>  set the export declaration to use for generated classes\n"
+            "  -namespace <ns>           put all generated classes into the given C++ namespace"
             "\n", appName);
 }
 
@@ -53,6 +54,7 @@ int main( int argc, char **argv )
     QString headerFile;
     QString serviceName;
     QString exportMacro;
+    QString nameSpace;
 
     int arg = 1;
     while (arg < argc) {
@@ -94,6 +96,13 @@ int main( int argc, char **argv )
                 return 1;
             }
             exportMacro = argv[arg];
+        } else if ( opt == QLatin1String("-namespace") ) {
+            ++arg;
+            if (!argv[arg]) {
+                showHelp(argv[0]);
+                return 1;
+            }
+            nameSpace = argv[arg];
         } else if (!fileName) {
             fileName = argv[arg];
         } else {
@@ -118,6 +127,7 @@ int main( int argc, char **argv )
     Settings::self()->setWsdlFile(fileName);
     Settings::self()->setWantedService(serviceName);
     Settings::self()->setExportDeclaration(exportMacro);
+    Settings::self()->setNameSpace(nameSpace);
     KWSDL::Compiler compiler;
 
     // so that we have an event loop, for downloads

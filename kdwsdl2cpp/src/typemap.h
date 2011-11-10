@@ -102,7 +102,7 @@ class TypeMap
     QStringList forwardDeclarationsForAttribute( const QName &typeName ) const;
     QString localNameSpaceForAttribute( const QName &typeName ) const;
 
-    void addSchemaTypes( const XSD::Types &types );
+    void addSchemaTypes( const XSD::Types &types, const QString& ns );
 
     void dump() const;
 

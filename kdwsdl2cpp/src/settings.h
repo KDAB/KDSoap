@@ -51,6 +51,7 @@ class Settings
     void setOutputDirectory( const QString &outputDirectory );
     QString outputDirectory() const;
 
+    // UNUSED
     void setNamespaceMapping( const NSMapping &namespaceMapping );
     NSMapping namespaceMapping() const;
 
@@ -60,7 +61,10 @@ class Settings
     QString exportDeclaration() const;
     void setExportDeclaration( const QString& exportDeclaration );
 
-  private:
+    QString nameSpace() const;
+    void setNameSpace( const QString& ns );
+
+private:
     friend class SettingsSingleton;
     Settings();
 
@@ -70,6 +74,7 @@ class Settings
     QString mHeaderFile;
     QString mWantedService;
     QString mExportDeclaration;
+    QString mNameSpace;
     NSMapping mNamespaceMapping;
     bool mImpl;
     bool mServer;

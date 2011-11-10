@@ -45,9 +45,11 @@ void Converter::convertSimpleType( const XSD::SimpleType *type, const XSD::Simpl
 {
   const QString typeName( mTypeMap.localType( type->qualifiedName() ) );
   //qDebug() << "convertSimpleType:" << type->qualifiedName() << typeName;
-  KODE::Class newClass( typeName );
+  KODE::Class newClass;
+  newClass.setNamespaceAndName( typeName );
   if (!Settings::self()->exportDeclaration().isEmpty())
     newClass.setExportDeclaration(Settings::self()->exportDeclaration());
+  newClass.setNameSpace(Settings::self()->nameSpace());
 
   QString classDocumentation;
 
@@ -80,12 +82,12 @@ void Converter::convertSimpleType( const XSD::SimpleType *type, const XSD::Simpl
       setter.setBody( variable.name() + " = type;" );
 
       // getter method
-      KODE::Function getter( "type", upperlize( newClass.name() ) + "::Type" );
+      KODE::Function getter( "type", newClass.qualifiedName() + "::Type" );
       getter.setBody( "return " + variable.name() + ';' );
       getter.setConst( true );
 
       // convenience constructor
-      KODE::Function conctor( upperlize( newClass.name() ) );
+      KODE::Function conctor( newClass.name() );
       conctor.addArgument( "const Type &type" );
       KODE::Code code;
       code += variable.name() + " = type;";
@@ -163,7 +165,7 @@ void Converter::convertSimpleType( const XSD::SimpleType *type, const XSD::Simpl
       newClass.addFunction( getter );
 
       // convenience constructor
-      KODE::Function conctor( upperlize( newClass.name() ) );
+      KODE::Function conctor( newClass.name() );
       conctor.addArgument( mTypeMap.localInputType( baseName, QName() ) + " value" );
       conctor.addBodyLine( "setValue(value);" );
       newClass.addFunction( conctor );
@@ -257,11 +259,11 @@ void Converter::convertSimpleType( const XSD::SimpleType *type, const XSD::Simpl
   createSimpleTypeSerializer( newClass, type, simpleTypeList );
 
   // Empty ctor. Needed for derived simpleTypes (which use this one as value).
-  KODE::Function emptyCtor( upperlize( newClass.name() ) );
+  KODE::Function emptyCtor( newClass.name() );
   newClass.addFunction( emptyCtor );
 
   // Empty dtor. Just in case ;)
-  KODE::Function dtor( '~' + upperlize( newClass.name() ) );
+  KODE::Function dtor( '~' + newClass.name() );
   newClass.addFunction( dtor );
 
   mClasses.append( newClass );

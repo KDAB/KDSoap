@@ -113,6 +113,13 @@ QString Class::nameSpace() const
   return d->mNameSpace;
 }
 
+QString Class::qualifiedName() const
+{
+  if (d->mNameSpace.isEmpty())
+      return d->mName;
+  return d->mNameSpace + QLatin1String("::") + d->mName;
+}
+
 void Class::setExportDeclaration( const QString &name )
 {
   addHeaderInclude( name.toLower() + "_export.h" );
@@ -465,4 +472,17 @@ void KODE::Class::addDeclarationMacro(const QString &macro)
 QStringList KODE::Class::declarationMacros() const
 {
     return d->mDeclMacros;
+}
+
+void KODE::Class::setNamespaceAndName( const QString& name )
+{
+    d->mName = name;
+    d->mNameSpace.clear();
+    while (d->mName.contains("::")) {
+        const int pos = d->mName.indexOf("::");
+        if (!d->mNameSpace.isEmpty())
+            d->mNameSpace += QLatin1String("::");
+        d->mNameSpace += d->mName.left(pos);
+        d->mName = d->mName.mid(pos+2);
+    }
 }

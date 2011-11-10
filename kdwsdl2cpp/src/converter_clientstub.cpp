@@ -72,6 +72,13 @@ bool Converter::convertClientService()
           className = KODE::Style::className(bindingName.localName());
       }
 
+      if (!Settings::self()->nameSpace().isEmpty()) {
+          if (nameSpace.isEmpty())
+              nameSpace = Settings::self()->nameSpace();
+          else
+              nameSpace = Settings::self()->nameSpace() + QLatin1String("::") + nameSpace;
+      }
+
       KODE::Class newClass( className, nameSpace );
       if (!Settings::self()->exportDeclaration().isEmpty())
         newClass.setExportDeclaration(Settings::self()->exportDeclaration());
@@ -262,6 +269,7 @@ bool Converter::convertClientService()
           jobClass.addHeaderInclude( QLatin1String("KDSoapJob.h") );
           if ( !Settings::self()->exportDeclaration().isEmpty() )
             jobClass.setExportDeclaration( Settings::self()->exportDeclaration() );
+          jobClass.setNameSpace( Settings::self()->nameSpace() );
 
           jobClass.addBaseClass( KODE::Class( QLatin1String("KDSoapJob") ) );
 
