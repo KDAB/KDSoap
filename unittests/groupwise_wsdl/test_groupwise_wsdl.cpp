@@ -6,7 +6,6 @@
 #include "wsdl_groupwise.h"
 #include "httpserver_p.h"
 #include <QtTest/QtTest>
-#include <QEventLoop>
 #include <QDebug>
 
 using namespace KDSoapUnitTestHelpers;
