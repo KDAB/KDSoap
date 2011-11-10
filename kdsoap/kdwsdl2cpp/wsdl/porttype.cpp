@@ -19,10 +19,11 @@
     Boston, MA 02110-1301, USA.
 */
 
+#include "porttype.h"
+
 #include <common/messagehandler.h>
 #include <common/parsercontext.h>
-
-#include "porttype.h"
+#include <common/nsmanager.h>
 
 using namespace KWSDL;
 
@@ -67,6 +68,7 @@ void PortType::loadXML( ParserContext *context, const QDomElement &element )
 
   QDomElement child = element.firstChildElement();
   while ( !child.isNull() ) {
+    NSManager namespaceManager( context, child );
     QName tagName = child.tagName();
     if ( tagName.localName() == "operation" ) {
       Operation operation( nameSpace() );

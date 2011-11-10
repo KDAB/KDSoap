@@ -515,6 +515,7 @@ void SoapBinding::Header::loadXML( ParserContext *context, const QDomElement &el
 
   QDomElement child = element.firstChildElement();
   while ( !child.isNull() ) {
+    NSManager namespaceManager( context, child );
     if ( child.tagName() == soapPrefix( context ) + "headerfault" ) {
       mHeaderFault.loadXML( context, child );
     } else {
@@ -759,6 +760,7 @@ void SoapBinding::parseOperation( ParserContext *context, const QString &name, c
 {
   QDomElement child = parent.firstChildElement();
   while ( !child.isNull() ) {
+    NSManager namespaceManager( context, child );
     if ( child.tagName() == soapPrefix( context ) + "operation" ) {
       Operation op( name );
       op.loadXML( context, child );
@@ -774,6 +776,7 @@ void SoapBinding::parseOperationInput( ParserContext *context, const QString &na
 {
   QDomElement child = parent.firstChildElement();
   while ( !child.isNull() ) {
+    NSManager namespaceManager( context, child );
     if ( child.tagName() == soapPrefix( context ) + "body" ) {
       Operation &op = mOperations[ name ];
       Body inputBody;
@@ -795,6 +798,7 @@ void SoapBinding::parseOperationOutput( ParserContext *context, const QString &n
 {
   QDomElement child = parent.firstChildElement();
   while ( !child.isNull() ) {
+    NSManager namespaceManager( context, child );
     if ( child.tagName() == soapPrefix( context ) + "body" ) {
       Operation &op = mOperations[ name ];
       Body outputBody;
@@ -815,6 +819,7 @@ void SoapBinding::parseOperationFault( ParserContext *context, const QString &na
 {
   QDomElement child = parent.firstChildElement();
   while ( !child.isNull() ) {
+    NSManager namespaceManager( context, child );
     if ( child.tagName() == soapPrefix( context ) + "fault" ) {
       Operation &op = mOperations[ name ];
       Fault fault;
@@ -830,6 +835,7 @@ void SoapBinding::parsePort( ParserContext *context, const QDomElement &parent )
 {
   QDomElement child = parent.firstChildElement();
   while ( !child.isNull() ) {
+    NSManager namespaceManager( context, child );
     if ( child.tagName() == soapPrefix( context ) + "address" ) {
       mAddress.loadXML( context, child );
     }

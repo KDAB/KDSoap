@@ -20,6 +20,8 @@
  */
 
 #include "parsercontext.h"
+#include "nsmanager.h"
+#include <QDebug>
 
 ParserContext::ParserContext()
   : mNamespaceManager( 0 ),
@@ -34,6 +36,7 @@ ParserContext::~ParserContext()
 void ParserContext::setNamespaceManager( NSManager *manager )
 {
   mNamespaceManager = manager;
+  //qDebug() << "ParserContext now points to" << manager << "tns=" << manager->uri("tns");
 }
 
 NSManager* ParserContext::namespaceManager() const

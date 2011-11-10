@@ -17,7 +17,7 @@ QString lowerlize( const QString &str )
 
 
 Converter::Converter()
-{    
+{
   mQObject = KODE::Class( "QObject" );
   mKDSoapServerObjectInterface = KODE::Class( "KDSoapServerObjectInterface" );
 }

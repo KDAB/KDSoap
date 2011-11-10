@@ -19,11 +19,13 @@
     Boston, MA 02110-1301, USA.
 */
 
+#include "service.h"
+
 #include <common/messagehandler.h>
 #include <common/parsercontext.h>
+#include <common/nsmanager.h>
 
 #include <QDebug>
-#include "service.h"
 
 using namespace KWSDL;
 
@@ -68,6 +70,7 @@ void Service::loadXML( ParserContext *context, Binding::List *bindings, const QD
 
   QDomElement child = element.firstChildElement();
   while ( !child.isNull() ) {
+    NSManager namespaceManager( context, child );
     QName tagName = child.tagName();
     if ( tagName.localName() == "port" ) {
       Port port( nameSpace() );

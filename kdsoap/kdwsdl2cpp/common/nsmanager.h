@@ -28,11 +28,19 @@
 #include <common/qname.h>
 #include <kode_export.h>
 class QDomElement;
+class ParserContext;
 
 class KXMLCOMMON_EXPORT NSManager
 {
   public:
     NSManager();
+    // Called when entering a new XML element. We copy the current namespaces
+    // from the context and add the ones defined by the new XML element.
+    // Upon destruction, we restore the context.
+    NSManager( ParserContext* context, const QDomElement& child );
+    ~NSManager();
+
+    void enterChild( const QDomElement& element );
 
     void setCurrentNamespace( const QString& uri );
     void setPrefix( const QString &prefix, const QString &uri );
@@ -43,8 +51,6 @@ class KXMLCOMMON_EXPORT NSManager
     QString fullName( const QString &nameSpace, const QString &localname ) const;
     QString fullName( const QName &name ) const;
 
-    void enterChild( const QDomElement& element );
-    void exitChild( const QDomElement& element );
     QString nameSpace( const QDomElement& element ) const;
     QString localName( const QDomElement& element ) const;
 
@@ -62,9 +68,12 @@ class KXMLCOMMON_EXPORT NSManager
   private:
     void splitName( const QString &qname, QString &prefix, QString &localname ) const;
 
-    QMultiMap<QString, QString> mMap;
+    typedef QMultiMap<QString, QString> NSMap; // prefix -> URI
+    NSMap mMap;
     QString mCurrentNamespace;
+
+    ParserContext* mContext;
+    NSManager* mParentManager;
 };
 
 #endif
-

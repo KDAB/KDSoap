@@ -20,6 +20,7 @@
  */
 
 #include "nsmanager.h"
+#include "parsercontext.h"
 
 #include <QDebug>
 #include <QDomElement>
@@ -27,7 +28,25 @@
 // maybe port to QXmlNamespaceSupport?
 
 NSManager::NSManager()
+    : mContext(NULL), mParentManager(NULL)
 {
+}
+
+NSManager::NSManager( ParserContext* context, const QDomElement& child )
+{
+    mContext = context;
+    mParentManager = context->namespaceManager();
+    mMap = mParentManager->mMap;
+    mCurrentNamespace = mParentManager->mCurrentNamespace;
+    enterChild(child);
+    mContext->setNamespaceManager(this);
+}
+
+NSManager::~NSManager()
+{
+    // Restore parent namespaces
+    if (mContext)
+        mContext->setNamespaceManager(mParentManager);
 }
 
 void NSManager::setCurrentNamespace( const QString& uri )
@@ -37,23 +56,21 @@ void NSManager::setCurrentNamespace( const QString& uri )
 
 void NSManager::setPrefix( const QString &prefix, const QString &uri )
 {
-  // Note that it's allowed to have two prefixes for the same namespace uri.
-  //qDebug() << "NSManager::setPrefix" << uri << "->" << prefix;
-  if ( !mMap.contains( uri, prefix ) ) {
-    mMap.insert( uri, prefix );
-  }
+    mMap.replace( prefix, uri );
 }
 
 QString NSManager::prefix( const QString &uri ) const
 {
-  return mMap.value( uri );
+    // Note that it's allowed to have two prefixes for the same namespace uri.
+    // So we just pick one.
+    return mMap.key( uri ); // linear search
 }
 
 QString NSManager::uri( const QString &prefix ) const
 {
     if (prefix.isEmpty())
         return mCurrentNamespace;
-    return mMap.key( prefix ); // linear search
+    return mMap.value( prefix );
 }
 
 void NSManager::splitName( const QString &qname, QString &prefix, QString &localname ) const
@@ -83,12 +100,12 @@ QString NSManager::fullName( const QName &name ) const
 
 QStringList NSManager::prefixes() const
 {
-  return mMap.values();
+  return mMap.keys();
 }
 
 QStringList NSManager::uris() const
 {
-  return mMap.keys();
+  return mMap.values();
 }
 
 QString NSManager::schemaPrefix() const
@@ -115,7 +132,7 @@ void NSManager::dump() const
 {
   QMap<QString, QString>::ConstIterator it;
   for ( it = mMap.begin(); it != mMap.end(); ++it ) {
-    qDebug( "%s\t%s", qPrintable( it.value() ), qPrintable( it.key() ) );
+    qDebug( "%s\t%s", qPrintable( it.key() ), qPrintable( it.value() ) );
   }
 }
 
@@ -146,15 +163,11 @@ void NSManager::enterChild(const QDomElement &element)
       QDomAttr attribute = attributes.item( i ).toAttr();
       if ( attribute.name().startsWith( QLatin1String("xmlns:") ) ) {
         QString prefix = attribute.name().mid( 6 );
+        //if (prefix == "tns")
+        //    qDebug() << this << "enterChild: setting tns to" << attribute.value();
         setPrefix( prefix, attribute.value() );
       } else if ( attribute.name() == "xmlns" ) {
         setCurrentNamespace( attribute.value() );
       }
     }
-}
-
-void NSManager::exitChild(const QDomElement &)
-{
-    // TODO: pop everything that enterChild did when entering that element.
-    // We need a stack somehow...
 }

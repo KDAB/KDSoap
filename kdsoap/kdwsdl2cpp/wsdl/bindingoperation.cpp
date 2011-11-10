@@ -21,10 +21,11 @@
 
 #include <wsdl/abstractbinding.h>
 
+#include "bindingoperation.h"
+
 #include <common/messagehandler.h>
 #include <common/parsercontext.h>
-
-#include "bindingoperation.h"
+#include <common/nsmanager.h>
 
 using namespace KWSDL;
 
@@ -61,6 +62,7 @@ void BindingOperation::loadXML( AbstractBinding *binding, ParserContext *context
 
   QDomElement child = element.firstChildElement();
   while ( !child.isNull() ) {
+    NSManager namespaceManager( context, child );
     QName tagName = child.tagName();
     if ( tagName.localName() == "input" ) {
       binding->parseOperationInput( context, mName, child );
