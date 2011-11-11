@@ -229,6 +229,8 @@ bool KDSoapServer::setExpectedSocketCount(int sockets)
         qDebug() << "error calling setrlimit(" << lim.rlim_cur << "," << lim.rlim_max << ") :" << strerror(errno);
         return false;
     }
+#else
+    Q_UNUSED(sockets);
 #endif
     return true;
 }
