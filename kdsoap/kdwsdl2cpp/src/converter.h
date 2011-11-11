@@ -30,7 +30,7 @@
 #include "typemap.h"
 
 #ifdef NDEBUG
-#define COMMENT
+#define COMMENT ""
 #else
 #define COMMENT "// " __FILE__ ":"  + QString::number(__LINE__)
 #endif
