@@ -79,12 +79,17 @@ KDSoapMessage::~KDSoapMessage()
 
 void KDSoapMessage::addArgument(const QString &argumentName, const QVariant& argumentValue, const QString& typeNameSpace, const QString& typeName)
 {
-    childValues().append(KDSoapValue(argumentName, argumentValue, typeNameSpace, typeName));
+    KDSoapValue soapValue(argumentName, argumentValue, typeNameSpace, typeName);
+    if (isQualified())
+        soapValue.setQualified(true);
+    childValues().append(soapValue);
 }
 
 void KDSoapMessage::addArgument(const QString& argumentName, const KDSoapValueList& argumentValueList, const QString& typeNameSpace, const QString& typeName)
 {
     KDSoapValue soapValue(argumentName, argumentValueList, typeNameSpace, typeName);
+    if (isQualified())
+        soapValue.setQualified(true);
     childValues().append(soapValue);
 }
 

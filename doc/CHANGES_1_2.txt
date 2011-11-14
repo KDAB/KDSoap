@@ -10,8 +10,11 @@ Server-side:
 ============
 * Support for delayed responses
 * Fix support for messages with no input or output arguments
+* Set response namespace automatically in generated processRequest, so as to not rely on the namespace
+  of the incoming request.
 
 Code generator changes, applying to both client and server side:
 ================================================================
-* Reworked parsing of XML namespaces
+* Reworked parsing of XML namespaces.
 * New option -namespace <...> to kdwsdl2cpp, in order to put all the generated code into a C++ namespace.
+* Better handling of whether elements are "qualified" or not, and writing out the correct namespace for them.

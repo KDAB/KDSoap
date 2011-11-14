@@ -234,12 +234,22 @@ static QString variantToXMLType(const QVariant& value)
     }
 }
 
-void KDSoapValue::writeElement(KDSoapNamespacePrefixes& namespacePrefixes, QXmlStreamWriter& writer, KDSoapValue::Use use, const QString& messageNamespace) const
+void KDSoapValue::writeElement(KDSoapNamespacePrefixes& namespacePrefixes, QXmlStreamWriter& writer, KDSoapValue::Use use, const QString& messageNamespace, bool forceQualified) const
 {
-    const QString ns = d->m_nameNamespace.isEmpty() ? messageNamespace : d->m_nameNamespace;
-    //qDebug() << "writeElement" << d->m_nameNamespace << name();
     Q_ASSERT(!name().isEmpty());
-    writer.writeStartElement(ns, name());
+    if ( !d->m_nameNamespace.isEmpty() && d->m_nameNamespace != messageNamespace )
+        forceQualified = true;
+
+    if (d->m_qualified || forceQualified) {
+        const QString ns = d->m_nameNamespace.isEmpty() ? messageNamespace : d->m_nameNamespace;
+
+        // TODO: if the prefix is new, we want to do namespacePrefixes.insert()
+        // But this means figuring out n2/n3/n4 the same way Qt does...
+
+        writer.writeStartElement(ns, name());
+    } else {
+        writer.writeStartElement(name());
+    }
     writeElementContents(namespacePrefixes, writer, use, messageNamespace);
     writer.writeEndElement();
 }
@@ -264,23 +274,28 @@ void KDSoapValue::writeElementContents(KDSoapNamespacePrefixes& namespacePrefixe
             writer.writeAttribute(KDSoapNamespaceManager::soapEncoding(), QLatin1String("arrayType"), namespacePrefixes.resolve(list.arrayTypeNs(), list.arrayType()) + QLatin1Char('[') + QString::number(list.count()) + QLatin1Char(']'));
         }
     }
-    writeChildren(namespacePrefixes, writer, use, messageNamespace);
+    writeChildren(namespacePrefixes, writer, use, messageNamespace, false);
 
     if (!value.isNull())
         writer.writeCharacters(variantToTextValue(value, this->typeNs(), this->type()));
 }
 
-void KDSoapValue::writeChildren(KDSoapNamespacePrefixes& namespacePrefixes, QXmlStreamWriter& writer, KDSoapValue::Use use, const QString& messageNamespace) const
+void KDSoapValue::writeChildren(KDSoapNamespacePrefixes& namespacePrefixes, QXmlStreamWriter& writer, KDSoapValue::Use use, const QString& messageNamespace, bool forceQualified) const
 {
     const KDSoapValueList& args = childValues();
     Q_FOREACH(const KDSoapValue& attr, args.attributes()) {
         //Q_ASSERT(!attr.value().isNull());
-        writer.writeAttribute(messageNamespace, attr.name(), variantToTextValue(attr.value(), attr.typeNs(), attr.type()));
+        QString ns;
+        if ( !d->m_nameNamespace.isEmpty() && d->m_nameNamespace != messageNamespace )
+            forceQualified = true;
+        if (d->m_qualified || forceQualified)
+            ns = d->m_nameNamespace.isEmpty() ? messageNamespace : d->m_nameNamespace;
+        writer.writeAttribute(ns, attr.name(), variantToTextValue(attr.value(), attr.typeNs(), attr.type()));
     }
     KDSoapValueListIterator it(args);
     while (it.hasNext()) {
         const KDSoapValue& element = it.next();
-        element.writeElement(namespacePrefixes, writer, use, d->m_qualified?messageNamespace:QString());
+        element.writeElement(namespacePrefixes, writer, use, messageNamespace, forceQualified);
     }
 }
 
@@ -377,7 +392,7 @@ QByteArray KDSoapValue::toXml(KDSoapValue::Use use, const QString& messageNamesp
     KDSoapNamespacePrefixes namespacePrefixes;
     namespacePrefixes.writeStandardNamespaces(writer);
 
-    writeElement(namespacePrefixes, writer, use, messageNamespace);
+    writeElement(namespacePrefixes, writer, use, messageNamespace, false);
     writer.writeEndDocument();
 
     return data;

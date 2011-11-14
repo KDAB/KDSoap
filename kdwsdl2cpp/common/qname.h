@@ -37,7 +37,7 @@ class KXMLCOMMON_EXPORT QName
     QName();
 
     // Create a QName with prefix+localname
-    QName( const QString &name ); // TODO explicit?
+    explicit QName( const QString &name );
 
     // Create a QName with namespace+localname
     QName( const QString &nameSpace, const QString &localName );

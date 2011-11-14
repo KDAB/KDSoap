@@ -244,13 +244,18 @@ void KDSoapServerSocket::sendReply(KDSoapServerObjectInterface* serverObjectInte
     const bool isFault = replyMsg.isFault();
 
     KDSoapMessageWriter msgWriter;
-    msgWriter.setMessageNamespace(m_messageNamespace);
     // Note that the kdsoap client parsing code doesn't care for the name (except if it's fault), even in
     // Document mode. Other implementations do, though.
     const QString responseName = isFault ? QString::fromLatin1("Fault") : m_method;
+    QString responseNamespace = m_messageNamespace;
     KDSoapHeaders responseHeaders;
-    if (serverObjectInterface)
+    if (serverObjectInterface) {
         responseHeaders = serverObjectInterface->responseHeaders();
+        if (!serverObjectInterface->responseNamespace().isEmpty()) {
+            responseNamespace = serverObjectInterface->responseNamespace();
+        }
+    }
+    msgWriter.setMessageNamespace(responseNamespace);
     const QByteArray xmlResponse = msgWriter.messageToXml(replyMsg, responseName, responseHeaders, QMap<QString, KDSoapMessage>());
     const QByteArray response = httpResponseHeaders(isFault, "text/xml", xmlResponse.size());
     if (m_doDebug) {

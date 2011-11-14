@@ -761,6 +761,7 @@ QTEST_MAIN(ServerTest)
 // TODO: generate this method (needs a .wsdl file)
 void CountryServerObject::processRequest(const KDSoapMessage &request, KDSoapMessage &response, const QByteArray& soapAction)
 {
+    setResponseNamespace(QLatin1String("http://www.kdab.com/xml/MyWsdl"));
     const QByteArray method = request.name().toLatin1();
     if (method == "getEmployeeCountry") {
         if (soapAction != "http://www.kdab.com/xml/MyWsdl/getEmployeeCountry") {

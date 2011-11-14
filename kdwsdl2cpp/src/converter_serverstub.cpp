@@ -45,6 +45,8 @@ void Converter::convertServerService()
         processRequestMethod.addArgument("const QByteArray& soapAction");
 
         KODE::Code body;
+        const QString responseNs = mWSDL.definitions().targetNamespace();
+        body.addLine("setResponseNamespace(QLatin1String(\"" + responseNs + "\"));" COMMENT);
         body.addLine("const QByteArray method = request.name().toLatin1();");
 
         PortType portType = mWSDL.findPortType( binding.portTypeName() );
@@ -163,7 +165,9 @@ void Converter::generateServerMethod(KODE::Code& code, const Binding& binding, c
             // We need to make up fooResponse in RPC mode
             qCritical("ERROR: RPC mode is not supported on the server-side yet, for lack of a good example - please report this with your wsdl file to kdsoap-support@kdab.com");
         }
-        code.addBlock( serializeElementArg( retPart.type(), retPart.element(), elementNameForPart(retPart), "ret", "response", false ) );
+        bool qualified;
+        const QName elemName = elementNameForPart( retPart, &qualified );
+        code.addBlock( serializeElementArg( retPart.type(), retPart.element(), elemName, "ret", "response", false, qualified ) );
 
         code.unindent();
         code += "}";
@@ -188,7 +192,9 @@ void Converter::generateDelayedReponseMethod(const QString& methodName, const QS
 
     KODE::Code code;
     code.addLine("KDSoapMessage response;");
-    code.addBlock(serializeElementArg(retPart.type(), retPart.element(), elementNameForPart(retPart), "ret", "response", false));
+    bool qualified;
+    const QName elemName = elementNameForPart( retPart, &qualified );
+    code.addBlock(serializeElementArg(retPart.type(), retPart.element(), elemName, "ret", "response", false, qualified));
     code.addLine("sendDelayedResponse(responseHandle, response);");
     delayedMethod.setBody(code);
 

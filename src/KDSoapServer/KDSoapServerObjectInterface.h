@@ -105,6 +105,14 @@ public:
     void setResponseHeaders(const KDSoapHeaders& headers);
 
     /**
+     * Sets the message namespace to be used in the response.
+     * If the requests comes with a message namespace("qualified"), then this can be determined from that namespace.
+     * But if the request is not qualified, this is very much necessary (at least when the response has headers,
+     * which are always qualified).
+     */
+    void setResponseNamespace(const QString& ns);
+
+    /**
      * Instructs KD SOAP to return a fault message instead of the return value of the slot.
      *
      * \param faultCode A code for identifying the fault. Example: "Server.EntryNotFound", or
@@ -148,6 +156,7 @@ private:
     void setServerSocket(KDSoapServerSocket* serverSocket); // only valid during processRequest()
     void setRequestHeaders(const KDSoapHeaders& headers, const QByteArray& soapAction);
     KDSoapHeaders responseHeaders() const;
+    QString responseNamespace() const;
     void storeFaultAttributes(KDSoapMessage& message) const;
     class Private;
     Private* const d;

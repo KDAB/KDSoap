@@ -57,11 +57,15 @@ private Q_SLOTS:
         QByteArray expectedRequestXml =
             QByteArray(xmlEnvBegin) + " xmlns:n1=\"http://schemas.microsoft.com/exchange/services/2006/messages\">"
                 "<soap:Header>"
-                  "<n1:ExchangeImpersonation><n1:ConnectingSID><n1:PrincipalName>dfaure</n1:PrincipalName><n1:SID>sid</n1:SID><n1:PrimarySmtpAddress>david.faure@kdab.com</n1:PrimarySmtpAddress></n1:ConnectingSID></n1:ExchangeImpersonation>"
+                  "<n2:ExchangeImpersonation xmlns:n2=\"http://schemas.microsoft.com/exchange/services/2006/types\"><n2:ConnectingSID>"
+                    "<n2:PrincipalName>dfaure</n2:PrincipalName>"
+                    "<n2:SID>sid</n2:SID>"
+                    "<n2:PrimarySmtpAddress>david.faure@kdab.com</n2:PrimarySmtpAddress>"
+                  "</n2:ConnectingSID></n2:ExchangeImpersonation>"
                 "</soap:Header>"
                 "<soap:Body>"
                   "<n1:ResolveNames n1:ReturnFullContactData=\"true\" n1:SearchScope=\"ActiveDirectory\">"
-                  "<n1:ParentFolderIds><n1:FolderId n1:Id=\"folderId\" n1:ChangeKey=\"\"/></n1:ParentFolderIds>"
+                  "<n1:ParentFolderIds><n2:FolderId xmlns:n2=\"http://schemas.microsoft.com/exchange/services/2006/types\" n2:Id=\"folderId\" n2:ChangeKey=\"\"/></n1:ParentFolderIds>"
                   "<n1:UnresolvedEntry/>"
                 "</n1:ResolveNames>"
                 "</soap:Body>" + xmlEnvEnd
