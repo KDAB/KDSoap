@@ -69,3 +69,5 @@ QString KDSoapJob::faultAsString() const
     else
         return QString();
 }
+
+#include "moc_KDSoapJob.cpp"
