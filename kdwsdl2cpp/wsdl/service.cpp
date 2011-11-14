@@ -71,7 +71,7 @@ void Service::loadXML( ParserContext *context, Binding::List *bindings, const QD
   QDomElement child = element.firstChildElement();
   while ( !child.isNull() ) {
     NSManager namespaceManager( context, child );
-    QName tagName = child.tagName();
+    const QName tagName( child.tagName() );
     if ( tagName.localName() == "port" ) {
       Port port( nameSpace() );
       port.loadXML( context, bindings, child );

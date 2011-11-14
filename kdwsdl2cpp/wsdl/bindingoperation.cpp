@@ -63,7 +63,7 @@ void BindingOperation::loadXML( AbstractBinding *binding, ParserContext *context
   QDomElement child = element.firstChildElement();
   while ( !child.isNull() ) {
     NSManager namespaceManager( context, child );
-    QName tagName = child.tagName();
+    const QName tagName( child.tagName() );
     if ( tagName.localName() == "input" ) {
       binding->parseOperationInput( context, mName, child );
     } else if ( tagName.localName() == "output" ) {
