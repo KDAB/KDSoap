@@ -132,7 +132,7 @@ bool Definitions::loadXML( ParserContext *context, const QDomElement &element )
   QDomElement child = element.firstChildElement();
   while ( !child.isNull() ) {
     NSManager namespaceManager( context, child );
-    QName tagName = child.tagName();
+    const QName tagName( child.tagName() );
     if ( tagName.localName() == "import" ) {
       Import import( mTargetNamespace );
       import.loadXML( context, child );
