@@ -115,7 +115,6 @@ private slots:
         QCOMPARE(ret.faultAsString(), QString::fromLatin1("Fault code 1: Connection refused"));
     }
 
-    // TODO a similar test in webcalls_wsdl using OrteLookup.wsdl
     void testOrteLookup()
     {
         const QString endPoint = QString::fromLatin1("http://mathertel.de/AJAXEngine/S02_AJAXCoreSamples/OrteLookup.asmx?WSDL");
@@ -123,7 +122,7 @@ private slots:
         const QString action = QString::fromLatin1("");
         KDSoapClientInterface client(endPoint, messageNamespace);
         KDSoapMessage message;
-        message.setQualified(true);
+        message.setQualified(true); // so that the prefix element is qualified
         message.addArgument(QLatin1String("prefix"), QLatin1String("Berl"));
         KDSoapPendingCall pendingCall = client.asyncCall(QLatin1String("OrteStartWith"), message, action);
         KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);

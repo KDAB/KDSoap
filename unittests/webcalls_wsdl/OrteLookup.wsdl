@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://www.mathertel.de/OrteLookup/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" targetNamespace="http://www.mathertel.de/OrteLookup/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">A WebService retreiving the names of German cities starting with a specific string.</wsdl:documentation>
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://www.mathertel.de/OrteLookup/">
+      <s:element name="OrteStartWith">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="prefix" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="OrteStartWithResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="OrteStartWithResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetPrefixedEntries">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="prefix" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetPrefixedEntriesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetPrefixedEntriesResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="string" nillable="true" type="s:string" />
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="OrteStartWithSoapIn">
+    <wsdl:part name="parameters" element="tns:OrteStartWith" />
+  </wsdl:message>
+  <wsdl:message name="OrteStartWithSoapOut">
+    <wsdl:part name="parameters" element="tns:OrteStartWithResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetPrefixedEntriesSoapIn">
+    <wsdl:part name="parameters" element="tns:GetPrefixedEntries" />
+  </wsdl:message>
+  <wsdl:message name="GetPrefixedEntriesSoapOut">
+    <wsdl:part name="parameters" element="tns:GetPrefixedEntriesResponse" />
+  </wsdl:message>
+  <wsdl:message name="OrteStartWithHttpGetIn">
+    <wsdl:part name="prefix" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="OrteStartWithHttpGetOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="GetPrefixedEntriesHttpGetIn">
+    <wsdl:part name="prefix" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="GetPrefixedEntriesHttpGetOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:portType name="OrteLookupSoap">
+    <wsdl:operation name="OrteStartWith">
+      <wsdl:input message="tns:OrteStartWithSoapIn" />
+      <wsdl:output message="tns:OrteStartWithSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPrefixedEntries">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Return Lookup entries that start with the given prefix.</wsdl:documentation>
+      <wsdl:input message="tns:GetPrefixedEntriesSoapIn" />
+      <wsdl:output message="tns:GetPrefixedEntriesSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="OrteLookupHttpGet">
+    <wsdl:operation name="OrteStartWith">
+      <wsdl:input message="tns:OrteStartWithHttpGetIn" />
+      <wsdl:output message="tns:OrteStartWithHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPrefixedEntries">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Return Lookup entries that start with the given prefix.</wsdl:documentation>
+      <wsdl:input message="tns:GetPrefixedEntriesHttpGetIn" />
+      <wsdl:output message="tns:GetPrefixedEntriesHttpGetOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="OrteLookupSoap" type="tns:OrteLookupSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="OrteStartWith">
+      <soap:operation soapAction="http://www.mathertel.de/OrteLookup/OrteStartWith" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPrefixedEntries">
+      <soap:operation soapAction="http://www.mathertel.de/OrteLookup/GetPrefixedEntries" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="OrteLookupSoap12" type="tns:OrteLookupSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="OrteStartWith">
+      <soap12:operation soapAction="http://www.mathertel.de/OrteLookup/OrteStartWith" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPrefixedEntries">
+      <soap12:operation soapAction="http://www.mathertel.de/OrteLookup/GetPrefixedEntries" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="OrteLookupHttpGet" type="tns:OrteLookupHttpGet">
+    <http:binding verb="GET" />
+    <wsdl:operation name="OrteStartWith">
+      <http:operation location="/OrteStartWith" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPrefixedEntries">
+      <http:operation location="/GetPrefixedEntries" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="OrteLookup">
+    <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">A WebService retreiving the names of German cities starting with a specific string.</wsdl:documentation>
+    <wsdl:port name="OrteLookupSoap" binding="tns:OrteLookupSoap">
+      <soap:address location="http://mathertel.de/AJAXEngine/S02_AJAXCoreSamples/OrteLookup.asmx" />
+    </wsdl:port>
+    <wsdl:port name="OrteLookupSoap12" binding="tns:OrteLookupSoap12">
+      <soap12:address location="http://mathertel.de/AJAXEngine/S02_AJAXCoreSamples/OrteLookup.asmx" />
+    </wsdl:port>
+    <wsdl:port name="OrteLookupHttpGet" binding="tns:OrteLookupHttpGet">
+      <http:address location="http://mathertel.de/AJAXEngine/S02_AJAXCoreSamples/OrteLookup.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
