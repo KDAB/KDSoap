@@ -4,6 +4,7 @@
 #include "wsdl_soapresponder.h"
 #include "wsdl_holidays.h"
 #include "wsdl_BFGlobalService.h"
+#include "wsdl_OrteLookup.h"
 #include <QtTest/QtTest>
 #include <QEventLoop>
 #include <QDebug>
@@ -95,6 +96,15 @@ private slots:
             lResp = globalService.login(loginParam);
             qDebug() << globalService.lastError();
         }
+    }
+
+    void testOrteLookup()
+    {
+        OrteLookup lookup;
+        TNS__OrteStartWith args;
+        args.setPrefix(QLatin1String("Berl"));
+        TNS__OrteStartWithResponse resp = lookup.orteStartWith(args);
+        QCOMPARE(resp.orteStartWithResult(), QString::fromLatin1("Berlin;Berlstedt"));
     }
 
     // TODO: a great example for complex returned structures:
