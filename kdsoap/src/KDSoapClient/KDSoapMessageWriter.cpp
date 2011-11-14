@@ -56,15 +56,15 @@ QByteArray KDSoapMessageWriter::messageToXml(const KDSoapMessage& message, const
         namespacePrefixes.writeNamespace(writer, m_messageNamespace, QLatin1String("n1") /*make configurable?*/);
         writer.writeStartElement(soapNS, QLatin1String("Header"));
         Q_FOREACH(const KDSoapMessage& header, persistentHeaders) {
-            header.writeChildren(namespacePrefixes, writer, header.use(), m_messageNamespace);
+            header.writeChildren(namespacePrefixes, writer, header.use(), m_messageNamespace, true);
         }
         Q_FOREACH(const KDSoapMessage& header, headers) {
-            header.writeChildren(namespacePrefixes, writer, header.use(), m_messageNamespace);
+            header.writeChildren(namespacePrefixes, writer, header.use(), m_messageNamespace, true);
         }
         writer.writeEndElement(); // Header
     } else {
         // So in the standard case (no headers) we just rely on Qt calling it n1 and insert it into the map.
-        // Calling this after the writeStartElement(method) below leads to a double-definition of n1.
+        // Calling this after the writeStartElement(ns, elementName) below leads to a double-definition of n1.
         namespacePrefixes.insert(m_messageNamespace, QString::fromLatin1("n1"));
     }
 
@@ -79,6 +79,9 @@ QByteArray KDSoapMessageWriter::messageToXml(const KDSoapMessage& message, const
             qDebug() << message;
         }
     } else {
+        // Note that the message itself is always qualified.
+        // http://www.ibm.com/developerworks/webservices/library/ws-tip-namespace/index.html
+        // isQualified() is only for child elements.
         writer.writeStartElement(m_messageNamespace, elementName);
         message.writeElementContents(namespacePrefixes, writer, message.use(), m_messageNamespace);
         writer.writeEndElement();

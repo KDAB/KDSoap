@@ -69,13 +69,18 @@ private Q_SLOTS:
         METHODS__UpdateVersionStatusResponse response = groupwise.updateVersionStatusRequest(req);
 
         // Check what we sent
+        // This WSDL (well, the XSD) uses elementFormDefault="qualified", so we get namespace definitions.
+        // TODO: declare them up in the main element, to make this shorter
         QByteArray expectedRequestXml =
             QByteArray(xmlEnvBegin) +
             "><soap:Body>"
             "<n1:updateVersionStatusRequest xmlns:n1=\"http://schemas.novell.com/2005/01/GroupWise/groupwise.wsdl\">"
-                "<n1:id>TheId</n1:id>"
-                "<n1:event>archive</n1:event>"
-                "<n1:part><n1:size>6</n1:size><n1:data>QUJDREVG</n1:data></n1:part>"
+                "<n2:id xmlns:n2=\"http://schemas.novell.com/2005/01/GroupWise/methods\">TheId</n2:id>"
+                "<n3:event xmlns:n3=\"http://schemas.novell.com/2005/01/GroupWise/methods\">archive</n3:event>"
+                "<n4:part xmlns:n4=\"http://schemas.novell.com/2005/01/GroupWise/methods\">"
+                  "<n5:size xmlns:n5=\"http://schemas.novell.com/2005/01/GroupWise/types\">6</n5:size>"
+                  "<n6:data xmlns:n6=\"http://schemas.novell.com/2005/01/GroupWise/types\">QUJDREVG</n6:data>"
+                "</n4:part>"
             "</n1:updateVersionStatusRequest>"
             "</soap:Body>" + xmlEnvEnd
             + '\n'; // added by QXmlStreamWriter::writeEndDocument
@@ -108,8 +113,8 @@ private Q_SLOTS:
             QByteArray(xmlEnvBegin) +
             "><soap:Body>"
             "<n1:setTimestampRequest xmlns:n1=\"http://schemas.novell.com/2005/01/GroupWise/groupwise.wsdl\">"
-                "<n1:backup>2011-03-15T04:03:02.001+01:00</n1:backup>"
-                "<n1:retention>2011-01-15T04:03:02.001</n1:retention>"
+                "<n2:backup xmlns:n2=\"http://schemas.novell.com/2005/01/GroupWise/methods\">2011-03-15T04:03:02.001+01:00</n2:backup>"
+                "<n3:retention xmlns:n3=\"http://schemas.novell.com/2005/01/GroupWise/methods\">2011-01-15T04:03:02.001</n3:retention>"
             "</n1:setTimestampRequest>"
             "</soap:Body>" + xmlEnvEnd
             + '\n'; // added by QXmlStreamWriter::writeEndDocument
@@ -132,9 +137,9 @@ private Q_SLOTS:
             QByteArray(xmlEnvBegin) +
             "><soap:Body>"
             "<n1:getTimestampRequest xmlns:n1=\"http://schemas.novell.com/2005/01/GroupWise/groupwise.wsdl\">"
-                "<n1:backup>true</n1:backup>"
-                "<n1:retention>true</n1:retention>"
-                "<n1:noop>false</n1:noop>"
+                "<n2:backup xmlns:n2=\"http://schemas.novell.com/2005/01/GroupWise/methods\">true</n2:backup>"
+                "<n3:retention xmlns:n3=\"http://schemas.novell.com/2005/01/GroupWise/methods\">true</n3:retention>" // TODO: would be better to move the ns decl one level up!
+                "<n4:noop xmlns:n4=\"http://schemas.novell.com/2005/01/GroupWise/methods\">false</n4:noop>"
             "</n1:getTimestampRequest>"
             "</soap:Body>" + xmlEnvEnd
             + '\n'; // added by QXmlStreamWriter::writeEndDocument

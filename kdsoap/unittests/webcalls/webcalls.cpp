@@ -115,6 +115,7 @@ private slots:
         QCOMPARE(ret.faultAsString(), QString::fromLatin1("Fault code 1: Connection refused"));
     }
 
+    // TODO a similar test in webcalls_wsdl using OrteLookup.wsdl
     void testOrteLookup()
     {
         const QString endPoint = QString::fromLatin1("http://mathertel.de/AJAXEngine/S02_AJAXCoreSamples/OrteLookup.asmx?WSDL");

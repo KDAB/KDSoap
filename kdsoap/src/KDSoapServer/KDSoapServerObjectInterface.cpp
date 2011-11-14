@@ -37,6 +37,7 @@ public:
     QString m_faultString;
     QString m_faultActor;
     QString m_detail;
+    QString m_responseNamespace;
     QByteArray m_soapAction;
     KDSoapServerSocket* m_serverSocket;
 };
@@ -124,5 +125,15 @@ void KDSoapServerObjectInterface::setServerSocket(KDSoapServerSocket *serverSock
 void KDSoapServerObjectInterface::sendDelayedResponse(const KDSoapDelayedResponseHandle& responseHandle, const KDSoapMessage &response)
 {
     responseHandle.serverSocket()->sendDelayedReply(this, response);
+}
+
+void KDSoapServerObjectInterface::setResponseNamespace(const QString& ns)
+{
+    d->m_responseNamespace = ns;
+}
+
+QString KDSoapServerObjectInterface::responseNamespace() const
+{
+    return d->m_responseNamespace;
 }
 

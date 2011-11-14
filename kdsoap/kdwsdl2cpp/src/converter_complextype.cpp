@@ -209,33 +209,43 @@ static QString namespaceString(const QString& ns)
 }
 
 // Helper method for the generation of the serialize() method, also used in addMessageArgument.
-KODE::Code Converter::serializeElementArg( const QName& type, const QName& elementType, const QString& name, const QString& localVariableName, const QByteArray& varName, bool append )
+KODE::Code Converter::serializeElementArg( const QName& type, const QName& elementType, const QName& name, const QString& localVariableName, const QByteArray& varName, bool append, bool isQualified )
 {
-    const QString varAndMethod = varName + (append ? ".append" : " = ");
+    const QString varAndMethodBefore = varName + (append ? ".append(" : " = ");
+    const QString varAndMethodAfter = (append ? QString(")") : QString());
     KODE::Code block;
     // for debugging, add this:
     //block += "// type: " + type.qname() + " element:" + elementType.qname();
-    //qDebug() << "appendElementArg: type=" << type << "isBuiltin=" << mTypeMap.isBuiltinType(type);
+    if ( name.localName() == "Telegram" )
+        qDebug() << "appendElementArg:" << name << "type=" << type << "isBuiltin=" << mTypeMap.isBuiltinType(type) << "isQualified=" << isQualified;
     if ( mTypeMap.isTypeAny( type ) ) {
         block += "if (!" + localVariableName + ".isNull()) {";
         block.indent();
-        block += varAndMethod + '(' + localVariableName + ");" COMMENT;
+        block += varAndMethodBefore + localVariableName + varAndMethodAfter + ";" COMMENT;
         block.unindent();
         block += "}";
     } else {
-        const QString nameArg = "QString::fromLatin1(\"" + name + "\")";
+        const QString nameArg = "QString::fromLatin1(\"" + name.localName() + "\")";
+        const QString namespaceArg = namespaceString(name.nameSpace());
         const QName actualType = type.isEmpty() ? elementType : type;
         const QString typeArgs = namespaceString(actualType.nameSpace()) + ", QString::fromLatin1(\"" + actualType.localName() + "\")";
-        if ( mTypeMap.isBuiltinType( type, elementType ) ) {
-            const QString qtTypeName = mTypeMap.localType( type, elementType );
-            const QString value = mTypeMap.serializeBuiltin( type, elementType, localVariableName, qtTypeName );
-
-            block += varAndMethod + "(KDSoapValue(" + nameArg + ", " + value + ", " + typeArgs + "));" COMMENT;
-        } else if ( mTypeMap.isComplexType( type, elementType ) ) {
-            block += varAndMethod + '(' + localVariableName + ".serialize(" + nameArg + "));" COMMENT;
+        const QString valueVarName = "_value" + upperlize(name.localName());
+        if ( mTypeMap.isComplexType( type, elementType ) ) {
+            block += "KDSoapValue " + valueVarName + '(' + localVariableName + ".serialize(" + nameArg + "));" COMMENT;
         } else {
-            block += varAndMethod + "(KDSoapValue(" + nameArg + ", " + localVariableName + ".serialize(), " + typeArgs + "));" COMMENT;
+            if ( mTypeMap.isBuiltinType( type, elementType ) ) {
+                const QString qtTypeName = mTypeMap.localType( type, elementType );
+                const QString value = mTypeMap.serializeBuiltin( type, elementType, localVariableName, qtTypeName );
+
+                block += "KDSoapValue " + valueVarName + "(" + nameArg + ", " + value + ", " + typeArgs + ");" COMMENT;
+            } else {
+                block += "KDSoapValue " + valueVarName + "(" + nameArg + ", " + localVariableName + ".serialize(), " + typeArgs + ");" COMMENT;
+            }
         }
+        block += valueVarName + ".setNamespaceUri(" + namespaceArg + ");";
+        if ( isQualified )
+            block += valueVarName + ".setQualified(true);";
+        block += varAndMethodBefore + valueVarName + varAndMethodAfter + ";" COMMENT;
     }
     return block;
 }
@@ -374,7 +384,8 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
         marshalCode += "args.setArrayType(QString::fromLatin1(\"" + arrayType.nameSpace() + "\"), QString::fromLatin1(\"" + arrayType.localName() + "\"));";
         marshalCode += "for (int i = 0; i < " + variableName + ".count(); ++i) {";
         marshalCode.indent();
-        marshalCode.addBlock( serializeElementArg( arrayType, QName(), "item", variableName + ".at(i)", "args", true ) );
+        const QString nameSpace = elem.nameSpace();
+        marshalCode.addBlock( serializeElementArg( arrayType, QName(), QName(nameSpace, "item"), variableName + ".at(i)", "args", true, elem.isQualified() ) );
         marshalCode.unindent();
         marshalCode += '}';
 
@@ -399,13 +410,13 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
 
                 marshalCode += "for (int i = 0; i < " + variableName + ".count(); ++i) {";
                 marshalCode.indent();
-                marshalCode.addBlock( serializeElementArg( elem.type(), QName(), elem.name(), variableName + ".at(i)", "args", true ) );
+                marshalCode.addBlock( serializeElementArg( elem.type(), QName(), elem.qualifiedName(), variableName + ".at(i)", "args", true, elem.isQualified() ) );
                 marshalCode.unindent();
                 marshalCode += '}';
 
                 demarshalCode.addBlock( demarshalArrayVar( elem.type(), variableName, typeName ) );
             } else {
-                marshalCode.addBlock( serializeElementArg( elem.type(), QName(), elem.name(), variableName, "args", true ) );
+                marshalCode.addBlock( serializeElementArg( elem.type(), QName(), elem.qualifiedName(), variableName, "args", true, elem.isQualified() ) );
                 demarshalCode.addBlock( demarshalVar( elem.type(), QName(), variableName, typeName ) );
             }
 
@@ -438,7 +449,7 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
             demarshalCode.addBlock( demarshalNameTest( attribute.type(), attrName, &first ) );
             demarshalCode.indent();
 
-            marshalCode.addBlock( serializeElementArg( attribute.type(), QName(), attribute.name(), variableName, "attribs", true ) );
+            marshalCode.addBlock( serializeElementArg( attribute.type(), QName(), attribute.qualifiedName(), variableName, "attribs", true, attribute.isQualified() ) );
 
             const QString typeName = mTypeMap.localType( attribute.type() );
             Q_ASSERT(!typeName.isEmpty());

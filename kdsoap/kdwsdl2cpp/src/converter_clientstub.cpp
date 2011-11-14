@@ -427,28 +427,33 @@ bool Converter::clientAddAction( KODE::Code& code, const Binding &binding, const
     return hasAction;
 }
 
-QString Converter::elementNameForPart(const Part& part) const
+// Maybe the "qualified" bool isn't useful after all, now that we make sure
+// that all messages are qualified (it's really only configurable for child elements)
+QName Converter::elementNameForPart(const Part& part, bool* qualified) const
 {
     if (part.type().isEmpty()) { // element (document style)
         XSD::Element element = mWSDL.findElement(part.element());
-        return element.name();
+        *qualified = element.isQualified();
+        return element.qualifiedName();
     } else { // type (rpc style)
-        return part.name();
+        *qualified = false;
+        return QName(part.nameSpace(), part.name());
     }
 }
 
 void Converter::addMessageArgument( KODE::Code& code, const SoapBinding::Style& bindingStyle, const Part& part, const QString& localVariableName, const QByteArray& messageName, bool varIsMember )
 {
     const QString partname = varIsMember ? QLatin1Char('m') + upperlize( localVariableName ) :  lowerlize( localVariableName );
-
+    bool qualified;
+    const QName elemName = elementNameForPart(part, &qualified);
     // In document style, the "part" is directly added as arguments
     // See http://www.ibm.com/developerworks/webservices/library/ws-whichwsdl/
     if ( bindingStyle == SoapBinding::DocumentStyle )
-        code.addBlock( serializeElementArg( part.type(), part.element(), elementNameForPart(part), partname, messageName, false) );
+        code.addBlock( serializeElementArg( part.type(), part.element(), elemName, partname, messageName, false, qualified ) );
     else {
         const QString argType = mTypeMap.localType( part.type(), part.element() );
         if ( argType != "void" ) {
-            code.addBlock( serializeElementArg( part.type(), part.element(), elementNameForPart(part), partname, messageName + ".childValues()", true ) );
+            code.addBlock( serializeElementArg( part.type(), part.element(), elemName, partname, messageName + ".childValues()", true, qualified ) );
         }
     }
 }

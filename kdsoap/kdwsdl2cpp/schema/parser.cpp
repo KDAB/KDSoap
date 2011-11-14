@@ -167,7 +167,7 @@ bool Parser::parse( ParserContext *context, QXmlInputSource *source )
   }
 
   QDomElement element = doc.documentElement();
-  const QName name = element.tagName();
+  const QName name( element.tagName() );
   if ( name.localName() != QLatin1String("schema") ) {
     qDebug( "document element is '%s'", qPrintable( element.tagName() ) );
     return false;
@@ -178,7 +178,7 @@ bool Parser::parse( ParserContext *context, QXmlInputSource *source )
 
 bool Parser::parseSchemaTag( ParserContext *context, const QDomElement &root )
 {
-  QName name = root.tagName();
+  QName name(root.tagName());
   if ( name.localName() != QLatin1String("schema") ) {
     qDebug() << "ERROR localName=" << name.localName();
     return false;
@@ -201,7 +201,7 @@ bool Parser::parseSchemaTag( ParserContext *context, const QDomElement &root )
   QDomElement element = root.firstChildElement();
   while ( !element.isNull() ) {
     NSManager namespaceManager( context, element );
-    QName name = element.tagName();
+    const QName name( element.tagName() );
     if (debugParsing())
         qDebug() << "Schema: parsing" << name.localName();
     if ( name.localName() == QLatin1String("import") ) {
@@ -280,7 +280,7 @@ Annotation::List Parser::parseAnnotation( ParserContext *context, const QDomElem
   for( child = element.firstChildElement(); !child.isNull();
        child = child.nextSiblingElement() ) {
     NSManager namespaceManager( context, child );
-    QName name = child.tagName();
+    const QName name( child.tagName() );
     if ( name.localName() == "documentation" ) {
       result.append( Annotation( child ) );
     } else if ( name.localName() == "appinfo" ) {
@@ -309,7 +309,7 @@ ComplexType Parser::parseComplexType( ParserContext *context, const QDomElement 
 
   while ( !childElement.isNull() ) {
     NSManager namespaceManager( context, childElement );
-    QName name = childElement.tagName();
+    const QName name( childElement.tagName() );
     if ( name.localName() == "all" ) {
       all( context, childElement, newType );
     } else if ( name.localName() == "sequence" ) {
@@ -347,7 +347,7 @@ void Parser::all( ParserContext *context, const QDomElement &element, ComplexTyp
 
   while ( !childElement.isNull() ) {
     NSManager namespaceManager( context, childElement );
-    QName name = childElement.tagName();
+    const QName name( childElement.tagName() );
     if ( name.localName() == "element" ) {
       ct.addElement( parseElement( context, childElement, ct.nameSpace(),
         childElement ) );
@@ -364,7 +364,7 @@ void Parser::all( ParserContext *context, const QDomElement &element, ComplexTyp
 void Parser::parseCompositor( ParserContext *context,
   const QDomElement &element, ComplexType &ct )
 {
-  QName name = element.tagName();
+  const QName name( element.tagName() );
   bool isChoice = name.localName() == "choice";
   bool isSequence = name.localName() == "sequence";
 
@@ -379,7 +379,7 @@ void Parser::parseCompositor( ParserContext *context,
 
     while ( !childElement.isNull() ) {
       NSManager namespaceManager( context, childElement );
-      QName csName = childElement.tagName();
+      const QName csName( childElement.tagName() );
       if ( csName.localName() == "element" ) {
         Element newElement;
         if ( isChoice ) {
@@ -417,7 +417,7 @@ Element Parser::parseElement( ParserContext *context,
 
   newElement.setName( element.attribute( "name" ) );
   if (debugParsing())
-      qDebug() << "newElement namespace=" << nameSpace << "name=" << newElement.name();
+      qDebug() << "newElement namespace=" << nameSpace << "name=" << newElement.name() << "defaultQualified=" << d->mDefaultQualified;
 
   newElement.setIsQualified(d->mDefaultQualified);
   if ( element.hasAttribute( "form" ) ) {
@@ -430,7 +430,7 @@ Element Parser::parseElement( ParserContext *context,
   }
 
   if ( element.hasAttribute( "ref" ) ) {
-    QName reference = element.attribute( "ref" );
+    QName reference( element.attribute( "ref" ) );
     reference.setNameSpace( context->namespaceManager()->uri( reference.prefix() ) );
     newElement.setReference( reference );
   }
@@ -445,7 +445,7 @@ Element Parser::parseElement( ParserContext *context,
     //nill = true;
 
   if ( element.hasAttribute( "type" ) ) {
-    QName typeName = element.attribute( "type" );
+    QName typeName( element.attribute( "type" ) );
     typeName.setNameSpace( context->namespaceManager()->uri( typeName.prefix() ) );
     //qDebug() << "typeName=" << typeName.qname() << "namespace=" << context->namespaceManager()->uri( typeName.prefix() );
     newElement.setType( typeName );
@@ -454,7 +454,7 @@ Element Parser::parseElement( ParserContext *context,
 
     while ( !childElement.isNull() ) {
       NSManager namespaceManager( context, childElement );
-      QName childName = childElement.tagName();
+      const QName childName( childElement.tagName() );
       //qDebug() << "childName:" << childName.localName();
       if ( childName.localName() == "complexType" ) {
         ComplexType ct = parseComplexType( context, childElement );
@@ -529,7 +529,8 @@ Attribute Parser::parseAttribute( ParserContext *context,
   newAttribute.setName( element.attribute( "name" ) );
 
   if ( element.hasAttribute( "type" ) ) {
-    QName typeName = element.attribute( "type" );
+    // TODO pass nsmanager to QName so that it can resolve namespaces?
+    QName typeName( element.attribute( "type" ) );
     typeName.setNameSpace( context->namespaceManager()->uri( typeName.prefix() ) );
     newAttribute.setType( typeName );
   }
@@ -567,7 +568,7 @@ Attribute Parser::parseAttribute( ParserContext *context,
 
   while ( !childElement.isNull() ) {
     NSManager namespaceManager( context, childElement );
-    QName childName = childElement.tagName();
+    const QName childName( childElement.tagName() );
     if ( childName.localName() == "simpleType" ) {
       SimpleType st = parseSimpleType( context, childElement );
       st.setName( newAttribute.name() );
@@ -599,7 +600,7 @@ SimpleType Parser::parseSimpleType( ParserContext *context, const QDomElement &e
 
   while ( !childElement.isNull() ) {
     NSManager namespaceManager( context, childElement );
-    QName name = childElement.tagName();
+    const QName name( childElement.tagName() );
     if ( name.localName() == "restriction" ) {
       st.setSubType( SimpleType::TypeRestriction );
 
@@ -632,7 +633,7 @@ SimpleType Parser::parseSimpleType( ParserContext *context, const QDomElement &e
         QDomElement typeElement = childElement.firstChildElement();
         for ( ; !typeElement.isNull() ; typeElement = typeElement.nextSiblingElement() ) {
           NSManager namespaceManager( context, typeElement );
-          const QName typeName = typeElement.tagName();
+          const QName typeName( typeElement.tagName() );
           //qDebug() << "childName:" << childName.localName();
           if ( typeName.localName() == "complexType" ) {
             ComplexType ctItem = parseComplexType( context, typeElement );
@@ -670,7 +671,7 @@ void Parser::parseRestriction( ParserContext* context, const QDomElement &elemen
 
   while ( !childElement.isNull() ) {
     NSManager namespaceManager( context, childElement );
-    const QName tagName = childElement.tagName();
+    const QName tagName( childElement.tagName() );
     if ( tagName.localName() == "annotation" ) {
       // Skip annotations here.
     } else {
@@ -694,7 +695,7 @@ void Parser::parseComplexContent( ParserContext *context, const QDomElement &ele
   QDomElement childElement = element.firstChildElement();
 
   while ( !childElement.isNull() ) {
-    QName name = childElement.tagName();
+    const QName name( childElement.tagName() );
 
     if ( name.localName() == "restriction" || name.localName() == "extension" ) {
       typeName = childElement.attribute( "base" );
@@ -732,7 +733,7 @@ void Parser::parseComplexContent( ParserContext *context, const QDomElement &ele
         QDomElement ctElement = childElement.firstChildElement();
         while ( !ctElement.isNull() ) {
           NSManager namespaceManager( context, ctElement );
-          QName name = ctElement.tagName();
+          const QName name( ctElement.tagName() );
 
           if ( name.localName() == "all" ) {
             all( context, ctElement, complexType );
@@ -766,7 +767,7 @@ void Parser::parseSimpleContent( ParserContext *context, const QDomElement &elem
 
   while ( !childElement.isNull() ) {
     NSManager namespaceManager( context, childElement );
-    QName name = childElement.tagName();
+    const QName name( childElement.tagName() );
     if ( name.localName() == "restriction" ) {
       SimpleType st( d->mNameSpace );
 
@@ -789,7 +790,7 @@ void Parser::parseSimpleContent( ParserContext *context, const QDomElement &elem
         QDomElement ctElement = childElement.firstChildElement();
         while ( !ctElement.isNull() ) {
           NSManager namespaceManager( context, ctElement );
-          QName name = ctElement.tagName();
+          const QName name( ctElement.tagName() );
           if ( name.localName() == "attribute" )
             complexType.addAttribute( parseAttribute( context, ctElement ) );
 
@@ -930,7 +931,7 @@ void Parser::importSchema( ParserContext *context, const QString &location )
 
     NSManager namespaceManager( context, node );
 
-    QName tagName = node.tagName();
+    const QName tagName( node.tagName() );
     if ( tagName.localName() == "schema" ) {
       parseSchemaTag( context, node );
     } else {
@@ -977,7 +978,7 @@ void Parser::includeSchema( ParserContext *context, const QString &location )
 
     QDomElement node = doc.documentElement();
     NSManager namespaceManager( context, node );
-    QName tagName = node.tagName();
+    const QName tagName( node.tagName() );
     if ( tagName.localName() == "schema" ) {
       // For include, targetNamespace must be the same as the current document.
       if ( node.hasAttribute( QLatin1String("targetNamespace") ) ) {

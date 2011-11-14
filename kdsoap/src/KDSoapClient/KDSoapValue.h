@@ -149,6 +149,10 @@ public:
      * Set whether the element should be qualified. Qualified means, that
      * locally declared elements and attributes are qualified by a namespace,
      * using an explicit prefix. Default is unqualified.
+     *
+     * Note that this property does not propagate to child values, it needs to be set
+     * in each child value (they could come from another schema which doesn't specify
+     * the same value for qualified).
      */
     void setQualified(bool isQualified);
 
@@ -211,9 +215,9 @@ private:
     KDSoapValue(QString, QString, QString);
 
     friend class KDSoapMessageWriter;
-    void writeElement(KDSoapNamespacePrefixes& namespacePrefixes, QXmlStreamWriter& writer, KDSoapValue::Use use, const QString& messageNamespace) const;
+    void writeElement(KDSoapNamespacePrefixes& namespacePrefixes, QXmlStreamWriter& writer, KDSoapValue::Use use, const QString& messageNamespace, bool forceQualified) const;
     void writeElementContents(KDSoapNamespacePrefixes& namespacePrefixes, QXmlStreamWriter& writer, KDSoapValue::Use use, const QString& messageNamespace) const;
-    void writeChildren(KDSoapNamespacePrefixes& namespacePrefixes, QXmlStreamWriter& writer, KDSoapValue::Use use, const QString& messageNamespace) const;
+    void writeChildren(KDSoapNamespacePrefixes& namespacePrefixes, QXmlStreamWriter& writer, KDSoapValue::Use use, const QString& messageNamespace, bool forceQualified) const;
 
     class Private;
     QSharedDataPointer<Private> d;
@@ -251,6 +255,8 @@ public:
      *          (the KDSoapValueList support is mostly for the convenience of the \c kdwsdl2cpp generated code)
      * \param typeNameSpace namespace of the type of this value; this is only useful if using KDSoapMessage::EncodedUse
      * \param typeName localname of the type of this value; this is only useful if using KDSoapMessage::EncodedUse
+     *
+     * Note that this doesn't make it possible to call setQualified() or setNamespaceUri() on the value.
      *
      * Equivalent to
      * \code

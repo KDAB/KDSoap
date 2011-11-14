@@ -7,8 +7,7 @@
          xmlns:wsdl='http://schemas.xmlsoap.org/wsdl/'
          xmlns='http://schemas.xmlsoap.org/wsdl/'>
   <types>
-    <!-- Note: kdsoap doesn't support the case where the namespace for elements is different from the namespace for definitions, yet. -->
-    <xsd:schema targetNamespace='http://www.kdab.com/xml/MyWsdl/' xmlns='http://www.w3.org/2001/XMLSchema'>
+    <xsd:schema elementFormDefault="qualified" targetNamespace='http://www.kdab.com/xml/MyWsdl/' xmlns='http://www.w3.org/2001/XMLSchema'>
       <element name="HelloWorld">
         <complexType>
           <sequence>

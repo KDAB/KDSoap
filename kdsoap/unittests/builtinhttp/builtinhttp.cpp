@@ -127,7 +127,7 @@ private Q_SLOTS:
         HttpServerThread server(countryResponse(), HttpServerThread::Public);
         KDSoapClientInterface client(server.endPoint(), countryMessageNamespace());
         KDSoapAuthentication auth;
-        
+
         auth.setUser(QLatin1String("kdab"));
         auth.setPassword(QLatin1String("unused"));
         client.setAuthentication(auth); // unused...
@@ -153,7 +153,7 @@ private Q_SLOTS:
 #endif
             QCOMPARE(ret.arguments().child(QLatin1String("employeeCountry")).value().toString(), QString::fromLatin1("France"));
 
-        }        
+        }
         client.setSoapVersion(KDSoapClientInterface::SOAP1_2);
         {
             KDSoapMessage ret = client.call(QLatin1String("getEmployeeCountry"), countryMessage());
@@ -238,7 +238,7 @@ private Q_SLOTS:
         rectArgument.addArgument(QLatin1String("y"), rect.y());
         rectArgument.addArgument(QLatin1String("width"), rect.width());
         rectArgument.addArgument(QLatin1String("height"), rect.height());
-        message.addArgument(QLatin1String("rect"), rectArgument); // NOTE: type information is missing
+        message.addArgument(QLatin1String("rect"), rectArgument); // NOTE: type information is missing; setQualified() is missing too.
 
         const QString XMLSchemaNS = KDSoapNamespaceManager::xmlSchema2001();
 

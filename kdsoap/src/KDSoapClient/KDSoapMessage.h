@@ -91,6 +91,8 @@ public:
      * \code
      * arguments().addArgument(argumentName, argumentValue [, typeNameSpace, typeName] );
      * \endcode
+     *
+     * If the message isQualified(), the value will be set to qualified as well, for convenience.
      */
     void addArgument(const QString& argumentName, const QVariant& argumentValue, const QString& typeNameSpace = QString(), const QString& typeName = QString());
 
@@ -106,6 +108,8 @@ public:
      * \code
      * arguments().append(KDSoapValue(argumentName, argumentValueList [, typeNameSpace, typeName] ));
      * \endcode
+     *
+     * If the message isQualified(), the value will be set to qualified as well, for convenience.
      */
     void addArgument(const QString& argumentName, const KDSoapValueList& argumentValueList, const QString& typeNameSpace = QString(), const QString& typeName = QString());
 

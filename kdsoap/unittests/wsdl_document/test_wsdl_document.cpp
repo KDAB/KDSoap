@@ -72,27 +72,27 @@ private:
                 " xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">%1"
                 "<soap:Body>"
                 "<n1:addEmployee>"
-                "<employeeType type=\"Developer\">"
-                "<team>Minitel</team>"
-                "<otherRoles>TeamLeader</otherRoles>"
-                "</employeeType>"
-                "<employeeName>David Faure</employeeName>"
-                "<employeeCountry>France</employeeCountry>"
-                "<employeeAchievements>"
-                "<item>"
-                "<type>50726f6a656374</type>" // Project
-                "<label>Management</label>"
-                "<time>2011-06-27</time>"
-                "</item>"
-                "<item>"
-                "<type>446576656c6f706d656e74</type>" // Development
-                "<label>C++</label>"
-                "<time>today</time>"
-                "</item>"
-                "</employeeAchievements>"
-                "<employeeId>"
-                "<id>5</id>"
-                "</employeeId>"
+                "<n1:employeeType n1:type=\"Developer\">"
+                "<n1:team>Minitel</n1:team>"
+                "<n1:otherRoles>TeamLeader</n1:otherRoles>"
+                "</n1:employeeType>"
+                "<n1:employeeName>David Faure</n1:employeeName>"
+                "<n1:employeeCountry>France</n1:employeeCountry>"
+                "<n1:employeeAchievements>"
+                "<n1:item>"
+                "<n1:type>50726f6a656374</n1:type>" // Project
+                "<n1:label>Management</n1:label>"
+                "<n1:time>2011-06-27</n1:time>"
+                "</n1:item>"
+                "<n1:item>"
+                "<n1:type>446576656c6f706d656e74</n1:type>" // Development
+                "<n1:label>C++</n1:label>"
+                "<n1:time>today</n1:time>"
+                "</n1:item>"
+                "</n1:employeeAchievements>"
+                "<n1:employeeId>"
+                "<n1:id>5</n1:id>"
+                "</n1:employeeId>"
                 "</n1:addEmployee>"
                 "</soap:Body>" + xmlEnvEnd
                 + '\n'; // added by QXmlStreamWriter::writeEndDocument
@@ -100,11 +100,11 @@ private:
     static QByteArray expectedHeader() {
         return QByteArray("<soap:Header>"
                           "<n1:LoginElement>"
-                          "<user>foo</user>"
-                          "<pass>bar</pass>"
+                          "<n1:user>foo</n1:user>"
+                          "<n1:pass>bar</n1:pass>"
                           "</n1:LoginElement>"
                           "<n1:SessionElement>"
-                          "<sessionId>id</sessionId>"
+                          "<n1:sessionId>id</n1:sessionId>"
                           "</n1:SessionElement>"
                           "</soap:Header>");
     }
@@ -315,11 +315,12 @@ private Q_SLOTS:
     }
 
     // Was http://www.service-repository.com/service/wsdl?id=163859, but it disappeared.
+    // Local WSDL file: thomas-bayer.wsdl
     void testSequenceInResponse()
     {
         // Prepare response
         QByteArray responseData = QByteArray(xmlEnvBegin) + "><soap:Body>"
-                                  "<tb:getCountriesResponse xmlns:tb=\"http://namesservice.thomas_bayer.com/\"><tb:country>Great Britain</tb:country><tb:country>Ireland</tb:country></tb:getCountriesResponse>"
+                                  "<getCountriesResponse><country>Great Britain</country><country>Ireland</country></getCountriesResponse>"
                                   " </soap:Body>" + xmlEnvEnd;
         HttpServerThread server(responseData, HttpServerThread::Public);
 
@@ -487,9 +488,9 @@ private:
         return QByteArray(xmlEnvBegin) +
                 "><soap:Body>"
                 "<n1:EmployeeNameParams xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
-                "<employeeName>"
+                "<n1:employeeName>"
                 "David Ä Faure"
-                "</employeeName>"
+                "</n1:employeeName>"
                 "</n1:EmployeeNameParams>"
                 "</soap:Body>" + xmlEnvEnd
                 + '\n'; // added by QXmlStreamWriter::writeEndDocument
@@ -675,9 +676,9 @@ void WsdlDocumentTest::testServerAddEmployee()
     QVERIFY(server->lastServerObject());
     const QByteArray expectedResponseXml =
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-                "<addEmployeeMyResponse xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsd=\"http://www.w3.org/1999/XMLSchema\" xmlns:xsi=\"http://www.w3.org/1999/XMLSchema-instance\">"
+                "<n1:addEmployeeMyResponse xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsd=\"http://www.w3.org/1999/XMLSchema\" xmlns:xsi=\"http://www.w3.org/1999/XMLSchema-instance\" xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
                 "6164646564204461766964204661757265"
-                "</addEmployeeMyResponse>\n";
+                "</n1:addEmployeeMyResponse>\n";
     //qDebug() << server->lastServerObject() << "response name" << server->lastServerObject()->m_response.name();
     // Note: that's the response as sent by the generated code.
     // But then the server socket code will call messageToXml, possibly with a method name,
@@ -735,17 +736,20 @@ void WsdlDocumentTest::testSendTelegram()
     QCOMPARE(service.lastError(), QString());
     QCOMPARE(ret.telegram().value(), QByteArray("Received Hello"));
 
+    // Check the request as received by the server.
     const QByteArray expectedRequestXml =
-        QByteArray(xmlBegin) + "<n1:TelegramRequest " + xmlNamespaces + " xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
+        QByteArray(xmlBegin) + "<TelegramRequest " + xmlNamespaces + ">"
            "<Telegram>48656c6c6f</Telegram>"
-          "</n1:TelegramRequest>";
+          "</TelegramRequest>";
     const QString msgNS = QString::fromLatin1("http://www.kdab.com/xml/MyWsdl/");
+    // Note that "qualified" is false in m_request, since it was created dynamically by the server -> no namespaces
     QVERIFY(xmlBufferCompare(server->lastServerObject()->m_request.toXml(KDSoapValue::LiteralUse, msgNS), expectedRequestXml));
 
     const QByteArray expectedResponseXml =
         QByteArray(xmlBegin) + "<n1:TelegramResponse " + xmlNamespaces + " xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
-            "<Telegram>52656365697665642048656c6c6f</Telegram>"
+            "<n1:Telegram>52656365697665642048656c6c6f</n1:Telegram>"
           "</n1:TelegramResponse>";
+    // m_response, however, has qualified = true (set by the generated code).
     QVERIFY(xmlBufferCompare(server->lastServerObject()->m_response.toXml(KDSoapValue::LiteralUse, msgNS), expectedResponseXml));
 }
 
