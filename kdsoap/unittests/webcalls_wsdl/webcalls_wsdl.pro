@@ -1,3 +1,6 @@
+# This would apply to all .wsdl files... qmake is too limited for this.
+# KDWSDL_OPTIONS = -service OrteLookup
+
 KDSOAP_PATH = $$PWD/../..
 include( $$KDSOAP_PATH/unittests/unittests.pri )
 QT += network xml

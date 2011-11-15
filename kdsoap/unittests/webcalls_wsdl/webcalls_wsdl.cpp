@@ -100,10 +100,14 @@ private slots:
 
     void testOrteLookup()
     {
-        OrteLookup lookup;
+        // TODO OrteLookup::OrteLookupSoap12 lookup;
+        OrteLookup::OrteLookupSoap lookup;
+        //lookup.setSoapVersion(KDSoapClientInterface::SOAP1_2);
         TNS__OrteStartWith args;
         args.setPrefix(QLatin1String("Berl"));
         TNS__OrteStartWithResponse resp = lookup.orteStartWith(args);
+        if (!lookup.lastError().isEmpty())
+            qWarning("%s", qPrintable(lookup.lastError()));
         QCOMPARE(resp.orteStartWithResult(), QString::fromLatin1("Berlin;Berlstedt"));
     }
 
