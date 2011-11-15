@@ -59,10 +59,12 @@ QString Definitions::targetNamespace() const
   return mTargetNamespace;
 }
 
+#if 0
 void Definitions::setBindings( const Binding::List &bindings )
 {
   mBindings = bindings;
 }
+#endif
 
 Binding::List Definitions::bindings() const
 {

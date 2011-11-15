@@ -53,7 +53,7 @@ class KWSDL_EXPORT Definitions
     void setTargetNamespace( const QString &targetNamespace );
     QString targetNamespace() const;
 
-    void setBindings( const Binding::List &bindings );
+    //void setBindings( const Binding::List &bindings );
     Binding::List bindings() const;
 
     //void setImports( const Import::List &imports );

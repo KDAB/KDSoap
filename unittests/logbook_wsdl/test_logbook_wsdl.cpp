@@ -29,7 +29,7 @@ private Q_SLOTS:
     void testGetUpdateInfo()
     {
         HttpServerThread server(complexTypeResponse(), HttpServerThread::Public);
-        LogbookIFV3 service(this);
+        LogbookIFV3::LogbookIFV3Soap12 service(this);
         service.setEndPoint(server.endPoint());
 
         TNS__GetUpdateInfo params;
