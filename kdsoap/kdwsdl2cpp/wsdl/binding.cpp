@@ -29,6 +29,7 @@
 using namespace KWSDL;
 
 static QString soapStandardNamespace = "http://schemas.xmlsoap.org/wsdl/soap/";
+static QString soap12StandardNamespace = "http://schemas.xmlsoap.org/wsdl/soap12/";
 static QString httpStandardNamespace = "http://schemas.xmlsoap.org/wsdl/http/";
 
 Binding::Binding()
@@ -61,19 +62,25 @@ void Binding::loadXML( ParserContext *context, const QDomElement &element )
   QDomElement child = element.firstChildElement();
   while ( !child.isNull() ) {
     NSManager namespaceManager( context, child );
-    const QName tagName( child.tagName() );
+    QName tagName( child.tagName() );
+
+    tagName.setNameSpace( context->namespaceManager()->uri( tagName.prefix() ) );
+
     if ( tagName.localName() == "operation" ) {
       BindingOperation operation( nameSpace() );
       operation.loadXML( &mSoapBinding, context, child );
       mOperations.append( operation );
-    } else if ( child.tagName() == context->namespaceManager()->fullName( soapStandardNamespace, "binding" ) ) {
-      mType = SOAPBinding;
-      mSoapBinding.parseBinding( context, child );
-    } else if ( child.tagName() == context->namespaceManager()->fullName( httpStandardNamespace, "binding" ) ) {
-      mType = HTTPBinding;
-      // Not Implemented: HTTPBinding
-    } else {
-      // Not Implemented: MIMEBinding
+    } else if ( tagName.localName() == "binding" ) {
+        if ( tagName.nameSpace() == soapStandardNamespace ||
+             tagName.nameSpace() == soap12StandardNamespace ) {
+            mType = SOAPBinding;
+            mSoapBinding.parseBinding( context, child );
+        } else if ( tagName.nameSpace() == httpStandardNamespace ) {
+            mType = HTTPBinding;
+            // Not Implemented: HTTPBinding
+        } else {
+            // Not Implemented: MIMEBinding
+        }
     }
 
     child = child.nextSiblingElement();
