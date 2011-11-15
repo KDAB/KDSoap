@@ -57,13 +57,12 @@ Binding WSDL::findBinding( const QName &bindingName ) const
   const Binding::List list = mDefinitions.bindings();
   Binding::List::ConstIterator it;
   for ( it = list.constBegin(); it != list.constEnd(); ++it ) {
-      qDebug() << (*it).name() << (*it).nameSpace();
     if ( (*it).name() == bindingName.localName() && (*it).nameSpace() == bindingName.nameSpace() ) {
       return *it;
     }
   }
 
-  qDebug() << "binding not found" << bindingName.localName() << bindingName.nameSpace();
+  qDebug() << "ERROR: binding not found" << bindingName.localName() << bindingName.nameSpace();
   return Binding();
 }
 
@@ -151,11 +150,3 @@ QSet<QName> WSDL::uniqueBindings(const Service& service) const
     return bindings;
 }
 
-int WSDL::bindingsCount() const
-{
-    int count = 0;
-    Q_FOREACH( const Service& service, mDefinitions.services() ) {
-        count += uniqueBindings( service ).count();
-    }
-    return count;
-}

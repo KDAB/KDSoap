@@ -55,8 +55,6 @@ static SoapBinding::Headers getHeaders( const Binding& binding, const QString& o
 
 bool Converter::convertClientService()
 {
-    const int bindingsCount = mWSDL.bindingsCount();
-
     KODE::Class::List bindingClasses;
     Q_FOREACH( const Service& service, mWSDL.definitions().services() ) {
         Q_ASSERT(!service.name().isEmpty());
@@ -69,7 +67,8 @@ bool Converter::convertClientService()
 
             QString className = KODE::Style::className(service.name());
             QString nameSpace;
-            if (bindingsCount > 1) {
+            if (uniqueBindings.count() > 1) {
+                // Multiple bindings: use Service::Binding as classname.
                 nameSpace = className;
                 className = KODE::Style::className(bindingName.localName());
             }

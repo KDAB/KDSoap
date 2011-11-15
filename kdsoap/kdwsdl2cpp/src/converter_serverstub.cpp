@@ -8,8 +8,6 @@ using namespace KWSDL;
 
 void Converter::convertServerService()
 {
-    const int bindingsCount = mWSDL.bindingsCount();
-
     Q_FOREACH( const Service& service, mWSDL.definitions().services() ) {
         Q_ASSERT(!service.name().isEmpty());
 
@@ -22,7 +20,8 @@ void Converter::convertServerService()
 
             QString className = KODE::Style::className(service.name());
             QString nameSpace;
-            if (bindingsCount > 1) {
+            if (uniqueBindings.count() > 1) {
+                // Multiple bindings: use Service::Binding as classname.
                 nameSpace = className;
                 className = KODE::Style::className(bindingName.localName());
             }
