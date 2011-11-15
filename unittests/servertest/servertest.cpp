@@ -669,7 +669,7 @@ public Q_SLOTS:
 
     void slotStats()
     {
-        qDebug() << m_server->numConnectedSockets() << "sockets connected";
+        qDebug() << m_server->numConnectedSockets() << "sockets connected. Messages received" << m_returnMessages.count();
     }
 
 private:
