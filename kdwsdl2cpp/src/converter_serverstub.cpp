@@ -8,77 +8,81 @@ using namespace KWSDL;
 
 void Converter::convertServerService()
 {
-    const Service service = mWSDL.definitions().service();
-    Q_ASSERT(!service.name().isEmpty());
+    const int bindingsCount = mWSDL.bindingsCount();
 
-    bool first = true;
-    QSet<QName> uniqueBindings = mWSDL.uniqueBindings();
-    Q_FOREACH( const QName& bindingName, uniqueBindings ) {
-        //qDebug() << "binding" << bindingName;
-        const Binding binding = mWSDL.findBinding( bindingName );
+    Q_FOREACH( const Service& service, mWSDL.definitions().services() ) {
+        Q_ASSERT(!service.name().isEmpty());
 
-        QString className = KODE::Style::className(service.name());
-        QString nameSpace;
-        if (uniqueBindings.count() > 1) {
-            nameSpace = className;
-            className = KODE::Style::className(bindingName.localName());
-        }
-        className += "ServerBase";
+        QSet<QName> uniqueBindings = mWSDL.uniqueBindings( service );
 
-        KODE::Class serverClass(className, nameSpace);
-        serverClass.addBaseClass(mQObject);
-        serverClass.addBaseClass(mKDSoapServerObjectInterface);
-        if (!Settings::self()->exportDeclaration().isEmpty())
-            serverClass.setExportDeclaration(Settings::self()->exportDeclaration());
-        serverClass.setNameSpace( Settings::self()->nameSpace() );
+        bool first = true;
+        Q_FOREACH( const QName& bindingName, uniqueBindings ) {
+            //qDebug() << "binding" << bindingName;
+            const Binding binding = mWSDL.findBinding( bindingName );
 
-        // Files included in the header
-        serverClass.addHeaderInclude("QObject");
-        serverClass.addHeaderInclude("KDSoapServerObjectInterface.h");
-
-        serverClass.addDeclarationMacro("Q_OBJECT");
-        serverClass.addDeclarationMacro("Q_INTERFACES(KDSoapServerObjectInterface)");
-
-        KODE::Function processRequestMethod(QString::fromLatin1("processRequest"), QString::fromLatin1("void"));
-        processRequestMethod.addArgument("const KDSoapMessage &request");
-        processRequestMethod.addArgument("KDSoapMessage &response");
-        processRequestMethod.addArgument("const QByteArray& soapAction");
-
-        KODE::Code body;
-        const QString responseNs = mWSDL.definitions().targetNamespace();
-        body.addLine("setResponseNamespace(QLatin1String(\"" + responseNs + "\"));" COMMENT);
-        body.addLine("const QByteArray method = request.name().toLatin1();");
-
-        PortType portType = mWSDL.findPortType( binding.portTypeName() );
-        //qDebug() << portType.name();
-        const Operation::List operations = portType.operations();
-        Q_FOREACH( const Operation& operation, operations ) {
-            const Operation::OperationType opType = operation.operationType();
-            switch(opType) {
-            case Operation::OneWayOperation:
-            case Operation::RequestResponseOperation: // the standard case
-            case Operation::SolicitResponseOperation:
-            case Operation::NotificationOperation:
-                generateServerMethod(body, binding, operation, serverClass, first);
-                break;
+            QString className = KODE::Style::className(service.name());
+            QString nameSpace;
+            if (bindingsCount > 1) {
+                nameSpace = className;
+                className = KODE::Style::className(bindingName.localName());
             }
-            first = false;
-        }
+            className += "ServerBase";
 
-        if (!first) {
-            body += "else {";
-            body.indent();
-        }
-        body += "KDSoapServerObjectInterface::processRequest(request, response, soapAction);" COMMENT;
-        if (!first) {
-            body.unindent();
-            body += "}";
-        }
-        processRequestMethod.setBody(body);
+            KODE::Class serverClass(className, nameSpace);
+            serverClass.addBaseClass(mQObject);
+            serverClass.addBaseClass(mKDSoapServerObjectInterface);
+            if (!Settings::self()->exportDeclaration().isEmpty())
+                serverClass.setExportDeclaration(Settings::self()->exportDeclaration());
+            serverClass.setNameSpace( Settings::self()->nameSpace() );
 
-        serverClass.addFunction(processRequestMethod);
+            // Files included in the header
+            serverClass.addHeaderInclude("QObject");
+            serverClass.addHeaderInclude("KDSoapServerObjectInterface.h");
 
-        mClasses += serverClass;
+            serverClass.addDeclarationMacro("Q_OBJECT");
+            serverClass.addDeclarationMacro("Q_INTERFACES(KDSoapServerObjectInterface)");
+
+            KODE::Function processRequestMethod(QString::fromLatin1("processRequest"), QString::fromLatin1("void"));
+            processRequestMethod.addArgument("const KDSoapMessage &request");
+            processRequestMethod.addArgument("KDSoapMessage &response");
+            processRequestMethod.addArgument("const QByteArray& soapAction");
+
+            KODE::Code body;
+            const QString responseNs = mWSDL.definitions().targetNamespace();
+            body.addLine("setResponseNamespace(QLatin1String(\"" + responseNs + "\"));" COMMENT);
+            body.addLine("const QByteArray method = request.name().toLatin1();");
+
+            PortType portType = mWSDL.findPortType( binding.portTypeName() );
+            //qDebug() << portType.name();
+            const Operation::List operations = portType.operations();
+            Q_FOREACH( const Operation& operation, operations ) {
+                const Operation::OperationType opType = operation.operationType();
+                switch(opType) {
+                case Operation::OneWayOperation:
+                case Operation::RequestResponseOperation: // the standard case
+                case Operation::SolicitResponseOperation:
+                case Operation::NotificationOperation:
+                    generateServerMethod(body, binding, operation, serverClass, first);
+                    break;
+                }
+                first = false;
+            }
+
+            if (!first) {
+                body += "else {";
+                body.indent();
+            }
+            body += "KDSoapServerObjectInterface::processRequest(request, response, soapAction);" COMMENT;
+            if (!first) {
+                body.unindent();
+                body += "}";
+            }
+            processRequestMethod.setBody(body);
+
+            serverClass.addFunction(processRequestMethod);
+
+            mClasses += serverClass;
+        }
     }
 }
 

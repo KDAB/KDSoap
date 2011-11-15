@@ -65,8 +65,8 @@ class KWSDL_EXPORT Definitions
     void setPortTypes( const PortType::List &portTypes );
     PortType::List portTypes() const;
 
-    void setService( const Service &service );
-    Service service() const;
+    //void setService( const Service &service );
+    Service::List services() const;
 
     void setType( const Type &type );
     Type type() const;
@@ -79,7 +79,7 @@ class KWSDL_EXPORT Definitions
     //Import::List mImports;
     Message::List mMessages;
     PortType::List mPortTypes;
-    Service mService;
+    Service::List mServices;
     Type mType;
 
     QString mTargetNamespace;

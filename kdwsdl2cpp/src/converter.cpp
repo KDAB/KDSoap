@@ -146,35 +146,37 @@ void Converter::cleanupUnusedTypes()
 
     QSet<QName> usedMessageNames;
     //QSet<QName> portTypeNames;
-    Q_FOREACH( const Port& port, definitions.service().ports() ) {
-        Binding binding = mWSDL.findBinding( port.bindingName() );
-        //portTypeNames.insert( binding.portTypeName() );
-        PortType portType = mWSDL.findPortType( binding.portTypeName() );
-        const Operation::List operations = portType.operations();
-        //qDebug() << "portType" << portType.name() << operations.count() << "operations";
-        Q_FOREACH( const Operation& operation, operations ) {
-            //qDebug() << "  operation" << operation.operationType() << operation.name();
-            switch(operation.operationType()) {
-            case Operation::OneWayOperation:
-                usedMessageNames.insert(operation.input().message());
-                break;
-            case Operation::RequestResponseOperation:
-            case Operation::SolicitResponseOperation:
-                usedMessageNames.insert(operation.input().message());
-                usedMessageNames.insert(operation.output().message());
-                break;
-            case Operation::NotificationOperation:
-                usedMessageNames.insert(operation.output().message());
-                break;
-            };
-            if ( binding.type() == Binding::SOAPBinding ) {
-              const SoapBinding soapBinding( binding.soapBinding() );
-              const SoapBinding::Operation op = soapBinding.operations().value( operation.name() );
-              Q_FOREACH(const SoapBinding::Header& header, op.inputHeaders()) {
-                  usedMessageNames.insert(header.message());
-              }
+    Q_FOREACH( const Service& service, definitions.services() ) {
+        Q_FOREACH( const Port& port, service.ports() ) {
+            Binding binding = mWSDL.findBinding( port.bindingName() );
+            //portTypeNames.insert( binding.portTypeName() );
+            qDebug() << "binding" << port.bindingName() << binding.name() << "port type" << binding.portTypeName();
+            PortType portType = mWSDL.findPortType( binding.portTypeName() );
+            const Operation::List operations = portType.operations();
+            //qDebug() << "portType" << portType.name() << operations.count() << "operations";
+            Q_FOREACH( const Operation& operation, operations ) {
+                //qDebug() << "  operation" << operation.operationType() << operation.name();
+                switch(operation.operationType()) {
+                case Operation::OneWayOperation:
+                    usedMessageNames.insert(operation.input().message());
+                    break;
+                case Operation::RequestResponseOperation:
+                case Operation::SolicitResponseOperation:
+                    usedMessageNames.insert(operation.input().message());
+                    usedMessageNames.insert(operation.output().message());
+                    break;
+                case Operation::NotificationOperation:
+                    usedMessageNames.insert(operation.output().message());
+                    break;
+                };
+                if ( binding.type() == Binding::SOAPBinding ) {
+                    const SoapBinding soapBinding( binding.soapBinding() );
+                    const SoapBinding::Operation op = soapBinding.operations().value( operation.name() );
+                    Q_FOREACH(const SoapBinding::Header& header, op.inputHeaders()) {
+                        usedMessageNames.insert(header.message());
+                    }
+                }
             }
-
         }
     }
 
