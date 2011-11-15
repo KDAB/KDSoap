@@ -1,0 +1,1409 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions name="DWService" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:tns="http://tempuri.org/" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex">
+    <wsdl:types>
+        <xsd:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+                <xsd:element name="Login">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element minOccurs="0" name="userName" nillable="true" type="xsd:string"/>
+                            <xsd:element minOccurs="0" name="password" nillable="true" type="xsd:string"/>
+                            <xsd:element minOccurs="0" name="organization" nillable="true" type="xsd:string"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element name="LoginResponse">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element minOccurs="0" name="LoginResult" nillable="true" type="q1:ClientServiceSession" xmlns:q1="http://schemas.datacontract.org/2004/07/DocuWare.WebServices.GAPIFunctionality.DataContracts"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element name="Logoff">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element minOccurs="0" name="clientSession" nillable="true" type="q2:ClientServiceSession" xmlns:q2="http://schemas.datacontract.org/2004/07/DocuWare.WebServices.GAPIFunctionality.DataContracts"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element name="LogoffResponse">
+                    <xsd:complexType>
+                        <xsd:sequence/>
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element name="HasValidLicense">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element minOccurs="0" name="clientSession" nillable="true" type="q3:ClientServiceSession" xmlns:q3="http://schemas.datacontract.org/2004/07/DocuWare.WebServices.GAPIFunctionality.DataContracts">
+                            </xsd:element>
+                            <xsd:element minOccurs="0" name="productType" type="q4:ProductTypes" xmlns:q4="http://schemas.datacontract.org/2004/07/DocuWare.Gapi.Common">
+                            </xsd:element>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element name="HasValidLicenseResponse">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element minOccurs="0" name="HasValidLicenseResult" type="xsd:boolean"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element name="GetAvailableFileCabinets">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element minOccurs="0" name="clientSession" nillable="true" type="q5:ClientServiceSession" xmlns:q5="http://schemas.datacontract.org/2004/07/DocuWare.WebServices.GAPIFunctionality.DataContracts"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element name="GetAvailableFileCabinetsResponse">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element minOccurs="0" name="GetAvailableFileCabinetsResult" nillable="true" type="q6:ArrayOfFileCabinet" xmlns:q6="http://schemas.datacontract.org/2004/07/DocuWare.WebServices.GAPIFunctionality.DataContracts"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element name="GetAvailableStamps">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element minOccurs="0" name="clientSession" nillable="true" type="q7:ClientServiceSession" xmlns:q7="http://schemas.datacontract.org/2004/07/DocuWare.WebServices.GAPIFunctionality.DataContracts"/>
+                            <xsd:element minOccurs="0" name="scope" type="q8:StampScope" xmlns:q8="http://schemas.datacontract.org/2004/07/DocuWare.WebServices.GAPIFunctionality.DataContracts"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element name="GetAvailableStampsResponse">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element minOccurs="0" name="GetAvailableStampsResult" nillable="true" type="q9:ArrayOfStamp" xmlns:q9="http://schemas.datacontract.org/2004/07/DocuWare.WebServices.GAPIFunctionality.DataContracts"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element name="GetStampDialog">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element minOccurs="0" name="clientSession" nillable="true" type="q10:ClientServiceSession" xmlns:q10="http://schemas.datacontract.org/2004/07/DocuWare.WebServices.GAPIFunctionality.DataContracts" >
+                            </xsd:element>
+                            <xsd:element minOccurs="0" name="stamp" nillable="true" type="q11:Stamp" xmlns:q11="http://schemas.datacontract.org/2004/07/DocuWare.WebServices.GAPIFunctionality.DataContracts" >
+                            </xsd:element>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element name="GetStampDialogResponse">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element minOccurs="0" name="GetStampDialogResult" nillable="true" type="q12:DialogDefinition" xmlns:q12="http://schemas.datacontract.org/2004/07/DocuWare.WebServices.GAPIFunctionality.DataContracts"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element name="GetStampPicture">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element minOccurs="0" name="clientSession" nillable="true" type="q13:ClientServiceSession" xmlns:q13="http://schemas.datacontract.org/2004/07/DocuWare.WebServices.GAPIFunctionality.DataContracts"/>
+                            <xsd:element minOccurs="0" name="stamp" nillable="true" type="q14:Stamp" xmlns:q14="http://schemas.datacontract.org/2004/07/DocuWare.WebServices.GAPIFunctionality.DataContracts"/>
+                            <xsd:element minOccurs="0" name="hasColor" type="xsd:boolean"/>
+                            <xsd:element minOccurs="0" name="color" type="q15:Color" xmlns:q15="http://schemas.datacontract.org/2004/07/System.Drawing"/>
+                            <xsd:element minOccurs="0" name="dpiX" type="xsd:int"/>
+                            <xsd:element minOccurs="0" name="dpiY" type="xsd:int"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element name="GetStampPictureResponse">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element minOccurs="0" name="GetStampPictureResult" nillable="true" type="xsd:string"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element name="GetDialogs">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element minOccurs="0" name="clientSession" nillable="true" type="q16:ClientServiceSession" xmlns:q16="http://schemas.datacontract.org/2004/07/DocuWare.WebServices.GAPIFunctionality.DataContracts"/>
+                            <xsd:element minOccurs="0" name="type" type="q17:DialogType" xmlns:q17="http://schemas.datacontract.org/2004/07/DocuWare.Gapi.Dialog"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element name="GetDialogsResponse">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element minOccurs="0" name="GetDialogsResult" nillable="true" type="q18:ArrayOfDialog" xmlns:q18="http://schemas.datacontract.org/2004/07/DocuWare.WebServices.GAPIFunctionality.DataContracts"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element name="GetDialogDefinition">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element minOccurs="0" name="clientSession" nillable="true" type="q19:ClientServiceSession" xmlns:q19="http://schemas.datacontract.org/2004/07/DocuWare.WebServices.GAPIFunctionality.DataContracts"/>
+                            <xsd:element minOccurs="0" name="dialog" nillable="true" type="q20:Dialog" xmlns:q20="http://schemas.datacontract.org/2004/07/DocuWare.WebServices.GAPIFunctionality.DataContracts"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element name="GetDialogDefinitionResponse">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element minOccurs="0" name="GetDialogDefinitionResult" nillable="true" type="q21:DialogDefinition" xmlns:q21="http://schemas.datacontract.org/2004/07/DocuWare.WebServices.GAPIFunctionality.DataContracts">
+                            </xsd:element>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </xsd:schema>
+            <xsd:schema elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/DocuWare.WebServices.GAPIFunctionality.DataContracts" xmlns:tns="http://schemas.datacontract.org/2004/07/DocuWare.WebServices.GAPIFunctionality.DataContracts" xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/">
+                <xsd:complexType name="ClientServiceSession">
+                    <xsd:complexContent mixed="false">
+                        <xsd:extension base="tns:SessionBase">
+                            <xsd:sequence/>
+                        </xsd:extension>
+                    </xsd:complexContent>
+                </xsd:complexType>
+                <xsd:element name="ClientServiceSession" nillable="true" type="tns:ClientServiceSession"/>
+                <xsd:complexType name="SessionBase">
+                    <xsd:sequence>
+                        <xsd:element minOccurs="0" name="SessionID" type="ser:guid"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+                <xsd:element name="SessionBase" nillable="true" type="tns:SessionBase"/>
+                <xsd:complexType name="ArrayOfFileCabinet">
+                    <xsd:sequence>
+                        <xsd:element minOccurs="0" maxOccurs="unbounded" name="FileCabinet" nillable="true" type="tns:FileCabinet"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+                <xsd:element name="ArrayOfFileCabinet" nillable="true" type="tns:ArrayOfFileCabinet"/>
+                <xsd:complexType name="FileCabinet">
+                    <xsd:sequence>
+                        <xsd:element minOccurs="0" name="DBName" nillable="true" type="xsd:string"/>
+                        <xsd:element minOccurs="0" name="Id" type="ser:guid"/>
+                        <xsd:element minOccurs="0" name="Name" nillable="true" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+                <xsd:element name="FileCabinet" nillable="true" type="tns:FileCabinet"/>
+                <xsd:simpleType name="StampScope" >
+                    <xsd:restriction base="xsd:string">
+                        <xsd:enumeration value="Public"/>
+                        <xsd:enumeration value="Private"/>
+                        <xsd:enumeration value="All"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+                <xsd:element name="StampScope" nillable="true" type="tns:StampScope"/>
+                <xsd:complexType name="ArrayOfStamp">
+                    <xsd:sequence>
+                        <xsd:element minOccurs="0" maxOccurs="unbounded" name="Stamp" nillable="true" type="tns:Stamp"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+                <xsd:element name="ArrayOfStamp" nillable="true" type="tns:ArrayOfStamp"/>
+                <xsd:complexType name="Stamp">
+                    <xsd:complexContent mixed="false">
+                        <xsd:extension base="tns:DataObject">
+                            <xsd:sequence>
+                                <xsd:element minOccurs="0" name="Type" type="q22:StampType" xmlns:q22="http://schemas.datacontract.org/2004/07/DocuWare.Gapi.Settings">
+                                </xsd:element>
+                            </xsd:sequence>
+                        </xsd:extension>
+                    </xsd:complexContent>
+                </xsd:complexType>
+                <xsd:element name="Stamp" nillable="true" type="tns:Stamp"/>
+                <xsd:complexType name="DataObject">
+                    <xsd:sequence>
+                        <xsd:element minOccurs="0" name="Guid" nillable="true" type="xsd:string"/>
+                        <xsd:element minOccurs="0" name="Name" nillable="true" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+                <xsd:element name="DataObject" nillable="true" type="tns:DataObject">
+                </xsd:element>
+                <xsd:complexType name="DialogDefinition">
+                    <xsd:sequence>
+                        <xsd:element minOccurs="0" name="Dialog" nillable="true" type="tns:Dialog"/>
+                        <xsd:element minOccurs="0" name="DialogFields" nillable="true" type="tns:ArrayOfDialogField"/>
+                        <xsd:element minOccurs="0" name="IsDefault" type="xsd:boolean"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+                <xsd:element name="DialogDefinition" nillable="true" type="tns:DialogDefinition"/>
+                <xsd:complexType name="Dialog">
+                    <xsd:complexContent mixed="false">
+                        <xsd:extension base="tns:DataObject">
+                            <xsd:sequence>
+                                <xsd:element minOccurs="0" name="FileCabinet" nillable="true" type="tns:FileCabinet"/>
+                                <xsd:element minOccurs="0" name="Type" type="q23:DialogType" xmlns:q23="http://schemas.datacontract.org/2004/07/DocuWare.Gapi.Dialog"/>
+                            </xsd:sequence>
+                        </xsd:extension>
+                    </xsd:complexContent>
+                </xsd:complexType>
+                <xsd:element name="Dialog" nillable="true" type="tns:Dialog"/>
+                <xsd:complexType name="ArrayOfDialogField">
+                    <xsd:sequence>
+                        <xsd:element minOccurs="0" maxOccurs="unbounded" name="DialogField" nillable="true" type="tns:DialogField"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+                <xsd:element name="ArrayOfDialogField" nillable="true" type="tns:ArrayOfDialogField"/>
+                <xsd:complexType name="DialogField">
+                    <xsd:sequence>
+                        <xsd:element minOccurs="0" name="DBName" nillable="true" type="xsd:string"/>
+                        <xsd:element minOccurs="0" name="FieldType" type="q24:DialogFieldType" xmlns:q24="http://schemas.datacontract.org/2004/07/DocuWare.Gapi.Dialog"/>
+                        <xsd:element minOccurs="0" name="FileCabinetField" nillable="true" type="tns:Field"/>
+                        <xsd:element minOccurs="0" name="KeywordValues" nillable="true" type="q25:ArrayOfstring" xmlns:q25="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/>
+                        <xsd:element minOccurs="0" name="MaxValue" nillable="true" type="xsd:string"/>
+                        <xsd:element minOccurs="0" name="Name" nillable="true" type="xsd:string"/>
+                        <xsd:element minOccurs="0" name="Readonly" type="xsd:boolean"/>
+                        <xsd:element minOccurs="0" name="UseMinMaxValues" type="xsd:boolean"/>
+                        <xsd:element minOccurs="0" name="Value" nillable="true" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+                <xsd:element name="DialogField" nillable="true" type="tns:DialogField"/>
+                <xsd:complexType name="Field">
+                    <xsd:sequence>
+                        <xsd:element minOccurs="0" name="DbName" nillable="true" type="xsd:string"/>
+                        <xsd:element minOccurs="0" name="DecimalPlaces" type="xsd:int"/>
+                        <xsd:element minOccurs="0" name="Label" nillable="true" type="xsd:string"/>
+                        <xsd:element minOccurs="0" name="Type" type="tns:FieldType"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+                <xsd:element name="Field" nillable="true" type="tns:Field"/>
+                <xsd:simpleType name="FieldType">
+                    <xsd:restriction base="xsd:string">
+                        <xsd:enumeration value="Text">
+                            <xsd:annotation>
+                                <xsd:appinfo>
+                                    <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">1</EnumerationValue>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                        </xsd:enumeration>
+                        <xsd:enumeration value="Numeric">
+                            <xsd:annotation>
+                                <xsd:appinfo>
+                                    <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">2</EnumerationValue>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                        </xsd:enumeration>
+                        <xsd:enumeration value="Date">
+                            <xsd:annotation>
+                                <xsd:appinfo>
+                                    <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">4</EnumerationValue>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                        </xsd:enumeration>
+                        <xsd:enumeration value="Keyword">
+                            <xsd:annotation>
+                                <xsd:appinfo>
+                                    <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">5</EnumerationValue>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                        </xsd:enumeration>
+                        <xsd:enumeration value="Memo">
+                            <xsd:annotation>
+                                <xsd:appinfo>
+                                    <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">3</EnumerationValue>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                        </xsd:enumeration>
+                    </xsd:restriction>
+                </xsd:simpleType>
+                <xsd:element name="FieldType" nillable="true" type="tns:FieldType"/>
+                <xsd:complexType name="ArrayOfDialog">
+                    <xsd:sequence>
+                        <xsd:element minOccurs="0" maxOccurs="unbounded" name="Dialog" nillable="true" type="tns:Dialog"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+                <xsd:element name="ArrayOfDialog" nillable="true" type="tns:ArrayOfDialog"/>
+            </xsd:schema>
+            <xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://schemas.microsoft.com/2003/10/Serialization/">
+                <xs:element name="anyType" nillable="true" type="xs:anyType"/>
+                <xs:element name="anyURI" nillable="true" type="xs:anyURI"/>
+                <xs:element name="base64Binary" nillable="true" type="xs:base64Binary"/>
+                <xs:element name="boolean" nillable="true" type="xs:boolean"/>
+                <xs:element name="byte" nillable="true" type="xs:byte"/>
+                <xs:element name="dateTime" nillable="true" type="xs:dateTime"/>
+                <xs:element name="decimal" nillable="true" type="xs:decimal"/>
+                <xs:element name="double" nillable="true" type="xs:double"/>
+                <xs:element name="float" nillable="true" type="xs:float"/>
+                <xs:element name="int" nillable="true" type="xs:int"/>
+                <xs:element name="long" nillable="true" type="xs:long"/>
+                <xs:element name="QName" nillable="true" type="xs:QName"/>
+                <xs:element name="short" nillable="true" type="xs:short"/>
+                <xs:element name="string" nillable="true" type="xs:string"/>
+                <xs:element name="unsignedByte" nillable="true" type="xs:unsignedByte"/>
+                <xs:element name="unsignedInt" nillable="true" type="xs:unsignedInt"/>
+                <xs:element name="unsignedLong" nillable="true" type="xs:unsignedLong"/>
+                <xs:element name="unsignedShort" nillable="true" type="xs:unsignedShort"/>
+                <xs:element name="char" nillable="true" type="tns:char"/>
+                <xs:simpleType name="char">
+                    <xs:restriction base="xs:int"/>
+                </xs:simpleType>
+                <xs:element name="duration" nillable="true" type="tns:duration"/>
+                <xs:simpleType name="duration">
+                    <xs:restriction base="xs:duration">
+                        <xs:pattern value="\-?P(\d*D)?(T(\d*H)?(\d*M)?(\d*(\.\d*)?S)?)?"/>
+                        <xs:minInclusive value="-P10675199DT2H48M5.4775808S"/>
+                        <xs:maxInclusive value="P10675199DT2H48M5.4775807S"/>
+                    </xs:restriction>
+                </xs:simpleType>
+                <xs:element name="guid" nillable="true" type="tns:guid"/>
+                <xs:simpleType name="guid">
+                    <xs:restriction base="xs:string">
+                        <xs:pattern value="[\da-fA-F]{8}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{12}"/>
+                    </xs:restriction>
+                </xs:simpleType>
+                <xs:attribute name="FactoryType" type="xs:QName"/>
+                <xs:attribute name="Id" type="xs:ID"/>
+                <xs:attribute name="Ref" type="xs:IDREF"/>
+            </xs:schema>
+            <xsd:schema elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/DocuWare.Gapi.Settings" xmlns:tns="http://schemas.datacontract.org/2004/07/DocuWare.Gapi.Settings">
+                <xsd:simpleType name="StampType">
+                    <xsd:restriction base="xsd:string">
+                        <xsd:enumeration value="Text"/>
+                        <xsd:enumeration value="Image"/>
+                        <xsd:enumeration value="Freehand"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+                <xsd:element name="StampType" nillable="true" type="tns:StampType"/>
+            </xsd:schema>
+            <xsd:schema elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/DocuWare.Gapi.Dialog" xmlns:tns="http://schemas.datacontract.org/2004/07/DocuWare.Gapi.Dialog">
+                <xsd:simpleType name="DialogType">
+                    <xsd:restriction base="xsd:string">
+                        <xsd:enumeration value="Search"/>
+                        <xsd:enumeration value="Store"/>
+                        <xsd:enumeration value="Info"/>
+                        <xsd:enumeration value="Resultlist"/>
+                        <xsd:enumeration value="Resulttree"/>
+                        <xsd:enumeration value="Stamp"/>
+                        <xsd:enumeration value="TaskList"/>
+                        <xsd:enumeration value="Viewer"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+                <xsd:element name="DialogType" nillable="true" type="tns:DialogType"/>
+                <xsd:simpleType name="DialogFieldType">
+                    <xsd:restriction base="xsd:string">
+                        <xsd:enumeration value="Index"/>
+                        <xsd:enumeration value="System"/>
+                        <xsd:enumeration value="ExtendedSystem"/>
+                        <xsd:enumeration value="Fulltext"/>
+                        <xsd:enumeration value="Stamp"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+                <xsd:element name="DialogFieldType" nillable="true" type="tns:DialogFieldType"/>
+            </xsd:schema>
+            <xsd:schema elementFormDefault="qualified" targetNamespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" xmlns:tns="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+                <xsd:complexType name="ArrayOfstring">
+                    <xsd:sequence>
+                        <xsd:element minOccurs="0" maxOccurs="unbounded" name="string" nillable="true" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+                <xsd:element name="ArrayOfstring" nillable="true" type="tns:ArrayOfstring"/>
+            </xsd:schema>
+            <xsd:schema elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/DocuWare.Gapi.Common" xmlns:tns="http://schemas.datacontract.org/2004/07/DocuWare.Gapi.Common">
+                <xsd:simpleType name="ProductTypes">
+                    <xsd:restriction base="xsd:string">
+                        <xsd:enumeration value="DefaultApplication"/>
+                        <xsd:enumeration value="AdminTool">
+                            <xsd:annotation>
+                                <xsd:appinfo>
+                                    <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">5</EnumerationValue>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                        </xsd:enumeration>
+                        <xsd:enumeration value="ContentServer">
+                            <xsd:annotation>
+                                <xsd:appinfo>
+                                    <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">128</EnumerationValue>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                        </xsd:enumeration>
+                        <xsd:enumeration value="ProcessServer">
+                            <xsd:annotation>
+                                <xsd:appinfo>
+                                    <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">129</EnumerationValue>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                        </xsd:enumeration>
+                        <xsd:enumeration value="SettingsServer">
+                            <xsd:annotation>
+                                <xsd:appinfo>
+                                    <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">130
+                                    </EnumerationValue>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                        </xsd:enumeration>
+                        <xsd:enumeration value="SAPHttpServer">
+                            <xsd:annotation>
+                                <xsd:appinfo>
+                                    <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">131</EnumerationValue>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                        </xsd:enumeration>
+                        <xsd:enumeration value="WebInstanceServer">
+                            <xsd:annotation>
+                                <xsd:appinfo>
+                                    <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">132</EnumerationValue>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                        </xsd:enumeration>
+                        <xsd:enumeration value="COLDREAD">
+                            <xsd:annotation>
+                                <xsd:appinfo>
+                                    <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">2</EnumerationValue>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                        </xsd:enumeration>
+                        <xsd:enumeration value="AutoIndex">
+                            <xsd:annotation>
+                                <xsd:appinfo>
+                                    <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">3</EnumerationValue>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                        </xsd:enumeration>
+                        <xsd:enumeration value="DocuWareClient">
+                            <xsd:annotation>
+                                <xsd:appinfo>
+                                    <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">20</EnumerationValue>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                        </xsd:enumeration>
+                        <xsd:enumeration value="Recognition">
+                            <xsd:annotation>
+                                <xsd:appinfo>
+                                    <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">21</EnumerationValue>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                        </xsd:enumeration>
+                        <xsd:enumeration value="InternetServer">
+                            <xsd:annotation>
+                                <xsd:appinfo>
+                                    <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">22</EnumerationValue>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                        </xsd:enumeration>
+                        <xsd:enumeration value="DocuWareBusinessClient">
+                            <xsd:annotation>
+                                <xsd:appinfo>
+                                    <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">26</EnumerationValue>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                        </xsd:enumeration>
+                        <xsd:enumeration value="CDMaker">
+                            <xsd:annotation>
+                                <xsd:appinfo>
+                                    <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">28</EnumerationValue>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                        </xsd:enumeration>
+                        <xsd:enumeration value="LINK">
+                            <xsd:annotation>
+                                <xsd:appinfo>
+                                    <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">29</EnumerationValue>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                        </xsd:enumeration>
+                        <xsd:enumeration value="ConnectR3">
+                            <xsd:annotation>
+                                <xsd:appinfo>
+                                    <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">30</EnumerationValue>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                        </xsd:enumeration>
+                        <xsd:enumeration value="CDSERVICE">
+                            <xsd:annotation>
+                                <xsd:appinfo>
+                                    <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">32</EnumerationValue>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                        </xsd:enumeration>
+                        <xsd:enumeration value="ActiveImport">
+                            <xsd:annotation>
+                                <xsd:appinfo>
+                                    <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialzation/">33</EnumerationValue>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                        </xsd:enumeration>
+                        <xsd:enumeration value="Administrator">
+                            <xsd:annotation>
+                                <xsd:appinfo>
+                                    <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">34
+                                    </EnumerationValue>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                        </xsd:enumeration>
+                        <xsd:enumeration value="DocuWareSite">
+                            <xsd:annotation>
+                                <xsd:appinfo>
+                                    <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">37</EnumerationValue>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                        </xsd:enumeration>
+                        <xsd:enumeration value="ConnectNotes">
+                            <xsd:annotation>
+                                <xsd:appinfo>
+                                    <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">39</EnumerationValue>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                        </xsd:enumeration>
+                        <xsd:enumeration value="Reader">
+                            <xsd:annotation>
+                                <xsd:appinfo>
+                                    <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">41</EnumerationValue>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                        </xsd:enumeration>
+                        <xsd:enumeration value="ISISPro">
+                            <xsd:annotation>
+                                <xsd:appinfo>
+                                    <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">42</EnumerationValue>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                        </xsd:enumeration>
+                        <xsd:enumeration value="ContentFolder">
+                            <xsd:annotation>
+                                <xsd:appinfo>
+                                    <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">45</EnumerationValue>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                        </xsd:enumeration>
+                        <xsd:enumeration value="ConnectSPS">
+                            <xsd:annotation>
+                                <xsd:appinfo>
+                                    <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">46</EnumerationValue>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                        </xsd:enumeration>
+                        <xsd:enumeration value="TIFFMAKER">
+                            <xsd:annotation>
+                                <xsd:appinfo>
+                                    <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">47</EnumerationValue>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                        </xsd:enumeration>
+                        <xsd:enumeration value="DW4AdminTool">
+                            <xsd:annotation>
+                                <xsd:appinfo>
+                                    <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">48</EnumerationValue>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                        </xsd:enumeration>
+                        <xsd:enumeration value="ActiveImportEnh">
+                            <xsd:annotation>
+                                <xsd:appinfo>
+                                    <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">49</EnumerationValue>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                        </xsd:enumeration>
+                        <xsd:enumeration value="Viewer">
+                            <xsd:annotation>
+                                <xsd:appinfo>
+                                    <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">50</EnumerationValue>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                        </xsd:enumeration>
+                        <xsd:enumeration value="RecognitionEnh">
+                            <xsd:annotation>
+                                <xsd:appinfo>
+                                    <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">51</EnumerationValue>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                        </xsd:enumeration>
+                        <xsd:enumeration value="ConnectToECopy">
+                            <xsd:annotation>
+                                <xsd:appinfo>
+                                    <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">52</EnumerationValue>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                        </xsd:enumeration>
+                        <xsd:enumeration value="SqlServerClient">
+                            <xsd:annotation>
+                                <xsd:appinfo>
+                                    <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">60</EnumerationValue>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                        </xsd:enumeration>
+                        <xsd:enumeration value="OfficeAddIn">
+                            <xsd:annotation>
+                                <xsd:appinfo>
+                                    <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">61</EnumerationValue>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                        </xsd:enumeration>
+                        <xsd:enumeration value="MAPISupport">
+                            <xsd:annotation>
+                                <xsd:appinfo>
+                                    <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">62</EnumerationValue>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                        </xsd:enumeration>
+                        <xsd:enumeration value="GAPI">
+                            <xsd:annotation>
+                                <xsd:appinfo>
+                                    <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">63</EnumerationValue>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                        </xsd:enumeration>
+                        <xsd:enumeration value="ROWebInstanceClient">
+                            <xsd:annotation>
+                                <xsd:appinfo>
+                                    <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">64</EnumerationValue>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                        </xsd:enumeration>
+                        <xsd:enumeration value="RWWebInstanceClient">
+                            <xsd:annotation>
+                                <xsd:appinfo>
+                                    <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">65</EnumerationValue>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                        </xsd:enumeration>
+                        <xsd:enumeration value="WebInstanceClient">
+                            <xsd:annotation>
+                                <xsd:appinfo>
+                                    <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">66</EnumerationValue>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                        </xsd:enumeration>
+                        <xsd:enumeration value="CONNECTToRicoh">
+                            <xsd:annotation>
+                                <xsd:appinfo>
+                                    <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">53</EnumerationValue>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                        </xsd:enumeration>
+                        <xsd:enumeration value="CONNECTToToshiba">
+                            <xsd:annotation>
+                                <xsd:appinfo>
+                                    <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">54</EnumerationValue>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                        </xsd:enumeration>
+                        <xsd:enumeration value="CONNECTToXerox">
+                            <xsd:annotation>
+                                <xsd:appinfo>
+                                    <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">55</EnumerationValue>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                        </xsd:enumeration>
+                        <xsd:enumeration value="CONNECTToSharp">
+                            <xsd:annotation>
+                                <xsd:appinfo>
+                                    <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">56</EnumerationValue>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                        </xsd:enumeration>
+                        <xsd:enumeration value="CONNECTToMOSS">
+                            <xsd:annotation>
+                                <xsd:appinfo>
+                                    <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">57</EnumerationValue>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                        </xsd:enumeration>
+                    </xsd:restriction>
+                </xsd:simpleType>
+                <xsd:element name="ProductTypes" nillable="true" type="tns:ProductTypes"/>
+            </xsd:schema>
+            <xsd:schema elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/System.Drawing" xmlns:tns="http://schemas.datacontract.org/2004/07/System.Drawing">
+                <xsd:complexType name="Color">
+                    <xsd:annotation>
+                        <xsd:appinfo>
+                            <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                    <xsd:sequence>
+                        <xsd:element name="knownColor" type="xsd:short"/>
+                        <xsd:element name="name" nillable="true" type="xsd:string"/>
+                        <xsd:element name="state" type="xsd:short"/>
+                        <xsd:element name="value" type="xsd:long"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+                <xsd:element name="Color" nillable="true" type="tns:Color"/>
+            </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="IDWService_Login_InputMessage">
+        <wsdl:part name="parameters" element="tns:Login"/>
+    </wsdl:message>
+    <wsdl:message name="IDWService_Login_OutputMessage">
+        <wsdl:part name="parameters" element="tns:LoginResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IDWService_Logoff_InputMessage">
+        <wsdl:part name="parameters" element="tns:Logoff"/>
+    </wsdl:message>
+    <wsdl:message name="IDWService_Logoff_OutputMessage">
+        <wsdl:part name="parameters" element="tns:LogoffResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IDWService_HasValidLicense_InputMessage">
+        <wsdl:part name="parameters" element="tns:HasValidLicense"/>
+    </wsdl:message>
+    <wsdl:message name="IDWService_HasValidLicense_OutputMessage">
+        <wsdl:part name="parameters" element="tns:HasValidLicenseResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IDWService_GetAvailableFileCabinets_InputMessage">
+        <wsdl:part name="parameters" element="tns:GetAvailableFileCabinets"/>
+    </wsdl:message>
+    <wsdl:message name="IDWService_GetAvailableFileCabinets_OutputMessage">
+        <wsdl:part name="parameters" element="tns:GetAvailableFileCabinetsResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IDWService_GetAvailableStamps_InputMessage">
+        <wsdl:part name="parameters" element="tns:GetAvailableStamps"/>
+    </wsdl:message>
+    <wsdl:message name="IDWService_GetAvailableStamps_OutputMessage">
+        <wsdl:part name="parameters" element="tns:GetAvailableStampsResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IDWService_GetStampDialog_InputMessage">
+        <wsdl:part name="parameters" element="tns:GetStampDialog"/>
+    </wsdl:message>
+    <wsdl:message name="IDWService_GetStampDialog_OutputMessage">
+        <wsdl:part name="parameters" element="tns:GetStampDialogResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IDWService_GetStampPicture_InputMessage">
+        <wsdl:part name="parameters" element="tns:GetStampPicture"/>
+    </wsdl:message>
+    <wsdl:message name="IDWService_GetStampPicture_OutputMessage">
+        <wsdl:part name="parameters" element="tns:GetStampPictureResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IDWService_GetDialogs_InputMessage">
+        <wsdl:part name="parameters" element="tns:GetDialogs"/>
+    </wsdl:message>
+    <wsdl:message name="IDWService_GetDialogs_OutputMessage">
+        <wsdl:part name="parameters" element="tns:GetDialogsResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IDWService_GetDialogDefinition_InputMessage">
+        <wsdl:part name="parameters" element="tns:GetDialogDefinition"/>
+    </wsdl:message>
+    <wsdl:message name="IDWService_GetDialogDefinition_OutputMessage">
+        <wsdl:part name="parameters" element="tns:GetDialogDefinitionResponse"/>
+    </wsdl:message>
+    <wsdl:portType msc:usingSession="false" name="IDWService">
+        <wsdl:operation name="Login">
+            <wsdl:input wsaw:Action="http://tempuri.org/IDWService/Login" message="tns:IDWService_Login_InputMessage"/>
+            <wsdl:output wsaw:Action="http://tempuri.org/IDWService/LoginResponse" message="tns:IDWService_Login_OutputMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="Logoff">
+            <wsdl:input wsaw:Action="http://tempuri.org/IDWService/Logoff" message="tns:IDWService_Logoff_InputMessage"/>
+            <wsdl:output wsaw:Action="http://tempuri.org/IDWService/LogoffResponse" message="tns:IDWService_Logoff_OutputMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="HasValidLicense">
+            <wsdl:input wsaw:Action="http://tempuri.org/IDWService/HasValidLicense" message="tns:IDWService_HasValidLicense_InputMessage"/>
+            <wsdl:output wsaw:Action="http://tempuri.org/IDWService/HasValidLicenseResponse" message="tns:IDWService_HasValidLicense_OutputMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="GetAvailableFileCabinets">
+            <wsdl:input wsaw:Action="http://tempuri.org/IDWService/GetAvailableFileCabinets" message="tns:IDWService_GetAvailableFileCabinets_InputMessage"/>
+            <wsdl:output wsaw:Action="http://tempuri.org/IDWService/GetAvailableFileCabinetsResponse" message="tns:IDWService_GetAvailableFileCabinets_OutputMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="GetAvailableStamps">
+            <wsdl:input wsaw:Action="http://tempuri.org/IDWService/GetAvailableStamps" message="tns:IDWService_GetAvailableStamps_InputMessage"/>
+            <wsdl:output wsaw:Action="http://tempuri.org/IDWService/GetAvailableStampsResponse" message="tns:IDWService_GetAvailableStamps_OutputMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="GetStampDialog">
+            <wsdl:input wsaw:Action="http://tempuri.org/IDWService/GetStampDialog" message="tns:IDWService_GetStampDialog_InputMessage"/>
+            <wsdl:output wsaw:Action="http://tempuri.org/IDWService/GetStampDialogResponse" message="tns:IDWService_GetStampDialog_OutputMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="GetStampPicture">
+            <wsdl:input wsaw:Action="http://tempuri.org/IDWService/GetStampPicture" message="tns:IDWService_GetStampPicture_InputMessage"/>
+            <wsdl:output wsaw:Action="http://tempuri.org/IDWService/GetStampPictureResponse" message="tns:IDWService_GetStampPicture_OutputMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="GetDialogs">
+            <wsdl:input wsaw:Action="http://tempuri.org/IDWService/GetDialogs" message="tns:IDWService_GetDialogs_InputMessage"/>
+            <wsdl:output wsaw:Action="http://tempuri.org/IDWService/GetDialogsResponse" message="tns:IDWService_GetDialogs_OutputMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="GetDialogDefinition">
+            <wsdl:input wsaw:Action="http://tempuri.org/IDWService/GetDialogDefinition" message="tns:IDWService_GetDialogDefinition_InputMessage"/>
+            <wsdl:output wsaw:Action="http://tempuri.org/IDWService/GetDialogDefinitionResponse" message="tns:IDWService_GetDialogDefinition_OutputMessage"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="BasicHttpBinding_IDWService" type="tns:IDWService">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="Login">
+            <soap:operation soapAction="http://tempuri.org/IDWService/Login" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="Logoff">
+            <soap:operation soapAction="http://tempuri.org/IDWService/Logoff" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="HasValidLicense">
+            <soap:operation soapAction="http://tempuri.org/IDWService/HasValidLicense" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="GetAvailableFileCabinets">
+            <soap:operation soapAction="http://tempuri.org/IDWService/GetAvailableFileCabinets" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="GetAvailableStamps">
+            <soap:operation soapAction="http://tempuri.org/IDWService/GetAvailableStamps" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="GetStampDialog">
+            <soap:operation soapAction="http://tempuri.org/IDWService/GetStampDialog" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="GetStampPicture">
+            <soap:operation soapAction="http://tempuri.org/IDWService/GetStampPicture" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="GetDialogs">
+            <soap:operation soapAction="http://tempuri.org/IDWService/GetDialogs" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="GetDialogDefinition">
+            <soap:operation soapAction="http://tempuri.org/IDWService/GetDialogDefinition" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="DWService">
+        <wsdl:port name="BasicHttpBinding_IDWService" binding="tns:BasicHttpBinding_IDWService">
+            <soap:address location="http://dw-pr-2008-en:9007/DWService"/>
+        </wsdl:port>
+    </wsdl:service>
+  <wsdl:types>
+    <xsd:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+      <xsd:element name="Connect">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element xmlns:q1="http://schemas.datacontract.org/2004/07/DocuWare.WebServices.GAPIFunctionality.DataContracts" minOccurs="0" name="clientSession" nillable="true" type="q1:ClientServiceSession"/>
+            <xsd:element xmlns:q2="http://schemas.datacontract.org/2004/07/DocuWare.WebServices.GAPIFunctionality.DataContracts" minOccurs="0" name="fileCabinet" nillable="true" type="q2:FileCabinet"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="ConnectResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element xmlns:q3="http://schemas.datacontract.org/2004/07/DocuWare.WebServices.GAPIFunctionality.DataContracts" minOccurs="0" name="ConnectResult" nillable="true" type="q3:FileCabinetSession"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="Disconnect">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element xmlns:q4="http://schemas.datacontract.org/2004/07/DocuWare.WebServices.GAPIFunctionality.DataContracts" minOccurs="0" name="fcSession" nillable="true" type="q4:FileCabinetSession"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="DisconnectResponse">
+        <xsd:complexType>
+          <xsd:sequence/>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="GetAllFields">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element xmlns:q5="http://schemas.datacontract.org/2004/07/DocuWare.WebServices.GAPIFunctionality.DataContracts" minOccurs="0" name="fcSession" nillable="true" type="q5:FileCabinetSession"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="GetAllFieldsResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element xmlns:q6="http://schemas.datacontract.org/2004/07/DocuWare.WebServices.GAPIFunctionality.DataContracts" minOccurs="0" name="GetAllFieldsResult" nillable="true" type="q6:ArrayOfField"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="GetFCDialogs">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element xmlns:q7="http://schemas.datacontract.org/2004/07/DocuWare.WebServices.GAPIFunctionality.DataContracts" minOccurs="0" name="fcSession" nillable="true" type="q7:FileCabinetSession"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="GetFCDialogsResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element xmlns:q8="http://schemas.datacontract.org/2004/07/DocuWare.WebServices.GAPIFunctionality.DataContracts" minOccurs="0" name="GetFCDialogsResult" nillable="true" type="q8:ArrayOfDialog"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="GetDialogsByType">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element xmlns:q9="http://schemas.datacontract.org/2004/07/DocuWare.WebServices.GAPIFunctionality.DataContracts" minOccurs="0" name="fcSession" nillable="true" type="q9:FileCabinetSession"/>
+            <xsd:element xmlns:q10="http://schemas.datacontract.org/2004/07/DocuWare.Gapi.Dialog" minOccurs="0" name="type" type="q10:DialogType"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="GetDialogsByTypeResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element xmlns:q11="http://schemas.datacontract.org/2004/07/DocuWare.WebServices.GAPIFunctionality.DataContracts" minOccurs="0" name="GetDialogsByTypeResult" nillable="true" type="q11:ArrayOfDialog"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="GetFCDialogDefinition">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element xmlns:q12="http://schemas.datacontract.org/2004/07/DocuWare.WebServices.GAPIFunctionality.DataContracts" minOccurs="0" name="fcSession" nillable="true" type="q12:FileCabinetSession"/>
+            <xsd:element xmlns:q13="http://schemas.datacontract.org/2004/07/DocuWare.WebServices.GAPIFunctionality.DataContracts" minOccurs="0" name="dialog" nillable="true" type="q13:Dialog"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="GetFCDialogDefinitionResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element xmlns:q14="http://schemas.datacontract.org/2004/07/DocuWare.WebServices.GAPIFunctionality.DataContracts" minOccurs="0" name="GetFCDialogDefinitionResult" nillable="true" type="q14:DialogDefinition"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="GetInfoDialogForDialog">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element xmlns:q15="http://schemas.datacontract.org/2004/07/DocuWare.WebServices.GAPIFunctionality.DataContracts" minOccurs="0" name="fcSession" nillable="true" type="q15:FileCabinetSession"/>
+            <xsd:element xmlns:q16="http://schemas.datacontract.org/2004/07/DocuWare.WebServices.GAPIFunctionality.DataContracts" minOccurs="0" name="dialog" nillable="true" type="q16:Dialog"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="GetInfoDialogForDialogResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element xmlns:q17="http://schemas.datacontract.org/2004/07/DocuWare.WebServices.GAPIFunctionality.DataContracts" minOccurs="0" name="GetInfoDialogForDialogResult" nillable="true" type="q17:Dialog"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="GetResultDialogForDialog">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element xmlns:q18="http://schemas.datacontract.org/2004/07/DocuWare.WebServices.GAPIFunctionality.DataContracts" minOccurs="0" name="fcSession" nillable="true" type="q18:FileCabinetSession"/>
+            <xsd:element xmlns:q19="http://schemas.datacontract.org/2004/07/DocuWare.WebServices.GAPIFunctionality.DataContracts" minOccurs="0" name="dialog" nillable="true" type="q19:Dialog"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="GetResultDialogForDialogResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element xmlns:q20="http://schemas.datacontract.org/2004/07/DocuWare.WebServices.GAPIFunctionality.DataContracts" minOccurs="0" name="GetResultDialogForDialogResult" nillable="true" type="q20:Dialog"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="GetSelectList">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element xmlns:q21="http://schemas.datacontract.org/2004/07/DocuWare.WebServices.GAPIFunctionality.DataContracts" minOccurs="0" name="fcSession" nillable="true" type="q21:FileCabinetSession"/>
+            <xsd:element xmlns:q22="http://schemas.datacontract.org/2004/07/DocuWare.WebServices.GAPIFunctionality.DataContracts" minOccurs="0" name="dialogDefinition" nillable="true" type="q22:DialogDefinition"/>
+            <xsd:element xmlns:q23="http://schemas.datacontract.org/2004/07/DocuWare.WebServices.GAPIFunctionality.DataContracts" minOccurs="0" name="field" nillable="true" type="q23:DialogField"/>
+            <xsd:element minOccurs="0" name="selective" type="xsd:boolean"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="GetSelectListResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element xmlns:q24="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="GetSelectListResult" nillable="true" type="q24:ArrayOfstring"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="DeleteDocument">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element xmlns:q25="http://schemas.datacontract.org/2004/07/DocuWare.WebServices.GAPIFunctionality.DataContracts" minOccurs="0" name="fcSession" nillable="true" type="q25:FileCabinetSession"/>
+            <xsd:element minOccurs="0" name="docID" type="xsd:int"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="DeleteDocumentResponse">
+        <xsd:complexType>
+          <xsd:sequence/>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="GetAvailableFileCabinetStamps">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element xmlns:q26="http://schemas.datacontract.org/2004/07/DocuWare.WebServices.GAPIFunctionality.DataContracts" minOccurs="0" name="fcSession" nillable="true" type="q26:FileCabinetSession"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="GetAvailableFileCabinetStampsResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element xmlns:q27="http://schemas.datacontract.org/2004/07/DocuWare.WebServices.GAPIFunctionality.DataContracts" minOccurs="0" name="GetAvailableFileCabinetStampsResult" nillable="true" type="q27:ArrayOfStamp"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:schema>
+    <xsd:schema xmlns:tns="http://schemas.datacontract.org/2004/07/DocuWare.WebServices.GAPIFunctionality.DataContracts" xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/DocuWare.WebServices.GAPIFunctionality.DataContracts">
+      <xsd:complexType name="FileCabinetSession">
+        <xsd:complexContent mixed="false">
+          <xsd:extension base="tns:SessionBase">
+            <xsd:sequence/>
+          </xsd:extension>
+        </xsd:complexContent>
+      </xsd:complexType>
+      <xsd:element name="FileCabinetSession" nillable="true" type="tns:FileCabinetSession"/>
+      <xsd:complexType name="ArrayOfField">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="Field" nillable="true" type="tns:Field"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="ArrayOfField" nillable="true" type="tns:ArrayOfField"/>
+      <xsd:complexType name="Field">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="DbName" nillable="true" type="xsd:string"/>
+          <xsd:element minOccurs="0" name="DecimalPlaces" type="xsd:int"/>
+          <xsd:element minOccurs="0" name="Label" nillable="true" type="xsd:string"/>
+          <xsd:element minOccurs="0" name="Type" type="tns:FieldType"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="Field" nillable="true" type="tns:Field"/>
+      <xsd:simpleType name="FieldType">
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="Text">
+            <xsd:annotation>
+              <xsd:appinfo>
+                <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">1</EnumerationValue>
+              </xsd:appinfo>
+            </xsd:annotation>
+          </xsd:enumeration>
+          <xsd:enumeration value="Numeric">
+            <xsd:annotation>
+              <xsd:appinfo>
+                <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">2</EnumerationValue>
+              </xsd:appinfo>
+            </xsd:annotation>
+          </xsd:enumeration>
+          <xsd:enumeration value="Date">
+            <xsd:annotation>
+              <xsd:appinfo>
+                <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">4</EnumerationValue>
+              </xsd:appinfo>
+            </xsd:annotation>
+          </xsd:enumeration>
+          <xsd:enumeration value="Keyword">
+            <xsd:annotation>
+              <xsd:appinfo>
+                <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">5</EnumerationValue>
+              </xsd:appinfo>
+            </xsd:annotation>
+          </xsd:enumeration>
+          <xsd:enumeration value="Memo">
+            <xsd:annotation>
+              <xsd:appinfo>
+                <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">3</EnumerationValue>
+              </xsd:appinfo>
+            </xsd:annotation>
+          </xsd:enumeration>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:element name="FieldType" nillable="true" type="tns:FieldType"/>
+      <xsd:complexType name="ArrayOfDialog">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="Dialog" nillable="true" type="tns:Dialog"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="ArrayOfDialog" nillable="true" type="tns:ArrayOfDialog"/>
+       <xsd:complexType name="DataObject">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="Guid" nillable="true" type="xsd:string"/>
+          <xsd:element minOccurs="0" name="Name" nillable="true" type="xsd:string"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="DataObject" nillable="true" type="tns:DataObject"/>
+      <xsd:complexType name="DialogDefinition">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="Dialog" nillable="true" type="tns:Dialog"/>
+          <xsd:element minOccurs="0" name="DialogFields" nillable="true" type="tns:ArrayOfDialogField"/>
+          <xsd:element minOccurs="0" name="IsDefault" type="xsd:boolean"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="DialogDefinition" nillable="true" type="tns:DialogDefinition"/>
+    </xsd:schema>
+    <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://schemas.microsoft.com/2003/10/Serialization/" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://schemas.microsoft.com/2003/10/Serialization/">
+      <xs:element name="anyType" nillable="true" type="xs:anyType"/>
+      <xs:element name="anyURI" nillable="true" type="xs:anyURI"/>
+      <xs:element name="base64Binary" nillable="true" type="xs:base64Binary"/>
+      <xs:element name="boolean" nillable="true" type="xs:boolean"/>
+      <xs:element name="byte" nillable="true" type="xs:byte"/>
+      <xs:element name="dateTime" nillable="true" type="xs:dateTime"/>
+      <xs:element name="decimal" nillable="true" type="xs:decimal"/>
+      <xs:element name="double" nillable="true" type="xs:double"/>
+      <xs:element name="float" nillable="true" type="xs:float"/>
+      <xs:element name="int" nillable="true" type="xs:int"/>
+      <xs:element name="long" nillable="true" type="xs:long"/>
+      <xs:element name="QName" nillable="true" type="xs:QName"/>
+      <xs:element name="short" nillable="true" type="xs:short"/>
+      <xs:element name="string" nillable="true" type="xs:string"/>
+      <xs:element name="unsignedByte" nillable="true" type="xs:unsignedByte"/>
+      <xs:element name="unsignedInt" nillable="true" type="xs:unsignedInt"/>
+      <xs:element name="unsignedLong" nillable="true" type="xs:unsignedLong"/>
+      <xs:element name="unsignedShort" nillable="true" type="xs:unsignedShort"/>
+      <xs:element name="char" nillable="true" type="tns:char"/>
+      <xs:simpleType name="char">
+        <xs:restriction base="xs:int"/>
+      </xs:simpleType>
+      <xs:element name="duration" nillable="true" type="tns:duration"/>
+      <xs:simpleType name="duration">
+        <xs:restriction base="xs:duration">
+          <xs:pattern value="\-?P(\d*D)?(T(\d*H)?(\d*M)?(\d*(\.\d*)?S)?)?"/>
+          <xs:minInclusive value="-P10675199DT2H48M5.4775808S"/>
+          <xs:maxInclusive value="P10675199DT2H48M5.4775807S"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:element name="guid" nillable="true" type="tns:guid"/>
+      <xs:simpleType name="guid">
+        <xs:restriction base="xs:string">
+          <xs:pattern value="[\da-fA-F]{8}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{12}"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:attribute name="FactoryType" type="xs:QName"/>
+      <xs:attribute name="Id" type="xs:ID"/>
+      <xs:attribute name="Ref" type="xs:IDREF"/>
+    </xs:schema>
+    <xsd:schema xmlns:tns="http://schemas.datacontract.org/2004/07/DocuWare.Gapi.Settings" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/DocuWare.Gapi.Settings">
+      <xsd:simpleType name="StampType">
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="Text"/>
+          <xsd:enumeration value="Image"/>
+          <xsd:enumeration value="Freehand"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:element name="StampType" nillable="true" type="tns:StampType"/>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IFileCabinetService_Connect_InputMessage">
+    <wsdl:part name="parameters" element="tns:Connect"/>
+  </wsdl:message>
+  <wsdl:message name="IFileCabinetService_Connect_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ConnectResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IFileCabinetService_Disconnect_InputMessage">
+    <wsdl:part name="parameters" element="tns:Disconnect"/>
+  </wsdl:message>
+  <wsdl:message name="IFileCabinetService_Disconnect_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DisconnectResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IFileCabinetService_GetAllFields_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllFields"/>
+  </wsdl:message>
+  <wsdl:message name="IFileCabinetService_GetAllFields_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllFieldsResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IFileCabinetService_GetFCDialogs_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetFCDialogs"/>
+  </wsdl:message>
+  <wsdl:message name="IFileCabinetService_GetFCDialogs_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetFCDialogsResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IFileCabinetService_GetDialogsByType_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetDialogsByType"/>
+  </wsdl:message>
+  <wsdl:message name="IFileCabinetService_GetDialogsByType_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetDialogsByTypeResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IFileCabinetService_GetFCDialogDefinition_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetFCDialogDefinition"/>
+  </wsdl:message>
+  <wsdl:message name="IFileCabinetService_GetFCDialogDefinition_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetFCDialogDefinitionResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IFileCabinetService_GetInfoDialogForDialog_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetInfoDialogForDialog"/>
+  </wsdl:message>
+  <wsdl:message name="IFileCabinetService_GetInfoDialogForDialog_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetInfoDialogForDialogResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IFileCabinetService_GetResultDialogForDialog_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetResultDialogForDialog"/>
+  </wsdl:message>
+  <wsdl:message name="IFileCabinetService_GetResultDialogForDialog_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetResultDialogForDialogResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IFileCabinetService_GetSelectList_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetSelectList"/>
+  </wsdl:message>
+  <wsdl:message name="IFileCabinetService_GetSelectList_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetSelectListResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IFileCabinetService_DeleteDocument_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteDocument"/>
+  </wsdl:message>
+  <wsdl:message name="IFileCabinetService_DeleteDocument_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteDocumentResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IFileCabinetService_GetAvailableFileCabinetStamps_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAvailableFileCabinetStamps"/>
+  </wsdl:message>
+  <wsdl:message name="IFileCabinetService_GetAvailableFileCabinetStamps_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAvailableFileCabinetStampsResponse"/>
+  </wsdl:message>
+  <wsdl:portType msc:usingSession="false" name="IFileCabinetService">
+    <wsdl:operation name="Connect">
+      <wsdl:input wsaw:Action="http://tempuri.org/IFileCabinetService/Connect" message="tns:IFileCabinetService_Connect_InputMessage"/>
+      <wsdl:output wsaw:Action="http://tempuri.org/IFileCabinetService/ConnectResponse" message="tns:IFileCabinetService_Connect_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="Disconnect">
+      <wsdl:input wsaw:Action="http://tempuri.org/IFileCabinetService/Disconnect" message="tns:IFileCabinetService_Disconnect_InputMessage"/>
+      <wsdl:output wsaw:Action="http://tempuri.org/IFileCabinetService/DisconnectResponse" message="tns:IFileCabinetService_Disconnect_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllFields">
+      <wsdl:input wsaw:Action="http://tempuri.org/IFileCabinetService/GetAllFields" message="tns:IFileCabinetService_GetAllFields_InputMessage"/>
+      <wsdl:output wsaw:Action="http://tempuri.org/IFileCabinetService/GetAllFieldsResponse" message="tns:IFileCabinetService_GetAllFields_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="GetFCDialogs">
+      <wsdl:input wsaw:Action="http://tempuri.org/IFileCabinetService/GetFCDialogs" message="tns:IFileCabinetService_GetFCDialogs_InputMessage"/>
+      <wsdl:output wsaw:Action="http://tempuri.org/IFileCabinetService/GetFCDialogsResponse" message="tns:IFileCabinetService_GetFCDialogs_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="GetDialogsByType">
+      <wsdl:input wsaw:Action="http://tempuri.org/IFileCabinetService/GetDialogsByType" message="tns:IFileCabinetService_GetDialogsByType_InputMessage"/>
+      <wsdl:output wsaw:Action="http://tempuri.org/IFileCabinetService/GetDialogsByTypeResponse" message="tns:IFileCabinetService_GetDialogsByType_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="GetFCDialogDefinition">
+      <wsdl:input wsaw:Action="http://tempuri.org/IFileCabinetService/GetFCDialogDefinition" message="tns:IFileCabinetService_GetFCDialogDefinition_InputMessage"/>
+      <wsdl:output wsaw:Action="http://tempuri.org/IFileCabinetService/GetFCDialogDefinitionResponse" message="tns:IFileCabinetService_GetFCDialogDefinition_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="GetInfoDialogForDialog">
+      <wsdl:input wsaw:Action="http://tempuri.org/IFileCabinetService/GetInfoDialogForDialog" message="tns:IFileCabinetService_GetInfoDialogForDialog_InputMessage"/>
+      <wsdl:output wsaw:Action="http://tempuri.org/IFileCabinetService/GetInfoDialogForDialogResponse" message="tns:IFileCabinetService_GetInfoDialogForDialog_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="GetResultDialogForDialog">
+      <wsdl:input wsaw:Action="http://tempuri.org/IFileCabinetService/GetResultDialogForDialog" message="tns:IFileCabinetService_GetResultDialogForDialog_InputMessage"/>
+      <wsdl:output wsaw:Action="http://tempuri.org/IFileCabinetService/GetResultDialogForDialogResponse" message="tns:IFileCabinetService_GetResultDialogForDialog_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="GetSelectList">
+      <wsdl:input wsaw:Action="http://tempuri.org/IFileCabinetService/GetSelectList" message="tns:IFileCabinetService_GetSelectList_InputMessage"/>
+      <wsdl:output wsaw:Action="http://tempuri.org/IFileCabinetService/GetSelectListResponse" message="tns:IFileCabinetService_GetSelectList_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="DeleteDocument">
+      <wsdl:input wsaw:Action="http://tempuri.org/IFileCabinetService/DeleteDocument" message="tns:IFileCabinetService_DeleteDocument_InputMessage"/>
+      <wsdl:output wsaw:Action="http://tempuri.org/IFileCabinetService/DeleteDocumentResponse" message="tns:IFileCabinetService_DeleteDocument_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="GetAvailableFileCabinetStamps">
+      <wsdl:input wsaw:Action="http://tempuri.org/IFileCabinetService/GetAvailableFileCabinetStamps" message="tns:IFileCabinetService_GetAvailableFileCabinetStamps_InputMessage"/>
+      <wsdl:output wsaw:Action="http://tempuri.org/IFileCabinetService/GetAvailableFileCabinetStampsResponse" message="tns:IFileCabinetService_GetAvailableFileCabinetStamps_OutputMessage"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="BasicHttpBinding_IFileCabinetService" type="tns:IFileCabinetService">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="Connect">
+      <soap:operation soapAction="http://tempuri.org/IFileCabinetService/Connect" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Disconnect">
+      <soap:operation soapAction="http://tempuri.org/IFileCabinetService/Disconnect" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllFields">
+      <soap:operation soapAction="http://tempuri.org/IFileCabinetService/GetAllFields" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetFCDialogs">
+      <soap:operation soapAction="http://tempuri.org/IFileCabinetService/GetFCDialogs" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDialogsByType">
+      <soap:operation soapAction="http://tempuri.org/IFileCabinetService/GetDialogsByType" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetFCDialogDefinition">
+      <soap:operation soapAction="http://tempuri.org/IFileCabinetService/GetFCDialogDefinition" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetInfoDialogForDialog">
+      <soap:operation soapAction="http://tempuri.org/IFileCabinetService/GetInfoDialogForDialog" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetResultDialogForDialog">
+      <soap:operation soapAction="http://tempuri.org/IFileCabinetService/GetResultDialogForDialog" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSelectList">
+      <soap:operation soapAction="http://tempuri.org/IFileCabinetService/GetSelectList" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeleteDocument">
+      <soap:operation soapAction="http://tempuri.org/IFileCabinetService/DeleteDocument" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAvailableFileCabinetStamps">
+      <soap:operation soapAction="http://tempuri.org/IFileCabinetService/GetAvailableFileCabinetStamps" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="FileCabinetService">
+    <wsdl:port name="BasicHttpBinding_IFileCabinetService" binding="tns:BasicHttpBinding_IFileCabinetService">
+      <soap:address location="http://dw-pr-2008-en:9007/FileCabinetService"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
