@@ -15,6 +15,7 @@ Server-side:
 
 Code generator changes, applying to both client and server side:
 ================================================================
+* Handle wsdl files with multiple service definitions
 * Reworked parsing of XML namespaces.
 * New option -namespace <...> to kdwsdl2cpp, in order to put all the generated code into a C++ namespace.
 * Better handling of whether elements are "qualified" or not, and writing out the correct namespace for them.

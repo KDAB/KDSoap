@@ -41,7 +41,6 @@ class KWSDL_EXPORT WSDL
     const NSManager& namespaceManager() const;
 
     QSet<QName> uniqueBindings( const Service& service ) const;
-    int bindingsCount() const;
 
     Binding findBinding( const QName &bindingName ) const;
     BindingOperation findBindingOperation( const Binding &binding, const QString &operationName );
