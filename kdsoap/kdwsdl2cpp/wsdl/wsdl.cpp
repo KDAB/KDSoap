@@ -57,11 +57,13 @@ Binding WSDL::findBinding( const QName &bindingName ) const
   const Binding::List list = mDefinitions.bindings();
   Binding::List::ConstIterator it;
   for ( it = list.constBegin(); it != list.constEnd(); ++it ) {
+      qDebug() << (*it).name() << (*it).nameSpace();
     if ( (*it).name() == bindingName.localName() && (*it).nameSpace() == bindingName.nameSpace() ) {
       return *it;
     }
   }
 
+  qDebug() << "binding not found" << bindingName.localName() << bindingName.nameSpace();
   return Binding();
 }
 
@@ -134,10 +136,9 @@ XSD::ComplexType WSDL::findComplexType( const QName &typeName ) const
     return XSD::ComplexType();
 }
 
-QSet<QName> KWSDL::WSDL::uniqueBindings() const
+QSet<QName> WSDL::uniqueBindings(const Service& service) const
 {
     QSet<QName> bindings;
-    const Service service = mDefinitions.service();
     Q_FOREACH( const Port& port, service.ports() ) {
         const Binding binding = findBinding( port.bindingName() );
         if ( binding.type() == Binding::SOAPBinding ) {
@@ -148,4 +149,13 @@ QSet<QName> KWSDL::WSDL::uniqueBindings() const
         }
     }
     return bindings;
+}
+
+int WSDL::bindingsCount() const
+{
+    int count = 0;
+    Q_FOREACH( const Service& service, mDefinitions.services() ) {
+        count += uniqueBindings( service ).count();
+    }
+    return count;
 }

@@ -55,328 +55,331 @@ static SoapBinding::Headers getHeaders( const Binding& binding, const QString& o
 
 bool Converter::convertClientService()
 {
-  const Service service = mWSDL.definitions().service();
-  Q_ASSERT(!service.name().isEmpty());
+    const int bindingsCount = mWSDL.bindingsCount();
 
-  QSet<QName> uniqueBindings = mWSDL.uniqueBindings();
-  //qDebug() << uniqueBindings;
+    KODE::Class::List bindingClasses;
+    Q_FOREACH( const Service& service, mWSDL.definitions().services() ) {
+        Q_ASSERT(!service.name().isEmpty());
 
-  KODE::Class::List bindingClasses;
-  Q_FOREACH( const QName& bindingName, uniqueBindings ) {
-      const Binding binding = mWSDL.findBinding( bindingName );
+        QSet<QName> uniqueBindings = mWSDL.uniqueBindings( service );
+        //qDebug() << service.name() << uniqueBindings;
 
-      QString className = KODE::Style::className(service.name());
-      QString nameSpace;
-      if (uniqueBindings.count() > 1) {
-          nameSpace = className;
-          className = KODE::Style::className(bindingName.localName());
-      }
+        Q_FOREACH( const QName& bindingName, uniqueBindings ) {
+            const Binding binding = mWSDL.findBinding( bindingName );
 
-      if (!Settings::self()->nameSpace().isEmpty()) {
-          if (nameSpace.isEmpty())
-              nameSpace = Settings::self()->nameSpace();
-          else
-              nameSpace = Settings::self()->nameSpace() + QLatin1String("::") + nameSpace;
-      }
+            QString className = KODE::Style::className(service.name());
+            QString nameSpace;
+            if (bindingsCount > 1) {
+                nameSpace = className;
+                className = KODE::Style::className(bindingName.localName());
+            }
 
-      KODE::Class newClass( className, nameSpace );
-      if (!Settings::self()->exportDeclaration().isEmpty())
-        newClass.setExportDeclaration(Settings::self()->exportDeclaration());
-      newClass.setUseDPointer( true, "d_ptr" /*avoid clash with possible d() method*/ );
-      newClass.addBaseClass( mQObject );
-      newClass.setDocs(service.documentation());
+            if (!Settings::self()->nameSpace().isEmpty()) {
+                if (nameSpace.isEmpty())
+                    nameSpace = Settings::self()->nameSpace();
+                else
+                    nameSpace = Settings::self()->nameSpace() + QLatin1String("::") + nameSpace;
+            }
 
-      // Files included in the header
-      newClass.addHeaderInclude( "QObject" );
-      newClass.addHeaderInclude( "QString" );
-      newClass.addHeaderInclude("KDSoapClientInterface.h");
+            KODE::Class newClass( className, nameSpace );
+            if (!Settings::self()->exportDeclaration().isEmpty())
+                newClass.setExportDeclaration(Settings::self()->exportDeclaration());
+            newClass.setUseDPointer( true, "d_ptr" /*avoid clash with possible d() method*/ );
+            newClass.addBaseClass( mQObject );
+            newClass.setDocs(service.documentation());
 
-      // Files included in the impl, with optional forward-declarations in the header
-      newClass.addInclude("KDSoapMessage.h", "KDSoapMessage");
-      newClass.addInclude("KDSoapValue.h", "KDSoapValue");
-      newClass.addInclude("KDSoapPendingCallWatcher.h", "KDSoapPendingCallWatcher");
-      newClass.addInclude("KDSoapNamespaceManager.h");
+            // Files included in the header
+            newClass.addHeaderInclude( "QObject" );
+            newClass.addHeaderInclude( "QString" );
+            newClass.addHeaderInclude("KDSoapClientInterface.h");
 
-      // Variables (which will go into the d pointer)
-      KODE::MemberVariable clientInterfaceVar("m_clientInterface", "KDSoapClientInterface*");
-      clientInterfaceVar.setInitializer("NULL");
-      newClass.addMemberVariable(clientInterfaceVar);
+            // Files included in the impl, with optional forward-declarations in the header
+            newClass.addInclude("KDSoapMessage.h", "KDSoapMessage");
+            newClass.addInclude("KDSoapValue.h", "KDSoapValue");
+            newClass.addInclude("KDSoapPendingCallWatcher.h", "KDSoapPendingCallWatcher");
+            newClass.addInclude("KDSoapNamespaceManager.h");
 
-      KODE::MemberVariable lastReply("m_lastReply", "KDSoapMessage");
-      newClass.addMemberVariable(lastReply);
+            // Variables (which will go into the d pointer)
+            KODE::MemberVariable clientInterfaceVar("m_clientInterface", "KDSoapClientInterface*");
+            clientInterfaceVar.setInitializer("NULL");
+            newClass.addMemberVariable(clientInterfaceVar);
 
-      KODE::MemberVariable endPoint("m_endPoint", "QString");
-      newClass.addMemberVariable(endPoint);
+            KODE::MemberVariable lastReply("m_lastReply", "KDSoapMessage");
+            newClass.addMemberVariable(lastReply);
 
-      // Ctor and dtor
-      {
-          KODE::Function ctor( newClass.name() );
-          ctor.addArgument(KODE::Function::Argument("QObject* parent", "0"));
-          ctor.addInitializer("QObject(parent)");
-          KODE::Function dtor( '~' + newClass.name() );
-          KODE::Code ctorCode, dtorCode;
+            KODE::MemberVariable endPoint("m_endPoint", "QString");
+            newClass.addMemberVariable(endPoint);
 
-          ctor.setBody( ctorCode );
-          newClass.addFunction( ctor );
+            // Ctor and dtor
+            {
+                KODE::Function ctor( newClass.name() );
+                ctor.addArgument(KODE::Function::Argument("QObject* parent", "0"));
+                ctor.addInitializer("QObject(parent)");
+                KODE::Function dtor( '~' + newClass.name() );
+                KODE::Code ctorCode, dtorCode;
 
-          dtorCode += "delete d_ptr->m_clientInterface;";
+                ctor.setBody( ctorCode );
+                newClass.addFunction( ctor );
 
-          dtor.setBody( dtorCode );
-          newClass.addFunction( dtor );
-      }
-      // ignoreSslErrors() method
-      {
-          KODE::Function ignoreSslErrors("ignoreSslErrors", "void");
-          KODE::Code code;
-          code += "clientInterface()->ignoreSslErrors();";
-          ignoreSslErrors.setBody(code);
-          ignoreSslErrors.setDocs("Asks Qt to ignore ssl errors in https requests. Use this for testing only!");
-          newClass.addFunction(ignoreSslErrors);
-      }
-      // setEndPoint() method
-      {
-          KODE::Function setEndPoint("setEndPoint", "void");
-          setEndPoint.addArgument( "const QString& endPoint" );
-          KODE::Code code;
-          code += "d_ptr->m_endPoint = endPoint;";
-          code += "if (d_ptr->m_clientInterface)";
-          code.indent();
-          code += "d_ptr->m_clientInterface->setEndPoint( endPoint );";
-          code.unindent();
-          setEndPoint.setBody(code);
-          setEndPoint.setDocs("Overwrite the end point defined in the .wsdl file, with another http/https URL.");
-          newClass.addFunction(setEndPoint);
-      }
-      //setSoapVersion() method
-      {
-	  KODE::Function setSoapVersion("setSoapVersion", "void");
-	  setSoapVersion.addArgument("KDSoapClientInterface::SoapVersion soapVersion");
-	  KODE::Code code;
-	  code += "clientInterface()->setSoapVersion(soapVersion);";
-	  setSoapVersion.setBody(code);
-	  setSoapVersion.setDocs("Overwrite the soap version defined in the .wsdl file, with another version. \n"
-				"version can be KDSoapClientInterface::SOAP1_1 or KDSoapClientInterface::SOAP1_2");
-	  newClass.addFunction(setSoapVersion);
-      }
-      // lastError() method
-      {
-          KODE::Function lastError("lastError", "QString");
-          lastError.setConst(true);
-          KODE::Code code;
-          code += "if (d_ptr->m_lastReply.isFault())";
-          code.indent();
-          code += "return d_ptr->m_lastReply.faultAsString();";
-          code.unindent();
-          code += "return QString();";
-          lastError.setBody(code);
-          lastError.setDocs("Return the error from the last blocking call.\nEmpty if no error.");
-          newClass.addFunction(lastError);
-      }
-      //soapError() signal
-      {
-          KODE::Function errorSignal( "soapError", "void", KODE::Function::Signal );
-          errorSignal.addArgument( "const QString& method" );
-          errorSignal.addArgument( "const KDSoapMessage& fault" );
-          errorSignal.setDocs( "This signal is emitted whenever a SOAP call failed, for a central processing of all SOAP errors.\nmethod is the name of the method (or operation) that returned the fault, for instance \"addContact\"." );
-          newClass.addFunction(errorSignal);
-      }
+                dtorCode += "delete d_ptr->m_clientInterface;";
 
-      QUrl webserviceLocation;
+                dtor.setBody( dtorCode );
+                newClass.addFunction( dtor );
+            }
+            // ignoreSslErrors() method
+            {
+                KODE::Function ignoreSslErrors("ignoreSslErrors", "void");
+                KODE::Code code;
+                code += "clientInterface()->ignoreSslErrors();";
+                ignoreSslErrors.setBody(code);
+                ignoreSslErrors.setDocs("Asks Qt to ignore ssl errors in https requests. Use this for testing only!");
+                newClass.addFunction(ignoreSslErrors);
+            }
+            // setEndPoint() method
+            {
+                KODE::Function setEndPoint("setEndPoint", "void");
+                setEndPoint.addArgument( "const QString& endPoint" );
+                KODE::Code code;
+                code += "d_ptr->m_endPoint = endPoint;";
+                code += "if (d_ptr->m_clientInterface)";
+                code.indent();
+                code += "d_ptr->m_clientInterface->setEndPoint( endPoint );";
+                code.unindent();
+                setEndPoint.setBody(code);
+                setEndPoint.setDocs("Overwrite the end point defined in the .wsdl file, with another http/https URL.");
+                newClass.addFunction(setEndPoint);
+            }
+            //setSoapVersion() method
+            {
+                KODE::Function setSoapVersion("setSoapVersion", "void");
+                setSoapVersion.addArgument("KDSoapClientInterface::SoapVersion soapVersion");
+                KODE::Code code;
+                code += "clientInterface()->setSoapVersion(soapVersion);";
+                setSoapVersion.setBody(code);
+                setSoapVersion.setDocs("Overwrite the soap version defined in the .wsdl file, with another version. \n"
+                "version can be KDSoapClientInterface::SOAP1_1 or KDSoapClientInterface::SOAP1_2");
+                newClass.addFunction(setSoapVersion);
+            }
+            // lastError() method
+            {
+                KODE::Function lastError("lastError", "QString");
+                lastError.setConst(true);
+                KODE::Code code;
+                code += "if (d_ptr->m_lastReply.isFault())";
+                code.indent();
+                code += "return d_ptr->m_lastReply.faultAsString();";
+                code.unindent();
+                code += "return QString();";
+                lastError.setBody(code);
+                lastError.setDocs("Return the error from the last blocking call.\nEmpty if no error.");
+                newClass.addFunction(lastError);
+            }
+            //soapError() signal
+            {
+                KODE::Function errorSignal( "soapError", "void", KODE::Function::Signal );
+                errorSignal.addArgument( "const QString& method" );
+                errorSignal.addArgument( "const KDSoapMessage& fault" );
+                errorSignal.setDocs( "This signal is emitted whenever a SOAP call failed, for a central processing of all SOAP errors.\nmethod is the name of the method (or operation) that returned the fault, for instance \"addContact\"." );
+                newClass.addFunction(errorSignal);
+            }
 
-      if ( binding.type() == Binding::SOAPBinding ) {
-          const SoapBinding soapBinding( binding.soapBinding() );
-          const SoapBinding::Address address = soapBinding.address();
-          if ( address.location().isValid() )
-              webserviceLocation = address.location();
-      } else {
-          // ignore non-SOAP bindings, like HTTP GET and HTTP POST
-          continue;
-      }
+            QUrl webserviceLocation;
 
-      // clientInterface() method
-      {
-          KODE::Function clientInterface("clientInterface", "KDSoapClientInterface*", KODE::Function::Public);
-          KODE::Code code;
-          code += "if (!d_ptr->m_clientInterface) {";
-          code.indent();
-          const QByteArray encoded = webserviceLocation.toEncoded();
-          code += "const QString endPoint = !d_ptr->m_endPoint.isEmpty() ? d_ptr->m_endPoint : QString::fromLatin1(\"" + QString::fromLatin1( encoded.data(), encoded.size() ) + "\");";
-          code += "const QString messageNamespace = QString::fromLatin1(\"" + mWSDL.definitions().targetNamespace() + "\");";
-          code += "d_ptr->m_clientInterface = new KDSoapClientInterface(endPoint, messageNamespace);";
-          if ( soapStyle(binding) == SoapBinding::DocumentStyle ) {
-              code += "d_ptr->m_clientInterface->setStyle( KDSoapClientInterface::DocumentStyle );";
-          }
-          code += "d_ptr->m_clientInterface->setSoapVersion( KDSoapClientInterface::SOAP1_1 );";
-          code.unindent();
-          code += "}";
-          code += "return d_ptr->m_clientInterface;";
-          clientInterface.setBody(code);
-          newClass.addFunction(clientInterface);
-      }
+            if ( binding.type() == Binding::SOAPBinding ) {
+                const SoapBinding soapBinding( binding.soapBinding() );
+                const SoapBinding::Address address = soapBinding.address();
+                if ( address.location().isValid() )
+                    webserviceLocation = address.location();
+            } else {
+                // ignore non-SOAP bindings, like HTTP GET and HTTP POST
+                continue;
+            }
 
-      SoapBinding::Headers soapHeaders;
+            // clientInterface() method
+            {
+                KODE::Function clientInterface("clientInterface", "KDSoapClientInterface*", KODE::Function::Public);
+                KODE::Code code;
+                code += "if (!d_ptr->m_clientInterface) {";
+                code.indent();
+                const QByteArray encoded = webserviceLocation.toEncoded();
+                code += "const QString endPoint = !d_ptr->m_endPoint.isEmpty() ? d_ptr->m_endPoint : QString::fromLatin1(\"" + QString::fromLatin1( encoded.data(), encoded.size() ) + "\");";
+                code += "const QString messageNamespace = QString::fromLatin1(\"" + mWSDL.definitions().targetNamespace() + "\");";
+                code += "d_ptr->m_clientInterface = new KDSoapClientInterface(endPoint, messageNamespace);";
+                if ( soapStyle(binding) == SoapBinding::DocumentStyle ) {
+                    code += "d_ptr->m_clientInterface->setStyle( KDSoapClientInterface::DocumentStyle );";
+                }
+                code += "d_ptr->m_clientInterface->setSoapVersion( KDSoapClientInterface::SOAP1_1 );";
+                code.unindent();
+                code += "}";
+                code += "return d_ptr->m_clientInterface;";
+                clientInterface.setBody(code);
+                newClass.addFunction(clientInterface);
+            }
 
-      PortType portType = mWSDL.findPortType( binding.portTypeName() );
-      //qDebug() << portType.name();
-      const Operation::List operations = portType.operations();
-      Q_FOREACH( const Operation& operation, operations ) {
-          Operation::OperationType opType = operation.operationType();
-          switch(opType) {
-          case Operation::OneWayOperation:
-              convertClientInputMessage( operation, binding, newClass );
-              break;
-          case Operation::RequestResponseOperation: // the standard case
-              // sync method
-              if (!convertClientCall( operation, binding, newClass )) {
-                  return false;
-              }
-              // async method
-              convertClientInputMessage( operation, binding, newClass );
-              convertClientOutputMessage( operation, binding, newClass );
-              // TODO fault
-              break;
-          case Operation::SolicitResponseOperation:
-              convertClientOutputMessage( operation, binding, newClass );
-              convertClientInputMessage( operation, binding, newClass );
-              // TODO fault
-              break;
-          case Operation::NotificationOperation:
-              convertClientOutputMessage( operation, binding, newClass );
-              break;
-          }
+            SoapBinding::Headers soapHeaders;
 
-          // Collect message parts used as headers
-          Q_FOREACH( const SoapBinding::Header& header, getHeaders(binding, operation.name()) ) {
-              if ( !soapHeaders.contains(header) )
-                  soapHeaders.append( header );
-          }
-      } // end of for each operation
+            PortType portType = mWSDL.findPortType( binding.portTypeName() );
+            //qDebug() << portType.name();
+            const Operation::List operations = portType.operations();
+            Q_FOREACH( const Operation& operation, operations ) {
+                Operation::OperationType opType = operation.operationType();
+                switch(opType) {
+                case Operation::OneWayOperation:
+                    convertClientInputMessage( operation, binding, newClass );
+                    break;
+                case Operation::RequestResponseOperation: // the standard case
+                    // sync method
+                    if (!convertClientCall( operation, binding, newClass )) {
+                        return false;
+                    }
+                    // async method
+                    convertClientInputMessage( operation, binding, newClass );
+                    convertClientOutputMessage( operation, binding, newClass );
+                    // TODO fault
+                    break;
+                case Operation::SolicitResponseOperation:
+                    convertClientOutputMessage( operation, binding, newClass );
+                    convertClientInputMessage( operation, binding, newClass );
+                    // TODO fault
+                    break;
+                case Operation::NotificationOperation:
+                    convertClientOutputMessage( operation, binding, newClass );
+                    break;
+                }
 
-      Q_FOREACH( const SoapBinding::Header& header, soapHeaders ) {
-          createHeader( header, newClass );
-      }
-      bindingClasses.append(newClass);
+                // Collect message parts used as headers
+                Q_FOREACH( const SoapBinding::Header& header, getHeaders(binding, operation.name()) ) {
+                    if ( !soapHeaders.contains(header) )
+                        soapHeaders.append( header );
+                }
+            } // end of for each operation
 
-      // for each operation, create a job class
-      Q_FOREACH( const Operation& operation, operations ) {
-          Operation::OperationType opType = operation.operationType();
-          if ( opType != Operation::SolicitResponseOperation && opType != Operation::RequestResponseOperation )
-              continue;
+            Q_FOREACH( const SoapBinding::Header& header, soapHeaders ) {
+                createHeader( header, newClass );
+            }
+            bindingClasses.append(newClass);
 
-          const QString operationName = operation.name();
-          KODE::Class jobClass( upperlize( operation.name() ) + QLatin1String("Job"), nameSpace );
-          jobClass.addInclude( QString(), fullyQualified( newClass ) );
-          jobClass.addHeaderInclude( QLatin1String("KDSoapJob.h") );
-          if ( !Settings::self()->exportDeclaration().isEmpty() )
-            jobClass.setExportDeclaration( Settings::self()->exportDeclaration() );
-          jobClass.setNameSpace( Settings::self()->nameSpace() );
+            // for each operation, create a job class
+            Q_FOREACH( const Operation& operation, operations ) {
+                Operation::OperationType opType = operation.operationType();
+                if ( opType != Operation::SolicitResponseOperation && opType != Operation::RequestResponseOperation )
+                    continue;
 
-          jobClass.addBaseClass( KODE::Class( QLatin1String("KDSoapJob") ) );
+                const QString operationName = operation.name();
+                KODE::Class jobClass( upperlize( operation.name() ) + QLatin1String("Job"), nameSpace );
+                jobClass.addInclude( QString(), fullyQualified( newClass ) );
+                jobClass.addHeaderInclude( QLatin1String("KDSoapJob.h") );
+                if ( !Settings::self()->exportDeclaration().isEmpty() )
+                    jobClass.setExportDeclaration( Settings::self()->exportDeclaration() );
+                jobClass.setNameSpace( Settings::self()->nameSpace() );
 
-          KODE::MemberVariable serviceVar( QLatin1String("service"), fullyQualified(newClass) + QLatin1Char('*') );
-          jobClass.addMemberVariable( serviceVar );
+                jobClass.addBaseClass( KODE::Class( QLatin1String("KDSoapJob") ) );
 
-          KODE::Function ctor( jobClass.name() );
-          ctor.addArgument( KODE::Function::Argument( QString::fromLatin1("%1* service").arg( fullyQualified(newClass) ) ) );
-          ctor.addArgument( KODE::Function::Argument( QLatin1String("QObject* parent"), QLatin1String("0") ) );
-          ctor.addInitializer( QLatin1String("KDSoapJob(parent)") );
-          ctor.addInitializer( QLatin1String("mService(service)") );
-          jobClass.addFunction( ctor );
+                KODE::MemberVariable serviceVar( QLatin1String("service"), fullyQualified(newClass) + QLatin1Char('*') );
+                jobClass.addMemberVariable( serviceVar );
 
-          const Message message = mWSDL.findMessage( operation.input().message() );
+                KODE::Function ctor( jobClass.name() );
+                ctor.addArgument( KODE::Function::Argument( QString::fromLatin1("%1* service").arg( fullyQualified(newClass) ) ) );
+                ctor.addArgument( KODE::Function::Argument( QLatin1String("QObject* parent"), QLatin1String("0") ) );
+                ctor.addInitializer( QLatin1String("KDSoapJob(parent)") );
+                ctor.addInitializer( QLatin1String("mService(service)") );
+                jobClass.addFunction( ctor );
 
-          QStringList inputGetters;
+                const Message message = mWSDL.findMessage( operation.input().message() );
 
-          Q_FOREACH( const Part& part, selectedParts( binding, message, operation, true /*input*/ ) ) {
-              const QString varType = mTypeMap.localType( part.type(), part.element() );
-              const KODE::MemberVariable member( part.name(), varType );
-              jobClass.addMemberVariable( member );
+                QStringList inputGetters;
 
-              KODE::Function setter( QLatin1String("set") + mNameMapper.escape( upperlize( part.name() ) ), QLatin1String("void") );
-              setter.addArgument( mTypeMap.localInputType( part.type(), part.element() ) + QLatin1String(" arg0") );
-              KODE::Code sc;
-              sc += QString::fromLatin1("%1 = arg0;").arg( member.name() );
-              setter.setBody( sc );
-              jobClass.addFunction( setter );
+                Q_FOREACH( const Part& part, selectedParts( binding, message, operation, true /*input*/ ) ) {
+                    const QString varType = mTypeMap.localType( part.type(), part.element() );
+                    const KODE::MemberVariable member( part.name(), varType );
+                    jobClass.addMemberVariable( member );
 
-              const QString getterName = mNameMapper.escape( lowerlize( part.name() ) );
-              inputGetters.append( getterName );
-              KODE::Function getter( getterName, mTypeMap.localType( part.type(), part.element() ) );
-              getter.setConst( true );
-              KODE::Code gc;
-              gc += QString::fromLatin1("return %1;").arg( member.name() );
-              getter.setBody( gc );
-              jobClass.addFunction( getter );
-          }
+                    KODE::Function setter( QLatin1String("set") + mNameMapper.escape( upperlize( part.name() ) ), QLatin1String("void") );
+                    setter.addArgument( mTypeMap.localInputType( part.type(), part.element() ) + QLatin1String(" arg0") );
+                    KODE::Code sc;
+                    sc += QString::fromLatin1("%1 = arg0;").arg( member.name() );
+                    setter.setBody( sc );
+                    jobClass.addFunction( setter );
 
-          const Message outputMsg = mWSDL.findMessage( operation.output().message() );
+                    const QString getterName = mNameMapper.escape( lowerlize( part.name() ) );
+                    inputGetters.append( getterName );
+                    KODE::Function getter( getterName, mTypeMap.localType( part.type(), part.element() ) );
+                    getter.setConst( true );
+                    KODE::Code gc;
+                    gc += QString::fromLatin1("return %1;").arg( member.name() );
+                    getter.setBody( gc );
+                    jobClass.addFunction( getter );
+                }
 
-          Q_FOREACH( const Part& part, selectedParts( binding, outputMsg, operation, false /*input*/ ) ) {
-              const QString varType = mTypeMap.localType( part.type(), part.element() );
-              const KODE::MemberVariable member( mNameMapper.escape( QLatin1String("result") + upperlize( part.name() ) ), varType );
-              jobClass.addMemberVariable( member );
+                const Message outputMsg = mWSDL.findMessage( operation.output().message() );
 
-              QString getterName = mNameMapper.escape( lowerlize( part.name() ) );
-              while ( inputGetters.contains( getterName ) )
-                  getterName = mNameMapper.escape( QLatin1String("result") + upperlize( getterName ) );
+                Q_FOREACH( const Part& part, selectedParts( binding, outputMsg, operation, false /*input*/ ) ) {
+                    const QString varType = mTypeMap.localType( part.type(), part.element() );
+                    const KODE::MemberVariable member( mNameMapper.escape( QLatin1String("result") + upperlize( part.name() ) ), varType );
+                    jobClass.addMemberVariable( member );
 
-              KODE::Function getter( getterName, mTypeMap.localType( part.type(), part.element() ) );
-              getter.setConst( true );
-              KODE::Code gc;
-              gc += QString::fromLatin1("return %1;").arg( member.name() );
-              getter.setBody( gc );
-              jobClass.addFunction( getter );
-          }
+                    QString getterName = mNameMapper.escape( lowerlize( part.name() ) );
+                    while ( inputGetters.contains( getterName ) )
+                        getterName = mNameMapper.escape( QLatin1String("result") + upperlize( getterName ) );
 
-          KODE::Function doStart( QLatin1String("doStart"), QLatin1String("void"), KODE::Function::Protected );
-          KODE::Code doStartCode;
-          const bool hasAction = clientAddAction( doStartCode, binding, operationName );
-          clientGenerateMessage( doStartCode, binding, message, operation, /*use members=*/true );
+                    KODE::Function getter( getterName, mTypeMap.localType( part.type(), part.element() ) );
+                    getter.setConst( true );
+                    KODE::Code gc;
+                    gc += QString::fromLatin1("return %1;").arg( member.name() );
+                    getter.setBody( gc );
+                    jobClass.addFunction( getter );
+                }
 
-          QString callLine = QString::fromLatin1("KDSoapPendingCall pendingCall = mService->clientInterface()->asyncCall(QLatin1String(\"%1\"), message").arg(operationName);
-          if (hasAction) {
-              callLine += ", action";
-          }
-          callLine += ");";
-          doStartCode += callLine;
+                KODE::Function doStart( QLatin1String("doStart"), QLatin1String("void"), KODE::Function::Protected );
+                KODE::Code doStartCode;
+                const bool hasAction = clientAddAction( doStartCode, binding, operationName );
+                clientGenerateMessage( doStartCode, binding, message, operation, /*use members=*/true );
 
-          doStartCode += "KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);";
-          doStartCode += "QObject::connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher*)),\n"
-                         "                 this, SLOT(slotFinished(KDSoapPendingCallWatcher*)));";
-          doStart.setBody( doStartCode );
-          jobClass.addFunction( doStart );
+                QString callLine = QString::fromLatin1("KDSoapPendingCall pendingCall = mService->clientInterface()->asyncCall(QLatin1String(\"%1\"), message").arg(operationName);
+                if (hasAction) {
+                    callLine += ", action";
+                }
+                callLine += ");";
+                doStartCode += callLine;
 
-          KODE::Function slot( QLatin1String("slotFinished"), QLatin1String("void"), KODE::Function::Private|KODE::Function::Slot );
-          slot.addArgument( QLatin1String("KDSoapPendingCallWatcher* watcher") );
-          KODE::Code slotCode;
-          slotCode += QLatin1String("watcher->deleteLater();");
-          slotCode += QLatin1String("const KDSoapMessage reply = watcher->returnMessage();");
-          slotCode += QLatin1String("if (!reply.isFault()) {");
-          slotCode.indent();
-          Q_FOREACH( const Part& part, selectedParts( binding, outputMsg, operation, false /*input*/ ) ) {
-              const KODE::MemberVariable member( QLatin1String("result") + upperlize( part.name() ), QString() );
-              slotCode += deserializeRetVal(part, QLatin1String("reply"),  mTypeMap.localType( part.type(), part.element() ), member.name() );
-              //slotCode += QString::fromLatin1("%1.deserialize(reply.childValues().child(\"%2\").value());").arg( member.name(), part.name() );
-          }
-          slotCode.unindent();
-          slotCode += QLatin1String("}");
-          slotCode += QLatin1String("emitFinished(reply);");
-          slot.setBody( slotCode );
-          jobClass.addFunction( slot );
+                doStartCode += "KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);";
+                doStartCode += "QObject::connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher*)),\n"
+                "                 this, SLOT(slotFinished(KDSoapPendingCallWatcher*)));";
+                doStart.setBody( doStartCode );
+                jobClass.addFunction( doStart );
 
-          mClasses += jobClass;
-      } // end of for each operation (job creation)
-  } // end of for each port
+                KODE::Function slot( QLatin1String("slotFinished"), QLatin1String("void"), KODE::Function::Private|KODE::Function::Slot );
+                slot.addArgument( QLatin1String("KDSoapPendingCallWatcher* watcher") );
+                KODE::Code slotCode;
+                slotCode += QLatin1String("watcher->deleteLater();");
+                slotCode += QLatin1String("const KDSoapMessage reply = watcher->returnMessage();");
+                slotCode += QLatin1String("if (!reply.isFault()) {");
+                slotCode.indent();
+                Q_FOREACH( const Part& part, selectedParts( binding, outputMsg, operation, false /*input*/ ) ) {
+                    const KODE::MemberVariable member( QLatin1String("result") + upperlize( part.name() ), QString() );
+                    slotCode += deserializeRetVal(part, QLatin1String("reply"),  mTypeMap.localType( part.type(), part.element() ), member.name() );
+                    //slotCode += QString::fromLatin1("%1.deserialize(reply.childValues().child(\"%2\").value());").arg( member.name(), part.name() );
+                }
+                slotCode.unindent();
+                slotCode += QLatin1String("}");
+                slotCode += QLatin1String("emitFinished(reply);");
+                slot.setBody( slotCode );
+                jobClass.addFunction( slot );
 
-  // First sort all classes so that the order compiles
-  QStringList excludedClasses;
-  excludedClasses << "KDSoapServerObjectInterface";
-  excludedClasses << "KDSoapJob";
-  mClasses.sortByDependencies(excludedClasses);
-  // Then add the service, at the end
+                mClasses += jobClass;
+            } // end of for each operation (job creation)
+        } // end of for each port
+    } // end of for each service
 
-  mClasses += bindingClasses;
-  return true;
+    // First sort all classes so that the order compiles
+    QStringList excludedClasses;
+    excludedClasses << "KDSoapServerObjectInterface";
+    excludedClasses << "KDSoapJob";
+    mClasses.sortByDependencies(excludedClasses);
+    // Then add the service, at the end
+
+    mClasses += bindingClasses;
+    return true;
 }
 
 void Converter::clientAddOneArgument( KODE::Function& callFunc, const Part& part, KODE::Class &newClass )

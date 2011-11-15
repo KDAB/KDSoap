@@ -25,6 +25,8 @@
 #include "binding.h"
 #include "port.h"
 
+#include <QDebug>
+
 using namespace KWSDL;
 
 Port::Port()
@@ -40,20 +42,24 @@ Port::~Port()
 {
 }
 
+#if 0
 void Port::setName( const QString &name )
 {
   mName = name;
 }
+#endif
 
 QString Port::name() const
 {
   return mName;
 }
 
+#if 0
 void Port::setBindingName( const QName &bindingName )
 {
   mBindingName = bindingName;
 }
+#endif
 
 QName Port::bindingName() const
 {
@@ -70,7 +76,7 @@ void Port::loadXML( ParserContext *context, Binding::List *bindings, const QDomE
   if ( mBindingName.isEmpty() )
     context->messageHandler()->warning( "Port: 'binding' required" );
   else
-    if ( mBindingName.nameSpace().isEmpty() )
+    if ( mBindingName.nameSpace().isEmpty() ) // well, always true...
       mBindingName.setNameSpace( nameSpace() );
 
   for ( int i = 0; i < bindings->count(); ++i ) {

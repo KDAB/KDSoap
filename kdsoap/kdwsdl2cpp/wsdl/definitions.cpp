@@ -51,7 +51,6 @@ void Definitions::setTargetNamespace( const QString &targetNamespace )
   mTargetNamespace = targetNamespace;
 
   mType.setNameSpace( mTargetNamespace );
-  mService.setNameSpace( mTargetNamespace );
 }
 
 QString Definitions::targetNamespace() const
@@ -103,14 +102,16 @@ PortType::List Definitions::portTypes() const
   return mPortTypes;
 }
 
+#if 0
 void Definitions::setService( const Service &service )
 {
   mService = service;
 }
+#endif
 
-Service Definitions::service() const
+Service::List Definitions::services() const
 {
-  return mService;
+  return mServices;
 }
 
 void Definitions::setType( const Type &type )
@@ -130,7 +131,6 @@ bool Definitions::loadXML( ParserContext *context, const QDomElement &element )
 
   context->namespaceManager()->enterChild( element );
 
-  bool foundService = false;
   QDomElement child = element.firstChildElement();
   while ( !child.isNull() ) {
     NSManager namespaceManager( context, child );
@@ -161,12 +161,9 @@ bool Definitions::loadXML( ParserContext *context, const QDomElement &element )
       //qDebug() << "Service:" << name << "looking for" << mWantedService;
       // is this the service we want?
       if ( mWantedService.isEmpty() || mWantedService == name ) {
-        if ( !foundService ) {
-          mService.loadXML( context, &mBindings, child );
-          foundService = true;
-        } else {
-          qDebug() << "WARNING: multiple service tags found. Use -s to specify the one you want.";
-        }
+        Service service( mTargetNamespace );
+        service.loadXML( context, &mBindings, child );
+        mServices.append( service );
       }
     } else if ( tagName.localName() == "documentation" ) {
       // ignore documentation for now
@@ -177,7 +174,7 @@ bool Definitions::loadXML( ParserContext *context, const QDomElement &element )
     child = child.nextSiblingElement();
   }
 
-  if ( !foundService ) {
+  if ( mServices.isEmpty() ) {
     qDebug() << "WARNING: no service tags found. There is nothing to generate!";
     return false;
   }
