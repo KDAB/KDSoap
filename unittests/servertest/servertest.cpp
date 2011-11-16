@@ -405,6 +405,10 @@ private Q_SLOTS:
         connect(&timer, SIGNAL(timeout()), this, SLOT(slotStats()));
         timer.start(1000);
 
+        QTime expireTimer;
+        connect(&expireTimer, SIGNAL(timeout()), m_eventLoop, SLOT(quit()));
+        expireTimer.start(10000); // 10 s
+
         // FOR DEBUG
         //qDebug() << server->endPoint();
         //qApp->exec();
