@@ -13,6 +13,7 @@ For terms of redistribution, refer to the license agreement.
 KD Soap requires Qt 4.6.0 or newer.
 
 Note: the use of the cookie jar requires Qt 4.7.0 or newer.
+Note: large multithreaded kdsoap servers should use Qt 4.7.0 or newer.
 
 To build KD Soap, run ./configure.sh (configure.bat on Windows) in the root of the KD Soap source
 distribution. Then run make.
