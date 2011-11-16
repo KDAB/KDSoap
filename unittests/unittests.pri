@@ -12,7 +12,7 @@ DEPENDPATH += $$KDSOAP_PATH/testtools
 
 DEBUG_SUFFIX=""
 CONFIG(debug, debug|release):!unix: DEBUG_SUFFIX = d
-LIBS += -L../lib -ltesttools$$DEBUG_SUFFIX
+LIBS += -L$$PWD/../lib -ltesttools$$DEBUG_SUFFIX
 
 # qtest.h in 4.5 is not QT_NO_CAST_FROM_BYTEARRAY-clean
 contains( $$list($$[QT_VERSION]), 4.5.* ):DEFINES -= QT_NO_CAST_FROM_BYTEARRAY
