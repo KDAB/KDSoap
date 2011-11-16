@@ -150,7 +150,7 @@ void Converter::cleanupUnusedTypes()
         Q_FOREACH( const Port& port, service.ports() ) {
             Binding binding = mWSDL.findBinding( port.bindingName() );
             //portTypeNames.insert( binding.portTypeName() );
-            qDebug() << "binding" << port.bindingName() << binding.name() << "port type" << binding.portTypeName();
+            //qDebug() << "binding" << port.bindingName() << binding.name() << "port type" << binding.portTypeName();
             PortType portType = mWSDL.findPortType( binding.portTypeName() );
             const Operation::List operations = portType.operations();
             //qDebug() << "portType" << portType.name() << operations.count() << "operations";
