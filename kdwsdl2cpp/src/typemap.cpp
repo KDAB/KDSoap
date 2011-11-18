@@ -45,7 +45,6 @@ TypeMap::TypeMap()
   addBuiltinType("anySimpleType", "QVariant");
   addBuiltinType("anyURI", "QString");
   addBuiltinType("base64Binary", "QByteArray");
-  addBuiltinType("binary", "QByteArray");
   addBuiltinType("boolean", "bool");
   addBuiltinType("byte", "signed char"); // 8 bit, signed
   addBuiltinType("date", "QDate");
