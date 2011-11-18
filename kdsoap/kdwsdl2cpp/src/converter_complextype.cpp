@@ -216,8 +216,9 @@ KODE::Code Converter::serializeElementArg( const QName& type, const QName& eleme
     KODE::Code block;
     // for debugging, add this:
     //block += "// type: " + type.qname() + " element:" + elementType.qname();
-    if ( name.localName() == "Telegram" )
-        qDebug() << "appendElementArg:" << name << "type=" << type << "isBuiltin=" << mTypeMap.isBuiltinType(type) << "isQualified=" << isQualified;
+
+    //if ( name.localName() == "..." )
+    //    qDebug() << "appendElementArg:" << name << "type=" << type << "isBuiltin=" << mTypeMap.isBuiltinType(type) << "isQualified=" << isQualified;
     if ( mTypeMap.isTypeAny( type ) ) {
         block += "if (!" + localVariableName + ".isNull()) {";
         block.indent();
