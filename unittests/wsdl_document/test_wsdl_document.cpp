@@ -579,7 +579,8 @@ public:
 
     KDAB__TelegramResponse sendTelegram( const KDAB__TelegramRequest& parameters ) {
         KDAB__TelegramResponse resp;
-        resp.setTelegram(QByteArray("Received ") + parameters.telegram());
+        resp.setTelegramHex(QByteArray("Received ") + parameters.telegramHex());
+        resp.setTelegramBase64(QByteArray("Received ") + parameters.telegramBase64());
         return resp;
     }
 
@@ -731,15 +732,18 @@ void WsdlDocumentTest::testSendTelegram()
     service.setEndPoint(server->endPoint());
 
     KDAB__TelegramRequest req;
-    req.setTelegram(KDAB__TelegramType("Hello"));
+    req.setTelegramHex(KDAB__TelegramType("Hello"));
+    req.setTelegramBase64(QByteArray("Hello"));
     const KDAB__TelegramResponse ret = service.sendTelegram(req);
     QCOMPARE(service.lastError(), QString());
-    QCOMPARE(ret.telegram().value(), QByteArray("Received Hello"));
+    QCOMPARE(ret.telegramHex().value(), QByteArray("Received Hello"));
+    QCOMPARE(ret.telegramBase64().constData(), "Received Hello");
 
     // Check the request as received by the server.
     const QByteArray expectedRequestXml =
         QByteArray(xmlBegin) + "<TelegramRequest " + xmlNamespaces + ">"
-           "<Telegram>48656c6c6f</Telegram>"
+           "<TelegramHex>48656c6c6f</TelegramHex>"
+           "<TelegramBase64>SGVsbG8=</TelegramBase64>"
           "</TelegramRequest>";
     const QString msgNS = QString::fromLatin1("http://www.kdab.com/xml/MyWsdl/");
     // Note that "qualified" is false in m_request, since it was created dynamically by the server -> no namespaces
@@ -747,7 +751,8 @@ void WsdlDocumentTest::testSendTelegram()
 
     const QByteArray expectedResponseXml =
         QByteArray(xmlBegin) + "<n1:TelegramResponse " + xmlNamespaces + " xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
-            "<n1:Telegram>52656365697665642048656c6c6f</n1:Telegram>"
+            "<n1:TelegramHex>52656365697665642048656c6c6f</n1:TelegramHex>"
+            "<n1:TelegramBase64>UmVjZWl2ZWQgSGVsbG8=</n1:TelegramBase64>"
           "</n1:TelegramResponse>";
     // m_response, however, has qualified = true (set by the generated code).
     QVERIFY(xmlBufferCompare(server->lastServerObject()->m_response.toXml(KDSoapValue::LiteralUse, msgNS), expectedResponseXml));
