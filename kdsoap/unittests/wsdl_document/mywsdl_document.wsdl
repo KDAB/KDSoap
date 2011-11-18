@@ -48,14 +48,16 @@
       <element name="TelegramRequest">
         <complexType>
           <sequence>
-            <element name="Telegram" type="kdab:TelegramType"/>
+            <element name="TelegramHex" type="kdab:TelegramType"/>
+            <element name="TelegramBase64" type="xsd:base64Binary"/>
           </sequence>
         </complexType>
       </element>
       <element name="TelegramResponse">
         <complexType>
           <sequence>
-            <element name="Telegram" type="kdab:TelegramType"/>
+            <element name="TelegramHex" type="kdab:TelegramType"/>
+            <element name="TelegramBase64" type="xsd:base64Binary"/>
           </sequence>
         </complexType>
       </element>
