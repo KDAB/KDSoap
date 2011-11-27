@@ -22,15 +22,15 @@ class ForwardHeaderGenerator():
 	def run( self ):
 		self.createProject()
 
-	def _checkFileName( self, filename ):
+	def _isValidHeaderFile( self, filename ):
 		if ( filename.endswith( ".h" ) ):
 			if filename.startswith( "moc_" ):
 				return False
-			if ( filename.startswith( "ui_" ) ):
+			if filename.startswith( "ui_" ):
 				return False
-			if ( filename.startswith( "qrc_" ) ):
+			if filename.startswith( "qrc_" ):
 				return False;
-			if ( filename.endswith( "_p.h" ) ):
+			if filename.endswith( "_p.h" ):
 				return False
 			return True
 		else:
@@ -88,29 +88,20 @@ class ForwardHeaderGenerator():
 		basename = os.path.basename( header )
 		classNames = self._suggestedHeaderNames( project, header )
 
-		for classname in classNames:
-			if self.prefixed:
-				localPath = self.includepath + "/" + basename
-				copyfile( header, localPath )
-				fHeaderName = os.path.abspath( self.includepath + "/" + classname )
-				self._addForwardHeader( fHeaderName, basename, self.__projectFile )
-
-			fHeaderName = os.path.abspath( path + "/" + classname )
-			self._addForwardHeader( fHeaderName, basename, projectFile )
-
-		if len( classNames ) == 0:
-			if self.prefixed:
-				localPath = self.includepath + "/" + basename
-				copyfile( header, localPath )
-				self.__projectFile.write( basename + " \\" + os.linesep )
-
+		if len( classNames ) > 0:
+			for classname in classNames:
+				fHeaderName = os.path.abspath( path + "/" + classname )
+				self._addForwardHeader( fHeaderName, basename, projectFile )
+		else:
 			sanitizedBasename = basename.replace( ".h", "" )
 
-			fHeaderName = os.path.abspath( self.includepath + "/" + sanitizedBasename )
-			self._addForwardHeader( fHeaderName, basename, self.__projectFile )
+			#fHeaderName = os.path.abspath( self.includepath + "/" + sanitizedBasename )
+			#self._addForwardHeader( fHeaderName, basename, self.__projectFile )
 
 			fHeaderNameProjectDir = os.path.dirname( os.path.abspath( header ) ) + "/" + sanitizedBasename;
-			self._addForwardHeader( fHeaderNameProjectDir, "../{0}".format( basename ), projectFile )
+			self._addForwardHeader( fHeaderNameProjectDir, "{0}".format( basename ), projectFile )
+
+		projectFile.write( basename + " \\" + os.linesep )
 
 	def createProject( self ):
 		if ( not os.path.exists( self.path ) ):
@@ -186,7 +177,7 @@ class ForwardHeaderGenerator():
 			if ( not os.path.isdir( file ) ):
 				destfile = os.path.abspath( destDir + "/" + filename )
 				srcfile = os.path.abspath( srcDir + "/" + filename )
-				if ( self._checkFileName( filename ) ):
+				if self._isValidHeaderFile( filename ):
 					copyfile( srcfile, destfile )
 					self._createForwardHeader( destfile, projectFile, project )
 			else:
