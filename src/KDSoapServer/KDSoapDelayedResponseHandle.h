@@ -3,7 +3,6 @@
 
 #include "KDSoapServerGlobal.h"
 #include <QSharedDataPointer>
-#include <KDSoapServerSocket_p.h>
 
 class KDSoapDelayedResponseHandleData;
 class KDSoapServerSocket;
