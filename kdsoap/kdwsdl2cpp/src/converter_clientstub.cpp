@@ -652,8 +652,8 @@ void Converter::convertClientOutputMessage( const Operation &operation,
   slotCode += "const KDSoapMessage reply = watcher->returnMessage();";
   slotCode += "if (reply.isFault()) {";
   slotCode.indent();
-  slotCode += "emit " + errorSignal.name() + "(reply);" COMMENT;
-  slotCode += "emit soapError(QLatin1String(\"" + operationName + "\"), reply);";
+  slotCode += "Q_EMIT " + errorSignal.name() + "(reply);" COMMENT;
+  slotCode += "Q_EMIT soapError(QLatin1String(\"" + operationName + "\"), reply);";
   slotCode.unindent();
   slotCode += "} else {";
   slotCode.indent();
@@ -703,7 +703,7 @@ void Converter::convertClientOutputMessage( const Operation &operation,
   newClass.addFunction( doneSignal );
   newClass.addFunction( errorSignal );
 
-  slotCode += "emit " + doneSignal.name() + "( " + partNames.join( "," ) + " );";
+  slotCode += "Q_EMIT " + doneSignal.name() + "( " + partNames.join( "," ) + " );";
   slotCode.unindent();
   slotCode += '}';
   slotCode += "watcher->deleteLater();";
