@@ -212,9 +212,9 @@ QString Function::accessAsString() const
     access = "private";
 
   if ( d->mAccess & Signal )
-    access = "signals";
+    access = "Q_SIGNALS";
   if ( d->mAccess & Slot )
-    access += " slots";
+    access += " Q_SLOTS";
 
   return access;
 }
