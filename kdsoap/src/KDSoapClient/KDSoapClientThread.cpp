@@ -5,6 +5,7 @@
 #include "KDSoapClientInterface_p.h"
 #include "KDSoapPendingCall.h"
 #include <QNetworkRequest>
+#include <QNetworkProxy>
 #include <QBuffer>
 #include <QEventLoop>
 #include <QAuthenticator>
@@ -27,16 +28,15 @@ void KDSoapClientThread::run()
     QEventLoop eventLoop;
 
     while ( true ) {
-        m_mutex.lock();
+        QMutexLocker locker( &m_mutex );
         if (!m_stopThread && m_queue.isEmpty()) {
             m_queueNotEmpty.wait( &m_mutex );
         }
         if (m_stopThread) {
-            m_mutex.unlock();
             break;
         }
         KDSoapThreadTaskData* taskData = m_queue.dequeue();
-        m_mutex.unlock();
+        locker.unlock();
 
         KDSoapThreadTask task(taskData); // must be created here, so that it's in the right thread
         connect(&task, SIGNAL(taskDone()), &eventLoop, SLOT(quit()));
@@ -65,6 +65,8 @@ void KDSoapThreadTask::process(QNetworkAccessManager& accessManager)
     // Qt-4.7: it's from a different thread, so this won't change the parent object
     accessManager.setCookieJar(jar);
 #endif
+
+    accessManager.setProxy( m_data->m_iface->d->m_accessManager.proxy() );
 
     QBuffer* buffer = m_data->m_iface->d->prepareRequestBuffer(m_data->m_method, m_data->m_message, m_data->m_headers);
     QNetworkRequest request = m_data->m_iface->d->prepareRequest(m_data->m_method, m_data->m_action);
