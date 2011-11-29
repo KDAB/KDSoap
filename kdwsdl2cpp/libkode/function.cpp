@@ -21,6 +21,7 @@
 */
 
 #include <QtCore/QStringList>
+#include <QtCore/QDebug>
 
 #include "function.h"
 
@@ -263,4 +264,10 @@ void Function::setVirtualMode( Function::VirtualMode v )
 Function::VirtualMode Function::virtualMode() const
 {
   return d->mVirtualMode;
+}
+
+QDebug operator<<(QDebug dbg, const Function &func)
+{
+    dbg << func.name();
+    return dbg;
 }
