@@ -28,6 +28,7 @@
 #include <QAuthenticator>
 #include <QDebug>
 #include <QBuffer>
+#include <QNetworkProxy>
 
 KDSoapClientInterface::KDSoapClientInterface(const QString& endPoint, const QString& messageNamespace)
     : d(new Private)
@@ -209,6 +210,16 @@ void KDSoapClientInterface::setCookieJar(QNetworkCookieJar *jar)
     QObject* oldParent = jar->parent();
     d->m_accessManager.setCookieJar(jar);
     jar->setParent(oldParent); // see comment in QNAM::setCookieJar...
+}
+
+QNetworkProxy KDSoapClientInterface::proxy() const
+{
+    return d->m_accessManager.proxy();
+}
+
+void KDSoapClientInterface::setProxy(const QNetworkProxy &proxy)
+{
+    d->m_accessManager.setProxy(proxy);
 }
 
 #include "moc_KDSoapClientInterface_p.cpp"

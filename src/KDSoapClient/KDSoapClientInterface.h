@@ -29,6 +29,7 @@
 
 class KDSoapAuthentication;
 class QNetworkCookieJar;
+class QNetworkProxy;
 
 /**
  * KDSoapClientInterface is a generic accessor class that is used to place
@@ -214,6 +215,20 @@ public:
      * \since 1.2
      */
     void setCookieJar(QNetworkCookieJar* jar);
+
+    /**
+      * Returns the network proxy used for the HTTP requests.
+      * \since 1.2
+      * \sa QNetworkAccessManager::proxy()
+      */
+    QNetworkProxy proxy() const;
+
+    /**
+      * Sets the network proxy used for the HTTP requests.
+      * \since 1.2
+      * \sa QNetworkAccessManager::setProxy()
+      */
+    void setProxy( const QNetworkProxy & proxy );
 
     /**
      * WSDL style. See the "style" attribute for soap:binding, in the WSDL file.
