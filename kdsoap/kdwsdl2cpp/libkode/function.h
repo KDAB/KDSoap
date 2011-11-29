@@ -42,18 +42,18 @@ class KODE_EXPORT Function
     class Argument {
       public:
         typedef QList<Argument> List;
-      
+
         Argument( const QString &declaration,
           const QString &defaultArgument = QString() );
 
         QString headerDeclaration() const;
         QString bodyDeclaration() const;
-    
+
       private:
         class ArgumentPrivate;
         ArgumentPrivate *d;
     };
-  
+
     typedef QList<Function> List;
 
     /**
@@ -152,7 +152,7 @@ class KODE_EXPORT Function
      * Adds an @param argument to the function.
      */
     void addArgument( const Function::Argument &argument );
-    
+
     /**
      * Adds an @param argument to the function.
      */
@@ -236,5 +236,7 @@ class KODE_EXPORT Function
 };
 
 }
+
+QDebug operator<<(QDebug dbg, const KODE::Function &func);
 
 #endif
