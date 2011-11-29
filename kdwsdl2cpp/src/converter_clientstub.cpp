@@ -194,9 +194,10 @@ bool Converter::convertClientService()
                 continue;
             }
 
-            // clientInterface() method
+            // clientInterface() methods
             {
-                KODE::Function clientInterface("clientInterface", "KDSoapClientInterface*", KODE::Function::Public);
+                KODE::Function clientInterface("clientInterface", "const KDSoapClientInterface*", KODE::Function::Public);
+                clientInterface.setConst(true);
                 KODE::Code code;
                 code += "if (!d_ptr->m_clientInterface) {";
                 code.indent();
@@ -213,6 +214,13 @@ bool Converter::convertClientService()
                 code += "return d_ptr->m_clientInterface;";
                 clientInterface.setBody(code);
                 newClass.addFunction(clientInterface);
+            }
+            {
+                KODE::Function mutableClientInterface("clientInterface", "KDSoapClientInterface*", KODE::Function::Public);
+                KODE::Code code;
+                code += "return const_cast<KDSoapClientInterface*>( const_cast< const " + newClass.name() + "*>( this )->clientInterface() );";
+                mutableClientInterface.setBody( code );
+                newClass.addFunction(mutableClientInterface);
             }
 
             SoapBinding::Headers soapHeaders;
