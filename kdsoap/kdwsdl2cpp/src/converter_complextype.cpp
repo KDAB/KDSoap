@@ -71,7 +71,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
             conctor.setBody( variableName + " = value;" );
 
             // type operator
-            KODE::Function op( "operator const " + typeName );
+            KODE::Function op( "operator " + typeName );
             op.setBody( "return " + variableName + ';' );
             op.setConst( true );
 
