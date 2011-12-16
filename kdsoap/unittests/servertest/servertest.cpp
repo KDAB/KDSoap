@@ -357,7 +357,7 @@ private Q_SLOTS:
         QTest::newRow("300 requests") << 5 << 50 << 6;
 #ifndef Q_OS_MAC
 #ifndef Q_OS_WIN // builbot gets "Fault code 99: Unknown error" after 358 connected sockets
-#if QT_VERSION >= 0x040700 // Qt-4.6 socket code isn't fully threadsafe, an occasional crash in QEventDispatcherUNIXPrivate::doSelect happens
+#if QT_VERSION >= 0x040800 // Qt-4.6/4.7 socket code isn't fully threadsafe, an occasional crash in QEventDispatcherUNIXPrivate::doSelect happens
         QTest::newRow("500 requests") << 5 << 125 << 4;
         QTest::newRow("600 requests, requires >1K fd") << 5 << 100 << 6;
         //QTest::newRow("1800 requests") << 5 << 300 << 6;
