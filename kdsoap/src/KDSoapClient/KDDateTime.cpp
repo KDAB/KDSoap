@@ -101,9 +101,12 @@ QString KDDateTime::toDateString() const
     if (time().msec()) {
         // include milli-seconds
         str = toString(QLatin1String("yyyy-MM-ddThh:mm:ss.zzz"));
+        str += d->mTimeZone;
     } else {
         str = toString(Qt::ISODate);
+#if QT_VERSION < 0x040800 // Qt adds the timezone since 4.8
+        str += d->mTimeZone;
+#endif
     }
-    str += d->mTimeZone;
     return str;
 }
