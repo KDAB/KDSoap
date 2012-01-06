@@ -161,9 +161,9 @@ class ForwardHeaderGenerator():
 
 	def _projectFile_finalize( self, projectFile, installPath ):
 		projectFile.write( os.linesep )
-		projectFile.write( "message( $$INSTALL_HEADERS.path )" + os.linesep )
+		#projectFile.write( "message( $$INSTALL_HEADERS.path )" + os.linesep )
 		projectFile.write( "INSTALL_HEADERS.path = {0}".format( installPath ) + os.linesep )
-		projectFile.write( "message( $$INSTALL_HEADERS.path )" + os.linesep )
+		#projectFile.write( "message( $$INSTALL_HEADERS.path )" + os.linesep )
 		projectFile.write( "INSTALLS += INSTALL_HEADERS" + os.linesep )
 
 	def _copyHeaders( self, srcDir, destDir, projectFile, project, prefixed = False ):
