@@ -60,8 +60,8 @@ class KDSoapServerSocket;
  * when parsing a KDSoapMessage that is a "getEmployeeCountry" request.
  *
  * Multi-threading note: KDSoapServer will create one instance of a "server object"
- * per thread. So the code in this class does not need to be protected for thread
- * safety. Make sure to protect any shared resources though.
+ * per thread. So the code in this class does not need to be protected for thread-safety.
+ * Make sure to protect any shared resources though.
  */
 class KDSOAPSERVER_EXPORT KDSoapServerObjectInterface
 {
