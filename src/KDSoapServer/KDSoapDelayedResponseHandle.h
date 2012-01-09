@@ -8,9 +8,9 @@ class KDSoapDelayedResponseHandleData;
 class KDSoapServerSocket;
 
 /**
- * The delayed-response-handle is an opaque data type representing
+ * The delayed-response handle is an opaque data type representing
  * a delayed response. When a server object wants to implement a SOAP method
- * call using an asynchronous operation, it can call prepareDelayedResponse(), store
+ * call using an asynchronous operation, it can call KDSoapServerObjectInterface::prepareDelayedResponse(), store
  * the handle, and use the handle later on in order to send the delayed response.
  */
 class KDSOAPSERVER_EXPORT KDSoapDelayedResponseHandle
