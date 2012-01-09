@@ -33,8 +33,10 @@ class KDSoapNamespacePrefixes;
 class KDSoapValue;
 class KDSoapValueList;
 
-/// Internal class -- only exported for the server lib
-
+/**
+ * \internal
+ * Internal class -- only exported for the server lib
+ */
 class KDSOAP_EXPORT KDSoapMessageWriter
 {
 public:

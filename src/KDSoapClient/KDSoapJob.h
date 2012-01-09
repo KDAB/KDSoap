@@ -30,6 +30,7 @@ class KDSoapMessage;
 
 /**
  * \brief KDSoapJob provides a job-based interface to handle asynchronous KD Soap calls.
+ *
  * For each SOAP operation, kdwsdl2cpp generates a corresponding KDSoapJob subclass.
  * This makes it easier to manage multiple callers in the client application code calling the same functions, preventing
  * callers processing results for calls made from another caller instead of their own calls.

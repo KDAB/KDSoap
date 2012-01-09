@@ -141,7 +141,9 @@ public:
     void setValue(const QVariant& value);
 
     /**
-     * Should element be qualified?
+     * Whether the element should be qualified in the XML. See setQualified()
+     *
+     * \since 1.2
      */
     bool isQualified() const;
 
@@ -150,11 +152,14 @@ public:
      * locally declared elements and attributes are qualified by a namespace,
      * using an explicit prefix. Default is unqualified.
      *
-     * Note that this property does not propagate to child values, it needs to be set
-     * in each child value (they could come from another schema which doesn't specify
+     * Note that this property does not propagate to child values. It needs to be set
+     * for each child value (they could come from another schema which doesn't specify
      * the same value for qualified).
+     *
+     * \param qualified Whether to qualify the element, or not.
+     * \since 1.2
      */
-    void setQualified(bool isQualified);
+    void setQualified(bool qualified);
 
     /**
      * Returns the list of child values (elements and attributes).
@@ -256,7 +261,7 @@ public:
      * \param typeNameSpace namespace of the type of this value; this is only useful if using KDSoapMessage::EncodedUse
      * \param typeName localname of the type of this value; this is only useful if using KDSoapMessage::EncodedUse
      *
-     * Note that this doesn't make it possible to call setQualified() or setNamespaceUri() on the value.
+     * Note that this doesn't allow to call KDSoapValue::setQualified() or KDSoapValue::setNamespaceUri() on the value.
      *
      * Equivalent to
      * \code
