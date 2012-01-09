@@ -1,3 +1,7 @@
+General:
+========
+* Fix compilation with gcc-4.6, and fix behavior with Qt-4.8
+
 Client-side:
 ============
 * Generic soapError() signal, for central processing of all SOAP errors (faults) [Jira SOAP-6]
@@ -13,6 +17,7 @@ Server-side:
 * Fix support for messages with no input or output arguments
 * Set response namespace automatically in generated processRequest, so as to not rely on the namespace
   of the incoming request.
+* Fix crash in Qt-4.8 at server shutdown.
 
 Code generator changes, applying to both client and server side:
 ================================================================
