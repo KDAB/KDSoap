@@ -1,4 +1,5 @@
 PROJECT_NAME           = KD SOAP
+PROJECT_NUMBER         = 1.2
 OUTPUT_DIRECTORY       = doc
 HTML_OUTPUT            = refman
 INHERIT_DOCS           = NO
