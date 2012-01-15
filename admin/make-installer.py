@@ -10,7 +10,7 @@ config.parseCommandLineOptions()
 # product setup
 config.setProduct( "KDSoap" )
 config.setVendor( "KDAB" )
-config.setRelease( "1.1" )
+config.setRelease( "1.2" )
 # the directory that is packed into the installer
 config.setDirectory( config.targetDir() )
 # FIXME (Thomas) map to QMAKESPEC
