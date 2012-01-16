@@ -146,7 +146,11 @@ private Q_SLOTS:
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
 
         // Check response parsing
+#if QT_VERSION >= 0x040800 // Qt-4.8 now outputs the timezone
+        QCOMPARE(response.backup().toString(Qt::ISODate), QString::fromLatin1("2011-03-15T04:03:02+01:00")); // Qt doesn't show msec
+#else
         QCOMPARE(response.backup().toString(Qt::ISODate), QString::fromLatin1("2011-03-15T04:03:02")); // Qt doesn't show msec
+#endif
         QCOMPARE(response.backup().timeZone(), QString::fromLatin1("+01:00"));
         QCOMPARE(response.backup().toDateString(), QString::fromLatin1("2011-03-15T04:03:02.001+01:00"));
         QCOMPARE(response.retention().toDateString(), QString::fromLatin1("2011-01-15T04:03:02.001Z"));

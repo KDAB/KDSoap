@@ -117,6 +117,7 @@ private:
     }
 
 private:
+    QByteArray m_partialRequest;
     QSemaphore m_ready;
     QByteArray m_dataToSend;
     QByteArray m_receivedData;
