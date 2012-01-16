@@ -70,8 +70,16 @@ void KDDateTime::setTimeZone(const QString &timeZone)
         setTimeSpec(Qt::UTC);
     else if (timeZone.isEmpty())
         setTimeSpec(Qt::LocalTime);
-    else
+    else {
         setTimeSpec(Qt::OffsetFromUTC);
+        const int pos = timeZone.indexOf(QLatin1Char(':'));
+        if ( pos > 0 ) {
+            const int hours = timeZone.left(pos).toInt();
+            const int minutes = timeZone.mid(pos+1).toInt();
+            const int offset = hours * 3600 + minutes * 60;
+            setUtcOffset(offset);
+        }
+    }
 }
 
 KDDateTime KDDateTime::fromDateString(const QString &s)

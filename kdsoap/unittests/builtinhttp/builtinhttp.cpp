@@ -148,7 +148,9 @@ private Q_SLOTS:
 
             QCOMPARE(server.header("Content-Type").constData(), "text/xml;charset=utf-8");
             QCOMPARE(server.header("SoapAction").constData(), "\"http://www.kdab.com/xml/MyWsdl/getEmployeeCountry\"");
-#if QT_VERSION >= 0x040700
+#if QT_VERSION >= 0x040800
+            QCOMPARE(server.header("Cookie").constData(), "biscuits=are good");
+#elif QT_VERSION >= 0x040700
             QCOMPARE(server.header("Cookie").constData(), "biscuits=\"are good\"");
 #endif
             QCOMPARE(ret.arguments().child(QLatin1String("employeeCountry")).value().toString(), QString::fromLatin1("France"));
@@ -162,7 +164,9 @@ private Q_SLOTS:
             QVERIFY(!ret.isFault());
             QCOMPARE(server.header("Content-Type").constData(), "application/soap+xml;charset=utf-8;action=http://www.kdab.com/xml/MyWsdl/getEmployeeCountry");
             QCOMPARE(ret.arguments().child(QLatin1String("employeeCountry")).value().toString(), QString::fromLatin1("France"));
-#if QT_VERSION >= 0x040700
+#if QT_VERSION >= 0x040800
+            QCOMPARE(server.header("Cookie").constData(), "biscuits=are good");
+#elif QT_VERSION >= 0x040700
             QCOMPARE(server.header("Cookie").constData(), "biscuits=\"are good\"");
 #endif
         }

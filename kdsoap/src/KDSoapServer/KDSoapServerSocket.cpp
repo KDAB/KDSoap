@@ -53,7 +53,8 @@ KDSoapServerSocket::KDSoapServerSocket(KDSoapSocketList* owner, QObject* serverO
 // The socket is deleted when it emits disconnected() (see KDSoapSocketList::handleIncomingConnection).
 KDSoapServerSocket::~KDSoapServerSocket()
 {
-    m_owner->socketDeleted(this);
+    // same as m_owner->socketDeleted, but safe in case m_owner is deleted first
+    emit socketDeleted(this);
 }
 
 typedef QMap<QByteArray, QByteArray> HeadersMap;
@@ -160,6 +161,10 @@ void KDSoapServerSocket::slotReadyRead()
         qDebug() << httpHeaders;
         qDebug() << "data received:" << receivedData;
     }
+
+    const QByteArray contentLength = httpHeaders.value("content-length");
+    if (receivedData.size() < contentLength.size())
+        return; // incomplete request, wait for more data
 
     KDSoapServer* server = m_owner->server();
     KDSoapMessage replyMsg;
