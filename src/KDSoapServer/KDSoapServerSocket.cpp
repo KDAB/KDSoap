@@ -162,6 +162,10 @@ void KDSoapServerSocket::slotReadyRead()
         qDebug() << "data received:" << receivedData;
     }
 
+    const QByteArray contentLength = httpHeaders.value("content-length");
+    if (receivedData.size() < contentLength.size())
+        return; // incomplete request, wait for more data
+
     KDSoapServer* server = m_owner->server();
     KDSoapMessage replyMsg;
     replyMsg.setUse(server->use());
