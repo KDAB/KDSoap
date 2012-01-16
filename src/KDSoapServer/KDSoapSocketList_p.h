@@ -23,25 +23,28 @@
 #define KDSOAPSOCKETLIST_P_H
 
 #include <QSet>
+#include <QObject>
 class QTcpSocket;
 class KDSoapServer;
 class QObject;
 class KDSoapServerSocket;
 
-class KDSoapSocketList
+class KDSoapSocketList : public QObject
 {
+    Q_OBJECT
 public:
     explicit KDSoapSocketList(KDSoapServer* server);
     ~KDSoapSocketList();
 
     KDSoapServerSocket* handleIncomingConnection(int socketDescriptor);
 
-    void socketDeleted(KDSoapServerSocket* socket);
-
     int socketCount() const;
     void disconnectAll();
 
     KDSoapServer* server() const { return m_server; }
+
+public Q_SLOTS:
+    void socketDeleted(KDSoapServerSocket* socket);
 
 private:
     KDSoapServer* m_server;

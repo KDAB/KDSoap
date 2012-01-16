@@ -279,15 +279,30 @@ void HttpServerThread::run()
                 break;
             }
         }
-        const QByteArray request = clientSocket->readAll();
+        const QByteArray request = m_partialRequest + clientSocket->readAll();
         if (doDebug) {
             qDebug() << "HttpServerThread: request:" << request;
         }
+
         // Split headers and request xml
         const bool splitOK = splitHeadersAndData(request, m_receivedHeaders, m_receivedData);
-        Q_ASSERT(splitOK);
-        Q_UNUSED(splitOK); // To avoid a warning if Q_ASSERT doesn't expand to anything.
+        if (!splitOK) {
+            //if (doDebug)
+            //    qDebug() << "Storing partial request" << request;
+            m_partialRequest = request;
+            continue;
+        }
+
         m_headers = parseHeaders(m_receivedHeaders);
+
+        if (m_headers.value("Content-Length").toInt() > m_receivedData.size()) {
+            //if (doDebug)
+            //    qDebug() << "Storing partial request" << request;
+            m_partialRequest = request;
+            continue;
+        }
+
+        m_partialRequest.clear();
 
         if (m_headers.value("_path").endsWith("terminateThread")) // we're asked to exit
             break; // normal exit

@@ -53,6 +53,9 @@ public:
     void sendDelayedReply(KDSoapServerObjectInterface* serverObjectInterface, const KDSoapMessage& replyMsg);
     void sendReply(KDSoapServerObjectInterface* serverObjectInterface, const KDSoapMessage& replyMsg);
 
+Q_SIGNALS:
+    void socketDeleted(KDSoapServerSocket *);
+
 private Q_SLOTS:
     void slotReadyRead();
 
