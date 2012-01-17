@@ -138,4 +138,20 @@ void KDSoapThreadPool::disconnectSockets(KDSoapServer *server)
     readyThreads.acquire(d->m_threads.count());
 }
 
+int KDSoapThreadPool::totalConnectionCount(const KDSoapServer* server) const
+{
+    int sc = 0;
+    Q_FOREACH(KDSoapServerThread* thread, d->m_threads) {
+        sc += thread->totalConnectionCountForServer(server);
+    }
+    return sc;
+}
+
+void KDSoapThreadPool::resetTotalConnectionCount(const KDSoapServer* server)
+{
+    Q_FOREACH(KDSoapServerThread* thread, d->m_threads) {
+        thread->resetTotalConnectionCountForServer(server);
+    }
+}
+
 #include "moc_KDSoapThreadPool.cpp"

@@ -44,6 +44,8 @@ public Q_SLOTS:
 public:
     int socketCount();
     int socketCountForServer(const KDSoapServer* server);
+    int totalConnectionCountForServer(const KDSoapServer* server);
+    void resetTotalConnectionCountForServer(const KDSoapServer* server);
 
     void addIncomingConnection();
 private:
@@ -67,6 +69,9 @@ public:
 
     int socketCount() const;
     int socketCountForServer(const KDSoapServer* server) const;
+    int totalConnectionCountForServer(const KDSoapServer* server) const;
+    void resetTotalConnectionCountForServer(const KDSoapServer* server);
+
     void disconnectSocketsForServer(KDSoapServer* server, QSemaphore& semaphore);
     void handleIncomingConnection(int socketDescriptor, KDSoapServer* server);
 
