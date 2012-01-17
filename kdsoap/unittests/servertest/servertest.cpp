@@ -55,8 +55,8 @@ public: // SOAP-accessible methods
             return QString();
         }
         //qDebug() << "getEmployeeCountry(" << employeeName << ") called";
-        //if (employeeName == QLatin1String("Slow"))
-        //    PublicThread::msleep(100);
+        if (employeeName == QLatin1String("Slow"))
+            PublicThread::msleep(100);
         return QString::fromLatin1("France");
     }
 
@@ -189,10 +189,9 @@ private Q_SLOTS:
 
             QCOMPARE(s_serverObjects.count(), 1);
             QVERIFY(s_serverObjects.value(&serverThread)); // request handled by server thread itself (no thread pool)
-            QCOMPARE(server->numConnectedSockets(), 1);
+            QCOMPARE(server->totalConnectionCount(), 1);
             delete client;
             QTest::qWait(100);
-            QCOMPARE(server->numConnectedSockets(), 0);
         }
         QCOMPARE(s_serverObjects.count(), 0);
     }
@@ -283,10 +282,8 @@ private Q_SLOTS:
             QThread* thread = s_serverObjects.begin().key();
             QVERIFY(thread != qApp->thread());
             QVERIFY(thread != &serverThread);
-            QCOMPARE(server->numConnectedSockets(), 1);
+            QCOMPARE(server->totalConnectionCount(), 1);
             delete client;
-            QTest::qWait(100); // race: we're waiting for the thread to be told about the socket disconnecting
-            QCOMPARE(server->numConnectedSockets(), 0);
         }
         QCOMPARE(s_serverObjects.count(), 0);
     }
@@ -328,9 +325,7 @@ private Q_SLOTS:
                 m_expectedMessages = numRequests;
 
                 makeAsyncCalls(client, numRequests);
-                QCOMPARE(server->numConnectedSockets(), 0); // too early, none of them connected yet
                 m_eventLoop.exec();
-                QCOMPARE(server->numConnectedSockets(), numRequests); // works, but racy, by design.
 
                 QCOMPARE(m_returnMessages.count(), m_expectedMessages);
                 Q_FOREACH(const KDSoapMessage& response, m_returnMessages) {
@@ -344,6 +339,7 @@ private Q_SLOTS:
                     QVERIFY(thread != &serverThread);
                 }
             }
+            QCOMPARE(server->totalConnectionCount(), numClients * numRequests);
         }
         QCOMPARE(s_serverObjects.count(), 0);
     }
@@ -357,7 +353,11 @@ private Q_SLOTS:
         QTest::newRow("300 requests") << 5 << 50 << 6;
 #ifndef Q_OS_MAC
 #ifndef Q_OS_WIN // builbot gets "Fault code 99: Unknown error" after 358 connected sockets
-#if QT_VERSION >= 0x040800 // Qt-4.6/4.7 socket code isn't fully threadsafe, an occasional crash in QEventDispatcherUNIXPrivate::doSelect happens
+#if QT_VERSION >= 0x040800
+        // Qt-4.6/4.7 socket code isn't fully threadsafe, an occasional crash in QEventDispatcherUNIXPrivate::doSelect happens
+        // Qt-4.8, on the other hand, uses more file descriptors (thread pipes) and then:
+        // without glib, select() on fd > 1024, which gives "QSocketNotifier: Internal error".
+        // With glib, though, it works.
         QTest::newRow("500 requests") << 5 << 125 << 4;
         QTest::newRow("600 requests, requires >1K fd") << 5 << 100 << 6;
         //QTest::newRow("1800 requests") << 5 << 300 << 6;
@@ -380,7 +380,11 @@ private Q_SLOTS:
         QFETCH(int, numRequests);
         const int expectedConnectedSockets = numClients * numRequests;
         // the *2 is because in this unittest, we have both the client and the server socket, in the same process
-        if (!KDSoapServer::setExpectedSocketCount(expectedConnectedSockets * 2)) {
+        int numFileDescriptors = expectedConnectedSockets * 2;
+#if QT_VERSION >= 0x040800 // Qt-4.8 uses threads so it needs pipes -- more fds
+        numFileDescriptors += numClients;
+#endif
+        if (!KDSoapServer::setExpectedSocketCount(numFileDescriptors)) {
             if (expectedConnectedSockets > 500)
                 QSKIP("needs root", SkipSingle);
             else
@@ -409,15 +413,19 @@ private Q_SLOTS:
 
         QTimer expireTimer;
         connect(&expireTimer, SIGNAL(timeout()), &m_eventLoop, SLOT(quit()));
-        expireTimer.start(10000); // 10 s
+        expireTimer.start(660000); // 660 s (10 s would be enough, but not in valgrind)
 
         // FOR DEBUG
         //qDebug() << server->endPoint();
         //qApp->exec();
 
         m_eventLoop.exec();
+        qDebug() << "exec returned";
         slotStats();
-        if (server->numConnectedSockets() < expectedConnectedSockets) {
+        QTest::qWait(1000); // makes totalConnectionCount() more reliable.
+        qDebug() << "after qWait";
+        slotStats();
+        if (server->totalConnectionCount() < expectedConnectedSockets) {
             Q_FOREACH(const KDSoapMessage& response, m_returnMessages) {
                 if (response.isFault()) {
                     qDebug() << response.faultAsString();
@@ -425,7 +433,7 @@ private Q_SLOTS:
                 }
             }
         }
-        QCOMPARE(server->numConnectedSockets(), expectedConnectedSockets);
+        QCOMPARE(server->totalConnectionCount(), expectedConnectedSockets);
 
         QCOMPARE(m_returnMessages.count(), m_expectedMessages);
         Q_FOREACH(const KDSoapMessage& response, m_returnMessages) {
@@ -447,7 +455,7 @@ private Q_SLOTS:
         m_expectedMessages = 2;
         makeAsyncCalls(client, m_expectedMessages);
         m_eventLoop.exec();
-        QCOMPARE(server->numConnectedSockets(), m_expectedMessages);
+        QCOMPARE(server->totalConnectionCount(), m_expectedMessages);
         const quint16 oldPort = server->serverPort();
         QCOMPARE(m_returnMessages.count(), 2);
 
@@ -524,7 +532,7 @@ private Q_SLOTS:
 
         if (m_returnMessages.count() < m_expectedMessages)
             m_eventLoop.exec();
-        // Don't look at m_returnMessages or numConnectedSockets here,
+        // Don't look at m_returnMessages or totalConnectionCount here,
         // some of them got an error, trying to connect while server was suspended.
 
         qDeleteAll(clients);
@@ -675,7 +683,7 @@ public Q_SLOTS:
 
     void slotStats()
     {
-        qDebug() << m_server->numConnectedSockets() << "sockets connected. Messages received" << m_returnMessages.count();
+        qDebug() << m_server->totalConnectionCount() << "sockets seen." << m_server->numConnectedSockets() << "connected right now. Messages received" << m_returnMessages.count();
     }
 
 private:
@@ -720,9 +728,9 @@ private:
     static QString countryMessageNamespace() {
         return QString::fromLatin1("http://www.kdab.com/xml/MyWsdl/");
     }
-    static KDSoapMessage countryMessage() {
+    static KDSoapMessage countryMessage(bool slow = false) {
         KDSoapMessage message;
-        message.addArgument(QLatin1String("employeeName"), QString::fromUtf8("David Ä Faure"));
+        message.addArgument(QLatin1String("employeeName"), QString::fromUtf8(slow ? "Slow" : "David Ä Faure"));
         return message;
     }
 

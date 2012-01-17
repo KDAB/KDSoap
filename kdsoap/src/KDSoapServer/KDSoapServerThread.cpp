@@ -58,6 +58,19 @@ int KDSoapServerThread::socketCountForServer(const KDSoapServer* server) const
     return 0;
 }
 
+int KDSoapServerThread::totalConnectionCountForServer(const KDSoapServer* server) const
+{
+    if (d)
+        return d->totalConnectionCountForServer(server);
+    return 0;
+}
+
+void KDSoapServerThread::resetTotalConnectionCountForServer(const KDSoapServer* server)
+{
+    if (d)
+        d->resetTotalConnectionCountForServer(server);
+}
+
 void KDSoapServerThread::disconnectSocketsForServer(KDSoapServer *server, QSemaphore& semaphore)
 {
     if (d) {
@@ -154,4 +167,19 @@ void KDSoapServerThreadImpl::disconnectSocketsForServer(KDSoapServer *server, QS
         sockets->disconnectAll();
     }
     semaphore->release();
+}
+
+int KDSoapServerThreadImpl::totalConnectionCountForServer(const KDSoapServer* server)
+{
+    QMutexLocker lock(&m_socketListMutex);
+    KDSoapSocketList* sockets = m_socketLists.value(const_cast<KDSoapServer*>(server));
+    return sockets ? sockets->totalConnectionCount() : 0;
+}
+
+void KDSoapServerThreadImpl::resetTotalConnectionCountForServer(const KDSoapServer* server)
+{
+    QMutexLocker lock(&m_socketListMutex);
+    KDSoapSocketList* sockets = m_socketLists.value(const_cast<KDSoapServer*>(server));
+    if (sockets)
+        sockets->resetTotalConnectionCount();
 }

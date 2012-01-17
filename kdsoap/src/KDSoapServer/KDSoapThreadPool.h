@@ -68,6 +68,19 @@ public:
     int numConnectedSockets(const KDSoapServer* server) const;
 
     /**
+     * Returns the number of sockets that have connected to the given server,
+     * in this threadpool, since the last call to resetTotalConnectionCount().
+     * \since 1.2
+     */
+    int totalConnectionCount(const KDSoapServer* server) const;
+
+    /**
+     * Resets totalConnectionCount to 0.
+     * \since 1.2
+     */
+    void resetTotalConnectionCount(const KDSoapServer *server);
+
+    /**
      * Disconnect all connected sockets for a given server
      */
     void disconnectSockets(KDSoapServer* server);
