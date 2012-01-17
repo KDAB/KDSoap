@@ -179,7 +179,7 @@ public:
 
     /**
      * Returns the maximum of concurrent connections as set by setMaxConnections.
-     * 
+     *
      * The special value -1 means unlimited.
      */
     int maxConnections() const;
@@ -195,13 +195,26 @@ public:
     static bool setExpectedSocketCount(int sockets);
 
     /**
-     * Returns the number of connected sockets.
+     * Returns the number of connected sockets at this precise moment.
      * This information can change at any time, and is therefore only useful
      * for statistical purposes.
      *
      * It will always be less than maxConnections(), if maxConnections was set.
      */
     int numConnectedSockets() const;
+
+    /**
+     * Returns the number of sockets that have connected to the server since the
+     * last call to resetTotalConnectionCount().
+     * \since 1.2
+     */
+    int totalConnectionCount() const;
+
+    /**
+     * Resets totalConnectionCount to 0.
+     * \since 1.2
+     */
+    void resetTotalConnectionCount();
 
     /**
      * Sets the .wsdl file that users can download from the soap server.

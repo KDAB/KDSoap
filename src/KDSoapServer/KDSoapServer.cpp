@@ -86,9 +86,10 @@ KDSoapServer::~KDSoapServer()
 void KDSoapServer::incomingConnection(int socketDescriptor)
 {
     const int max = maxConnections();
-    if (max > -1 && numConnectedSockets() >= max) {
+    const int numSockets = numConnectedSockets();
+    if (max > -1 && numSockets >= max) {
         emit connectionRejected();
-        log(QByteArray("ERROR Too many connections (") + QByteArray::number(numConnectedSockets()) + "), incoming connection rejected\n");
+        log(QByteArray("ERROR Too many connections (") + QByteArray::number(numSockets) + "), incoming connection rejected\n");
     } else if (d->m_threadPool) {
         //qDebug() << "incomingConnection: using thread pool";
         d->m_threadPool->handleIncomingConnection(socketDescriptor, this);
@@ -108,6 +109,26 @@ int KDSoapServer::numConnectedSockets() const
         return d->m_mainThreadSocketList->socketCount();
     } else {
         return 0;
+    }
+}
+
+int KDSoapServer::totalConnectionCount() const
+{
+    if (d->m_threadPool) {
+        return d->m_threadPool->totalConnectionCount(this);
+    } else if (d->m_mainThreadSocketList) {
+        return d->m_mainThreadSocketList->totalConnectionCount();
+    } else {
+        return 0;
+    }
+}
+
+void KDSoapServer::resetTotalConnectionCount()
+{
+    if (d->m_threadPool) {
+        return d->m_threadPool->resetTotalConnectionCount(this);
+    } else if (d->m_mainThreadSocketList) {
+        return d->m_mainThreadSocketList->resetTotalConnectionCount();
     }
 }
 

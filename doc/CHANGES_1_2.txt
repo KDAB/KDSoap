@@ -17,6 +17,7 @@ Server-side:
 * Fix support for messages with no input or output arguments
 * Set response namespace automatically in generated processRequest, so as to not rely on the namespace
   of the incoming request.
+* Fix parsing of requests with Qt-4.8.
 * Fix crash in Qt-4.8 at server shutdown.
 
 Code generator changes, applying to both client and server side:
