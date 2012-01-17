@@ -27,7 +27,7 @@
 const bool doDebug = true;
 
 KDSoapSocketList::KDSoapSocketList(KDSoapServer* server)
-    : m_server(server), m_serverObject(server->createServerObject())
+    : m_server(server), m_serverObject(server->createServerObject()), m_totalConnectionCount(0)
 {
     Q_ASSERT(m_server);
     Q_ASSERT(m_serverObject);
@@ -54,6 +54,8 @@ KDSoapServerSocket* KDSoapSocketList::handleIncomingConnection(int socketDescrip
     QObject::connect(socket, SIGNAL(disconnected()),
                      socket, SLOT(deleteLater()));
     m_sockets.insert(socket);
+    m_totalConnectionCount.ref();
+    //qDebug() << m_totalConnectionCount << "sockets connected in" << this;
     connect(socket, SIGNAL(socketDeleted(KDSoapServerSocket*)), this, SLOT(socketDeleted(KDSoapServerSocket*)));
     return socket;
 }
@@ -73,4 +75,14 @@ void KDSoapSocketList::disconnectAll()
 {
     Q_FOREACH(KDSoapServerSocket* socket, m_sockets)
         socket->close(); // will disconnect
+}
+
+int KDSoapSocketList::totalConnectionCount() const
+{
+    return m_totalConnectionCount;
+}
+
+void KDSoapSocketList::resetTotalConnectionCount()
+{
+    m_totalConnectionCount = 0;
 }
