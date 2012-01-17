@@ -413,7 +413,7 @@ private Q_SLOTS:
 
         QTimer expireTimer;
         connect(&expireTimer, SIGNAL(timeout()), &m_eventLoop, SLOT(quit()));
-        expireTimer.start(660000); // 660 s (10 s would be enough, but not in valgrind)
+        expireTimer.start(10000); // 10 s. Make this higher when running in valgrind.
 
         // FOR DEBUG
         //qDebug() << server->endPoint();
