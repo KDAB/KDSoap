@@ -2,7 +2,7 @@
 from autogen.autogen import autogen
 
 project = "KDSoap"
-version = "1.2.0-svn"
+version = "1.2.0"
 subprojects = ["KDSoapClient", "KDSoapServer"]
 prefixed = False
 
