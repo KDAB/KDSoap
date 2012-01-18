@@ -70,13 +70,10 @@ static HeadersMap parseHeaders(const QByteArray& headerData)
         qDebug() << "Malformed HTTP request:" << firstLine;
         return headersMap;
     }
-    const QByteArray request = firstLine.at(0);
+    const QByteArray requestType = firstLine.at(0);
     const QByteArray path = firstLine.at(1);
     const QByteArray httpVersion = firstLine.at(2);
-    if (request != "GET" && request != "POST") {
-        qDebug() << "Unknown HTTP request:" << firstLine;
-        return headersMap;
-    }
+    headersMap.insert("_requestType", requestType);
     headersMap.insert("_path", path);
     headersMap.insert("_httpVersion", httpVersion);
 
@@ -162,18 +159,26 @@ void KDSoapServerSocket::slotReadyRead()
         qDebug() << "data received:" << receivedData;
     }
 
-    const QByteArray contentLength = httpHeaders.value("content-length");
-    if (receivedData.size() < contentLength.size())
-        return; // incomplete request, wait for more data
-
     KDSoapServer* server = m_owner->server();
     KDSoapMessage replyMsg;
     replyMsg.setUse(server->use());
 
+    const QByteArray requestType = httpHeaders.value("_requestType");
+    if (requestType != "GET" && requestType != "POST") {
+        qDebug() << "Unknown HTTP request:" << requestType;
+        handleError(replyMsg, "Client.Data", QString::fromLatin1("Invalid request type '%1', should be GET or POST").arg(QString::fromLatin1(requestType.constData())));
+        sendReply(0, replyMsg);
+        return;
+    }
+
+    const QByteArray contentLength = httpHeaders.value("content-length");
+    if (receivedData.size() < contentLength.size())
+        return; // incomplete request, wait for more data
+
     const QString path = QString::fromLatin1(httpHeaders.value("_path").constData());
     if (path != server->path()) {
         m_requestBuffer.clear();
-        if (path == server->wsdlPathInUrl()) {
+        if (path == server->wsdlPathInUrl() && requestType == "GET") {
             const QString wsdlFile = server->wsdlFile();
             QFile wf(wsdlFile);
             if (wf.open(QIODevice::ReadOnly)) {
@@ -186,6 +191,15 @@ void KDSoapServerSocket::slotReadyRead()
             }
         }
         handleError(replyMsg, "Client.Data", QString::fromLatin1("Invalid path '%1'").arg(path));
+    }
+
+    if (requestType == "GET") {
+        // See http://www.ibm.com/developerworks/xml/library/x-tipgetr/
+        // We could implement it, but there's no SOAP request, just a query in the URL,
+        // which we'd have to pass to a different virtual than processRequest.
+        handleError(replyMsg, "Client.Data", QString::fromLatin1("Support for GET requests not implemented yet."));
+        sendReply(0, replyMsg);
+        return;
     }
 
     //parse message
