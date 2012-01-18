@@ -109,6 +109,7 @@ public:
      * If the requests comes with a message namespace("qualified"), then this can be determined from that namespace.
      * But if the request is not qualified, this is very much necessary (at least when the response has headers,
      * which are always qualified).
+     * \since 1.2
      */
     void setResponseNamespace(const QString& ns);
 
@@ -136,11 +137,13 @@ public:
      * it should call prepareDelayedResponse() from within the call handler, store
      * the handle, return a dummy value (this allows to go back to the event loop),
      * and use the handle later on (typically from a slot) in order to send the delayed response.
+     * \since 1.2
      */
     KDSoapDelayedResponseHandle prepareDelayedResponse(); // only valid during processRequest()
     /**
      * Returns true if prepareDelayedResponse was called, during this soap call.
      * Mostly useful internally in KDSoap.
+     * \since 1.2
      */
     bool isDelayedResponse() const; // only valid during processRequest()
 
@@ -148,6 +151,7 @@ public:
      * Send a delayed response.
      * \param responseHandle the identifier of the call we are responding to
      * \param response the response message for that call
+     * \since 1.2
      */
     void sendDelayedResponse(const KDSoapDelayedResponseHandle& responseHandle, const KDSoapMessage& response);
 
