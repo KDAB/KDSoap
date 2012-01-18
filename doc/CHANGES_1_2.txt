@@ -19,6 +19,7 @@ Server-side:
   of the incoming request.
 * Fix parsing of requests with Qt-4.8.
 * Fix crash in Qt-4.8 at server shutdown.
+* Return an error if receiving a GET request (other than when retrieving the .wsdl file)
 
 Code generator changes, applying to both client and server side:
 ================================================================
