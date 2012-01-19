@@ -47,6 +47,8 @@ static void showHelp(const char *appName)
 
 int main( int argc, char **argv )
 {
+    QCoreApplication app( argc, argv );
+
     const char *fileName = 0;
     QFileInfo outputFile;
     bool impl = false;
@@ -117,8 +119,6 @@ int main( int argc, char **argv )
         showHelp(argv[0]);
         return 1;
     }
-
-    QCoreApplication app( argc, argv );
 
     Settings::self()->setGenerateServerCode(server);
     Settings::self()->setGenerateImplementation(impl, headerFile);

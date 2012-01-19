@@ -23,6 +23,7 @@ Server-side:
 
 Code generator changes, applying to both client and server side:
 ================================================================
+* Handle paths with non-ascii letters (url encoding issues).
 * Handle wsdl files with multiple service definitions
 * Reworked parsing of XML namespaces.
 * New option -namespace <...> to kdwsdl2cpp, in order to put all the generated code into a C++ namespace.
