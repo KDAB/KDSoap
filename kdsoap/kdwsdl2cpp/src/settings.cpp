@@ -17,6 +17,10 @@
     Boston, MA 02110-1301, USA.
 */
 
+#define QT_NO_CAST_TO_ASCII
+#define QT_NO_CAST_FROM_ASCII
+#define QT_NO_URL_CAST_FROM_STRING
+
 #include <QDir>
 #include <QDomDocument>
 #include <QFile>
@@ -35,7 +39,7 @@ Q_GLOBAL_STATIC(SettingsSingleton, s_settings)
 Settings::Settings()
 {
   mOutputDirectory = QDir::current().path();
-  mOutputFileName = "kwsdl_generated";
+  mOutputFileName = QString::fromLatin1("kwsdl_generated");
   mImpl = false;
   mServer = false;
 }
@@ -51,19 +55,17 @@ Settings* Settings::self()
 
 void Settings::setWsdlFile(const QString &wsdlFile)
 {
-    //qDebug() << "wsdlFile=" << wsdlFile;
-    mWsdlUrl = QDir::fromNativeSeparators(wsdlFile);
+    QString path = QDir::fromNativeSeparators(wsdlFile);
 
-    QUrl u(mWsdlUrl);
+    QUrl u(path);
     if (u.isRelative()) { // no scheme yet in the URL
-        if (QDir::isRelativePath(wsdlFile)) {
-            mWsdlUrl = QDir::current().path() + '/' + mWsdlUrl;
+        if (QDir::isRelativePath(path)) {
+            path = QDir::current().path() + QLatin1Char('/') + path;
         }
-        const QByteArray encoded = QUrl::fromLocalFile(mWsdlUrl).toEncoded();
-        mWsdlUrl = QString::fromLatin1(encoded.data(), encoded.size());
+        mWsdlUrl = QUrl::fromLocalFile(path);
+    } else {
+        mWsdlUrl = u;
     }
-
-    //qDebug() << this << "setWsdlUrl: remembering" << mWsdlUrl;
 }
 
 QUrl Settings::wsdlUrl() const
@@ -73,12 +75,14 @@ QUrl Settings::wsdlUrl() const
 
 QString Settings::wsdlBaseUrl() const
 {
-  return mWsdlUrl.left( mWsdlUrl.lastIndexOf( '/' ) );
+    const QString strUrl = mWsdlUrl.toString();
+    return strUrl.left( strUrl.lastIndexOf( QLatin1Char('/') ) );
 }
 
 QString Settings::wsdlFileName() const
 {
-  return mWsdlUrl.mid( mWsdlUrl.lastIndexOf( '/' ) + 1 );
+    const QString strUrl = mWsdlUrl.toString();
+    return strUrl.mid( strUrl.lastIndexOf( QLatin1Char('/') ) + 1 );
 }
 
 void Settings::setOutputFileName( const QString &outputFileName )
@@ -90,7 +94,7 @@ QString Settings::outputFileName() const
 {
     if (mOutputFileName.isEmpty()) {
         QFileInfo fi(wsdlFileName());
-        return "wsdl_" + fi.completeBaseName() + (mImpl ? ".cpp" : ".h");
+        return QLatin1String("wsdl_") + fi.completeBaseName() + QLatin1String(mImpl ? ".cpp" : ".h");
     }
 
     return mOutputFileName;
@@ -100,8 +104,8 @@ void Settings::setOutputDirectory( const QString &outputDirectory )
 {
   mOutputDirectory = outputDirectory;
 
-  if ( !mOutputDirectory.endsWith( "/" ) )
-    mOutputDirectory.append( "/" );
+  if ( !mOutputDirectory.endsWith( QLatin1Char('/') ) )
+    mOutputDirectory.append( QLatin1Char('/') );
 }
 
 QString Settings::outputDirectory() const
