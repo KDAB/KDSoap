@@ -3,11 +3,12 @@ import os.path
 
 class CPackGenerateConfiguration():
 	def __init__( self, projectName, version, directory, revision,
-	              licenseFile = "LICENSE.txt" ):
+	              licenseFile = "LICENSE.txt", isTaggedRevision = False ):
 		self._projectName = projectName
 		self._directory = directory
 		self._revision = revision 
 		self._licenseFile = licenseFile
+		self._isTaggedRevision = isTaggedRevision
 		versionList = version.split( "." )
 		assert( isinstance( versionList, list ) and len( versionList ) == 3 )
 		self._versionList = versionList
@@ -31,7 +32,8 @@ class CPackGenerateConfiguration():
 		config = config.replace( "@CPACK_PACKAGE_VERSION_MAJOR@", versionList[0] or 1, 1 )
 		config = config.replace( "@CPACK_PACKAGE_VERSION_MINOR@", versionList[1] or 0, 1 )
 		patchVersion = versionList[2] or 0
-		patchVersion += '-r' + self._revision
+		if not self._isTaggedRevision:
+			patchVersion += '-r' + self._revision
 		config = config.replace( "@CPACK_PACKAGE_VERSION_PATCH@", patchVersion, 1 )
 		installDirectory = self.fixCMakeWindowsPaths( self._directory )
 		config = config.replace( "@CPACK_INSTALL_DIRECTORY@", installDirectory, 1 )

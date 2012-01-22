@@ -17,13 +17,15 @@ def autogen(project, version, subprojects, prefixed):
 		p = subprocess.Popen( ["git", "svn", "info"], cwd = sourceDirectory, stdout = subprocess.PIPE, stderr = subprocess.PIPE )
 		( stdout, stderr ) = p.communicate()
 	if p.returncode != 0:
-		print_stderr( "Error: Not a SVN repository: {0}".format( sourceDirectory ) )
+		print_stderr( "Error: Not an SVN repository: {0}".format( sourceDirectory ) )
 		sys.exit( 1 )
 
 	repositoryUrl = stdout.splitlines()[1].split( ':', 1 )[1]
 	repositoryRevision = stdout.splitlines()[4].split( ':', 1 )[1].strip()
+	isTagged = repositoryUrl.find('/tags/') != -1:
 
-	cpackConfigurationGenerator = CPackGenerateConfiguration( project, version, buildDirectory, repositoryRevision)
+	cpackConfigurationGenerator = CPackGenerateConfiguration( project, version, buildDirectory, repositoryRevision,
+	                                                          isTaggedRevision = isTagged )
 	cpackConfigurationGenerator.run()
 
 	configureScriptGenerator = ConfigureScriptGenerator( project, buildDirectory, version )
