@@ -3,13 +3,12 @@ import os.path
 
 class CPackGenerateConfiguration():
 	def __init__( self, projectName, version, directory, revision,
-	              licenseFile = "LICENSE.txt", isTaggedRevision = False, ignoreFilePatterns = [] ):
+	              licenseFile = "LICENSE.txt", isTaggedRevision = False ):
 		self._projectName = projectName
 		self._directory = directory
 		self._revision = revision 
 		self._licenseFile = licenseFile
 		self._isTaggedRevision = isTaggedRevision
-		self._ignoreFilePatterns = ignoreFilePatterns
 		versionList = version.split( "." )
 		assert( isinstance( versionList, list ) and len( versionList ) == 3 )
 		self._versionList = versionList
@@ -20,8 +19,14 @@ class CPackGenerateConfiguration():
 
 	def ignoreString( self ):
 		ret = str()
-		for p in self._ignoreFilePatterns:
-			ret = ret + '\n                       "' + p + '"'
+		try:
+			ignTxt = open( os.path.join( self._directory, 'CPackIgnores.txt' ) )
+			for ign in ignTxt:
+				# using ${CPACK_INSTALL_DIRECTORY} or similar seems to be the only way to specify
+				# anchored *sub*directory names
+				ret += '\n                       "^${CPACK_INSTALL_DIRECTORY}' + ign[ :-1 ] + '$"'
+		except:
+			pass # It's no mandatory to add ignores
 		return ret
 
 	def _formattedConfiguration( self ):

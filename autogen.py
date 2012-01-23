@@ -4,7 +4,7 @@ from cpack import CPackGenerateConfiguration
 from configure import ConfigureScriptGenerator
 from header import ForwardHeaderGenerator
 
-def autogen(project, version, subprojects, prefixed, ignoreFilePatterns = []):
+def autogen(project, version, subprojects, prefixed):
 	sourceDirectory = os.path.abspath( os.path.dirname( os.path.dirname( __file__ ) ) )
 	buildDirectory = os.getcwd()
 
@@ -25,7 +25,7 @@ def autogen(project, version, subprojects, prefixed, ignoreFilePatterns = []):
 	isTagged = repositoryUrl.find('/tags/') != -1
 
 	cpackConfigurationGenerator = CPackGenerateConfiguration( project, version, buildDirectory, repositoryRevision,
-	                                                          isTaggedRevision = isTagged, ignoreFilePatterns = ignoreFilePatterns )
+	                                                          isTaggedRevision = isTagged )
 	cpackConfigurationGenerator.run()
 
 	configureScriptGenerator = ConfigureScriptGenerator( project, buildDirectory, version )
