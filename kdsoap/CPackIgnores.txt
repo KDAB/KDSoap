@@ -1,0 +1,16 @@
+/unittests/wsdl_document/wsdl_document
+/unittests/msexchange_wsdl/msexchange_wsdl
+/unittests/webcalls/webcalls
+/unittests/webcalls_wsdl/webcalls_wsdl
+/unittests/builtinhttp/builtinhttp
+/unittests/wsdl_rpc/wsdl_rpc
+/unittests/salesforce_wsdl/salesforce_wsdl
+/unittests/sugar_wsdl/sugar_wsdl
+/unittests/dwservice_wsdl/dwservice_wsdl
+/unittests/servertest/servertest
+/unittests/dwservice_12_wsdl/dwservice_12_wsdl
+/unittests/basic/basic
+/unittests/logbook_wsdl/logbook_wsdl
+/unittests/groupwise_wsdl/groupwise_wsdl
+/unittests/dwservice_combined_wsdl/dwservice_combined_wsdl
+/unittests/messagereader/messagereader
