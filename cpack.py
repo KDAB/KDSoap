@@ -3,12 +3,13 @@ import os.path
 
 class CPackGenerateConfiguration():
 	def __init__( self, projectName, version, directory, revision,
-	              licenseFile = "LICENSE.txt", isTaggedRevision = False ):
+	              licenseFile = "LICENSE.txt", isTaggedRevision = False, ignoreFilePatterns = [] ):
 		self._projectName = projectName
 		self._directory = directory
 		self._revision = revision 
 		self._licenseFile = licenseFile
 		self._isTaggedRevision = isTaggedRevision
+		self._ignoreFilePatterns = ignoreFilePatterns
 		versionList = version.split( "." )
 		assert( isinstance( versionList, list ) and len( versionList ) == 3 )
 		self._versionList = versionList
@@ -16,6 +17,12 @@ class CPackGenerateConfiguration():
 
 	def fixCMakeWindowsPaths( self, path ):
 		return path.replace( '\\', '\\\\' )
+
+	def ignoreString( self ):
+		ret = str()
+		for p in self._ignoreFilePatterns:
+			ret = ret + '\n                       "' + p + '"'
+		return ret
 
 	def _formattedConfiguration( self ):
 		with open(os.path.dirname(__file__) + '/cpack.cmake.in') as configFile:
@@ -37,6 +44,7 @@ class CPackGenerateConfiguration():
 		config = config.replace( "@CPACK_PACKAGE_VERSION_PATCH@", patchVersion, 1 )
 		installDirectory = self.fixCMakeWindowsPaths( self._directory )
 		config = config.replace( "@CPACK_INSTALL_DIRECTORY@", installDirectory, 1 )
+		config = config.replace( "@CPACK_EXTRA_IGNORE_FILES@", self.ignoreString(), 1 )
 
 		licenseFile = self._licenseFile
 

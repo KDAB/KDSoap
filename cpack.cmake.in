@@ -36,5 +36,10 @@ ENDIF()
 
 SET(CPACK_TOPLEVEL_TAG "${CPACK_SYSTEM_NAME}")
 SET(CPACK_RESOURCE_FILE_LICENSE "@CPACK_RESOURCE_FILE_LICENSE@")
-SET(CPACK_IGNORE_FILES "/\\.svn/;/\\.git/;\\.cache$;/[\\._]moc/;/[\\._]obj/;[\\._]ui/;[\\._]qrc/;\\.pdb$;\\.zip$;\\.exe$;\\.tar;Makefile;CPack;autogen.py$;\\.license\\.accepted$;/bin/;/lib/;/debug/;/release/;-source/;/autogen/")
+SET(CPACK_IGNORE_FILES "^${CPACK_INSTALL_DIRECTORY}/autogen.py$" "^${CPACK_INSTALL_DIRECTORY}/genignore.py$"
+                       "^${CPACK_INSTALL_DIRECTORY}/CPackIgnores.txt$"
+                        "/\\.svn/" "/\\.git/" "\\.cache$" "/[\\._]moc/" "/[\\._]obj/" "[\\._]ui/"
+                       "[\\._]qrc/" "\\.pdb$" "\\.zip$" "\\.exe$" "\\.tar" "Makefile" "CPack"
+                       "\\.license\\.accepted$" "/bin/" "/lib/"
+                       "/debug/" "/release/" "-source/" "/autogen/" @CPACK_EXTRA_IGNORE_FILES@)
 SET(CPACK_PACKAGE_DESCRIPTION "")
