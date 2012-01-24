@@ -5,6 +5,7 @@ class ConfigureScriptGenerator():
 		self.__project = project
 		self.__path = path
 		self.__version = version
+		self.__staticSupported = static
 		autogen_dir = os.path.dirname( __file__ )
 		self.__winTemplate = os.path.abspath( autogen_dir + "/configure.bat.in" )
 		self.__unixTemplate = os.path.abspath( autogen_dir + "/configure.sh.in" )
@@ -17,6 +18,10 @@ class ConfigureScriptGenerator():
 		mixedname = self.__project
 		mixedname = mixedname.replace( "KD", "KD " )
 		value = value.replace( "@VERSION@", self.__version )
+		strStaticSupported = 'false'
+		if self.__staticSupported:
+			strStaticSupported = 'true'
+		value = value.replace( "@STATIC_BUILD_SUPPORTED@", strStaticSupported )
 		value = value.replace( "@PRODUCT_UPPERCASE@", self.__project.upper() )
 		value = value.replace( "@PRODUCT_LOWERCASE@", self.__project.lower() )
 		value = value.replace( "@PRODUCT_MIXEDCASE@", self.__project )
