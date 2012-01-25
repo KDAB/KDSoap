@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 import os, stat
 
+# Run this on Linux.
+
 # This script, when run in KD Soap's source and build directory containing the results of a full
 # build, writes a list of files to be excluded from packaging to CPackIgnores.txt.
 # autogen reads that list and passes it to CPack.
@@ -21,6 +23,8 @@ def ignoredFiles():
 			elif os.access( pathname, os.X_OK ):
 				# The file is executable for us
 				ret.append( pathname )
+				# for OS X
+				ret.append( pathname + '.app' )
 
 	# With one exception, the executables in those paths are binaries and we're making a SOURCE package.
 	for path in [ 'unittests' ]:
