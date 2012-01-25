@@ -22,9 +22,9 @@ def ignoredFiles():
 				findExecutables( pathname )
 			elif os.access( pathname, os.X_OK ):
 				# The file is executable for us
-				ret.append( pathname )
+				ret.append( pathname + '$' )
 				# for OS X
-				ret.append( pathname + '.app' )
+				ret.append( pathname + '.app/' )
 
 	# With one exception, the executables in those paths are binaries and we're making a SOURCE package.
 	for path in [ 'unittests' ]:
