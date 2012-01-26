@@ -30,8 +30,8 @@ def ignoredFiles():
 	for path in [ 'unittests' ]:
 		findExecutables( os.path.join( sourceDirectory, path ) )
 	# The exception!
-	def isGoodExclude(s): return s != os.path.join( sourceDirectory, 'unittests/runTest.bat' )
-	return filter( isGoodExclude, ret )
+	def isGoodExclude(s): return not s.startswith( os.path.join( sourceDirectory, 'unittests/runTest.bat' ) )
+	return sorted( filter( isGoodExclude, ret ) )
 
 f = open( 'CPackIgnores.txt', 'w')
 for ign in ignoredFiles():
