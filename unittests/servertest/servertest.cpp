@@ -434,8 +434,9 @@ private Q_SLOTS:
         timer.start(1000);
 
         QTimer expireTimer;
-        connect(&expireTimer, SIGNAL(timeout()), &m_eventLoop, SLOT(quit()));
-        expireTimer.start(10000); // 10 s. Make this higher when running in valgrind.
+        connect(&expireTimer, SIGNAL(timeout()), this, SLOT(slotTimeout()));
+        m_eventLoop.quit();
+        expireTimer.start(30000); // 30 s. Make this higher when running in valgrind.
 
         // FOR DEBUG
         //qDebug() << server->endPoint();
@@ -750,6 +751,12 @@ public Q_SLOTS:
     void slotStats()
     {
         qDebug() << m_server->totalConnectionCount() << "sockets seen." << m_server->numConnectedSockets() << "connected right now. Messages received" << m_returnMessages.count();
+    }
+
+    void slotTimeout()
+    {
+        qDebug() << "Timeout!";
+        m_eventLoop.quit();
     }
 
 private:
