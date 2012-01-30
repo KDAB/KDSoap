@@ -18,8 +18,8 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
     m_browser = new QTextBrowser;
     QLabel* label = new QLabel;
     label->setWordWrap(true);
-    label->setText(tr("This is a simple client/server demo. Start bin/helloworld_server separately on the commandline.\n\n"
-                   " Clicking \"Send\" will make a sayHello() soap call. To trigger an error, leave the input field empty and click \"Send\"."));
+    label->setText(tr("<qt><p>This is a simple client/server demo. Start bin/helloworld_server separately on the commandline.</p>"
+                   "<p>Clicking &quot;Send&quot; will make a sayHello() soap call. To trigger an error, leave the input field empty and click &quot;Send&quot;.</p>"));
     layout->addWidget(label);
     layout->addWidget(m_browser);
     layout->setMargin(0);
