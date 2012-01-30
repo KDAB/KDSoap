@@ -13,6 +13,7 @@ set debug=no
 set release=no
 set prefix=
 set unittests=no
++set static_qt=no
 
 if exist %PACKSCRIPTS_DIR% (
     set unittests=yes
@@ -143,6 +144,9 @@ if "%1" == "/shared"   goto :Shared
 if "%1" == "-static"   goto :Static
 if "%1" == "/static"   goto :Static
 
+if "%1" == "-qt_static"   goto :QT_Static
+if "%1" == "/qt_static"   goto :QT_Static	
+
 if "%1" == "-release"  goto :Release
 if "%1" == "/release"  goto :Release
 
@@ -190,6 +194,14 @@ rem   goto :usage
 :Debug
     set debug=yes
     goto :OptionNoArg
+:QT_Static
+if "%STATIC_BUILD_SUPPORTED%" == "true" (
+    set qt_static=yes
+    goto :OptionNoArg
+) else (
+  echo Static build not supported, -static option not allowed
+  goto :usage
+)
 :Help
     goto :usage
 
@@ -222,7 +234,9 @@ if "%shared%" == "yes" (
 ) else (
     echo CONFIG += static >> .qmake.cache
     rem This is needed too, when Qt is static, otherwise it sets -DQT_DLL and linking fails.
-    echo CONFIG += qt_static >> .qmake.cache
+    if "%qt_static%" == "yes" (
+      echo CONFIG += qt_static >> .qmake.cache
+    )
 )
 
 if "%unittests%" == "yes" (
