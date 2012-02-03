@@ -10,6 +10,7 @@ Client-side:
 * Support for network cookies, see setCookieJar(). Requires Qt >= 4.7.0
 * Support for network proxies, see setProxy() and the class QNetworkProxy in Qt.
 * Generated code: make clientInterface() public, add const overload.
+* Generate additional job-based API for asynchronous calls.
 
 Server-side:
 ============
