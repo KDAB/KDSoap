@@ -4,7 +4,9 @@ from cpack import CPackGenerateConfiguration
 from configure import ConfigureScriptGenerator
 from header import ForwardHeaderGenerator
 
-def autogen(project, version, subprojects, prefixed):
+def autogen(project, version, subprojects, prefixed, policyVersion = 1):
+	global __policyVersion
+	__policyVersion = policyVersion
 	sourceDirectory = os.path.abspath( os.path.dirname( os.path.dirname( __file__ ) ) )
 	buildDirectory = os.getcwd()
 
@@ -56,3 +58,7 @@ def autogen(project, version, subprojects, prefixed):
 		os.execvp( './configure.bat', ['configure.bat'] + sys.argv[1:] )
 	else:
 		os.execvp( './configure.sh', ['configure.sh'] + sys.argv[1:] )
+
+def policyVersion():
+	global __policyVersion
+	return __policyVersion

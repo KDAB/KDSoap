@@ -3,6 +3,7 @@ from string import Template
 import os.path
 import re
 import sys
+import autogen
 
 class ForwardHeaderGenerator():
 	def __init__( self, copy, path, includepath, srcpath, project, subprojects, prefix,
@@ -114,7 +115,11 @@ class ForwardHeaderGenerator():
 		if not os.path.exists( self.includepath ):
 			os.mkdir( self.includepath )
 
-		profilename = os.path.abspath( self.includepath ) + "/" + self.project + ".pro"
+		if autogen.policyVersion() >= 2:
+			includeProjectName = os.path.basename( self.includepath.rstrip( "/" ) )
+		else:
+			includeProjectName = self.project
+		profilename = os.path.abspath( self.includepath ) + "/" + includeProjectName + ".pro"
 		projectFile = open( profilename, "wb" )
 		self.__projectFile = projectFile
 		lines = []
