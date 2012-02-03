@@ -1,5 +1,5 @@
 TEMPLATE = subdirs
-SUBDIRS  = src kdwsdl2cpp features include/KDSoap.pro
+SUBDIRS  = src kdwsdl2cpp features include
 unittests: SUBDIRS += testtools unittests
 SUBDIRS += examples
 CONFIG   += ordered

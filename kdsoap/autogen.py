@@ -6,4 +6,4 @@ version = "1.2.0"
 subprojects = ["KDSoapClient", "KDSoapServer"]
 prefixed = False
 
-autogen(project, version, subprojects, prefixed)
+autogen(project, version, subprojects, prefixed, policyVersion = 2)
