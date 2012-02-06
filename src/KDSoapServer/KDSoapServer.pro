@@ -11,6 +11,7 @@ win32:DLLDESTDIR = ../../bin
 
 include(../../variables.pri)
 INSTALLHEADERS = KDSoapServer.h \
+                 KDSoapServerAuthInterface.h \
                  KDSoapServerObjectInterface.h \
                  KDSoapServerGlobal.h
 
@@ -23,6 +24,7 @@ HEADERS = $$INSTALLHEADERS \
     KDSoapServerSocket_p.h \
     KDSoapServerThread_p.h \
     KDSoapSocketList_p.h \
+    KDSoapServerAuthInterface.h \
     KDSoapServerObjectInterface.h \
     KDSoapDelayedResponseHandle.h
 
@@ -31,6 +33,7 @@ SOURCES = KDSoapServer.cpp \
     KDSoapServerSocket.cpp \
     KDSoapServerThread.cpp \
     KDSoapSocketList.cpp \
+    KDSoapServerAuthInterface.cpp \
     KDSoapServerObjectInterface.cpp \
     KDSoapDelayedResponseHandle.cpp
 

@@ -25,8 +25,10 @@
 #include "KDSoapValue.h"
 #include "KDSoapPendingCallWatcher.h"
 #include "KDSoapNamespaceManager.h"
+#include "KDSoapAuthentication.h"
 #include "KDSoapServer.h"
 #include "KDSoapThreadPool.h"
+#include "KDSoapServerAuthInterface.h"
 #include "KDSoapServerObjectInterface.h"
 #include "httpserver_p.h" // KDSoapUnitTestHelpers
 #include <QtTest/QtTest>
@@ -48,12 +50,13 @@ public:
     using QThread::msleep;
 };
 
-class CountryServerObject : public QObject, public KDSoapServerObjectInterface
+class CountryServerObject : public QObject, public KDSoapServerObjectInterface, public KDSoapServerAuthInterface
 {
     Q_OBJECT
     Q_INTERFACES(KDSoapServerObjectInterface)
+    Q_INTERFACES(KDSoapServerAuthInterface)
 public:
-    CountryServerObject() : QObject(), KDSoapServerObjectInterface() {
+    CountryServerObject(bool auth) : QObject(), KDSoapServerObjectInterface(), m_requireAuth(auth) {
         //qDebug() << "Server object created in thread" << QThread::currentThread();
         QMutexLocker locker(&s_serverObjectsMutex);
         s_serverObjects.insert(QThread::currentThread(), this);
@@ -65,6 +68,14 @@ public:
     }
 
     virtual void processRequest(const KDSoapMessage &request, KDSoapMessage &response, const QByteArray& soapAction);
+
+    virtual bool validateAuthentication(const KDSoapAuthentication& auth) {
+        if (!m_requireAuth)
+            return true;
+        if (auth.user() == QLatin1String("kdab"))
+            return auth.password() == QLatin1String("pass42");
+        return false;
+    }
 public: // SOAP-accessible methods
     QString getEmployeeCountry(const QString& employeeName) {
         // Should be called in same thread as constructor
@@ -106,14 +117,19 @@ public: // SOAP-accessible methods
         }
         return input1 + input2;
     }
+private:
+    bool m_requireAuth;
 };
 
 class CountryServer : public KDSoapServer
 {
     Q_OBJECT
 public:
-    CountryServer() : KDSoapServer() {}
-    virtual QObject* createServerObject() { return new CountryServerObject; }
+    CountryServer() : KDSoapServer(), m_requireAuth(false) {}
+
+    virtual QObject* createServerObject() { return new CountryServerObject(m_requireAuth); }
+
+    void setRequireAuth(bool b) { m_requireAuth = b; }
 
 Q_SIGNALS:
     void releaseSemaphore();
@@ -122,6 +138,9 @@ public Q_SLOTS:
     void quit() { thread()->quit(); }
     void suspend() { KDSoapServer::suspend(); emit releaseSemaphore(); }
     void resume() { KDSoapServer::resume(); emit releaseSemaphore(); }
+
+private:
+    bool m_requireAuth;
 };
 
 // We need to do the listening and socket handling in a separate thread,
@@ -207,6 +226,7 @@ private Q_SLOTS:
             //qDebug() << "server ready, proceeding" << server->endPoint();
             KDSoapClientInterface* client = new KDSoapClientInterface(server->endPoint(), countryMessageNamespace());
             const KDSoapMessage response = client->call(QLatin1String("getEmployeeCountry"), countryMessage());
+            QVERIFY(!response.isFault());
             QCOMPARE(response.childValues().first().value().toString(), QString::fromLatin1("France"));
 
             QCOMPARE(s_serverObjects.count(), 1);
@@ -216,6 +236,34 @@ private Q_SLOTS:
             QTest::qWait(100);
         }
         QCOMPARE(s_serverObjects.count(), 0);
+    }
+
+    void testAuth()
+    {
+        CountryServerThread serverThread;
+        CountryServer* server = serverThread.startThread();
+        server->setRequireAuth(true);
+        KDSoapClientInterface* client = new KDSoapClientInterface(server->endPoint(), countryMessageNamespace());
+        KDSoapAuthentication auth;
+        auth.setUser(QLatin1String("kdab"));
+        auth.setPassword(QLatin1String("pass42"));
+        client->setAuthentication(auth);
+        const KDSoapMessage response = client->call(QLatin1String("getEmployeeCountry"), countryMessage());
+        QCOMPARE(response.childValues().first().value().toString(), QString::fromLatin1("France"));
+    }
+
+    void testRefusedAuth()
+    {
+        CountryServerThread serverThread;
+        CountryServer* server = serverThread.startThread();
+        server->setRequireAuth(true);
+        KDSoapClientInterface* client = new KDSoapClientInterface(server->endPoint(), countryMessageNamespace());
+        KDSoapAuthentication auth;
+        auth.setUser(QLatin1String("kdab"));
+        auth.setPassword(QLatin1String("invalid"));
+        client->setAuthentication(auth);
+        const KDSoapMessage response = client->call(QLatin1String("getEmployeeCountry"), countryMessage());
+        QVERIFY(response.isFault());
     }
 
     void testParamTypes()

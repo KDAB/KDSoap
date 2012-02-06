@@ -1,0 +1,14 @@
+General:
+========
+
+Client-side:
+============
+* 
+
+Server-side:
+============
+* Implement support for HTTP Basic authentication, see KDSoapServerAuthInterface.
+
+Code generator changes, applying to both client and server side:
+================================================================
+* 

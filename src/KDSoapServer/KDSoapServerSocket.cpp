@@ -22,6 +22,7 @@
 #include "KDSoapServerSocket_p.h"
 #include "KDSoapSocketList_p.h"
 #include "KDSoapServerObjectInterface.h"
+#include "KDSoapServerAuthInterface.h"
 #include "KDSoapServer.h"
 #include <KDSoapMessage.h>
 #include <KDSoapNamespaceManager.h>
@@ -244,6 +245,19 @@ void KDSoapServerSocket::slotReadyRead()
         handleError(replyMsg, "Server.ImplementationError", error);
     } else {
         serverObjectInterface->setServerSocket(this);
+    }
+
+    KDSoapServerAuthInterface* serverAuthInterface = qobject_cast<KDSoapServerAuthInterface *>(m_serverObject);
+    if (serverAuthInterface) {
+        QByteArray authValue = httpHeaders.value("Authorization");
+        if (authValue.isEmpty())
+            authValue = httpHeaders.value("authorization"); // as sent by Qt-4.5
+        if (!serverAuthInterface->handleHttpAuth(authValue)) {
+            // send auth request (Qt supports basic, ntlm and digest)
+            const QByteArray unauthorized = "HTTP/1.1 401 Authorization Required\r\nWWW-Authenticate: Basic realm=\"example\"\r\nContent-Length: 0\r\n\r\n";
+            write(unauthorized);
+            return;
+        }
     }
 
     if (!replyMsg.isFault()) {
