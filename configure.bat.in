@@ -13,7 +13,7 @@ set debug=no
 set release=no
 set prefix=
 set unittests=no
-+set static_qt=no
+set static_qt=no
 
 if exist %PACKSCRIPTS_DIR% (
     set unittests=yes
