@@ -23,8 +23,9 @@ class CPackGenerateConfiguration():
 			ignTxt = open( os.path.join( self._directory, 'CPackIgnores.txt' ) )
 			for ign in ignTxt:
 				# using ${CPACK_INSTALL_DIRECTORY} or similar seems to be the only way to specify
-				# anchored *sub*directory names
-				ret += '\n                       "^${CPACK_INSTALL_DIRECTORY}' + ign[ :-1 ] + '"'
+				# "absolute" *sub*directory names. XPLATFORM_INSTALL_DIR is set by us and like
+				# CPACK_INSTALL_DIRECTORY, but with forward slashes instead of backslashes.
+				ret += '\n                       "^${XPLATFORM_INSTALL_DIR}' + ign[ :-1 ] + '"'
 		except:
 			pass # It's no mandatory to add ignores
 		return ret

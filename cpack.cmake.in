@@ -36,8 +36,9 @@ ENDIF()
 
 SET(CPACK_TOPLEVEL_TAG "${CPACK_SYSTEM_NAME}")
 SET(CPACK_RESOURCE_FILE_LICENSE "@CPACK_RESOURCE_FILE_LICENSE@")
-SET(CPACK_IGNORE_FILES "^${CPACK_INSTALL_DIRECTORY}/autogen.py$" "^${CPACK_INSTALL_DIRECTORY}/genignore.py$"
-                       "^${CPACK_INSTALL_DIRECTORY}/CPackIgnores.txt$"
+FILE(TO_CMAKE_PATH "${CPACK_INSTALL_DIRECTORY}" XPLATFORM_INSTALL_DIR) # to get forward slashes on Windows
+SET(CPACK_IGNORE_FILES "^${XPLATFORM_INSTALL_DIR}/autogen.py$" "^${XPLATFORM_INSTALL_DIR}/genignore.py$"
+                       "^${XPLATFORM_INSTALL_DIR}/CPackIgnores.txt$"
                         "/\\.svn/" "/\\.git/" "\\.cache$" "/[\\._]moc/" "/[\\._]obj/" "[\\._]ui/"
                        "[\\._]qrc/" "\\.pdb$" "\\.zip$" "\\.exe$" "\\.tar" "Makefile" "CPack"
                        "\\.license\\.accepted$" "/bin/" "/lib/"
