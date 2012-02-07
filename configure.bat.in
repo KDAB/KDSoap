@@ -265,8 +265,8 @@ if exist "%QTDIR%\include\Qt\private" (
 
 echo %Product_mix% v%VERSION% configuration:
 echo.
-echo   Debug...................: %debug% (default: combined)
-echo   Release.................: %release% (default: combined)
+echo   Debug...................: %debug% (default: no)
+echo   Release.................: %release% (default: yes)
 echo   Shared build............: %shared% (default: yes)
 echo   Compiled-In Unit Tests..: %unittests% (default: no)
 echo.
@@ -293,13 +293,13 @@ echo   -prefix <dir>
 echo       set installation prefix to <dir>, used by make install
 echo.
 echo   -release / -debug
-echo       build in debug/release mode
+echo       build in debug/release mode (default is release)
 echo.
 echo   -static / -shared
-echo       build static/shared libraries
+echo       build static/shared libraries (default shared)
 echo.
 echo   -unittests / -no-unittests
-echo       enable/disable compiled-in unittests
+echo       enable/disable compiled-in unittests (default is disabled)
 echo.
 
 :CleanEnd
