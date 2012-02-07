@@ -10,7 +10,7 @@ set PACKSCRIPTS_DIR=../admin/packscripts
 
 set shared=yes
 set debug=no
-set release=no
+set release=yes
 set prefix=
 set unittests=no
 set static_qt=no
@@ -190,9 +190,11 @@ rem   goto :usage
     goto :OptionNoArg
 :Release
     set release=yes
+    set debug=no
     goto :OptionNoArg
 :Debug
     set debug=yes
+    set release=no
     goto :OptionNoArg
 :QT_Static
 if "%STATIC_BUILD_SUPPORTED%" == "true" (
@@ -223,9 +225,8 @@ if "%release%" == "yes" (
 	echo CONFIG += debug >> .qmake.cache
 	echo CONFIG -= debug_and_release >> .qmake.cache
     ) else (
-	echo CONFIG += debug_and_release build_all >> .qmake.cache
-	set release="yes (combined)"
-	set debug="yes (combined)"
+	echo "Internal error. At least one of debug and release must be set"
+	goto :CleanEnd
     )
 )
 
