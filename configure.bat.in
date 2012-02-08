@@ -100,17 +100,15 @@ exit /B 1
 
 :CheckLicenseComplete
 
-if "%QTDIR%" == "" (
-  rem This is the batch equivalent of QTDIR=`qmake -query QT_INSTALL_PREFIX`...
-  for /f "tokens=*" %%V in ('qmake -query QT_INSTALL_PREFIX') do set QTDIR=%%V
-)
+rem This is the batch equivalent of KDAB_QT_PATH=`qmake -query QT_INSTALL_PREFIX`...
+for /f "tokens=*" %%V in ('qmake -query QT_INSTALL_PREFIX') do set KDAB_QT_PATH=%%V
 
-if "%QTDIR%" == "" (
-  echo You need to set QTDIR or add qmake to the PATH
+if "%KDAB_QT_PATH%" == "" (
+  echo You need to add qmake to the PATH
   exit /B 1
 )
 
-echo Qt found: %QTDIR%
+echo Qt found: %KDAB_QT_PATH%
 
 del /Q /S Makefile* 2> NUL
 del /Q /S debug 2> NUL
@@ -255,11 +253,11 @@ echo %PRODUCT_CAP%_INSTALL_PREFIX = %prefix% >> .qmake.cache
 echo VERSION=%VERSION% >> .qmake.cache
 echo CONFIG += %product_low%_target >> .qmake.cache
 
-if exist "%QTDIR%\include\Qt\private" (
+if exist "%KDAB_QT_PATH%\include\Qt\private" (
     echo CONFIG += have_private_qt_headers >> .qmake.cache
-    echo INCLUDEPATH += %QTDIR%/include/Qt/private >> .qmake.cache
+    echo INCLUDEPATH += %KDAB_QT_PATH%/include/Qt/private >> .qmake.cache
 ) else (
-    rem echo QTDIR must point to an installation that has private headers installed.
+    rem echo KDAB_QT_PATH must point to an installation that has private headers installed.
     rem echo Some features will not be available.
 )
 
@@ -274,7 +272,7 @@ echo.
 rem Make a copy so that each run of qmake on $product.pro starts clean
 copy .qmake.cache .confqmake.cache
 
-%QTDIR%\bin\qmake %product_low%.pro -recursive "%PRODUCT_CAP%_BASE=%CD%"
+%KDAB_QT_PATH%\bin\qmake %product_low%.pro -recursive "%PRODUCT_CAP%_BASE=%CD%"
 
 if errorlevel 1 (
     echo qmake failed
