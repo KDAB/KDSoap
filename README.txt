@@ -1,6 +1,6 @@
 KD Soap is a Qt-based client-side SOAP and WSDL tool.
 
-KD Soap is (C) 2010, Klaralvdalens Datakonsult. Licensed customers
+KD Soap is (C) 2010-2012, Klaralvdalens Datakonsult. Licensed customers
 receive the full source code of the application according to the terms
 of the 
         KD Soap COMMERCIAL LICENSE AGREEMENT (non-US customers)
