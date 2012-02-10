@@ -288,8 +288,8 @@ IF "%1" NEQ "" echo %0: unknown option "%1"
 echo usage: %0 [options]
 echo where options include:
 echo.
-echo   -prefix <dir>
-echo       set installation prefix to <dir>, used by make install
+echo   -prefix ^<dir^>
+echo       set installation prefix to ^<dir^>, used by make install
 echo.
 echo   -release / -debug
 echo       build in debug/release mode (default is release)
