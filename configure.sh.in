@@ -8,7 +8,8 @@ VERSION=@VERSION@
 
 STATIC_BUILD_SUPPORTED=@STATIC_BUILD_SUPPORTED@
 
-PACKSCRIPTS_DIR=../admin/packscripts
+SOURCE_DIR=`dirname $0`
+PACKSCRIPTS_DIR=$SOURCE_DIR/../admin/packscripts
 
 hide_symbols=yes
 shared=yes
@@ -29,7 +30,7 @@ function check_license {
     [ -d $PACKSCRIPTS_DIR ] && return 0 
     [ -f .license.accepted ] && return 0
 
-    if [ -f LICENSE.GPL.txt -a -f LICENSE.US.txt -a -f LICENSE.txt ] ; then
+    if [ -f $SOURCE_DIR/LICENSE.GPL.txt -a -f $SOURCE_DIR/LICENSE.US.txt -a -f $SOURCE_DIR/LICENSE.txt ] ; then
         echo
         echo "Please choose your license."
         echo
@@ -41,13 +42,13 @@ function check_license {
         echo -n "Select: "
         read license
 
-    elif [ -f LICENSE.GPL.txt ] ; then
+    elif [ -f $SOURCE_DIR/LICENSE.GPL.txt ] ; then
         license="1"
 
-    elif [ -f LICENSE.US.txt ] ; then
+    elif [ -f $SOURCE_DIR/LICENSE.US.txt ] ; then
         license="2"
 
-    elif [ -f LICENSE.txt ] ; then
+    elif [ -f $SOURCE_DIR/LICENSE.txt ] ; then
         license="3"
     else
         die "Couldn't find license file, aborting"
@@ -55,13 +56,13 @@ function check_license {
 
     if [ "$license" = "1" ]; then
         license_name="GNU General Public License (GPL)"
-        license_file=LICENSE.GPL.txt
+        license_file=$SOURCE_DIR/LICENSE.GPL.txt
     elif [ "$license" = "2" ]; then
         license_name="$ProductSpace USA/Canada Commercial License"
-        license_file=LICENSE.US.txt
+        license_file=$SOURCE_DIR/LICENSE.US.txt
     elif [ "$license" = "3" ]; then
         license_name="$ProductSpace Commercial License"
-        license_file=LICENSE.txt
+        license_file=$SOURCE_DIR/LICENSE.txt
     else
         return 1
     fi
@@ -287,6 +288,6 @@ EOF
 # Make a copy so that each run of qmake on $product.pro starts clean
 cp -f .qmake.cache .confqmake.cache
 
-$QTDIR/bin/qmake ${SPEC} $product.pro -recursive "${PRODUCT}_BASE=`pwd`" || die "qmake failed"
+$QTDIR/bin/qmake ${SPEC} $SOURCE_DIR/$product.pro -recursive "${PRODUCT}_BASE=`pwd`" || die "qmake failed"
 
 echo "Ok, now run make, then make install to install into $prefix"
