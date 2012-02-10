@@ -6,6 +6,7 @@ set Product_Space="@PRODUCT_MIXEDCASE_SPACED@"
 
 set VERSION=@VERSION@
 
+set SOURCE_DIR=%~dp0
 set PACKSCRIPTS_DIR=../admin/packscripts
 
 set shared=yes
@@ -24,9 +25,9 @@ if exist .license.accepted goto :CheckLicenseComplete
 
 set license_file=
 
-if exist LICENSE.GPL.txt (
-    if exist LICENSE.US.txt (
-        if exist LICENSE.txt (
+if exist %SOURCE_DIR%\LICENSE.GPL.txt (
+    if exist %SOURCE_DIR%\LICENSE.US.txt (
+        if exist %SOURCE_DIR%\LICENSE.txt (
             echo.
             echo Please choose your license.
             echo.
@@ -41,10 +42,10 @@ if exist LICENSE.GPL.txt (
         license=1
     )
 ) else (
-    if exist LICENSE.US.txt (
+    if exist %SOURCE_DIR%\LICENSE.US.txt (
         license=2
     ) else (
-        if exist LICENSE.txt (
+        if exist %SOURCE_DIR%\LICENSE.txt (
             license=3
         ) else (
             echo "Couldn't find license file, aborting"
@@ -272,7 +273,7 @@ echo.
 rem Make a copy so that each run of qmake on $product.pro starts clean
 copy .qmake.cache .confqmake.cache
 
-%KDAB_QT_PATH%\bin\qmake %product_low%.pro -recursive "%PRODUCT_CAP%_BASE=%CD%"
+%KDAB_QT_PATH%\bin\qmake %SOURCE_DIR%\%product_low%.pro -recursive "%PRODUCT_CAP%_BASE=%CD%"
 
 if errorlevel 1 (
     echo qmake failed
