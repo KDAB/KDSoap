@@ -1,8 +1,6 @@
-KDSOAP_PATH = $$PWD/../..
-
 WSDL_DIR = generated
 
-include( $$KDSOAP_PATH/examples/examples.pri )
+include( $${TOP_SOURCE_DIR}/examples/examples.pri )
 
 SOURCES = main.cpp
 HEADERS += helloworld_client.h

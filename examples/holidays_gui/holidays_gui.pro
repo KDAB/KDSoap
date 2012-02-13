@@ -1,6 +1,4 @@
-KDSOAP_PATH = $$PWD/../..
-
-include( $$KDSOAP_PATH/examples/examples.pri )
+include( $${TOP_SOURCE_DIR}/examples/examples.pri )
 
 HEADERS = mainwindow.h
 SOURCES = holidays_gui.cpp mainwindow.cpp

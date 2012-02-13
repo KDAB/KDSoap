@@ -1,5 +1,4 @@
-KDSOAP_PATH = $$PWD/../..
-include( $$KDSOAP_PATH/unittests/unittests.pri )
+include( $${TOP_SOURCE_DIR}/unittests/unittests.pri )
 QT += network xml
 SOURCES = salesforce_wsdl.cpp
 test.target = test

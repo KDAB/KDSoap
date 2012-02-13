@@ -1,6 +1,5 @@
 # Private library used by unittests
 
-KDSOAP_PATH = ..
 TEMPLATE = lib
 CONFIG += staticlib
 TARGET = testtools
@@ -13,12 +12,12 @@ QT += network
 QT += xml
 
 # Workaround for visual studio integration
-DESTDIR = ../lib
-win32:DLLDESTDIR = ../bin
+DESTDIR = $${TOP_BUILD_DIR}/lib
+win32:DLLDESTDIR = $${TOP_BUILD_DIR}/bin
 
-include(../variables.pri)
+include($${TOP_SOURCE_DIR}/variables.pri)
 # To link to KDSoap
-include(../examples/examples.pri)
+include($${TOP_SOURCE_DIR}/examples/examples.pri)
 
 SOURCES = httpserver_p.cpp
 HEADERS = httpserver_p.h

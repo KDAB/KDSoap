@@ -1,7 +1,6 @@
 KDWSDL_OPTIONS = -namespace KDAB
 
-KDSOAP_PATH = $$PWD/../..
-include( $$KDSOAP_PATH/unittests/unittests.pri )
+include( $${TOP_SOURCE_DIR}/unittests/unittests.pri )
 QT += network xml
 SOURCES = test_dwservice_12_wsdl.cpp
 test.target = test
