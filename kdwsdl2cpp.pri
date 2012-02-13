@@ -8,9 +8,11 @@ isEmpty(KD_MOD_SWSDL):KD_MOD_SWSDL = swsdl_
 win32* {
     isEmpty(KDSOAPDIR): KDWSDL2CPP = $$KDSOAP_PATH/bin/kdwsdl2cpp.exe
     !isEmpty(KDSOAPDIR): KDWSDL2CPP = $$KDSOAPDIR/bin/kdwsdl2cpp.exe
+    !isEmpty(TOP_BUILD_DIR): KDWSDL2CPP = $${TOP_BUILD_DIR}/bin/kdwsdl2cpp.exe
 } else {
     isEmpty(KDSOAPDIR): KDWSDL2CPP = $$KDSOAP_PATH/bin/kdwsdl2cpp
     !isEmpty(KDSOAPDIR): KDWSDL2CPP = $$KDSOAPDIR/bin/kdwsdl2cpp
+    !isEmpty(TOP_BUILD_DIR): KDWSDL2CPP = $${TOP_BUILD_DIR}/bin/kdwsdl2cpp
 }
 
 kdwsdl_h.commands = $$KDWSDL2CPP $$KDWSDL_OPTIONS ${QMAKE_FILE_IN} -o ${QMAKE_FILE_OUT}

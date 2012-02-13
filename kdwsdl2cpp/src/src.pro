@@ -13,7 +13,7 @@ SOURCES = compiler.cpp \
     typemap.cpp
 HEADERS = compiler.h \
     converter.h
-INCLUDEPATH += ..
+INCLUDEPATH += $${TOP_SOURCE_DIR}/kdwsdl2cpp
 QT -= gui
 QT += xml
 
@@ -21,16 +21,16 @@ CONFIG += console
 macx:CONFIG -= app_bundle
 
 # Relink when a static lib changed
-unix:PRE_TARGETDEPS += ../../lib/libkode.a \
-    ../../lib/libwsdl.a \
-    ../../lib/libxmlschema.a \
-    ../../lib/libxmlcommon.a
-LIBS += -L../../lib \
+unix:PRE_TARGETDEPS += $${TOP_BUILD_DIR}/lib/libkode.a \
+    $${TOP_BUILD_DIR}/lib/libwsdl.a \
+    $${TOP_BUILD_DIR}/lib/libxmlschema.a \
+    $${TOP_BUILD_DIR}/lib/libxmlcommon.a
+LIBS += -L$${TOP_BUILD_DIR}/lib \
     -lkode \
     -lwsdl \
     -lxmlschema \
     -lxmlcommon
-include(../../variables.pri)
+include($${TOP_SOURCE_DIR}/variables.pri)
 DEFINES -= QT_NO_CAST_TO_ASCII \
     QBA_NO_CAST_TO_VOID \
     QBA_NO_CAST_TO_ASCII \

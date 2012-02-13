@@ -3,24 +3,21 @@
 # KDSOAPLIB is defined by the toplevel kdsoap.pro and stored into .qmake.cache
 isEmpty(KDSOAPLIB): error("KDSOAPLIB is empty. This should not happen, please check .qmake.cache at the toplevel")
 
-# Adjust the paths and LIBS according to KDSOAP_PATH.
-#    Note: KDSOAP_PATH is set in the calling .pro file,
-#          before examples.pri is included
 INCLUDEPATH += \
-            $$KDSOAP_PATH/src/KDSoapClient \
-            $$KDSOAP_PATH/src/KDSoapServer \
-            $$KDSOAP_PATH/examples/tools
+            $${TOP_SOURCE_DIR}/src/KDSoapClient \
+            $${TOP_SOURCE_DIR}/src/KDSoapServer \
+            $${TOP_SOURCE_DIR}/examples/tools
 DEPENDPATH += \
-            $$KDSOAP_PATH/src/KDSoapClient \
-            $$KDSOAP_PATH/src/KDSoapServer \
-            $$KDSOAP_PATH/examples/tools
-LIBS        += -L$$KDSOAP_PATH/lib -l$$KDSOAPLIB
-!isEmpty(QMAKE_LFLAGS_RPATH):LIBS += $$QMAKE_LFLAGS_RPATH$$KDSOAP_PATH/lib
+            $${TOP_SOURCE_DIR}/src/KDSoapClient \
+            $${TOP_SOURCE_DIR}/src/KDSoapServer \
+            $${TOP_SOURCE_DIR}/examples/tools
+LIBS        += -L$${TOP_BUILD_DIR}/lib -l$$KDSOAPLIB
+!isEmpty(QMAKE_LFLAGS_RPATH):LIBS += $$QMAKE_LFLAGS_RPATH$${TOP_BUILD_DIR}/lib
 
-include(../variables.pri)
+include($${TOP_SOURCE_DIR}/variables.pri)
 #DEFINES -= QT_NO_CAST_FROM_ASCII
 
-include(../kdwsdl2cpp.pri)
+include($${TOP_SOURCE_DIR}/kdwsdl2cpp.pri)
 
 # Assume command-line by default
 CONFIG += console

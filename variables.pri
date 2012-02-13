@@ -17,18 +17,18 @@ CONFIG += depend_includepath
 QT += network
 
 contains(TEMPLATE, lib) {
-  DESTDIR = $$PWD/lib
+  DESTDIR = $${TOP_BUILD_DIR}/lib
 }
 
 contains(TEMPLATE, app) {
-  DESTDIR = $$PWD/bin
+  DESTDIR = $${TOP_BUILD_DIR}/bin
 }
 
 staticlib {
 } else {
   contains(TEMPLATE, lib) {
     win32 {
-      DLLDESTDIR = $$PWD/bin
+      DLLDESTDIR = $${TOP_BUILD_DIR}/bin
       CONFIG += dll
     }
   }

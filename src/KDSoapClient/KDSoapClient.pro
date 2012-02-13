@@ -6,9 +6,9 @@ QT -= gui
 QT += network
 
 # Workaround for visual studio integration
-DESTDIR = ../../lib
-win32:DLLDESTDIR = ../../bin
-include(../../variables.pri)
+DESTDIR = $${TOP_BUILD_DIR}/lib
+win32:DLLDESTDIR = $${TOP_BUILD_DIR}/bin
+include($${TOP_SOURCE_DIR}/variables.pri)
 INSTALLHEADERS = KDSoapMessage.h \
     KDSoapClientInterface.h \
     KDSoapPendingCall.h \
