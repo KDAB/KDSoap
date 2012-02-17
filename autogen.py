@@ -30,7 +30,7 @@ def autogen(project, version, subprojects, prefixed, policyVersion = 1):
 	                                                          isTaggedRevision = isTagged )
 	cpackConfigurationGenerator.run()
 
-	configureScriptGenerator = ConfigureScriptGenerator( project, buildDirectory, version )
+	configureScriptGenerator = ConfigureScriptGenerator( project, sourceDirectory, version )
 	configureScriptGenerator.run()
 
 	includePath = os.path.join( sourceDirectory, "include" )
@@ -54,10 +54,9 @@ def autogen(project, version, subprojects, prefixed, policyVersion = 1):
 	print( "" )
 	sys.stdout.flush()
 
-	if sys.platform == 'win32':
-		os.execvp( './configure.bat', ['configure.bat'] + sys.argv[1:] )
-	else:
-		os.execvp( './configure.sh', ['configure.sh'] + sys.argv[1:] )
+	configureFile = 'configure.bat' if sys.platform == 'win32' else 'configure.sh'
+	configurePath = os.path.join( sourceDirectory, configureFile )
+	os.execvp( configurePath, [configurePath] + sys.argv[1:] )
 
 def policyVersion():
 	global __policyVersion
