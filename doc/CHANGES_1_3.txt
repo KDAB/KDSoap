@@ -7,8 +7,9 @@ Client-side:
 
 Server-side:
 ============
-* Fix element name of the response element to be the one defined in the WSDL (SOAP-32).
 * Implement support for HTTP Basic authentication, see KDSoapServerAuthInterface.
+* Fix element name of the response element to be the one defined in the WSDL (SOAP-32).
+* Added closeLogFile() so that log files can be rotated (SOAP-33).
 
 Code generator changes, applying to both client and server side:
 ================================================================

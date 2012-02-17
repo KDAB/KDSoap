@@ -207,6 +207,11 @@ void KDSoapServer::flushLogFile()
     d->m_logFile.flush();
 }
 
+void KDSoapServer::closeLogFile()
+{
+    d->m_logFile.close();
+}
+
 bool KDSoapServer::setExpectedSocketCount(int sockets)
 {
     // I hit a system limit when trying to connect more than 1024 sockets in the same process.

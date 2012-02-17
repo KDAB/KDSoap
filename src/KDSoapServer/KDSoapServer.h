@@ -169,6 +169,12 @@ public:
     void flushLogFile();
 
     /**
+     * Close the log file. This can be used to then rename it, in order to
+     * implement log file rotation.
+     */
+    void closeLogFile();
+
+    /**
      * Sets a maximum number of concurrent connections to this server.
      * When this number is reached, connections are rejected, and the signal
      * clientConnectionRejected is emitted for each rejected connection.
