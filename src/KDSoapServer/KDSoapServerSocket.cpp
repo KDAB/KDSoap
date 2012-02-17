@@ -279,7 +279,9 @@ void KDSoapServerSocket::sendReply(KDSoapServerObjectInterface* serverObjectInte
     KDSoapMessageWriter msgWriter;
     // Note that the kdsoap client parsing code doesn't care for the name (except if it's fault), even in
     // Document mode. Other implementations do, though.
-    const QString responseName = isFault ? QString::fromLatin1("Fault") : m_method;
+    QString responseName = isFault ? QString::fromLatin1("Fault") : replyMsg.name();
+    if (responseName.isEmpty())
+        responseName = m_method;
     QString responseNamespace = m_messageNamespace;
     KDSoapHeaders responseHeaders;
     if (serverObjectInterface) {

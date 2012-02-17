@@ -30,6 +30,9 @@
 #include <KDSoapMessage.h>
 #include <KDSoapPendingCallWatcher.h>
 #include <KDSoapNamespaceManager.h>
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
+#include <QNetworkReply>
 #ifndef QT_NO_OPENSSL
 #include <QSslSocket>
 #endif
@@ -468,6 +471,7 @@ private Q_SLOTS:
     // Client+server tests
 
     void testServerAddEmployee();
+    void testServerPostByHand();
     void testServerEmptyArgs();
     void testServerFault();
     void testSendTelegram();
@@ -705,10 +709,42 @@ void WsdlDocumentTest::testServerAddEmployee()
     //qDebug() << server->lastServerObject() << "response name" << server->lastServerObject()->m_response.name();
     // Note: that's the response as sent by the generated code.
     // But then the server socket code will call messageToXml, possibly with a method name,
-    // we can't debug that here.
+    // we can't debug that here. The next test is for that.
     QVERIFY(xmlBufferCompare(server->lastServerObject()->m_response.toXml(), expectedResponseXml));
     QCOMPARE(service.lastError(), QString());
     QCOMPARE(QString::fromLatin1(ret.constData()), QString::fromLatin1("added David Faure"));
+}
+
+static QByteArray rawCountryMessage() {
+    return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsd=\"http://www.w3.org/1999/XMLSchema\" xmlns:xsi=\"http://www.w3.org/1999/XMLSchema-instance\" soap:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\"><soap:Body><n1:getEmployeeCountry xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
+    "<employeeName>David</employeeName>"
+    "</n1:getEmployeeCountry></soap:Body></soap:Envelope>";
+}
+
+void WsdlDocumentTest::testServerPostByHand()
+{
+    DocServerThread serverThread;
+    DocServer* server = serverThread.startThread();
+
+    QUrl url(server->endPoint());
+    QNetworkRequest request(url);
+    request.setRawHeader("SoapAction", "http://www.kdab.com/xml/MyWsdl/getEmployeeCountry");
+    QString soapHeader = QString::fromLatin1("text/xml;charset=utf-8");
+    request.setHeader(QNetworkRequest::ContentTypeHeader, soapHeader.toUtf8());
+    QNetworkAccessManager accessManager;
+    QNetworkReply* reply = accessManager.post(request, rawCountryMessage());
+    QEventLoop loop;
+    connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+    loop.exec();
+    const QByteArray response = reply->readAll();
+    const QByteArray expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsd=\"http://www.w3.org/1999/XMLSchema\" xmlns:xsi=\"http://www.w3.org/1999/XMLSchema-instance\" soap:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\">"
+    "<soap:Body>"
+    "<n1:EmployeeCountryResponse xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
+      "<n1:employeeCountry>France</n1:employeeCountry>"
+    "</n1:EmployeeCountryResponse>"
+    "</soap:Body></soap:Envelope>\n";
+    QVERIFY(xmlBufferCompare(response, expected));
+    QCOMPARE(response.constData(), expected.constData());
 }
 
 void WsdlDocumentTest::testServerEmptyArgs()
