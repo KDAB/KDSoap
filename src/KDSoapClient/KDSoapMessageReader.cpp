@@ -188,7 +188,10 @@ KDSoapMessageReader::XmlError KDSoapMessageReader::xmlToMessage(const QByteArray
     if (reader.hasError()) {
         pMsg->setFault(true);
         pMsg->addArgument(QString::fromLatin1("faultcode"), QString::number(reader.error()));
-        pMsg->addArgument(QString::fromLatin1("faultstring"), QString::fromLatin1("XML error line %1: %2").arg(reader.lineNumber()).arg(reader.errorString()));
+        pMsg->addArgument(QString::fromLatin1("faultstring"),
+                          QString::fromLatin1("XML error: [%1:%2] %3").arg(QString::number(reader.lineNumber()),
+                                                                           QString::number(reader.columnNumber()), 
+                                                                           reader.errorString()));
         return reader.error() == QXmlStreamReader::PrematureEndOfDocumentError ? PrematureEndOfDocumentError : ParseError;
     }
 
