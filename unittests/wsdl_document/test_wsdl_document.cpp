@@ -475,6 +475,7 @@ private Q_SLOTS:
     void testServerEmptyArgs();
     void testServerFault();
     void testSendTelegram();
+    void testSendHugeTelegram();
     void testServerDelayedCall();
     void testSyncCallAfterServerDelayedCall();
     void testServerTwoDelayedCalls();
@@ -814,6 +815,32 @@ void WsdlDocumentTest::testSendTelegram()
           "</n1:TelegramResponse>";
     // m_response, however, has qualified = true (set by the generated code).
     QVERIFY(xmlBufferCompare(server->lastServerObject()->m_response.toXml(KDSoapValue::LiteralUse, msgNS), expectedResponseXml));
+}
+
+void WsdlDocumentTest::testSendHugeTelegram()
+{
+    DocServerThread serverThread;
+    DocServer* server = serverThread.startThread();
+
+    MyWsdlDocument service;
+    service.setEndPoint(server->endPoint());
+
+    QByteArray hugePayload;
+    hugePayload.resize(50000);
+    char ch = 'A';
+    for (int i = 0 ; i < hugePayload.size() ; ++i) {
+        hugePayload[i] = ++ch;
+        if (ch == 'z' + 1)
+            ch = 'A';
+    }
+
+    KDAB__TelegramRequest req;
+    req.setTelegramHex(KDAB__TelegramType(hugePayload));
+    req.setTelegramBase64(QByteArray(hugePayload));
+    const KDAB__TelegramResponse ret = service.sendTelegram(req);
+    QCOMPARE(service.lastError(), QString());
+    QCOMPARE(ret.telegramHex().value(), QByteArray("Received ") + hugePayload);
+    QCOMPARE(ret.telegramBase64().constData(), QByteArray("Received " + hugePayload).constData());
 }
 
 void WsdlDocumentTest::testServerDelayedCall()

@@ -40,8 +40,7 @@
       </simpleType>
       <simpleType name="TelegramType">
         <restriction base="xsd:hexBinary">
-          <minLength value="1"></minLength>
-          <maxLength value="255"></maxLength>
+          <minLength value="2"></minLength>
         </restriction>
       </simpleType>
       <element name="Telegram" type="kdab:TelegramType"/>
