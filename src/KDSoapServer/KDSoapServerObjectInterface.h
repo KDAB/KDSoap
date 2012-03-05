@@ -38,25 +38,21 @@ class KDSoapServerSocket;
  * To handle the call, either reimplement processRequest and do the dispatching
  * manually (not recommended), or use kdwsdl2cpp to generate the base class for your server object.
  *
- * Example for manual handling:
+ * Example:
   <code>
-  class EmployeeServerObject : public QObject, public KDSoapServerObjectInterface
+  class EmployeeServerObject : public MyServerBase // base class generated from the wsdl file
   {
     Q_OBJECT
-    Q_INTERFACES(KDSoapServerObjectInterface)
 
   public: // methods published to SOAP
     QString getEmployeeCountry(const QString& employeeName);
     [...]
   };
   </code>
-  And in the .cpp file:
-  <code>
-    #define KDWSDLServerClass EmployeeServerObject
-    #include "swsdl_employee.cpp"
-  </code>
  *
- * swsdl_employee.cpp will contain the code which calls getEmployeeCountry
+ * The generated base class provides the pure virtual methods for each method
+ * defined in the WSDL file, such as getEmployeeCountry() in this example,
+ * as well as a generated processRequest() method which calls getEmployeeCountry
  * when parsing a KDSoapMessage that is a "getEmployeeCountry" request.
  *
  * Multi-threading note: KDSoapServer will create one instance of a "server object"
