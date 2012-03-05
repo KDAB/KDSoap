@@ -22,7 +22,7 @@
 #ifndef KDSOAPSERVERGLOBAL_H
 #define KDSOAPSERVERGLOBAL_H
 
-#include <qglobal.h>
+#include <QtCore/QtGlobal>
 
 # ifdef KDSOAPSERVER_STATICLIB
 #  undef KDSOAPSERVER_SHAREDLIB

@@ -24,7 +24,7 @@
 #define KDSOAPDELAYEDRESPONSEHANDLE_H
 
 #include "KDSoapServerGlobal.h"
-#include <QSharedDataPointer>
+#include <QtCore/QSharedDataPointer>
 
 class KDSoapDelayedResponseHandleData;
 class KDSoapServerSocket;

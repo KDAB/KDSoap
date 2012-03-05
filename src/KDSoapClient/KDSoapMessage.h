@@ -22,8 +22,8 @@
 #ifndef KDSOAPMESSAGE_H
 #define KDSOAPMESSAGE_H
 
-#include <QSharedDataPointer>
-#include <QVariant>
+#include <QtCore/QSharedDataPointer>
+#include <QtCore/QVariant>
 #include "KDSoapValue.h"
 class QString;
 class KDSoapMessageData;

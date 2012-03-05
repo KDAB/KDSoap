@@ -35,7 +35,7 @@ void Converter::convertServerService()
             serverClass.setNameSpace( Settings::self()->nameSpace() );
 
             // Files included in the header
-            serverClass.addHeaderInclude("QObject");
+            serverClass.addHeaderInclude("QtCore/QObject");
             serverClass.addHeaderInclude("KDSoapServerObjectInterface.h");
 
             serverClass.addDeclarationMacro("Q_OBJECT");

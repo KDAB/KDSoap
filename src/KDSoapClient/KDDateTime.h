@@ -24,9 +24,9 @@
 
 #include "KDSoapGlobal.h"
 
-#include <QDateTime>
-#include <QVariant>
-#include <QSharedDataPointer>
+#include <QtCore/QDateTime>
+#include <QtCore/QVariant>
+#include <QtCore/QSharedDataPointer>
 
 class KDDateTimeData;
 

@@ -691,7 +691,7 @@ void Printer::printHeader( const File &file )
     Q_ASSERT( !cl.name().isEmpty() );
     QStringList includes = cl.headerIncludes();
     if ( cl.useSharedData() )
-        includes.append( "QSharedData" );
+        includes.append( "QtCore/QSharedData" );
     //qDebug() << "includes=" << includes;
     QStringList::ConstIterator it2;
     for ( it2 = includes.constBegin(); it2 != includes.constEnd(); ++it2 ) {

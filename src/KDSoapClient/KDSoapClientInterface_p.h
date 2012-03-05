@@ -22,9 +22,9 @@
 #ifndef KDSOAPCLIENTINTERFACE_P_H
 #define KDSOAPCLIENTINTERFACE_P_H
 
-#include <QNetworkAccessManager>
-#include <QNetworkCookieJar>
-#include <QXmlStreamWriter>
+#include <QtNetwork/QNetworkAccessManager>
+#include <QtNetwork/QNetworkCookieJar>
+#include <QtCore/QXmlStreamWriter>
 
 #include "KDSoapClientInterface.h"
 #include "KDSoapClientThread_p.h"

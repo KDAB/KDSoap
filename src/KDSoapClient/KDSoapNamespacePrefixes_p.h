@@ -22,8 +22,8 @@
 #ifndef KDSOAPNAMESPACESPREFIXES_H
 #define KDSOAPNAMESPACESPREFIXES_H
 
-#include <QMap>
-#include <QXmlStreamWriter>
+#include <QtCore/QMap>
+#include <QtCore/QXmlStreamWriter>
 
 class KDSoapNamespacePrefixes : public QMap<QString /*ns*/, QString /*prefix*/>
 {

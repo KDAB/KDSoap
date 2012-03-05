@@ -25,12 +25,12 @@
 
 #include "KDSoapMessage.h"
 #include "KDSoapAuthentication.h"
-#include <QWaitCondition>
-#include <QQueue>
-#include <QThread>
-#include <QMutex>
-#include <QSemaphore>
-#include <QNetworkAccessManager>
+#include <QtCore/QWaitCondition>
+#include <QtCore/QQueue>
+#include <QtCore/QThread>
+#include <QtCore/QMutex>
+#include <QtCore/QSemaphore>
+#include <QtNetwork/QNetworkAccessManager>
 
 class KDSoapPendingCallWatcher;
 class KDSoapClientInterface;

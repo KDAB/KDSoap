@@ -23,7 +23,7 @@
 #define KDSOAPAUTHENTICATION_H
 
 #include "KDSoapGlobal.h"
-#include <QUrl>
+#include <QtCore/QUrl>
 class QAuthenticator;
 class QNetworkReply;
 

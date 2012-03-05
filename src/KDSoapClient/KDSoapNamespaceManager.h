@@ -23,7 +23,7 @@
 #define KDSOAPNAMESPACEMANAGER_H
 
 #include "KDSoapGlobal.h"
-#include <QString>
+#include <QtCore/QString>
 
 /**
  * Repository of namespaces

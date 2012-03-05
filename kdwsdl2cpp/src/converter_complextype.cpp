@@ -112,7 +112,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
                 //qDebug() << "array of" << attribute.arrayType() << "->" << arrayTypeName;
                 typeName = listTypeFor(arrayTypeName, newClass);
                 newClass.addInclude(QString(), arrayTypeName); // add forward declaration
-                newClass.addHeaderIncludes( QStringList() << "QList" );
+                newClass.addHeaderIncludes( QStringList() << "QtCore/QList" );
                 inputTypeName = "const " + typeName + '&';
             }
 
@@ -144,7 +144,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
         newClass.addIncludes( QStringList(), mTypeMap.forwardDeclarations( elemIt.type() ) );
         newClass.addHeaderIncludes( mTypeMap.headerIncludes( elemIt.type() ) );
         if ( elemIt.maxOccurs() > 1 )
-            newClass.addHeaderIncludes( QStringList( "QList" ) );
+            newClass.addHeaderIncludes(QStringList() << "QtCore/QList");
     }
 
     // attributes

@@ -23,7 +23,7 @@
 #define KDSOAPSERVERAUTHINTERFACE_H
 
 #include "KDSoapServerGlobal.h"
-#include <QObject>
+#include <QtCore/QObject>
 class KDSoapAuthentication;
 class KDSoapServerSocket;
 

@@ -1,5 +1,6 @@
 General:
 ========
+* Fix compilation with custom build systems who do not set include paths to QtCore and QtNetwork.
 
 Client-side:
 ============

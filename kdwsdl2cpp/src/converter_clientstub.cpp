@@ -88,8 +88,8 @@ bool Converter::convertClientService()
             newClass.setDocs(service.documentation());
 
             // Files included in the header
-            newClass.addHeaderInclude( "QObject" );
-            newClass.addHeaderInclude( "QString" );
+            newClass.addHeaderInclude("QtCore/QObject");
+            newClass.addHeaderInclude("QtCore/QString");
             newClass.addHeaderInclude("KDSoapClientInterface.h");
 
             // Files included in the impl, with optional forward-declarations in the header

@@ -29,7 +29,7 @@ void Converter::addVariableInitializer( KODE::MemberVariable& variable ) const
 QString Converter::listTypeFor(const QString& itemTypeName, KODE::Class& newClass)
 {
     if (itemTypeName == QLatin1String("QString")) {
-        newClass.addHeaderInclude( "QStringList" );
+        newClass.addHeaderInclude("QtCore/QStringList");
         return "QStringList";
     }
     return "QList<" + itemTypeName + ">";
@@ -197,7 +197,7 @@ void Converter::convertSimpleType( const XSD::SimpleType *type, const XSD::Simpl
   case XSD::SimpleType::TypeList: {
     classDocumentation = "This class encapsulates a list type.";
 
-    newClass.addHeaderInclude( "QList" );
+    newClass.addHeaderInclude("QtCore/QList");
     const QName baseName = type->listTypeName();
     const QString itemTypeName = mTypeMap.localType( baseName );
     Q_ASSERT(!itemTypeName.isEmpty());
@@ -230,7 +230,7 @@ void Converter::convertSimpleType( const XSD::SimpleType *type, const XSD::Simpl
       classDocumentation = "This class encapsulates a union type.";
       // Let's be lazy and let's just have a qvariant for storing the various
       // possible simple types (int, QString).
-      newClass.addHeaderInclude( "QVariant" );
+      newClass.addHeaderInclude("QtCore/QVariant");
 
       KODE::MemberVariable variable( "value", "QVariant" );
       newClass.addMemberVariable( variable );

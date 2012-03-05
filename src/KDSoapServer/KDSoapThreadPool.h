@@ -22,8 +22,8 @@
 #ifndef KDSOAPTHREADPOOL_H
 #define KDSOAPTHREADPOOL_H
 
-#include <QObject>
-#include <QHash>
+#include <QtCore/QObject>
+#include <QtCore/QHash>
 #include "KDSoapServerGlobal.h"
 class KDSoapServer;
 
