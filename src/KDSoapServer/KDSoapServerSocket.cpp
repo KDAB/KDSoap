@@ -296,8 +296,11 @@ void KDSoapServerSocket::sendReply(KDSoapServerObjectInterface* serverObjectInte
     if (m_doDebug) {
         qDebug() << "HttpServerThread: writing" << response << xmlResponse;
     }
-    write(response);
-    write(xmlResponse);
+    qint64 written = write(response);
+    Q_ASSERT(written == response.size()); // Please report a bug if you hit this.
+    written = write(xmlResponse);
+    Q_ASSERT(written == xmlResponse.size()); // Please report a bug if you hit this.
+    Q_UNUSED(written);
     // flush() ?
 
     // All done, check if we should log this
