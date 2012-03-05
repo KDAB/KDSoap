@@ -302,7 +302,7 @@ KODE::Code Converter::demarshalArrayVar( const QName& type, const QString& varia
 
 void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::ComplexType *type )
 {
-    newClass.addInclude("KDSoapNamespaceManager.h");
+    newClass.addInclude("KDSoapClient/KDSoapNamespaceManager.h");
 
     KODE::Function serializeFunc( "serialize", "KDSoapValue" );
     serializeFunc.addArgument( "const QString& valueName" );

@@ -482,7 +482,7 @@ static KODE::Code createRangeCheckCode( const XSD::SimpleType *type, const QStri
       code += "QRegExp exp( QString::fromLatin1(\"" + escapeRegExp(type->facetPattern()) + "\") );";
     code += "rangeOk = rangeOk && exp.exactMatch( " + variableName + " );";
 
-    parentClass.addInclude( "QRegExp" );
+    parentClass.addInclude( "QtCore/QRegExp" );
   }
 
   return code;

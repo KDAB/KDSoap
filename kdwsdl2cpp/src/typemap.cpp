@@ -88,9 +88,10 @@ void TypeMap::addBuiltinType(const char *typeName, const char *localType)
     entry.basicType = !entry.localType.startsWith('Q') && !entry.localType.startsWith('K');
     if ( !entry.basicType ) {
         QString header = entry.localType;
-        if (entry.localType.startsWith("KD"))
+        if (entry.localType.startsWith("KD")) {
             header += ".h";
-        else if (entry.localType.startsWith("Q"))
+            header.prepend("KDSoapClient/");
+        } else if (entry.localType.startsWith("Q"))
             header.prepend("QtCore/");
         entry.headers << header;
         entry.headerIncludes << header;

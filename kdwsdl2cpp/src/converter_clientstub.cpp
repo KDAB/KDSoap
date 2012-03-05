@@ -90,13 +90,13 @@ bool Converter::convertClientService()
             // Files included in the header
             newClass.addHeaderInclude("QtCore/QObject");
             newClass.addHeaderInclude("QtCore/QString");
-            newClass.addHeaderInclude("KDSoapClientInterface.h");
+            newClass.addHeaderInclude("KDSoapClient/KDSoapClientInterface.h");
 
             // Files included in the impl, with optional forward-declarations in the header
-            newClass.addInclude("KDSoapMessage.h", "KDSoapMessage");
-            newClass.addInclude("KDSoapValue.h", "KDSoapValue");
-            newClass.addInclude("KDSoapPendingCallWatcher.h", "KDSoapPendingCallWatcher");
-            newClass.addInclude("KDSoapNamespaceManager.h");
+            newClass.addInclude("KDSoapClient/KDSoapMessage.h", "KDSoapMessage");
+            newClass.addInclude("KDSoapClient/KDSoapValue.h", "KDSoapValue");
+            newClass.addInclude("KDSoapClient/KDSoapPendingCallWatcher.h", "KDSoapPendingCallWatcher");
+            newClass.addInclude("KDSoapClient/KDSoapNamespaceManager.h");
 
             // Variables (which will go into the d pointer)
             KODE::MemberVariable clientInterfaceVar("m_clientInterface", "KDSoapClientInterface*");
@@ -275,7 +275,7 @@ bool Converter::convertClientService()
                 const QString operationName = operation.name();
                 KODE::Class jobClass( upperlize( operation.name() ) + QLatin1String("Job"), nameSpace );
                 jobClass.addInclude( QString(), fullyQualified( newClass ) );
-                jobClass.addHeaderInclude( QLatin1String("KDSoapJob.h") );
+                jobClass.addHeaderInclude( QLatin1String("KDSoapClient/KDSoapJob.h") );
                 if ( !Settings::self()->exportDeclaration().isEmpty() )
                     jobClass.setExportDeclaration( Settings::self()->exportDeclaration() );
                 jobClass.setNameSpace( Settings::self()->nameSpace() );

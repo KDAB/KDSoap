@@ -23,7 +23,7 @@
 #define KDSOAPSERVER_H
 
 #include "KDSoapServerGlobal.h"
-#include <KDSoapMessage.h>
+#include <KDSoapClient/KDSoapMessage.h>
 #include <QtNetwork/QTcpServer>
 
 class KDSoapThreadPool;

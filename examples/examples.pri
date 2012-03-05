@@ -4,10 +4,12 @@
 isEmpty(KDSOAPLIB): error("KDSOAPLIB is empty. This should not happen, please check .qmake.cache at the toplevel")
 
 INCLUDEPATH += \
+            $${TOP_SOURCE_DIR}/src \
             $${TOP_SOURCE_DIR}/src/KDSoapClient \
             $${TOP_SOURCE_DIR}/src/KDSoapServer \
             $${TOP_SOURCE_DIR}/examples/tools
 DEPENDPATH += \
+            $${TOP_SOURCE_DIR}/src \
             $${TOP_SOURCE_DIR}/src/KDSoapClient \
             $${TOP_SOURCE_DIR}/src/KDSoapServer \
             $${TOP_SOURCE_DIR}/examples/tools

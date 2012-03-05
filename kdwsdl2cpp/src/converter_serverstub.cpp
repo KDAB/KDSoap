@@ -36,7 +36,7 @@ void Converter::convertServerService()
 
             // Files included in the header
             serverClass.addHeaderInclude("QtCore/QObject");
-            serverClass.addHeaderInclude("KDSoapServerObjectInterface.h");
+            serverClass.addHeaderInclude("KDSoapServer/KDSoapServerObjectInterface.h");
 
             serverClass.addDeclarationMacro("Q_OBJECT");
             serverClass.addDeclarationMacro("Q_INTERFACES(KDSoapServerObjectInterface)");

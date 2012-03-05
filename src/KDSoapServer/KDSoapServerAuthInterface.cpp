@@ -21,7 +21,7 @@
 **********************************************************************/
 
 #include "KDSoapServerAuthInterface.h"
-#include <KDSoapAuthentication.h>
+#include <KDSoapClient/KDSoapAuthentication.h>
 
 KDSoapServerAuthInterface::KDSoapServerAuthInterface()
     : d(0)

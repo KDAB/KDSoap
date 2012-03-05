@@ -24,10 +24,10 @@
 #include "KDSoapServerObjectInterface.h"
 #include "KDSoapServerAuthInterface.h"
 #include "KDSoapServer.h"
-#include <KDSoapMessage.h>
-#include <KDSoapNamespaceManager.h>
-#include <KDSoapMessageReader_p.h>
-#include <KDSoapMessageWriter_p.h>
+#include <KDSoapClient/KDSoapMessage.h>
+#include <KDSoapClient/KDSoapNamespaceManager.h>
+#include <KDSoapClient/KDSoapMessageReader_p.h>
+#include <KDSoapClient/KDSoapMessageWriter_p.h>
 #include <QBuffer>
 #include <QThread>
 #include <QMetaMethod>

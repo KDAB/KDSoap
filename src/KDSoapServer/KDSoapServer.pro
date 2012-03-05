@@ -40,8 +40,8 @@ SOURCES = KDSoapServer.cpp \
 DEFINES += KDSOAP_BUILD_KDSOAPSERVER_LIB
 
 # We use the soap client library, for xml parsing
-INCLUDEPATH += . $${TOP_SOURCE_DIR}/src/KDSoapClient
-DEPENDPATH += . $${TOP_SOURCE_DIR}/src//KDSoapClient
+INCLUDEPATH += . $${TOP_SOURCE_DIR}/src
+DEPENDPATH += . $${TOP_SOURCE_DIR}/src
 LIBS        += -L$$DESTDIR -l$$KDSOAPLIB
 
 # installation targets:
