@@ -172,7 +172,7 @@ void KDSoapServerSocket::slotReadyRead()
     }
 
     const QByteArray contentLength = httpHeaders.value("content-length");
-    if (receivedData.size() < contentLength.size())
+    if (receivedData.size() < contentLength.toInt())
         return; // incomplete request, wait for more data
 
     const QString path = QString::fromLatin1(httpHeaders.value("_path").constData());
@@ -209,7 +209,7 @@ void KDSoapServerSocket::slotReadyRead()
     KDSoapMessageReader::XmlError err = reader.xmlToMessage(receivedData, &requestMsg, &m_messageNamespace, &requestHeaders);
     if (err == KDSoapMessageReader::PrematureEndOfDocumentError) {
         //qDebug() << "Incomplete SOAP message, wait for more data";
-        //incomplete request, wait for more data
+        // This should never happen, since we check for content-size above.
         return;
     } //TODO handle parse errors?
 

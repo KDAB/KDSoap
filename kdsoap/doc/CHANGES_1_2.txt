@@ -22,6 +22,8 @@ Server-side:
 * Fix crash in Qt-4.8 at server shutdown.
 * Return an error if receiving a GET request (other than when retrieving the .wsdl file)
 
+* 1.2.1: make handling of partial requests more robust
+
 Code generator changes, applying to both client and server side:
 ================================================================
 * Handle paths with non-ascii letters (url encoding issues).
