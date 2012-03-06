@@ -55,13 +55,13 @@ static void parseAuthLine(const QString& str, Method* method, QString* headerVal
     }
 }
 
-bool KDSoapServerAuthInterface::handleHttpAuth(const QByteArray &authValue)
+bool KDSoapServerAuthInterface::handleHttpAuth(const QByteArray &authValue, const QString& path)
 {
     bool authOk = false;
     KDSoapAuthentication authSettings;
     if (authValue.isEmpty()) {
         // Let the implementation decide whether it accepts "no auth".
-        authOk = validateAuthentication(authSettings);
+        authOk = validateAuthentication(authSettings, path);
     } else {
         //qDebug() << "got authValue=" << authValue; // looks like "Basic <base64 of user:pass>"
         Method method;
@@ -71,7 +71,7 @@ bool KDSoapServerAuthInterface::handleHttpAuth(const QByteArray &authValue)
         switch (method) {
         case None:
             // Let the implementation decide whether it accepts "no auth".
-            authOk = validateAuthentication(authSettings);
+            authOk = validateAuthentication(authSettings, path);
             break;
         case Basic:
         {
@@ -81,7 +81,7 @@ bool KDSoapServerAuthInterface::handleHttpAuth(const QByteArray &authValue)
                 break;
             authSettings.setUser(QString::fromUtf8(userPass.left(separatorPos).constData()));
             authSettings.setPassword(QString::fromUtf8(userPass.mid(separatorPos + 1).constData()));
-            authOk = validateAuthentication(authSettings);
+            authOk = validateAuthentication(authSettings, path);
             break;
         }
         default:
@@ -92,8 +92,9 @@ bool KDSoapServerAuthInterface::handleHttpAuth(const QByteArray &authValue)
     return authOk;
 }
 
-bool KDSoapServerAuthInterface::validateAuthentication(const KDSoapAuthentication& auth)
+bool KDSoapServerAuthInterface::validateAuthentication(const KDSoapAuthentication& auth, const QString& path)
 {
     Q_UNUSED(auth);
+    Q_UNUSED(path);
     return false;
 }

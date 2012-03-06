@@ -61,6 +61,24 @@ void KDSoapServerObjectInterface::processRequest(const KDSoapMessage &request, K
     response.addArgument(QString::fromLatin1("faultstring"), QString::fromLatin1("%1 not found").arg(method));
 }
 
+QIODevice *KDSoapServerObjectInterface::processFileRequest(const QString &path, QByteArray &contentType)
+{
+    Q_UNUSED(path);
+    Q_UNUSED(contentType);
+    return NULL;
+}
+
+void KDSoapServerObjectInterface::processRequestWithPath(const KDSoapMessage &request, KDSoapMessage &response, const QByteArray &soapAction, const QString &path)
+{
+    Q_UNUSED(soapAction);
+    const QString method = request.name();
+    qWarning("Invalid path: \"%s\"", qPrintable(path));
+    //qWarning() << "Invalid path:" << path << "[method =" << method << "; soapAction =" << soapAction << "]" /* << "in" << metaObject()->className()*/;
+    response.setFault(true);
+    response.addArgument(QString::fromLatin1("faultcode"), QString::fromLatin1("Client.Data"));
+    response.addArgument(QString::fromLatin1("faultstring"), QString::fromLatin1("Method %1 not found in path %2").arg(method, path));
+}
+
 void KDSoapServerObjectInterface::setFault(const QString &faultCode, const QString &faultString, const QString &faultActor, const QString &detail)
 {
     Q_ASSERT(!faultCode.isEmpty());

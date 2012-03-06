@@ -51,11 +51,11 @@ public:
     /**
      * Return true if the authentication details are valid.
      */
-    virtual bool validateAuthentication(const KDSoapAuthentication& auth);
+    virtual bool validateAuthentication(const KDSoapAuthentication& auth, const QString &path);
 
 private:
     friend class KDSoapServerSocket;
-    bool handleHttpAuth(const QByteArray &authValue);
+    bool handleHttpAuth(const QByteArray &authValue, const QString &path);
     class Private;
     Private* const d;
 };

@@ -69,14 +69,22 @@ public:
 
     virtual void processRequest(const KDSoapMessage &request, KDSoapMessage &response, const QByteArray& soapAction);
 
-    virtual bool validateAuthentication(const KDSoapAuthentication& auth) {
+    virtual QIODevice* processFileRequest(const QString &path, QByteArray &contentType) {
+        if (path == QLatin1String("/path/to/file_download.txt")) {
+            QFile* file = new QFile(QLatin1String("file_download.txt")); // local file, created by the unittest
+            contentType = "text/plain";
+            return file; // will be deleted by KDSoap
+        }
+        return NULL;
+    }
+
+    virtual bool validateAuthentication(const KDSoapAuthentication& auth, const QString& path) {
         if (!m_requireAuth)
             return true;
-        if (auth.user() == QLatin1String("kdab"))
+        if (path == QLatin1String("/") && auth.user() == QLatin1String("kdab"))
             return auth.password() == QLatin1String("pass42");
         return false;
-    }
-public: // SOAP-accessible methods
+    } public: // SOAP-accessible methods
     QString getEmployeeCountry(const QString& employeeName) {
         // Should be called in same thread as constructor
         s_serverObjectsMutex.lock();
@@ -619,17 +627,6 @@ private Q_SLOTS:
         makeFaultyCall(server->endPoint());
     }
 
-#ifndef QT_NO_OPENSSL
-    void testSsl()
-    {
-        CountryServerThread serverThread;
-        CountryServer* server = serverThread.startThread();
-        server->setFeatures(KDSoapServer::Ssl);
-        QVERIFY(server->endPoint().startsWith(QLatin1String("https")));
-        makeSimpleCall(server->endPoint());
-    }
-#endif
-
     void testLogging()
     {
         CountryServerThread serverThread;
@@ -711,6 +708,34 @@ private Q_SLOTS:
 
         QCOMPARE((int)reply->error(), (int)QNetworkReply::NoError);
         QCOMPARE(reply->readAll(), QByteArray("Hello world"));
+        QFile::remove(fileName);
+    }
+
+    void testFileDownload()
+    {
+        CountryServerThread serverThread;
+        CountryServer* server = serverThread.startThread();
+
+        const QString fileName = QString::fromLatin1("file_download.txt");
+        QFile file(fileName);
+        QVERIFY(file.open(QIODevice::WriteOnly));
+        file.write("Hello world");
+        file.flush();
+        const QString pathInUrl = QString::fromLatin1("/path/to/file_download.txt");
+
+        QString url = server->endPoint();
+        url.chop(1) /*trailing slash*/;
+        url += pathInUrl;
+        QNetworkAccessManager manager;
+        QNetworkRequest request(url);
+        QNetworkReply* reply = manager.get(request);
+        QEventLoop loop;
+        connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+        loop.exec();
+
+        QCOMPARE((int)reply->error(), (int)QNetworkReply::NoError);
+        QCOMPARE(reply->readAll(), QByteArray("Hello world"));
+        QFile::remove(fileName);
     }
 
     void testPostByHand()
@@ -777,16 +802,27 @@ private Q_SLOTS:
         const QString url = server->endPoint().remove(serverPath).append(requestPath);
         KDSoapClientInterface client(url, countryMessageNamespace());
         if (serverPath != requestPath) {
-            QTest::ignoreMessage(QtWarningMsg, "Invalid path '/bar'");
+            QTest::ignoreMessage(QtWarningMsg, "Invalid path: \"/bar\"");
         }
 
         const KDSoapMessage response = client.call(QLatin1String("getEmployeeCountry"), countryMessage());
         QCOMPARE(response.isFault(), !expectedSuccess);
         if (!expectedSuccess) {
             QCOMPARE(response.arguments().child(QLatin1String("faultcode")).value().toString(), QString::fromLatin1("Client.Data"));
-            QCOMPARE(response.arguments().child(QLatin1String("faultstring")).value().toString(), QString::fromLatin1("Invalid path '%1'").arg(requestPath));
+            QCOMPARE(response.arguments().child(QLatin1String("faultstring")).value().toString(), QString::fromLatin1("Method %1 not found in path %2").arg(QLatin1String("getEmployeeCountry"), requestPath));
         }
     }
+
+#ifndef QT_NO_OPENSSL
+    void testSsl()
+    {
+        CountryServerThread serverThread;
+        CountryServer* server = serverThread.startThread();
+        server->setFeatures(KDSoapServer::Ssl);
+        QVERIFY(server->endPoint().startsWith(QLatin1String("https")));
+        makeSimpleCall(server->endPoint());
+    }
+#endif
 
 public Q_SLOTS:
     void slotFinished(KDSoapPendingCallWatcher* watcher)

@@ -60,10 +60,12 @@ private Q_SLOTS:
     void slotReadyRead();
 
 private:
+    bool handleWsdlDownload();
+    bool handleFileDownload(KDSoapServerObjectInterface* serverObjectInterface, KDSoapMessage& replyMsg, const QString& path);
     void makeCall(KDSoapServerObjectInterface* serverObjectInterface,
                   const KDSoapMessage& requestMsg, KDSoapMessage& replyMsg,
                   const KDSoapHeaders& requestHeaders,
-                  const QByteArray& soapAction);
+                  const QByteArray& soapAction, const QString &path);
     void handleError(KDSoapMessage& replyMsg, const char* errorCode, const QString& error);
     void setSocketEnabled(bool enabled);
 

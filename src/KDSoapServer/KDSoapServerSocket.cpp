@@ -169,32 +169,31 @@ void KDSoapServerSocket::slotReadyRead()
         qDebug() << "Unknown HTTP request:" << requestType;
         handleError(replyMsg, "Client.Data", QString::fromLatin1("Invalid request type '%1', should be GET or POST").arg(QString::fromLatin1(requestType.constData())));
         sendReply(0, replyMsg);
+        m_requestBuffer.clear();
         return;
     }
 
     const QByteArray contentLength = httpHeaders.value("content-length");
-    if (receivedData.size() < contentLength.size())
+    if (receivedData.size() < contentLength.toInt())
         return; // incomplete request, wait for more data
 
-    const QString path = QString::fromLatin1(httpHeaders.value("_path").constData());
-    if (path != server->path()) {
-        m_requestBuffer.clear();
-        if (path == server->wsdlPathInUrl() && requestType == "GET") {
-            const QString wsdlFile = server->wsdlFile();
-            QFile wf(wsdlFile);
-            if (wf.open(QIODevice::ReadOnly)) {
-                //qDebug() << "Returning wsdl file contents";
-                const QByteArray responseText = wf.readAll();
-                const QByteArray response = httpResponseHeaders(false, "application/xml", responseText.size());
-                write(response);
-                write(responseText);
-                return;
-            }
-        }
-        handleError(replyMsg, "Client.Data", QString::fromLatin1("Invalid path '%1'").arg(path));
+    m_requestBuffer.clear();
+    KDSoapServerObjectInterface* serverObjectInterface = qobject_cast<KDSoapServerObjectInterface *>(m_serverObject);
+    if (!serverObjectInterface) {
+        const QString error = QString::fromLatin1("Server object %1 does not implement KDSoapServerObjectInterface!").arg(QString::fromLatin1(m_serverObject->metaObject()->className()));
+        handleError(replyMsg, "Server.ImplementationError", error);
+    } else {
+        serverObjectInterface->setServerSocket(this);
     }
 
+    const QString path = QString::fromLatin1(httpHeaders.value("_path").constData());
     if (requestType == "GET") {
+        if (path == server->wsdlPathInUrl() && handleWsdlDownload()) {
+            return;
+        } else if (handleFileDownload(serverObjectInterface, replyMsg, path)) {
+            return;
+        }
+
         // See http://www.ibm.com/developerworks/xml/library/x-tipgetr/
         // We could implement it, but there's no SOAP request, just a query in the URL,
         // which we'd have to pass to a different virtual than processRequest.
@@ -210,11 +209,9 @@ void KDSoapServerSocket::slotReadyRead()
     KDSoapMessageReader::XmlError err = reader.xmlToMessage(receivedData, &requestMsg, &m_messageNamespace, &requestHeaders);
     if (err == KDSoapMessageReader::PrematureEndOfDocumentError) {
         //qDebug() << "Incomplete SOAP message, wait for more data";
-        //incomplete request, wait for more data
+        // This should never happen, since we check for content-size above.
         return;
     } //TODO handle parse errors?
-
-    m_requestBuffer.clear();
 
     // check soap version and extract soapAction header
     QByteArray soapAction;
@@ -239,20 +236,12 @@ void KDSoapServerSocket::slotReadyRead()
 
     m_method = requestMsg.name();
 
-    KDSoapServerObjectInterface* serverObjectInterface = qobject_cast<KDSoapServerObjectInterface *>(m_serverObject);
-    if (!serverObjectInterface) {
-        const QString error = QString::fromLatin1("Server object %1 does not implement KDSoapServerObjectInterface!").arg(QString::fromLatin1(m_serverObject->metaObject()->className()));
-        handleError(replyMsg, "Server.ImplementationError", error);
-    } else {
-        serverObjectInterface->setServerSocket(this);
-    }
-
     KDSoapServerAuthInterface* serverAuthInterface = qobject_cast<KDSoapServerAuthInterface *>(m_serverObject);
     if (serverAuthInterface) {
         QByteArray authValue = httpHeaders.value("Authorization");
         if (authValue.isEmpty())
             authValue = httpHeaders.value("authorization"); // as sent by Qt-4.5
-        if (!serverAuthInterface->handleHttpAuth(authValue)) {
+        if (!serverAuthInterface->handleHttpAuth(authValue, path)) {
             // send auth request (Qt supports basic, ntlm and digest)
             const QByteArray unauthorized = "HTTP/1.1 401 Authorization Required\r\nWWW-Authenticate: Basic realm=\"example\"\r\nContent-Length: 0\r\n\r\n";
             write(unauthorized);
@@ -261,7 +250,7 @@ void KDSoapServerSocket::slotReadyRead()
     }
 
     if (!replyMsg.isFault()) {
-        makeCall(serverObjectInterface, requestMsg, replyMsg, requestHeaders, soapAction);
+        makeCall(serverObjectInterface, requestMsg, replyMsg, requestHeaders, soapAction, path);
     }
 
     if (serverObjectInterface && m_delayedResponse) {
@@ -270,6 +259,61 @@ void KDSoapServerSocket::slotReadyRead()
     } else {
         sendReply(serverObjectInterface, replyMsg);
     }
+}
+
+bool KDSoapServerSocket::handleWsdlDownload()
+{
+    KDSoapServer* server = m_owner->server();
+    const QString wsdlFile = server->wsdlFile();
+    QFile wf(wsdlFile);
+    if (wf.open(QIODevice::ReadOnly)) {
+        //qDebug() << "Returning wsdl file contents";
+        const QByteArray responseText = wf.readAll();
+        const QByteArray response = httpResponseHeaders(false, "application/xml", responseText.size());
+        write(response);
+        write(responseText);
+        return true;
+    }
+    return false;
+}
+
+bool KDSoapServerSocket::handleFileDownload(KDSoapServerObjectInterface *serverObjectInterface, KDSoapMessage &replyMsg, const QString &path)
+{
+    QByteArray contentType;
+    QIODevice* device = serverObjectInterface->processFileRequest(path, contentType);
+    if (!device)
+        return false;
+    if (!device->open(QIODevice::ReadOnly)) {
+        handleError(replyMsg, "Server.File", QString::fromLatin1("File (or device) associated with path %1 could not be opened for reading.").arg(path));
+        return true; // handled!
+    }
+    const QByteArray response = httpResponseHeaders(false, contentType, device->size());
+    if (m_doDebug) {
+        qDebug() << "KDSoapServerSocket: file download response" << response;
+    }
+    qint64 written = write(response);
+    Q_ASSERT(written == response.size()); // Please report a bug if you hit this.
+
+    char block[4096];
+    qint64 totalRead = 0;
+    while (!device->atEnd()) {
+        const qint64 in = device->read(block, sizeof(block));
+        if (in <= 0)
+            break;
+        totalRead += in;
+        if(in != write(block, in)) {
+            //error = true;
+            break;
+        }
+    }
+    //if (totalRead != device->size()) {
+    //    // Unable to read from the source.
+    //    error = true;
+    //}
+
+    delete device;
+    // TODO log the file request, if logging is enabled?
+    return true;
 }
 
 void KDSoapServerSocket::sendReply(KDSoapServerObjectInterface* serverObjectInterface, const KDSoapMessage& replyMsg)
@@ -294,7 +338,7 @@ void KDSoapServerSocket::sendReply(KDSoapServerObjectInterface* serverObjectInte
     const QByteArray xmlResponse = msgWriter.messageToXml(replyMsg, responseName, responseHeaders, QMap<QString, KDSoapMessage>());
     const QByteArray response = httpResponseHeaders(isFault, "text/xml", xmlResponse.size());
     if (m_doDebug) {
-        qDebug() << "HttpServerThread: writing" << response << xmlResponse;
+        qDebug() << "KDSoapServerSocket: writing" << response << xmlResponse;
     }
     qint64 written = write(response);
     Q_ASSERT(written == response.size()); // Please report a bug if you hit this.
@@ -338,7 +382,7 @@ void KDSoapServerSocket::handleError(KDSoapMessage &replyMsg, const char *errorC
     replyMsg.addArgument(QString::fromLatin1("faultstring"), error);
 }
 
-void KDSoapServerSocket::makeCall(KDSoapServerObjectInterface* serverObjectInterface, const KDSoapMessage &requestMsg, KDSoapMessage& replyMsg, const KDSoapHeaders& requestHeaders, const QByteArray& soapAction)
+void KDSoapServerSocket::makeCall(KDSoapServerObjectInterface* serverObjectInterface, const KDSoapMessage &requestMsg, KDSoapMessage& replyMsg, const KDSoapHeaders& requestHeaders, const QByteArray& soapAction, const QString& path)
 {
     //const QString method = requestMsg.name();
 
@@ -353,8 +397,12 @@ void KDSoapServerSocket::makeCall(KDSoapServerObjectInterface* serverObjectInter
         // Call method on m_serverObject
         serverObjectInterface->setRequestHeaders(requestHeaders, soapAction);
 
-        serverObjectInterface->processRequest(requestMsg, replyMsg, soapAction);
-
+        KDSoapServer* server = m_owner->server();
+        if (path != server->path()) {
+            serverObjectInterface->processRequestWithPath(requestMsg, replyMsg, soapAction, path);
+        } else {
+            serverObjectInterface->processRequest(requestMsg, replyMsg, soapAction);
+        }
         if (serverObjectInterface->hasFault()) {
             //qDebug() << "Got fault!";
             replyMsg.setFault(true);

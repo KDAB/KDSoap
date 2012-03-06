@@ -479,6 +479,7 @@ private Q_SLOTS:
     void testServerDelayedCall();
     void testSyncCallAfterServerDelayedCall();
     void testServerTwoDelayedCalls();
+    void testServerDifferentPath();
 
 public slots:
     void slotFinished(KDSoapPendingCallWatcher* watcher)
@@ -545,6 +546,30 @@ private Q_SLOTS:
     }
 private:
     KDSoapDelayedResponseHandle m_handle;
+};
+
+class NameServiceServerObject : public NamesServiceServiceServerBase /* generated from thomas-bayer.wsdl */
+{
+    Q_OBJECT
+public:
+    virtual TNS__GetCountriesResponse getCountries( const TNS__GetCountries& ) {
+        TNS__GetCountriesResponse response;
+        response.setCountry(QStringList() << QLatin1String("Great Britain") << QLatin1String("Ireland"));
+        return response;
+    }
+      TNS__GetNamesInCountryResponse getNamesInCountry( const TNS__GetNamesInCountry& parameters ) {
+          TNS__GetNamesInCountryResponse response;
+          if (parameters.country() == QLatin1String("Ireland")) {
+              response.setName(QStringList() << QLatin1String("Name1") << QLatin1String("Name2"));
+          }
+          return response;
+      }
+
+      void getNameInfoResponse( const KDSoapDelayedResponseHandle& responseHandle, const TNS__GetNameInfoResponse& ret );
+      virtual TNS__GetNameInfoResponse getNameInfo( const TNS__GetNameInfo& parameters ) {
+          setFault(QLatin1String("Server.Implementation"), QLatin1String("Not implemented"), QLatin1String(metaObject()->className()), parameters.name());
+          return TNS__GetNameInfoResponse();
+      }
 };
 
 class DocServerObject : public MyWsdlDocumentServerBase /* generated from mywsdl_document.wsdl */
@@ -619,6 +644,18 @@ public:
         //qDebug() << "processRequest: done. " << this << "Response name=" << response.name();
     }
 
+    void processRequestWithPath(const KDSoapMessage &request, KDSoapMessage &response, const QByteArray &soapAction, const QString &path) {
+        Q_UNUSED(request);
+        Q_UNUSED(response);
+        if (path == QLatin1String("/xml/NamesService")
+            && soapAction == "http://namesservice.thomas_bayer.com/getCountries") {
+            m_nameServiceServerObject.processRequest(request, response, soapAction);
+        } else {
+            setFault(QLatin1String("Client.Data"),
+                     QString::fromLatin1("Action %1 not found in path %2").arg(QLatin1String(soapAction.constData()), path));
+        }
+    }
+
     KDSoapMessage m_request;
     KDSoapMessage m_response;
     QString m_lastMethodCalled;
@@ -630,6 +667,8 @@ private Q_SLOTS:
         job->deleteLater();
         // TODO test delayed fault.
     }
+private:
+    NameServiceServerObject m_nameServiceServerObject;
 };
 
 class DocServer : public KDSoapServer
@@ -897,6 +936,23 @@ void WsdlDocumentTest::testServerTwoDelayedCalls()
     const QString expected = QString::fromLatin1("delayed reply works");
     QCOMPARE(QString::fromLatin1(m_delayedData.at(0).constData()), expected);
     QCOMPARE(QString::fromLatin1(m_delayedData.at(1).constData()), expected);
+}
+
+// Same as testSequenceInResponse (thomas-bayer.wsdl), but as a server test, by calling DocServer on a different path
+void WsdlDocumentTest::testServerDifferentPath()
+{
+    DocServerThread serverThread;
+    DocServer* server = serverThread.startThread();
+
+    NamesServiceService serv;
+    QString endPoint = server->endPoint(); // ends with "/xml"
+    endPoint += QLatin1String("/NamesService");
+    serv.setEndPoint(endPoint);
+    const QStringList countries = serv.getCountries().country(); // the wsdl should have named it "countries"...
+    QCOMPARE(countries.count(), 2);
+    QCOMPARE(countries[0], QString::fromLatin1("Great Britain"));
+    QCOMPARE(countries[1], QString::fromLatin1("Ireland"));
+
 }
 
 QTEST_MAIN(WsdlDocumentTest)

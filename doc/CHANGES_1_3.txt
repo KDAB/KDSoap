@@ -12,6 +12,8 @@ Server-side:
 * Implement support for HTTP Basic authentication, see KDSoapServerAuthInterface.
 * Fix element name of the response element to be the one defined in the WSDL (SOAP-32).
 * Added closeLogFile() so that log files can be rotated (SOAP-33).
+* Support for HTTP GET requests for file download (SOAP-29_3).
+* Support for SOAP requests on different paths than the default one (SOAP-8).
 
 Code generator changes, applying to both client and server side:
 ================================================================

@@ -86,4 +86,4 @@ prifiles.files = kdsoap.pri kdwsdl2cpp.pri
 prifiles.path = $$INSTALL_PREFIX
 INSTALLS += prifiles
 
-OTHER_FILES += configure.sh configure.bat kdsoap.pri kdwsdl2cpp.pri
+OTHER_FILES += configure.sh configure.bat kdsoap.pri kdwsdl2cpp.pri doc/CHANGES*
