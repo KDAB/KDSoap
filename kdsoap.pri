@@ -13,7 +13,7 @@
           else:QMAKE_EXTENSION_SHLIB=so
         }
         !exists( $$KDSOAPDIR/lib/libkdsoap.$$QMAKE_EXTENSION_SHLIB ):!exists( $$KDSOAPDIR/lib/libkdsoap.a ) {
-          error( "Cannot find libkdsoap.$$QMAKE_EXTENSION_SHLIB or libkdsoap.a in $KDSOAPDIR/lib" )
+          error( "Cannot find libkdsoap.$$QMAKE_EXTENSION_SHLIB or libkdsoap.a in $$KDSOAPDIR/lib" )
         }
       }
       !exists( $$KDSOAPDIR/include/KDSoapClient/KDSoapClientInterface.h ):error( "Cannot find KDSoapClientInterface.h in $KDSOAPDIR/include/KDSoapClient" )
