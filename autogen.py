@@ -4,7 +4,7 @@ from cpack import CPackGenerateConfiguration
 from configure import ConfigureScriptGenerator
 from header import ForwardHeaderGenerator
 
-def autogen(project, version, subprojects, prefixed, policyVersion = 1):
+def autogen(project, version, subprojects, prefixed, forwardHeaderMap = {}, policyVersion = 1):
 	global __policyVersion
 	__policyVersion = policyVersion
 	sourceDirectory = os.path.abspath( os.path.dirname( os.path.dirname( __file__ ) ) )
@@ -39,7 +39,8 @@ def autogen(project, version, subprojects, prefixed, policyVersion = 1):
 	if subprojects:
 		forwardHeaderGenerator = ForwardHeaderGenerator( 
 			copy = True, path = sourceDirectory, includepath = includePath, srcpath = srcPath,
-			project = project, subprojects = subprojects, prefix = "$$INSTALL_PREFIX", prefixed = prefixed 
+			project = project, subprojects = subprojects, prefix = "$$INSTALL_PREFIX", prefixed = prefixed,
+			additionalHeaders = forwardHeaderMap			
 		)
 		forwardHeaderGenerator.run()
 
