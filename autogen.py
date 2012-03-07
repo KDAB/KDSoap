@@ -4,7 +4,7 @@ from cpack import CPackGenerateConfiguration
 from configure import ConfigureScriptGenerator
 from header import ForwardHeaderGenerator
 
-def autogen(project, version, subprojects, prefixed, forwardHeaderMap = {}, policyVersion = 1):
+def autogen(project, version, subprojects, prefixed, forwardHeaderMap = {}, steps=["generate-cpack", "generate-configure", "generate-forward-headers"], policyVersion = 1):
 	global __policyVersion
 	__policyVersion = policyVersion
 	sourceDirectory = os.path.abspath( os.path.dirname( os.path.dirname( __file__ ) ) )
@@ -26,17 +26,19 @@ def autogen(project, version, subprojects, prefixed, forwardHeaderMap = {}, poli
 	repositoryRevision = stdout.splitlines()[4].split( ':', 1 )[1].strip()
 	isTagged = repositoryUrl.find('/tags/') != -1
 
-	cpackConfigurationGenerator = CPackGenerateConfiguration( project, version, buildDirectory, repositoryRevision,
-	                                                          isTaggedRevision = isTagged )
-	cpackConfigurationGenerator.run()
+	if "generate-cpack" in steps:
+		cpackConfigurationGenerator = CPackGenerateConfiguration( project, version, buildDirectory, repositoryRevision,
+								    isTaggedRevision = isTagged )
+		cpackConfigurationGenerator.run()
 
-	configureScriptGenerator = ConfigureScriptGenerator( project, sourceDirectory, version )
-	configureScriptGenerator.run()
+	if "generate-configure" in steps:
+		configureScriptGenerator = ConfigureScriptGenerator( project, sourceDirectory, version )
+		configureScriptGenerator.run()
 
 	includePath = os.path.join( sourceDirectory, "include" )
 	srcPath = os.path.join( sourceDirectory, "src" )
 
-	if subprojects:
+	if subprojects and "generate-cpack" in steps:
 		forwardHeaderGenerator = ForwardHeaderGenerator( 
 			copy = True, path = sourceDirectory, includepath = includePath, srcpath = srcPath,
 			project = project, subprojects = subprojects, prefix = "$$INSTALL_PREFIX", prefixed = prefixed,
