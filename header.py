@@ -93,7 +93,9 @@ class ForwardHeaderGenerator():
 			for classname in classNames:
 				fHeaderName = os.path.abspath( path + "/" + classname )
 				self._addForwardHeader( fHeaderName, basename, projectFile )
-		else:
+
+			projectFile.write( basename + " \\" + os.linesep )
+		elif not basename in self.additionalHeaders.values(): # only create "foo" for "foo.h" if additionalHeaders doesn't overrides it
 			sanitizedBasename = basename.replace( ".h", "" )
 
 			#fHeaderName = os.path.abspath( self.includepath + "/" + sanitizedBasename )
@@ -101,8 +103,7 @@ class ForwardHeaderGenerator():
 
 			fHeaderNameProjectDir = os.path.dirname( os.path.abspath( header ) ) + "/" + sanitizedBasename;
 			self._addForwardHeader( fHeaderNameProjectDir, "{0}".format( basename ), projectFile )
-
-		projectFile.write( basename + " \\" + os.linesep )
+			projectFile.write( basename + " \\" + os.linesep )
 
 	def createProject( self ):
 		if ( not os.path.exists( self.path ) ):
