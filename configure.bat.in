@@ -12,6 +12,7 @@ set PACKSCRIPTS_DIR=../admin/packscripts
 set shared=yes
 set debug=no
 set release=yes
+set debug_and_release=no
 set prefix=
 set unittests=no
 set static_qt=no
@@ -149,6 +150,9 @@ if "%1" == "/qt_static"   goto :QT_Static
 if "%1" == "-release"  goto :Release
 if "%1" == "/release"  goto :Release
 
+if "%1" == "-debug_and_release"  goto :Debug_And_Release
+if "%1" == "/debug_and_release"  goto :Debug_And_Release
+
 if "%1" == "-debug"    goto :Debug
 if "%1" == "/debug"    goto :Debug
 
@@ -190,10 +194,18 @@ rem   goto :usage
 :Release
     set release=yes
     set debug=no
+	set debug_and_release=no
+    goto :OptionNoArg
+	
+:Debug_And_Release
+	set release=no
+    set debug=no
+	set debug_and_release=yes
     goto :OptionNoArg
 :Debug
     set debug=yes
     set release=no
+	set debug_and_release=no
     goto :OptionNoArg
 :QT_Static
 if "%STATIC_BUILD_SUPPORTED%" == "true" (
@@ -207,6 +219,11 @@ if "%STATIC_BUILD_SUPPORTED%" == "true" (
     goto :usage
 
 :EndOfOptions
+
+if "%debug_and_release%" == "yes" (
+	echo CONFIG += debug_and_release build_all >> .qmake.cache
+	goto :END_BUILDTYPE
+)
 
 if "%release%" == "yes" (
     if "%debug%" == "yes" (
@@ -228,6 +245,7 @@ if "%release%" == "yes" (
 	goto :CleanEnd
     )
 )
+:END_BUILDTYPE
 
 if "%shared%" == "yes" (
     echo CONFIG += shared >> .qmake.cache
