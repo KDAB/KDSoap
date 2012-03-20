@@ -293,6 +293,7 @@ bool KDSoapServerSocket::handleFileDownload(KDSoapServerObjectInterface *serverO
     }
     qint64 written = write(response);
     Q_ASSERT(written == response.size()); // Please report a bug if you hit this.
+    Q_UNUSED(written);
 
     char block[4096];
     qint64 totalRead = 0;
