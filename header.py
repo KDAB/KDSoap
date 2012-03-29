@@ -131,9 +131,7 @@ class ForwardHeaderGenerator():
 			line = subProject
 			if ( subProject != self.subprojects[ -1 ] ):
 				line += " \\"
-			line += os.linesep
-
-			lines.append( line )
+			lines.append( line + os.linesep )
 
 		projectFile.writelines( lines )
 		projectFile.write( os.linesep )
@@ -180,7 +178,9 @@ class ForwardHeaderGenerator():
 				if ( filename in self.subprojects ):
 					continue
 			file = os.path.abspath( srcDir + "/" + filename )
-			if ( not os.path.isdir( file ) ):
+			if os.path.isdir( file ):
+				self._copyHeaders( file, destDir, projectFile, project, prefixed )
+			else:
 				destfile = os.path.abspath( destDir + "/" + filename )
 				srcfile = os.path.abspath( srcDir + "/" + filename )
 				if self._isValidHeaderFile( filename ):
