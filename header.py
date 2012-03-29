@@ -186,5 +186,3 @@ class ForwardHeaderGenerator():
 				if self._isValidHeaderFile( filename ):
 					copyfile( srcfile, destfile )
 					self._createForwardHeader( destfile, projectFile, project )
-			else:
-				continue
