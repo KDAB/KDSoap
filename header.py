@@ -173,6 +173,7 @@ class ForwardHeaderGenerator():
 	def _copyHeaders( self, srcDir, destDir, projectFile, project, prefixed = False ):
 		rootDir = srcDir == self.srcpath
 		dir = os.listdir( srcDir )
+		headersForCatchAll = []
 		for filename in dir:
 			if ( rootDir ):
 				if ( filename in self.subprojects ):
@@ -181,8 +182,15 @@ class ForwardHeaderGenerator():
 			if os.path.isdir( file ):
 				self._copyHeaders( file, destDir, projectFile, project, prefixed )
 			else:
-				destfile = os.path.abspath( destDir + "/" + filename )
-				srcfile = os.path.abspath( srcDir + "/" + filename )
 				if self._isValidHeaderFile( filename ):
+					destfile = os.path.abspath( destDir + "/" + filename )
+					srcfile = os.path.abspath( srcDir + "/" + filename )
 					copyfile( srcfile, destfile )
 					self._createForwardHeader( destfile, projectFile, project )
+					headersForCatchAll.append( filename )
+		# Create "catch all" convenience header including all headers:
+		catchAllFileName = os.path.abspath( destDir + "/" + os.path.basename( destDir ) )
+		catchAllContent = ["#include \"%s\"%s" % (header, os.linesep) for header in headersForCatchAll]
+		catchAllFile = open( catchAllFileName, "wb" )
+		catchAllFile.writelines( catchAllContent )
+		catchAllFile.close()
