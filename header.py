@@ -194,3 +194,5 @@ class ForwardHeaderGenerator():
 		catchAllFile = open( catchAllFileName, "wb" )
 		catchAllFile.writelines( catchAllContent )
 		catchAllFile.close()
+		projectFile.write( os.path.basename( catchAllFileName ) + " \\" + os.linesep )
+
