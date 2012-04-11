@@ -189,10 +189,11 @@ class ForwardHeaderGenerator():
 					self._createForwardHeader( destfile, projectFile, project )
 					headersForCatchAll.append( filename )
 		# Create "catch all" convenience header including all headers:
-		catchAllFileName = os.path.abspath( destDir + "/" + os.path.basename( destDir ) )
-		catchAllContent = ["#include \"%s\"%s" % (header, os.linesep) for header in headersForCatchAll]
-		catchAllFile = open( catchAllFileName, "wb" )
-		catchAllFile.writelines( catchAllContent )
-		catchAllFile.close()
-		projectFile.write( os.path.basename( catchAllFileName ) + " \\" + os.linesep )
+		if len( headersForCatchAll ) > 0:
+			catchAllFileName = os.path.abspath( destDir + "/" + os.path.basename( destDir ) )
+			catchAllContent = ["#include \"%s\"%s" % (header, os.linesep) for header in headersForCatchAll]
+			catchAllFile = open( catchAllFileName, "wb" )
+			catchAllFile.writelines( catchAllContent )
+			catchAllFile.close()
+			projectFile.write( os.path.basename( catchAllFileName ) + " \\" + os.linesep )
 
