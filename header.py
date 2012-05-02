@@ -38,7 +38,8 @@ class ForwardHeaderGenerator():
 			return False
 
 	def _suggestedHeaderNames( self, project, header ):
-		regex = re.compile( "(?:class\s+[{0}|{1}][_0-9A-Z]*_EXPORT|MAKEINCLUDES_EXPORT)\s+([a-zA-Z_][A-Za-z0-9_]*)".format( project.upper(), self.project.upper() ) )
+		regex = re.compile( "(?:class\s+[{0}|{1}][_0-9A-Z]*_EXPORT|MAKEINCLUDES_EXPORT)\s+([a-zA-Z_][A-Za-z0-9_]*)"
+		                     .format( project.upper(), self.project.upper() ) )
 		regex2 = re.compile( "(?:class\s+MAKEINCLUDES_EXPORT)\s+([a-zA-Z_][A-Za-z0-9_]*)" )
 		regex3 = re.compile( "(?:\\\\file)\s+([a-zA-Z_][A-Za-z0-9_]*)" )
 
@@ -46,8 +47,7 @@ class ForwardHeaderGenerator():
 		classNames = set()
 
 		for line in f.readlines():
-			line = line.rstrip()
-			line = line.lstrip()
+			line = line.strip()
 
 			className = None
 			noPrefix = False
