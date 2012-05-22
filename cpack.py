@@ -3,7 +3,7 @@ import os.path
 
 class CPackGenerateConfiguration():
 	def __init__( self, projectName, version, sourceDirectory, buildDirectory, revision,
-	              licenseFile = "LICENSE.txt", isTaggedRevision = False ):
+	              licenseFile, isTaggedRevision = False ):
 		self._projectName = projectName
 		self._sourceDirectory = sourceDirectory
 		self._buildDirectory = buildDirectory
