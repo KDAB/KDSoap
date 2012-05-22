@@ -19,7 +19,7 @@ IF(WIN32)
 	SET(CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_NAME_AND_VERSION}")
 	SET(CPACK_NSIS_PACKAGE_NAME "${CPACK_PACKAGE_NAME_AND_VERSION}")
 	SET(CPACK_PACKAGE_INSTALL_REGISTRY_KEY "${CPACK_PACKAGE_NAME_AND_VERSION}")
-	SET(CPACK_NSIS_INSTALL_ROOT "C:\KDAB") # use "$PROGRAMFILES" to get "C:\Program Files" or similar
+	SET(CPACK_NSIS_INSTALL_ROOT "C:\\KDAB") # use "$PROGRAMFILES" to get "C:\Program Files" or similar
 	SET(CPACK_NSIS_URL_INFO_ABOUT "http://www.kdab.com")
 	SET(CPACK_NSIS_MENU_LINKS
 		"LICENSE.txt" "License" 
@@ -41,6 +41,6 @@ SET(CPACK_IGNORE_FILES "^${XPLATFORM_INSTALL_DIR}/autogen.py$" "^${XPLATFORM_INS
                        "^${XPLATFORM_INSTALL_DIR}/CPackIgnores.txt$"
                         "/\\.svn/" "/\\.git/" "\\.cache$" "/[\\._]moc/" "/[\\._]obj/" "[\\._]ui/"
                        "[\\._]qrc/" "\\.pdb$" "\\.zip$" "\\.exe$" "\\.tar" "Makefile" "CPack"
-                       "\\.license\\.accepted$" "/bin/" "/lib/"
+                       "\\.license\\.accepted$" "/bin/" "/lib/" "/b/"
                        "/debug/" "/release/" "-source/" "/autogen/" @CPACK_EXTRA_IGNORE_FILES@)
 SET(CPACK_PACKAGE_DESCRIPTION "")
