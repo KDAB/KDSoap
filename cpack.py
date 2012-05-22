@@ -2,10 +2,11 @@ from datetime import datetime
 import os.path
 
 class CPackGenerateConfiguration():
-	def __init__( self, projectName, version, directory, revision,
+	def __init__( self, projectName, version, sourceDirectory, buildDirectory, revision,
 	              licenseFile = "LICENSE.txt", isTaggedRevision = False ):
 		self._projectName = projectName
-		self._directory = directory
+		self._sourceDirectory = sourceDirectory
+		self._buildDirectory = buildDirectory
 		self._revision = revision
 		self._licenseFile = licenseFile
 		self._isTaggedRevision = isTaggedRevision
@@ -18,17 +19,17 @@ class CPackGenerateConfiguration():
 		return path.replace( '\\', '\\\\' )
 
 	def ignoreString( self ):
-		ret = str()
+		ignores = str()
 		try:
-			ignTxt = open( os.path.join( self._directory, 'CPackIgnores.txt' ) )
-			for ign in ignTxt:
-				# using ${CPACK_INSTALL_DIRECTORY} or similar seems to be the only way to specify
-				# "absolute" *sub*directory names. XPLATFORM_INSTALL_DIR is set by us and like
-				# CPACK_INSTALL_DIRECTORY, but with forward slashes instead of backslashes.
-				ret += '\n                       "^${XPLATFORM_INSTALL_DIR}' + ign[ :-1 ] + '"'
+			with open( os.path.join( self._sourceDirectory, 'CPackIgnores.txt' ) ) as ignoresFile:
+				for ignore in ignoresFile:
+					# using ${CPACK_INSTALL_DIRECTORY} or similar seems to be the only way to specify
+					# "absolute" *sub*directory names. XPLATFORM_INSTALL_DIR is set by us and like
+					# CPACK_INSTALL_DIRECTORY, but with forward slashes instead of backslashes.
+					ignores += '\n                       "^${XPLATFORM_INSTALL_DIR}' + ignore[ :-1 ] + '"'
 		except:
-			pass # It's no mandatory to add ignores
-		return ret
+			pass # It's not mandatory to add ignores
+		return ignores
 
 	def _formattedConfiguration( self ):
 		with open(os.path.dirname(__file__) + '/cpack.cmake.in') as configFile:
@@ -48,14 +49,14 @@ class CPackGenerateConfiguration():
 		if not self._isTaggedRevision:
 			patchVersion += '-r' + self._revision
 		config = config.replace( "@CPACK_PACKAGE_VERSION_PATCH@", patchVersion, 1 )
-		installDirectory = self.fixCMakeWindowsPaths( self._directory )
+		installDirectory = self.fixCMakeWindowsPaths( self._sourceDirectory )
 		config = config.replace( "@CPACK_INSTALL_DIRECTORY@", installDirectory, 1 )
 		config = config.replace( "@CPACK_EXTRA_IGNORE_FILES@", self.ignoreString(), 1 )
 
 		licenseFile = self._licenseFile
 
 		if not licenseFile:
-			licenseFile = os.path.join( self._directory, "CPackGeneratedLicense.txt" )
+			licenseFile = os.path.join( self._buildDirectory, "CPackGeneratedLicense.txt" )
 			with open( licenseFile, 'w' ) as license:
 				license.write( '{0} - Copyright {1}, All Rights Reserved.'.format( packageName, datetime.now().year ) )
 		else:
@@ -71,6 +72,6 @@ class CPackGenerateConfiguration():
 		return config
 
 	def run( self ):
-		config = os.path.join( self._directory, 'CPackConfig.cmake' )
+		config = os.path.join( self._buildDirectory, 'CPackConfig.cmake' )
 		with open( config, 'w' ) as configFile:
 			configFile.write( self._formattedConfiguration() )

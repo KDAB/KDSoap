@@ -47,8 +47,8 @@ def autogen(project, version, subprojects, prefixed, forwardHeaderMap = {}, step
 	print( "-- Using repository information: revision={0} isTagged={1}".format( repositoryRevision, isTagged ) )
 
 	if "generate-cpack" in steps:
-		cpackConfigurationGenerator = CPackGenerateConfiguration( project, version, buildDirectory, repositoryRevision,
-								    isTaggedRevision = isTagged )
+		cpackConfigurationGenerator = CPackGenerateConfiguration( project, version, sourceDirectory,
+								    buildDirectory, repositoryRevision, isTaggedRevision = isTagged )
 		cpackConfigurationGenerator.run()
 
 	if "generate-configure" in steps:
