@@ -5,25 +5,33 @@ from configure import ConfigureScriptGenerator
 from header import ForwardHeaderGenerator
 
 def checkVCS( sourceDirectory ):
-	p = subprocess.Popen( ["git", "rev-parse", "HEAD"], cwd = sourceDirectory, stdout = subprocess.PIPE, stderr = subprocess.PIPE )
-	( stdout, stderr ) = p.communicate()
-	if p.returncode == 0:
-		revision = stdout.strip()[:8]
-		return ( revision, False ) #TODO check if tagged
-
-	# check repository URL
-	p = subprocess.Popen( ["svn", "info"], cwd = sourceDirectory, stdout = subprocess.PIPE, stderr = subprocess.PIPE )
-	( stdout, stderr ) = p.communicate()
-	if p.returncode != 0:
-		p = subprocess.Popen( ["git", "svn", "info"], cwd = sourceDirectory, stdout = subprocess.PIPE, stderr = subprocess.PIPE )
+	isTagged = False
+	repositoryRevision = "unknown"
+	try:
+		p = subprocess.Popen( ["git", "rev-parse", "HEAD"], cwd = sourceDirectory, stdout = subprocess.PIPE, stderr = subprocess.PIPE )
 		( stdout, stderr ) = p.communicate()
-	if p.returncode != 0:
-		print_stderr( "Error: Not an SVN nor Git repository: {0}".format( sourceDirectory ) )
-		sys.exit( 1 )
+		if p.returncode == 0:
+			revision = stdout.strip()[:8]
+			return ( revision, False ) #TODO check if tagged
+	except:
+		pass
 
-	repositoryUrl = stdout.splitlines()[1].split( ':', 1 )[1]
-	repositoryRevision = stdout.splitlines()[4].split( ':', 1 )[1].strip()
-	isTagged = repositoryUrl.find('/tags/') != -1
+	try:
+		# check repository URL
+		p = subprocess.Popen( ["svn", "info"], cwd = sourceDirectory, stdout = subprocess.PIPE, stderr = subprocess.PIPE )
+		( stdout, stderr ) = p.communicate()
+		if p.returncode != 0:
+			p = subprocess.Popen( ["git", "svn", "info"], cwd = sourceDirectory, stdout = subprocess.PIPE, stderr = subprocess.PIPE )
+			( stdout, stderr ) = p.communicate()
+		if p.returncode != 0:
+			print_stderr( "Error: Not an SVN nor Git repository: {0}".format( sourceDirectory ) )
+			sys.exit( 1 )
+
+		repositoryUrl = stdout.splitlines()[1].split( ':', 1 )[1]
+		repositoryRevision = stdout.splitlines()[4].split( ':', 1 )[1].strip()
+		isTagged = repositoryUrl.find('/tags/') != -1
+	except:
+		pass
 	return ( repositoryRevision, isTagged )
 
 def autogen(project, version, subprojects, prefixed, forwardHeaderMap = {}, steps=["generate-cpack", "generate-configure", "generate-forward-headers"], installPrefix="$$INSTALL_PREFIX", policyVersion = 1):
