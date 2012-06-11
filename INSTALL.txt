@@ -72,7 +72,7 @@ Here is a step by step introduction how to compile KD Soap with the Symbian-Tool
    set QTDIR=c:\Qt\NokiaQtSDK_1_0_2\Symbian\SDK\
    set PATH=c:\Qt\NokiaQtSDK_1_0_2\Symbian\SDK\bin\;%PATH%
    set QMAKESPEC=symbian-abld
-3. Chanhge to your KD Soap source-directory
+3. Change to your KD Soap source-directory
    cd c:\src\kdsoap\
 4. Run configuration
    configure.bat -static -debug
