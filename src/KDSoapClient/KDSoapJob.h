@@ -49,7 +49,7 @@ class KDSoapMessage;
  *
  * \code
  *  GetMothersDayJob* job = new GetMothersDayJob(client);
- *  connect(job, SIGNAL(finished(KDJob*)), this, SLOT(getMothersDayDone(KDSoapJob*)));
+ *  connect(job, SIGNAL(finished(KDSoapJob*)), this, SLOT(getMothersDayDone(KDSoapJob*)));
  *  TNS__GetMothersDay params;
  *  params.setYear(2012);
  *  job->setParameters(params);
