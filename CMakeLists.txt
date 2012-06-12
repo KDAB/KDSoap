@@ -1,6 +1,9 @@
 project(KDSoap CXX)
 cmake_minimum_required(VERSION 2.8.6)
 
+option(${PROJECT_NAME}_STATIC "Build statically" OFF)
+option(${PROJECT_NAME}_TESTS "Build the tests" OFF)
+
 set(${PROJECT_NAME}_VERSION_MAJOR 1)
 set(${PROJECT_NAME}_VERSION_MINOR 0)
 set(${PROJECT_NAME}_VERSION_PATCH 0)
