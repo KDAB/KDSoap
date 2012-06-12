@@ -1,7 +1,11 @@
 set(QT_USE_QTNETWORK TRUE)
 include(${QT_USE_FILE})
 
-add_definitions(-DKDSOAPSERVER_STATICLIB -DKDSOAP_STATICLIB -DKDSOAP_BUILD_KDSOAPSERVER_LIB)
+if(KDSoap_STATIC)
+	add_definitions(-DKDSOAPSERVER_STATICLIB)
+else()
+	add_definitions(-DKDSOAP_BUILD_KDSOAPSERVER_LIB)
+endif()
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -24,16 +28,18 @@ add_library(kdsoap-server ${${PROJECT_NAME}_LIBRARY_MODE} ${SOURCES})
 target_link_libraries(kdsoap-server kdsoap ${QT_LIBRARIES})
 set_target_properties(kdsoap-server PROPERTIES VERSION ${${PROJECT_NAME}_VERSION})
 
-install(FILES
-	KDSoapServer.h
-	KDSoapServerAuthInterface.h
-	KDSoapServerObjectInterface.h
-	KDSoapServerGlobal.h
-	DESTINATION include
-)
+if(KDSoap_IS_ROOT_PROJECT)
+	install(FILES
+		KDSoapServer.h
+		KDSoapServerAuthInterface.h
+		KDSoapServerObjectInterface.h
+		KDSoapServerGlobal.h
+		DESTINATION include
+	)
 
-install(TARGETS kdsoap-server
-	RUNTIME DESTINATION bin
-	LIBRARY DESTINATION lib
-	ARCHIVE DESTINATION lib
-)
+	install(TARGETS kdsoap-server
+		RUNTIME DESTINATION bin
+		LIBRARY DESTINATION lib
+		ARCHIVE DESTINATION lib
+	)
+endif()
