@@ -1,0 +1,2 @@
+add_subdirectory(KDSoapClient)
+add_subdirectory(KDSoapServer)
