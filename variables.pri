@@ -34,7 +34,7 @@ staticlib {
   }
 }
 
-unix {
+unix:!symbian {
   MOC_DIR = .moc
   OBJECTS_DIR = .obj
   UI_DIR = .ui
