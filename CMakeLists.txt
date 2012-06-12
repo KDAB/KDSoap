@@ -1,5 +1,5 @@
-project(KDSoap)
-cmake_minimum_required(VERSION 2.8)
+project(KDSoap CXX)
+cmake_minimum_required(VERSION 2.8.6)
 
 set(${PROJECT_NAME}_VERSION_MAJOR 1)
 set(${PROJECT_NAME}_VERSION_MINOR 0)
@@ -9,22 +9,7 @@ set(${PROJECT_NAME}_VERSION ${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_V
 find_package(Qt4 4.7 QUIET REQUIRED QtCore QtMain QtGui)
 
 set(CMAKE_INCLUDE_CURRENT_DIR TRUE)
-
-function(qt4_generate_moc_cpp)
-	set(HEADERS ${ARGV})
-	foreach(HEADER ${HEADERS})
-		get_filename_component(HEADER_PATH ${HEADER} PATH)
-		if(HEADER_PATH)
-			set(HEADER_PATH ${HEADER_PATH}/)
-		endif()
-		get_filename_component(HEADER_NAME_WE ${HEADER} NAME_WE)
-		string(REPLACE "_p" "" HEADER_NAME_WE_WP ${HEADER_NAME_WE})
-		set(CPP_SOURCE ${HEADER_PATH}${HEADER_NAME_WE_WP}.cpp)
-		set(MOC_SOURCE ${CMAKE_CURRENT_BINARY_DIR}/moc_${HEADER_NAME_WE}.cpp)
-		qt4_generate_moc(${HEADER} ${MOC_SOURCE})
-		set_source_files_properties(${CPP_SOURCE} PROPERTIES OBJECT_DEPENDS ${MOC_SOURCE})
-	endforeach()
-endfunction()
+set(CMAKE_AUTOMOC TRUE)
 
 if(${PROJECT_NAME}_STATIC)
 	set(${PROJECT_NAME}_LIBRARY_MODE "STATIC")

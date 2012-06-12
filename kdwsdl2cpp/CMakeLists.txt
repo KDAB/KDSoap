@@ -62,12 +62,5 @@ set(SOURCES
 	src/typemap.cpp
 )
 
-set(HEADERS
-	common/fileprovider.h
-	src/compiler.h
-)
-
-qt4_generate_moc_cpp(${HEADERS})
-
-add_executable(kdwsdl2cpp ${MOC_SOURCES} ${SOURCES})
+add_executable(kdwsdl2cpp ${SOURCES})
 target_link_libraries(kdwsdl2cpp ${QT_LIBRARIES})

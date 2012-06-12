@@ -13,22 +13,14 @@ set(SOURCES
 	KDSoapServerObjectInterface.cpp
 	KDSoapServerSocket.cpp
 	KDSoapServerThread.cpp
+	KDSoapServerThread.cpp
+	KDSoapServerThread.cpp
 	KDSoapServerAuthInterface.cpp
 	KDSoapSocketList.cpp
 	KDSoapThreadPool.cpp
 )
 
-set(HEADERS
-	KDSoapServer.h
-	KDSoapServerSocket_p.h
-	KDSoapThreadPool.h
-)
-
-qt4_generate_moc_cpp(${HEADERS})
-
-qt4_wrap_cpp(MOC_SOURCES KDSoapServerThread_p.h KDSoapSocketList_p.h)
-
-add_library(kdsoap-server ${${PROJECT_NAME}_LIBRARY_MODE} ${MOC_SOURCES} ${SOURCES})
+add_library(kdsoap-server ${${PROJECT_NAME}_LIBRARY_MODE} ${SOURCES})
 target_link_libraries(kdsoap-server kdsoap ${QT_LIBRARIES})
 set_target_properties(kdsoap-server PROPERTIES VERSION ${${PROJECT_NAME}_VERSION})
 

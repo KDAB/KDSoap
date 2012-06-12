@@ -21,16 +21,7 @@ set(SOURCES
 	KDSoapJob.cpp
 )
 
-set(HEADERS
-	KDSoapClientThread_p.h
-	KDSoapJob.h
-)
-
-qt4_wrap_cpp(MOC_SOURCES ${HEADERS})
-
-qt4_generate_moc_cpp(KDSoapPendingCallWatcher.h KDSoapClientInterface_p.h KDSoapJob.h)
-
-add_library(kdsoap STATIC ${MOC_SOURCES} ${SOURCES})
+add_library(kdsoap STATIC ${HEADERS} ${SOURCES})
 target_link_libraries(kdsoap ${QT_LIBRARIES})
 set_target_properties(kdsoap PROPERTIES VERSION ${${PROJECT_NAME}_VERSION})
 
