@@ -24,7 +24,7 @@ set(SOURCES
 	KDSoapThreadPool.cpp
 )
 
-add_library(kdsoap-server ${${PROJECT_NAME}_LIBRARY_MODE} ${SOURCES})
+add_library(kdsoap-server ${KDSoap_LIBRARY_MODE} ${SOURCES})
 target_link_libraries(kdsoap-server kdsoap ${QT_LIBRARIES})
 set_target_properties(kdsoap-server PROPERTIES VERSION ${${PROJECT_NAME}_VERSION})
 

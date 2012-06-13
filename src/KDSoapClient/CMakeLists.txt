@@ -25,7 +25,7 @@ set(SOURCES
 	KDSoapJob.cpp
 )
 
-add_library(kdsoap STATIC ${HEADERS} ${SOURCES})
+add_library(kdsoap ${KDSoap_LIBRARY_MODE} ${HEADERS} ${SOURCES})
 target_link_libraries(kdsoap ${QT_LIBRARIES})
 set_target_properties(kdsoap PROPERTIES VERSION ${${PROJECT_NAME}_VERSION})
 
