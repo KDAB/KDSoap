@@ -278,22 +278,8 @@ private Q_SLOTS:
     {
         CountryServerThread serverThread;
         CountryServer* server = serverThread.startThread();
-
         KDSoapClientInterface client(server->endPoint(), countryMessageNamespace());
-        KDSoapMessage message;
-        message.addArgument(QLatin1String("foo"), 4);
-        message.addArgument(QLatin1String("bar"), float(3.2));
-        QDateTime dt = QDateTime::fromTime_t(123456);
-        dt.setTime(dt.time().addMSecs(789));
-        message.addArgument(QLatin1String("dateTime"), dt);
-
-        // Add a header
-        KDSoapMessage header1;
-        header1.addArgument(QString::fromLatin1("header1"), QString::fromLatin1("headerValue"));
-        KDSoapHeaders headers;
-        headers << header1;
-
-        const KDSoapMessage response = client.call(QLatin1String("getStuff"), message, QString::fromLatin1("MySoapAction"), headers);
+        const KDSoapMessage response = client.call(QLatin1String("getStuff"), getStuffMessage(), QString::fromLatin1("MySoapAction"), getStuffRequestHeaders());
         if (response.isFault()) {
             qDebug() << response.faultAsString();
             QVERIFY(!response.isFault());
@@ -302,6 +288,24 @@ private Q_SLOTS:
         const KDSoapHeaders responseHeaders = client.lastResponseHeaders();
         //qDebug() << responseHeaders;
         QCOMPARE(responseHeaders.header(QString::fromLatin1("header2")).value().toString(), QString::fromLatin1("responseHeader"));
+    }
+
+    void testHeadersAsyncCall() // KDSOAP-45
+    {
+        CountryServerThread serverThread;
+        CountryServer* server = serverThread.startThread();
+        KDSoapClientInterface client(server->endPoint(), countryMessageNamespace());
+        m_returnMessages.clear();
+        m_expectedMessages = 1;
+        KDSoapPendingCall pendingCall = client.asyncCall(QLatin1String("getStuff"), getStuffMessage(), QString::fromLatin1("MySoapAction"), getStuffRequestHeaders());
+        KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);
+        connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher*)),
+                this, SLOT(slotFinished(KDSoapPendingCallWatcher*)));
+        m_eventLoop.exec();
+        QCOMPARE(m_returnMessages.count(), 1);
+        QCOMPARE(m_returnMessages.at(0).value().toDouble(), double(4+3.2+123456.789));
+        QCOMPARE(m_returnHeaders.count(), 1);
+        QCOMPARE(m_returnHeaders.at(0).header(QString::fromLatin1("header2")).value().toString(), QString::fromLatin1("responseHeader"));
     }
 
     void testHexBinary()
@@ -828,6 +832,7 @@ public Q_SLOTS:
     void slotFinished(KDSoapPendingCallWatcher* watcher)
     {
         m_returnMessages.append(watcher->returnMessage());
+        m_returnHeaders.append(watcher->returnHeaders());
         if (m_returnMessages.count() == m_expectedMessages)
             m_eventLoop.quit();
     }
@@ -847,6 +852,7 @@ private:
     QEventLoop m_eventLoop;
     int m_expectedMessages;
     QList<KDSoapMessage> m_returnMessages;
+    QList<KDSoapHeaders> m_returnHeaders;
 
     KDSoapServer* m_server;
 
@@ -892,6 +898,23 @@ private:
     }
     static QByteArray rawCountryMessage() {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsd=\"http://www.w3.org/1999/XMLSchema\" xmlns:xsi=\"http://www.w3.org/1999/XMLSchema-instance\" soap:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\"><soap:Body><n1:getEmployeeCountry xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\"><employeeName>David ???? Faure</employeeName></n1:getEmployeeCountry></soap:Body></soap:Envelope>";
+    }
+
+    static KDSoapMessage getStuffMessage() {
+        KDSoapMessage message;
+        message.addArgument(QLatin1String("foo"), 4);
+        message.addArgument(QLatin1String("bar"), float(3.2));
+        QDateTime dt = QDateTime::fromTime_t(123456);
+        dt.setTime(dt.time().addMSecs(789));
+        message.addArgument(QLatin1String("dateTime"), dt);
+        return message;
+    }
+    static KDSoapHeaders getStuffRequestHeaders() {
+        KDSoapMessage header1;
+        header1.addArgument(QString::fromLatin1("header1"), QString::fromLatin1("headerValue"));
+        KDSoapHeaders headers;
+        headers << header1;
+        return headers;
     }
 
     static QList<QByteArray> readLines(const QString& fileName)
