@@ -41,7 +41,7 @@ if(KDSoap_IS_ROOT_PROJECT)
 		KDSoapAuthentication.h
 		KDSoapNamespaceManager.h
 		KDDateTime.h
-		KDSoap
+		KDSoap.h
 		DESTINATION include
 	)
 
