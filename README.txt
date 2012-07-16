@@ -1,27 +1,29 @@
-KD Soap is a Qt-based client-side SOAP and WSDL tool.
+KD Soap is a Qt-based client-side and server-side SOAP component.
 
-KD Soap is (C) 2010-2012, Klaralvdalens Datakonsult. Licensed customers
-receive the full source code of the application according to the terms
-of the 
-        KD Soap COMMERCIAL LICENSE AGREEMENT (non-US customers)
-or the 
-        KD Soap COMMERCIAL LICENSE AGREEMENT - US (US customers)
-, respectively.
+It can be used to create client applications for web services and also provides
+the means to create web services without the need for any further component such
+as a dedicated web server.
 
-For terms of redistribution, refer to the license agreement.
+For a full description of KDSoap, see http://www.kdab.com/kdab-products/kd-soap/
+
+KD Soap is (C) 2010-2012, Klaralvdalens Datakonsult AB, and is available
+under the terms of:
+* the LGPL (see LICENSE.LGPL.txt for details)
+* the GPL (see LICENSE.GPL.txt for details)
+* the KDAB commercial license, provided that you buy a license, see
+http://www.kdab.com/kdab-products/prices/
 
 KD Soap requires Qt 4.6.0 or newer.
 
 Note: the use of the cookie jar requires Qt 4.7.0 or newer.
 Note: large multithreaded kdsoap servers should use Qt 4.7.0 or newer.
 
-To build KD Soap, run ./configure.sh (configure.bat on Windows) in the root of the KD Soap source
+To build KD Soap from a github clone, run ./autogen.py in the root of the KD Soap source
 distribution. Then run make.
-configure understands the -prefix <dir> command line option to specify an
-installation prefix for KD Soap. This affects make install.
+autogen.py supports a number of command-line options, including -prefix <dir>
+to specify an installation prefix for KD Soap. This affects make install.
 
-For more information, please refer to the KD Soap Programmer's
-Manual.
+For more information, please refer to the KD Soap Programmer's Manual.
 
 With best regards,
 
