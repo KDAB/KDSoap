@@ -1,0 +1,5 @@
+add_subdirectory(helloworld_client)
+add_subdirectory(helloworld_server)
+add_subdirectory(holidays_gui)
+add_subdirectory(holidays_sync)
+add_subdirectory(holidays_wsdl)
