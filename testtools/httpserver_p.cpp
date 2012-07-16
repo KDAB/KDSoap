@@ -123,21 +123,28 @@ void KDSoapUnitTestHelpers::httpGet(const QUrl& url)
 
 static void setupSslServer(QSslSocket* serverSocket)
 {
+    Q_INIT_RESOURCE(testtools);
     //qDebug() << "setupSslServer";
     serverSocket->setProtocol(QSsl::AnyProtocol);
-    serverSocket->setLocalCertificate(QString::fromLatin1("../certs/test-127.0.0.1-cert.pem"));
-    serverSocket->setPrivateKey(QString::fromLatin1("../certs/test-127.0.0.1-key.pem"));
+    serverSocket->setLocalCertificate(QString::fromLatin1(":/certs/test-127.0.0.1-cert.pem"));
+    serverSocket->setPrivateKey(QString::fromLatin1(":/certs/test-127.0.0.1-key.pem"));
 }
 
+static void initResource()
+{
+    Q_INIT_RESOURCE(testtools);
+}
 
 bool KDSoapUnitTestHelpers::setSslConfiguration()
 {
+    initResource();
+
     // To make SSL work, we need to tell Qt about our local certificate
 
     // Both ways work:
 #if 0
     QSslConfiguration defaultConfig = QSslConfiguration::defaultConfiguration();
-    QFile certFile(QString::fromLatin1("../certs/cacert.pem"));
+    QFile certFile(QString::fromLatin1(":/certs/cacert.pem"));
     if (!certFile.open(QIODevice::ReadOnly)) {
         qDebug() << "Could not open cacert.pem";
         return false;
@@ -149,7 +156,7 @@ bool KDSoapUnitTestHelpers::setSslConfiguration()
     QSslConfiguration::setDefaultConfiguration(defaultConfig);
 #endif
 
-    QFile certFile(QString::fromLatin1("../certs/cacert.pem"));
+    QFile certFile(QString::fromLatin1(":/certs/cacert.pem"));
     if (!certFile.open(QIODevice::ReadOnly)) {
         qDebug() << "Could not open cacert.pem";
         return false;

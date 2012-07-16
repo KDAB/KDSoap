@@ -22,3 +22,5 @@ include($${TOP_SOURCE_DIR}/examples/examples.pri)
 SOURCES = httpserver_p.cpp
 HEADERS = httpserver_p.h
 
+RESOURCES += testtools.qrc
+
