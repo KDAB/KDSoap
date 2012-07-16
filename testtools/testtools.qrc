@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>certs/cacert.pem</file>
+        <file>certs/test-127.0.0.1-cert.pem</file>
+        <file>certs/cakey.pem</file>
+        <file>certs/test-127.0.0.1-key.pem</file>
+    </qresource>
+</RCC>
