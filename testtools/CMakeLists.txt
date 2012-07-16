@@ -10,4 +10,4 @@ qt4_automoc(${testtools_srcs})
 
 qt4_add_resources(testtools_srcs testtools.qrc)
 
-add_library(testtools_srcs STATIC ${testtools_srcs})
+add_library(testtools STATIC ${testtools_srcs})
