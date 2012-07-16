@@ -18,8 +18,13 @@ KD Soap requires Qt 4.6.0 or newer.
 Note: the use of the cookie jar requires Qt 4.7.0 or newer.
 Note: large multithreaded kdsoap servers should use Qt 4.7.0 or newer.
 
-To build KD Soap from a github clone, run ./autogen.py in the root of the KD Soap source
-distribution. Then run make.
+To build KD Soap from a github clone, do the following:
+* git clone https://github.com/KDAB/KDSoap.git
+* cd KDSoap
+* git submodule update --init
+* ./autogen.py [options]
+* make
+
 autogen.py supports a number of command-line options, including -prefix <dir>
 to specify an installation prefix for KD Soap. This affects make install.
 
