@@ -122,9 +122,9 @@ QString Class::qualifiedName() const
 
 void Class::setExportDeclaration( const QString &name )
 {
-  addHeaderInclude( name.toLower() + "_export.h" );
-  if ( name.contains( "/" ) ) {
-    d->mExportDeclaration = name.split( "/" ).value( 1 );
+  addHeaderInclude( name.toLower() + QLatin1String("_export.h") );
+  if ( name.contains( QLatin1String("/") ) ) {
+    d->mExportDeclaration = name.split( QLatin1String("/") ).value( 1 );
   } else {
     d->mExportDeclaration = name;
   }
@@ -357,7 +357,7 @@ static QStringList dependenciesForClass( const Class& aClass, const QStringList&
     QStringList lst;
     Q_FOREACH( const Class& baseClass, aClass.baseClasses() ) {
         const QString baseName = baseClass.name();
-        if ( !baseName.startsWith('Q') && !excludedClasses.contains( baseName ) )
+        if ( !baseName.startsWith(QLatin1Char('Q')) && !excludedClasses.contains( baseName ) )
             lst.append( baseClass.name() );
     }
     if (!aClass.useDPointer())
@@ -478,10 +478,10 @@ void KODE::Class::setNamespaceAndName( const QString& name )
 {
     d->mName = name;
     d->mNameSpace.clear();
-    while (d->mName.contains("::")) {
-        const int pos = d->mName.indexOf("::");
+    while (d->mName.contains(QLatin1String("::"))) {
+        const int pos = d->mName.indexOf(QLatin1String("::"));
         if (!d->mNameSpace.isEmpty())
-            d->mNameSpace += QLatin1String("::");
+            d->mNameSpace += QLatin1String(QLatin1String("::"));
         d->mNameSpace += d->mName.left(pos);
         d->mName = d->mName.mid(pos+2);
     }
