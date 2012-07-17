@@ -18,7 +18,7 @@ macro( KDSOAP_GENERATE_WSDL _sources )
        MAIN_DEPENDENCY ${_source_FILE} ${_header_wsdl_FILE}
        DEPENDS ${_tmp_FILE} ${KDWSDL2CPP} )
 
-    list(APPEND ${_header_wsdl_FILE} ${_source_wsdl_FILE} ${_sources} )
+    list(APPEND ${_sources} ${_header_wsdl_FILE} ${_source_wsdl_FILE} )
   endforeach (_source_FILE)
 endmacro(KDSOAP_GENERATE_WSDL _sources )
 
