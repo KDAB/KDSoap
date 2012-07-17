@@ -1,5 +1,6 @@
 project(KDSoap CXX)
 cmake_minimum_required(VERSION 2.8.6)
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/ ${CMAKE_MODULE_PATH}")
 
 option(${PROJECT_NAME}_STATIC "Build statically" OFF)
 option(${PROJECT_NAME}_TESTS "Build the tests" OFF)
@@ -8,6 +9,8 @@ set(${PROJECT_NAME}_VERSION_MAJOR 1)
 set(${PROJECT_NAME}_VERSION_MINOR 0)
 set(${PROJECT_NAME}_VERSION_PATCH 0)
 set(${PROJECT_NAME}_VERSION ${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR}.${${PROJECT_NAME}_VERSION_PATCH})
+
+configure_file(KDSoapConfig.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/KDSoapConfig.cmake @ONLY)
 
 find_package(Qt4 4.7 QUIET REQUIRED QtCore QtMain QtGui)
 
@@ -59,4 +62,3 @@ if(${PROJECT_NAME}_IS_ROOT_PROJECT)
 	endif()
 	add_subdirectory(examples)
 endif()
-add_subdirectory(cmake/modules/)
