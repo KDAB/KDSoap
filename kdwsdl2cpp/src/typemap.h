@@ -26,8 +26,8 @@
 #include <common/qname.h>
 #include <schema/types.h>
 
-static const QString XMLSchemaURI( "http://www.w3.org/2001/XMLSchema" );
-static const QString XMLSchemaInstanceURI( "http://www.w3.org/2001/XMLSchema-instance" );
+static const QString XMLSchemaURI( QLatin1String("http://www.w3.org/2001/XMLSchema") );
+static const QString XMLSchemaInstanceURI( QLatin1String("http://www.w3.org/2001/XMLSchema-instance") );
 
 class NSManager;
 

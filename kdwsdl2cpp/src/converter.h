@@ -104,6 +104,6 @@ class Converter
 QString upperlize( const QString& );
 QString lowerlize( const QString& );
 
-static QName XmlAnyType( "http://www.w3.org/2001/XMLSchema", "any" );
+static QName XmlAnyType( QLatin1String("http://www.w3.org/2001/XMLSchema"), QLatin1String("any") );
 
 #endif

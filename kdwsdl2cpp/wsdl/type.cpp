@@ -61,7 +61,7 @@ bool Type::loadXML( ParserContext *context, const QDomElement &element )
   while ( !child.isNull() ) {
     NSManager namespaceManager( context, child );
     if ( namespaceManager.nameSpace( child ) == XSD::Parser::schemaUri() &&
-         namespaceManager.localName( child ) == "schema" ) {
+         namespaceManager.localName( child ) == QLatin1String("schema")) {
       //qDebug() << "Loading schema" << nameSpace();
       if (!parser.parseSchemaTag( context, child ))
           return false;

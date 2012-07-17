@@ -18,8 +18,8 @@ QString lowerlize( const QString &str )
 
 Converter::Converter()
 {
-  mQObject = KODE::Class( "QObject" );
-  mKDSoapServerObjectInterface = KODE::Class( "KDSoapServerObjectInterface" );
+  mQObject = KODE::Class( QLatin1String("QObject") );
+  mKDSoapServerObjectInterface = KODE::Class( QLatin1String("KDSoapServerObjectInterface") );
 }
 
 void Converter::setWSDL( const WSDL &wsdl )
@@ -28,7 +28,7 @@ void Converter::setWSDL( const WSDL &wsdl )
 
   // merge namespaces from wsdl and schema
   QStringList namespaces = wsdl.definitions().type().types().namespaces();
-  namespaces.append( "http://schemas.xmlsoap.org/soap/encoding/" );
+  namespaces.append( QLatin1String("http://schemas.xmlsoap.org/soap/encoding/") );
   const QStringList wsdlNamespaces = wsdl.namespaceManager().uris();
   for ( int i = 0; i < wsdlNamespaces.count(); ++i ) {
     if ( !namespaces.contains( wsdlNamespaces[ i ] ) )
@@ -39,11 +39,11 @@ void Converter::setWSDL( const WSDL &wsdl )
   mNSManager = wsdl.namespaceManager();
 
   // overwrite some default prefixes
-  mNSManager.setPrefix( "soapenc", "http://schemas.xmlsoap.org/soap/encoding/" );
-  mNSManager.setPrefix( "http", "http://schemas.xmlsoap.org/wsdl/http/" );
-  mNSManager.setPrefix( "soap", "http://schemas.xmlsoap.org/wsdl/soap/" );
-  mNSManager.setPrefix( "xsd", "http://www.w3.org/2001/XMLSchema" );
-  mNSManager.setPrefix( "xsi", "http://www.w3.org/2001/XMLSchema-instance" );
+  mNSManager.setPrefix(QLatin1String( "soapenc"), QLatin1String("http://schemas.xmlsoap.org/soap/encoding/") );
+  mNSManager.setPrefix( QLatin1String("http"), QLatin1String("http://schemas.xmlsoap.org/wsdl/http/") );
+  mNSManager.setPrefix( QLatin1String("soap"), QLatin1String("http://schemas.xmlsoap.org/wsdl/soap/") );
+  mNSManager.setPrefix( QLatin1String("xsd"), QLatin1String("http://www.w3.org/2001/XMLSchema") );
+  mNSManager.setPrefix( QLatin1String("xsi"), QLatin1String("http://www.w3.org/2001/XMLSchema-instance") );
 
   // overwrite with prefixes from settings
   Settings::NSMapping mapping = Settings::self()->namespaceMapping();

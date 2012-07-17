@@ -62,7 +62,7 @@ void Compiler::download()
     //qDebug() << "parsing" << fileName;
     QXmlInputSource source( &file );
     QXmlSimpleReader reader;
-    reader.setFeature( "http://xml.org/sax/features/namespace-prefixes", true );
+    reader.setFeature( QLatin1String("http://xml.org/sax/features/namespace-prefixes"), true );
 
     QString errorMsg;
     int errorLine, errorCol;
