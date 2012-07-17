@@ -1,5 +1,9 @@
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+include(${QT_USE_FILE})
+
 include(../KDSoapMacros.cmake)
-#add_subdirectory(helloworld_client)
+include_directories(../src/)
+add_subdirectory(helloworld_client)
 #add_subdirectory(helloworld_server)
 #add_subdirectory(holidays_gui)
 #add_subdirectory(holidays_sync)
