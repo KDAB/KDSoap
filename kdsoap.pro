@@ -1,5 +1,5 @@
 TEMPLATE = subdirs
-SUBDIRS  = src kdwsdl2cpp features include
+SUBDIRS  = src kdwsdl2cpp features
 unittests: SUBDIRS += testtools unittests
 SUBDIRS += examples
 CONFIG   += ordered
