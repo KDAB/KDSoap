@@ -47,7 +47,7 @@ QString Function::Argument::headerDeclaration() const
   if ( d->defaultArgument.isEmpty() ) {
     return d->declaration;
   } else {
-    return d->declaration + " = " + d->defaultArgument;
+    return d->declaration + QLatin1String(" = ") + d->defaultArgument;
   }
 }
 
@@ -147,7 +147,7 @@ void Function::setArgumentString( const QString &argumentString )
 {
   d->mArguments.clear();
 
-  const QStringList arguments = argumentString.split( "," );
+  const QStringList arguments = argumentString.split( QLatin1String(",") );
   QStringList::ConstIterator it;
   for ( it = arguments.constBegin(); it != arguments.constEnd(); ++it ) {
     addArgument( *it );
@@ -182,8 +182,8 @@ void Function::setBody( const Code &body )
 void Function::addBodyLine( const QString &bodyLine )
 {
   d->mBody.append( bodyLine );
-  if ( bodyLine.right( 1 ) != "\n" )
-    d->mBody.append( '\n' );
+  if ( bodyLine.right( 1 ) != QLatin1String("\n") )
+    d->mBody.append( QLatin1Char('\n') );
 }
 
 QString Function::body() const
@@ -206,23 +206,23 @@ QString Function::accessAsString() const
   QString access;
 
   if ( d->mAccess & Public )
-    access = "public";
+    access = QLatin1String("public");
   if ( d->mAccess & Protected )
-    access = "protected";
+    access = QLatin1String("protected");
   if ( d->mAccess & Private )
-    access = "private";
+    access = QLatin1String("private");
 
   if ( d->mAccess & Signal )
-    access = "Q_SIGNALS";
+    access = QLatin1String("Q_SIGNALS");
   if ( d->mAccess & Slot )
-    access += " Q_SLOTS";
+    access += QLatin1String(" Q_SLOTS");
 
   return access;
 }
 
 void Function::setReturnType( const QString &returnType )
 {
-  Q_ASSERT(returnType != "*");
+  Q_ASSERT(returnType != QLatin1String("*"));
   d->mReturnType = returnType;
 }
 

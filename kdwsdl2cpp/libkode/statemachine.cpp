@@ -82,8 +82,8 @@ Code StateMachine::stateDefinition() const
     states.append( it.key() );
   }
 
-  code += "enum State { " + states.join( ", " ) + " };";
-  code += "State state = " + d->mInitialState + ';';
+  code += QLatin1String("enum State { ") + states.join( QLatin1String(", ") ) + QLatin1String(" };");
+  code += QLatin1String("State state = ") + d->mInitialState + QLatin1Char(';');
 
   return code;
 }
@@ -92,25 +92,25 @@ Code StateMachine::transitionLogic() const
 {
   Code code;
 
-  code += "switch( state ) {";
+  code += QLatin1String("switch( state ) {");
   code.indent();
 
   QMap<QString,Code>::ConstIterator it;
   for ( it = d->mStateMap.constBegin(); it != d->mStateMap.constEnd(); ++it ) {
-    code += "case " + it.key() + ':';
+    code += QLatin1String("case ") + it.key() + QLatin1Char(':');
     code.indent();
     code.addBlock( it.value() );
-    code += "break;";
+    code += QLatin1String("break;");
     code.unindent();
   }
 
-  code += "default:";
+  code += QLatin1String("default:");
   code.indent();
-  code += "break;";
+  code += QLatin1String("break;");
   code.unindent();
 
   code.unindent();
-  code += '}';
+  code += QLatin1String("}");
 
   return code;
 }

@@ -59,7 +59,7 @@ Variable::Variable( const QString &name, const QString &type, bool isStatic )
   Q_ASSERT(!name.isEmpty());
 
   if ( name.isEmpty() ) {
-    d->mName = "mUndefined";
+    d->mName = QLatin1String("mUndefined");
   } else {
     d->mName = name;
   }

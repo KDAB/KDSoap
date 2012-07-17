@@ -48,14 +48,14 @@ MemberVariable::MemberVariable( const QString &name, const QString &type,
   QString n;
 
   if ( name.isEmpty() ) {
-    n = "mUndefined";
-  } else if ( name.length() >= 2  && name[ 0 ] == QChar( 'm' ) &&
+    n = QLatin1String("mUndefined");
+  } else if ( name.length() >= 2  && name[ 0 ] == QLatin1Char( 'm' ) &&
               ( name[ 1 ].toUpper() == name[ 1 ] ) ) {
     n = name;
-  } else if ( name == "q" || name == "d" ) {
+  } else if ( name == QLatin1String("q") || name == QLatin1String("d") ) {
     n = name;
   } else {
-    n = "m";
+    n = QLatin1String("m");
     n += name[ 0 ].toUpper();
     n += name.mid( 1 );
   }

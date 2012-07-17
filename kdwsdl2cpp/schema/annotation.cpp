@@ -74,12 +74,12 @@ QDomElement Annotation::domElement() const
 
 bool Annotation::isDocumentation() const
 {
-  return QName( d->mDomElement.tagName() ).localName() == "documentation";
+  return QName( d->mDomElement.tagName() ).localName() == QLatin1String("documentation");
 }
 
 bool Annotation::isAppinfo() const
 {
-  return QName( d->mDomElement.tagName() ).localName() == "appinfo";
+  return QName( d->mDomElement.tagName() ).localName() == QLatin1String("appinfo");
 }
 
 QString Annotation::documentation() const

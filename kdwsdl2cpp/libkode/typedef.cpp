@@ -67,5 +67,5 @@ Typedef& Typedef::operator=( const Typedef &other )
 
 QString Typedef::declaration() const
 {
-  return "typedef " + d->mType + ' ' + d->mAlias + ';';
+  return QLatin1String("typedef ") + d->mType + QLatin1Char(' ') + d->mAlias + QLatin1Char(';');
 }
