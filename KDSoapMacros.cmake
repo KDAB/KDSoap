@@ -4,7 +4,7 @@ macro( KDSOAP_GENERATE_WSDL _sources )
     get_filename_component(_tmp_FILE ${_source_FILE} ABSOLUTE)
     get_filename_component(_basename ${_tmp_FILE} NAME_WE)
     set(_header_wsdl_FILE ${CMAKE_CURRENT_BINARY_DIR}/wsdl_${_basename}.h)
-    set(_source_wsdk_FILE ${CMAKE_CURRENT_BINARY_DIR}/wsdl_${_basename}.cpp)
+    set(_source_wsdl_FILE ${CMAKE_CURRENT_BINARY_DIR}/wsdl_${_basename}.cpp)
     
     add_custom_command(OUTPUT ${_header_wsdl_FILE} 
        COMMAND ${KDWSDL2CPP}
@@ -12,13 +12,13 @@ macro( KDSOAP_GENERATE_WSDL _sources )
        MAIN_DEPENDENCY ${_source_FILE}
        DEPENDS ${_tmp_FILE} ${KDWSDL2CPP} )
 
-    add_custom_command(OUTPUT ${_source_wsdk_FILE} 
+    add_custom_command(OUTPUT ${_source_wsdl_FILE} 
        COMMAND ${KDWSDL2CPP}
        ARGS -impl ${_header_wsdl_FILE} ${_source_FILE} -o ${CMAKE_CURRENT_BINARY_DIR}/${_source_wsdl_FILE}
        MAIN_DEPENDENCY ${_source_FILE} ${_header_wsdl_FILE}
        DEPENDS ${_tmp_FILE} ${KDWSDL2CPP} )
 
-    list(APPEND ${_header_FILE} )
+    list(APPEND ${_header_wsdl_FILE} ${_source_wsdl_FILE} ${_sources} )
   endforeach (_source_FILE)
 endmacro(KDSOAP_GENERATE_WSDL _sources )
 
