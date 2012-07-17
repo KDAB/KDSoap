@@ -9,7 +9,6 @@ macro( KDSOAP_GENERATE_WSDL _sources )
     get_filename_component(_basename ${_tmp_FILE} NAME_WE)
     set(_header_wsdl_FILE ${CMAKE_CURRENT_BINARY_DIR}/wsdl_${_basename}.h)
     set(_source_wsdl_FILE ${CMAKE_CURRENT_BINARY_DIR}/wsdl_${_basename}.cpp)
-    
     add_custom_command(OUTPUT ${_header_wsdl_FILE} 
        COMMAND ${KDWSDL2CPP}
        ARGS ${_KSWSDL2CPP_OPTION} ${_tmp_FILE} -o ${_header_wsdl_FILE}
