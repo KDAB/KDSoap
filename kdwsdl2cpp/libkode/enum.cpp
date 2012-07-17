@@ -79,24 +79,24 @@ QString Enum::name() const
 
 QString Enum::declaration() const
 {
-  QString retval( "enum " + d->mName + " {" );
+  QString retval( QLatin1String("enum ") + d->mName + QLatin1String(" {") );
   uint value = 0;
   QStringList::ConstIterator it;
   for ( it = d->mEnums.constBegin(); it != d->mEnums.constEnd(); ++it, ++value ) {
     if ( d->mCombinable ) {
       if ( it == d->mEnums.constBegin() )
-        retval += QString( " %1 = %2" ).arg( *it ).arg( 1 << value );
+        retval += QString::fromLatin1( " %1 = %2" ).arg( *it ).arg( 1 << value );
       else
-        retval += QString( ", %1 = %2" ).arg( *it ).arg( 1 << value );
+        retval += QString::fromLatin1( ", %1 = %2" ).arg( *it ).arg( 1 << value );
     } else {
       if ( it == d->mEnums.constBegin() )
-        retval += ' ' + *it;
+        retval += QLatin1Char(' ') + *it;
       else
-        retval += ", " + *it;
+        retval += QLatin1String(", ") + *it;
     }
   }
 
-  retval += " };";
+  retval += QLatin1String(" };");
 
   return retval;
 }

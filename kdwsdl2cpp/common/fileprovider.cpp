@@ -59,7 +59,7 @@ bool FileProvider::get( const QUrl &url, QString &target )
       return true;
   }
   if (url.scheme() == QLatin1String("qrc")) {
-      target = ":" + url.path();
+      target = QLatin1String(":") + url.path();
       return true;
   }
 

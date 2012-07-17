@@ -75,7 +75,7 @@ QString NSManager::uri( const QString &prefix ) const
 
 void NSManager::splitName( const QString &qname, QString &prefix, QString &localname ) const
 {
-  int pos = qname.indexOf( ':' );
+  int pos = qname.indexOf( QLatin1Char(':') );
   if ( pos != -1 ) {
     prefix = qname.left( pos );
     localname = qname.mid( pos + 1 );
@@ -90,7 +90,7 @@ QString NSManager::fullName( const QString &nameSpace, const QString &localname 
   if ( prefix( nameSpace ).isEmpty() )
     return localname;
   else
-    return prefix( nameSpace ) + ':' + localname;
+    return prefix( nameSpace ) + QLatin1Char(':') + localname;
 }
 
 QString NSManager::fullName( const QName &name ) const
@@ -110,17 +110,17 @@ QStringList NSManager::uris() const
 
 QString NSManager::schemaPrefix() const
 {
-  return prefix( "http://www.w3.org/2001/XMLSchema" );
+  return prefix( QLatin1String("http://www.w3.org/2001/XMLSchema") );
 }
 
 QString NSManager::schemaInstancePrefix() const
 {
-  return prefix( "http://www.w3.org/2001/XMLSchema-instance" );
+  return prefix( QLatin1String("http://www.w3.org/2001/XMLSchema-instance") );
 }
 
 QString NSManager::soapEncPrefix() const
 {
-  return prefix( "http://schemas.xmlsoap.org/soap/encoding/" );
+  return prefix( QLatin1String("http://schemas.xmlsoap.org/soap/encoding/") );
 }
 
 void NSManager::reset()
@@ -166,7 +166,7 @@ void NSManager::enterChild(const QDomElement &element)
         //if (prefix == "tns")
         //    qDebug() << this << "enterChild: setting tns to" << attribute.value();
         setPrefix( prefix, attribute.value() );
-      } else if ( attribute.name() == "xmlns" ) {
+      } else if ( attribute.name() == QLatin1String("xmlns") ) {
         setCurrentNamespace( attribute.value() );
       }
     }

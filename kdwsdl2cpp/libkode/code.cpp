@@ -108,33 +108,33 @@ void Code::addLine( const QString &line )
 {
   d->mText += spaces( d->mIndent );
   d->mText += line;
-  d->mText += '\n';
+  d->mText += QLatin1Char('\n');
 }
 
 void Code::addLine( const char c )
 {
   d->mText += spaces( d->mIndent );
-  d->mText += c;
-  d->mText += '\n';
+  d->mText += QLatin1Char(c);
+  d->mText += QLatin1Char('\n');
 }
 
 void Code::newLine()
 {
-  d->mText += '\n';
+  d->mText += QLatin1Char('\n');
 }
 
 QString Code::spaces( int count )
 {
   QString str;
   for ( int i = 0; i < count; ++i )
-    str += ' ';
+    str += QLatin1Char(' ');
 
   return str;
 }
 
 void Code::addBlock( const QString &block )
 {
-  QStringList lines = block.split( "\n" );
+  QStringList lines = block.split( QLatin1String("\n") );
   if ( !lines.isEmpty() && lines.last().isEmpty() ) {
     lines.pop_back();
   }
@@ -144,7 +144,7 @@ void Code::addBlock( const QString &block )
       d->mText += spaces( d->mIndent );
 
     d->mText += *it;
-    d->mText += '\n';
+    d->mText += QLatin1Char('\n');
   }
 }
 
@@ -178,7 +178,7 @@ void Code::addFormattedText( const QString &text )
   int lineLength = 0;
 
   QString line;
-  const QStringList words = text.split( ' ', QString::SkipEmptyParts );
+  const QStringList words = text.split( QLatin1Char(' '), QString::SkipEmptyParts );
 
   QStringList::ConstIterator it;
   for ( it = words.constBegin(); it != words.constEnd(); ++it ) {
@@ -189,16 +189,16 @@ void Code::addFormattedText( const QString &text )
       lineLength = 0;
     }
 
-    int pos = (*it).indexOf( "\n" );
+    int pos = (*it).indexOf( QLatin1String("\n") );
     if ( pos != -1 ) {
       line += (*it).left( pos );
       line = line.trimmed();
       addLine( line );
 
-      line = (*it).mid( pos + 1 ) + ' ';
+      line = (*it).mid( pos + 1 ) + QLatin1Char(' ');
       lineLength = (*it).length() - pos;
     } else {
-      line += *it + ' ';
+      line += *it + QLatin1Char(' ');
       lineLength += (*it).length() + 1;
     }
   }

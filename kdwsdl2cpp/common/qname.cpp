@@ -35,7 +35,7 @@ QName::QName( const QString &name )
 QName::QName( const QString &nameSpace, const QString &localName )
   : mNameSpace( nameSpace ), mLocalName( localName )
 {
-    Q_ASSERT(!localName.contains(':'));
+    Q_ASSERT(!localName.contains(QLatin1Char(':')));
 }
 
 void QName::operator=( const QString &name )
@@ -58,7 +58,7 @@ QString QName::qname() const
   if ( mPrefix.isEmpty() )
     return mLocalName;
   else
-    return mPrefix + ':' + mLocalName;
+    return mPrefix + QLatin1Char(':') + mLocalName;
 }
 
 void QName::setNameSpace( const QString &nameSpace )
@@ -88,14 +88,14 @@ bool QName::isEmpty() const
 
 void QName::parse( const QString &str )
 {
-  int pos = str.indexOf( ':' );
+  int pos = str.indexOf( QLatin1Char(':') );
   if ( pos != -1 ) {
     mPrefix = str.left( pos );
     mLocalName = str.mid( pos + 1 );
   } else {
     mLocalName = str;
   }
-  Q_ASSERT(!mLocalName.contains(':'));
+  Q_ASSERT(!mLocalName.contains(QLatin1Char(':')));
 }
 
 QDebug operator <<(QDebug dbg, const QName &qn)
