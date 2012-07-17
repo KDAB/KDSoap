@@ -2,3 +2,7 @@ Makefile
 *.moc
 *.obj
 testtools/qrc_testtools.cpp
+lib
+bin
+generated
+.qmake.cache
