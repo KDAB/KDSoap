@@ -61,27 +61,27 @@ QName Fault::message() const
 
 void Fault::loadXML( ParserContext *context, const QDomElement &element )
 {
-  mName = element.attribute( "name" );
+  mName = element.attribute( QLatin1String("name") );
   if ( mName.isEmpty() )
-    context->messageHandler()->warning( "Fault: 'name' required" );
+    context->messageHandler()->warning( QLatin1String("Fault: 'name' required") );
 
-  mMessage = element.attribute( "message" );
+  mMessage = element.attribute( QLatin1String("message") );
   if ( mMessage.isEmpty() )
-    context->messageHandler()->warning( "Fault: 'message' required" );
+    context->messageHandler()->warning( QLatin1String("Fault: 'message' required") );
 }
 
 void Fault::saveXML( ParserContext *context, QDomDocument &document, QDomElement &parent ) const
 {
-  QDomElement element = document.createElement( "fault" );
+  QDomElement element = document.createElement( QLatin1String("fault") );
   parent.appendChild( element );
 
   if ( !mName.isEmpty() )
-    element.setAttribute( "name", mName );
+    element.setAttribute( QLatin1String("name"), mName );
   else
-    context->messageHandler()->warning( "Fault: 'name' required" );
+    context->messageHandler()->warning( QLatin1String("Fault: 'name' required") );
 
   if ( !mMessage.isEmpty() )
-    element.setAttribute( "message", mMessage.qname() );
+    element.setAttribute( QLatin1String("message"), mMessage.qname() );
   else
-    context->messageHandler()->warning( "Fault: 'message' required" );
+    context->messageHandler()->warning( QLatin1String("Fault: 'message' required") );
 }

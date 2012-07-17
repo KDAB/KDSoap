@@ -54,9 +54,9 @@ QString BindingOperation::name() const
 
 void BindingOperation::loadXML( AbstractBinding *binding, ParserContext *context, const QDomElement &element )
 {
-  mName = element.attribute( "name" );
+  mName = element.attribute( QLatin1String("name") );
   if ( mName.isEmpty() )
-    context->messageHandler()->warning( "BindingOperation: 'name' required" );
+    context->messageHandler()->warning( QLatin1String("BindingOperation: 'name' required") );
 
   binding->parseOperation( context, mName, element );
 
@@ -64,11 +64,11 @@ void BindingOperation::loadXML( AbstractBinding *binding, ParserContext *context
   while ( !child.isNull() ) {
     NSManager namespaceManager( context, child );
     const QName tagName( child.tagName() );
-    if ( tagName.localName() == "input" ) {
+    if ( tagName.localName() == QLatin1String("input") ) {
       binding->parseOperationInput( context, mName, child );
-    } else if ( tagName.localName() == "output" ) {
+    } else if ( tagName.localName() == QLatin1String("output") ) {
       binding->parseOperationOutput( context, mName, child );
-    } else if ( tagName.localName() == "fault" ) {
+    } else if ( tagName.localName() == QLatin1String("fault") ) {
       binding->parseOperationFault( context, mName, child );
     } // no fallback else here, some other tags (like soap:operation) are already parsed by parseOperation().
 
@@ -78,25 +78,25 @@ void BindingOperation::loadXML( AbstractBinding *binding, ParserContext *context
 
 void BindingOperation::saveXML( const AbstractBinding *binding, ParserContext *context, QDomDocument &document, QDomElement &parent ) const
 {
-  QDomElement element = document.createElement( "operation" );
+  QDomElement element = document.createElement( QLatin1String("operation") );
   parent.appendChild( element );
 
   if ( !mName.isEmpty() )
-    element.setAttribute( "name", mName );
+    element.setAttribute( QLatin1String("name"), mName );
   else
-    context->messageHandler()->warning( "BindingOperation: 'name' required" );
+    context->messageHandler()->warning( QLatin1String("BindingOperation: 'name' required") );
 
   binding->synthesizeOperation( context, mName, document, element );
 
-  QDomElement inputElement = document.createElement( "input" );
+  QDomElement inputElement = document.createElement( QLatin1String("input") );
   element.appendChild( inputElement );
   binding->synthesizeOperationInput( context, mName, document, inputElement );
 
-  QDomElement outputElement = document.createElement( "output" );
+  QDomElement outputElement = document.createElement( QLatin1String("output") );
   element.appendChild( outputElement );
   binding->synthesizeOperationOutput( context, mName, document, outputElement );
 
-  QDomElement faultElement = document.createElement( "fault" );
+  QDomElement faultElement = document.createElement( QLatin1String("fault") );
   element.appendChild( faultElement );
   binding->synthesizeOperationFault( context, mName, document, faultElement );
 }

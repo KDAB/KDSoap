@@ -61,27 +61,27 @@ QUrl Import::location() const
 
 void Import::loadXML( ParserContext *context, const QDomElement &element )
 {
-  mImportNamespace = element.attribute( "namespace" );
+  mImportNamespace = element.attribute(QLatin1String( "namespace") );
   if ( mImportNamespace.isEmpty() )
-    context->messageHandler()->warning( "Import: 'namespace' required" );
+    context->messageHandler()->warning( QLatin1String("Import: 'namespace' required") );
 
-  mLocation = element.attribute( "schemaLocation" );
+  mLocation = element.attribute( QLatin1String("schemaLocation") );
   if ( !mLocation.isValid() )
-    context->messageHandler()->warning( "Import: 'schemaLocation' required" );
+    context->messageHandler()->warning( QLatin1String("Import: 'schemaLocation' required") );
 }
 
 void Import::saveXML( ParserContext *context, QDomDocument &document, QDomElement &parent ) const
 {
-  QDomElement element = document.createElement( "import" );
+  QDomElement element = document.createElement( QLatin1String("import") );
   parent.appendChild( element );
 
   if ( mImportNamespace.isEmpty() )
-    element.setAttribute( "namespace", mImportNamespace );
+    element.setAttribute( QLatin1String("namespace"), mImportNamespace );
   else
-    context->messageHandler()->warning( "Import: 'namespace' required" );
+    context->messageHandler()->warning( QLatin1String("Import: 'namespace' required") );
 
   if ( mLocation.isValid() )
-    element.setAttribute( "schemaLocation", mLocation.toString() );
+    element.setAttribute( QLatin1String("schemaLocation"), mLocation.toString() );
   else
-    context->messageHandler()->warning( "Import: 'schemaLocation' required" );
+    context->messageHandler()->warning(QLatin1String( "Import: 'schemaLocation' required") );
 }

@@ -64,23 +64,23 @@ Port::List Service::ports() const
 
 void Service::loadXML( ParserContext *context, Binding::List *bindings, const QDomElement &element )
 {
-  mName = element.attribute( "name" );
+  mName = element.attribute( QLatin1String("name") );
   if ( mName.isEmpty() )
-    context->messageHandler()->warning( "Service: 'name' required" );
+    context->messageHandler()->warning( QLatin1String("Service: 'name' required") );
 
   QDomElement child = element.firstChildElement();
   while ( !child.isNull() ) {
     NSManager namespaceManager( context, child );
     const QName tagName( child.tagName() );
-    if ( tagName.localName() == "port" ) {
+    if ( tagName.localName() == QLatin1String("port") ) {
       Port port( nameSpace() );
       port.loadXML( context, bindings, child );
       mPorts.append( port );
-    } else if ( tagName.localName() == "documentation") {
+    } else if ( tagName.localName() == QLatin1String("documentation")) {
       const QString text = child.text().trimmed();
       setDocumentation(text);
     } else {
-      context->messageHandler()->warning( QString( "Service: unknown tag %1" ).arg( child.tagName() ) );
+      context->messageHandler()->warning( QString::fromLatin1("Service: unknown tag %1" ).arg( child.tagName() ) );
     }
 
     child = child.nextSiblingElement();
@@ -89,13 +89,13 @@ void Service::loadXML( ParserContext *context, Binding::List *bindings, const QD
 
 void Service::saveXML( ParserContext *context, const Binding::List *bindings, QDomDocument &document, QDomElement &parent ) const
 {
-  QDomElement element = document.createElement( "service" );
+  QDomElement element = document.createElement( QLatin1String("service") );
   parent.appendChild( element );
 
   if ( !mName.isEmpty() )
-    element.setAttribute( "name", mName );
+    element.setAttribute( QLatin1String("name"), mName );
   else
-    context->messageHandler()->warning( "Service: 'name' required" );
+    context->messageHandler()->warning( QLatin1String("Service: 'name' required") );
 
   Port::List::ConstIterator it( mPorts.begin() );
   const Port::List::ConstIterator endIt( mPorts.end() );

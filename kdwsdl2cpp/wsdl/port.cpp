@@ -68,13 +68,13 @@ QName Port::bindingName() const
 
 void Port::loadXML( ParserContext *context, Binding::List *bindings, const QDomElement &element )
 {
-  mName = element.attribute( "name" );
+  mName = element.attribute( QLatin1String("name") );
   if ( mName.isEmpty() )
-    context->messageHandler()->warning( "Port: 'name' required" );
+    context->messageHandler()->warning(QLatin1String( "Port: 'name' required") );
 
-  mBindingName = element.attribute( "binding" );
+  mBindingName = element.attribute( QLatin1String("binding") );
   if ( mBindingName.isEmpty() )
-    context->messageHandler()->warning( "Port: 'binding' required" );
+    context->messageHandler()->warning( QLatin1String("Port: 'binding' required") );
   else
     if ( mBindingName.nameSpace().isEmpty() ) // well, always true...
       mBindingName.setNameSpace( nameSpace() );
@@ -92,18 +92,18 @@ void Port::loadXML( ParserContext *context, Binding::List *bindings, const QDomE
 
 void Port::saveXML( ParserContext *context, const Binding::List *bindings, QDomDocument &document, QDomElement &parent ) const
 {
-  QDomElement element = document.createElement( "port" );
+  QDomElement element = document.createElement( QLatin1String("port") );
   parent.appendChild( element );
 
   if ( !mName.isEmpty() )
-    element.setAttribute( "name", mName );
+    element.setAttribute( QLatin1String("name"), mName );
   else
-    context->messageHandler()->warning( "Port: 'name' required" );
+    context->messageHandler()->warning( QLatin1String("Port: 'name' required") );
 
   if ( !mBindingName.isEmpty() )
-    element.setAttribute( "binding", mBindingName.qname() );
+    element.setAttribute( QLatin1String("binding"), mBindingName.qname() );
   else
-    context->messageHandler()->warning( "Port: 'binding' required" );
+    context->messageHandler()->warning(QLatin1String( "Port: 'binding' required") );
 
   for ( int i = 0; i < bindings->count(); ++i ) {
     if ( (*bindings)[ i ].name() == mBindingName.localName() ) {

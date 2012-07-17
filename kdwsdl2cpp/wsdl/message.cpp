@@ -73,22 +73,22 @@ Part Message::partByName(const QString &name) const
 
 void Message::loadXML( ParserContext *context, const QDomElement &element )
 {
-  mName = element.attribute( "name" );
+  mName = element.attribute( QLatin1String("name") );
   if ( mName.isEmpty() )
-    context->messageHandler()->warning( "Message: 'name' required" );
+    context->messageHandler()->warning( QLatin1String("Message: 'name' required") );
 
   QDomElement child = element.firstChildElement();
   while ( !child.isNull() ) {
     NSManager namespaceManager( context, child );
     const QName tagName( child.tagName() );
-    if ( tagName.localName() == "part" ) {
+    if ( tagName.localName() == QLatin1String("part") ) {
       Part part( nameSpace() );
       part.loadXML( context, child );
       mParts.append( part );
-    } else if ( tagName.localName() == "documentation") {
+    } else if ( tagName.localName() == QLatin1String("documentation")) {
       setDocumentation( child.text().trimmed() );
     } else {
-      context->messageHandler()->warning( QString( "Message: unknown tag %1" ).arg( child.tagName() ) );
+      context->messageHandler()->warning( QString::fromLatin1( "Message: unknown tag %1" ).arg( child.tagName() ) );
     }
 
     child = child.nextSiblingElement();
@@ -97,13 +97,13 @@ void Message::loadXML( ParserContext *context, const QDomElement &element )
 
 void Message::saveXML( ParserContext *context, QDomDocument &document, QDomElement &parent ) const
 {
-  QDomElement element = document.createElement( "message" );
+  QDomElement element = document.createElement( QLatin1String("message") );
   parent.appendChild( element );
 
   if ( !mName.isEmpty() )
-    element.setAttribute( "name", mName );
+    element.setAttribute( QLatin1String("name"), mName );
   else
-    context->messageHandler()->warning( "Message: 'name' required" );
+    context->messageHandler()->warning( QLatin1String("Message: 'name' required") );
 
   Part::List::ConstIterator it( mParts.begin() );
   const Part::List::ConstIterator endIt( mParts.end() );

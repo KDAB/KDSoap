@@ -126,8 +126,8 @@ Type Definitions::type() const
 
 bool Definitions::loadXML( ParserContext *context, const QDomElement &element )
 {
-  setTargetNamespace( element.attribute( "targetNamespace" ) );
-  mName = element.attribute( "name" );
+  setTargetNamespace( element.attribute( QLatin1String("targetNamespace") ) );
+  mName = element.attribute( QLatin1String("name") );
 
   context->namespaceManager()->enterChild( element );
 
@@ -135,29 +135,29 @@ bool Definitions::loadXML( ParserContext *context, const QDomElement &element )
   while ( !child.isNull() ) {
     NSManager namespaceManager( context, child );
     const QName tagName( child.tagName() );
-    if ( tagName.localName() == "import" ) {
+    if ( tagName.localName() == QLatin1String("import") ) {
       Import import( mTargetNamespace );
       import.loadXML( context, child );
       qFatal("Unsupported <import> element in <definitions> - TODO");
       //mImports.append( import );
-    } else if ( tagName.localName() == "types" ) {
+    } else if ( tagName.localName() == QLatin1String("types") ) {
       if ( !mType.loadXML( context, child ) )
           return false;
-    } else if ( tagName.localName() == "message" ) {
+    } else if ( tagName.localName() == QLatin1String("message") ) {
       Message message( mTargetNamespace );
       message.loadXML( context, child );
       //qDebug() << "Definitions: found message" << message.name() << message.nameSpace();
       mMessages.append( message );
-    } else if ( tagName.localName() == "portType" ) {
+    } else if ( tagName.localName() == QLatin1String("portType") ) {
       PortType portType( mTargetNamespace );
       portType.loadXML( context, child );
       mPortTypes.append( portType );
-    } else if ( tagName.localName() == "binding" ) {
+    } else if ( tagName.localName() == QLatin1String("binding") ) {
       Binding binding( mTargetNamespace );
       binding.loadXML( context, child );
       mBindings.append( binding );
-    } else if ( tagName.localName() == "service" ) {
-      const QString name = child.attribute( "name" );
+    } else if ( tagName.localName() == QLatin1String("service") ) {
+      const QString name = child.attribute( QLatin1String("name") );
       //qDebug() << "Service:" << name << "looking for" << mWantedService;
       // is this the service we want?
       if ( mWantedService.isEmpty() || mWantedService == name ) {
@@ -165,10 +165,10 @@ bool Definitions::loadXML( ParserContext *context, const QDomElement &element )
         service.loadXML( context, &mBindings, child );
         mServices.append( service );
       }
-    } else if ( tagName.localName() == "documentation" ) {
+    } else if ( tagName.localName() == QLatin1String("documentation") ) {
       // ignore documentation for now
     } else {
-      context->messageHandler()->warning( QString( "Definitions: unknown tag %1" ).arg( child.tagName() ) );
+      context->messageHandler()->warning( QString::fromLatin1( "Definitions: unknown tag %1" ).arg( child.tagName() ) );
     }
 
     child = child.nextSiblingElement();

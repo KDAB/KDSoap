@@ -71,12 +71,12 @@ QName Part::element() const
 
 void Part::loadXML( ParserContext *context, const QDomElement &element )
 {
-  mName = element.attribute( "name" );
-  mType = element.attribute( "type" );
+  mName = element.attribute( QLatin1String("name") );
+  mType = element.attribute( QLatin1String("type") );
   if ( !mType.prefix().isEmpty() )
     mType.setNameSpace( context->namespaceManager()->uri( mType.prefix() ) );
 
-  mElement = element.attribute( "element" );
+  mElement = element.attribute( QLatin1String("element") );
   if ( !mElement.prefix().isEmpty() )
     mElement.setNameSpace( context->namespaceManager()->uri( mElement.prefix() ) );
 }
@@ -85,15 +85,15 @@ void Part::saveXML( ParserContext *context, QDomDocument &document, QDomElement 
 {
   Q_UNUSED( context );
 
-  QDomElement element = document.createElement( "part" );
+  QDomElement element = document.createElement( QLatin1String("part") );
   parent.appendChild( element );
 
   if ( !mName.isEmpty() )
-    element.setAttribute( "name", mName );
+    element.setAttribute( QLatin1String("name"), mName );
 
   if ( !mType.isEmpty() )
-    element.setAttribute( "type", mType.qname() );
+    element.setAttribute( QLatin1String("type"), mType.qname() );
 
   if ( !mElement.isEmpty() )
-    element.setAttribute( "element", mElement.qname() );
+    element.setAttribute( QLatin1String("element"), mElement.qname() );
 }

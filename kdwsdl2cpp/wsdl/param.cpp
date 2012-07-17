@@ -63,10 +63,10 @@ QName Param::message() const
 
 void Param::loadXML( ParserContext *context, const QDomElement &element )
 {
-  mName = element.attribute( "name" );
-  mMessage = element.attribute( "message" );
+  mName = element.attribute( QLatin1String("name") );
+  mMessage = element.attribute( QLatin1String("message") );
   if ( mMessage.isEmpty() )
-    context->messageHandler()->warning( "Param: 'message' required" );
+    context->messageHandler()->warning( QLatin1String("Param: 'message' required") );
   else {
     if ( mMessage.prefix().isEmpty() ) {
       mMessage.setNameSpace( nameSpace() );
@@ -82,10 +82,10 @@ void Param::saveXML( ParserContext *context, const QString &name, QDomDocument &
   parent.appendChild( element );
 
   if ( !mName.isEmpty() )
-    element.setAttribute( "name", mName );
+    element.setAttribute( QLatin1String("name"), mName );
 
   if ( !mMessage.isEmpty() )
-    element.setAttribute( "message", mMessage.qname() );
+    element.setAttribute( QLatin1String("message"), mMessage.qname() );
   else
-    context->messageHandler()->warning( "Param: 'message' required" );
+    context->messageHandler()->warning( QLatin1String("Param: 'message' required") );
 }

@@ -94,12 +94,12 @@ Fault::List Operation::faults() const
 
 void Operation::loadXML( ParserContext *context, const QDomElement &element )
 {
-  mName = element.attribute( "name" );
+  mName = element.attribute( QLatin1String("name" ));
   if ( mName.isEmpty() )
-    context->messageHandler()->warning( "Operation: 'name' required" );
+    context->messageHandler()->warning( QLatin1String("Operation: 'name' required") );
 
-  QDomNodeList inputElements = element.elementsByTagName( "input" );
-  QDomNodeList outputElements = element.elementsByTagName( "output" );
+  QDomNodeList inputElements = element.elementsByTagName( QLatin1String("input") );
+  QDomNodeList outputElements = element.elementsByTagName( QLatin1String("output") );
 
   if ( inputElements.count() == 1 && outputElements.count() == 0 ) {
     mType = OneWayOperation;
@@ -113,27 +113,27 @@ void Operation::loadXML( ParserContext *context, const QDomElement &element )
     while ( !child.isNull() ) {
       NSManager namespaceManager( context, child );
       const QName tagName( child.tagName() );
-      if ( tagName.localName() == "input" ) {
+      if ( tagName.localName() == QLatin1String("input") ) {
         if ( first ) {
           first = false;
           mType = RequestResponseOperation;
         }
         mInput.loadXML( context, child );
-      } else if ( tagName.localName() == "output" ) {
+      } else if ( tagName.localName() == QLatin1String("output") ) {
         if ( first ) {
           first = false;
           mType = SolicitResponseOperation;
         }
         mOutput.loadXML( context, child );
-      } else if ( tagName.localName() == "fault" ) {
+      } else if ( tagName.localName() == QLatin1String("fault") ) {
         Fault fault( nameSpace() );
         fault.loadXML( context, child );
         mFaults.append( fault );
-      } else if ( tagName.localName() == "documentation") {
+      } else if ( tagName.localName() == QLatin1String("documentation")) {
         QString text = child.firstChild().toText().data().trimmed();
         setDocumentation(text);
       } else {
-        context->messageHandler()->warning( QString( "Operation: unknown tag %1" ).arg( child.tagName() ) );
+        context->messageHandler()->warning( QString::fromLatin1( "Operation: unknown tag %1" ).arg( child.tagName() ) );
       }
 
       child = child.nextSiblingElement();
@@ -143,21 +143,21 @@ void Operation::loadXML( ParserContext *context, const QDomElement &element )
 
 void Operation::saveXML( ParserContext *context, QDomDocument &document, QDomElement &parent ) const
 {
-  QDomElement element = document.createElement( "operation" );
+  QDomElement element = document.createElement( QLatin1String("operation") );
   parent.appendChild( element );
 
   if ( !mName.isEmpty() )
-    element.setAttribute( "name", mName );
+    element.setAttribute( QLatin1String("name"), mName );
   else
-    context->messageHandler()->warning( "Operation: 'name' required" );
+    context->messageHandler()->warning( QLatin1String("Operation: 'name' required") );
 
   switch ( mType ) {
     case OneWayOperation:
-      mInput.saveXML( context, "input", document, element );
+      mInput.saveXML( context, QLatin1String("input"), document, element );
       break;
     case SolicitResponseOperation:
-      mOutput.saveXML( context, "output", document, element );
-      mInput.saveXML( context, "input", document, element );
+      mOutput.saveXML( context, QLatin1String("output"), document, element );
+      mInput.saveXML( context, QLatin1String("input"), document, element );
       {
         Fault::List::ConstIterator it( mFaults.begin() );
         const Fault::List::ConstIterator endIt( mFaults.end() );
@@ -166,12 +166,12 @@ void Operation::saveXML( ParserContext *context, QDomDocument &document, QDomEle
       }
       break;
     case NotificationOperation:
-      mOutput.saveXML( context, "output", document, element );
+      mOutput.saveXML( context, QLatin1String("output)"), document, element );
       break;
     case RequestResponseOperation:
     default:
-      mInput.saveXML( context, "input", document, element );
-      mOutput.saveXML( context, "output", document, element );
+      mInput.saveXML( context, QLatin1String("input"), document, element );
+      mOutput.saveXML( context, QLatin1String("output"), document, element );
       {
         Fault::List::ConstIterator it( mFaults.begin() );
         const Fault::List::ConstIterator endIt( mFaults.end() );

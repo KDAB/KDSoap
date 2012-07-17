@@ -28,9 +28,9 @@
 
 using namespace KWSDL;
 
-static QString soapStandardNamespace = "http://schemas.xmlsoap.org/wsdl/soap/";
-static QString soap12StandardNamespace = "http://schemas.xmlsoap.org/wsdl/soap12/";
-static QString httpStandardNamespace = "http://schemas.xmlsoap.org/wsdl/http/";
+static QString soapStandardNamespace = QLatin1String("http://schemas.xmlsoap.org/wsdl/soap/");
+static QString soap12StandardNamespace = QLatin1String("http://schemas.xmlsoap.org/wsdl/soap12/");
+static QString httpStandardNamespace = QLatin1String("http://schemas.xmlsoap.org/wsdl/http/");
 
 Binding::Binding()
   : mType( UnknownBinding )
@@ -48,13 +48,13 @@ Binding::~Binding()
 
 void Binding::loadXML( ParserContext *context, const QDomElement &element )
 {
-  mName = element.attribute( "name" );
+  mName = element.attribute( QLatin1String("name") );
   if ( mName.isEmpty() )
-    context->messageHandler()->warning( "Binding: 'name' required" );
+    context->messageHandler()->warning( QLatin1String("Binding: 'name' required") );
 
-  mPortTypeName = element.attribute( "type" );
+  mPortTypeName = element.attribute( QLatin1String("type") );
   if ( mPortTypeName.isEmpty() )
-    context->messageHandler()->warning( "Binding: 'type' required" );
+    context->messageHandler()->warning( QLatin1String("Binding: 'type' required" ));
   else
     if ( mPortTypeName.nameSpace().isEmpty() )
       mPortTypeName.setNameSpace( nameSpace() );
@@ -66,11 +66,11 @@ void Binding::loadXML( ParserContext *context, const QDomElement &element )
 
     tagName.setNameSpace( context->namespaceManager()->uri( tagName.prefix() ) );
 
-    if ( tagName.localName() == "operation" ) {
+    if ( tagName.localName() == QLatin1String("operation") ) {
       BindingOperation operation( nameSpace() );
       operation.loadXML( &mSoapBinding, context, child );
       mOperations.append( operation );
-    } else if ( tagName.localName() == "binding" ) {
+    } else if ( tagName.localName() == QLatin1String("binding") ) {
         if ( tagName.nameSpace() == soapStandardNamespace ||
              tagName.nameSpace() == soap12StandardNamespace ) {
             mType = SOAPBinding;
@@ -89,18 +89,18 @@ void Binding::loadXML( ParserContext *context, const QDomElement &element )
 
 void Binding::saveXML( ParserContext *context, QDomDocument &document, QDomElement &parent ) const
 {
-  QDomElement element = document.createElement( "binding" );
+  QDomElement element = document.createElement( QLatin1String("binding") );
   parent.appendChild( element );
 
   if ( !mName.isEmpty() )
-    element.setAttribute( "name", mName );
+    element.setAttribute( QLatin1String("name"), mName );
   else
-    context->messageHandler()->warning( "Binding: 'name' required" );
+    context->messageHandler()->warning( QLatin1String("Binding: 'name' required") );
 
   if ( !mPortTypeName.isEmpty() )
-    element.setAttribute( "type", mPortTypeName.localName() );
+    element.setAttribute( QLatin1String("type"), mPortTypeName.localName() );
   else
-    context->messageHandler()->warning( "Binding: 'type' required" );
+    context->messageHandler()->warning( QLatin1String("Binding: 'type' required") );
 
   mSoapBinding.synthesizeBinding( context, document, element );
 

@@ -154,29 +154,29 @@ SimpleType::FacetType SimpleType::parseFacetId( const QString &facet ) const
     return NONE;
   }
 
-  if ( facet == "length" )
+  if ( facet == QLatin1String("length") )
     return LENGTH;
-  else if ( facet == "minLength" )
+  else if ( facet == QLatin1String("minLength") )
     return MINLEN;
-  else if ( facet == "maxLength" )
+  else if ( facet == QLatin1String("maxLength") )
     return MAXLEN;
-  else if ( facet == "enumeration" )
+  else if ( facet == QLatin1String("enumeration") )
     return ENUM;
-  else if ( facet == "whiteSpace" )
+  else if ( facet == QLatin1String("whiteSpace") )
     return WSP;
-  else if ( facet == "pattern" )
+  else if ( facet == QLatin1String("pattern") )
     return PATTERN;
-  else if ( facet == "maxInclusive" )
+  else if ( facet == QLatin1String("maxInclusive") )
     return MAXINC;
-  else if ( facet == "maxExclusive" )
+  else if ( facet == QLatin1String("maxExclusive") )
     return MAXEX;
-  else if ( facet == "minInclusive" )
+  else if ( facet == QLatin1String("minInclusive") )
     return MININC;
-  else if ( facet == "minExclusive" )
+  else if ( facet == QLatin1String("minExclusive") )
     return MINEX;
-  else if ( facet == "totalDigits" )
+  else if ( facet == QLatin1String("totalDigits") )
     return TOT;
-  else if ( facet == "fractionDigits" )
+  else if ( facet == QLatin1String("fractionDigits") )
     return FRAC;
   else {
     qDebug("Unknown facet: %s", qPrintable(facet));
@@ -193,11 +193,11 @@ void SimpleType::setFacetValue( FacetType ft, const QString &value )
   } else if ( ft == PATTERN ) {
     d->mFacetValue.pattern = value;
   } else if ( ft == WSP ) {
-    if ( value == "preserve" )
+    if ( value == QLatin1String("preserve") )
       d->mFacetValue.wsp = PRESERVE;
-    else if ( value == "collapse" )
+    else if ( value == QLatin1String("collapse") )
       d->mFacetValue.wsp = COLLAPSE;
-    else if ( value == "replace" )
+    else if ( value == QLatin1String("replace") )
       d->mFacetValue.wsp = REPLACE;
     else {
       qDebug( "Invalid facet value for whitespace" );
@@ -297,7 +297,7 @@ QString SimpleType::facetPattern() const
 
 bool SimpleType::isRestriction() const
 {
-    static QName XmlAnyType( "http://www.w3.org/2001/XMLSchema", "any" );
+    static QName XmlAnyType( QLatin1String("http://www.w3.org/2001/XMLSchema"), QLatin1String("any") );
     return d->mSubType == TypeRestriction && d->mBaseTypeName != XmlAnyType && !d->mBaseTypeName.isEmpty()
             && !(d->mFacetId & ENUM);
 }

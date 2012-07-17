@@ -62,22 +62,22 @@ Operation::List PortType::operations() const
 
 void PortType::loadXML( ParserContext *context, const QDomElement &element )
 {
-  mName = element.attribute( "name" );
+  mName = element.attribute( QLatin1String("name" ));
   if ( mName.isEmpty() )
-    context->messageHandler()->warning( "PortType: 'name' required" );
+    context->messageHandler()->warning( QLatin1String("PortType: 'name' required") );
 
   QDomElement child = element.firstChildElement();
   while ( !child.isNull() ) {
     NSManager namespaceManager( context, child );
     const QName tagName( child.tagName() );
-    if ( tagName.localName() == "operation" ) {
+    if ( tagName.localName() == QLatin1String("operation") ) {
       Operation operation( nameSpace() );
       operation.loadXML( context, child );
       mOperations.append( operation );
-    } else if ( tagName.localName() == "documentation") {
+    } else if ( tagName.localName() == QLatin1String("documentation")) {
       setDocumentation( child.text().trimmed() );
     } else {
-      context->messageHandler()->warning( QString( "PortType: unknown tag %1" ).arg( child.tagName() ) );
+      context->messageHandler()->warning( QString::fromLatin1( "PortType: unknown tag %1" ).arg( child.tagName() ) );
     }
 
     child = child.nextSiblingElement();
@@ -86,13 +86,13 @@ void PortType::loadXML( ParserContext *context, const QDomElement &element )
 
 void PortType::saveXML( ParserContext *context, QDomDocument &document, QDomElement &parent ) const
 {
-  QDomElement element = document.createElement( "portType" );
+  QDomElement element = document.createElement( QLatin1String("portType" ));
   parent.appendChild( element );
 
   if ( !mName.isEmpty() )
-    element.setAttribute( "name", mName );
+    element.setAttribute( QLatin1String("name"), mName );
   else
-    context->messageHandler()->warning( "PortType: 'name' required" );
+    context->messageHandler()->warning( QLatin1String("PortType: 'name' required") );
 
   Operation::List::ConstIterator it( mOperations.begin() );
   const Operation::List::ConstIterator endIt( mOperations.end() );
