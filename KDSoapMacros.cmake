@@ -8,14 +8,14 @@ macro( KDSOAP_GENERATE_WSDL _sources )
     
     add_custom_command(OUTPUT ${_header_wsdl_FILE} 
        COMMAND ${KDWSDL2CPP}
-       ARGS ${_source_FILE} -o ${CMAKE_CURRENT_BINARY_DIR}/${_header_wsdl_FILE}
-       MAIN_DEPENDENCY ${_source_FILE}
+       ARGS ${_tmp_FILE} -o ${_header_wsdl_FILE}
+       MAIN_DEPENDENCY ${_tmp_FILE}
        DEPENDS ${_tmp_FILE} ${KDWSDL2CPP} )
 
     add_custom_command(OUTPUT ${_source_wsdl_FILE} 
        COMMAND ${KDWSDL2CPP}
-       ARGS -impl ${_header_wsdl_FILE} ${_source_FILE} -o ${CMAKE_CURRENT_BINARY_DIR}/${_source_wsdl_FILE}
-       MAIN_DEPENDENCY ${_source_FILE} ${_header_wsdl_FILE}
+       ARGS -impl ${_header_wsdl_FILE} ${_tmp_FILE} -o ${_source_wsdl_FILE}
+       MAIN_DEPENDENCY ${_tmp_FILE} ${_header_wsdl_FILE}
        DEPENDS ${_tmp_FILE} ${KDWSDL2CPP} )
 
     list(APPEND ${_sources} ${_header_wsdl_FILE} ${_source_wsdl_FILE} )
