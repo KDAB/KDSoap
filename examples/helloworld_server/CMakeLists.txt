@@ -1,9 +1,10 @@
 project(helloworld_server)
 
+set(KSWSDL2CPP_OPTION "-server")
 set(helloworld_server_SRCS main.cpp)
 set(helloworld_server_HDRS helloworld_server.h)
 
-KDSOAP_GENERATE_SERVER_WSDL(helloworld_server_SRCS helloworld.wsdl)
+KDSOAP_GENERATE_WSDL(helloworld_server_SRCS helloworld.wsdl)
 
 qt4_wrap_cpp( helloworld_server_MOCS ${helloworld_server_HDRS} )
 
