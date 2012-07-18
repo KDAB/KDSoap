@@ -2,6 +2,7 @@
 #define HELLOWORLD_SERVER_H
 
 #include "wsdl_helloworld.h"
+#include "KDSoapServerObjectInterface.h"
 
 class ServerObject : public Hello_ServiceServerBase
 {
