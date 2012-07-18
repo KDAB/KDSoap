@@ -4,7 +4,7 @@
 
 #include <QDebug>
 
-static const char* soapEncNs = "http://schemas.xmlsoap.org/soap/encoding/";
+static const QString soapEncNs = QLatin1String("http://schemas.xmlsoap.org/soap/encoding/");
 
 using namespace KWSDL;
 
@@ -222,7 +222,7 @@ KODE::Code Converter::serializeElementArg( const QName& type, const QName& eleme
     if ( mTypeMap.isTypeAny( type ) ) {
         block += "if (!" + localVariableName + ".isNull()) {";
         block.indent();
-        block += varAndMethodBefore + localVariableName + varAndMethodAfter + ";" COMMENT;
+        block += varAndMethodBefore + localVariableName + varAndMethodAfter + ";" + COMMENT;
         block.unindent();
         block += "}";
     } else {
@@ -232,21 +232,21 @@ KODE::Code Converter::serializeElementArg( const QName& type, const QName& eleme
         const QString typeArgs = namespaceString(actualType.nameSpace()) + ", QString::fromLatin1(\"" + actualType.localName() + "\")";
         const QString valueVarName = "_value" + upperlize(name.localName());
         if ( mTypeMap.isComplexType( type, elementType ) ) {
-            block += "KDSoapValue " + valueVarName + '(' + localVariableName + ".serialize(" + nameArg + "));" COMMENT;
+            block += "KDSoapValue " + valueVarName + '(' + localVariableName + ".serialize(" + nameArg + "));" + COMMENT;
         } else {
             if ( mTypeMap.isBuiltinType( type, elementType ) ) {
                 const QString qtTypeName = mTypeMap.localType( type, elementType );
                 const QString value = mTypeMap.serializeBuiltin( type, elementType, localVariableName, qtTypeName );
 
-                block += "KDSoapValue " + valueVarName + "(" + nameArg + ", " + value + ", " + typeArgs + ");" COMMENT;
+                block += "KDSoapValue " + valueVarName + "(" + nameArg + ", " + value + ", " + typeArgs + ");" + COMMENT;
             } else {
-                block += "KDSoapValue " + valueVarName + "(" + nameArg + ", " + localVariableName + ".serialize(), " + typeArgs + ");" COMMENT;
+                block += "KDSoapValue " + valueVarName + "(" + nameArg + ", " + localVariableName + ".serialize(), " + typeArgs + ");" + COMMENT;
             }
         }
         block += valueVarName + ".setNamespaceUri(" + namespaceArg + ");";
         if ( isQualified )
             block += valueVarName + ".setQualified(true);";
-        block += varAndMethodBefore + valueVarName + varAndMethodAfter + ";" COMMENT;
+        block += varAndMethodBefore + valueVarName + varAndMethodAfter + ";" + COMMENT;
     }
     return block;
 }
@@ -256,9 +256,9 @@ static KODE::Code demarshalNameTest( const QName& type, const QString& tagName, 
 {
     KODE::Code demarshalCode;
     if ( type.nameSpace() == XMLSchemaURI && (type.localName() == "any") ) {
-        demarshalCode += QString::fromLatin1(*first? "" : "else ") + "{" COMMENT;
+        demarshalCode += QString::fromLatin1(*first? "" : "else ") + "{" + COMMENT;
     } else {
-        demarshalCode += QString::fromLatin1(*first? "" : "else ") + "if (name == QLatin1String(\"" + tagName + "\")) {" COMMENT;
+        demarshalCode += QString::fromLatin1(*first? "" : "else ") + "if (name == QLatin1String(\"" + tagName + "\")) {" + COMMENT;
     }
     *first = false;
     return demarshalCode;
@@ -269,13 +269,13 @@ KODE::Code Converter::demarshalVar( const QName& type, const QName& elementType,
 {
     KODE::Code code;
     if ( mTypeMap.isTypeAny( type ) ) {
-        code += variableName + " = " + soapValueVarName + ";" COMMENT;
+        code += variableName + " = " + soapValueVarName + ";" + COMMENT;
     } else if ( mTypeMap.isBuiltinType( type, elementType ) ) {
-        code += variableName + " = " + mTypeMap.deserializeBuiltin(type, elementType, soapValueVarName + ".value()", qtTypeName) + ";" COMMENT;
+        code += variableName + " = " + mTypeMap.deserializeBuiltin(type, elementType, soapValueVarName + ".value()", qtTypeName) + ";" + COMMENT;
     } else if ( mTypeMap.isComplexType( type, elementType ) ) {
-        code += variableName + ".deserialize(" + soapValueVarName + ");" COMMENT;
+        code += variableName + ".deserialize(" + soapValueVarName + ");" + COMMENT;
     } else {
-        code += variableName + ".deserialize(" + soapValueVarName + ".value());" COMMENT;
+        code += variableName + ".deserialize(" + soapValueVarName + ".value());"  + COMMENT;
     }
     return code;
 }
@@ -352,13 +352,13 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
     }
     const XSD::Attribute::List attributes = type->attributes();
     if ( !elements.isEmpty() || !attributes.isEmpty() ) {
-        demarshalCode += "const KDSoapValueList& args = mainValue.childValues();" COMMENT;
+        demarshalCode += "const KDSoapValueList& args = mainValue.childValues();" + COMMENT;
     }
 
     if ( !elements.isEmpty() ) {
-        marshalCode += "KDSoapValueList& args = mainValue.childValues();" COMMENT;
+        marshalCode += "KDSoapValueList& args = mainValue.childValues();" + COMMENT;
         if (elements.at(0).isQualified()) {
-            marshalCode += "mainValue.setQualified(true);" COMMENT;
+            marshalCode += "mainValue.setQualified(true);" + COMMENT;
         }
         demarshalCode += "for (int argNr = 0; argNr < args.count(); ++argNr) {";
         demarshalCode.indent();
@@ -366,7 +366,7 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
         demarshalCode += "const QString name = val.name();";
     } else {
         // The Q_UNUSED is not necessarily true in case of attributes, but who cares.
-        demarshalCode += "Q_UNUSED(mainValue);" COMMENT;
+        demarshalCode += "Q_UNUSED(mainValue);" + COMMENT;
     }
 
     if ( type->isArray() ) {
@@ -459,7 +459,7 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
             demarshalCode.unindent();
             demarshalCode += "}";
         }
-        marshalCode += "mainValue.childValues().attributes() += attribs;" COMMENT;
+        marshalCode += "mainValue.childValues().attributes() += attribs;" + COMMENT;
 
         demarshalCode.unindent();
         demarshalCode += "}";

@@ -48,7 +48,7 @@ void Converter::convertServerService()
 
             KODE::Code body;
             const QString responseNs = mWSDL.definitions().targetNamespace();
-            body.addLine("setResponseNamespace(QLatin1String(\"" + responseNs + "\"));" COMMENT);
+            body.addLine("setResponseNamespace(QLatin1String(\"" + responseNs + "\"));" + COMMENT);
             body.addLine("const QByteArray method = request.name().toLatin1();");
 
             PortType portType = mWSDL.findPortType( binding.portTypeName() );
@@ -71,7 +71,7 @@ void Converter::convertServerService()
                 body += "else {";
                 body.indent();
             }
-            body += "KDSoapServerObjectInterface::processRequest(request, response, soapAction);" COMMENT;
+            body += "KDSoapServerObjectInterface::processRequest(request, response, soapAction);"  + COMMENT;
             if (!first) {
                 body.unindent();
                 body += "}";
@@ -119,7 +119,7 @@ void Converter::generateServerMethod(KODE::Code& code, const Binding& binding, c
         if ( argType != "void" ) {
             const QString varName = mNameMapper.escape( lowerName );
 
-            code += argType + ' ' + varName + ";" COMMENT;
+            code += argType + ' ' + varName + ";" + COMMENT;
 
             // what if there's more than one?
             code.addBlock( demarshalVar( part.type(), part.element(), varName, argType, "request" ) );
@@ -152,9 +152,9 @@ void Converter::generateServerMethod(KODE::Code& code, const Binding& binding, c
         }
         const QString methodCall = methodName + '(' + inputVars.join(", ") + ')';
         if (retType == "void") {
-            code += methodCall + ";" COMMENT;
+            code += methodCall + ";" + COMMENT;
         } else {
-            code += retType + " ret = " + methodCall + ";" COMMENT;
+            code += retType + " ret = " + methodCall + ";" + COMMENT;
         }
         code += "if (!hasFault()) {";
         code.indent();

@@ -359,11 +359,11 @@ void Converter::createSimpleTypeSerializer( KODE::Class& newClass, const XSD::Si
             //const QName mostBasicTypeName = simpleTypeList.mostBasicType( baseType );
             //Q_UNUSED(mostBasicTypeName);
             if ( mTypeMap.isBuiltinType( baseType ) ) { // serialize from QString, int, etc.
-                serializeFunc.addBodyLine( "return " + mTypeMap.serializeBuiltin(baseType, QName(), variable.name(), baseTypeName) + ";" COMMENT );
-                deserializeFunc.addBodyLine( variable.name() + " = " + mTypeMap.deserializeBuiltin(baseType, QName(), "value", baseTypeName) + ";" COMMENT );
+                serializeFunc.addBodyLine( "return " + mTypeMap.serializeBuiltin(baseType, QName(), variable.name(), baseTypeName) + ";" + COMMENT );
+                deserializeFunc.addBodyLine( variable.name() + " = " + mTypeMap.deserializeBuiltin(baseType, QName(), "value", baseTypeName) + ";" + COMMENT );
             } else { // inherits another simple type, need to call its serialize/deserialize method
-                serializeFunc.addBodyLine( "return " + variable.name() + ".serialize();" COMMENT );
-                deserializeFunc.addBodyLine( variable.name() + ".deserialize( value );" COMMENT );
+                serializeFunc.addBodyLine( "return " + variable.name() + ".serialize();" + COMMENT );
+                deserializeFunc.addBodyLine( variable.name() + ".deserialize( value );" + COMMENT );
             }
 
         }
@@ -419,12 +419,12 @@ void Converter::createSimpleTypeSerializer( KODE::Class& newClass, const XSD::Si
         KODE::MemberVariable variable( "value", "QVariant" ); // just for the naming
         {
             KODE::Code code;
-            code += "return " + variable.name() + ";" COMMENT;
+            code += "return " + variable.name() + ";" + COMMENT;
             serializeFunc.setBody( code );
         }
         {
             KODE::Code code;
-            code += variable.name() + " = value;" COMMENT;
+            code += variable.name() + " = value;" + COMMENT;
             deserializeFunc.setBody( code );
         }
         break;
