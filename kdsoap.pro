@@ -66,8 +66,8 @@ system('echo KDSOAPSERVERLIB=$$KDSOAPSERVERLIB >> $${QMAKE_CACHE}')
 # forward make test calls to unittests:
 test.target=test
 unittests {
-unix:!macx:test.commands=export LD_LIBRARY_PATH=\"$$PWD/lib\":$$(LD_LIBRARY_PATH); (cd unittests && make test)
-macx:test.commands=export DYLD_LIBRARY_PATH=\"$$PWD/lib\":$$(DYLD_LIBRARY_PATH); (cd unittests && make test)
+unix:!macx:test.commands=export LD_LIBRARY_PATH=\"$${OUT_PWD}/lib\":$$(LD_LIBRARY_PATH); (cd unittests && make test)
+macx:test.commands=export DYLD_LIBRARY_PATH=\"$${OUT_PWD}/lib\":$$(DYLD_LIBRARY_PATH); (cd unittests && make test)
 win32:test.commands=(cd unittests && $(MAKE) test)
 }
 test.depends = first
