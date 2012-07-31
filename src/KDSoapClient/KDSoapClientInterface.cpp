@@ -74,8 +74,11 @@ QNetworkRequest KDSoapClientInterface::Private::prepareRequest(const QString &me
     // (e.g. urn:GoogleSearchAction for google).
     QString soapAction = action;
     if (soapAction.isEmpty()) {
-        // Does the namespace always end with a '/'?
-        soapAction = this->m_messageNamespace + /*QChar::fromLatin1('/') +*/ method;
+        // Does the namespace always end with a '/'? - nope, it doesn't.
+        soapAction = this->m_messageNamespace;
+        if (!soapAction.endsWith(QLatin1Char('/')))
+            soapAction += QLatin1Char('/');
+        soapAction += method;
     }
     //qDebug() << "soapAction=" << soapAction;
 
