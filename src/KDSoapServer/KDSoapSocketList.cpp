@@ -79,7 +79,7 @@ void KDSoapSocketList::disconnectAll()
 
 int KDSoapSocketList::totalConnectionCount() const
 {
-    return m_totalConnectionCount;
+    return m_totalConnectionCount.loadAcquire();
 }
 
 void KDSoapSocketList::resetTotalConnectionCount()

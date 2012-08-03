@@ -22,6 +22,8 @@
 #include "KDSoapServerThread_p.h"
 #include "KDSoapSocketList_p.h"
 #include "KDSoapServerSocket_p.h"
+#include "KDSoapServer.h"
+
 #include <QMetaType>
 
 KDSoapServerThread::KDSoapServerThread(QObject *parent)
@@ -116,7 +118,7 @@ int KDSoapServerThreadImpl::socketCount()
     for (; it != m_socketLists.constEnd(); ++it) {
         sc += it.value()->socketCount();
     }
-    sc += m_incomingConnectionCount;
+    sc += m_incomingConnectionCount.loadAcquire();
     return sc;
 }
 
