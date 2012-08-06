@@ -8,6 +8,6 @@ HEADERS += helloworld_client.h
 KDWSDL = helloworld.wsdl
 
 CONFIG -= console
-QT += gui
+QT += widgets
 macx:CONFIG += app_bundle
 

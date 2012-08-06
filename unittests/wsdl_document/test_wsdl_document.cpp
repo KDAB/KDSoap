@@ -217,7 +217,7 @@ private Q_SLOTS:
     void testMyWsdlSSL()
     {
         if (!QSslSocket::supportsSsl()) {
-            QSKIP("No SSL support on this machine, check that ssleay.so/ssleay32.dll is installed", SkipAll);
+            QSKIP("No SSL support on this machine, check that ssleay.so/ssleay32.dll is installed");
         }
 
 #ifndef QT_NO_SSLSOCKET

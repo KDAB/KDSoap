@@ -468,7 +468,7 @@ private Q_SLOTS:
 #endif
         if (!KDSoapServer::setExpectedSocketCount(numFileDescriptors)) {
             if (expectedConnectedSockets > 500)
-                QSKIP("needs root", SkipSingle);
+                QSKIP("needs root");
             else
                 QVERIFY(false); // should not happen
         }
@@ -585,7 +585,7 @@ private Q_SLOTS:
     void testSuspendUnderLoad()
     {
 #ifdef Q_OS_MAC
-        QSKIP("fails with 'select: Invalid argument' on mac, to be investigated", SkipSingle);
+        QSKIP("fails with 'select: Invalid argument' on mac, to be investigated");
 #endif
         const int numRequests = 5;
         const int numClients = 100;
