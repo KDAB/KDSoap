@@ -53,10 +53,14 @@ private Q_SLOTS:
         // No runtime test yet, just checking that the methods got generated
         if (false) { // Don't contact localhost:8080 :-)
             GroupwiseService::GroupWiseBinding groupwise;
+            groupwise.setGwTraceHeader(true);
             METHODS__AcceptRequest acceptRequest;
             acceptRequest.setComment(QString::fromLatin1("Comment"));
             METHODS__AcceptResponse response = groupwise.acceptRequest(acceptRequest);
             (void)response.status();
+
+            GroupwiseService::GroupWiseEventsBinding groupwiseEvents;
+            groupwiseEvents.setGwTraceHeader(true);
         }
     }
 

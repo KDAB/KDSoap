@@ -265,6 +265,7 @@ bool Converter::convertClientService()
                 createHeader( header, newClass );
             }
             bindingClasses.append(newClass);
+            mHeaderMethods.clear();
 
             // for each operation, create a job class
             Q_FOREACH( const Operation& operation, operations ) {
