@@ -146,21 +146,24 @@ ComplexType Types::complexType( const Element &element ) const
 
 ComplexType Types::complexType( const QName &typeName ) const
 {
-   //qDebug() << "looking for" << typeName << "ns=" << typeName.nameSpace();
-  foreach( const ComplexType& type, d->mComplexTypes ) {
-    //qDebug() << type.nameSpace() << "qualifiedName=" << type.qualifiedName();
-    if( typeName == type.qualifiedName() ) return type;
-  }
-  return ComplexType();
+    qDebug() << Q_FUNC_INFO << "Looking for" << typeName << "ns=" << typeName.nameSpace();
+    foreach( const ComplexType& type, d->mComplexTypes ) {
+        qDebug() << Q_FUNC_INFO << "Testing" << type.qualifiedName() << "ns=" << type.nameSpace();
+        if( typeName == type.qualifiedName() ) return type;
+    }
+    qDebug() << Q_FUNC_INFO << "Type Name:" << typeName << "not found." << "NS:" << typeName.nameSpace() << "LN:" << typeName.localName() << "PF:" << typeName.prefix(); 
+    return ComplexType();
 }
 
 SimpleType Types::simpleType( const QName &typeName ) const
 {
-  foreach( const SimpleType& type, d->mSimpleTypes ) {
-    if ( type.qualifiedName() == typeName ) return type;
-  }
-  qDebug() << "Types::simpleType():" << typeName << "not found";
-  return SimpleType();
+    qDebug() << Q_FUNC_INFO << "Looking for" << typeName << "ns=" << typeName.nameSpace();
+    foreach( const SimpleType& type, d->mSimpleTypes ) {
+        qDebug() << Q_FUNC_INFO << "Testing" << type.qualifiedName() << "ns=" << type.nameSpace();
+        if ( type.qualifiedName() == typeName ) return type;
+    }
+    qDebug() << Q_FUNC_INFO << "Type Name:" << typeName << "not found." << "NS:" << typeName.nameSpace() << "LN:" << typeName.localName() << "PF:" << typeName.prefix();
+    return SimpleType();
 }
 
 }

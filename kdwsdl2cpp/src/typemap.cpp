@@ -156,7 +156,7 @@ QString TypeMap::localType( const QName &typeName ) const
 {
   QList<Entry>::ConstIterator it = typeEntry( typeName );
   if ( it == mTypeMap.constEnd() ) {
-      qDebug() << "ERROR: basic type not found:" << typeName;
+      qDebug() << Q_FUNC_INFO << "ERROR: basic type not found:" << typeName;
       return QString();
   }
   return (*it).localType;
@@ -240,7 +240,7 @@ QString TypeMap::localTypeForElement( const QName &elementName ) const
       return (*it).localType;
   }
 
-  qDebug() << "TypeMap::localTypeForElement: unknown type" << elementName;
+  qDebug() << Q_FUNC_INFO << "TypeMap::localTypeForElement: unknown type" << elementName;
   return QString();
 }
 
@@ -251,7 +251,7 @@ QName TypeMap::typeForElement( const QName &elementName ) const
       return (*it).baseType;
   }
 
-  qDebug() << "TypeMap::typeForElement: unknown type" << elementName;
+  qDebug() << Q_FUNC_INFO << "TypeMap::typeForElement: unknown type" << elementName;
   return QName();
 }
 
@@ -344,13 +344,13 @@ void TypeMap::addSchemaTypes( const XSD::Types &types, const QString& ns )
 
     QName type = elemIt.type();
     if ( type.isEmpty() ) {
-        qDebug() << "ERROR: element without type" << elemIt.nameSpace() << elemIt.name();
+        qDebug() << Q_FUNC_INFO << "ERROR: element without type" << elemIt.nameSpace() << elemIt.name();
     }
 
     // Resolve to localType(type)
     QList<Entry>::ConstIterator it = typeEntry(type);
     if ( it == mTypeMap.constEnd() ) {
-        qDebug() << "ERROR: basic type not found:" << type;
+        qDebug() << Q_FUNC_INFO << "ERROR: basic type not found:" << type;
         Q_ASSERT(0);
         continue;
     }
@@ -426,13 +426,13 @@ QString TypeMap::localInputType( const QName &typeName, const QName& elementName
     if ( !typeName.isEmpty() ) {
         it = typeEntry( typeName );
         if ( it == mTypeMap.constEnd() ) {
-            qDebug() << "ERROR: type not found:" << typeName;
+            qDebug() << Q_FUNC_INFO << "ERROR: type not found:" << typeName;
             return QString();
         }
     } else {
         it = elementEntry( elementName );
         if ( it == mElementMap.constEnd() ) {
-            qDebug() << "ERROR: element not found:" << elementName;
+            qDebug() << Q_FUNC_INFO << "ERROR: element not found:" << elementName;
             return QString();
         }
     }
