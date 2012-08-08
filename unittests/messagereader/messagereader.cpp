@@ -71,6 +71,7 @@ private Q_SLOTS:
 
         if ( msg != msg2 ) {
             QEXPECT_FAIL( "", "There is different whitespace in the (unused) value of getEaster", Continue );
+            QCOMPARE(msg, msg2);
             qDebug() << msg;
             qDebug() << msg2;
         }
