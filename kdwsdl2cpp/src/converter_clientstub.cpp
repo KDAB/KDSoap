@@ -267,6 +267,12 @@ bool Converter::convertClientService()
             bindingClasses.append(newClass);
             mHeaderMethods.clear();
 
+            QString jobsNamespace = nameSpace;
+            if (uniqueBindings.count() > 1) {
+                // Multiple bindings: use <Service>::<Binding>Jobs as namespace for the job classes
+                jobsNamespace += "::" + KODE::Style::className(bindingName.localName()) + "Jobs";
+            }
+
             // for each operation, create a job class
             Q_FOREACH( const Operation& operation, operations ) {
                 Operation::OperationType opType = operation.operationType();
@@ -274,12 +280,11 @@ bool Converter::convertClientService()
                     continue;
 
                 const QString operationName = operation.name();
-                KODE::Class jobClass( upperlize( operation.name() ) + QLatin1String("Job"), nameSpace );
+                KODE::Class jobClass( upperlize( operation.name() ) + QLatin1String("Job"), jobsNamespace );
                 jobClass.addInclude( QString(), fullyQualified( newClass ) );
                 jobClass.addHeaderInclude( QLatin1String("KDSoapClient/KDSoapJob.h") );
                 if ( !Settings::self()->exportDeclaration().isEmpty() )
                     jobClass.setExportDeclaration( Settings::self()->exportDeclaration() );
-                jobClass.setNameSpace( Settings::self()->nameSpace() );
 
                 jobClass.addBaseClass( KODE::Class( QLatin1String("KDSoapJob") ) );
 
