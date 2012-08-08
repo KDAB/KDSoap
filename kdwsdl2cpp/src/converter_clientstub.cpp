@@ -60,7 +60,7 @@ bool Converter::convertClientService()
         Q_ASSERT(!service.name().isEmpty());
 
         QSet<QName> uniqueBindings = mWSDL.uniqueBindings( service );
-        //qDebug() << service.name() << uniqueBindings;
+        //qDebug() << "Looking at" << service.name() << uniqueBindings;
 
         Q_FOREACH( const QName& bindingName, uniqueBindings ) {
             const Binding binding = mWSDL.findBinding( bindingName );
@@ -374,7 +374,7 @@ bool Converter::convertClientService()
                 slot.setBody( slotCode );
                 jobClass.addFunction( slot );
 
-                mClasses += jobClass;
+                mClasses.addClass(jobClass);
             } // end of for each operation (job creation)
         } // end of for each port
     } // end of for each service
