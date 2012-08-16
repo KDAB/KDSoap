@@ -64,7 +64,7 @@ class KXMLCOMMON_EXPORT QName
     QString mPrefix;
 };
 
-inline uint qHash(const QName& qn) { return ::qHash(qn.qname()); }
+inline uint qHash(const QName& qn) { return qHash(qn.nameSpace())^qHash(qn.localName()); }
 
 QDebug operator<<(QDebug dbg, const QName &qn);
 
