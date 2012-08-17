@@ -41,7 +41,7 @@ QName::QName( const QString &nameSpace, const QString &name )
       mPrefix( "" )
 {
     // if localName contains a ':' prefix will also be correctly extract else mLocalName will be set to localName
-    parse( localName );
+    parse( name );
 }
 
 void QName::operator=( const QString &name )
