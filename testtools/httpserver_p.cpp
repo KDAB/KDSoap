@@ -192,7 +192,12 @@ public:
             return nextPendingConnection();
         }
     }
+
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
+    virtual void incomingConnection(qintptr socketDescriptor)
+#else
     virtual void incomingConnection(int socketDescriptor)
+#endif
     {
 #ifndef QT_NO_OPENSSL
         if (doSsl) {
