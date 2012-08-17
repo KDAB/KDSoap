@@ -28,14 +28,20 @@ QName::QName()
 }
 
 QName::QName( const QString &name )
+    : mNameSpace( "" ),
+      mLocalName( "" ),
+      mPrefix( "" )
 {
-  parse( name );
+    parse( name );
 }
 
-QName::QName( const QString &nameSpace, const QString &localName )
-  : mNameSpace( nameSpace ), mLocalName( localName )
+QName::QName( const QString &nameSpace, const QString &name )
+    : mNameSpace( nameSpace ),
+      mLocalName( "" ),
+      mPrefix( "" )
 {
-    Q_ASSERT(!localName.contains(QLatin1Char(':')));
+    // if localName contains a ':' prefix will also be correctly extract else mLocalName will be set to localName
+    parse( localName );
 }
 
 void QName::operator=( const QString &name )

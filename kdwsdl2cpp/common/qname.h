@@ -40,7 +40,7 @@ class KXMLCOMMON_EXPORT QName
     explicit QName( const QString &name );
 
     // Create a QName with namespace+localname
-    QName( const QString &nameSpace, const QString &localName );
+    QName( const QString &nameSpace, const QString &name );
 
     void operator=( const QString &name );
 
