@@ -191,7 +191,7 @@ while [ $# -ne 0 ] ; do
         -spec)
             shift
             if [ $# -eq 0 ] ; then
-                echo "-prefix needs an argument" 2>&1
+                echo "-spec needs an argument" 2>&1
                 usage
             fi
             SPEC="-spec $1"
