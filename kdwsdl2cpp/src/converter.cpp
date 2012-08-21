@@ -249,8 +249,14 @@ void Converter::cleanupUnusedTypes()
     Message::List tmpMessages = definitions.messages();
 
     QSet<QName> conflictingTypeSet = tmpSimpleTypeNames.intersect( tmpComplexTypeNames );
-    if ( conflictingTypeSet.count() > 0 )
-        qWarning() << QObject::tr("Error: There are:") << conflictingTypeSet.count() << QObject::tr("Simple and Complex Types with the same name present.");
+    if ( conflictingTypeSet.count() > 0 ) {
+        QString msg;
+        msg.append("\n");
+        Q_FOREACH( const QName& name, conflictingTypeSet ) {
+            msg.append( "Prefix: " + name.prefix() + " NameSpace: " + name.nameSpace() + " LocalName: " + name.localName() + "\n" );
+        }
+        qWarning() << "ERROR: There are:" << conflictingTypeSet.count() << "Simple and Complex Types that have the same name present:" << msg;
+    }
 
     // Remove expected conflicts between SimpleType and Element Sets
     QSet<QName> simpleTypeConflictingElementsSubtracted = tmpSimpleTypeNames.subtract( tmpElementNames );
@@ -270,51 +276,49 @@ void Converter::cleanupUnusedTypes()
     // Check for unexpected conflicts
     QSet<QName> conflictingSimpleTypeAndElementSet = elementConflictingSimpleTypesSubtracted.intersect( simpleTypeConflictingElementsSubtracted );
     // Resolve unexpected conflictings
-    if ( conflictingSimpleTypeAndElementSet.count() > 0 ) {
-        Q_FOREACH( const QName& name, conflictingSimpleTypeAndElementSet.toList() ) {
-            Q_FOREACH( const QName& eName, elementConflictingSimpleTypesSubtractedOriginal.toList() ) {
-                if ( lowerlize( name.localName() ) == eName.localName() ) {
-                    // resolve conflicting elements...
-                    //pre-pend "element" to conflicting Element name
-                    QString newElementName = QLatin1String( "element" ) + name.localName();
-                    for ( QList< XSD::Element >::iterator elementIt = tmpElements.begin(); elementIt != tmpElements.end(); ++elementIt ) {
-                        if ( (*elementIt).qualifiedName() == eName ) {
-                            (*elementIt).setName( newElementName );
+    Q_FOREACH( const QName& name, conflictingSimpleTypeAndElementSet.toList() ) {
+        Q_FOREACH( const QName& eName, elementConflictingSimpleTypesSubtractedOriginal.toList() ) {
+            if ( lowerlize( name.localName() ) == eName.localName() ) {
+                // resolve conflicting elements...
+                //pre-pend "element" to conflicting Element name
+                QString newElementName = QLatin1String( "element" ) + name.localName();
+                for ( QList< XSD::Element >::iterator elementIt = tmpElements.begin(); elementIt != tmpElements.end(); ++elementIt ) {
+                    if ( (*elementIt).qualifiedName() == eName ) {
+                        (*elementIt).setName( newElementName );
+                    }
+                    if ( (*elementIt).type() == eName ) {
+                        if ( (*elementIt).type().prefix().size() ) {
+                            QName tmpElementType( (*elementIt).type().nameSpace(), (*elementIt).type().prefix() + QLatin1Char( ':' ) + newElementName );
+                            (*elementIt).setType( tmpElementType );
                         }
-                        if ( (*elementIt).type() == eName ) {
-                            if ( (*elementIt).type().prefix().size() ) {
-                                QName tmpElementType( (*elementIt).type().nameSpace(), (*elementIt).type().prefix() + QLatin1Char( ':' ) + newElementName );
-                                (*elementIt).setType( tmpElementType );
+                        else {
+                            QName tmpElementType( (*elementIt).type().nameSpace(), newElementName );
+                            (*elementIt).setType( tmpElementType );
+                        }
+                    }
+                }
+                for ( QList< XSD::SimpleType >::iterator simpleIt = tmpSimpleTypes.begin(); simpleIt != tmpSimpleTypes.end(); ++simpleIt ) {
+                    if ( (*simpleIt).qualifiedName() == eName ) {
+                        (*simpleIt).setName( newElementName );
+                    }
+                }
+                // resolve conflicting messages and their constiuate parts...
+                for ( QList< Message >::iterator messageIt = tmpMessages.begin(); messageIt != tmpMessages.end(); ++messageIt ) {
+                    Part::List parts = (*messageIt).parts();
+                    for ( QList< Part >::iterator partIt = parts.begin(); partIt != parts.end(); ++partIt ) {
+                        if ( lowerlize( name.localName() ) == (*partIt).element().localName() ) {
+                            if ( (*partIt).element().prefix().size() ) {
+                                QName tmpPartElement( (*partIt).element().prefix() + QLatin1Char(':') + newElementName );
+                                tmpPartElement.setNameSpace( (*partIt).element().nameSpace() );
+                                (*partIt).setElement( tmpPartElement );
                             }
                             else {
-                                QName tmpElementType( (*elementIt).type().nameSpace(), newElementName );
-                                (*elementIt).setType( tmpElementType );
+                                QName tmpPartElement( (*partIt).element().nameSpace(), newElementName );
+                                (*partIt).setElement( tmpPartElement );
                             }
                         }
                     }
-                    for ( QList< XSD::SimpleType >::iterator simpleIt = tmpSimpleTypes.begin(); simpleIt != tmpSimpleTypes.end(); ++simpleIt ) {
-                        if ( (*simpleIt).qualifiedName() == eName ) {
-                            (*simpleIt).setName( newElementName );
-                        }
-                    }
-                    // resolve conflicting messages and their constiuate parts...
-                    for ( QList< Message >::iterator messageIt = tmpMessages.begin(); messageIt != tmpMessages.end(); ++messageIt ) {
-                        Part::List parts = (*messageIt).parts();
-                        for ( QList< Part >::iterator partIt = parts.begin(); partIt != parts.end(); ++partIt ) {
-                            if ( lowerlize( name.localName() ) == (*partIt).element().localName() ) {
-                                if ( (*partIt).element().prefix().size() ) {
-                                    QName tmpPartElement( (*partIt).element().prefix() + QLatin1Char(':') + newElementName );
-                                    tmpPartElement.setNameSpace( (*partIt).element().nameSpace() );
-                                    (*partIt).setElement( tmpPartElement );
-                                }
-                                else {
-                                    QName tmpPartElement( (*partIt).element().nameSpace(), newElementName );
-                                    (*partIt).setElement( tmpPartElement );
-                                }
-                            }
-                        }
-                        (*messageIt).setParts( parts );
-                    }
+                    (*messageIt).setParts( parts );
                 }
             }
         }
@@ -338,71 +342,69 @@ void Converter::cleanupUnusedTypes()
     // Check for unexpected conflicts
     QSet<QName> conflictingComplexTypeAndElementSet = elementConflictingComplexTypesSubtracted.intersect( complexTypeConflictingElementsSubtracted );
     // Resolve unexpected conflictings
-    if ( conflictingComplexTypeAndElementSet.count() > 0 ) {
-        Q_FOREACH( const QName& name, conflictingComplexTypeAndElementSet.toList() ) {
-            Q_FOREACH( const QName& eName, elementConflictingComplexTypesSubtractedOriginal.toList() ) {
-                if ( lowerlize( name.localName() ) == eName.localName() ) {
-                    // resolve conflicting elements...
-                    // pre-pend "element" to conflicting Element name
-                    QString newElementName = QLatin1String( "element" ) + name.localName();
-                    for ( QList< XSD::Element >::iterator elementIt = tmpElements.begin(); elementIt != tmpElements.end(); ++elementIt ) {
+    Q_FOREACH( const QName& name, conflictingComplexTypeAndElementSet.toList() ) {
+        Q_FOREACH( const QName& eName, elementConflictingComplexTypesSubtractedOriginal.toList() ) {
+            if ( lowerlize( name.localName() ) == eName.localName() ) {
+                // resolve conflicting elements...
+                // pre-pend "element" to conflicting Element name
+                QString newElementName = QLatin1String( "element" ) + name.localName();
+                for ( QList< XSD::Element >::iterator elementIt = tmpElements.begin(); elementIt != tmpElements.end(); ++elementIt ) {
+                    if ( (*elementIt).qualifiedName() == eName ) {
+                        (*elementIt).setName( newElementName );
+                    }
+                    if ( (*elementIt).type() == eName ) {
+                        if ( (*elementIt).type().prefix().size() )
+                        {
+                            QName tmpElementType( (*elementIt).type().nameSpace(), (*elementIt).type().prefix() + QLatin1Char( ':' ) + newElementName );
+                            (*elementIt).setType( tmpElementType );
+                        }
+                        else {
+                            QName tmpElementType( (*elementIt).type().nameSpace(), newElementName );
+                            (*elementIt).setType( tmpElementType );
+                        }
+                    }
+                }
+                for ( QList< XSD::ComplexType >::iterator complexIt = tmpComplexTypes.begin(); complexIt != tmpComplexTypes.end(); ++complexIt ) {
+                    if ( (*complexIt).qualifiedName() == eName ) {
+                        (*complexIt).setName( newElementName );
+                        if ( (*complexIt).isArray() ) {
+                            if ( (*complexIt).arrayType() == eName ) {
+                                if ( (*complexIt).arrayType().prefix().size() ) {
+                                    QName tmpArrayType( (*complexIt).arrayType().nameSpace(), (*complexIt).arrayType().prefix() + QLatin1Char( ':' ) + newElementName );
+                                    (*complexIt).setArrayType( tmpArrayType );
+                                }
+                                else {
+                                    QName tmpArrayType( (*complexIt).arrayType().nameSpace(), newElementName );
+                                    (*complexIt).setArrayType( tmpArrayType );
+                                }
+                            }
+                        }
+                    }
+                    XSD::Element::List elements = (*complexIt).elements();
+                    for ( QList< XSD::Element >::iterator elementIt = elements.begin(); elementIt != elements.end(); ++elementIt ) {
                         if ( (*elementIt).qualifiedName() == eName ) {
                             (*elementIt).setName( newElementName );
                         }
-                        if ( (*elementIt).type() == eName ) {
-                            if ( (*elementIt).type().prefix().size() )
-                            {
-                                QName tmpElementType( (*elementIt).type().nameSpace(), (*elementIt).type().prefix() + QLatin1Char( ':' ) + newElementName );
-                                (*elementIt).setType( tmpElementType );
+                    }
+                    (*complexIt).setElements( elements );
+                }
+                // resolve conflicting messages and their constiuate parts...
+                for ( QList< Message >::iterator messageIt = tmpMessages.begin(); messageIt != tmpMessages.end(); ++messageIt ) {
+                    Part::List parts = (*messageIt).parts();
+                    for ( QList< Part >::iterator partIt = parts.begin(); partIt != parts.end(); ++partIt ) {
+                        if ( lowerlize( name.localName() ) == (*partIt).element().localName() ) {
+                            if ( (*partIt).element().prefix().size() ) {
+                                QName tmpPartElement( (*partIt).element().prefix() + QLatin1Char(':') + newElementName );
+                                tmpPartElement.setNameSpace( (*partIt).element().nameSpace() );
+                                (*partIt).setElement( tmpPartElement );
                             }
                             else {
-                                QName tmpElementType( (*elementIt).type().nameSpace(), newElementName );
-                                (*elementIt).setType( tmpElementType );
+                                QName tmpPartElement( (*partIt).element().nameSpace(), newElementName );
+                                (*partIt).setElement( tmpPartElement );
                             }
                         }
                     }
-                    for ( QList< XSD::ComplexType >::iterator complexIt = tmpComplexTypes.begin(); complexIt != tmpComplexTypes.end(); ++complexIt ) {
-                        if ( (*complexIt).qualifiedName() == eName ) {
-                            (*complexIt).setName( newElementName );
-                            if ( (*complexIt).isArray() ) {
-                                if ( (*complexIt).arrayType() == eName ) {
-                                    if ( (*complexIt).arrayType().prefix().size() ) {
-                                        QName tmpArrayType( (*complexIt).arrayType().nameSpace(), (*complexIt).arrayType().prefix() + QLatin1Char( ':' ) + newElementName );
-                                        (*complexIt).setArrayType( tmpArrayType );
-                                    }
-                                    else {
-                                        QName tmpArrayType( (*complexIt).arrayType().nameSpace(), newElementName );
-                                        (*complexIt).setArrayType( tmpArrayType );
-                                    }
-                                }
-                            }
-                        }
-                        XSD::Element::List elements = (*complexIt).elements();
-                        for ( QList< XSD::Element >::iterator elementIt = elements.begin(); elementIt != elements.end(); ++elementIt ) {
-                            if ( (*elementIt).qualifiedName() == eName ) {
-                                (*elementIt).setName( newElementName );
-                            }
-                        }
-                        (*complexIt).setElements( elements );
-                    }
-                    // resolve conflicting messages and their constiuate parts...
-                    for ( QList< Message >::iterator messageIt = tmpMessages.begin(); messageIt != tmpMessages.end(); ++messageIt ) {
-                        Part::List parts = (*messageIt).parts();
-                        for ( QList< Part >::iterator partIt = parts.begin(); partIt != parts.end(); ++partIt ) {
-                            if ( lowerlize( name.localName() ) == (*partIt).element().localName() ) {
-                                if ( (*partIt).element().prefix().size() ) {
-                                    QName tmpPartElement( (*partIt).element().prefix() + QLatin1Char(':') + newElementName );
-                                    tmpPartElement.setNameSpace( (*partIt).element().nameSpace() );
-                                    (*partIt).setElement( tmpPartElement );
-                                }
-                                else {
-                                    QName tmpPartElement( (*partIt).element().nameSpace(), newElementName );
-                                    (*partIt).setElement( tmpPartElement );
-                                }
-                            }
-                        }
-                        (*messageIt).setParts( parts );
-                    }
+                    (*messageIt).setParts( parts );
                 }
             }
         }
