@@ -67,8 +67,7 @@ public:
      * Constructs a value from a QVariant.
      *
      * \param name the argument name (which corresponds to the element or attribute name in the XML)
-     * \param valueVariant this QVariant can hold either a simple value, or a KDSoapValueList of child values.
-     *          (the KDSoapValueList support is mostly for the convenience of the kdwsdl2cpp generated code)
+     * \param valueVariant the value of the argument
      * \param typeNameSpace namespace of the type of this value; this is only useful if using KDSoapMessage::EncodedUse
      * \param typeName localname of the type of this value; this is only useful if using KDSoapMessage::EncodedUse
      */
@@ -256,8 +255,7 @@ public:
      * Convenience method for adding an argument to the list.
      *
      * \param argumentName the argument name (which corresponds to the element or attribute name in the XML)
-     * \param argumentValue this QVariant can hold either a simple value, or a KDSoapValueList of child values.
-     *          (the KDSoapValueList support is mostly for the convenience of the \c kdwsdl2cpp generated code)
+     * \param argumentValue the value of the argument
      * \param typeNameSpace namespace of the type of this value; this is only useful if using KDSoapMessage::EncodedUse
      * \param typeName localname of the type of this value; this is only useful if using KDSoapMessage::EncodedUse
      *
