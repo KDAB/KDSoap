@@ -119,10 +119,6 @@ if exist src\src.pro (
     del /Q lib 2> NUL
     del /Q bin 2> NUL
 )
-del .qmake.cache 2> NUL
-
-echo. > .qmake.cache
-
 :Options
 if "%1" == ""          goto :EndOfOptions
 
@@ -221,25 +217,21 @@ if "%STATIC_BUILD_SUPPORTED%" == "true" (
 :EndOfOptions
 
 if "%debug_and_release%" == "yes" (
-	echo CONFIG += debug_and_release build_all >> .qmake.cache
+	set QMAKE_ARGS=%QMAKE_ARGS% CONFIG+=debug_and_release CONFIG-=build_all
 	goto :END_BUILDTYPE
 )
 
 if "%release%" == "yes" (
     if "%debug%" == "yes" (
-        echo CONFIG += debug_and_release build_all >> .qmake.cache
+		set QMAKE_ARGS=%QMAKE_ARGS% CONFIG+=debug_and_release CONFIG+=build_all
 	set release="yes (combined)"
 	set debug="yes (combined)"
     ) else (
-        echo CONFIG += release >> .qmake.cache
-        echo CONFIG -= debug >> .qmake.cache
-	echo CONFIG -= debug_and_release >> .qmake.cache
+		set QMAKE_ARGS=%QMAKE_ARGS% CONFIG+=release CONFIG-=debug CONFIG-=debug_and_release
     )
 ) else (
     if "%debug%" == "yes" (
-        echo CONFIG -= release >> .qmake.cache
-	echo CONFIG += debug >> .qmake.cache
-	echo CONFIG -= debug_and_release >> .qmake.cache
+        set QMAKE_ARGS=%QMAKE_ARGS% CONFIG-=release CONFIG+=debug CONFIG-=debug_and_release
     ) else (
 	echo "Internal error. At least one of debug and release must be set"
 	goto :CleanEnd
@@ -248,17 +240,17 @@ if "%release%" == "yes" (
 :END_BUILDTYPE
 
 if "%shared%" == "yes" (
-    echo CONFIG += shared >> .qmake.cache
+    set QMAKE_ARGS=%QMAKE_ARGS% CONFIG+=shared
 ) else (
-    echo CONFIG += static >> .qmake.cache
+    set QMAKE_ARGS=%QMAKE_ARGS% CONFIG+=static
     rem This is needed too, when Qt is static, otherwise it sets -DQT_DLL and linking fails.
     if "%qt_static%" == "yes" (
-      echo CONFIG += qt_static >> .qmake.cache
+      set QMAKE_ARGS=%QMAKE_ARGS% CONFIG+=qt_static
     )
 )
 
 if "%unittests%" == "yes" (
-    echo CONFIG += unittests >> .qmake.cache
+    set QMAKE_ARGS=%QMAKE_ARGS% CONFIG+=unittests
 )
 
 set default_prefix=C:\\KDAB\\%Product_mix%-%VERSION%
@@ -266,15 +258,14 @@ set default_prefix=C:\\KDAB\\%Product_mix%-%VERSION%
 if "%prefix%" == "" (
     set prefix="%default_prefix%"
 )
-echo %PRODUCT_CAP%_INSTALL_PREFIX = %prefix% >> .qmake.cache
+set QMAKE_ARGS=%QMAKE_ARGS% %PRODUCT_CAP%_INSTALL_PREFIX=%prefix%
 
-
-echo VERSION=%VERSION% >> .qmake.cache
-echo CONFIG += %product_low%_target >> .qmake.cache
+set QMAKE_ARGS=%QMAKE_ARGS% VERSION=%VERSION%
+set QMAKE_ARGS=%QMAKE_ARGS% CONFIG+=%product_low%_target
 
 if exist "%KDAB_QT_PATH%\include\Qt\private" (
-    echo CONFIG += have_private_qt_headers >> .qmake.cache
-    echo INCLUDEPATH += %KDAB_QT_PATH%/include/Qt/private >> .qmake.cache
+    set QMAKE_ARGS=%QMAKE_ARGS% CONFIG+=have_private_qt_headers
+    set QMAKE_ARGS=%QMAKE_ARGS% INCLUDEPATH+=%KDAB_QT_PATH%/include/Qt/private
 ) else (
     rem echo KDAB_QT_PATH must point to an installation that has private headers installed.
     rem echo Some features will not be available.
@@ -288,10 +279,7 @@ echo   Shared build............: %shared% (default: yes)
 echo   Compiled-In Unit Tests..: %unittests% (default: no)
 echo.
 
-rem Make a copy so that each run of qmake on $product.pro starts clean
-copy .qmake.cache .confqmake.cache
-
-%KDAB_QT_PATH%\bin\qmake %SOURCE_DIR%\%product_low%.pro -recursive "%PRODUCT_CAP%_BASE=%CD%"
+%KDAB_QT_PATH%\bin\qmake %SOURCE_DIR%\%product_low%.pro -recursive %QMAKE_ARGS% "%PRODUCT_CAP%_BASE=%CD%"
 
 if errorlevel 1 (
     echo qmake failed
@@ -320,6 +308,5 @@ echo       enable/disable compiled-in unittests (default is disabled)
 echo.
 
 :CleanEnd
-del .qmake.cache
 
 :end
