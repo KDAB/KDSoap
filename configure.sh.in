@@ -214,46 +214,36 @@ if [ -z "$prefix" ] ; then
     prefix="$default_prefix"
 fi
 
-echo -n > ".qmake.cache"
-(
-    echo "VERSION=$VERSION"
-    echo "CONFIG += ${product}_target"
+QMAKE_ARGS="$QMAKE_ARGS VERSION=$VERSION"
+QMAKE_ARGS="$QMAKE_ARGS CONFIG+=${product}_target"
 
-    if [ "$debug" = "yes" ]; then
-      echo "CONFIG -= release"
-      echo "CONFIG += debug"
-      echo "CONFIG -= debug_and_release"
-    fi
+if [ "$debug" = "yes" ]; then
+    QMAKE_ARGS="$QMAKE_ARGS CONFIG-=release CONFIG+=debug CONFIG-=debug_and_release"
+fi
 
-    if [ "$release" = "yes" ]; then
-      echo "CONFIG += release"
-      echo "CONFIG -= debug"
-      echo "CONFIG -= debug_and_release"
-    fi
+if [ "$release" = "yes" ]; then
+    QMAKE_ARGS="$QMAKE_ARGS CONFIG+=release CONFIG-=debug CONFIG-=debug_and_release"
+fi
 
-    [ "$hide_symbols" = "yes" ] &&  echo "CONFIG += hide_symbols"
-    [ "$unittests" = "yes" ] && echo "CONFIG += unittests"
+[ "$hide_symbols" = "yes" ] && QMAKE_ARGS="$QMAKE_ARGS CONFIG+=hide_symbols"
 
-    if [ "$shared" = "yes" ]; then
-      echo "CONFIG -= static"
-      echo "CONFIG -= staticlib"
-      echo "CONFIG += shared"
-    else
-      echo "CONFIG += static"
-      echo "CONFIG += staticlib"
-      echo "CONFIG -= shared"
-    fi
+[ "$unittests" = "yes" ] && QMAKE_ARGS="$QMAKE_ARGS CONFIG+=unittests"
 
-    if [ -d "$QTDIR/include/Qt/private" ] ; then
-	echo "CONFIG += have_private_qt_headers"
-	echo "INCLUDEPATH += $QTDIR/include/Qt/private"
-    #else
-        #echo "QTDIR must point to an installation that has private headers installed."
-        #echo "Some features will not be available."    
-    fi
-echo "${PRODUCT}_INSTALL_PREFIX = $prefix"
+if [ "$shared" = "yes" ]; then
+    QMAKE_ARGS="$QMAKE_ARGS CONFIG-=static CONFIG-=staticlib CONFIG+=shared"
+else
+    QMAKE_ARGS="$QMAKE_ARGS CONFIG+=static CONFIG+=staticlib CONFIG-=shared"
+fi
 
-) >> ".qmake.cache"
+if [ -d "$QTDIR/include/Qt/private" ] ; then
+    QMAKE_ARGS="$QMAKE_ARGS CONFIG+=have_private_qt_headers"
+    QMAKE_ARGS="$QMAKE_ARGS INCLUDEPATH+=$QTDIR/include/Qt/private"
+#else
+    #echo "QTDIR must point to an installation that has private headers installed."
+    #echo "Some features will not be available."
+fi
+
+QMAKE_ARGS="$QMAKE_ARGS ${PRODUCT}_INSTALL_PREFIX=$prefix"
 
 cat <<EOF 1>&2
 $ProductSpace v$VERSION configuration:
@@ -285,9 +275,6 @@ cat <<EOF 1>&2
 
 EOF
 
-# Make a copy so that each run of qmake on $product.pro starts clean
-cp -f .qmake.cache .confqmake.cache
-
-"$QTDIR"/bin/qmake ${SPEC} "$SOURCE_DIR"/$product.pro -recursive "${PRODUCT}_BASE=`pwd`" || die "qmake failed"
+"$QTDIR"/bin/qmake ${SPEC} "$SOURCE_DIR"/$product.pro -recursive $QMAKE_ARGS "${PRODUCT}_BASE=`pwd`" || die "qmake failed"
 
 echo "Ok, now run make, then make install to install into $prefix"
