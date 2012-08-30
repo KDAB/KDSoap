@@ -221,6 +221,7 @@
   <message name="Header">
     <part element="kdab:LoginElement" name="LoginHeader"/>
     <part element="kdab:SessionElement" name="SessionHeader"/>
+    <part element="kdab:SessionElement" name="OutputHeader"/>
   </message>
 
   <portType name='MyWsdlPortType'>
@@ -267,6 +268,7 @@
         <soap:body use='literal'/>
       </input>
       <output>
+        <soap:header use="literal" message="kdab:Header" part="OutputHeader"/>
         <soap:body use='literal'/>
       </output>
     </operation>

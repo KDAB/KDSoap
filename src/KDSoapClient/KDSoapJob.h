@@ -27,6 +27,7 @@
 #include <QtCore/QObject>
 
 class KDSoapMessage;
+class KDSoapHeaders;
 
 /**
  * \brief KDSoapJob provides a job-based interface to handle asynchronous KD Soap calls.
@@ -92,6 +93,12 @@ public:
     KDSoapMessage reply() const;
 
     /**
+     * Returns the reply headers received from the SOAP server once the request was completed.
+     * Only valid once the request is completed and finished() was emitted.
+     */
+    KDSoapHeaders returnHeaders() const;
+
+    /**
      * Starts the job. The job will emit finished() once done.
      */
     void start();
@@ -117,7 +124,7 @@ protected:
      * \internal
      * Sets reply, emits finished() signal and manages deletion of job
      */
-    void emitFinished(const KDSoapMessage & reply);
+    void emitFinished(const KDSoapMessage & reply, const KDSoapHeaders & replyHeaders);
 
 private:
     class Private;

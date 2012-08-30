@@ -161,9 +161,14 @@ class KDSOAP_EXPORT KDSoapHeaders : public QList<KDSoapMessage>
 {
 public:
     /**
-     * Convenience method: return the header with a given name (assumes unicity)
+     * Convenience method: return the header with a given XML element name (assumes unicity)
      */
     KDSoapMessage header(const QString& name) const;
+
+    /**
+     * Convenience method: return the header with a given XML element name and namespace (assumes unicity)
+     */
+    KDSoapMessage header(const QString& name, const QString& namespaceUri) const;
 };
 
 /**

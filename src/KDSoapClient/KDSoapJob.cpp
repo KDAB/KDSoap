@@ -26,6 +26,7 @@
 class KDSoapJob::Private {
 public:
     KDSoapMessage reply;
+    KDSoapHeaders replyHeaders;
 };
 
 
@@ -45,9 +46,10 @@ void KDSoapJob::start()
     QMetaObject::invokeMethod(this, "doStart", Qt::QueuedConnection);
 }
 
-void KDSoapJob::emitFinished(const KDSoapMessage &reply)
+void KDSoapJob::emitFinished(const KDSoapMessage &reply, const KDSoapHeaders &replyHeaders)
 {
     d->reply = reply;
+    d->replyHeaders = replyHeaders;
     emit finished(this);
     deleteLater();
 }

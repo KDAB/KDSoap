@@ -39,6 +39,8 @@
 #include <QSslConfiguration>
 #endif
 
+static const char* myWsdlNamespace = "http://www.kdab.com/xml/MyWsdl/";
+
 class CountryServerObject;
 typedef QMap<QThread*, CountryServerObject*> ServerObjectsMap;
 ServerObjectsMap s_serverObjects;
@@ -108,11 +110,13 @@ public:
             qDebug() << "ERROR: SoapAction was" << soapAction();
             return 0; // error
         }
-        const QString header1 = requestHeaders().header(QString::fromLatin1("header1")).value().toString();
+        const QString header1 = requestHeaders().header(QLatin1String("header1")).value().toString();
         if (header1 == QLatin1String("headerValue")) {
             KDSoapHeaders headers;
             KDSoapMessage header2;
-            header2.addArgument(QString::fromLatin1("header2"), QString::fromLatin1("responseHeader"));
+            KDSoapValue header2Value(QString::fromLatin1("header2"), QString::fromLatin1("responseHeader"));
+            header2Value.setNamespaceUri(QLatin1String("http://foo"));
+            header2.childValues().append(header2Value);
             headers.append(header2);
             setResponseHeaders(headers);
         }
@@ -287,7 +291,7 @@ private Q_SLOTS:
         QCOMPARE(response.value().toDouble(), double(4+3.2+123456.789));
         const KDSoapHeaders responseHeaders = client.lastResponseHeaders();
         //qDebug() << responseHeaders;
-        QCOMPARE(responseHeaders.header(QString::fromLatin1("header2")).value().toString(), QString::fromLatin1("responseHeader"));
+        QCOMPARE(responseHeaders.header(QLatin1String("header2"), QLatin1String("http://foo")).value().toString(), QString::fromLatin1("responseHeader"));
     }
 
     void testHeadersAsyncCall() // KDSOAP-45
@@ -305,7 +309,7 @@ private Q_SLOTS:
         QCOMPARE(m_returnMessages.count(), 1);
         QCOMPARE(m_returnMessages.at(0).value().toDouble(), double(4+3.2+123456.789));
         QCOMPARE(m_returnHeaders.count(), 1);
-        QCOMPARE(m_returnHeaders.at(0).header(QString::fromLatin1("header2")).value().toString(), QString::fromLatin1("responseHeader"));
+        QCOMPARE(m_returnHeaders.at(0).header(QLatin1String("header2"), QLatin1String("http://foo")).value().toString(), QLatin1String("responseHeader"));
     }
 
     void testHexBinary()

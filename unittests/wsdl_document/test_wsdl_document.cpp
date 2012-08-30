@@ -54,6 +54,7 @@ static const char* xmlNamespaces = "xmlns:soap=\"http://schemas.xmlsoap.org/soap
     " xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\""
     " xmlns:xsd=\"http://www.w3.org/1999/XMLSchema\""
     " xmlns:xsi=\"http://www.w3.org/1999/XMLSchema-instance\"";
+static const char* myWsdlNamespace = "http://www.kdab.com/xml/MyWsdl/";
 
 class WsdlDocumentTest : public QObject
 {
@@ -134,7 +135,11 @@ private:
                           "</soap:Header>");
     }
     static QByteArray addEmployeeResponse() {
-        return QByteArray(xmlEnvBegin) + "><soap:Body>"
+        return QByteArray(xmlEnvBegin) + ">"
+        "<soap:Header xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl/\">"
+        "<kdab:SessionElement sessionId=\"returned_id\"/>"
+        "</soap:Header>"
+        "<soap:Body>"
                 "<kdab:addEmployeeResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl/\">466F6F</kdab:addEmployeeResponse>"
                 " </soap:Body>" + xmlEnvEnd;
     }
@@ -471,6 +476,7 @@ private Q_SLOTS:
     // Client+server tests
 
     void testServerAddEmployee();
+    void testServerAddEmployeeJob();
     void testServerPostByHand();
     void testServerEmptyArgs();
     void testServerFault();
@@ -495,6 +501,12 @@ public slots:
         if (--m_expectedDelayedCalls == 0) {
             m_eventLoop.quit();
         }
+    }
+    void slotAddEmployeeJobFinished(KDSoapJob*)
+    {
+        // TODO: we should emit a signal with the proper job type?
+        //AddEmployeeJob* addJob = static_cast<AddEmployeeJob *>(job);
+        m_eventLoop.quit();
     }
 
 private:
@@ -584,6 +596,16 @@ public:
                      QLatin1String("DocServerObject"), tr("Employee name must not be empty"));
             return QByteArray();
         }
+        // TODO generate a helper method for this!
+        KDSoapHeaders headers;
+        KDSoapMessage sessionHeader;
+        KDSoapValue sessionElement(QString::fromLatin1("SessionElement"), QVariant());
+        sessionElement.setNamespaceUri(QLatin1String(myWsdlNamespace));
+        KDSoapValue sessionIdElement(QString::fromLatin1("sessionId"), QString::fromLatin1("returned_id"));
+        sessionElement.childValues().append(sessionIdElement);
+        sessionHeader.childValues().append(sessionElement);
+        headers.append(sessionHeader);
+        setResponseHeaders(headers);
         return "added " + name.toLatin1();
     }
 
@@ -753,6 +775,28 @@ void WsdlDocumentTest::testServerAddEmployee()
     QVERIFY(xmlBufferCompare(server->lastServerObject()->m_response.toXml(), expectedResponseXml));
     QCOMPARE(service.lastError(), QString());
     QCOMPARE(QString::fromLatin1(ret.constData()), QString::fromLatin1("added David Faure"));
+    // TODO KDAB__SessionElement outputSession = service.lastReplyHeaders();
+    // TODO QCOMPARE(outputSession.sessionId(), QLatin1String("returned_id"));
+}
+
+void WsdlDocumentTest::testServerAddEmployeeJob()
+{
+    DocServerThread serverThread;
+    DocServer* server = serverThread.startThread();
+
+    MyWsdlDocument service;
+    service.setEndPoint(server->endPoint());
+    AddEmployeeJob* job = new AddEmployeeJob(&service);
+    job->setParameters(addEmployeeParameters());
+    job->start();
+    connect(job, SIGNAL(finished(KDSoapJob*)), this, SLOT(slotAddEmployeeJobFinished(KDSoapJob*)));
+    m_eventLoop.exec();
+
+    QCOMPARE(service.lastError(), QString());
+    QByteArray ret = job->resultParameters();
+    QCOMPARE(QString::fromLatin1(ret.constData()), QString::fromLatin1("added David Faure"));
+    KDAB__SessionElement outputSession = job->outputHeader();
+    QCOMPARE(outputSession.sessionId(), QLatin1String("returned_id"));
 }
 
 static QByteArray rawCountryMessage() {

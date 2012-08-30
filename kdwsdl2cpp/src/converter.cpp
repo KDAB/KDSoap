@@ -175,6 +175,9 @@ void Converter::cleanupUnusedTypes()
                     Q_FOREACH(const SoapBinding::Header& header, op.inputHeaders()) {
                         usedMessageNames.insert(header.message());
                     }
+                    Q_FOREACH(const SoapBinding::Header& header, op.outputHeaders()) {
+                        usedMessageNames.insert(header.message());
+                    }
                 }
             }
         }
