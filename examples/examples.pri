@@ -17,7 +17,7 @@ LIBS        += -L$${TOP_BUILD_DIR}/lib -l$$KDSOAPLIB
 !isEmpty(QMAKE_LFLAGS_RPATH):LIBS += $$QMAKE_LFLAGS_RPATH$${TOP_BUILD_DIR}/lib
 
 include($${TOP_SOURCE_DIR}/variables.pri)
-#DEFINES -= QT_NO_CAST_FROM_ASCII
+DEFINES -= QT_NO_CAST_FROM_ASCII
 
 include($${TOP_SOURCE_DIR}/kdwsdl2cpp.pri)
 
