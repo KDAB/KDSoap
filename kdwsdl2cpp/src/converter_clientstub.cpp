@@ -17,11 +17,10 @@ SoapBinding::Style Converter::soapStyle( const Binding& binding ) const
 
 static Part::List selectedParts( const Binding& binding, const Message& message, const Operation& operation, bool input )
 {
-    QString selectedPart;
     if ( binding.type() == Binding::SOAPBinding ) {
         const SoapBinding soapBinding = binding.soapBinding();
         const SoapBinding::Operation op = soapBinding.operations().value( operation.name() );
-        selectedPart = input ? op.input().part() : op.output().part();
+        const QString selectedPart = input ? op.input().part() : op.output().part();
         if (!selectedPart.isEmpty()) {
             Part::List selected;
             Q_FOREACH( const Part& part, message.parts() ) {
@@ -43,7 +42,7 @@ static QString fullyQualified( const KODE::Class& c ) {
         return c.nameSpace() + QLatin1String("::") + c.name();
 }
 
-static SoapBinding::Headers getHeaders( const Binding& binding, const QString& operationName )
+static SoapBinding::Headers getInputHeaders( const Binding& binding, const QString& operationName )
 {
     if ( binding.type() == Binding::SOAPBinding ) {
         const SoapBinding soapBinding( binding.soapBinding() );
@@ -255,7 +254,7 @@ bool Converter::convertClientService()
                 }
 
                 // Collect message parts used as headers
-                Q_FOREACH( const SoapBinding::Header& header, getHeaders(binding, operation.name()) ) {
+                Q_FOREACH( const SoapBinding::Header& header, getInputHeaders(binding, operation.name()) ) {
                     if ( !soapHeaders.contains(header) )
                         soapHeaders.append( header );
                 }
@@ -360,11 +359,11 @@ bool Converter::convertClientService()
                 KODE::Code slotCode;
                 slotCode += QLatin1String("watcher->deleteLater();");
                 slotCode += QLatin1String("const KDSoapMessage reply = watcher->returnMessage();");
-                slotCode += QLatin1String("if (!reply.isFault()) {");
+                slotCode += QLatin1String("if (!reply.isFault()) {") + COMMENT;
                 slotCode.indent();
                 Q_FOREACH( const Part& part, selectedParts( binding, outputMsg, operation, false /*input*/ ) ) {
                     const KODE::MemberVariable member( QLatin1String("result") + upperlize( part.name() ), QString() );
-                    slotCode += deserializeRetVal(part, QLatin1String("reply"),  mTypeMap.localType( part.type(), part.element() ), member.name() );
+                    slotCode.addBlock( deserializeRetVal(part, QLatin1String("reply"),  mTypeMap.localType( part.type(), part.element() ), member.name() ) );
                     //slotCode += QString::fromLatin1("%1.deserialize(reply.childValues().child(\"%2\").value());").arg( member.name(), part.name() );
                 }
                 slotCode.unindent();
