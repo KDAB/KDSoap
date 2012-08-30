@@ -775,8 +775,9 @@ void WsdlDocumentTest::testServerAddEmployee()
     QVERIFY(xmlBufferCompare(server->lastServerObject()->m_response.toXml(), expectedResponseXml));
     QCOMPARE(service.lastError(), QString());
     QCOMPARE(QString::fromLatin1(ret.constData()), QString::fromLatin1("added David Faure"));
-    // TODO KDAB__SessionElement outputSession = service.lastReplyHeaders();
-    // TODO QCOMPARE(outputSession.sessionId(), QLatin1String("returned_id"));
+    KDSoapMessage sessionHeader = service.clientInterface()->lastResponseHeaders().header(QLatin1String("SessionElement"));
+    KDSoapValue sessionIdValue = sessionHeader.arguments().child("sessionId");
+    QCOMPARE(sessionIdValue.value().toString(), QLatin1String("returned_id"));
 }
 
 void WsdlDocumentTest::testServerAddEmployeeJob()

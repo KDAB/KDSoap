@@ -223,6 +223,7 @@ bool Converter::convertClientService()
                 code += "}";
                 code += "return d_ptr->m_clientInterface;";
                 clientInterface.setBody(code);
+                clientInterface.setDocs(QLatin1String("Returns the underlying KDSoapClientInterface instance, which allows to access setCookieJar, lastResponseHeaders, etc."));
                 newClass.addFunction(clientInterface);
             }
             {
