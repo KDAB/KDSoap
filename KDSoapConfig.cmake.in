@@ -1,9 +1,20 @@
 # set the version of myself
-
 set(KDSOAP_VERSION_MAJOR @KDSoap_VERSION_MAJOR@)
 set(KDSOAP_VERSION_VERSION_MINOR @KDSoap_VERSION_MINOR@)
 set(KDSOAP_VERSION_VERSION_PATCH @KDSoap_VERSION_PATCH@)
 set(KDSOAP_VERSION_VERSION "@KDSoap_VERSION@")
 
-include("${CMAKE_CURRENT_LIST_DIR}/KDSoapMacros.cmake")
+set(KDSoap_INSTALL_PREFIX  "@KDSoap_INSTALL_PREFIX@")
+set(KDSoap_INCLUDE_DIRS    "@KDSoap_INCLUDE_DIRS@")
+set(KDSoap_LIBRARY_DIR     "${KDSoap_INSTALL_PREFIX}/@INSTALL_LIBRARY_DIR@@LIB_SUFFIX@")
+set(KDSoap_RUNTIME_DIR     "${KDSoap_INSTALL_PREFIX}/@INSTALL_RUNTIME_DIR@")
+set(KDSoap_CMAKE_DIR       "@KDSoap_CMAKE_DIR@")
+set(KDSoap_KDWSDL2CPP_EXE "${KDSoap_RUNTIME_DIR}/kdwsdl2cpp")
+
+# include KDSoap macros
+include(${KDSoap_CMAKE_DIR}/KDSoapMacros.cmake)
+
+if(NOT TARGET kdsoap)
+  include("@KDSoap_TARGETS_DIR@/KDSoapTargets.cmake")
+endif()
 
