@@ -9,6 +9,10 @@ set(${PROJECT_NAME}_VERSION_MAJOR 1)
 set(${PROJECT_NAME}_VERSION_MINOR 0)
 set(${PROJECT_NAME}_VERSION_PATCH 0)
 set(${PROJECT_NAME}_VERSION ${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR}.${${PROJECT_NAME}_VERSION_PATCH})
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+
+# setup default install locations
+include(InstallLocation)
 
 configure_file(KDSoapConfig.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/KDSoapConfig.cmake @ONLY)
 
@@ -61,7 +65,7 @@ if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
       "${CMAKE_CURRENT_BINARY_DIR}/KDSoapConfig.cmake"
       "${CMAKE_CURRENT_BINARY_DIR}/KDSoapConfigVersion.cmake"
       KDSoapMacros.cmake
-    DESTINATION lib/cmake/KDSoap
+    DESTINATION "${INSTALL_LIBRARY_DIR}/cmake/KDSoap"
   )
 endif()
 
