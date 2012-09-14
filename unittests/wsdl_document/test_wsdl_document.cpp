@@ -669,7 +669,7 @@ public:
     void processRequestWithPath(const KDSoapMessage &request, KDSoapMessage &response, const QByteArray &soapAction, const QString &path) {
         Q_UNUSED(request);
         Q_UNUSED(response);
-        if (path == QLatin1String("/xml/NamesService")
+        if (path == QLatin1String("/xml/NamesService?foo")
             && soapAction == "http://namesservice.thomas_bayer.com/getCountries") {
             m_nameServiceServerObject.processRequest(request, response, soapAction);
         } else {
@@ -991,7 +991,7 @@ void WsdlDocumentTest::testServerDifferentPath()
 
     NamesServiceService serv;
     QString endPoint = server->endPoint(); // ends with "/xml"
-    endPoint += QLatin1String("/NamesService");
+    endPoint += QLatin1String("/../xml/./NamesService?foo");
     serv.setEndPoint(endPoint);
     const QStringList countries = serv.getCountries().country(); // the wsdl should have named it "countries"...
     QCOMPARE(countries.count(), 2);

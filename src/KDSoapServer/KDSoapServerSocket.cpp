@@ -32,6 +32,7 @@
 #include <QThread>
 #include <QMetaMethod>
 #include <QFile>
+#include <QDir>
 #include <QFileInfo>
 #include <QVarLengthArray>
 
@@ -72,7 +73,7 @@ static HeadersMap parseHeaders(const QByteArray& headerData)
         return headersMap;
     }
     const QByteArray requestType = firstLine.at(0);
-    const QByteArray path = firstLine.at(1);
+    const QByteArray path = QDir::cleanPath(QString::fromLatin1(firstLine.at(1).constData())).toLatin1();
     const QByteArray httpVersion = firstLine.at(2);
     headersMap.insert("_requestType", requestType);
     headersMap.insert("_path", path);
