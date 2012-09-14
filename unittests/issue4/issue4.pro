@@ -10,7 +10,6 @@ QT       -= gui
 
 include(../unittests.pri)
 
-TARGET = TestKDSoap
 CONFIG   += console
 CONFIG   -= app_bundle
 
