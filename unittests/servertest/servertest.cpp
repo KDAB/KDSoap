@@ -893,7 +893,7 @@ private:
     }
 
     static QString countryMessageNamespace() {
-        return QString::fromLatin1("http://www.kdab.com/xml/MyWsdl/");
+        return QString::fromLatin1(myWsdlNamespace);
     }
     static KDSoapMessage countryMessage(bool slow = false) {
         KDSoapMessage message;
@@ -962,7 +962,7 @@ QTEST_MAIN(ServerTest)
 // TODO: generate this method (needs a .wsdl file)
 void CountryServerObject::processRequest(const KDSoapMessage &request, KDSoapMessage &response, const QByteArray& soapAction)
 {
-    setResponseNamespace(QLatin1String("http://www.kdab.com/xml/MyWsdl"));
+    setResponseNamespace(QLatin1String(myWsdlNamespace));
     const QByteArray method = request.name().toLatin1();
     if (method == "getEmployeeCountry") {
         if (soapAction != "http://www.kdab.com/xml/MyWsdl/getEmployeeCountry") {
