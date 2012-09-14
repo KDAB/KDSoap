@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://kdab.com/test/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" targetNamespace="http://kdab.com/test/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://kdab.com/test/">
+      <s:element name="version">
+        <s:complexType/>
+      </s:element>
+      <s:element name="versionResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="versionResult" type="s:int"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="versionSoapIn">
+    <wsdl:part name="parameters" element="tns:version"/>
+  </wsdl:message>
+  <wsdl:message name="versionSoapOut">
+    <wsdl:part name="parameters" element="tns:versionResponse"/>
+  </wsdl:message>
+  <wsdl:portType name="TestSoap">
+    <wsdl:operation name="version">
+      <wsdl:input message="tns:versionSoapIn"/>
+      <wsdl:output message="tns:versionSoapOut"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="TestSoap" type="tns:TestSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="version">
+      <soap:operation soapAction="http://kdab.com/test/version" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="TestSoap12" type="tns:TestSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="version">
+      <soap12:operation soapAction="http://kdab.com/test/version" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="Test">
+    <wsdl:port name="TestSoap" binding="tns:TestSoap">
+      <soap:address location="http://localhost:3437/Test.asmx"/>
+    </wsdl:port>
+    <wsdl:port name="TestSoap12" binding="tns:TestSoap12">
+      <soap12:address location="http://localhost:3437/Test.asmx"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

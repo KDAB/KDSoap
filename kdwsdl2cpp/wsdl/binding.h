@@ -62,6 +62,14 @@ class KWSDL_EXPORT Binding : public Element
     void setType( Type type );
     Type type() const;
 
+    enum Version
+    {
+        SOAP_1_1,
+        SOAP_1_2
+    };
+    void setVersion(Version v);
+    Version version() const;
+
     void setOperations( const BindingOperation::List &operations );
     BindingOperation::List operations() const;
 
@@ -80,6 +88,7 @@ class KWSDL_EXPORT Binding : public Element
 
     Type mType;
     SoapBinding mSoapBinding;
+    Version mVersion;
 };
 
 }

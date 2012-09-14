@@ -218,7 +218,10 @@ bool Converter::convertClientService()
                 if ( soapStyle(binding) == SoapBinding::DocumentStyle ) {
                     code += "d_ptr->m_clientInterface->setStyle( KDSoapClientInterface::DocumentStyle );";
                 }
-                code += "d_ptr->m_clientInterface->setSoapVersion( KDSoapClientInterface::SOAP1_1 );";
+                if (binding.version() == Binding::SOAP_1_2)
+                    code += "d_ptr->m_clientInterface->setSoapVersion( KDSoapClientInterface::SOAP1_2 );";
+                else
+                    code += "d_ptr->m_clientInterface->setSoapVersion( KDSoapClientInterface::SOAP1_1 );";
                 code.unindent();
                 code += "}";
                 code += "return d_ptr->m_clientInterface;";

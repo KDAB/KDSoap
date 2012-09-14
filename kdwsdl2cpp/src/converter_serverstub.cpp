@@ -13,7 +13,6 @@ void Converter::convertServerService()
 
         QSet<QName> uniqueBindings = mWSDL.uniqueBindings( service );
 
-        bool first = true;
         Q_FOREACH( const QName& bindingName, uniqueBindings ) {
             //qDebug() << "binding" << bindingName;
             const Binding binding = mWSDL.findBinding( bindingName );
@@ -53,6 +52,7 @@ void Converter::convertServerService()
 
             PortType portType = mWSDL.findPortType( binding.portTypeName() );
             //qDebug() << portType.name();
+            bool first = true;
             const Operation::List operations = portType.operations();
             Q_FOREACH( const Operation& operation, operations ) {
                 const Operation::OperationType opType = operation.operationType();

@@ -33,12 +33,12 @@ static QString soap12StandardNamespace = QLatin1String("http://schemas.xmlsoap.o
 static QString httpStandardNamespace = QLatin1String("http://schemas.xmlsoap.org/wsdl/http/");
 
 Binding::Binding()
-  : mType( UnknownBinding )
+  : mType( UnknownBinding ), mVersion( SOAP_1_1 )
 {
 }
 
 Binding::Binding( const QString &nameSpace )
-  : Element( nameSpace ), mType( UnknownBinding )
+  : Element( nameSpace ), mType( UnknownBinding ), mVersion( SOAP_1_1 )
 {
 }
 
@@ -71,8 +71,11 @@ void Binding::loadXML( ParserContext *context, const QDomElement &element )
       operation.loadXML( &mSoapBinding, context, child );
       mOperations.append( operation );
     } else if ( tagName.localName() == QLatin1String("binding") ) {
-        if ( tagName.nameSpace() == soapStandardNamespace ||
-             tagName.nameSpace() == soap12StandardNamespace ) {
+        const bool soap11 = ( tagName.nameSpace() == soapStandardNamespace );
+        const bool soap12 = ( tagName.nameSpace() == soap12StandardNamespace );
+        if ( soap11 || soap12 ) {
+            if ( soap12 )
+                mVersion = SOAP_1_2;
             mType = SOAPBinding;
             mSoapBinding.parseBinding( context, child );
         } else if ( tagName.nameSpace() == httpStandardNamespace ) {
@@ -147,7 +150,17 @@ void Binding::setType( Type type )
 
 Binding::Type Binding::type() const
 {
-  return mType;
+    return mType;
+}
+
+void Binding::setVersion(Binding::Version v)
+{
+    mVersion = v;
+}
+
+Binding::Version Binding::version() const
+{
+    return mVersion;
 }
 
 #if 0
