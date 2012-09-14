@@ -1,0 +1,64 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns0="http://test.example.com/types/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://test.example.com/" name="PREFIX" targetNamespace="http://test.example.com/">
+    <types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:soap11-enc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://test.example.com/types/" targetNamespace="http://test.example.com/types/" elementFormDefault="qualified">
+            <complexType name="Credential">
+                <sequence>
+                    <element name="Id" type="string" nillable="false"/>
+                    <element name="PassWord" type="string" nillable="false"/>
+                </sequence>
+            </complexType>
+            <complexType name="MyObj">
+                <sequence>
+                    <element name="Id" type="string" nillable="false"/>
+                    <element name="Field1" type="string" nillable="false"/>
+                </sequence>
+            </complexType>
+            <element name="updateObjElement">
+                <complexType>
+                    <sequence>
+                        <element name="arrayOfObj" type="tns:MyObj" nillable="false" minOccurs="0" maxOccurs="unbounded"/>
+                        <element name="credential" type="tns:Credential" nillable="false"/>
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="updateObjResponseElement">
+                <complexType>
+                    <sequence>
+                        <element name="result" type="tns:MyObj" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+                    </sequence>
+                </complexType>
+            </element>
+        </schema>
+    </types>
+    <message name="PREFIX_updateObjs">
+        <part name="parameters" element="tns0:updateObjElement"/>
+    </message>
+    <message name="PREFIX_updateObjResponse">
+        <part name="parameters" element="tns0:updateObjResponseElement"/>
+    </message>
+    <portType name="PREFIX">
+        <operation name="updateObjs">
+            <input message="tns:PREFIX_updateObjs"/>
+            <output message="tns:PREFIX_updateObjResponse"/>
+        </operation>
+    </portType>
+    <binding name="PREFIXSoapHttp" type="tns:PREFIX">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        
+        <operation name="updateObjs">
+            <soap:operation soapAction="http://test.example.com//Objs"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+    </binding>
+    <service name="PREFIX">
+        <port name="PREFIXSoapHttpPort" binding="tns:PREFIXSoapHttp">
+             <soap:address location="http://example.com/PREFIX_WS/PREFIXSoapHttpPort"/> 
+        </port>
+    </service>
+</definitions>

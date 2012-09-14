@@ -49,23 +49,28 @@ QByteArray KDSoapMessageWriter::messageToXml(const KDSoapMessage& message, const
     writer.writeStartElement(soapNS, QLatin1String("Envelope"));
     writer.writeAttribute(soapNS, QLatin1String("encodingStyle"), KDSoapNamespaceManager::soapEncoding());
 
+    QString messageNamespace = m_messageNamespace;
+    if (!message.namespaceUri().isEmpty() && messageNamespace != message.namespaceUri()) {
+        messageNamespace = message.namespaceUri();
+    }
+
     if (!headers.isEmpty() || !persistentHeaders.isEmpty()) {
         // This writeNamespace line adds the xmlns:n1 to <Envelope>, which looks ugly and unusual (and breaks all unittests)
         // However it's the best solution in case of headers, otherwise we get n1 in the header and n2 in the body,
         // and xsi:type attributes that refer to n1, which isn't defined in the body...
-        namespacePrefixes.writeNamespace(writer, m_messageNamespace, QLatin1String("n1") /*make configurable?*/);
+        namespacePrefixes.writeNamespace(writer, messageNamespace, QLatin1String("n1") /*make configurable?*/);
         writer.writeStartElement(soapNS, QLatin1String("Header"));
         Q_FOREACH(const KDSoapMessage& header, persistentHeaders) {
-            header.writeChildren(namespacePrefixes, writer, header.use(), m_messageNamespace, true);
+            header.writeChildren(namespacePrefixes, writer, header.use(), messageNamespace, true);
         }
         Q_FOREACH(const KDSoapMessage& header, headers) {
-            header.writeChildren(namespacePrefixes, writer, header.use(), m_messageNamespace, true);
+            header.writeChildren(namespacePrefixes, writer, header.use(), messageNamespace, true);
         }
         writer.writeEndElement(); // Header
     } else {
         // So in the standard case (no headers) we just rely on Qt calling it n1 and insert it into the map.
         // Calling this after the writeStartElement(ns, elementName) below leads to a double-definition of n1.
-        namespacePrefixes.insert(m_messageNamespace, QString::fromLatin1("n1"));
+        namespacePrefixes.insert(messageNamespace, QString::fromLatin1("n1"));
     }
 
     writer.writeStartElement(soapNS, QLatin1String("Body"));
@@ -82,8 +87,8 @@ QByteArray KDSoapMessageWriter::messageToXml(const KDSoapMessage& message, const
         // Note that the message itself is always qualified.
         // http://www.ibm.com/developerworks/webservices/library/ws-tip-namespace/index.html
         // isQualified() is only for child elements.
-        writer.writeStartElement(m_messageNamespace, elementName);
-        message.writeElementContents(namespacePrefixes, writer, message.use(), m_messageNamespace);
+        writer.writeStartElement(messageNamespace, elementName);
+        message.writeElementContents(namespacePrefixes, writer, message.use(), messageNamespace);
         writer.writeEndElement();
     }
 
