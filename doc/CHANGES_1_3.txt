@@ -8,7 +8,8 @@ Client-side:
 * Add support for return (output) headers (in async calls and jobs) (SOAP-45).
   Documented how to access them in sync calls (no deserialization possible).
 * Fix namespace of the main element in messages being sent, the NS from the schema
-  must be used rather than the NS from the WSDL, when both exist.
+  must be used rather than the NS from the WSDL, when both exist (github issue4).
+* Fix assert when the response message is empty (github issue1).
 
 Server-side:
 ============

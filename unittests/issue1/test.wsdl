@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="https://www.test.com/testapiv3/testapi.jws" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="https://www.test.com/testapiv3/testapi.jws" xmlns:intf="https://www.test.com/testapiv3/testapi.jws" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+ <wsdl:types>
+  <schema targetNamespace="https://www.test.com/testapiv3/testapi.jws" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="ArrayOf_xsd_string">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="xsd:string[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="createDirectoryRequest">
+
+      <wsdl:part name="token" type="xsd:string"/>
+
+      <wsdl:part name="hostID" type="xsd:long"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+      <wsdl:part name="directory" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="createDirectoryResponse">
+
+   </wsdl:message>
+
+
+   <wsdl:portType name="testapi">
+
+      <wsdl:operation name="createDirectory" parameterOrder="token hostID username directory">
+
+         <wsdl:input message="impl:createDirectoryRequest" name="createDirectoryRequest"/>
+
+         <wsdl:output message="impl:createDirectoryResponse" name="createDirectoryResponse"/>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="testapiSoapBinding" type="impl:testapi">
+
+      <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="createDirectory">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="createDirectoryRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="createDirectoryResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://www.test.com/testapiv3/testapi.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="testapiService">
+
+      <wsdl:port binding="impl:testapiSoapBinding" name="testapi">
+
+         <wsdlsoap:address location="https://www.test.com/testapiv3/testapi.jws"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

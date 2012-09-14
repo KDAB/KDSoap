@@ -538,9 +538,9 @@ bool Converter::convertClientCall( const Operation &operation, const Binding &bi
 
   // Return value(s) :
   const Part::List outParts = selectedParts( binding, outputMessage, operation, false /*output*/ );
-  const bool singleReturnValue = outParts.count() == 1;
+  const int numReturnValues = outParts.count() == 1;
 
-  if (singleReturnValue) {
+  if (numReturnValues) {
       const Part retPart = outParts.first();
       const QString retType = mTypeMap.localType( retPart.type(), retPart.element() );
       if ( retType.isEmpty() ) {
@@ -578,7 +578,7 @@ bool Converter::convertClientCall( const Operation &operation, const Binding &bi
           }
       }
 
-  } else {
+  } else if (numReturnValues > 1){
       // Add each output argument as a non-const ref to the method. A bit ugly but no other way.
 
       code += "if (d_ptr->m_lastReply.isFault())";
