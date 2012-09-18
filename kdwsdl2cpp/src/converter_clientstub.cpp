@@ -541,7 +541,7 @@ bool Converter::convertClientCall( const Operation &operation, const Binding &bi
 
   // Return value(s) :
   const Part::List outParts = selectedParts( binding, outputMessage, operation, false /*output*/ );
-  const int numReturnValues = outParts.count() == 1;
+  const int numReturnValues = outParts.count();
 
   if (numReturnValues) {
       const Part retPart = outParts.first();
