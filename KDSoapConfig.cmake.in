@@ -9,7 +9,7 @@ set(KDSoap_INCLUDE_DIRS    "@KDSoap_INCLUDE_DIRS@")
 set(KDSoap_LIBRARY_DIR     "${KDSoap_INSTALL_PREFIX}/@INSTALL_LIBRARY_DIR@@LIB_SUFFIX@")
 set(KDSoap_RUNTIME_DIR     "${KDSoap_INSTALL_PREFIX}/@INSTALL_RUNTIME_DIR@")
 set(KDSoap_CMAKE_DIR       "@KDSoap_CMAKE_DIR@")
-set(KDSoap_KDWSDL2CPP_EXE "${KDSoap_RUNTIME_DIR}/kdwsdl2cpp")
+set(KDSoap_KDWSDL2CPP_EXE kdwsdl2cpp)
 
 # include KDSoap macros
 include(${KDSoap_CMAKE_DIR}/KDSoapMacros.cmake)

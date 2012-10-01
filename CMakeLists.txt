@@ -87,7 +87,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/KDSoapConfigVersion.cmake.in
   ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/KDSoapConfigVersion.cmake @ONLY)
 
 # export targets file in build tree
-export(TARGETS kdsoap kdsoap-server
+export(TARGETS kdsoap kdsoap-server kdwsdl2cpp
   FILE ${CMAKE_CURRENT_BINARY_DIR}/KDSoapTargets.cmake)
 
 install(FILES
