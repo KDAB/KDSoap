@@ -68,6 +68,8 @@ public:
 
     QHostAddress m_addressBeforeSuspend;
     quint16 m_portBeforeSuspend;
+
+    QSslConfiguration m_sslConfiguration;
 };
 
 KDSoapServer::KDSoapServer(QObject* parent)
@@ -338,6 +340,16 @@ void KDSoapServer::setFeatures(Features features)
 KDSoapServer::Features KDSoapServer::features() const
 {
     return d->m_features;
+}
+
+QSslConfiguration KDSoapServer::sslConfiguration() const
+{
+    return d->m_sslConfiguration;
+}
+
+void KDSoapServer::setSslConfiguration(const QSslConfiguration &config)
+{
+    d->m_sslConfiguration = config;
 }
 
 #include "moc_KDSoapServer.cpp"

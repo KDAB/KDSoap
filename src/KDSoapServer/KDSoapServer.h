@@ -25,6 +25,7 @@
 #include "KDSoapServerGlobal.h"
 #include <KDSoapClient/KDSoapMessage.h>
 #include <QtNetwork/QTcpServer>
+#include <QtNetwork/QSslConfiguration>
 
 class KDSoapThreadPool;
 
@@ -239,6 +240,18 @@ public:
      * \returns the path given to setWsdlFile
      */
     QString wsdlPathInUrl() const;
+
+    /**
+     * \returns the ssl configuration for this server
+     */
+    QSslConfiguration sslConfiguration() const;
+
+    /**
+     * Sets the ssl configuration to use for new server connections
+     * \param config ssl configuration to use for new connections
+     */
+    void setSslConfiguration(const QSslConfiguration &config);
+
 
 public Q_SLOTS:
     /**

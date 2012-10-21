@@ -47,6 +47,8 @@ KDSoapServerSocket* KDSoapSocketList::handleIncomingConnection(int socketDescrip
     if (m_server->features() & KDSoapServer::Ssl) {
         // We could call a virtual "m_server->setSslConfiguration(socket)" here,
         // if we don't want to rely on everyone using QSslConfiguration::setDefaultConfiguration.
+        if (!m_server->sslConfiguration().isNull())
+            socket->setSslConfiguration(m_server->sslConfiguration());
         socket->startServerEncryption();
     }
 #endif
