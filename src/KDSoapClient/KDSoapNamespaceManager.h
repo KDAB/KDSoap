@@ -36,7 +36,9 @@ public:
     static QString xmlSchemaInstance1999();
     static QString xmlSchemaInstance2001();
     static QString soapEnvelope();
+    static QString soapEnvelope200305();
     static QString soapEncoding();
+    static QString soapEncoding200305();
 
 private: // TODO instanciate to handle custom namespaces per clientinterface
     KDSoapNamespaceManager();

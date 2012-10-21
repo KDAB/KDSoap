@@ -55,8 +55,20 @@ QString KDSoapNamespaceManager::soapEnvelope()
     return s;
 }
 
+QString KDSoapNamespaceManager::soapEnvelope200305()
+{
+    static QString s = QString::fromLatin1("http://www.w3.org/2003/05/soap-envelope");
+    return s;
+}
+
 QString KDSoapNamespaceManager::soapEncoding()
 {
     static QString s = QString::fromLatin1("http://schemas.xmlsoap.org/soap/encoding/");
+    return s;
+}
+
+QString KDSoapNamespaceManager::soapEncoding200305()
+{
+    static QString s = QString::fromLatin1("http://www.w3.org/2003/05/soap-encoding");
     return s;
 }

@@ -111,7 +111,8 @@ static KDSoapValue parseElement(QXmlStreamReader& reader, const QXmlStreamNamesp
                 metaTypeId = static_cast<QVariant::Type>(xmlTypeToMetaType(dataType));
             }
             continue;
-        } else if (ns == KDSoapNamespaceManager::soapEncoding() || ns == KDSoapNamespaceManager::soapEnvelope()) {
+        } else if (ns == KDSoapNamespaceManager::soapEncoding() || ns == KDSoapNamespaceManager::soapEncoding200305() ||
+                   ns == KDSoapNamespaceManager::soapEnvelope() || ns == KDSoapNamespaceManager::soapEnvelope200305()) {
             continue;
         }
         //qDebug() << "Got attribute:" << name << ns << "=" << attrValue;
@@ -154,10 +155,12 @@ KDSoapMessageReader::XmlError KDSoapMessageReader::xmlToMessage(const QByteArray
     Q_ASSERT(pMsg);
     QXmlStreamReader reader(data);
     if (readNextStartElement(reader)) {
-        if (reader.name() == "Envelope" && reader.namespaceUri() == KDSoapNamespaceManager::soapEnvelope()) {
+        if (reader.name() == "Envelope" && (reader.namespaceUri() == KDSoapNamespaceManager::soapEnvelope() ||
+                                            reader.namespaceUri() == KDSoapNamespaceManager::soapEnvelope200305())) {
             const QXmlStreamNamespaceDeclarations envNsDecls = reader.namespaceDeclarations();
             if (readNextStartElement(reader)) {
-                if (reader.name() == "Header" && reader.namespaceUri() == KDSoapNamespaceManager::soapEnvelope()) {
+                if (reader.name() == "Header" && (reader.namespaceUri() == KDSoapNamespaceManager::soapEnvelope() ||
+                                                  reader.namespaceUri() == KDSoapNamespaceManager::soapEnvelope200305())) {
                     while (readNextStartElement(reader)) {
                         KDSoapMessage header;
                         static_cast<KDSoapValue &>(header) = parseElement(reader, envNsDecls);
@@ -165,8 +168,8 @@ KDSoapMessageReader::XmlError KDSoapMessageReader::xmlToMessage(const QByteArray
                     }
                     readNextStartElement(reader); // read <Body>
                 }
-                if (reader.name() == "Body" && reader.namespaceUri() == KDSoapNamespaceManager::soapEnvelope()) {
-
+                if (reader.name() == "Body" && (reader.namespaceUri() == KDSoapNamespaceManager::soapEnvelope() ||
+                                                reader.namespaceUri() == KDSoapNamespaceManager::soapEnvelope200305())) {
                     if (readNextStartElement(reader)) {
                         *pMsg = parseElement(reader, envNsDecls);
                         if (pMessageNamespace)
