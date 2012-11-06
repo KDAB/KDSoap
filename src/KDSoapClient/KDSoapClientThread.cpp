@@ -37,6 +37,7 @@ KDSoapClientThread::KDSoapClientThread(QObject *parent) :
 {
 }
 
+// Called by the main thread
 void KDSoapClientThread::enqueue(KDSoapThreadTaskData* taskData)
 {
     QMutexLocker locker(&m_mutex);
