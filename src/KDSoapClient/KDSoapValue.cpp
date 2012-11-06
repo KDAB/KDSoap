@@ -266,7 +266,7 @@ void KDSoapValue::writeElementContents(KDSoapNamespacePrefixes& namespacePrefixe
         if (type.isEmpty() && !value.isNull())
             type = variantToXMLType(value); // fallback
         if (!type.isEmpty()) {
-            writer.writeAttribute(KDSoapNamespaceManager::xmlSchemaInstance1999(), QLatin1String("type"), type);
+            writer.writeAttribute(KDSoapNamespaceManager::xmlSchemaInstance2001(), QLatin1String("type"), type);
         }
 
         const bool isArray = !list.arrayType().isEmpty();

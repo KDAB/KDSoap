@@ -44,16 +44,16 @@ static const char* xmlEnvBegin =
         "<soap:Envelope"
         " xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\""
         " xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\""
-        " xmlns:xsd=\"http://www.w3.org/1999/XMLSchema\""
-        " xmlns:xsi=\"http://www.w3.org/1999/XMLSchema-instance\""
+        " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\""
+        " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
         " soap:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\"";
 static const char* xmlEnvEnd = "</soap:Envelope>";
 
 static const char* xmlBegin = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
 static const char* xmlNamespaces = "xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\""
     " xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\""
-    " xmlns:xsd=\"http://www.w3.org/1999/XMLSchema\""
-    " xmlns:xsi=\"http://www.w3.org/1999/XMLSchema-instance\"";
+    " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\""
+    " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"";
 static const char* myWsdlNamespace = "http://www.kdab.com/xml/MyWsdl/";
 
 class WsdlDocumentTest : public QObject
@@ -405,13 +405,13 @@ private Q_SLOTS:
         service.setEndPoint(server.endPoint());
 
         KDAB__AnyType anyType;
-        anyType.setInput(KDSoapValue(QString::fromLatin1("foo"), QString::fromLatin1("Value"), KDSoapNamespaceManager::xmlSchema1999(), QString::fromLatin1("string")));
+        anyType.setInput(KDSoapValue(QString::fromLatin1("foo"), QString::fromLatin1("Value"), KDSoapNamespaceManager::xmlSchema2001(), QString::fromLatin1("string")));
         KDSoapValueList schemaChildValues;
         KDSoapValue testVal(QLatin1String("test"), QString::fromLatin1("input"));
-        testVal.setNamespaceUri(KDSoapNamespaceManager::xmlSchema1999());
+        testVal.setNamespaceUri(KDSoapNamespaceManager::xmlSchema2001());
         schemaChildValues.append(testVal);
         KDSoapValue inputSchema(QLatin1String("schema"), schemaChildValues);
-        inputSchema.setNamespaceUri(KDSoapNamespaceManager::xmlSchema1999());
+        inputSchema.setNamespaceUri(KDSoapNamespaceManager::xmlSchema2001());
         anyType.setSchema(inputSchema);
         const KDAB__AnyTypeResponse response = service.testAnyType(anyType);
         const QList<KDSoapValue> values = response._return();
@@ -436,14 +436,14 @@ private Q_SLOTS:
 
         const KDSoapValue schema = response.schema();
         QCOMPARE(schema.name(), QString::fromLatin1("schema"));
-        QCOMPARE(schema.namespaceUri(), KDSoapNamespaceManager::xmlSchema1999());
+        QCOMPARE(schema.namespaceUri(), KDSoapNamespaceManager::xmlSchema2001());
         const QByteArray expectedResponseSchemaXml =
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
                 "<xsd:schema"
                 " xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\""
                 " xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\""
-                " xmlns:xsd=\"http://www.w3.org/1999/XMLSchema\""
-                " xmlns:xsi=\"http://www.w3.org/1999/XMLSchema-instance\""
+                " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\""
+                " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
                 ">"
                 "<xsd:test>response</xsd:test>"
                 "</xsd:schema>";
@@ -765,7 +765,7 @@ void WsdlDocumentTest::testServerAddEmployee()
     QVERIFY(server->lastServerObject());
     const QByteArray expectedResponseXml =
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-                "<n1:addEmployeeMyResponse xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsd=\"http://www.w3.org/1999/XMLSchema\" xmlns:xsi=\"http://www.w3.org/1999/XMLSchema-instance\" xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
+                "<n1:addEmployeeMyResponse xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
                 "6164646564204461766964204661757265"
                 "</n1:addEmployeeMyResponse>\n";
     //qDebug() << server->lastServerObject() << "response name" << server->lastServerObject()->m_response.name();
@@ -801,7 +801,7 @@ void WsdlDocumentTest::testServerAddEmployeeJob()
 }
 
 static QByteArray rawCountryMessage() {
-    return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsd=\"http://www.w3.org/1999/XMLSchema\" xmlns:xsi=\"http://www.w3.org/1999/XMLSchema-instance\" soap:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\"><soap:Body><n1:getEmployeeCountry xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
+    return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" soap:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\"><soap:Body><n1:getEmployeeCountry xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
     "<employeeName>David</employeeName>"
     "</n1:getEmployeeCountry></soap:Body></soap:Envelope>";
 }
@@ -822,7 +822,7 @@ void WsdlDocumentTest::testServerPostByHand()
     connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
     loop.exec();
     const QByteArray response = reply->readAll();
-    const QByteArray expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsd=\"http://www.w3.org/1999/XMLSchema\" xmlns:xsi=\"http://www.w3.org/1999/XMLSchema-instance\" soap:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\">"
+    const QByteArray expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" soap:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\">"
     "<soap:Body>"
     "<n1:EmployeeCountryResponse xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
       "<n1:employeeCountry>France</n1:employeeCountry>"
