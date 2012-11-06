@@ -364,7 +364,7 @@ private Q_SLOTS:
         const QByteArray expectedRequestXml =
             QByteArray(xmlEnvBegin) + ">"
             "<soap:Body>"
-            "<n1:getCountries xmlns:n1=\"http://namesservice.thomas_bayer.com/\"/>"
+            "<n1:getCountries xmlns:n1=\"http://namesservice.thomas_bayer.com/\" xsi:nil=\"true\"/>"
             "</soap:Body>" + xmlEnvEnd;
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
 

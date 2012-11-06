@@ -258,6 +258,10 @@ void KDSoapValue::writeElementContents(KDSoapNamespacePrefixes& namespacePrefixe
 {
     const QVariant value = this->value();
     const KDSoapValueList list = this->childValues();
+
+    if (value.isNull() && list.isEmpty())
+        writer.writeAttribute(KDSoapNamespaceManager::xmlSchemaInstance2001(), QLatin1String("nil"), QLatin1String("true"));
+
     if (use == EncodedUse) {
         // use=encoded means writing out xsi:type attributes. http://www.eherenow.com/soapfight.htm taught me that.
         QString type;

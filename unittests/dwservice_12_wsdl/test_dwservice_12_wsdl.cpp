@@ -98,7 +98,7 @@ private Q_SLOTS:
         QByteArray expectedRequestXml =
             QByteArray(xmlEnvBegin) +
             "><soap:Body>"
-            "<n1:Logoff xmlns:n1=\"http://tempuri.org/\"/>"
+            "<n1:Logoff xmlns:n1=\"http://tempuri.org/\" xsi:nil=\"true\"/>"
             "</soap:Body>" + xmlEnvEnd
             + '\n'; // added by QXmlStreamWriter::writeEndDocument
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));

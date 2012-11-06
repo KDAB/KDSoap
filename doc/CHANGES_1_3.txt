@@ -10,6 +10,7 @@ Client-side:
 * Fix namespace of the main element in messages being sent, the NS from the schema
   must be used rather than the NS from the WSDL, when both exist (github issue4).
 * Fix assert when the response message is empty (github issue1).
+* Set attribute xsi:nil="true" in empty elements, as per http://www.w3.org/TR/xmlschema-1/#xsi_nil
 
 Server-side:
 ============
