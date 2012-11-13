@@ -35,6 +35,7 @@
 #include <QDebug>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
+#include <QAuthenticator>
 #ifndef QT_NO_OPENSSL
 #include <QSslConfiguration>
 #endif
@@ -84,7 +85,8 @@ public:
     virtual bool validateAuthentication(const KDSoapAuthentication& auth, const QString& path) {
         if (!m_requireAuth)
             return true;
-        if (path == QLatin1String("/") && auth.user() == QLatin1String("kdab"))
+
+        if ((path == QLatin1String("/") || path == QLatin1String("/path/to/file_download.txt")) && auth.user() == QLatin1String("kdab"))
             return auth.password() == QLatin1String("pass42");
         return false;
     } public: // SOAP-accessible methods
@@ -262,6 +264,10 @@ private Q_SLOTS:
         auth.setPassword(QLatin1String("pass42"));
         client->setAuthentication(auth);
         const KDSoapMessage response = client->call(QLatin1String("getEmployeeCountry"), countryMessage());
+        if (response.isFault()) {
+            qDebug() << response.faultAsString();
+            QVERIFY(!response.isFault());
+        }
         QCOMPARE(response.childValues().first().value().toString(), QString::fromLatin1("France"));
     }
 
@@ -720,10 +726,27 @@ private Q_SLOTS:
         QFile::remove(fileName);
     }
 
+    void testFileDownload_data()
+    {
+        QTest::addColumn<bool>("requireAuth"); // server
+        QTest::addColumn<bool>("provideCorrectAuth"); // client
+        QTest::addColumn<bool>("expectedSuccess");
+
+        QTest::newRow("noauth") << false << false << true;
+        QTest::newRow("failing_auth") << true << false << false;
+        QTest::newRow("correct_auth") << true << true << true;
+    }
+
     void testFileDownload()
     {
+        QFETCH(bool, requireAuth);
+        QFETCH(bool, provideCorrectAuth);
+        QFETCH(bool, expectedSuccess);
+
         CountryServerThread serverThread;
         CountryServer* server = serverThread.startThread();
+
+        server->setRequireAuth(requireAuth);
 
         const QString fileName = QString::fromLatin1("file_download.txt");
         QFile file(fileName);
@@ -735,15 +758,24 @@ private Q_SLOTS:
         QString url = server->endPoint();
         url.chop(1) /*trailing slash*/;
         url += pathInUrl;
+
+        m_auth.setUser(QLatin1String("kdab"));
+        m_auth.setPassword(QLatin1String(provideCorrectAuth ? "pass42" : "invalid"));
         QNetworkAccessManager manager;
+        connect(&manager, SIGNAL(authenticationRequired(QNetworkReply*,QAuthenticator*)),
+                this, SLOT(slotAuthRequired(QNetworkReply*,QAuthenticator*)));
         QNetworkRequest request(url);
         QNetworkReply* reply = manager.get(request);
         QEventLoop loop;
         connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
         loop.exec();
 
-        QCOMPARE((int)reply->error(), (int)QNetworkReply::NoError);
-        QCOMPARE(reply->readAll(), QByteArray("Hello world"));
+        if (expectedSuccess) {
+            QCOMPARE((int)reply->error(), (int)QNetworkReply::NoError);
+            QCOMPARE(reply->readAll(), QByteArray("Hello world"));
+        } else {
+            QCOMPARE((int)reply->error(), (int)QNetworkReply::QNetworkReply::AuthenticationRequiredError);
+        }
         QFile::remove(fileName);
     }
 
@@ -853,6 +885,16 @@ public Q_SLOTS:
         m_eventLoop.quit();
     }
 
+    void slotAuthRequired(QNetworkReply *reply, QAuthenticator * authenticator)
+    {
+        // QNAM will just try and try again....
+        if (!reply->property("authAdded").toBool()) {
+            authenticator->setUser(m_auth.user());
+            authenticator->setPassword(m_auth.password());
+            reply->setProperty("authAdded", true);
+        }
+    }
+
 private:
     QEventLoop m_eventLoop;
     int m_expectedMessages;
@@ -860,6 +902,7 @@ private:
     QList<KDSoapHeaders> m_returnHeaders;
 
     KDSoapServer* m_server;
+    QAuthenticator m_auth;
 
 private:
     void makeSimpleCall(const QString& endPoint)

@@ -179,6 +179,21 @@ void KDSoapServerSocket::slotReadyRead()
         return; // incomplete request, wait for more data
 
     m_requestBuffer.clear();
+    const QString path = QString::fromLatin1(httpHeaders.value("_path").constData());
+
+    KDSoapServerAuthInterface* serverAuthInterface = qobject_cast<KDSoapServerAuthInterface *>(m_serverObject);
+    if (serverAuthInterface) {
+        QByteArray authValue = httpHeaders.value("Authorization");
+        if (authValue.isEmpty())
+            authValue = httpHeaders.value("authorization"); // as sent by Qt-4.5
+        if (!serverAuthInterface->handleHttpAuth(authValue, path)) {
+            // send auth request (Qt supports basic, ntlm and digest)
+            const QByteArray unauthorized = "HTTP/1.1 401 Authorization Required\r\nWWW-Authenticate: Basic realm=\"example\"\r\nContent-Length: 0\r\n\r\n";
+            write(unauthorized);
+            return;
+        }
+    }
+
     KDSoapServerObjectInterface* serverObjectInterface = qobject_cast<KDSoapServerObjectInterface *>(m_serverObject);
     if (!serverObjectInterface) {
         const QString error = QString::fromLatin1("Server object %1 does not implement KDSoapServerObjectInterface!").arg(QString::fromLatin1(m_serverObject->metaObject()->className()));
@@ -187,7 +202,6 @@ void KDSoapServerSocket::slotReadyRead()
         serverObjectInterface->setServerSocket(this);
     }
 
-    const QString path = QString::fromLatin1(httpHeaders.value("_path").constData());
     if (requestType == "GET") {
         if (path == server->wsdlPathInUrl() && handleWsdlDownload()) {
             return;
@@ -236,19 +250,6 @@ void KDSoapServerSocket::slotReadyRead()
     }
 
     m_method = requestMsg.name();
-
-    KDSoapServerAuthInterface* serverAuthInterface = qobject_cast<KDSoapServerAuthInterface *>(m_serverObject);
-    if (serverAuthInterface) {
-        QByteArray authValue = httpHeaders.value("Authorization");
-        if (authValue.isEmpty())
-            authValue = httpHeaders.value("authorization"); // as sent by Qt-4.5
-        if (!serverAuthInterface->handleHttpAuth(authValue, path)) {
-            // send auth request (Qt supports basic, ntlm and digest)
-            const QByteArray unauthorized = "HTTP/1.1 401 Authorization Required\r\nWWW-Authenticate: Basic realm=\"example\"\r\nContent-Length: 0\r\n\r\n";
-            write(unauthorized);
-            return;
-        }
-    }
 
     if (!replyMsg.isFault()) {
         makeCall(serverObjectInterface, requestMsg, replyMsg, requestHeaders, soapAction, path);
