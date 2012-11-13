@@ -820,6 +820,22 @@ private Q_SLOTS:
         QCOMPARE(response.constData(), expected.constData());
     }
 
+    void testHeadShouldFail()
+    {
+        CountryServerThread serverThread;
+        CountryServer* server = serverThread.startThread();
+
+        QUrl url(server->endPoint());
+        QNetworkRequest request(url);
+        QNetworkAccessManager accessManager;
+        //QTest::ignoreMessage(QtWarningMsg, "Unknown HTTP request: \"HEAD\"");
+        QNetworkReply* reply = accessManager.head(request);
+        QEventLoop loop;
+        connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+        loop.exec();
+        QCOMPARE((int)reply->error(), (int)QNetworkReply::QNetworkReply::ContentOperationNotPermittedError);
+    }
+
     void testSetPath_data()
     {
         QTest::addColumn<QString>("serverPath");

@@ -161,24 +161,21 @@ void KDSoapServerSocket::slotReadyRead()
         qDebug() << "data received:" << receivedData;
     }
 
-    KDSoapServer* server = m_owner->server();
-    KDSoapMessage replyMsg;
-    replyMsg.setUse(server->use());
-
-    const QByteArray requestType = httpHeaders.value("_requestType");
-    if (requestType != "GET" && requestType != "POST") {
-        qDebug() << "Unknown HTTP request:" << requestType;
-        handleError(replyMsg, "Client.Data", QString::fromLatin1("Invalid request type '%1', should be GET or POST").arg(QString::fromLatin1(requestType.constData())));
-        sendReply(0, replyMsg);
-        m_requestBuffer.clear();
-        return;
-    }
-
     const QByteArray contentLength = httpHeaders.value("content-length");
     if (receivedData.size() < contentLength.toInt())
         return; // incomplete request, wait for more data
-
     m_requestBuffer.clear();
+
+    const QByteArray requestType = httpHeaders.value("_requestType");
+    if (requestType != "GET" && requestType != "POST") {
+        qWarning() << "Unknown HTTP request:" << requestType;
+        //handleError(replyMsg, "Client.Data", QString::fromLatin1("Invalid request type '%1', should be GET or POST").arg(QString::fromLatin1(requestType.constData())));
+        //sendReply(0, replyMsg);
+        const QByteArray methodNotAllowed = "HTTP/1.1 405 Method Not Allowed\r\nAllow: GET POST\r\nContent-Length: 0\r\n\r\n";
+        write(methodNotAllowed);
+        return;
+    }
+
     const QString path = QString::fromLatin1(httpHeaders.value("_path").constData());
 
     KDSoapServerAuthInterface* serverAuthInterface = qobject_cast<KDSoapServerAuthInterface *>(m_serverObject);
@@ -193,6 +190,10 @@ void KDSoapServerSocket::slotReadyRead()
             return;
         }
     }
+
+    KDSoapServer* server = m_owner->server();
+    KDSoapMessage replyMsg;
+    replyMsg.setUse(server->use());
 
     KDSoapServerObjectInterface* serverObjectInterface = qobject_cast<KDSoapServerObjectInterface *>(m_serverObject);
     if (!serverObjectInterface) {
