@@ -774,7 +774,7 @@ private Q_SLOTS:
             QCOMPARE((int)reply->error(), (int)QNetworkReply::NoError);
             QCOMPARE(reply->readAll(), QByteArray("Hello world"));
         } else {
-            QCOMPARE((int)reply->error(), (int)QNetworkReply::QNetworkReply::AuthenticationRequiredError);
+            QCOMPARE((int)reply->error(), (int)QNetworkReply::AuthenticationRequiredError);
         }
         QFile::remove(fileName);
     }
@@ -833,7 +833,7 @@ private Q_SLOTS:
         QEventLoop loop;
         connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
         loop.exec();
-        QCOMPARE((int)reply->error(), (int)QNetworkReply::QNetworkReply::ContentOperationNotPermittedError);
+        QCOMPARE((int)reply->error(), (int)QNetworkReply::ContentOperationNotPermittedError);
     }
 
     void testSetPath_data()
