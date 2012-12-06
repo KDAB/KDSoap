@@ -37,6 +37,7 @@
 static const QString XMLSchemaURI( QLatin1String("http://www.w3.org/2001/XMLSchema") );
 static const QString WSDLSchemaURI( QLatin1String("http://schemas.xmlsoap.org/wsdl/") );
 static const QString soapEncNs = QLatin1String("http://schemas.xmlsoap.org/soap/encoding/");
+static const QString soap12EncNs = QLatin1String("http://www.w3.org/2003/05/soap-encoding");
 
 namespace XSD {
 
@@ -125,10 +126,27 @@ void Parser::init(ParserContext *context)
 
   // From http://schemas.xmlsoap.org/soap/encoding/, so that <attribute ref="soap-enc:arrayType" arrayType="kdab:EmployeeAchievement[]"/>
   // can be resolved.
-  Attribute arrayTypeAttr(soapEncNs);
-  arrayTypeAttr.setName(QLatin1String("arrayType"));
-  arrayTypeAttr.setType(QName(XMLSchemaURI, QLatin1String("string")));
-  d->mAttributes.append(arrayTypeAttr);
+  {
+      Attribute arrayTypeAttr(soapEncNs);
+      arrayTypeAttr.setName(QLatin1String("arrayType"));
+      arrayTypeAttr.setType(QName(XMLSchemaURI, QLatin1String("string")));
+      d->mAttributes.append(arrayTypeAttr);
+  }
+
+  // Same thing, but for SOAP-1.2: from http://www.w3.org/2003/05/soap-encoding
+  {
+      ComplexType array(soap12EncNs);
+      array.setArrayType(QName(XMLSchemaURI, QString::fromLatin1("any")));
+      array.setName(QLatin1String("Array"));
+      d->mComplexTypes.append(array);
+  }
+  {
+      Attribute arrayTypeAttr(soap12EncNs);
+      arrayTypeAttr.setName(QLatin1String("arrayType"));
+      arrayTypeAttr.setType(QName(XMLSchemaURI, QLatin1String("string")));
+      d->mAttributes.append(arrayTypeAttr);
+  }
+
 }
 
 bool Parser::parseFile( ParserContext *context, const QString &fileName )

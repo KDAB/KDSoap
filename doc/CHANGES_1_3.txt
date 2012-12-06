@@ -26,4 +26,4 @@ Server-side:
 
 Code generator changes, applying to both client and server side:
 ================================================================
-* 
+* Support for SOAP-1.2 encoding namespace (http://www.w3.org/2003/05/soap-encoding)
