@@ -59,9 +59,7 @@ class KXMLCOMMON_EXPORT NSManager
 
     void reset();
 
-    QString schemaPrefix() const;
-    QString schemaInstancePrefix() const;
-    QString soapEncPrefix() const;
+    static QStringList soapEncNamespaces();
 
     void dump() const;
 

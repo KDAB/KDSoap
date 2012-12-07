@@ -142,6 +142,9 @@ void Converter::cleanupUnusedTypes()
         //Q_FOREACH(const XSD::Element& elem, types.elements()) {
         //    qDebug() << "element:" << elem.qualifiedName();
         //}
+        //Q_FOREACH(const XSD::ComplexType& complexType, types.complexTypes()) {
+        //    qDebug() << "complex type:" << complexType.qualifiedName();
+        //}
     }
 
     QSet<QName> usedMessageNames;
@@ -249,6 +252,9 @@ void Converter::cleanupUnusedTypes()
         qDebug() << types.complexTypes().count() << "complex types";
         qDebug() << types.simpleTypes().count() << "simple types";
         qDebug() << types.elements().count() << "elements";
+        //Q_FOREACH(const XSD::ComplexType& complexType, types.complexTypes()) {
+        //    qDebug() << "complex type:" << complexType.qualifiedName();
+        //}
     }
 }
 
