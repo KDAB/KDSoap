@@ -88,7 +88,10 @@ void Converter::convertServerService()
 void Converter::generateServerMethod(KODE::Code& code, const Binding& binding, const Operation& operation, KODE::Class &newClass, bool first)
 {
     const Message message = mWSDL.findMessage( operation.input().message() );
-    const Message outputMessage = mWSDL.findMessage( operation.output().message() );
+    Message outputMessage;
+    if (operation.operationType() != Operation::OneWayOperation) {
+        outputMessage = mWSDL.findMessage( operation.output().message() );
+    }
 
     const QString operationName = operation.name();
     const QString methodName = mNameMapper.escape( lowerlize( operationName ) );
