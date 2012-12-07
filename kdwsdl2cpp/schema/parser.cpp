@@ -723,30 +723,59 @@ void Parser::parseComplexContent( ParserContext *context, const QDomElement &ele
         complexType.setBaseTypeName( typeName );
       }
 
-      // if the base soapenc:Array, then read only the arrayType attribute and nothing else
+      // if the base soapenc:Array, then read the arrayType attribute, and possibly the desired name for the child elements
       // TODO check namespace is really soap-encoding
       if ( typeName.localName() == QLatin1String("Array") ) {
-        const QDomElement arrayElement = childElement.firstChildElement();
-        if ( !arrayElement.isNull() ) {
-          const QString prefix = context->namespaceManager()->prefix( WSDLSchemaURI );
-          const QString attributeName = ( prefix.isEmpty() ? QString::fromLatin1("arrayType") : prefix + QLatin1String(":arrayType") );
 
-          QString typeStr = arrayElement.attribute( attributeName );
-          if ( typeStr.endsWith( QLatin1String("[]") ) )
-            typeStr.truncate( typeStr.length() - 2 );
+          QString typeStr;
+          QString arrayElementStr;
+          QDomElement arrayElement = childElement.firstChildElement();
+          while ( !arrayElement.isNull() ) {
+              NSManager namespaceManager( context, arrayElement );
+              const QName tagName( arrayElement.tagName() );
+              if ( context->namespaceManager()->uri( tagName.prefix() ) == XMLSchemaURI ) {
+                  const QString localName = tagName.localName();
+                  if ( localName == QLatin1String("attribute") ) {
+                      const QString prefix = context->namespaceManager()->prefix( WSDLSchemaURI );
+                      const QString attributeName = ( prefix.isEmpty() ? QString::fromLatin1("arrayType") : prefix + QLatin1String(":arrayType") );
 
-          QName arrayType( typeStr );
-          arrayType.setNameSpace( context->namespaceManager()->uri( arrayType.prefix() ) );
-          complexType.setArrayType( arrayType );
+                      typeStr = arrayElement.attribute( attributeName );
+                      if (typeStr.isEmpty()) {
+                          qWarning("ERROR: arrayType attribute missing in Array element.");
+                      }
+                      if ( typeStr.endsWith( QLatin1String("[]") ) )
+                          typeStr.truncate( typeStr.length() - 2 );
+                  } else if ( localName == QLatin1String("sequence") ) { // detosagent-legacy.wsdl
+                      arrayElement = arrayElement.firstChildElement(); // go down
+                  }
+                  if ( QName(arrayElement.tagName()).localName() == QLatin1String("element" ) ) {
+                      arrayElementStr = arrayElement.attribute("name");
+                      if ( localName == QLatin1String("sequence") ) { // go up again
+                          arrayElement = arrayElement.parentNode().toElement();
+                      }
+                  }
+              }
+              arrayElement = arrayElement.nextSiblingElement();
+          }
+          if (typeStr.isEmpty()) {
+              qWarning("ERROR: <attribute> element not found");
+          } else {
+              if (arrayElementStr.isEmpty())
+                  arrayElementStr = QLatin1String("items"); // we have to call it something...
 
-          Element items( complexType.nameSpace() );
-          items.setName( QLatin1String("items") );
-          items.setType( arrayType );
-          //items.setArrayType( arrayType );
-          complexType.addElement( items );
+              QName arrayType( typeStr );
+              arrayType.setNameSpace( context->namespaceManager()->uri( arrayType.prefix() ) );
+              complexType.setArrayType( arrayType );
 
-          //qDebug() << complexType.name() << "is array of" << arrayType;
-        }
+              Element items( complexType.nameSpace() );
+              items.setName( arrayElementStr );
+              items.setType( arrayType );
+              //items.setArrayType( arrayType );
+              complexType.addElement( items );
+
+              //qDebug() << complexType.name() << "is array of" << arrayType;
+          }
+
       } else {
         QDomElement ctElement = childElement.firstChildElement();
         while ( !ctElement.isNull() ) {
