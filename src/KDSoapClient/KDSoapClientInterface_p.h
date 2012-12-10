@@ -22,6 +22,7 @@
 #ifndef KDSOAPCLIENTINTERFACE_P_H
 #define KDSOAPCLIENTINTERFACE_P_H
 
+#include <QtNetwork/QSslConfiguration>
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkCookieJar>
 #include <QtCore/QXmlStreamWriter>
@@ -51,6 +52,7 @@ public:
     Style m_style;
     bool m_ignoreSslErrors;
     KDSoapHeaders m_lastResponseHeaders;
+    QSslConfiguration m_sslConfiguration;
 
     QNetworkRequest prepareRequest(const QString &method, const QString& action);
     QBuffer* prepareRequestBuffer(const QString& method, const KDSoapMessage& message, const KDSoapHeaders& headers);
