@@ -42,4 +42,7 @@ class ConfigureScriptGenerator():
 
 		# make file executable for Unix
 		if platformString != "win32":
-			os.chmod( outputFile, 0755 )
+			try:
+				os.chmod( outputFile, 0755 )
+			except SyntaxError: # Python 2.6 says syntax error on Windows, ignore it
+				print "ignoring failing os.chmod call, configure.sh won't be executable"
