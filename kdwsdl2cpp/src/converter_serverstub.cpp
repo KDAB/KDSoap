@@ -121,8 +121,21 @@ void Converter::generateServerMethod(KODE::Code& code, const Binding& binding, c
 
             code += argType + ' ' + varName + ";" + COMMENT;
 
-            // what if there's more than one?
-            code.addBlock( demarshalVar( part.type(), part.element(), varName, argType, "request" ) );
+            if (soapStyle(binding) == SoapBinding::RPCStyle) {
+                code += "KDSoapValue rpcParams = request.arguments().child(\"params\");";
+                code += "if (!rpcParams.isNull()) {";
+                code += "    KDSoapMessage modifiedRequest(request);";
+                code += "    modifiedRequest.arguments().clear();";
+                code += "    for (int i = 0; i < rpcParams.childValues().count(); ++i)";
+                code += "        modifiedRequest.arguments().append(rpcParams.childValues().at(i));";
+                code.indent();
+                code.addBlock( demarshalVar( part.type(), part.element(), varName, argType, "modifiedRequest" ) );
+                code.unindent();
+                code += "}";
+            } else {
+                // what if there's more than one?
+                code.addBlock( demarshalVar( part.type(), part.element(), varName, argType, "request" ) );
+            }
 
             inputVars += varName;
             newClass.addIncludes( mTypeMap.headerIncludes( part.type() ) );
