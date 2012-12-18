@@ -162,7 +162,9 @@ bool KDSoapUnitTestHelpers::setSslConfiguration()
         return false;
     }
     QSslCertificate cert(&certFile);
-    if (!cert.isValid()) {
+    const QDateTime currentTime = QDateTime::currentDateTime();
+    if (cert.effectiveDate() > currentTime
+            || cert.expiryDate() < currentTime) {
         qDebug() << "Certificate" << certFile.fileName() << "is not valid";
         qDebug() << "It is valid from" << cert.effectiveDate() << "to" << cert.expiryDate();
         return false;
