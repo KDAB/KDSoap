@@ -1,3 +1,5 @@
+option(host_build) # Qt5 option, ignore warning with Qt4
+
 TEMPLATE = lib
 TARGET = xmlcommon
 CONFIG += staticlib
