@@ -847,7 +847,7 @@ private Q_SLOTS:
         QUrl url(server->endPoint());
         QNetworkRequest request(url);
         QNetworkAccessManager accessManager;
-        //QTest::ignoreMessage(QtWarningMsg, "Unknown HTTP request: \"HEAD\"");
+        QTest::ignoreMessage(QtWarningMsg, "Unknown HTTP request: \"HEAD\" ");
         QNetworkReply* reply = accessManager.head(request);
         QEventLoop loop;
         connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
