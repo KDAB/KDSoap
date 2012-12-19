@@ -276,11 +276,13 @@ public:
 
     /**
      * Returns the ssl configuration used for outgoing connections
+     * \since 1.3
      */
     QSslConfiguration sslConfiguration() const;
 
     /**
      * Sets the ssl configuration used for outgoing connections
+     * \since 1.3
      */
     void setSslConfiguration(const QSslConfiguration &config);
 
