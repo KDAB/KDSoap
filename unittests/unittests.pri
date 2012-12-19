@@ -4,7 +4,7 @@ include ($${TOP_SOURCE_DIR}/examples/examples.pri)
 # Unittests shouldn't be in ../bin, it breaks 'nmake test' on Windows and makes things more difficult for developing on linux
 DESTDIR=.
 
-CONFIG += qtestlib
+QT += testlib
 QT += xml
 
 INCLUDEPATH += $${TOP_SOURCE_DIR}/testtools

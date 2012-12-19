@@ -478,8 +478,13 @@ private Q_SLOTS:
         numFileDescriptors += numClients;
 #endif
         if (!KDSoapServer::setExpectedSocketCount(numFileDescriptors)) {
-            if (expectedConnectedSockets > 500)
+            if (expectedConnectedSockets > 500) {
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
+                QSKIP("needs root");
+#else
                 QSKIP("needs root", SkipSingle);
+#endif
+            }
             else
                 QVERIFY(false); // should not happen
         }
@@ -596,7 +601,11 @@ private Q_SLOTS:
     void testSuspendUnderLoad()
     {
 #ifdef Q_OS_MAC
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
+        QSKIP("fails with 'select: Invalid argument' on mac, to be investigated");
+#else
         QSKIP("fails with 'select: Invalid argument' on mac, to be investigated", SkipSingle);
+#endif
 #endif
         const int numRequests = 5;
         const int numClients = 100;

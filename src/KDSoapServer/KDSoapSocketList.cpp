@@ -81,7 +81,11 @@ void KDSoapSocketList::disconnectAll()
 
 int KDSoapSocketList::totalConnectionCount() const
 {
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
+    return m_totalConnectionCount.loadAcquire();
+#else
     return m_totalConnectionCount;
+#endif
 }
 
 void KDSoapSocketList::resetTotalConnectionCount()

@@ -1,4 +1,4 @@
-/* 
+/*
     This file is part of KDE Schema Parser
 
     Copyright (c) 2005 Tobias Koenig <tokoe@kde.org>
@@ -29,7 +29,8 @@ class ComplexType::Private
 {
 public:
     Private()
-      // : mAnonymous(false)
+       : mAnonymous(false),
+         mConflicting(false)
     {}
 
     QString mDocumentation;
@@ -38,7 +39,8 @@ public:
     Attribute::List mAttributes;
     AttributeGroup::List mAttributeGroups;
 
-    //bool mAnonymous;
+    bool mAnonymous;
+    bool mConflicting;
 
     Derivation mBaseDerivation;
     QName mBaseTypeName;
@@ -126,15 +128,25 @@ bool ComplexType::isArray() const
     return !arrayType().isEmpty();
 }
 
-//void ComplexType::setAnonymous( bool anonymous )
-//{
-//  d->mAnonymous = anonymous;
-//}
+void ComplexType::setAnonymous( bool anonymous )
+{
+  d->mAnonymous = anonymous;
+}
 
-//bool ComplexType::isAnonymous() const
-//{
-//  return d->mAnonymous;
-//}
+bool ComplexType::isAnonymous() const
+{
+  return d->mAnonymous;
+}
+
+void ComplexType::setConflicting( bool conflicting )
+{
+  d->mConflicting = conflicting;
+}
+
+bool ComplexType::isConflicting() const
+{
+  return d->mConflicting;
+}
 
 void ComplexType::setElements( const Element::List &elements )
 {

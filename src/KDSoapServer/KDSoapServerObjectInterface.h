@@ -25,7 +25,10 @@
 #include "KDSoapServerGlobal.h"
 #include <KDSoapClient/KDSoapMessage.h>
 #include "KDSoapDelayedResponseHandle.h"
+
 #include <QtCore/QObject>
+#include <QIODevice>
+
 class KDSoapServerSocket;
 
 /**

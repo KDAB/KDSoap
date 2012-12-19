@@ -22,6 +22,7 @@
 #include <QtCore/QStringList>
 
 #include "file.h"
+#include <QDebug>
 
 using namespace KODE;
 
@@ -182,7 +183,9 @@ void File::insertClass( const Class &newClass )
   Q_ASSERT(!newClass.name().isEmpty());
   Class::List::Iterator it;
   for ( it = d->mClasses.begin(); it != d->mClasses.end(); ++it ) {
-    if ( (*it).name() == newClass.name() ) {
+    if ( (*it).qualifiedName() == newClass.qualifiedName() ) {
+      // This happens often, probably due to usage of shared types
+      //qDebug() << "WARNING: Already having class" << newClass.qualifiedName() << "in file" << filenameHeader() << filenameImplementation();
       it = d->mClasses.erase( it );
       d->mClasses.insert( it, newClass );
       return;

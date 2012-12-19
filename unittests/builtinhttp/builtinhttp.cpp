@@ -29,8 +29,10 @@
 #include "KDSoapServer.h"
 #include "KDSoapServerObjectInterface.h"
 #include "httpserver_p.h"
+
 #include <QtTest/QtTest>
 #include <QEventLoop>
+#include <QNetworkCookie>
 #include <QNetworkCookieJar>
 #include <QDebug>
 

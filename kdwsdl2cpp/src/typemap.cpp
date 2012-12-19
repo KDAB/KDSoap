@@ -314,6 +314,9 @@ void TypeMap::addSchemaTypes( const XSD::Types &types, const QString& ns )
         entry.localType = "void";
     else*/ {
         entry.localType = prefixNamespace( mNSManager->prefix( entry.nameSpace ).toUpper() + "__" + adaptLocalTypeName( (*complexIt).name() ), ns );
+        if ((*complexIt).isConflicting()) {
+            entry.localType += (*complexIt).isAnonymous() ? "Element" : "Type";
+        }
         //entry.headers << (*complexIt).name().toLower() + ".h";
         entry.forwardDeclarations << entry.localType;
     }

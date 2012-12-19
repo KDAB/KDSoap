@@ -193,7 +193,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
     KODE::Function dtor( QLatin1Char('~') + upperlize( newClass.name() ) );
     newClass.addFunction( dtor );
 
-    mClasses.append( newClass );
+    mClasses.addClass( newClass );
 }
 
 static QString namespaceString(const QString& ns)

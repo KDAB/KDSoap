@@ -47,7 +47,7 @@ unix:MESSAGE = '\\'$$LITERAL_HASH\\' KDAB qmake cache file: following lines auto
 
 system('echo $${MESSAGE} > $${QMAKE_CACHE}')
 
-TMP_SOURCE_DIR = $${IN_PWD}
+TMP_SOURCE_DIR = $${PWD}
 TMP_BUILD_DIR = $${OUT_PWD}
 system('echo TOP_SOURCE_DIR=$${TMP_SOURCE_DIR} >> $${QMAKE_CACHE}')
 system('echo TOP_BUILD_DIR=$${TMP_BUILD_DIR} >> $${QMAKE_CACHE}')

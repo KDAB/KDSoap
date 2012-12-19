@@ -26,20 +26,11 @@ void Converter::setWSDL( const WSDL &wsdl )
 {
   mWSDL = wsdl;
 
-  // merge namespaces from wsdl and schema
-  QStringList namespaces = wsdl.definitions().type().types().namespaces();
-  namespaces.append( QLatin1String("http://schemas.xmlsoap.org/soap/encoding/") );
-  const QStringList wsdlNamespaces = wsdl.namespaceManager().uris();
-  for ( int i = 0; i < wsdlNamespaces.count(); ++i ) {
-    if ( !namespaces.contains( wsdlNamespaces[ i ] ) )
-      namespaces.append( wsdlNamespaces[ i ] );
-  }
-
   // Keep the prefixes from the wsdl parsing, they are more meaningful than ns1 :)
   mNSManager = wsdl.namespaceManager();
 
   // overwrite some default prefixes
-  mNSManager.setPrefix(QLatin1String( "soapenc"), QLatin1String("http://schemas.xmlsoap.org/soap/encoding/") );
+  mNSManager.setPrefix( QLatin1String( "soapenc"), QLatin1String("http://schemas.xmlsoap.org/soap/encoding/") );
   mNSManager.setPrefix( QLatin1String("http"), QLatin1String("http://schemas.xmlsoap.org/wsdl/http/") );
   mNSManager.setPrefix( QLatin1String("soap"), QLatin1String("http://schemas.xmlsoap.org/wsdl/soap/") );
   mNSManager.setPrefix( QLatin1String("xsd"), QLatin1String("http://www.w3.org/2001/XMLSchema") );
@@ -83,7 +74,8 @@ public:
                 //qDebug() << "used type:" << typeName;
                 XSD::ComplexType complexType = types.complexType(typeName);
                 if (!complexType.name().isEmpty()) { // found it as a complex type
-                    usedComplexTypes.append(complexType);
+                    fixupComplexType(complexType);
+                    usedComplexTypes.insert(typeName, complexType);
 
                     addDependency(complexType.baseTypeName());
                     Q_FOREACH(const XSD::Element& element, complexType.elements()) {
@@ -109,13 +101,36 @@ public:
         } while (!typesToProcess.isEmpty());
     }
 
-    XSD::ComplexType::List usedComplexTypes;
+    QHash<QName, XSD::ComplexType> usedComplexTypes;
     XSD::SimpleType::List usedSimpleTypes;
+
 private:
     void addDependency(const QName& type) {
         if (!type.isEmpty() && !m_allUsedTypes.contains(type) && !m_alsoUsedTypes.contains(type)) {
             m_alsoUsedTypes.insert(type);
             m_allUsedTypes.insert(type);
+        }
+    }
+
+    void fixupComplexType(XSD::ComplexType& type)
+    {
+        // Check for conflicts (complex type Foo and anonymous complex type named after element foo, will both generate a class Foo later on)
+        if (type.name().at(0).isLower()) {
+            QName uppercaseType(type.nameSpace(), upperlize(type.name()));
+            XSD::ComplexType upperType = usedComplexTypes.value(uppercaseType);
+            if (!upperType.isNull()) {
+                //qDebug() << "FIXUP: found" << uppercaseType << "already in usedComplexTypes";
+                type.setConflicting(true);
+            }
+        } else {
+            QName lowercaseType(type.nameSpace(), lowerlize(type.name()));
+            XSD::ComplexType lowerType = usedComplexTypes.value(lowercaseType);
+            if (!lowerType.isNull()) {
+                //qDebug() << "FIXUP: found" << lowercaseType << "already in usedComplexTypes";
+                usedComplexTypes.remove(lowercaseType);
+                lowerType.setConflicting(true);
+                usedComplexTypes.insert(lowercaseType, lowerType);
+            }
         }
     }
 
@@ -237,8 +252,9 @@ void Converter::cleanupUnusedTypes()
         else
             usedElements.append(element);
     }
+
     definitions.setMessages(newMessages);
-    types.setComplexTypes(collector.usedComplexTypes);
+    types.setComplexTypes(collector.usedComplexTypes.values());
     types.setSimpleTypes(collector.usedSimpleTypes);
     types.setElements(usedElements);
     type.setTypes(types);

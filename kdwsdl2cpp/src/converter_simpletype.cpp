@@ -266,7 +266,7 @@ void Converter::convertSimpleType( const XSD::SimpleType *type, const XSD::Simpl
   KODE::Function dtor( '~' + newClass.name() );
   newClass.addFunction( dtor );
 
-  mClasses.append( newClass );
+  mClasses.addClass( newClass );
 }
 
 void Converter::createSimpleTypeSerializer( KODE::Class& newClass, const XSD::SimpleType *type, const XSD::SimpleType::List& simpleTypeList )

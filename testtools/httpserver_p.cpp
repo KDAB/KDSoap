@@ -162,7 +162,9 @@ bool KDSoapUnitTestHelpers::setSslConfiguration()
         return false;
     }
     QSslCertificate cert(&certFile);
-    if (!cert.isValid()) {
+    const QDateTime currentTime = QDateTime::currentDateTime();
+    if (cert.effectiveDate() > currentTime
+            || cert.expiryDate() < currentTime) {
         qDebug() << "Certificate" << certFile.fileName() << "is not valid";
         qDebug() << "It is valid from" << cert.effectiveDate() << "to" << cert.expiryDate();
         return false;
@@ -192,7 +194,12 @@ public:
             return nextPendingConnection();
         }
     }
+
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
+    virtual void incomingConnection(qintptr socketDescriptor)
+#else
     virtual void incomingConnection(int socketDescriptor)
+#endif
     {
 #ifndef QT_NO_OPENSSL
         if (doSsl) {

@@ -70,7 +70,7 @@ bool Converter::convertClientService()
         Q_ASSERT(!service.name().isEmpty());
 
         QSet<QName> uniqueBindings = mWSDL.uniqueBindings( service );
-        //qDebug() << service.name() << uniqueBindings;
+        //qDebug() << "Looking at" << service.name() << uniqueBindings;
 
         Q_FOREACH( const QName& bindingName, uniqueBindings ) {
             const Binding binding = mWSDL.findBinding( bindingName );
@@ -279,6 +279,13 @@ bool Converter::convertClientService()
                 createHeader( header, newClass );
             }
             bindingClasses.append(newClass);
+            mHeaderMethods.clear();
+
+            QString jobsNamespace = nameSpace;
+            if (uniqueBindings.count() > 1) {
+                // Multiple bindings: use <Service>::<Binding>Jobs as namespace for the job classes
+                jobsNamespace += "::" + KODE::Style::className(bindingName.localName()) + "Jobs";
+            }
 
             // for each operation, create a job class
             Q_FOREACH( const Operation& operation, operations ) {
@@ -287,12 +294,11 @@ bool Converter::convertClientService()
                     continue;
 
                 const QString operationName = operation.name();
-                KODE::Class jobClass( upperlize( operation.name() ) + QLatin1String("Job"), nameSpace );
+                KODE::Class jobClass( upperlize( operation.name() ) + QLatin1String("Job"), jobsNamespace );
                 jobClass.addInclude( QString(), fullyQualified( newClass ) );
                 jobClass.addHeaderInclude( QLatin1String("KDSoapClient/KDSoapJob.h") );
                 if ( !Settings::self()->exportDeclaration().isEmpty() )
                     jobClass.setExportDeclaration( Settings::self()->exportDeclaration() );
-                jobClass.setNameSpace( Settings::self()->nameSpace() );
 
                 jobClass.addBaseClass( KODE::Class( QLatin1String("KDSoapJob") ) );
 
@@ -385,7 +391,7 @@ bool Converter::convertClientService()
                 slot.setBody( slotCode );
                 jobClass.addFunction( slot );
 
-                mClasses += jobClass;
+                mClasses.addClass(jobClass);
             } // end of for each operation (job creation)
         } // end of for each port
     } // end of for each service

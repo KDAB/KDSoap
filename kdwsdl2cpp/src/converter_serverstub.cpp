@@ -80,7 +80,7 @@ void Converter::convertServerService()
 
             serverClass.addFunction(processRequestMethod);
 
-            mClasses += serverClass;
+            mClasses.addClass(serverClass);
         }
     }
 }

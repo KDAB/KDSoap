@@ -88,9 +88,14 @@ QString Printer::Private::classHeader( const Class &classObject, bool publicMemb
 {
   Code code;
 
+  int numNamespaces = 0;
   if ( !classObject.nameSpace().isEmpty() ) {
-    code += QLatin1String("namespace ") + classObject.nameSpace() + QLatin1String(" {");
-    code.indent();
+    const QStringList nsList = classObject.nameSpace().split("::");
+    Q_FOREACH(const QString& ns, nsList) {
+        code += QLatin1String("namespace ") + ns + QLatin1String(" {");
+        code.indent();
+        ++numNamespaces;
+    }
   }
 
   if ( nestedClass )
@@ -268,7 +273,7 @@ QString Printer::Private::classHeader( const Class &classObject, bool publicMemb
 
   code += QLatin1String("};");
 
-  if ( !classObject.nameSpace().isEmpty() ) {
+  for (int i = 0; i < numNamespaces; ++i) {
       code.unindent();
       code += QLatin1String("} // namespace end");
   }

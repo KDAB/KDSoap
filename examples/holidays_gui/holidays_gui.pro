@@ -6,6 +6,10 @@ RESOURCES = resources.qrc
 KDWSDL = holidays.wsdl
 
 # This is our only GUI program :)
-QT += gui
+greaterThan(QT_MAJOR_VERSION, 4) {
+    QT += widgets
+} else {
+    QT += gui
+}
 CONFIG -= console
 macx: CONFIG += app_bundle
