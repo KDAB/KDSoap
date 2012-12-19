@@ -538,7 +538,10 @@ bool Converter::convertClientCall( const Operation &operation, const Binding &bi
   KODE::Function callFunc( mNameMapper.escape( methodName ), QLatin1String("void"), KODE::Function::Public );
   callFunc.setDocs(QString::fromLatin1("Blocking call to %1.\nNot recommended in a GUI thread.").arg(operation.name()));
   const Message inputMessage = mWSDL.findMessage( operation.input().message() );
-  const Message outputMessage = mWSDL.findMessage( operation.output().message() );
+  Message outputMessage;
+  if (operation.operationType() != Operation::OneWayOperation) {
+      outputMessage = mWSDL.findMessage( operation.output().message() );
+  }
   clientAddArguments( callFunc, inputMessage, newClass, operation, binding );
   KODE::Code code;
   const bool hasAction = clientAddAction( code, binding, operation.name() );
