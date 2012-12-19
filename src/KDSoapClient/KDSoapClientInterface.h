@@ -28,6 +28,7 @@
 #include "KDSoapPendingCall.h"
 
 class KDSoapAuthentication;
+class QSslConfiguration;
 class QNetworkCookieJar;
 class QNetworkProxy;
 
@@ -272,6 +273,16 @@ public:
      * only!
      */
     void ignoreSslErrors();
+
+    /**
+     * Returns the ssl configuration used for outgoing connections
+     */
+    QSslConfiguration sslConfiguration() const;
+
+    /**
+     * Sets the ssl configuration used for outgoing connections
+     */
+    void setSslConfiguration(const QSslConfiguration &config);
 
 private:
     friend class KDSoapThreadTask;

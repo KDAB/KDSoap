@@ -23,6 +23,7 @@
 #include "KDSoapClientInterface_p.h"
 #include "KDSoapNamespaceManager.h"
 #include "KDSoapMessageWriter_p.h"
+#include <QSslConfiguration>
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QAuthenticator>
@@ -99,6 +100,9 @@ QNetworkRequest KDSoapClientInterface::Private::prepareRequest(const QString &me
     // happens with retrieval calls in against SugarCRM 5.5.1 running on Apache 2.2.15
     // when the response seems to reach a certain size threshold
     request.setRawHeader( "Accept-Encoding", "compress" );
+
+    if (!m_sslConfiguration.isNull())
+        request.setSslConfiguration(m_sslConfiguration);
 
     return request;
 }
@@ -223,6 +227,16 @@ QNetworkProxy KDSoapClientInterface::proxy() const
 void KDSoapClientInterface::setProxy(const QNetworkProxy &proxy)
 {
     d->m_accessManager.setProxy(proxy);
+}
+
+QSslConfiguration KDSoapClientInterface::sslConfiguration() const
+{
+    return d->m_sslConfiguration;
+}
+
+void KDSoapClientInterface::setSslConfiguration(const QSslConfiguration &config)
+{
+    d->m_sslConfiguration = config;
 }
 
 #include "moc_KDSoapClientInterface_p.cpp"
