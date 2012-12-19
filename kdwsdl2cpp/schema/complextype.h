@@ -57,8 +57,11 @@ class SCHEMA_EXPORT ComplexType : public XSDType
 
     bool isSimple() const;
 
-    //void setAnonymous( bool anonymous );
-    //bool isAnonymous() const;
+    void setAnonymous( bool anonymous );
+    bool isAnonymous() const;
+
+    void setConflicting( bool c );
+    bool isConflicting() const;
 
     void setBaseDerivation( Derivation derivation );
     Derivation baseDerivation() const;

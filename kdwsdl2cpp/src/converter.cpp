@@ -74,7 +74,8 @@ public:
                 //qDebug() << "used type:" << typeName;
                 XSD::ComplexType complexType = types.complexType(typeName);
                 if (!complexType.name().isEmpty()) { // found it as a complex type
-                    usedComplexTypes.append(complexType);
+                    fixupComplexType(complexType);
+                    usedComplexTypes.insert(typeName, complexType);
 
                     addDependency(complexType.baseTypeName());
                     Q_FOREACH(const XSD::Element& element, complexType.elements()) {
@@ -100,13 +101,36 @@ public:
         } while (!typesToProcess.isEmpty());
     }
 
-    XSD::ComplexType::List usedComplexTypes;
+    QHash<QName, XSD::ComplexType> usedComplexTypes;
     XSD::SimpleType::List usedSimpleTypes;
+
 private:
     void addDependency(const QName& type) {
         if (!type.isEmpty() && !m_allUsedTypes.contains(type) && !m_alsoUsedTypes.contains(type)) {
             m_alsoUsedTypes.insert(type);
             m_allUsedTypes.insert(type);
+        }
+    }
+
+    void fixupComplexType(XSD::ComplexType& type)
+    {
+        // Check for conflicts (complex type Foo and anonymous complex type named after element foo, will both generate a class Foo later on)
+        if (type.name().at(0).isLower()) {
+            QName uppercaseType(type.nameSpace(), upperlize(type.name()));
+            XSD::ComplexType upperType = usedComplexTypes.value(uppercaseType);
+            if (!upperType.isNull()) {
+                //qDebug() << "FIXUP: found" << uppercaseType << "already in usedComplexTypes";
+                type.setConflicting(true);
+            }
+        } else {
+            QName lowercaseType(type.nameSpace(), lowerlize(type.name()));
+            XSD::ComplexType lowerType = usedComplexTypes.value(lowercaseType);
+            if (!lowerType.isNull()) {
+                //qDebug() << "FIXUP: found" << lowercaseType << "already in usedComplexTypes";
+                usedComplexTypes.remove(lowercaseType);
+                lowerType.setConflicting(true);
+                usedComplexTypes.insert(lowercaseType, lowerType);
+            }
         }
     }
 
@@ -224,202 +248,11 @@ void Converter::cleanupUnusedTypes()
     }
 
     definitions.setMessages(newMessages);
-    types.setComplexTypes(collector.usedComplexTypes);
+    types.setComplexTypes(collector.usedComplexTypes.values());
     types.setSimpleTypes(collector.usedSimpleTypes);
     types.setElements(usedElements);
     type.setTypes(types);
     definitions.setType(type);
-
-//// TODO BEGIN: Disambiguate code to be refactored and cleaned up along with cleanupUnusedTypes functionality later
-    XSD::Element::List tmpElements = definitions.type().types().elements();
-    QSet<QName> tmpElementNames;
-    Q_FOREACH( const XSD::Element& element, tmpElements ) {
-        tmpElementNames.insert( element.qualifiedName() );
-    }
-    XSD::SimpleType::List tmpSimpleTypes = definitions.type().types().simpleTypes();
-    QSet<QName> tmpSimpleTypeNames;
-    Q_FOREACH( const XSD::SimpleType& simpleType, tmpSimpleTypes ) {
-        tmpSimpleTypeNames.insert( simpleType.qualifiedName() );
-    }
-    XSD::ComplexType::List tmpComplexTypes = definitions.type().types().complexTypes();
-    QSet<QName> tmpComplexTypeNames;
-    Q_FOREACH( const XSD::ComplexType& complexType, tmpComplexTypes ) {
-        tmpComplexTypeNames.insert( complexType.qualifiedName() );
-    }
-    Message::List tmpMessages = definitions.messages();
-
-    QSet<QName> conflictingTypeSet = tmpSimpleTypeNames.intersect( tmpComplexTypeNames );
-    if ( conflictingTypeSet.count() > 0 ) {
-        QString msg;
-        msg.append("\n");
-        Q_FOREACH( const QName& name, conflictingTypeSet ) {
-            msg.append( "Prefix: " + name.prefix() + " NameSpace: " + name.nameSpace() + " LocalName: " + name.localName() + "\n" );
-        }
-        qWarning() << "ERROR: There are:" << conflictingTypeSet.count() << "Simple and Complex Types that have the same name present:" << msg;
-    }
-
-    // Remove expected conflicts between SimpleType and Element Sets
-    QSet<QName> simpleTypeConflictingElementsSubtracted = tmpSimpleTypeNames.subtract( tmpElementNames );
-    QSet<QName> elementConflictingSimpleTypesSubtracted = tmpElementNames.subtract( tmpSimpleTypeNames );
-    QSet<QName> elementConflictingSimpleTypesSubtractedOriginal = elementConflictingSimpleTypesSubtracted;
-    // Convert SimpleType and Elements names to class names by capitalising the first character
-    Q_FOREACH( const QName& name, simpleTypeConflictingElementsSubtracted.toList() ) {
-        simpleTypeConflictingElementsSubtracted.remove( name );
-        QName tmpName( name.nameSpace(), upperlize( name.localName() ) );
-        simpleTypeConflictingElementsSubtracted.insert( tmpName );
-    }
-    Q_FOREACH( const QName& name, elementConflictingSimpleTypesSubtracted.toList() ) {
-        elementConflictingSimpleTypesSubtracted.remove( name );
-        QName tmpName( name.nameSpace(), upperlize( name.localName() ) );
-        elementConflictingSimpleTypesSubtracted.insert( tmpName );
-    }
-    // Check for unexpected conflicts
-    QSet<QName> conflictingSimpleTypeAndElementSet = elementConflictingSimpleTypesSubtracted.intersect( simpleTypeConflictingElementsSubtracted );
-    // Resolve unexpected conflictings
-    Q_FOREACH( const QName& name, conflictingSimpleTypeAndElementSet.toList() ) {
-        Q_FOREACH( const QName& eName, elementConflictingSimpleTypesSubtractedOriginal.toList() ) {
-            if ( lowerlize( name.localName() ) == eName.localName() ) {
-                // resolve conflicting elements...
-                //pre-pend "element" to conflicting Element name
-                QString newElementName = QLatin1String( "element" ) + name.localName();
-                for ( QList< XSD::Element >::iterator elementIt = tmpElements.begin(); elementIt != tmpElements.end(); ++elementIt ) {
-                    if ( (*elementIt).qualifiedName() == eName ) {
-                        (*elementIt).setName( newElementName );
-                    }
-                    if ( (*elementIt).type() == eName ) {
-                        if ( (*elementIt).type().prefix().size() ) {
-                            QName tmpElementType( (*elementIt).type().nameSpace(), (*elementIt).type().prefix() + QLatin1Char( ':' ) + newElementName );
-                            (*elementIt).setType( tmpElementType );
-                        }
-                        else {
-                            QName tmpElementType( (*elementIt).type().nameSpace(), newElementName );
-                            (*elementIt).setType( tmpElementType );
-                        }
-                    }
-                }
-                for ( QList< XSD::SimpleType >::iterator simpleIt = tmpSimpleTypes.begin(); simpleIt != tmpSimpleTypes.end(); ++simpleIt ) {
-                    if ( (*simpleIt).qualifiedName() == eName ) {
-                        (*simpleIt).setName( newElementName );
-                    }
-                }
-                // resolve conflicting messages and their constiuate parts...
-                for ( QList< Message >::iterator messageIt = tmpMessages.begin(); messageIt != tmpMessages.end(); ++messageIt ) {
-                    Part::List parts = (*messageIt).parts();
-                    for ( QList< Part >::iterator partIt = parts.begin(); partIt != parts.end(); ++partIt ) {
-                        if ( lowerlize( name.localName() ) == (*partIt).element().localName() ) {
-                            if ( (*partIt).element().prefix().size() ) {
-                                QName tmpPartElement( (*partIt).element().prefix() + QLatin1Char(':') + newElementName );
-                                tmpPartElement.setNameSpace( (*partIt).element().nameSpace() );
-                                (*partIt).setElement( tmpPartElement );
-                            }
-                            else {
-                                QName tmpPartElement( (*partIt).element().nameSpace(), newElementName );
-                                (*partIt).setElement( tmpPartElement );
-                            }
-                        }
-                    }
-                    (*messageIt).setParts( parts );
-                }
-            }
-        }
-    }
-
-    // Remove expected conflicts between ComplexType and Element Sets
-    QSet<QName> complexTypeConflictingElementsSubtracted = tmpComplexTypeNames.subtract( tmpElementNames );
-    QSet<QName> elementConflictingComplexTypesSubtracted = tmpElementNames.subtract( tmpComplexTypeNames );
-    QSet<QName> elementConflictingComplexTypesSubtractedOriginal = elementConflictingComplexTypesSubtracted;
-    // Convert ComplexType and Elements names to class names by capitalising the first character
-    Q_FOREACH( const QName& name, complexTypeConflictingElementsSubtracted.toList() ) {
-        complexTypeConflictingElementsSubtracted.remove( name );
-        QName tmpName( name.nameSpace(), upperlize( name.localName() ) );
-        complexTypeConflictingElementsSubtracted.insert( tmpName );
-    }
-    Q_FOREACH( const QName& name, elementConflictingComplexTypesSubtracted.toList() ) {
-        elementConflictingComplexTypesSubtracted.remove( name );
-        QName tmpName( name.nameSpace(), upperlize( name.localName() ) );
-        elementConflictingComplexTypesSubtracted.insert( tmpName );
-    }
-    // Check for unexpected conflicts
-    QSet<QName> conflictingComplexTypeAndElementSet = elementConflictingComplexTypesSubtracted.intersect( complexTypeConflictingElementsSubtracted );
-    // Resolve unexpected conflictings
-    Q_FOREACH( const QName& name, conflictingComplexTypeAndElementSet.toList() ) {
-        Q_FOREACH( const QName& eName, elementConflictingComplexTypesSubtractedOriginal.toList() ) {
-            if ( lowerlize( name.localName() ) == eName.localName() ) {
-                // resolve conflicting elements...
-                // pre-pend "element" to conflicting Element name
-                QString newElementName = QLatin1String( "element" ) + name.localName();
-                for ( QList< XSD::Element >::iterator elementIt = tmpElements.begin(); elementIt != tmpElements.end(); ++elementIt ) {
-                    if ( (*elementIt).qualifiedName() == eName ) {
-                        (*elementIt).setName( newElementName );
-                    }
-                    if ( (*elementIt).type() == eName ) {
-                        if ( (*elementIt).type().prefix().size() )
-                        {
-                            QName tmpElementType( (*elementIt).type().nameSpace(), (*elementIt).type().prefix() + QLatin1Char( ':' ) + newElementName );
-                            (*elementIt).setType( tmpElementType );
-                        }
-                        else {
-                            QName tmpElementType( (*elementIt).type().nameSpace(), newElementName );
-                            (*elementIt).setType( tmpElementType );
-                        }
-                    }
-                }
-                for ( QList< XSD::ComplexType >::iterator complexIt = tmpComplexTypes.begin(); complexIt != tmpComplexTypes.end(); ++complexIt ) {
-                    if ( (*complexIt).qualifiedName() == eName ) {
-                        (*complexIt).setName( newElementName );
-                        if ( (*complexIt).isArray() ) {
-                            if ( (*complexIt).arrayType() == eName ) {
-                                if ( (*complexIt).arrayType().prefix().size() ) {
-                                    QName tmpArrayType( (*complexIt).arrayType().nameSpace(), (*complexIt).arrayType().prefix() + QLatin1Char( ':' ) + newElementName );
-                                    (*complexIt).setArrayType( tmpArrayType );
-                                }
-                                else {
-                                    QName tmpArrayType( (*complexIt).arrayType().nameSpace(), newElementName );
-                                    (*complexIt).setArrayType( tmpArrayType );
-                                }
-                            }
-                        }
-                    }
-                    XSD::Element::List elements = (*complexIt).elements();
-                    for ( QList< XSD::Element >::iterator elementIt = elements.begin(); elementIt != elements.end(); ++elementIt ) {
-                        if ( (*elementIt).qualifiedName() == eName ) {
-                            (*elementIt).setName( newElementName );
-                        }
-                    }
-                    (*complexIt).setElements( elements );
-                }
-                // resolve conflicting messages and their constiuate parts...
-                for ( QList< Message >::iterator messageIt = tmpMessages.begin(); messageIt != tmpMessages.end(); ++messageIt ) {
-                    Part::List parts = (*messageIt).parts();
-                    for ( QList< Part >::iterator partIt = parts.begin(); partIt != parts.end(); ++partIt ) {
-                        if ( lowerlize( name.localName() ) == (*partIt).element().localName() ) {
-                            if ( (*partIt).element().prefix().size() ) {
-                                QName tmpPartElement( (*partIt).element().prefix() + QLatin1Char(':') + newElementName );
-                                tmpPartElement.setNameSpace( (*partIt).element().nameSpace() );
-                                (*partIt).setElement( tmpPartElement );
-                            }
-                            else {
-                                QName tmpPartElement( (*partIt).element().nameSpace(), newElementName );
-                                (*partIt).setElement( tmpPartElement );
-                            }
-                        }
-                    }
-                    (*messageIt).setParts( parts );
-                }
-            }
-        }
-    }
-
-    definitions.setMessages( tmpMessages );
-    Type tmpType = definitions.type();
-    XSD::Types tmpTypes = tmpType.types();
-    tmpTypes.setSimpleTypes( tmpSimpleTypes );
-    tmpTypes.setComplexTypes( tmpComplexTypes );
-    tmpTypes.setElements( tmpElements );
-    tmpType.setTypes( tmpTypes );
-    definitions.setType( tmpType );
-
-////////////////////////////////// TODO END: disambiguate //////////////////////////////////
 
     mWSDL.setDefinitions(definitions);
 

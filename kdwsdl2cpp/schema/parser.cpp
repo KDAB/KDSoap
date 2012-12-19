@@ -447,7 +447,8 @@ Element Parser::parseElement( ParserContext *context,
   if ( element.hasAttribute( QLatin1String("type") ) ) {
     QName typeName( element.attribute( QLatin1String("type") ) );
     typeName.setNameSpace( context->namespaceManager()->uri( typeName.prefix() ) );
-    //qDebug() << "typeName=" << typeName.qname() << "namespace=" << context->namespaceManager()->uri( typeName.prefix() );
+    if (debugParsing())
+        qDebug() << "typeName=" << typeName.qname() << "namespace=" << context->namespaceManager()->uri( typeName.prefix() );
     newElement.setType( typeName );
   } else {
     QDomElement childElement = element.firstChildElement();
@@ -460,9 +461,11 @@ Element Parser::parseElement( ParserContext *context,
         ComplexType ct = parseComplexType( context, childElement );
 
         ct.setName( newElement.name() );
+        ct.setAnonymous( true );
         d->mComplexTypes.append( ct );
 
-        //qDebug() << "  name is now" << ct.name() << "newElement.setType" << ct.qualifiedName();
+        if (debugParsing())
+            qDebug() << " found nested complexType element, type name is now element name, i.e. " << ct.name() << "newElement.setType" << ct.qualifiedName();
         newElement.setType( ct.qualifiedName() );
       } else if ( childName.localName() == QLatin1String("simpleType") ) {
         SimpleType st = parseSimpleType( context, childElement );
