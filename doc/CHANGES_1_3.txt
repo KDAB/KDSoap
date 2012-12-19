@@ -1,5 +1,8 @@
 General:
 ========
+* KDSoap now supports both Qt4 and Qt5
+* Added support for cross-compilation with Qt5's qmake
+  (so that kdwsdl2cpp is compiled as a host tool)
 * Fix compilation with custom build systems who do not set include paths to QtCore and QtNetwork.
 Similarly, do not requiring including the KDSoapClient and KDSoapServer subdirs, only the toplevel.
 * More steps towards SOAP-1.2 support (different namespaces)
@@ -12,6 +15,8 @@ Client-side:
   must be used rather than the NS from the WSDL, when both exist (github issue4).
 * Fix assert when the response message is empty (github issue1).
 * Set attribute xsi:nil="true" in empty elements, as per http://www.w3.org/TR/xmlschema-1/#xsi_nil
+* Fix missing setters for headers, when generating multiple classes
+* Fix job classes to be per-binding, when multiple bindings are generated.
 
 Server-side:
 ============
@@ -30,3 +35,9 @@ Code generator changes, applying to both client and server side:
 ================================================================
 * Support for SOAP-1.2 encoding namespace (http://www.w3.org/2003/05/soap-encoding)
 * Improve parsing of soap-enc:array restrictions, to use the correct element names, when specified
+* Fix generation of classes with nested namespaces (A::B::C)
+* Fix disappearing classes when the same file has classes with the same
+   name in different namespaces.
+* Fix hashing of QNames
+* Fix conflict between complex type "Foo" and anonymous complex type "foo",
+   both leading to a C++ class called "Foo".
