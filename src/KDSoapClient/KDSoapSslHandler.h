@@ -38,8 +38,6 @@ class KDSOAP_EXPORT KDSoapSslHandler : public QObject
 {
     Q_OBJECT
 public:
-    explicit KDSoapSslHandler(QObject *parent = 0);
-    virtual ~KDSoapSslHandler();
 
 Q_SIGNALS:
     /**
@@ -75,6 +73,15 @@ private Q_SLOTS:
     void slotSslErrors(const QList<QSslError> &errors);
 
 private:
+    friend class KDSoapClientInterface;
+    friend class KDSoapClientInterfacePrivate;
+    /**
+     * Constructs a KDSoapSslHandler.
+     * Used internally
+     */
+    explicit KDSoapSslHandler(QObject *parent = 0);
+    virtual ~KDSoapSslHandler();
+
     QNetworkReply* m_reply; // could be replaced with a d pointer if needed
 };
 

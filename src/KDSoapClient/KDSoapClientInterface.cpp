@@ -33,7 +33,7 @@
 #include <QNetworkProxy>
 
 KDSoapClientInterface::KDSoapClientInterface(const QString& endPoint, const QString& messageNamespace)
-    : d(new Private)
+    : d(new KDSoapClientInterfacePrivate)
 {
     d->m_endPoint = endPoint;
     d->m_messageNamespace = messageNamespace;
@@ -58,9 +58,9 @@ KDSoapClientInterface::SoapVersion KDSoapClientInterface::soapVersion()
 }
 
 
-KDSoapClientInterface::Private::Private()
+KDSoapClientInterfacePrivate::KDSoapClientInterfacePrivate()
     : m_authentication(),
-      m_style(RPCStyle),
+      m_style(KDSoapClientInterface::RPCStyle),
       m_ignoreSslErrors(false),
       m_sslHandler(0)
 {
@@ -69,12 +69,12 @@ KDSoapClientInterface::Private::Private()
     m_accessManager.cookieJar(); // create it in the right thread...
 }
 
-KDSoapClientInterface::Private::~Private()
+KDSoapClientInterfacePrivate::~KDSoapClientInterfacePrivate()
 {
     delete m_sslHandler;
 }
 
-QNetworkRequest KDSoapClientInterface::Private::prepareRequest(const QString &method, const QString& action)
+QNetworkRequest KDSoapClientInterfacePrivate::prepareRequest(const QString &method, const QString& action)
 {
     QNetworkRequest request(QUrl(this->m_endPoint));
 
@@ -91,10 +91,10 @@ QNetworkRequest KDSoapClientInterface::Private::prepareRequest(const QString &me
     //qDebug() << "soapAction=" << soapAction;
 
     QString soapHeader;
-    if (m_version == SOAP1_1) {
+    if (m_version == KDSoapClientInterface::SOAP1_1) {
         soapHeader += QString::fromLatin1("text/xml;charset=utf-8");
         request.setRawHeader("SoapAction", '\"' + soapAction.toUtf8() + '\"');
-    } else if (m_version == SOAP1_2) {
+    } else if (m_version == KDSoapClientInterface::SOAP1_2) {
         soapHeader += QString::fromLatin1("application/soap+xml;charset=utf-8;action=") + soapAction;
     }
 
@@ -114,11 +114,11 @@ QNetworkRequest KDSoapClientInterface::Private::prepareRequest(const QString &me
     return request;
 }
 
-QBuffer* KDSoapClientInterface::Private::prepareRequestBuffer(const QString& method, const KDSoapMessage& message, const KDSoapHeaders& headers)
+QBuffer* KDSoapClientInterfacePrivate::prepareRequestBuffer(const QString& method, const KDSoapMessage& message, const KDSoapHeaders& headers)
 {
     KDSoapMessageWriter msgWriter;
     msgWriter.setMessageNamespace(m_messageNamespace);
-    const QByteArray data = msgWriter.messageToXml(message, (m_style == RPCStyle) ? method : QString(), headers, m_persistentHeaders);
+    const QByteArray data = msgWriter.messageToXml(message, (m_style == KDSoapClientInterface::RPCStyle) ? method : QString(), headers, m_persistentHeaders);
     QBuffer* buffer = new QBuffer;
     buffer->setData(data);
     buffer->open(QIODevice::ReadOnly);
@@ -161,7 +161,7 @@ void KDSoapClientInterface::callNoReply(const QString &method, const KDSoapMessa
     QObject::connect(reply, SIGNAL(finished()), reply, SLOT(deleteLater()));
 }
 
-void KDSoapClientInterface::Private::_kd_slotAuthenticationRequired(QNetworkReply* reply, QAuthenticator* authenticator)
+void KDSoapClientInterfacePrivate::_kd_slotAuthenticationRequired(QNetworkReply* reply, QAuthenticator* authenticator)
 {
     m_authentication.handleAuthenticationRequired(reply, authenticator);
 }
@@ -192,7 +192,7 @@ void KDSoapClientInterface::ignoreSslErrors()
     d->m_ignoreSslErrors = true;
 }
 
-void KDSoapClientInterface::Private::setupReply(QNetworkReply *reply)
+void KDSoapClientInterfacePrivate::setupReply(QNetworkReply *reply)
 {
     if (m_ignoreSslErrors) {
         QObject::connect(reply, SIGNAL(sslErrors(const QList<QSslError>&)), reply, SLOT(ignoreSslErrors()));

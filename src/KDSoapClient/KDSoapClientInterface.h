@@ -32,6 +32,7 @@ class QSslConfiguration;
 class QNetworkCookieJar;
 class QNetworkProxy;
 class KDSoapSslHandler;
+class KDSoapClientInterfacePrivate;
 
 /**
  * KDSoapClientInterface is a generic accessor class that is used to place
@@ -302,8 +303,7 @@ public:
 private:
     friend class KDSoapThreadTask;
 
-    class Private;
-    Private * const d;
+    KDSoapClientInterfacePrivate * const d;
 };
 
 #endif // KDSOAPCLIENTINTERFACE_H

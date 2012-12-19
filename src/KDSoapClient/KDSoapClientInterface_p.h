@@ -34,12 +34,12 @@ class QBuffer;
 class KDSoapMessage;
 class KDSoapNamespacePrefixes;
 
-class KDSoapClientInterface::Private : public QObject
+class KDSoapClientInterfacePrivate : public QObject
 {
     Q_OBJECT
 public:
-    Private();
-    ~Private();
+    KDSoapClientInterfacePrivate();
+    ~KDSoapClientInterfacePrivate();
 
     // Warning: this accessManager is only used by asyncCall and callNoReply.
     // For blocking calls, the thread has its own accessManager.
@@ -49,8 +49,8 @@ public:
     KDSoapClientThread m_thread;
     KDSoapAuthentication m_authentication;
     QMap<QString, KDSoapMessage> m_persistentHeaders;
-    SoapVersion m_version;
-    Style m_style;
+    KDSoapClientInterface::SoapVersion m_version;
+    KDSoapClientInterface::Style m_style;
     bool m_ignoreSslErrors;
     KDSoapHeaders m_lastResponseHeaders;
     QSslConfiguration m_sslConfiguration;
