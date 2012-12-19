@@ -36,6 +36,9 @@
 #include <QStringList>
 #include <QSslCertificate>
 #include <QSslKey>
+
+class BlockingHttpServer;
+
 namespace KDSoapUnitTestHelpers
 {
     bool xmlBufferCompare(const QByteArray& source, const QByteArray& dest);
@@ -69,6 +72,7 @@ public:
         wait();
     }
 
+    void disableSsl();
     inline int serverPort() const { return m_port; }
     QString endPoint() const {
         return QString::fromLatin1("%1://127.0.0.1:%2/path")
@@ -147,6 +151,7 @@ private:
     QMap<QByteArray, QByteArray> m_headers;
     int m_port;
     Features m_features;
+    BlockingHttpServer* m_server;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(HttpServerThread::Features)

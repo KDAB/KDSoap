@@ -29,7 +29,8 @@ HEADERS = $$INSTALLHEADERS \
     $$PRIVATEHEADERS \
     KDSoapMessageReader_p.h \
     KDSoapMessageWriter_p.h \
-    KDSoapNamespacePrefixes_p.h
+    KDSoapNamespacePrefixes_p.h \
+    KDSoapSslHandler.h
 
 SOURCES = KDSoapMessage.cpp \
     KDSoapClientInterface.cpp \
@@ -43,7 +44,8 @@ SOURCES = KDSoapMessage.cpp \
     KDSoapMessageWriter.cpp \
     KDSoapNamespacePrefixes.cpp \
     KDDateTime.cpp \
-    KDSoapJob.cpp
+    KDSoapJob.cpp \
+    KDSoapSslHandler.cpp
 DEFINES += KDSOAP_BUILD_KDSOAP_LIB
 
 # installation targets:

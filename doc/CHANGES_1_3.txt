@@ -14,6 +14,7 @@ Client-side:
 * Generate synchronous methods for one-way operations too
 * Add setSslConfiguration(QSslConfiguration), for custom SSL configuration on a
   given KDSoapClientInterface.
+* Add class KDSoapSslHandler for notification and handling of SSL errors.
 * Fix namespace of the main element in messages being sent, the NS from the schema
   must be used rather than the NS from the WSDL, when both exist (github issue4).
 * Fix assert when the response message is empty (github issue1).

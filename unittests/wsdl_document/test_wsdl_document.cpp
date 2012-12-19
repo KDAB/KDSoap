@@ -34,6 +34,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #ifndef QT_NO_OPENSSL
+#include <KDSoapSslHandler.h>
 #include <QSslSocket>
 #endif
 
@@ -140,8 +141,8 @@ private:
         "<kdab:SessionElement sessionId=\"returned_id\"/>"
         "</soap:Header>"
         "<soap:Body>"
-                "<kdab:addEmployeeResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl/\">466F6F</kdab:addEmployeeResponse>"
-                " </soap:Body>" + xmlEnvEnd;
+        "<kdab:addEmployeeResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl/\">466F6F</kdab:addEmployeeResponse>" // "Foo"
+        " </soap:Body>" + xmlEnvEnd;
     }
 
 private Q_SLOTS:
@@ -149,6 +150,8 @@ private Q_SLOTS:
     void initTestCase()
     {
         qRegisterMetaType<KDSoapMessage>();
+        qRegisterMetaType< QList<QSslError> >();
+        qRegisterMetaType<KDSoapSslHandler *>();
     }
 
     // Using wsdl-generated code, make a call, and check the xml that was sent,
@@ -219,6 +222,55 @@ private Q_SLOTS:
     }
 
 #ifndef QT_NO_OPENSSL
+    void testSslError()
+    {
+        if (!QSslSocket::supportsSsl())
+            return; // see above
+        // Use SSL on the server, without adding the CA certificate (done by setSslConfiguration())
+        HttpServerThread server(addEmployeeResponse(), HttpServerThread::Ssl);
+        MyWsdlDocument service;
+        service.setEndPoint(server.endPoint());
+        QVERIFY(server.endPoint().startsWith(QLatin1String("https")));
+        QSignalSpy sslErrorsSpy(service.clientInterface()->sslHandler(), SIGNAL(sslErrors(KDSoapSslHandler*, QList<QSslError>)));
+        // We need to use async API to test sslHandler, see documentation there.
+        ListEmployeesJob *job = new ListEmployeesJob(&service);
+        connect(job, SIGNAL(finished(KDSoapJob*)), this, SLOT(slotListEmployeesJobFinished(KDSoapJob*)));
+        job->start();
+        m_eventLoop.exec();
+        // Disable SSL so that termination can happen normally (do it asap, in case of failure below)
+        server.disableSsl();
+
+        QVERIFY2(job->faultAsString().contains(QLatin1String("SSL handshake failed")), qPrintable(service.lastError()));
+        QCOMPARE(sslErrorsSpy.count(), 1);
+        const QList<QSslError> errors = sslErrorsSpy.at(0).at(1).value<QList<QSslError> >();
+        QCOMPARE((int)errors.at(0).error(), (int)QSslError::UnableToGetLocalIssuerCertificate);
+        QCOMPARE((int)errors.at(1).error(), (int)QSslError::CertificateUntrusted);
+        QCOMPARE((int)errors.at(2).error(), (int)QSslError::UnableToVerifyFirstCertificate);
+    }
+
+    void testSslErrorHandled()
+    {
+        if (!QSslSocket::supportsSsl())
+            return; // see above
+        // Use SSL on the server, without adding the CA certificate (done by setSslConfiguration())
+        HttpServerThread server(addEmployeeResponse(), HttpServerThread::Ssl);
+        MyWsdlDocument service;
+        service.setEndPoint(server.endPoint());
+        connect(service.clientInterface()->sslHandler(), SIGNAL(sslErrors(KDSoapSslHandler*, QList<QSslError>)),
+                this, SLOT(slotSslHandlerErrors(KDSoapSslHandler*, QList<QSslError>)));
+        AddEmployeeJob *job = new AddEmployeeJob(&service);
+        job->setParameters(addEmployeeParameters());
+        connect(job, SIGNAL(finished(KDSoapJob*)), this, SLOT(slotAddEmployeeJobFinished(KDSoapJob*)));
+        job->start();
+        m_eventLoop.exec();
+        // Disable SSL so that termination can happen normally (do it asap, in case of failure below)
+        server.disableSsl();
+        QCOMPARE(m_errors.count(), 3);
+        QCOMPARE(job->faultAsString(), QString());
+        QCOMPARE(QString::fromLatin1(job->resultParameters().constData()), QString::fromLatin1("Foo"));
+    }
+
+
     void testMyWsdlSSL()
     {
         if (!QSslSocket::supportsSsl()) {
@@ -267,6 +319,7 @@ private Q_SLOTS:
         QCOMPARE(QString::fromUtf8(server.receivedData().constData()), QString::fromUtf8(expectedRequestXml.constData()));
         QVERIFY(server.receivedHeaders().contains("SoapAction: \"http://www.kdab.com/AddEmployee\""));
     }
+
 #endif
 
     void testSimpleType()
@@ -512,10 +565,25 @@ public slots:
         //AddEmployeeJob* addJob = static_cast<AddEmployeeJob *>(job);
         m_eventLoop.quit();
     }
+    void slotListEmployeesJobFinished(KDSoapJob*)
+    {
+        m_eventLoop.quit();
+    }
+
+#ifndef QT_NO_OPENSSL
+    void slotSslHandlerErrors(KDSoapSslHandler* handler, const QList<QSslError>& errors)
+    {
+        // This is just for testing error handling. Don't write this in your actual code...
+        if (errors.at(0).error() == QSslError::UnableToGetLocalIssuerCertificate)
+            handler->ignoreSslErrors();
+        m_errors = errors;
+    }
+#endif
 
 private:
     QEventLoop m_eventLoop;
     KDSoapMessage m_returnMessage;
+    QList<QSslError> m_errors;
 
     int m_expectedDelayedCalls;
     QList<QByteArray> m_delayedData;

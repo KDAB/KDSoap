@@ -39,6 +39,7 @@ class KDSoapClientInterface::Private : public QObject
     Q_OBJECT
 public:
     Private();
+    ~Private();
 
     // Warning: this accessManager is only used by asyncCall and callNoReply.
     // For blocking calls, the thread has its own accessManager.
@@ -53,6 +54,7 @@ public:
     bool m_ignoreSslErrors;
     KDSoapHeaders m_lastResponseHeaders;
     QSslConfiguration m_sslConfiguration;
+    KDSoapSslHandler* m_sslHandler;
 
     QNetworkRequest prepareRequest(const QString &method, const QString& action);
     QBuffer* prepareRequestBuffer(const QString& method, const KDSoapMessage& message, const KDSoapHeaders& headers);

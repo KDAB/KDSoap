@@ -31,6 +31,7 @@ class KDSoapAuthentication;
 class QSslConfiguration;
 class QNetworkCookieJar;
 class QNetworkProxy;
+class KDSoapSslHandler;
 
 /**
  * KDSoapClientInterface is a generic accessor class that is used to place
@@ -273,6 +274,18 @@ public:
      * only!
      */
     void ignoreSslErrors();
+
+    /**
+     * Returns the ssl handler object, which can be used for notification
+     * and handling of SSL errors.
+     *
+     * Note that the notifications from synchronous calls will come in delayed, after the
+     * synchronous call failed. For this reason, it is not possible to ignore specific
+     * ssl errors during runtime when using synchronous calls. Use asynchronous calls instead.
+     *
+     * \since 1.3
+     */
+    KDSoapSslHandler* sslHandler() const;
 
     /**
      * Returns the ssl configuration used for outgoing connections

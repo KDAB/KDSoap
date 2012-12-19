@@ -23,6 +23,7 @@
 #include "KDSoapClientInterface_p.h"
 #include "KDSoapNamespaceManager.h"
 #include "KDSoapMessageWriter_p.h"
+#include "KDSoapSslHandler.h"
 #include <QSslConfiguration>
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -60,11 +61,17 @@ KDSoapClientInterface::SoapVersion KDSoapClientInterface::soapVersion()
 KDSoapClientInterface::Private::Private()
     : m_authentication(),
       m_style(RPCStyle),
-      m_ignoreSslErrors(false)
+      m_ignoreSslErrors(false),
+      m_sslHandler(0)
 {
     connect(&m_accessManager, SIGNAL(authenticationRequired(QNetworkReply*,QAuthenticator*)),
             this, SLOT(_kd_slotAuthenticationRequired(QNetworkReply*,QAuthenticator*)));
     m_accessManager.cookieJar(); // create it in the right thread...
+}
+
+KDSoapClientInterface::Private::~Private()
+{
+    delete m_sslHandler;
 }
 
 QNetworkRequest KDSoapClientInterface::Private::prepareRequest(const QString &method, const QString& action)
@@ -189,6 +196,10 @@ void KDSoapClientInterface::Private::setupReply(QNetworkReply *reply)
 {
     if (m_ignoreSslErrors) {
         QObject::connect(reply, SIGNAL(sslErrors(const QList<QSslError>&)), reply, SLOT(ignoreSslErrors()));
+    } else {
+        if (m_sslHandler) {
+            QObject::connect(reply, SIGNAL(sslErrors(QList<QSslError>)), m_sslHandler, SLOT(slotSslErrors(QList<QSslError>)));
+        }
     }
 }
 
@@ -237,6 +248,13 @@ QSslConfiguration KDSoapClientInterface::sslConfiguration() const
 void KDSoapClientInterface::setSslConfiguration(const QSslConfiguration &config)
 {
     d->m_sslConfiguration = config;
+}
+
+KDSoapSslHandler* KDSoapClientInterface::sslHandler() const
+{
+    if (!d->m_sslHandler)
+        d->m_sslHandler = new KDSoapSslHandler;
+    return d->m_sslHandler;
 }
 
 #include "moc_KDSoapClientInterface_p.cpp"

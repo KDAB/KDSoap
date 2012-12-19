@@ -222,6 +222,7 @@ public:
 #endif
             QTcpServer::incomingConnection(socketDescriptor);
     }
+    void disableSsl() { doSsl = false; }
 private slots:
 #ifndef QT_NO_OPENSSL
     void slotSslErrors(const QList<QSslError>& errors)
@@ -230,7 +231,7 @@ private slots:
     }
 #endif
 private:
-    const bool doSsl;
+    bool doSsl;
     QTcpSocket* sslSocket;
 };
 
@@ -279,11 +280,17 @@ static HeadersMap parseHeaders(const QByteArray& headerData) {
     return headersMap;
 }
 
+
+void HttpServerThread::disableSsl()
+{
+    m_server->disableSsl();
+}
+
 void HttpServerThread::run()
 {
-    BlockingHttpServer server(m_features & Ssl);
-    server.listen();
-    m_port = server.serverPort();
+    m_server = new BlockingHttpServer(m_features & Ssl);
+    m_server->listen();
+    m_port = m_server->serverPort();
     m_ready.release();
 
     const bool doDebug = qgetenv("KDSOAP_DEBUG").toInt();
@@ -292,7 +299,7 @@ void HttpServerThread::run()
         qDebug() << "HttpServerThread listening on port" << m_port;
 
     // Wait for first connection (we'll wait for further ones inside the loop)
-    QTcpSocket *clientSocket = server.waitForNextConnectionSocket();
+    QTcpSocket *clientSocket = m_server->waitForNextConnectionSocket();
     Q_ASSERT(clientSocket);
 
     Q_FOREVER {
@@ -307,7 +314,7 @@ void HttpServerThread::run()
                 if (doDebug) {
                     qDebug() << "Waiting for next connection...";
                 }
-                clientSocket = server.waitForNextConnectionSocket();
+                clientSocket = m_server->waitForNextConnectionSocket();
                 Q_ASSERT(clientSocket);
                 continue; // go to "waitForReadyRead"
             } else {
@@ -410,6 +417,7 @@ void HttpServerThread::run()
     }
     // all done...
     delete clientSocket;
+    delete m_server;
     if (doDebug) {
         qDebug() << "HttpServerThread terminated";
     }
