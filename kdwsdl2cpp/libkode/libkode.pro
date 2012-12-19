@@ -1,4 +1,3 @@
-option(host_build) # Qt5 option, ignore warning with Qt4
 TEMPLATE = lib
 CONFIG += staticlib
 TARGET = kode
