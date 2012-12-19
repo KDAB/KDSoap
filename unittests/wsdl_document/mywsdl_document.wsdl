@@ -201,6 +201,8 @@
   <message name='listEmployeesResponse'>
      <!-- todo -->
   </message>
+  <message name='heartbeatRequest'>
+  </message>
 
   <!-- Document/literal not wrapped -->
   <message name='sendRawTelegramRequest'>
@@ -256,6 +258,9 @@
     <operation name='sendTelegram'>
       <input message='kdab:sendTelegramRequest' />
       <output message='kdab:sendTelegramResponse' />
+    </operation>
+    <operation name='heartbeat'> <!-- One way operation -->
+      <input message='kdab:heartbeatRequest' />
     </operation>
   </portType>
   <binding name='MyWsdlBinding' type='kdab:MyWsdlPortType' >
