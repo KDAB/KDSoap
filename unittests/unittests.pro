@@ -3,6 +3,8 @@ SUBDIRS = basic builtinhttp wsdl_rpc sugar_wsdl salesforce_wsdl groupwise_wsdl l
 # These need internet access
 SUBDIRS += webcalls webcalls_wsdl
 
+SUBDIRS += wsdl_rpc-server
+
 test.target=test
 unix:!macx {
     LIB_PATH=$${TOP_BUILD_DIR}/lib:\$\$LD_LIBRARY_PATH
