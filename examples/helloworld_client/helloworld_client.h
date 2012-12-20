@@ -5,8 +5,10 @@
 
 #include <QMainWindow>
 
+QT_BEGIN_NAMESPACE
 class QLineEdit;
 class QTextBrowser;
+QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow
 {

@@ -28,11 +28,13 @@
 #include "KDSoapPendingCall.h"
 
 class KDSoapAuthentication;
+class KDSoapSslHandler;
+class KDSoapClientInterfacePrivate;
+QT_BEGIN_NAMESPACE
 class QSslConfiguration;
 class QNetworkCookieJar;
 class QNetworkProxy;
-class KDSoapSslHandler;
-class KDSoapClientInterfacePrivate;
+QT_END_NAMESPACE
 
 /**
  * KDSoapClientInterface is a generic accessor class that is used to place
@@ -288,6 +290,7 @@ public:
      */
     KDSoapSslHandler* sslHandler() const;
 
+#ifndef QT_NO_OPENSSL
     /**
      * Returns the ssl configuration used for outgoing connections
      * \since 1.3
@@ -299,6 +302,7 @@ public:
      * \since 1.3
      */
     void setSslConfiguration(const QSslConfiguration &config);
+#endif
 
 private:
     friend class KDSoapThreadTask;

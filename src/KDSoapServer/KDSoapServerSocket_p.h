@@ -31,7 +31,9 @@
 #endif
 
 #include <QMap>
+QT_BEGIN_NAMESPACE
 class QObject;
+QT_END_NAMESPACE
 class KDSoapSocketList;
 class KDSoapServerObjectInterface;
 class KDSoapMessage;

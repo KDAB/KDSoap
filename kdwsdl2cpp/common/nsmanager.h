@@ -27,7 +27,9 @@
 
 #include <common/qname.h>
 #include <kode_export.h>
+QT_BEGIN_NAMESPACE
 class QDomElement;
+QT_END_NAMESPACE
 class ParserContext;
 
 class KXMLCOMMON_EXPORT NSManager

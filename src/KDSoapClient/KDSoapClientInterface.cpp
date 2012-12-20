@@ -23,7 +23,9 @@
 #include "KDSoapClientInterface_p.h"
 #include "KDSoapNamespaceManager.h"
 #include "KDSoapMessageWriter_p.h"
+#ifndef QT_NO_OPENSSL
 #include "KDSoapSslHandler.h"
+#endif
 #include <QSslConfiguration>
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -61,9 +63,11 @@ KDSoapClientInterface::SoapVersion KDSoapClientInterface::soapVersion()
 KDSoapClientInterfacePrivate::KDSoapClientInterfacePrivate()
     : m_authentication(),
       m_style(KDSoapClientInterface::RPCStyle),
-      m_ignoreSslErrors(false),
-      m_sslHandler(0)
+      m_ignoreSslErrors(false)
 {
+#ifndef QT_NO_OPENSSL
+    m_sslHandler = 0;
+#endif
     connect(&m_accessManager, SIGNAL(authenticationRequired(QNetworkReply*,QAuthenticator*)),
             this, SLOT(_kd_slotAuthenticationRequired(QNetworkReply*,QAuthenticator*)));
     m_accessManager.cookieJar(); // create it in the right thread...
@@ -71,7 +75,9 @@ KDSoapClientInterfacePrivate::KDSoapClientInterfacePrivate()
 
 KDSoapClientInterfacePrivate::~KDSoapClientInterfacePrivate()
 {
+#ifndef QT_NO_OPENSSL
     delete m_sslHandler;
+#endif
 }
 
 QNetworkRequest KDSoapClientInterfacePrivate::prepareRequest(const QString &method, const QString& action)
@@ -108,8 +114,10 @@ QNetworkRequest KDSoapClientInterfacePrivate::prepareRequest(const QString &meth
     // when the response seems to reach a certain size threshold
     request.setRawHeader( "Accept-Encoding", "compress" );
 
+#ifndef QT_NO_OPENSSL
     if (!m_sslConfiguration.isNull())
         request.setSslConfiguration(m_sslConfiguration);
+#endif
 
     return request;
 }
@@ -197,9 +205,11 @@ void KDSoapClientInterfacePrivate::setupReply(QNetworkReply *reply)
     if (m_ignoreSslErrors) {
         QObject::connect(reply, SIGNAL(sslErrors(const QList<QSslError>&)), reply, SLOT(ignoreSslErrors()));
     } else {
+#ifndef QT_NO_OPENSSL
         if (m_sslHandler) {
             QObject::connect(reply, SIGNAL(sslErrors(QList<QSslError>)), m_sslHandler, SLOT(slotSslErrors(QList<QSslError>)));
         }
+#endif
     }
 }
 
@@ -240,6 +250,7 @@ void KDSoapClientInterface::setProxy(const QNetworkProxy &proxy)
     d->m_accessManager.setProxy(proxy);
 }
 
+#ifndef QT_NO_OPENSSL
 QSslConfiguration KDSoapClientInterface::sslConfiguration() const
 {
     return d->m_sslConfiguration;
@@ -256,5 +267,6 @@ KDSoapSslHandler* KDSoapClientInterface::sslHandler() const
         d->m_sslHandler = new KDSoapSslHandler;
     return d->m_sslHandler;
 }
+#endif
 
 #include "moc_KDSoapClientInterface_p.cpp"

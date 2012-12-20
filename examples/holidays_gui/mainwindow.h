@@ -6,9 +6,11 @@
 #include "KDSoapMessage.h"
 #include "wsdl_holidays.h"
 
+QT_BEGIN_NAMESPACE
 class QPushButton;
 class QLabel;
 class QMovie;
+QT_END_NAMESPACE
 
 class MainWindow : public QWidget{
   Q_OBJECT

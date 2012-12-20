@@ -150,8 +150,10 @@ private Q_SLOTS:
     void initTestCase()
     {
         qRegisterMetaType<KDSoapMessage>();
+#ifndef QT_NO_OPENSSL
         qRegisterMetaType< QList<QSslError> >();
         qRegisterMetaType<KDSoapSslHandler *>();
+#endif
     }
 
     // Using wsdl-generated code, make a call, and check the xml that was sent,
@@ -583,7 +585,9 @@ public slots:
 private:
     QEventLoop m_eventLoop;
     KDSoapMessage m_returnMessage;
+#ifndef QT_NO_OPENSSL
     QList<QSslError> m_errors;
+#endif
 
     int m_expectedDelayedCalls;
     QList<QByteArray> m_delayedData;

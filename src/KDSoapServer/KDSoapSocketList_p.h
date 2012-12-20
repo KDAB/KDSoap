@@ -24,9 +24,11 @@
 
 #include <QSet>
 #include <QObject>
+QT_BEGIN_NAMESPACE
 class QTcpSocket;
-class KDSoapServer;
 class QObject;
+QT_END_NAMESPACE
+class KDSoapServer;
 class KDSoapServerSocket;
 
 class KDSoapSocketList : public QObject

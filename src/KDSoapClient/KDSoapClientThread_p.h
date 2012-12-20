@@ -34,7 +34,9 @@
 
 class KDSoapPendingCallWatcher;
 class KDSoapClientInterface;
+QT_BEGIN_NAMESPACE
 class QEventLoop;
+QT_END_NAMESPACE
 
 class KDSoapThreadTaskData
 {

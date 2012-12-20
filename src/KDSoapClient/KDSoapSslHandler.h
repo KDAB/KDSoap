@@ -27,8 +27,11 @@
 #include <QSslError>
 #include "KDSoapGlobal.h"
 
+QT_BEGIN_NAMESPACE
 class QNetworkReply;
+QT_END_NAMESPACE
 
+#ifndef QT_NO_OPENSSL
 /**
  * \brief A class for handling SSL errors during SOAP calls
  *
@@ -88,5 +91,7 @@ private:
 #if QT_VERSION < 0x050000
 Q_DECLARE_METATYPE(KDSoapSslHandler *)
 #endif
+
+#endif // QT_NO_OPENSSL
 
 #endif // KDSOAPSSLHANDLER_H

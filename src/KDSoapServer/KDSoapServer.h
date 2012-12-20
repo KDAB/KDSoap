@@ -241,6 +241,7 @@ public:
      */
     QString wsdlPathInUrl() const;
 
+#ifndef QT_NO_SSL
     /**
      * \returns the ssl configuration for this server
      */
@@ -251,7 +252,7 @@ public:
      * \param config ssl configuration to use for new connections
      */
     void setSslConfiguration(const QSslConfiguration &config);
-
+#endif
 
 public Q_SLOTS:
     /**

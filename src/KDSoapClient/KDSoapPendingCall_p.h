@@ -28,7 +28,9 @@
 #include "KDSoapMessage.h"
 #include <QPointer>
 
+QT_BEGIN_NAMESPACE
 class QNetworkReply;
+QT_END_NAMESPACE
 class KDSoapValue;
 
 class KDSoapPendingCall::Private : public QSharedData

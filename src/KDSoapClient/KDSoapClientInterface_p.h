@@ -30,7 +30,9 @@
 #include "KDSoapClientInterface.h"
 #include "KDSoapClientThread_p.h"
 #include "KDSoapAuthentication.h"
+QT_BEGIN_NAMESPACE
 class QBuffer;
+QT_END_NAMESPACE
 class KDSoapMessage;
 class KDSoapNamespacePrefixes;
 
@@ -53,7 +55,9 @@ public:
     KDSoapClientInterface::Style m_style;
     bool m_ignoreSslErrors;
     KDSoapHeaders m_lastResponseHeaders;
+#ifndef QT_NO_OPENSSL
     QSslConfiguration m_sslConfiguration;
+#endif
     KDSoapSslHandler* m_sslHandler;
 
     QNetworkRequest prepareRequest(const QString &method, const QString& action);

@@ -24,8 +24,10 @@
 
 #include "KDSoapGlobal.h"
 #include <QtCore/QUrl>
+QT_BEGIN_NAMESPACE
 class QAuthenticator;
 class QNetworkReply;
+QT_END_NAMESPACE
 
 /**
  * KDSoapAuthentication provides an authentication object.

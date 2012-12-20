@@ -202,7 +202,9 @@ private:
     Private* const d;
 };
 
+QT_BEGIN_NAMESPACE
 Q_DECLARE_INTERFACE(KDSoapServerObjectInterface,
                     "com.kdab.KDSoap.ServerObjectInterface/1.0")
+QT_END_NAMESPACE
 
 #endif // KDSOAPSERVEROBJECTINTERFACE_H

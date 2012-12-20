@@ -37,7 +37,9 @@
 
 class KDSoapValueList;
 class KDSoapNamespacePrefixes;
+QT_BEGIN_NAMESPACE
 class QXmlStreamWriter;
+QT_END_NAMESPACE
 
 /**
  * KDSoapValue represents a value in a SOAP argument list.
