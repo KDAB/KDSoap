@@ -28,9 +28,6 @@
 
 #include <kode_export.h>
 
-class QString;
-class QStringList;
-
 namespace KODE {
 
 /**

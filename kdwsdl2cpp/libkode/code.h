@@ -22,8 +22,7 @@
 #define KODE_CODE_H
 
 #include <kode_export.h>
-
-class QString;
+#include <QtCore/QString>
 
 namespace KODE {
 

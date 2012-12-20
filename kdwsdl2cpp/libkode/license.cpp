@@ -19,8 +19,6 @@
     Boston, MA 02110-1301, USA.
 */
 
-#include <QtCore/QString>
-
 #include "license.h"
 
 using namespace KODE;

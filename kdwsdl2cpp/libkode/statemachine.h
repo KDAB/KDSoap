@@ -25,8 +25,6 @@
 
 #include <kode_export.h>
 
-class QString;
-
 namespace KODE {
 
 /**

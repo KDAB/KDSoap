@@ -22,14 +22,11 @@
 #ifndef KODE_FUNCTION_H
 #define KODE_FUNCTION_H
 
-#include <QtCore/QList>
+#include <QtCore/QStringList>
 
 #include "code.h"
 
 #include <kode_export.h>
-
-class QString;
-class QStringList;
 
 namespace KODE {
 

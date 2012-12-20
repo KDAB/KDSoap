@@ -748,8 +748,14 @@ void Printer::printHeader( const File &file )
       out.indent();
     }
 
-    if (!clas.isNull())
+    if (!clas.isNull()) {
+      const bool isQtClass = clas.startsWith(QLatin1Char('Q'));
+      if (isQtClass)
+        out += QLatin1String("QT_BEGIN_NAMESPACE");
       out += QLatin1String("class ") + clas + QLatin1Char(';');
+      if (isQtClass)
+        out += QLatin1String("QT_END_NAMESPACE");
+    }
     prevNS = ns;
   }
 

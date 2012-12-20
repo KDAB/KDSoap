@@ -22,12 +22,11 @@
 #define KODE_MEMBERVARIABLE_H
 
 #include <QtCore/QList>
+#include <QtCore/QString>
 
 #include "variable.h"
 
 #include <kode_export.h>
-
-class QString;
 
 namespace KODE {
 

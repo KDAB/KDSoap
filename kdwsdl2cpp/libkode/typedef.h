@@ -22,10 +22,9 @@
 #define KODE_TYPEDEF_H
 
 #include <QtCore/QList>
+#include <QtCore/QString>
 
 #include <kode_export.h>
-
-class QString;
 
 namespace KODE {
 
