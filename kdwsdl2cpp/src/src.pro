@@ -25,7 +25,7 @@ unix:PRE_TARGETDEPS += $${TOP_BUILD_DIR}/lib/libkode.a \
     $${TOP_BUILD_DIR}/lib/libwsdl.a \
     $${TOP_BUILD_DIR}/lib/libxmlschema.a \
     $${TOP_BUILD_DIR}/lib/libxmlcommon.a
-win32:PRE_TARGETDEPS += $${TOP_BUILD_DIR}/lib/kode.lib \
+win32-msvc*:PRE_TARGETDEPS += $${TOP_BUILD_DIR}/lib/kode.lib \
     $${TOP_BUILD_DIR}/lib/wsdl.lib \
     $${TOP_BUILD_DIR}/lib/xmlschema.lib \
     $${TOP_BUILD_DIR}/lib/xmlcommon.lib
