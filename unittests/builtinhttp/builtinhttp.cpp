@@ -184,7 +184,10 @@ private Q_SLOTS:
         {
             KDSoapMessage ret = client.call(QLatin1String("getEmployeeCountry"), countryMessage());
             // Check what we sent
-            QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
+            QByteArray expectedRequestXml12 = expectedRequestXml;
+            expectedRequestXml12.replace("http://schemas.xmlsoap.org/soap/envelope/", "http://www.w3.org/2003/05/soap-envelope");
+            expectedRequestXml12.replace("http://schemas.xmlsoap.org/soap/encoding/", "http://www.w3.org/2003/05/soap-encoding");
+            QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml12));
             QVERIFY(!ret.isFault());
             QCOMPARE(server.header("Content-Type").constData(), "application/soap+xml;charset=utf-8;action=http://www.kdab.com/xml/MyWsdl/getEmployeeCountry");
             QCOMPARE(ret.arguments().child(QLatin1String("employeeCountry")).value().toString(), QString::fromLatin1("France"));

@@ -19,13 +19,21 @@
 ** clear to you.
 **
 **********************************************************************/
+#include "KDSoapClientInterface_p.h"
 #include "KDSoapNamespacePrefixes_p.h"
 #include "KDSoapNamespaceManager.h"
 
-void KDSoapNamespacePrefixes::writeStandardNamespaces(QXmlStreamWriter& writer)
+void KDSoapNamespacePrefixes::writeStandardNamespaces(QXmlStreamWriter& writer,
+                                                      KDSoapClientInterface::SoapVersion version)
 {
-    writeNamespace(writer, KDSoapNamespaceManager::soapEnvelope(), QLatin1String("soap"));
-    writeNamespace(writer, KDSoapNamespaceManager::soapEncoding(), QLatin1String("soap-enc"));
+    if (version == KDSoapClientInterface::SOAP1_1) {
+        writeNamespace(writer, KDSoapNamespaceManager::soapEnvelope(), QLatin1String("soap"));
+        writeNamespace(writer, KDSoapNamespaceManager::soapEncoding(), QLatin1String("soap-enc"));
+    } else if (version == KDSoapClientInterface::SOAP1_2) {
+        writeNamespace(writer, KDSoapNamespaceManager::soapEnvelope200305(), QLatin1String("soap"));
+        writeNamespace(writer, KDSoapNamespaceManager::soapEncoding200305(), QLatin1String("soap-enc"));
+    }
+
     writeNamespace(writer, KDSoapNamespaceManager::xmlSchema2001(), QLatin1String("xsd"));
     writeNamespace(writer, KDSoapNamespaceManager::xmlSchemaInstance2001(), QLatin1String("xsi"));
 

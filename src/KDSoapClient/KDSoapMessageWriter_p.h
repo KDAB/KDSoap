@@ -23,6 +23,7 @@
 #define KDSOAPMESSAGEWRITER_P_H
 
 #include "KDSoapMessage.h"
+#include "KDSoapClientInterface.h"
 #include <QtCore/QXmlStreamWriter>
 #include <QtCore/QByteArray>
 #include <QtCore/QString>
@@ -42,6 +43,7 @@ class KDSOAP_EXPORT KDSoapMessageWriter
 public:
     KDSoapMessageWriter();
 
+    void setVersion(KDSoapClientInterface::SoapVersion version);
     void setMessageNamespace(const QString& ns);
 
     QByteArray messageToXml(const KDSoapMessage& message, const QString& method /*empty in document style*/,
@@ -50,6 +52,8 @@ public:
 
 private:
     QString m_messageNamespace;
+    KDSoapClientInterface::SoapVersion m_version;
+
 };
 
 #endif // KDSOAPMESSAGEWRITER_P_H

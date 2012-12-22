@@ -33,14 +33,15 @@
 
 using namespace KDSoapUnitTestHelpers;
 
+// SOAP 1.2 namespaces
 static const char* xmlEnvBegin =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
         "<soap:Envelope"
-        " xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\""
-        " xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\""
+        " xmlns:soap=\"http://www.w3.org/2003/05/soap-envelope\""
+        " xmlns:soap-enc=\"http://www.w3.org/2003/05/soap-encoding\""
         " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\""
         " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
-        " soap:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\"";
+        " soap:encodingStyle=\"http://www.w3.org/2003/05/soap-encoding\"";
 static const char* xmlEnvEnd = "</soap:Envelope>";
 
 class LogbookTest : public QObject

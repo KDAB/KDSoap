@@ -21,13 +21,20 @@
 **********************************************************************/
 #include "KDSoapMessageWriter_p.h"
 #include "KDSoapNamespacePrefixes_p.h"
+#include "KDSoapClientInterface_p.h"
 #include "KDSoapNamespaceManager.h"
 #include "KDSoapValue.h"
 #include <QVariant>
 #include <QDebug>
 
 KDSoapMessageWriter::KDSoapMessageWriter()
+    : m_version(KDSoapClientInterface::SOAP1_1)
 {
+}
+
+void KDSoapMessageWriter::setVersion(KDSoapClientInterface::SoapVersion version)
+{
+    m_version = version;
 }
 
 void KDSoapMessageWriter::setMessageNamespace(const QString &ns)
@@ -43,11 +50,20 @@ QByteArray KDSoapMessageWriter::messageToXml(const KDSoapMessage& message, const
     writer.writeStartDocument();
 
     KDSoapNamespacePrefixes namespacePrefixes;
-    namespacePrefixes.writeStandardNamespaces(writer);
+    namespacePrefixes.writeStandardNamespaces(writer, m_version);
 
-    const QString soapNS = KDSoapNamespaceManager::soapEnvelope();
-    writer.writeStartElement(soapNS, QLatin1String("Envelope"));
-    writer.writeAttribute(soapNS, QLatin1String("encodingStyle"), KDSoapNamespaceManager::soapEncoding());
+    QString soapEnvelope;
+    QString soapEncoding;
+    if (m_version == KDSoapClientInterface::SOAP1_1) {
+        soapEnvelope = KDSoapNamespaceManager::soapEnvelope();
+        soapEncoding = KDSoapNamespaceManager::soapEncoding();
+    } else if (m_version == KDSoapClientInterface::SOAP1_2) {
+        soapEnvelope = KDSoapNamespaceManager::soapEnvelope200305();
+        soapEncoding = KDSoapNamespaceManager::soapEncoding200305();
+    }
+
+    writer.writeStartElement(soapEnvelope, QLatin1String("Envelope"));
+    writer.writeAttribute(soapEnvelope, QLatin1String("encodingStyle"), soapEncoding);
 
     QString messageNamespace = m_messageNamespace;
     if (!message.namespaceUri().isEmpty() && messageNamespace != message.namespaceUri()) {
@@ -59,7 +75,7 @@ QByteArray KDSoapMessageWriter::messageToXml(const KDSoapMessage& message, const
         // However it's the best solution in case of headers, otherwise we get n1 in the header and n2 in the body,
         // and xsi:type attributes that refer to n1, which isn't defined in the body...
         namespacePrefixes.writeNamespace(writer, messageNamespace, QLatin1String("n1") /*make configurable?*/);
-        writer.writeStartElement(soapNS, QLatin1String("Header"));
+        writer.writeStartElement(soapEnvelope, QLatin1String("Header"));
         Q_FOREACH(const KDSoapMessage& header, persistentHeaders) {
             header.writeChildren(namespacePrefixes, writer, header.use(), messageNamespace, true);
         }
@@ -73,7 +89,7 @@ QByteArray KDSoapMessageWriter::messageToXml(const KDSoapMessage& message, const
         namespacePrefixes.insert(messageNamespace, QString::fromLatin1("n1"));
     }
 
-    writer.writeStartElement(soapNS, QLatin1String("Body"));
+    writer.writeStartElement(soapEnvelope, QLatin1String("Body"));
 
     const QString elementName = !method.isEmpty() ? method : message.name();
     if (elementName.isEmpty()) {
