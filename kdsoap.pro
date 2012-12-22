@@ -37,8 +37,7 @@ KDSOAPSERVERLIB = kdsoap-server$$DEBUG_SUFFIX$$VERSION_SUFFIX
 message(Install prefix is $$INSTALL_PREFIX)
 message(This is KD Soap version $$VERSION)
 
-# These files are in the build directory (Because "somecommand >> somefile" puts them there)
-CONFQMAKE_CACHE = "$${OUT_PWD}/.confqmake.cache"
+# This file is in the build directory (because "somecommand >> somefile" puts it there)
 QMAKE_CACHE = "$${OUT_PWD}/.qmake.cache"
 
 # Create a .qmake.cache file
