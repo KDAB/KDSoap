@@ -1,8 +1,39 @@
 TEMPLATE = subdirs
-SUBDIRS  = src kdwsdl2cpp features
-unittests: SUBDIRS += testtools unittests
-SUBDIRS += examples
-CONFIG   += ordered
+module_src.subdir = src
+module_src.target = module-src
+crosscompiling {
+    module_k.commands =
+    module_k.target = module_k
+    module_k-make_default.commands = cd kdwsdl2cpp && $(MAKE)
+    module_k-make_default.target = module_k-make_default
+    module_k-make_first.commands = cd kdwsdl2cpp && $(MAKE) first
+    module_k-make_first.target = module_k-make_first
+    module_k-clean.commands = cd kdwsdl2cpp && $(MAKE) clean
+    module_k-clean.target = module_k-clean
+    module_k-distclean.commands = cd kdwsdl2cpp && $(MAKE) distclean
+    module_k-distclean.target = module_k-distclean
+    module_k-all.commands = cd kdwsdl2cpp && $(MAKE) all
+    module_k-all.target = module_k-all
+    module_k-install_subtargets.commands = cd kdwsdl2cpp && $(MAKE) install
+    module_k-install_subtargets.target = module_k-install_subtargets
+    module_k-uninstall_subtargets.commands = cd kdwsdl2cpp && $(MAKE) uninstall
+    module_k-uninstall_subtargets.target = module_k-uninstall_subtargets
+    QMAKE_EXTRA_TARGETS += module_k module_k-make_default module_k-make_first module_k-clean module_k-all module_k-distclean module_k-install_subtargets module_k-uninstall_subtargets
+    module_src.depends = module_k
+} else {
+    SUBDIRS += kdwsdl2cpp
+}
+
+module_testtools.subdir = testtools
+module_testtools.depends = module_src
+module_unittests.subdir = unittests
+module_unittests.depends = module_src
+module_examples.subdir = examples
+module_examples.depends = module_src
+
+SUBDIRS += module_src features
+unittests: SUBDIRS += module_testtools module_unittests
+SUBDIRS += module_examples
 MAJOR_VERSION = 1 ### extract from $$VERSION
 
 unix:DEFAULT_INSTALL_PREFIX = /usr/local/KDAB/KDSoap-$$VERSION
