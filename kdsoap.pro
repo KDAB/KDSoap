@@ -1,29 +1,30 @@
 TEMPLATE = subdirs
-module_src.subdir = src
-module_src.target = module-src
 crosscompiling {
-    module_k.commands =
-    module_k.target = module_k
-    module_k-make_default.commands = cd kdwsdl2cpp && $(MAKE)
-    module_k-make_default.target = module_k-make_default
-    module_k-make_first.commands = cd kdwsdl2cpp && $(MAKE) first
-    module_k-make_first.target = module_k-make_first
-    module_k-clean.commands = cd kdwsdl2cpp && $(MAKE) clean
-    module_k-clean.target = module_k-clean
-    module_k-distclean.commands = cd kdwsdl2cpp && $(MAKE) distclean
-    module_k-distclean.target = module_k-distclean
-    module_k-all.commands = cd kdwsdl2cpp && $(MAKE) all
-    module_k-all.target = module_k-all
-    module_k-install_subtargets.commands = cd kdwsdl2cpp && $(MAKE) install
-    module_k-install_subtargets.target = module_k-install_subtargets
-    module_k-uninstall_subtargets.commands = cd kdwsdl2cpp && $(MAKE) uninstall
-    module_k-uninstall_subtargets.target = module_k-uninstall_subtargets
-    QMAKE_EXTRA_TARGETS += module_k module_k-make_default module_k-make_first module_k-clean module_k-all module_k-distclean module_k-install_subtargets module_k-uninstall_subtargets
-    module_src.depends = module_k
+    module_kdwsdl2cpp.commands =
+    module_kdwsdl2cpp.target = module_kdwsdl2cpp
+    module_kdwsdl2cpp-make_default.commands = cd kdwsdl2cpp && $(MAKE)
+    module_kdwsdl2cpp-make_default.target = module_kdwsdl2cpp-make_default
+    module_kdwsdl2cpp-make_first.commands = cd kdwsdl2cpp && $(MAKE) first
+    module_kdwsdl2cpp-make_first.target = module_kdwsdl2cpp-make_first
+    module_kdwsdl2cpp-clean.commands = cd kdwsdl2cpp && $(MAKE) clean
+    module_kdwsdl2cpp-clean.target = module_kdwsdl2cpp-clean
+    module_kdwsdl2cpp-distclean.commands = cd kdwsdl2cpp && $(MAKE) distclean
+    module_kdwsdl2cpp-distclean.target = module_kdwsdl2cpp-distclean
+    module_kdwsdl2cpp-all.commands = cd kdwsdl2cpp && $(MAKE) all
+    module_kdwsdl2cpp-all.target = module_kdwsdl2cpp-all
+    module_kdwsdl2cpp-install_subtargets.commands = cd kdwsdl2cpp && $(MAKE) install
+    module_kdwsdl2cpp-install_subtargets.target = module_kdwsdl2cpp-install_subtargets
+    module_kdwsdl2cpp-uninstall_subtargets.commands = cd kdwsdl2cpp && $(MAKE) uninstall
+    module_kdwsdl2cpp-uninstall_subtargets.target = module_kdwsdl2cpp-uninstall_subtargets
+    QMAKE_EXTRA_TARGETS += module_kdwsdl2cpp module_kdwsdl2cpp-make_default module_kdwsdl2cpp-make_first module_kdwsdl2cpp-clean module_kdwsdl2cpp-all module_kdwsdl2cpp-distclean module_kdwsdl2cpp-install_subtargets module_kdwsdl2cpp-uninstall_subtargets
 } else {
-    SUBDIRS += kdwsdl2cpp
+    module_kdwsdl2cpp.subdir = kdwsdl2cpp
+    SUBDIRS += module_kdwsdl2cpp
 }
 
+module_src.subdir = src
+module_src.target = module-src
+module_src.depends = module_kdwsdl2cpp
 module_testtools.subdir = testtools
 module_testtools.depends = module_src
 module_unittests.subdir = unittests
