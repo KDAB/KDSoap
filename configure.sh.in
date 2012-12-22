@@ -17,6 +17,7 @@ debug=no
 release=yes
 prefix=
 unittests=no
+hostqmake=
 
 [ -d "$PACKSCRIPTS_DIR" ] && unittests=yes
 
@@ -124,6 +125,11 @@ cat <<EOF 1>&2
   -[no-]unittests
       enable/disable compiled-in unittests
 
+  -hostqmake </host/qt/bin/qmake>
+      when cross-compiling, the qmake in the path will be used for
+      compiling the product's code, but the host qmake will be used
+      to compile the host tools (code generators).
+
   -spec <mkspec>
       compile $ProductSpace for specific Qt-supported target <mkspec>
 
@@ -196,6 +202,14 @@ while [ $# -ne 0 ] ; do
             fi
             SPEC="-spec $1"
             ;;
+        -hostqmake)
+            shift
+            if [ $# -eq 0 ] ; then
+                echo "-hostqmake needs an argument" 2>&1
+                usage
+            fi
+            hostqmake="$1"
+            ;;
         *)
             usage "$1"
             ;;
@@ -245,6 +259,13 @@ fi
 
 QMAKE_ARGS="$QMAKE_ARGS ${PRODUCT}_INSTALL_PREFIX=$prefix"
 
+# This must be the last line that touches QMAKE_ARGS
+if [ "$hostqmake" != "" ] ; then
+    HOST_QMAKE_ARGS="$QMAKE_ARGS"
+    QMAKE_ARGS="$QMAKE_ARGS CONFIG+=crosscompiling"
+fi
+
+
 cat <<EOF 1>&2
 $ProductSpace v$VERSION configuration:
 EOF
@@ -268,6 +289,11 @@ if [ "$SPEC" != "" ]; then
   Spec.......................: ${SPEC#-spec }
 EOF
 fi
+if [ "$hostqmake" != "" ]; then
+  cat <<EOF 1>&2
+  Host qmake................: ${hostqmake}
+EOF
+fi
 cat <<EOF 1>&2
   Compiled-In Unit Tests.....: $unittests (default: no)
   Restricted symbol export
@@ -276,5 +302,11 @@ cat <<EOF 1>&2
 EOF
 
 "$QTDIR"/bin/qmake ${SPEC} "$SOURCE_DIR"/$product.pro -recursive $QMAKE_ARGS "${PRODUCT}_BASE=`pwd`" || die "qmake failed"
+
+if [ "$hostqmake" != "" -a -d "$SOURCE_DIR"/kdwsdl2cpp ]; then
+   [ -d kdwsdl2cpp ] || mkdir kdwsdl2cpp
+   cd kdwsdl2cpp
+   $hostqmake "$SOURCE_DIR"/kdwsdl2cpp -recursive $HOST_QMAKE_ARGS || die "host qmake failed"
+fi
 
 echo "Ok, now run make, then make install to install into $prefix"
