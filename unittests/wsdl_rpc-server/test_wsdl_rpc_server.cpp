@@ -38,11 +38,11 @@ using namespace KDSoapUnitTestHelpers;
 
 static const char* xmlEnvBegin =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-    "<soap:Envelope "
+    "<soap:Envelope"
     " xmlns:soap=\"http://www.w3.org/2003/05/soap-envelope\""
     " xmlns:soap-enc=\"http://www.w3.org/2003/05/soap-encoding\""
-    " xmlns:xsd=\"http://www.w3.org/1999/XMLSchema\""
-    " xmlns:xsi=\"http://www.w3.org/1999/XMLSchema-instance\""
+    " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\""
+    " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
     " soap:encodingStyle=\"http://www.w3.org/2003/05/soap-encoding\"";
 static const char* xmlEnvEnd = "</soap:Envelope>";
 
@@ -58,10 +58,11 @@ private:
          "<n1:listKeys xmlns:n1=\"urn:RpcExample\">"
            "<params>"
              "<module>System Info</module>"
-             "<base xmlns:n2=\"http://www.w3.org/2001/XMLSchema-instance\" n2:nil=\"true\"/>"
+             "<base xsi:nil=\"true\"/>"
            "</params>"
          "</n1:listKeys>"
-        "</soap:Body>";
+        "</soap:Body>" + xmlEnvEnd
+            + '\n'; // added by QXmlStreamWriter::writeEndDocument
     }
     static QByteArray listKeysResponse()
     {
@@ -90,7 +91,6 @@ private Q_SLOTS:
         RPCEXAMPLE__ListKeysParams params;
         params.setModule(QString::fromLatin1("System Info"));
         RPCEXAMPLE__ListKeysResult result = service.listKeys(params);
-        QCOMPARE(result.keys(), QStringList() << QString::fromLatin1("testKey") << QString::fromLatin1("testKey2"));
 
         // Check what we sent
         {
@@ -98,6 +98,7 @@ private Q_SLOTS:
             QCOMPARE(QString::fromUtf8(server.receivedData().constData()), QString::fromUtf8(expectedRequest().constData()));
             QVERIFY(server.receivedHeaders().contains("SoapAction: \"http://www.kdab.com/AddEmployee\""));
         }
+        QCOMPARE(result.keys(), QStringList() << QString::fromLatin1("testKey") << QString::fromLatin1("testKey2"));
     }
 };
 
