@@ -23,6 +23,7 @@ set(SOURCES
 	KDDateTime.cpp
 	KDSoapNamespacePrefixes.cpp
 	KDSoapJob.cpp
+	KDSoapSslHandler.cpp
 )
 
 add_library(kdsoap ${KDSoap_LIBRARY_MODE} ${SOURCES})
@@ -42,6 +43,7 @@ if(KDSoap_IS_ROOT_PROJECT)
 		KDSoapNamespaceManager.h
 		KDDateTime.h
 		KDSoap.h
+		KDSoapSslHandler.h
 		DESTINATION include
 	)
 
