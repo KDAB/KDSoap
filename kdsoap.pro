@@ -27,12 +27,14 @@ module_src.target = module-src
 module_src.depends = module_kdwsdl2cpp
 module_testtools.subdir = testtools
 module_testtools.depends = module_src
+module_include.subdir = include
+module_include.depends = module_include
 module_unittests.subdir = unittests
 module_unittests.depends = module_src
 module_examples.subdir = examples
 module_examples.depends = module_src
 
-SUBDIRS += module_src features
+SUBDIRS += module_src features module_include
 unittests: SUBDIRS += module_testtools module_unittests
 SUBDIRS += module_examples
 MAJOR_VERSION = 1 ### extract from $$VERSION
