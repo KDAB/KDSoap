@@ -21,6 +21,7 @@
 **********************************************************************/
 
 #include "wsdl_rpcexample.h"
+#include "wsdl_sayhello.h"
 
 #include "httpserver_p.h"
 #include <QtTest/QtTest>
@@ -35,6 +36,15 @@
 #include <QNetworkReply>
 
 using namespace KDSoapUnitTestHelpers;
+
+static const char* xmlEnvBegin11 =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+        "<soap:Envelope"
+        " xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\""
+        " xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\""
+        " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\""
+        " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+        " soap:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\"";
 
 static const char* xmlEnvBegin =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
@@ -51,7 +61,36 @@ class RPCServerTest : public QObject
     Q_OBJECT
 
 private:
-    static QByteArray expectedRequest()
+
+    static QByteArray expectedHelloRequest() // http://oreilly.com/catalog/webservess/chapter/ch06.html
+    {
+        return QByteArray(xmlEnvBegin11) + ">"
+        "<soap:Body>"
+        "<n1:sayHello xmlns:n1=\"http://www.ecerami.com/wsdl/HelloService.wsdl\">"
+        /*"<n1:sayHello xmlns:n1=\"urn:examples:helloservice\">" // TODO! Add support for * namespace="urn:examples:helloservice" */
+             "<firstName xsi:type=\"xsd:string\">World</firstName>"
+        "</n1:sayHello>"
+        "</soap:Body>" + xmlEnvEnd
+            + '\n'; // added by QXmlStreamWriter::writeEndDocument
+    }
+    static QByteArray helloResponse()
+    {
+        return "<?xml version='1.0' encoding='UTF-8'?>"
+        "<SOAP-ENV:Envelope "
+           "xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" "
+           "xmlns:xsi=\"http://www.w3.org/1999/XMLSchema-instance\" "
+           "xmlns:xsd=\"http://www.w3.org/1999/XMLSchema\">"
+           "<SOAP-ENV:Body>"
+              "<ns1:sayHelloResponse "
+                 "xmlns:ns1=\"urn:examples:helloservice\" "
+                 "SOAP-ENV:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\">"
+        "<return xsi:type=\"xsd:string\">Hello, World!</return>"
+              "</ns1:sayHelloResponse>"
+           "</SOAP-ENV:Body>"
+        "</SOAP-ENV:Envelope>";
+    }
+
+    static QByteArray expectedListKeysRequest()
     {
         return QByteArray(xmlEnvBegin) + ">"
         "<soap:Body>"
@@ -79,6 +118,22 @@ private:
 
 private Q_SLOTS:
 
+    void testHello() // http://oreilly.com/catalog/webservess/chapter/ch06.html
+    {
+        HttpServerThread server(helloResponse(), HttpServerThread::Public);
+        Hello_Service service;
+        service.setEndPoint(server.endPoint());
+
+        const QString resp = service.sayHello("World");
+        QCOMPARE(resp, QString::fromLatin1("Hello, World!"));
+
+        // Check what we sent
+        {
+            QVERIFY(xmlBufferCompare(server.receivedData(), expectedHelloRequest()));
+            QCOMPARE(QString::fromUtf8(server.receivedData().constData()), QString::fromUtf8(expectedHelloRequest().constData()));
+        }
+    }
+
     // Using wsdl-generated code, make a call, and check the xml that was sent,
     // and check that the server's response was correctly parsed.
     void testListKeys()
@@ -94,8 +149,8 @@ private Q_SLOTS:
 
         // Check what we sent
         {
-            QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequest()));
-            QCOMPARE(QString::fromUtf8(server.receivedData().constData()), QString::fromUtf8(expectedRequest().constData()));
+            QVERIFY(xmlBufferCompare(server.receivedData(), expectedListKeysRequest()));
+            QCOMPARE(QString::fromUtf8(server.receivedData().constData()), QString::fromUtf8(expectedListKeysRequest().constData()));
         }
         QEXPECT_FAIL("", "Must fix RPC mode in server", Continue);
         QCOMPARE(result.keys(), QStringList() << QString::fromLatin1("testKey") << QString::fromLatin1("testKey2"));
