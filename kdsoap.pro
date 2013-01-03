@@ -30,7 +30,7 @@ module_testtools.depends = module_src
 module_include.subdir = include
 module_include.depends = module_src
 module_unittests.subdir = unittests
-module_unittests.depends = module_src
+module_unittests.depends = module_src module_testtools
 module_examples.subdir = examples
 module_examples.depends = module_src
 
