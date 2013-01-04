@@ -789,9 +789,6 @@ public:
 Q_SIGNALS:
     void releaseSemaphore();
 
-public Q_SLOTS:
-    void quit() { thread()->quit(); }
-
 private:
     DocServerObject* m_lastServerObject; // only for unittest purposes
 };
@@ -800,40 +797,35 @@ private:
 // so that the main thread can use synchronous calls. Note that this is
 // really specific to unit tests and doesn't need to be done in a real
 // KDSoap-based server.
-class DocServerThread : public QThread
+class DocServerThread
 {
-    Q_OBJECT
 public:
     DocServerThread() {}
     ~DocServerThread() {
-        // helgrind says don't call quit() here (Qt bug?)
-        if (m_pServer)
-            QMetaObject::invokeMethod(m_pServer, "quit");
-        wait();
+        if (m_thread) {
+            m_thread->quit();
+            m_thread->wait();
+            delete m_thread;
+        }
     }
     DocServer* startThread() {
-        start();
-        m_semaphore.acquire(); // wait for init to be done
+        m_pServer = new DocServer;
+        if (!m_pServer->listen()) {
+            delete m_pServer;
+            m_pServer = 0;
+            return 0;
+        }
+
+        m_thread = new QThread;
+        QObject::connect(m_thread, SIGNAL(finished()), m_pServer, SLOT(deleteLater()));
+
+        m_pServer->moveToThread(m_thread);
+        m_thread->start();
         return m_pServer;
     }
 
-protected:
-    void run() {
-        DocServer server;
-        if (server.listen())
-            m_pServer = &server;
-        connect(&server, SIGNAL(releaseSemaphore()), this, SLOT(slotReleaseSemaphore()), Qt::DirectConnection);
-        m_semaphore.release();
-        exec();
-        m_pServer = 0;
-    }
-private Q_SLOTS:
-    void slotReleaseSemaphore() {
-        m_semaphore.release();
-    }
-
 private:
-    QSemaphore m_semaphore;
+    QThread* m_thread; // we could also use m_pServer->thread()
     DocServer* m_pServer;
 };
 
