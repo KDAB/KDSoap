@@ -10,23 +10,23 @@ DESTDIR = $${TOP_BUILD_DIR}/lib
 win32:DLLDESTDIR = $${TOP_BUILD_DIR}/bin
 
 include($${TOP_SOURCE_DIR}/variables.pri)
+
+# Only used by Mac frameworks.
+# See the include subdir for standard header installation
+# TODO: install these from include/ as well
 INSTALLHEADERS = KDSoapServer.h \
                  KDSoapServerAuthInterface.h \
                  KDSoapServerObjectInterface.h \
-                 KDSoapServerGlobal.h
-
-EXTENSIONLESSHEADERS =
-PRIVATEHEADERS =
+                 KDSoapServerGlobal.h \
+                 KDSoapServerAuthInterface.h \
+                 KDSoapServerObjectInterface.h \
+                 KDSoapDelayedResponseHandle.h
 
 HEADERS = $$INSTALLHEADERS \
-    $$PRIVATEHEADERS \
     KDSoapThreadPool.h \
     KDSoapServerSocket_p.h \
     KDSoapServerThread_p.h \
     KDSoapSocketList_p.h \
-    KDSoapServerAuthInterface.h \
-    KDSoapServerObjectInterface.h \
-    KDSoapDelayedResponseHandle.h
 
 SOURCES = KDSoapServer.cpp \
     KDSoapThreadPool.cpp \
@@ -45,19 +45,13 @@ DEPENDPATH += . $${TOP_SOURCE_DIR}/src
 LIBS        += -L$$DESTDIR -l$$KDSOAPLIB
 
 # installation targets:
-headers.files = $$INSTALLHEADERS \
-    $$EXTENSIONLESSHEADERS
-headers.path = $$INSTALL_PREFIX/include
-#INSTALLS += headers
-
 target.path = $$INSTALL_PREFIX/lib
 INSTALLS += target
 
 # Mac frameworks
 macx:lib_bundle: {
     FRAMEWORK_HEADERS.version = Versions
-    FRAMEWORK_HEADERS.files = $$INSTALLHEADERS \
-        $$EXTENSIONLESSHEADERS
+    FRAMEWORK_HEADERS.files = $$INSTALLHEADERS
     FRAMEWORK_HEADERS.path = Headers
     QMAKE_BUNDLE_DATA += FRAMEWORK_HEADERS
 }
