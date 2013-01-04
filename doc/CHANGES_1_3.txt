@@ -40,6 +40,7 @@ Code generator changes, applying to both client and server side:
 ================================================================
 * Support for SOAP-1.2 encoding namespace (http://www.w3.org/2003/05/soap-encoding)
 * Improve parsing of soap-enc:array restrictions, to use the correct element names, when specified
+* Fix parsing of <soap:body use="encoded">, which sometimes didn't encode the parameters.
 * Fix generation of classes with nested namespaces (A::B::C)
 * Fix disappearing classes when the same file has classes with the same
    name in different namespaces.

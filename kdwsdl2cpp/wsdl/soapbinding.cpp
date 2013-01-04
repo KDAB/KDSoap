@@ -758,90 +758,99 @@ void SoapBinding::parseBinding( ParserContext *context, const QDomElement &paren
 
 void SoapBinding::parseOperation( ParserContext *context, const QString &name, const QDomElement &parent )
 {
-  QDomElement child = parent.firstChildElement();
-  while ( !child.isNull() ) {
-    NSManager namespaceManager( context, child );
-    if ( child.tagName() == soapPrefix( context ) + QLatin1String("operation") ) {
-      Operation op( name );
-      op.loadXML( context, child );
-      mOperations.insert( name, op );
-    }
+    QDomElement child = parent.firstChildElement();
+    while ( !child.isNull() ) {
+        NSManager namespaceManager( context, child );
+        if ( NSManager::soapNamespaces().contains( namespaceManager.nameSpace(child) ) ) {
+            if ( namespaceManager.localName(child) == QLatin1String("operation") ) {
+                Operation op( name );
+                op.loadXML( context, child );
+                mOperations.insert( name, op );
+            }
+        }
 
-    child = child.nextSiblingElement();
-  }
+        child = child.nextSiblingElement();
+    }
 }
 
 // Parse <operation><input>
 void SoapBinding::parseOperationInput( ParserContext *context, const QString &name, const QDomElement &parent )
 {
-  QDomElement child = parent.firstChildElement();
-  while ( !child.isNull() ) {
-    NSManager namespaceManager( context, child );
-    if ( child.tagName() == soapPrefix( context ) + QLatin1String("body") ) {
-      Operation &op = mOperations[ name ];
-      Body inputBody;
-      inputBody.loadXML( context, child );
-      op.setInput( inputBody );
-    } else if ( child.tagName() == soapPrefix( context ) + QLatin1String("header") ) {
-      Operation &op = mOperations[ name ];
-      Header inputHeader;
-      inputHeader.loadXML( context, child );
-      op.addInputHeader( inputHeader );
+    QDomElement child = parent.firstChildElement();
+    while ( !child.isNull() ) {
+        NSManager namespaceManager( context, child );
+        //qDebug() << Q_FUNC_INFO << namespaceManager.localName(child) << namespaceManager.nameSpace(child);
+        if ( NSManager::soapNamespaces().contains( namespaceManager.nameSpace(child) ) ) {
+            if ( namespaceManager.localName(child) == QLatin1String("body") ) {
+                Operation &op = mOperations[ name ];
+                Body inputBody;
+                inputBody.loadXML( context, child );
+                op.setInput( inputBody );
+            } else if ( namespaceManager.localName(child) == QLatin1String("header") ) {
+                Operation &op = mOperations[ name ];
+                Header inputHeader;
+                inputHeader.loadXML( context, child );
+                op.addInputHeader( inputHeader );
+            }
+        }
+        child = child.nextSiblingElement();
     }
-
-    child = child.nextSiblingElement();
-  }
 }
 
 // Parse <operation><output>
 void SoapBinding::parseOperationOutput( ParserContext *context, const QString &name, const QDomElement &parent )
 {
-  QDomElement child = parent.firstChildElement();
-  while ( !child.isNull() ) {
-    NSManager namespaceManager( context, child );
-    if ( child.tagName() == soapPrefix( context ) + QLatin1String("body") ) {
-      Operation &op = mOperations[ name ];
-      Body outputBody;
-      outputBody.loadXML( context, child );
-      op.setOutput( outputBody );
-    } else if ( child.tagName() == soapPrefix( context ) + QLatin1String("header") ) {
-      Operation &op = mOperations[ name ];
-      Header outputHeader;
-      outputHeader.loadXML( context, child );
-      op.addOutputHeader( outputHeader );
-    }
+    QDomElement child = parent.firstChildElement();
+    while ( !child.isNull() ) {
+        NSManager namespaceManager( context, child );
+        if ( NSManager::soapNamespaces().contains( namespaceManager.nameSpace(child) ) ) {
+            if ( namespaceManager.localName(child) == QLatin1String("body") ) {
+                Operation &op = mOperations[ name ];
+                Body outputBody;
+                outputBody.loadXML( context, child );
+                op.setOutput( outputBody );
+            } else if ( namespaceManager.localName(child) == QLatin1String("header") ) {
+                Operation &op = mOperations[ name ];
+                Header outputHeader;
+                outputHeader.loadXML( context, child );
+                op.addOutputHeader( outputHeader );
+            }
+        }
 
-    child = child.nextSiblingElement();
-  }
+        child = child.nextSiblingElement();
+    }
 }
 
 void SoapBinding::parseOperationFault( ParserContext *context, const QString &name, const QDomElement &parent )
 {
-  QDomElement child = parent.firstChildElement();
-  while ( !child.isNull() ) {
-    NSManager namespaceManager( context, child );
-    if ( child.tagName() == soapPrefix( context ) + QLatin1String("fault") ) {
-      Operation &op = mOperations[ name ];
-      Fault fault;
-      fault.loadXML( context, child );
-      op.setFault( fault );
+    QDomElement child = parent.firstChildElement();
+    while ( !child.isNull() ) {
+        NSManager namespaceManager( context, child );
+        if ( NSManager::soapNamespaces().contains( namespaceManager.nameSpace(child) ) ) {
+            if ( namespaceManager.localName(child) == QLatin1String("fault") ) {
+                Operation &op = mOperations[ name ];
+                Fault fault;
+                fault.loadXML( context, child );
+                op.setFault( fault );
+            }
+        }
+        child = child.nextSiblingElement();
     }
-
-    child = child.nextSiblingElement();
-  }
 }
 
 void SoapBinding::parsePort( ParserContext *context, const QDomElement &parent )
 {
-  QDomElement child = parent.firstChildElement();
-  while ( !child.isNull() ) {
-    NSManager namespaceManager( context, child );
-    if ( child.tagName() == soapPrefix( context ) + QLatin1String("address") ) {
-      mAddress.loadXML( context, child );
-    }
+    QDomElement child = parent.firstChildElement();
+    while ( !child.isNull() ) {
+        NSManager namespaceManager( context, child );
+        if ( NSManager::soapNamespaces().contains( namespaceManager.nameSpace(child) ) ) {
+            if ( namespaceManager.localName(child) == QLatin1String("address") ) {
+                mAddress.loadXML( context, child );
+            }
+        }
 
-    child = child.nextSiblingElement();
-  }
+        child = child.nextSiblingElement();
+    }
 }
 
 void SoapBinding::synthesizeBinding( ParserContext *context, QDomDocument &document, QDomElement &parent ) const

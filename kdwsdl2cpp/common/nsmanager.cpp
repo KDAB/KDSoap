@@ -114,6 +114,12 @@ QStringList NSManager::soapEncNamespaces()
                          << QLatin1String("http://www.w3.org/2003/05/soap-encoding");
 }
 
+QStringList NSManager::soapNamespaces()
+{
+    return QStringList() << QLatin1String("http://schemas.xmlsoap.org/wsdl/soap/")
+                         << QLatin1String("http://schemas.xmlsoap.org/wsdl/soap12/");
+}
+
 void NSManager::reset()
 {
   mMap.clear();

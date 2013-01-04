@@ -95,25 +95,28 @@ private:
         return QByteArray(xmlEnvBegin) + ">"
         "<soap:Body>"
          "<n1:listKeys xmlns:n1=\"urn:RpcExample\">"
-           "<params>"
-             "<module>System Info</module>"
-             "<base xsi:nil=\"true\"/>"
-           "</params>"
+          "<params xsi:type=\"n1:listKeysParams\">"
+           "<module xsi:type=\"xsd:string\">Firefox</module>"
+           "<base xsi:type=\"xsd:string\"></base>"
+          "</params>"
          "</n1:listKeys>"
         "</soap:Body>" + xmlEnvEnd
             + '\n'; // added by QXmlStreamWriter::writeEndDocument
     }
     static QByteArray listKeysResponse()
     {
-        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsd=\"http://www.w3.org/1999/XMLSchema\" xmlns:xsi=\"http://www.w3.org/1999/XMLSchema-instance\" soap:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\">"
-         "<soap:Body>"
-          "<n1:result xmlns:n1=\"urn:RpcExample\">"
-           "<item>testKey</item>"
-           "<item>testKey2</item>"
-           "<item>testKey3</item>"
-          "</n1:result>"
-         "</soap:Body>"
-        "</soap:Envelope>";
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+        "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://www.w3.org/2003/05/soap-envelope\" xmlns:SOAP-ENC=\"http://www.w3.org/2003/05/soap-encoding\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:RpcExample=\"urn:RpcExample\">"
+         "<SOAP-ENV:Body>"
+          "<RpcExample:listKeysResponse SOAP-ENV:encodingStyle=\"http://www.w3.org/2003/05/soap-encoding\">"
+           "<result>"
+            "<keys>test1</keys>"
+            "<keys>test2</keys>"
+            "<keys>test3</keys>"
+           "</result>"
+          "</RpcExample:listKeysResponse>"
+         "</SOAP-ENV:Body>"
+        "</SOAP-ENV:Envelope>";
     }
 
 private Q_SLOTS:
@@ -144,7 +147,8 @@ private Q_SLOTS:
         service.setEndPoint(server.endPoint());
 
         RPCEXAMPLE__ListKeysParams params;
-        params.setModule(QString::fromLatin1("System Info"));
+        params.setModule(QString::fromLatin1("Firefox"));
+        params.setBase(QString::fromLatin1(""));
         RPCEXAMPLE__ListKeysResult result = service.listKeys(params);
 
         // Check what we sent
@@ -152,8 +156,7 @@ private Q_SLOTS:
             QVERIFY(xmlBufferCompare(server.receivedData(), expectedListKeysRequest()));
             QCOMPARE(QString::fromUtf8(server.receivedData().constData()), QString::fromUtf8(expectedListKeysRequest().constData()));
         }
-        QEXPECT_FAIL("", "Must fix RPC mode in server", Continue);
-        QCOMPARE(result.keys(), QStringList() << QString::fromLatin1("testKey") << QString::fromLatin1("testKey2"));
+        QCOMPARE(result.keys(), QStringList() << QString::fromLatin1("test1") << QString::fromLatin1("test2") << QString::fromLatin1("test3"));
     }
 };
 
