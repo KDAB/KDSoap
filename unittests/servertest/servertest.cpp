@@ -620,7 +620,7 @@ private Q_SLOTS:
 #endif
 #endif
         const int numRequests = 5;
-        const int numClients = 100;
+        const int numClients = 80;
         const int maxThreads = 5;
 
         KDSoapThreadPool threadPool;
