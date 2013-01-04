@@ -786,52 +786,14 @@ public:
     virtual QObject* createServerObject() { m_lastServerObject = new DocServerObject; return m_lastServerObject; }
 
     DocServerObject* lastServerObject() { return m_lastServerObject; }
-Q_SIGNALS:
-    void releaseSemaphore();
 
 private:
     DocServerObject* m_lastServerObject; // only for unittest purposes
 };
 
-// We need to do the listening and socket handling in a separate thread,
-// so that the main thread can use synchronous calls. Note that this is
-// really specific to unit tests and doesn't need to be done in a real
-// KDSoap-based server.
-class DocServerThread
-{
-public:
-    DocServerThread() {}
-    ~DocServerThread() {
-        if (m_thread) {
-            m_thread->quit();
-            m_thread->wait();
-            delete m_thread;
-        }
-    }
-    DocServer* startThread() {
-        m_pServer = new DocServer;
-        if (!m_pServer->listen()) {
-            delete m_pServer;
-            m_pServer = 0;
-            return 0;
-        }
-
-        m_thread = new QThread;
-        QObject::connect(m_thread, SIGNAL(finished()), m_pServer, SLOT(deleteLater()));
-
-        m_pServer->moveToThread(m_thread);
-        m_thread->start();
-        return m_pServer;
-    }
-
-private:
-    QThread* m_thread; // we could also use m_pServer->thread()
-    DocServer* m_pServer;
-};
-
 void WsdlDocumentTest::testServerAddEmployee()
 {
-    DocServerThread serverThread;
+    TestServerThread<DocServer> serverThread;
     DocServer* server = serverThread.startThread();
 
     MyWsdlDocument service;
@@ -857,7 +819,7 @@ void WsdlDocumentTest::testServerAddEmployee()
 
 void WsdlDocumentTest::testServerAddEmployeeJob()
 {
-    DocServerThread serverThread;
+    TestServerThread<DocServer> serverThread;
     DocServer* server = serverThread.startThread();
 
     MyWsdlDocument service;
@@ -883,7 +845,7 @@ static QByteArray rawCountryMessage() {
 
 void WsdlDocumentTest::testServerPostByHand()
 {
-    DocServerThread serverThread;
+    TestServerThread<DocServer> serverThread;
     DocServer* server = serverThread.startThread();
 
     QUrl url(server->endPoint());
@@ -909,7 +871,7 @@ void WsdlDocumentTest::testServerPostByHand()
 
 void WsdlDocumentTest::testServerEmptyArgs()
 {
-    DocServerThread serverThread;
+    TestServerThread<DocServer> serverThread;
     DocServer* server = serverThread.startThread();
 
     MyWsdlDocument service;
@@ -923,7 +885,7 @@ void WsdlDocumentTest::testServerEmptyArgs()
 
 void WsdlDocumentTest::testServerFault() // test the error signals emitted on error, in async calls
 {
-    DocServerThread serverThread;
+    TestServerThread<DocServer> serverThread;
     DocServer* server = serverThread.startThread();
 
     MyWsdlDocument service;
@@ -944,7 +906,7 @@ void WsdlDocumentTest::testServerFault() // test the error signals emitted on er
 
 void WsdlDocumentTest::testSendTelegram()
 {
-    DocServerThread serverThread;
+    TestServerThread<DocServer> serverThread;
     DocServer* server = serverThread.startThread();
 
     MyWsdlDocument service;
@@ -979,7 +941,7 @@ void WsdlDocumentTest::testSendTelegram()
 
 void WsdlDocumentTest::testSendHugeTelegram()
 {
-    DocServerThread serverThread;
+    TestServerThread<DocServer> serverThread;
     DocServer* server = serverThread.startThread();
 
     MyWsdlDocument service;
@@ -1005,7 +967,7 @@ void WsdlDocumentTest::testSendHugeTelegram()
 
 void WsdlDocumentTest::testServerDelayedCall()
 {
-    DocServerThread serverThread;
+    TestServerThread<DocServer> serverThread;
     DocServer* server = serverThread.startThread();
     MyWsdlDocument service;
     service.setEndPoint(server->endPoint());
@@ -1017,7 +979,7 @@ void WsdlDocumentTest::testServerDelayedCall()
 
 void WsdlDocumentTest::testSyncCallAfterServerDelayedCall()
 {
-    DocServerThread serverThread;
+    TestServerThread<DocServer> serverThread;
     DocServer* server = serverThread.startThread();
     MyWsdlDocument service;
     service.setEndPoint(server->endPoint());
@@ -1033,7 +995,7 @@ void WsdlDocumentTest::testSyncCallAfterServerDelayedCall()
 
 void WsdlDocumentTest::testServerTwoDelayedCalls()
 {
-    DocServerThread serverThread;
+    TestServerThread<DocServer> serverThread;
     DocServer* server = serverThread.startThread();
     MyWsdlDocument service;
     service.setEndPoint(server->endPoint());
@@ -1062,7 +1024,7 @@ void WsdlDocumentTest::testServerTwoDelayedCalls()
 // Same as testSequenceInResponse (thomas-bayer.wsdl), but as a server test, by calling DocServer on a different path
 void WsdlDocumentTest::testServerDifferentPath()
 {
-    DocServerThread serverThread;
+    TestServerThread<DocServer> serverThread;
     DocServer* server = serverThread.startThread();
 
     NamesServiceService serv;

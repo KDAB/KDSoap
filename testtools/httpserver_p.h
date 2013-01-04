@@ -156,5 +156,43 @@ private:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(HttpServerThread::Features)
 
+// KDSoap-server-side testing
+// We need to do the listening and socket handling in a separate thread,
+// so that the main thread can use synchronous calls. Note that this is
+// really specific to unit tests and doesn't need to be done in a real
+// KDSoap-based server.
+template <class ServerObjectType>
+class TestServerThread
+{
+public:
+    TestServerThread() {}
+    ~TestServerThread() {
+        if (m_thread) {
+            m_thread->quit();
+            m_thread->wait();
+            delete m_thread;
+        }
+    }
+    ServerObjectType* startThread() {
+        m_pServer = new ServerObjectType;
+        if (!m_pServer->listen()) {
+            delete m_pServer;
+            m_pServer = 0;
+            return 0;
+        }
+
+        m_thread = new QThread;
+        QObject::connect(m_thread, SIGNAL(finished()), m_pServer, SLOT(deleteLater()));
+
+        m_pServer->moveToThread(m_thread);
+        m_thread->start();
+        return m_pServer;
+    }
+
+private:
+    QThread* m_thread; // we could also use m_pServer->thread()
+    ServerObjectType* m_pServer;
+};
+
 #endif /* HTTPSERVER_P_H */
 
