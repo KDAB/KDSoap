@@ -29,7 +29,7 @@
 #include <QDebug>
 #include <KDSoapClientInterface.h>
 #include <KDSoapMessage.h>
-#include <KDSoapPendingCallWatcher.h>
+#include <KDSoapServer.h>
 #include <KDSoapNamespaceManager.h>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
@@ -55,6 +55,27 @@ static const char* xmlEnvBegin =
     " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
     " soap:encodingStyle=\"http://www.w3.org/2003/05/soap-encoding\"";
 static const char* xmlEnvEnd = "</soap:Envelope>";
+
+class HelloServerObject : public Hello_ServiceServerBase
+{
+public:
+    virtual QString sayHello( const QString& firstName ) {
+        return QString::fromLatin1("Hello, ") + firstName + QLatin1String("!");
+    }
+};
+
+class HelloServer : public KDSoapServer
+{
+    Q_OBJECT
+public:
+    HelloServer() : KDSoapServer(), m_lastServerObject(0) {
+        setPath(QLatin1String("/hello"));
+    }
+    virtual QObject* createServerObject() { m_lastServerObject = new HelloServerObject; return m_lastServerObject; }
+    HelloServerObject* lastServerObject() { return m_lastServerObject; }
+private:
+    HelloServerObject* m_lastServerObject;
+};
 
 class RPCServerTest : public QObject
 {
@@ -135,6 +156,19 @@ private Q_SLOTS:
             QVERIFY(xmlBufferCompare(server.receivedData(), expectedHelloRequest()));
             QCOMPARE(QString::fromUtf8(server.receivedData().constData()), QString::fromUtf8(expectedHelloRequest().constData()));
         }
+    }
+
+    void serverTestHello() // same call, but test both client and server.
+    {
+        TestServerThread<HelloServer> serverThread;
+        HelloServer* server = serverThread.startThread();
+
+        Hello_Service service;
+        service.setEndPoint(server->endPoint());
+
+        const QString resp = service.sayHello("World");
+        QEXPECT_FAIL("", "Missing a wrapper element in the generated response", Continue);
+        QCOMPARE(resp, QString::fromLatin1("Hello, World!"));
     }
 
     // Using wsdl-generated code, make a call, and check the xml that was sent,
