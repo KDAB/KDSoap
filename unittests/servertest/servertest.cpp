@@ -445,7 +445,6 @@ private Q_SLOTS:
 
 #ifndef Q_OS_MAC //  "Fault code 99: Unknown error"
         QTest::newRow("300 requests") << 5 << 50 << 6;
-#endif
 #if 0 // disable for now, it breaks without glib, and it regularly breaks buildbot (354 messages received...)
 #ifndef Q_OS_WIN // builbot gets "Fault code 99: Unknown error" after 358 connected sockets
 #if QT_VERSION >= 0x040800
