@@ -258,12 +258,12 @@ private Q_SLOTS:
         CountryServerThread serverThread;
         CountryServer* server = serverThread.startThread();
         server->setRequireAuth(true);
-        KDSoapClientInterface* client = new KDSoapClientInterface(server->endPoint(), countryMessageNamespace());
+        KDSoapClientInterface client(server->endPoint(), countryMessageNamespace());
         KDSoapAuthentication auth;
         auth.setUser(QLatin1String("kdab"));
         auth.setPassword(QLatin1String("pass42"));
-        client->setAuthentication(auth);
-        const KDSoapMessage response = client->call(QLatin1String("getEmployeeCountry"), countryMessage());
+        client.setAuthentication(auth);
+        const KDSoapMessage response = client.call(QLatin1String("getEmployeeCountry"), countryMessage());
         if (response.isFault()) {
             qDebug() << response.faultAsString();
             QVERIFY(!response.isFault());
@@ -276,12 +276,12 @@ private Q_SLOTS:
         CountryServerThread serverThread;
         CountryServer* server = serverThread.startThread();
         server->setRequireAuth(true);
-        KDSoapClientInterface* client = new KDSoapClientInterface(server->endPoint(), countryMessageNamespace());
+        KDSoapClientInterface client(server->endPoint(), countryMessageNamespace());
         KDSoapAuthentication auth;
         auth.setUser(QLatin1String("kdab"));
         auth.setPassword(QLatin1String("invalid"));
-        client->setAuthentication(auth);
-        const KDSoapMessage response = client->call(QLatin1String("getEmployeeCountry"), countryMessage());
+        client.setAuthentication(auth);
+        const KDSoapMessage response = client.call(QLatin1String("getEmployeeCountry"), countryMessage());
         QVERIFY(response.isFault());
     }
 
@@ -716,6 +716,7 @@ private Q_SLOTS:
         server->flushLogFile();
         compareLines(expected, fileName);
 
+        qDeleteAll(clients);
         QFile::remove(fileName);
     }
 
@@ -855,6 +856,7 @@ private Q_SLOTS:
         connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
         loop.exec();
         QCOMPARE((int)reply->error(), (int)QNetworkReply::ContentOperationNotPermittedError);
+        reply->deleteLater();
     }
 
     void testSetPath_data()
