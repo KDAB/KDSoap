@@ -81,6 +81,101 @@ private:
     HelloServerObject* m_lastServerObject;
 };
 
+
+class RpcExampleServerObject : public RpcExampleServerBase
+{
+public:
+    virtual RPCEXAMPLE__ListKeysResult listKeys( const RPCEXAMPLE__ListKeysParams& params)
+    {
+        Q_UNUSED(params)
+        RPCEXAMPLE__ListKeysResult result;
+        result.setKeys(QStringList() << "test1" << "test2" << "test3");
+        return result;
+    }
+
+    virtual bool pullFile(const RPCEXAMPLE__PullFileParams& params)
+    {
+        Q_UNUSED(params)
+        return false;
+    }
+
+    virtual bool putFile(const RPCEXAMPLE__PutFileParams& params)
+    {
+        Q_UNUSED(params)
+        return false;
+    }
+
+    virtual QString getFile(const RPCEXAMPLE__GetFileParams& params)
+    {
+        Q_UNUSED(params)
+        return QString();
+    }
+
+    virtual RPCEXAMPLE__ExecFileResult execFile( const RPCEXAMPLE__ExecFileParams& params)
+    {
+        Q_UNUSED(params)
+        return RPCEXAMPLE__ExecFileResult();
+    }
+
+    virtual RPCEXAMPLE__ListFilesResult listFiles()
+    {
+        return RPCEXAMPLE__ListFilesResult();
+    }
+
+    virtual bool setKey(const RPCEXAMPLE__SetKeyParams& params)
+    {
+        Q_UNUSED(params)
+        return false;
+    }
+
+    virtual QString getKey(const RPCEXAMPLE__GetKeyParams& params)
+    {
+        Q_UNUSED(params)
+        return QString();
+    }
+
+    virtual bool clearKey(const RPCEXAMPLE__ClearKeyParams& params)
+    {
+        Q_UNUSED(params)
+        return false;
+    }
+
+    virtual QString execAction(const RPCEXAMPLE__ExecActionParams& params)
+    {
+        Q_UNUSED(params)
+        return QString();
+    }
+
+    virtual void heartbeat(const RPCEXAMPLE__HeartbeatParams& params)
+    {
+        Q_UNUSED(params)
+    }
+
+    virtual void legacyHeartbeat(const RPCEXAMPLE__LegacyHeartbeatParams& params)
+    {
+        Q_UNUSED(params)
+    }
+
+    virtual void message(const RPCEXAMPLE__MessageParams& params)
+    {
+        Q_UNUSED(params)
+    }
+
+};
+
+class RpcExampleServer : public KDSoapServer
+{
+    Q_OBJECT
+public:
+    RpcExampleServer() : KDSoapServer(), m_lastServerObject(0) {
+        setPath(QLatin1String("/rpcexample"));
+    }
+    virtual QObject* createServerObject() { m_lastServerObject = new RpcExampleServerObject; return m_lastServerObject; }
+    RpcExampleServerObject* lastServerObject() { return m_lastServerObject; }
+private:
+    RpcExampleServerObject* m_lastServerObject;
+};
+
 class RPCServerTest : public QObject
 {
     Q_OBJECT
@@ -197,6 +292,23 @@ private Q_SLOTS:
             QVERIFY(xmlBufferCompare(server.receivedData(), expectedListKeysRequest()));
             QCOMPARE(QString::fromUtf8(server.receivedData().constData()), QString::fromUtf8(expectedListKeysRequest().constData()));
         }
+        QCOMPARE(result.keys(), QStringList() << QString::fromLatin1("test1") << QString::fromLatin1("test2") << QString::fromLatin1("test3"));
+    }
+
+    void serverTestListKeys()
+    {
+        TestServerThread<RpcExampleServer> serverThread;
+        RpcExampleServer* server = serverThread.startThread();
+
+        RpcExample service;
+        service.setEndPoint(server->endPoint());
+
+        RPCEXAMPLE__ListKeysParams params;
+        params.setModule(QString::fromLatin1("Firefox"));
+        params.setBase(QString::fromLatin1(""));
+        RPCEXAMPLE__ListKeysResult result = service.listKeys(params);
+
+        QEXPECT_FAIL("", "Missing a wrapper element in the generated response", Continue);
         QCOMPARE(result.keys(), QStringList() << QString::fromLatin1("test1") << QString::fromLatin1("test2") << QString::fromLatin1("test3"));
     }
 };
