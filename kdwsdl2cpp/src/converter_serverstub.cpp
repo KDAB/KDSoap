@@ -140,7 +140,6 @@ void Converter::generateServerMethod(KODE::Code& code, const Binding& binding, c
         }
     }
 
-
     const Part::List outParts = outputMessage.parts();
     if (outParts.count() > 1) {
         qWarning("ERROR: multiple output parameters are not supported (operation %s) - please report"
@@ -179,17 +178,24 @@ void Converter::generateServerMethod(KODE::Code& code, const Binding& binding, c
             // TODO implement RPC!
             // We need to make up fooResponse in RPC mode
             qCritical("ERROR: RPC mode is not supported on the server-side yet, for lack of a good example - please report this with your wsdl file to kdsoap-support@kdab.com");
+
+            bool qualified;
+            const QName elemName = elementNameForPart( retPart, &qualified );
+            code += QString("KDSoapValue wrapper(\"%1\", QVariant(), \"%2\");").arg(outputMessage.name()).arg(outputMessage.nameSpace());
+            code.addBlock( serializeElementArg( retPart.type(), retPart.element(), elemName, "ret", "wrapper.childValues()", true, qualified ) );
+            code += "response = wrapper;";
+        } else {
+            bool qualified;
+            const QName elemName = elementNameForPart( retPart, &qualified );
+            code.addBlock( serializeElementArg( retPart.type(), retPart.element(), elemName, "ret", "response", false, qualified ) );
         }
-        bool qualified;
-        const QName elemName = elementNameForPart( retPart, &qualified );
-        code.addBlock( serializeElementArg( retPart.type(), retPart.element(), elemName, "ret", "response", false, qualified ) );
 
         code.unindent();
         code += "}";
         Q_ASSERT(!retType.isEmpty());
         virtualMethod.setReturnType(retType);
 
-        generateDelayedReponseMethod(methodName, retInputType, retPart, newClass);
+        generateDelayedReponseMethod(methodName, retInputType, retPart, newClass, binding, outputMessage);
     }
     code.unindent();
     code += "}";
@@ -197,7 +203,8 @@ void Converter::generateServerMethod(KODE::Code& code, const Binding& binding, c
     newClass.addFunction(virtualMethod);
 }
 
-void Converter::generateDelayedReponseMethod(const QString& methodName, const QString& retInputType, const Part &retPart, KODE::Class &newClass)
+void Converter::generateDelayedReponseMethod(const QString& methodName, const QString& retInputType, const Part &retPart, KODE::Class &newClass,
+                                             const Binding& binding, const Message &outputMessage)
 {
     const QString delayedMethodName = methodName + "Response";
     KODE::Function delayedMethod(delayedMethodName);
@@ -207,9 +214,17 @@ void Converter::generateDelayedReponseMethod(const QString& methodName, const QS
 
     KODE::Code code;
     code.addLine("KDSoapMessage response;");
+
     bool qualified;
     const QName elemName = elementNameForPart( retPart, &qualified );
-    code.addBlock(serializeElementArg(retPart.type(), retPart.element(), elemName, "ret", "response", false, qualified));
+    if (soapStyle(binding) == SoapBinding::RPCStyle) {
+        code += QString("KDSoapValue wrapper(\"%1\", QVariant(), \"%2\");").arg(outputMessage.name()).arg(outputMessage.nameSpace());
+        code.addBlock( serializeElementArg( retPart.type(), retPart.element(), elemName, "ret", "wrapper.childValues()", true, qualified ) );
+        code += "response = wrapper;";
+    } else {
+        code.addBlock(serializeElementArg(retPart.type(), retPart.element(), elemName, "ret", "response", false, qualified));
+    }
+
     code.addLine("sendDelayedResponse(responseHandle, response);");
     delayedMethod.setBody(code);
 

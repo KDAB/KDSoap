@@ -269,7 +269,6 @@ private Q_SLOTS:
 
         QCOMPARE(server->lastServerObject()->receivedFirstName(), QString::fromLatin1("World"));
 
-        QEXPECT_FAIL("", "Missing a wrapper element in the generated response", Continue);
         QCOMPARE(resp, QString::fromLatin1("Hello, World!"));
     }
 
@@ -308,7 +307,6 @@ private Q_SLOTS:
         params.setBase(QString::fromLatin1(""));
         RPCEXAMPLE__ListKeysResult result = service.listKeys(params);
 
-        QEXPECT_FAIL("", "Missing a wrapper element in the generated response", Continue);
         QCOMPARE(result.keys(), QStringList() << QString::fromLatin1("test1") << QString::fromLatin1("test2") << QString::fromLatin1("test3"));
     }
 };
