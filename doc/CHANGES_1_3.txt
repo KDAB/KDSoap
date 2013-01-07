@@ -32,6 +32,7 @@ Server-side:
 * Support for SOAP requests on different paths than the default one (SOAP-8).
 * Fix generated code when SOAP-1.1 and SOAP-1.2 bindings are present
   (fix compilation error, and set version to SOAP_1_2 in the 1.2 binding) (SOAP-44).
+* Fix handling of requests in RPC mode.
 * Fix small memory leak if the device returned from processFileRequest can not be accessed (SOAP-48).
 * Clean incoming path recieved via HTTP from "./" and "../" (SOAP-49).
 * Add ability to set custom ssl configuration for new connections.

@@ -60,8 +60,12 @@ class HelloServerObject : public Hello_ServiceServerBase
 {
 public:
     virtual QString sayHello( const QString& firstName ) {
+        m_receivedFirstName = firstName;
         return QString::fromLatin1("Hello, ") + firstName + QLatin1String("!");
     }
+    QString receivedFirstName() const { return m_receivedFirstName; }
+private:
+    QString m_receivedFirstName;
 };
 
 class HelloServer : public KDSoapServer
@@ -167,6 +171,9 @@ private Q_SLOTS:
         service.setEndPoint(server->endPoint());
 
         const QString resp = service.sayHello("World");
+
+        QCOMPARE(server->lastServerObject()->receivedFirstName(), QString::fromLatin1("World"));
+
         QEXPECT_FAIL("", "Missing a wrapper element in the generated response", Continue);
         QCOMPARE(resp, QString::fromLatin1("Hello, World!"));
     }

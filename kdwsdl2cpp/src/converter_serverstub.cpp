@@ -124,8 +124,15 @@ void Converter::generateServerMethod(KODE::Code& code, const Binding& binding, c
 
             code += argType + ' ' + varName + ";" + COMMENT;
 
+            QString soapValueVarName = "request";
+            if (soapStyle(binding) == SoapBinding::RPCStyle) {
+                // RPC comes with a wrapper element, dig into it here
+                code += QLatin1String("const KDSoapValue val = request.childValues().first();") + COMMENT;
+                soapValueVarName = "val";
+            }
+
             // what if there's more than one?
-            code.addBlock( demarshalVar( part.type(), part.element(), varName, argType, "request" ) );
+            code.addBlock( demarshalVar( part.type(), part.element(), varName, argType, soapValueVarName ) );
 
             inputVars += varName;
             newClass.addIncludes( mTypeMap.headerIncludes( part.type() ) );
