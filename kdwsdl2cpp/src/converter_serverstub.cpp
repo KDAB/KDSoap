@@ -169,24 +169,15 @@ void Converter::generateServerMethod(KODE::Code& code, const Binding& binding, c
         }
         code += "if (!hasFault()) {";
         code.indent();
-        // basic type: response.setValue(ret);
-        // complex type:
-        //   response.setValue(QLatin1String("getEmployeeCountryResponse"));
-        //   response.childValues() += ret.serialize(QString()).childValues();
-        //      == response.setValue(ret.serialize("getEmployeeCountryResponse")) I think.
-        if (soapStyle(binding) == SoapBinding::RPCStyle) {
-            // TODO implement RPC!
-            // We need to make up fooResponse in RPC mode
-            qCritical("ERROR: RPC mode is not supported on the server-side yet, for lack of a good example - please report this with your wsdl file to kdsoap-support@kdab.com");
 
-            bool qualified;
-            const QName elemName = elementNameForPart( retPart, &qualified );
-            code += QString("KDSoapValue wrapper(\"%1\", QVariant(), \"%2\");").arg(outputMessage.name()).arg(outputMessage.nameSpace());
+        bool qualified;
+        const QName elemName = elementNameForPart( retPart, &qualified );
+
+        if (soapStyle(binding) == SoapBinding::RPCStyle) {
+            code += QString("KDSoapValue wrapper(\"%1\", QVariant());").arg(outputMessage.name());
             code.addBlock( serializeElementArg( retPart.type(), retPart.element(), elemName, "ret", "wrapper.childValues()", true, qualified ) );
             code += "response = wrapper;";
         } else {
-            bool qualified;
-            const QName elemName = elementNameForPart( retPart, &qualified );
             code.addBlock( serializeElementArg( retPart.type(), retPart.element(), elemName, "ret", "response", false, qualified ) );
         }
 
