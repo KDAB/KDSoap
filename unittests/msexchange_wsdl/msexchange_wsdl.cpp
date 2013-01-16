@@ -48,6 +48,10 @@ class MSExchangeTest : public QObject
     Q_OBJECT
 
 private Q_SLOTS:
+    void initTestCase()
+    {
+        KDSoapUnitTestHelpers::initHashSeed();
+    }
 
     void testExchangeMessage()
     {

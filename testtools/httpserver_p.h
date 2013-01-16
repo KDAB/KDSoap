@@ -44,6 +44,7 @@ namespace KDSoapUnitTestHelpers
     bool xmlBufferCompare(const QByteArray& source, const QByteArray& dest);
     void httpGet(const QUrl& url);
     bool setSslConfiguration();
+    void initHashSeed();
 }
 
 class HttpServerThread : public QThread
