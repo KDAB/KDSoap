@@ -48,6 +48,11 @@ class SugarTest : public QObject
     Q_OBJECT
 
 private Q_SLOTS:
+    void initTestCase()
+    {
+        KDSoapUnitTestHelpers::initHashSeed();
+    }
+
     void testParseComplexReplyWsdl()
     {
         HttpServerThread server(complexTypeResponse(), HttpServerThread::Public);
