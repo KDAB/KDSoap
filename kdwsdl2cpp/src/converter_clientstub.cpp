@@ -246,13 +246,6 @@ bool Converter::convertClientService()
                 Operation::OperationType opType = operation.operationType();
                 switch(opType) {
                 case Operation::OneWayOperation:
-                    // sync method
-                    if (!convertClientCall( operation, binding, newClass )) {
-                        return false;
-                    }
-                    // async method
-                    convertClientInputMessage( operation, binding, newClass );
-                    break;
                 case Operation::RequestResponseOperation: // the standard case
                     // sync method
                     if (!convertClientCall( operation, binding, newClass )) {

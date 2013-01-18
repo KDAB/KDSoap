@@ -85,6 +85,9 @@ private:
 class RpcExampleServerObject : public RpcExampleServerBase
 {
 public:
+    RpcExampleServerObject()
+        : m_heartbeatCalled(false)
+    {}
     virtual RPCEXAMPLE__ListKeysResult listKeys( const RPCEXAMPLE__ListKeysParams& params)
     {
         Q_UNUSED(params)
@@ -148,7 +151,8 @@ public:
 
     virtual void heartbeat(const RPCEXAMPLE__HeartbeatParams& params)
     {
-        Q_UNUSED(params)
+        Q_UNUSED(params);
+        m_heartbeatCalled = true;
     }
 
     virtual void legacyHeartbeat(const RPCEXAMPLE__LegacyHeartbeatParams& params)
@@ -160,7 +164,9 @@ public:
     {
         Q_UNUSED(params)
     }
-
+    bool heartbeatCalled() const { return m_heartbeatCalled; }
+private:
+    bool m_heartbeatCalled;
 };
 
 class RpcExampleServer : public KDSoapServer
@@ -270,6 +276,41 @@ private Q_SLOTS:
         QCOMPARE(server->lastServerObject()->receivedFirstName(), QString::fromLatin1("World"));
 
         QCOMPARE(resp, QString::fromLatin1("Hello, World!"));
+    }
+
+    void syncOneWay() // client/server call for a one-way call
+    {
+        TestServerThread<RpcExampleServer> serverThread;
+        RpcExampleServer* server = serverThread.startThread();
+
+        RpcExample service;
+        service.setEndPoint(server->endPoint());
+
+        RPCEXAMPLE__HeartbeatParams params;
+        service.heartbeat(params);
+
+        QVERIFY(server->lastServerObject()->heartbeatCalled());
+    }
+
+    void asyncOneWay() // client/server call for a one-way call, using async methods
+    {
+        TestServerThread<RpcExampleServer> serverThread;
+        RpcExampleServer* server = serverThread.startThread();
+
+        RpcExample service;
+        service.setEndPoint(server->endPoint());
+
+        QSignalSpy spy(&service, SIGNAL(heartbeatDone()));
+        QVERIFY(spy.isValid());
+
+        // Qt5: use spy.wait() instead.
+        QEventLoop eventLoop;
+        connect(&service, SIGNAL(heartbeatDone()), &eventLoop, SLOT(quit()));
+        RPCEXAMPLE__HeartbeatParams params;
+        service.asyncHeartbeat(params);
+        eventLoop.exec();
+
+        QVERIFY(server->lastServerObject()->heartbeatCalled());
     }
 
     // Using wsdl-generated code, make a call, and check the xml that was sent,
