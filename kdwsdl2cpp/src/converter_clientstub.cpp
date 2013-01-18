@@ -646,7 +646,8 @@ void Converter::convertClientInputMessage( const Operation &operation,
   callLine += QLatin1String(");");
   code += callLine;
 
-  if (operation.operationType() == Operation::RequestResponseOperation) {
+  if (operation.operationType() == Operation::RequestResponseOperation ||
+      operation.operationType() == Operation::OneWayOperation) {
       const QString finishedSlotName = QLatin1String("_kd_slot") + upperlize(operationName) + QLatin1String("Finished");
 
       code += "KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);";
