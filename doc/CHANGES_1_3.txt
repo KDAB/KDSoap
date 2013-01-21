@@ -12,7 +12,7 @@ Client-side:
 ============
 * Add support for return (output) headers (in async calls and jobs) (SOAP-45).
   Documented how to access them in sync calls (no deserialization possible).
-* Generate synchronous and asynchronous methods for one-way operations too
+* Generate synchronous and asynchronous methods/signals for one-way operations too.
 * Add setSslConfiguration(QSslConfiguration), for custom SSL configuration on a
   given KDSoapClientInterface.
 * Add class KDSoapSslHandler for notification and handling of SSL errors.
