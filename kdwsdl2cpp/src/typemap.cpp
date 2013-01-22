@@ -71,7 +71,13 @@ TypeMap::TypeMap()
   addBuiltinType("negativeInteger", "qint64"); // unbounded (-inf to -1)
   addBuiltinType("nonNegativeInteger", "quint64"); // unbounded (0 to inf)
   addBuiltinType("unsignedInt", "unsigned int"); // 32 bits
+  addBuiltinType("NMTOKEN", "QString"); // http://www.w3.org/TR/2004/REC-xmlschema-2-20041028/datatypes.html#NMTOKEN
   addBuiltinType("token", "QString");
+  addBuiltinType("NCName", "QString");
+  addBuiltinType("Name", "QString");
+  addBuiltinType("normalizedString", "QString");
+  addBuiltinType("ID", "QString");
+  addBuiltinType("IDREF", "QString");
 }
 
 TypeMap::~TypeMap()
