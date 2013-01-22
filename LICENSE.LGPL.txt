@@ -4,6 +4,8 @@
  You may use, distribute and copy KD SOAP under the terms of
  GNU Library General Public License version 2, which is displayed below.
 
+ For the server-side library, see LICENSE.AGPL3-modified.txt
+
 -------------------------------------------------------------------------
                   GNU LIBRARY GENERAL PUBLIC LICENSE
                        Version 2, June 1991

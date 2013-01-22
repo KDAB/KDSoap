@@ -9,7 +9,9 @@ For a full description of KDSoap, see http://www.kdab.com/kdab-products/kd-soap/
 KD Soap is (C) 2010-2013, Klaralvdalens Datakonsult AB, and is available
 under the terms of:
 * the LGPL (see LICENSE.LGPL.txt for details)
+    (except libkdsoap-server, see LICENSE.AGPL3-modified.txt)
 * the GPL (see LICENSE.GPL.txt for details)
+    (except libkdsoap-server, see LICENSE.AGPL3-modified.txt)
 * the KDAB commercial license, provided that you buy a license, see
 http://www.kdab.com/kdab-products/prices/
 
