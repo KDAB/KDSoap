@@ -67,6 +67,7 @@ Attribute &Attribute::operator=( const Attribute &other )
     return *this;
 
   *d = *other.d;
+  XmlElement::operator=( other );
 
   return *this;
 }
