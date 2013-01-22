@@ -24,6 +24,7 @@
 #include <common/messagehandler.h>
 #include <common/parsercontext.h>
 #include <common/nsmanager.h>
+#include <QDebug>
 
 using namespace KWSDL;
 
@@ -94,51 +95,57 @@ Fault::List Operation::faults() const
 
 void Operation::loadXML( ParserContext *context, const QDomElement &element )
 {
-  mName = element.attribute( QLatin1String("name" ));
-  if ( mName.isEmpty() )
-    context->messageHandler()->warning( QLatin1String("Operation: 'name' required") );
+    mName = element.attribute( QLatin1String("name" ));
+    if ( mName.isEmpty() )
+        context->messageHandler()->warning( QLatin1String("Operation: 'name' required") );
 
-  QDomNodeList inputElements = element.elementsByTagName( QLatin1String("input") );
-  QDomNodeList outputElements = element.elementsByTagName( QLatin1String("output") );
+    //http://www.roguewave.com/portals/0/products/hydraexpress/docs/4.6.0/html/rwsfwsdevug/9-2.html
+    // input only = OneWayOperation
+    // output only = NotificationOperation
+    // input+output = RequestResponseOperation
+    // output+input = SolicitResponseOperation
 
-  if ( inputElements.count() == 1 && outputElements.count() == 0 ) {
-    mType = OneWayOperation;
-    mInput.loadXML( context, inputElements.item( 0 ).toElement() );
-  } else if ( inputElements.count() == 0 && outputElements.count() == 1 ) {
-    mType = NotificationOperation;
-    mOutput.loadXML( context, outputElements.item( 0 ).toElement() );
-  } else {
-    bool first = true;
+    bool hasInput = false;
+    bool hasOutput = false;
+    bool inputWasFirst = true;
     QDomElement child = element.firstChildElement();
     while ( !child.isNull() ) {
-      NSManager namespaceManager( context, child );
-      const QName tagName( child.tagName() );
-      if ( tagName.localName() == QLatin1String("input") ) {
-        if ( first ) {
-          first = false;
-          mType = RequestResponseOperation;
+        NSManager namespaceManager( context, child );
+        const QString tagName = namespaceManager.localName(child);
+        if ( tagName == QLatin1String("input") ) {
+            Q_ASSERT( !hasInput );
+            if ( !hasOutput ) {
+                inputWasFirst = true;
+            }
+            hasInput = true;
+            mInput.loadXML( context, child );
+        } else if ( tagName == QLatin1String("output") ) {
+            Q_ASSERT( !hasOutput );
+            hasOutput = true;
+            mOutput.loadXML( context, child );
+        } else if ( tagName == QLatin1String("fault") ) {
+            Fault fault( nameSpace() );
+            fault.loadXML( context, child );
+            mFaults.append( fault );
+        } else if ( tagName == QLatin1String("documentation")) {
+            QString text = child.firstChild().toText().data().trimmed();
+            setDocumentation(text);
+        } else {
+            context->messageHandler()->warning( QString::fromLatin1( "Operation: unknown tag %1" ).arg( child.tagName() ) );
         }
-        mInput.loadXML( context, child );
-      } else if ( tagName.localName() == QLatin1String("output") ) {
-        if ( first ) {
-          first = false;
-          mType = SolicitResponseOperation;
-        }
-        mOutput.loadXML( context, child );
-      } else if ( tagName.localName() == QLatin1String("fault") ) {
-        Fault fault( nameSpace() );
-        fault.loadXML( context, child );
-        mFaults.append( fault );
-      } else if ( tagName.localName() == QLatin1String("documentation")) {
-        QString text = child.firstChild().toText().data().trimmed();
-        setDocumentation(text);
-      } else {
-        context->messageHandler()->warning( QString::fromLatin1( "Operation: unknown tag %1" ).arg( child.tagName() ) );
-      }
 
-      child = child.nextSiblingElement();
+        child = child.nextSiblingElement();
     }
-  }
+    Q_ASSERT( hasInput || hasOutput );
+    if ( hasInput && !hasOutput ) {
+        mType = OneWayOperation;
+    } else if ( !hasInput && hasOutput ) {
+        mType = NotificationOperation;
+    } else if ( inputWasFirst ) {
+        mType = RequestResponseOperation;
+    } else {
+        mType = SolicitResponseOperation;
+    }
 }
 
 void Operation::saveXML( ParserContext *context, QDomDocument &document, QDomElement &parent ) const
