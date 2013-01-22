@@ -28,16 +28,6 @@
 
 using namespace KDSoapUnitTestHelpers;
 
-static const char* xmlEnvBegin =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-        "<soap:Envelope"
-        " xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\""
-        " xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\""
-        " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\""
-        " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
-        " soap:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\"";
-static const char* xmlEnvEnd = "</soap:Envelope>";
-
 class WsdlRPCTest : public QObject
 {
     Q_OBJECT
@@ -48,9 +38,9 @@ private Q_SLOTS:
     void testRequest()
     {
         // Prepare response
-        QByteArray responseData = QByteArray(xmlEnvBegin) + "><soap:Body>"
+        QByteArray responseData = QByteArray(xmlEnvBegin11()) + "><soap:Body>"
                                   "<kdab:addEmployeeResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl/\"><kdab:bStrReturn>Foo</kdab:bStrReturn></kdab:addEmployeeResponse>"
-                                  " </soap:Body>" + xmlEnvEnd;
+                                  " </soap:Body>" + xmlEnvEnd();
         HttpServerThread server(responseData, HttpServerThread::Public);
 
         // For testing the http server with telnet or wget:
@@ -117,13 +107,13 @@ private Q_SLOTS:
                 "</soap:Header>";
         // Check what we sent
         QByteArray requestXmlTemplate =
-            QByteArray(xmlEnvBegin) +
+            QByteArray(xmlEnvBegin11()) +
             " xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">%1"
             "<soap:Body>"
             "<n1:addEmployee>"
             + serializedEmployee() +
             "</n1:addEmployee>"
-            "</soap:Body>" + xmlEnvEnd
+            "</soap:Body>" + xmlEnvEnd()
             + '\n'; // added by QXmlStreamWriter::writeEndDocument
         {
             QByteArray expectedRequestXml = requestXmlTemplate;
@@ -168,13 +158,13 @@ private Q_SLOTS:
     void testResponse()
     {
         // Prepare response
-        QByteArray responseData = QByteArray(xmlEnvBegin) + "><soap:Body>"
+        QByteArray responseData = QByteArray(xmlEnvBegin11()) + "><soap:Body>"
                                   "<n1:getEmployeeResponse xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
                                   "<n1:employee>"
                                    + serializedEmployee() +
                                   "</n1:employee>"
                                   "</n1:getEmployeeResponse>"
-                                  " </soap:Body>" + xmlEnvEnd;
+        " </soap:Body>" + xmlEnvEnd();
         HttpServerThread server(responseData, HttpServerThread::Public);
         MyWsdl service;
         service.setEndPoint(server.endPoint());
@@ -211,14 +201,14 @@ private Q_SLOTS:
     void testEnums()
     {
         // Prepare response
-        QByteArray responseData = QByteArray(xmlEnvBegin) + "><soap:Body>"
+        QByteArray responseData = QByteArray(xmlEnvBegin11()) + "><soap:Body>"
                                   "<kdab:getEmployeeTypeResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl/\">"
                                     "<kdab:employeeType kdab:type=\"Developer\">"
                                       "<kdab:team>Minitel</kdab:team>"
                                       "<kdab:otherRoles>TeamLeader</kdab:otherRoles>"
                                     "</kdab:employeeType>"
                                   "</kdab:getEmployeeTypeResponse>"
-                                  "</soap:Body>" + xmlEnvEnd;
+                                  "</soap:Body>" + xmlEnvEnd();
         HttpServerThread server(responseData, HttpServerThread::Public);
         MyWsdl service;
         service.setEndPoint(server.endPoint());
@@ -236,11 +226,11 @@ private Q_SLOTS:
     void testByteArrays()
     {
         // Prepare response
-        QByteArray responseData = QByteArray(xmlEnvBegin) + "><soap:Body>"
+        QByteArray responseData = QByteArray(xmlEnvBegin11()) + "><soap:Body>"
                                   "<kdab:sendTelegramResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl/\">"
                                     "<kdab:telegram>466f6f</kdab:telegram>"
                                   "</kdab:sendTelegramResponse>"
-                                  "</soap:Body>" + xmlEnvEnd;
+                                  "</soap:Body>" + xmlEnvEnd();
         HttpServerThread server(responseData, HttpServerThread::Public);
         MyWsdl service;
         service.setEndPoint(server.endPoint());
@@ -250,12 +240,12 @@ private Q_SLOTS:
         QCOMPARE(ret.value(), QByteArray("Foo"));
 
         const QByteArray expectedRequestXml =
-            QByteArray(xmlEnvBegin) + ">"
+            QByteArray(xmlEnvBegin11()) + ">"
             "<soap:Body>"
             "<n1:sendTelegram xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
                "<telegram>48656c6c6f</telegram>"
             "</n1:sendTelegram>"
-            "</soap:Body>" + xmlEnvEnd;
+            "</soap:Body>" + xmlEnvEnd();
             QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
     }
 
@@ -288,21 +278,21 @@ private:
     }
 
     static QByteArray countryResponse() {
-        return QByteArray(xmlEnvBegin) + "><soap:Body>"
+        return QByteArray(xmlEnvBegin11()) + "><soap:Body>"
                 "<kdab:getEmployeeCountryResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl/\">"
                 "<kdab:employeeCountry>France</kdab:employeeCountry>"
                 "</kdab:getEmployeeCountryResponse>"
-                " </soap:Body>" + xmlEnvEnd;
+                " </soap:Body>" + xmlEnvEnd();
     }
     static QByteArray expectedCountryRequest() {
-        return QByteArray(xmlEnvBegin) +
+        return QByteArray(xmlEnvBegin11()) +
                 "><soap:Body>"
                 "<n1:getEmployeeCountry xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
                 "<employeeName>"
                 "David Ä Faure"
                 "</employeeName>"
                 "</n1:getEmployeeCountry>"
-                "</soap:Body>" + xmlEnvEnd
+                "</soap:Body>" + xmlEnvEnd()
                 + '\n'; // added by QXmlStreamWriter::writeEndDocument
     }
 };

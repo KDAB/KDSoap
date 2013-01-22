@@ -37,25 +37,6 @@
 
 using namespace KDSoapUnitTestHelpers;
 
-static const char* xmlEnvBegin11 =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-        "<soap:Envelope"
-        " xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\""
-        " xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\""
-        " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\""
-        " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
-        " soap:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\"";
-
-static const char* xmlEnvBegin =
-    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-    "<soap:Envelope"
-    " xmlns:soap=\"http://www.w3.org/2003/05/soap-envelope\""
-    " xmlns:soap-enc=\"http://www.w3.org/2003/05/soap-encoding\""
-    " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\""
-    " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
-    " soap:encodingStyle=\"http://www.w3.org/2003/05/soap-encoding\"";
-static const char* xmlEnvEnd = "</soap:Envelope>";
-
 class HelloServerObject : public Hello_ServiceServerBase
 {
 public:
@@ -190,13 +171,13 @@ private:
 
     static QByteArray expectedHelloRequest() // http://oreilly.com/catalog/webservess/chapter/ch06.html
     {
-        return QByteArray(xmlEnvBegin11) + ">"
+        return QByteArray(xmlEnvBegin11()) + ">"
         "<soap:Body>"
         "<n1:sayHello xmlns:n1=\"http://www.ecerami.com/wsdl/HelloService.wsdl\">"
         /*"<n1:sayHello xmlns:n1=\"urn:examples:helloservice\">" // TODO! Add support for * namespace="urn:examples:helloservice" */
              "<firstName xsi:type=\"xsd:string\">World</firstName>"
         "</n1:sayHello>"
-        "</soap:Body>" + xmlEnvEnd
+        "</soap:Body>" + xmlEnvEnd()
             + '\n'; // added by QXmlStreamWriter::writeEndDocument
     }
     static QByteArray helloResponse()
@@ -218,7 +199,7 @@ private:
 
     static QByteArray expectedListKeysRequest()
     {
-        return QByteArray(xmlEnvBegin) + ">"
+        return QByteArray(xmlEnvBegin12()) + ">"
         "<soap:Body>"
          "<n1:listKeys xmlns:n1=\"urn:RpcExample\">"
           "<params xsi:type=\"n1:listKeysParams\">"
@@ -226,7 +207,7 @@ private:
            "<base xsi:type=\"xsd:string\"></base>"
           "</params>"
          "</n1:listKeys>"
-        "</soap:Body>" + xmlEnvEnd
+        "</soap:Body>" + xmlEnvEnd()
             + '\n'; // added by QXmlStreamWriter::writeEndDocument
     }
     static QByteArray listKeysResponse()

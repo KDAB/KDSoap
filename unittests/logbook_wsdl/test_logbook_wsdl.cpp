@@ -33,16 +33,6 @@
 
 using namespace KDSoapUnitTestHelpers;
 
-// SOAP 1.2 namespaces
-static const char* xmlEnvBegin =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-        "<soap:Envelope"
-        " xmlns:soap=\"http://www.w3.org/2003/05/soap-envelope\""
-        " xmlns:soap-enc=\"http://www.w3.org/2003/05/soap-encoding\""
-        " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\""
-        " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
-        " soap:encodingStyle=\"http://www.w3.org/2003/05/soap-encoding\"";
-static const char* xmlEnvEnd = "</soap:Envelope>";
 
 class LogbookTest : public QObject
 {
@@ -67,13 +57,13 @@ private Q_SLOTS:
 
         // Check what we sent
         QByteArray expectedRequestXml =
-            QByteArray(xmlEnvBegin) +
+            QByteArray(xmlEnvBegin12()) +
             "><soap:Body>"
             "<n1:GetUpdateInfo xmlns:n1=\"https://www.elogbook.org/elogbook\">"
               "<n1:DBSerial>123</n1:DBSerial>"
               "<n1:spec>spec</n1:spec>"
             "</n1:GetUpdateInfo>"
-            "</soap:Body>" + xmlEnvEnd
+            "</soap:Body>" + xmlEnvEnd()
             + '\n'; // added by QXmlStreamWriter::writeEndDocument
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
     }
@@ -81,11 +71,11 @@ private Q_SLOTS:
 private:
     static QByteArray complexTypeResponse() {
         // From https://www.elogbook.org/logbookws/logbookifv3.asmx?op=GetUpdateInfo
-        return QByteArray(xmlEnvBegin) + "><soap:Body>"
+        return QByteArray(xmlEnvBegin12()) + "><soap:Body>"
                 "<GetUpdateInfoResponse xmlns=\"https://www.elogbook.org/elogbook\">"
                 "<GetUpdateInfoResult><success>1</success></GetUpdateInfoResult>"
                 "</GetUpdateInfoResponse>"
-                "</soap:Body>" + xmlEnvEnd;
+                "</soap:Body>" + xmlEnvEnd();
     }
 };
 

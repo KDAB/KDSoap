@@ -38,16 +38,6 @@
 
 using namespace KDSoapUnitTestHelpers;
 
-static const char* xmlEnvBegin =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-        "<soap:Envelope"
-        " xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\""
-        " xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\""
-        " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\""
-        " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
-        " soap:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\"";
-static const char* xmlEnvEnd = "</soap:Envelope>";
-
 class BuiltinHttpTest : public QObject
 {
     Q_OBJECT
@@ -84,7 +74,7 @@ private Q_SLOTS:
 
     void testInvalidXML()
     {
-        HttpServerThread server(QByteArray(xmlEnvBegin) + "><soap:Body><broken></xml></soap:Body>", HttpServerThread::Public);
+        HttpServerThread server(QByteArray(xmlEnvBegin11()) + "><soap:Body><broken></xml></soap:Body>", HttpServerThread::Public);
         KDSoapClientInterface client(server.endPoint(), QString::fromLatin1("urn:msg"));
         KDSoapMessage message;
         KDSoapMessage ret = client.call(QLatin1String("Method1"), message);
@@ -290,7 +280,7 @@ private Q_SLOTS:
         client.call(QLatin1String("test"), message, QString::fromLatin1("MySoapAction"), headers);
         // Check what we sent
         QByteArray expectedRequestXml =
-            QByteArray(xmlEnvBegin) +
+            QByteArray(xmlEnvBegin11()) +
             " xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\""
             "><soap:Header>"
             "<n1:header1 xsi:type=\"xsd:string\">headerValue</n1:header1>"
@@ -307,7 +297,7 @@ private Q_SLOTS:
              "<item xsi:type=\"xsd:string\">rocks</item>"
             "</testArray>"
             "</n1:test>"
-            "</soap:Body>") + xmlEnvEnd
+            "</soap:Body>") + xmlEnvEnd()
             + '\n'; // added by QXmlStreamWriter::writeEndDocument
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml + expectedRequestBody));
 
@@ -322,7 +312,7 @@ private Q_SLOTS:
         client.setHeader(QLatin1String("header1"), KDSoapMessage());
         client.call(QLatin1String("test"), message, QString::fromLatin1("MySoapAction"));
         const QByteArray expectedRequestXmlNoHeader =
-            QByteArray(xmlEnvBegin) +
+            QByteArray(xmlEnvBegin11()) +
             " xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\""
             "><soap:Header/>"; // the empty element does not matter
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXmlNoHeader + expectedRequestBody));
@@ -388,17 +378,17 @@ private Q_SLOTS:
 
 private:
     static QByteArray countryResponse() {
-        return QByteArray(xmlEnvBegin) + "><soap:Body>"
+        return QByteArray(xmlEnvBegin11()) + "><soap:Body>"
                 "<kdab:getEmployeeCountryResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl/\"><kdab:employeeCountry>France</kdab:employeeCountry></kdab:getEmployeeCountryResponse>"
-                " </soap:Body>" + xmlEnvEnd;
+                " </soap:Body>" + xmlEnvEnd();
     }
     static QByteArray expectedCountryRequest() {
-        return QByteArray(xmlEnvBegin) +
+        return QByteArray(xmlEnvBegin11()) +
                 "><soap:Body>"
                 "<n1:getEmployeeCountry xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
                 "<employeeName>David Ä Faure</employeeName>"
                 "</n1:getEmployeeCountry>"
-                "</soap:Body>" + xmlEnvEnd;
+                "</soap:Body>" + xmlEnvEnd();
     }
     static QString countryMessageNamespace() {
         return QString::fromLatin1("http://www.kdab.com/xml/MyWsdl/");
@@ -419,11 +409,11 @@ private:
     }
 
     static QByteArray emptyResponse() {
-        return QByteArray(xmlEnvBegin) + "><soap:Body/>";
+        return QByteArray(xmlEnvBegin11()) + "><soap:Body/>";
     }
 
     static QByteArray complexTypeResponse() {
-        return QByteArray(xmlEnvBegin) + "><soap:Body xmlns:tns=\"http://www.sugarcrm.com/sugarcrm\">"
+        return QByteArray(xmlEnvBegin11()) + "><soap:Body xmlns:tns=\"http://www.sugarcrm.com/sugarcrm\">"
                 "<ns1:loginResponse xmlns:ns1=\"http://www.sugarcrm.com/sugarcrm\""
                 " soap:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\">" // useless, but seen in the SoapResponder
                 "  <return xsi:type=\"tns:set_entry_result\">"
@@ -437,7 +427,7 @@ private:
                 "    </testArray>"
                 "  </return>"
                 "</ns1:loginResponse>"
-                "</soap:Body>" + xmlEnvEnd;
+                "</soap:Body>" + xmlEnvEnd();
     }
 };
 

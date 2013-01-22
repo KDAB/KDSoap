@@ -441,5 +441,32 @@ void HttpServerThread::run()
     }
 }
 
+const char* KDSoapUnitTestHelpers::xmlEnvBegin11()
+{
+    return  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+            "<soap:Envelope"
+            " xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\""
+            " xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\""
+            " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\""
+            " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+            " soap:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\"";
+}
+
+const char* KDSoapUnitTestHelpers::xmlEnvBegin12()
+{
+    return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+           "<soap:Envelope"
+           " xmlns:soap=\"http://www.w3.org/2003/05/soap-envelope\""
+           " xmlns:soap-enc=\"http://www.w3.org/2003/05/soap-encoding\""
+           " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\""
+           " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+           " soap:encodingStyle=\"http://www.w3.org/2003/05/soap-encoding\"";
+}
+
+const char* KDSoapUnitTestHelpers::xmlEnvEnd()
+{
+    return "</soap:Envelope>";
+}
+
 #include "moc_httpserver_p.cpp"
 #include "httpserver_p.moc"

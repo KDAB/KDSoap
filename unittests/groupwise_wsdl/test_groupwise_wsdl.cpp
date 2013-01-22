@@ -32,16 +32,6 @@
 
 using namespace KDSoapUnitTestHelpers;
 
-static const char* xmlEnvBegin =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-        "<soap:Envelope"
-        " xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\""
-        " xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\""
-        " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\""
-        " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
-        " soap:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\"";
-static const char* xmlEnvEnd = "</soap:Envelope>";
-
 class GroupwiseTest : public QObject
 {
     Q_OBJECT
@@ -98,7 +88,7 @@ private Q_SLOTS:
         // This WSDL (well, the XSD) uses elementFormDefault="qualified", so we get namespace definitions.
         // TODO: declare them up in the main element, to make this shorter
         QByteArray expectedRequestXml =
-            QByteArray(xmlEnvBegin) +
+            QByteArray(xmlEnvBegin11()) +
             "><soap:Body>"
             "<n1:updateVersionStatusRequest xmlns:n1=\"http://schemas.novell.com/2005/01/GroupWise/methods\">"
                 "<n1:id>TheId</n1:id>"
@@ -108,7 +98,7 @@ private Q_SLOTS:
                   "<n3:data xmlns:n3=\"http://schemas.novell.com/2005/01/GroupWise/types\">QUJDREVG</n3:data>"
                 "</n1:part>"
             "</n1:updateVersionStatusRequest>"
-            "</soap:Body>" + xmlEnvEnd
+            "</soap:Body>" + xmlEnvEnd()
             + '\n'; // added by QXmlStreamWriter::writeEndDocument
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
 
@@ -136,13 +126,13 @@ private Q_SLOTS:
 
         // Check what we sent
         QByteArray expectedRequestXml =
-            QByteArray(xmlEnvBegin) +
+            QByteArray(xmlEnvBegin11()) +
             "><soap:Body>"
             "<n1:setTimestampRequest xmlns:n1=\"http://schemas.novell.com/2005/01/GroupWise/methods\">"
                 "<n1:backup>2011-03-15T04:03:02.001+01:00</n1:backup>"
                 "<n1:retention>2011-01-15T04:03:02.001</n1:retention>"
             "</n1:setTimestampRequest>"
-            "</soap:Body>" + xmlEnvEnd
+            "</soap:Body>" + xmlEnvEnd()
             + '\n'; // added by QXmlStreamWriter::writeEndDocument
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
     }
@@ -160,14 +150,14 @@ private Q_SLOTS:
 
         // Check what we sent
         QByteArray expectedRequestXml =
-            QByteArray(xmlEnvBegin) +
+            QByteArray(xmlEnvBegin11()) +
             "><soap:Body>"
             "<n1:getTimestampRequest xmlns:n1=\"http://schemas.novell.com/2005/01/GroupWise/methods\">"
                 "<n1:backup>true</n1:backup>"
                 "<n1:retention>true</n1:retention>"
                 "<n1:noop>false</n1:noop>"
             "</n1:getTimestampRequest>"
-            "</soap:Body>" + xmlEnvEnd
+            "</soap:Body>" + xmlEnvEnd()
             + '\n'; // added by QXmlStreamWriter::writeEndDocument
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
 
@@ -187,23 +177,23 @@ private:
 
     // Bogus response
     static QByteArray updateVersionStatusResponse() {
-        return QByteArray(xmlEnvBegin) + " xmlns:gw=\"http://schemas.novell.com/2005/01/GroupWise/groupwise.wsdl\"><soap:Body>"
+        return QByteArray(xmlEnvBegin11()) + " xmlns:gw=\"http://schemas.novell.com/2005/01/GroupWise/groupwise.wsdl\"><soap:Body>"
               "<queryResponse>"
                "<result>"
                 "<done>true</done>"
                 "<size>3</size>"
                "</result>"
               "</queryResponse>"
-              "</soap:Body>" + xmlEnvEnd;
+              "</soap:Body>" + xmlEnvEnd();
     }
 
     static QByteArray getTimestampResponse() {
-        return QByteArray(xmlEnvBegin) + " xmlns:gw=\"http://schemas.novell.com/2005/01/GroupWise/groupwise.wsdl\"><soap:Body>"
+        return QByteArray(xmlEnvBegin11()) + " xmlns:gw=\"http://schemas.novell.com/2005/01/GroupWise/groupwise.wsdl\"><soap:Body>"
               "<gw:getTimestampResponse>"
                 "<gw:backup>2011-03-15T04:03:02.001+01:00</gw:backup>"
                 "<gw:retention>2011-01-15T04:03:02.001Z</gw:retention>"
                "</gw:getTimestampResponse>"
-              "</soap:Body>" + xmlEnvEnd;
+              "</soap:Body>" + xmlEnvEnd();
     }
 
 };

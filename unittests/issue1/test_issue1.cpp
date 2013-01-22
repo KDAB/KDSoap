@@ -19,21 +19,11 @@ TestIssue1::TestIssue1()
 {
 }
 
-static const char* xmlEnvBegin =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-        "<soap:Envelope"
-        " xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\""
-        " xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\""
-        " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\""
-        " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
-        " soap:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\"";
-static const char* xmlEnvEnd = "</soap:Envelope>";
-
 static QByteArray updateObjsResponse() {
-    return QByteArray(xmlEnvBegin) + "><soap:Body>"
+    return QByteArray(xmlEnvBegin11()) + "><soap:Body>"
             "<createDirectoryResponse xmlns=\"https://www.test.com/testapiv3/testapi.jws\">"
             "</createDirectoryResponse>"
-            "</soap:Body>" + xmlEnvEnd;
+            "</soap:Body>" + xmlEnvEnd();
 }
 
 void TestIssue1::test()
@@ -44,7 +34,7 @@ void TestIssue1::test()
 
     service.createDirectory("t", 42, "user", "dir");
 
-    const QByteArray expectedData = QByteArray(xmlEnvBegin) + "><soap:Body>"
+    const QByteArray expectedData = QByteArray(xmlEnvBegin11()) + "><soap:Body>"
     "<n1:createDirectory xmlns:n1=\"https://www.test.com/testapiv3/testapi.jws\">"
      "<token xsi:type=\"xsd:string\">t</token>"
      "<hostID xsi:type=\"xsd:long\">42</hostID>"

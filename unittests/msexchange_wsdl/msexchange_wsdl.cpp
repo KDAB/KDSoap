@@ -33,16 +33,6 @@
 
 using namespace KDSoapUnitTestHelpers;
 
-static const char* xmlEnvBegin =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-        "<soap:Envelope"
-        " xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\""
-        " xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\""
-        " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\""
-        " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
-        " soap:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\"";
-static const char* xmlEnvEnd = "</soap:Envelope>";
-
 class MSExchangeTest : public QObject
 {
     Q_OBJECT
@@ -81,7 +71,7 @@ private Q_SLOTS:
 
         // Check what we sent
         QByteArray expectedRequestXml =
-            QByteArray(xmlEnvBegin) + " xmlns:n1=\"http://schemas.microsoft.com/exchange/services/2006/messages\">"
+            QByteArray(xmlEnvBegin11()) + " xmlns:n1=\"http://schemas.microsoft.com/exchange/services/2006/messages\">"
                 "<soap:Header>"
                   "<n2:ExchangeImpersonation xmlns:n2=\"http://schemas.microsoft.com/exchange/services/2006/types\"><n2:ConnectingSID>"
                     "<n2:PrincipalName>dfaure</n2:PrincipalName>"
@@ -94,17 +84,17 @@ private Q_SLOTS:
                   "<n1:ParentFolderIds><n2:FolderId xmlns:n2=\"http://schemas.microsoft.com/exchange/services/2006/types\" n2:Id=\"folderId\" n2:ChangeKey=\"\" xsi:nil=\"true\"/></n1:ParentFolderIds>"
                   "<n1:UnresolvedEntry xsi:nil=\"true\"/>"
                 "</n1:ResolveNames>"
-                "</soap:Body>" + xmlEnvEnd
+                "</soap:Body>" + xmlEnvEnd()
             + '\n'; // added by QXmlStreamWriter::writeEndDocument
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
     }
 
 private:
     static QByteArray queryResponse() {
-        return QByteArray(xmlEnvBegin) + " xmlns:sf=\"urn:sobject.partner.soap.sforce.com\"><soap:Body>"
+        return QByteArray(xmlEnvBegin11()) + " xmlns:sf=\"urn:sobject.partner.soap.sforce.com\"><soap:Body>"
               "<queryResponse>" // TODO
               "</queryResponse>"
-              "</soap:Body>" + xmlEnvEnd;
+              "</soap:Body>" + xmlEnvEnd();
     }
 };
 

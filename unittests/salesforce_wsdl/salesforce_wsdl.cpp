@@ -32,16 +32,6 @@
 
 using namespace KDSoapUnitTestHelpers;
 
-static const char* xmlEnvBegin =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-        "<soap:Envelope"
-        " xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\""
-        " xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\""
-        " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\""
-        " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
-        " soap:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\"";
-static const char* xmlEnvEnd = "</soap:Envelope>";
-
 class SalesForceTest : public QObject
 {
     Q_OBJECT
@@ -104,19 +94,19 @@ private Q_SLOTS:
 
         // Check what we sent
         QByteArray expectedRequestXml =
-            QByteArray(xmlEnvBegin) +
+            QByteArray(xmlEnvBegin11()) +
             "><soap:Body>"
             "<n1:query xmlns:n1=\"urn:partner.soap.sforce.com\">"
              "<n1:queryString>Select Id, FirstName, LastName from Contact</n1:queryString>"
             "</n1:query>"
-            "</soap:Body>" + xmlEnvEnd
+            "</soap:Body>" + xmlEnvEnd()
             + '\n'; // added by QXmlStreamWriter::writeEndDocument
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
     }
 
 private:
     static QByteArray queryResponse() {
-        return QByteArray(xmlEnvBegin) + " xmlns:sf=\"urn:sobject.partner.soap.sforce.com\"><soap:Body>"
+        return QByteArray(xmlEnvBegin11()) + " xmlns:sf=\"urn:sobject.partner.soap.sforce.com\"><soap:Body>"
               "<queryResponse>"
                "<result xsi:type=\"QueryResult\">"
                 "<done>true</done>"
@@ -139,7 +129,7 @@ private:
                 "<size>3</size>"
                "</result>"
               "</queryResponse>"
-              "</soap:Body>" + xmlEnvEnd;
+              "</soap:Body>" + xmlEnvEnd();
     }
 };
 

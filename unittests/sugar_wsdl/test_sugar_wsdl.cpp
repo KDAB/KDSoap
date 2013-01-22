@@ -33,16 +33,6 @@ Q_DECLARE_METATYPE(TNS__Set_entry_result)
 
 using namespace KDSoapUnitTestHelpers;
 
-static const char* xmlEnvBegin =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-        "<soap:Envelope"
-        " xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\""
-        " xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\""
-        " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\""
-        " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
-        " soap:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\"";
-static const char* xmlEnvEnd = "</soap:Envelope>";
-
 class SugarTest : public QObject
 {
     Q_OBJECT
@@ -69,7 +59,7 @@ private Q_SLOTS:
 
         // Check what we sent
         QByteArray expectedRequestXml =
-            QByteArray(xmlEnvBegin) +
+            QByteArray(xmlEnvBegin11()) +
             "><soap:Body>"
             "<n1:login xmlns:n1=\"http://www.sugarcrm.com/sugarcrm\">"
               "<user_auth xsi:type=\"n1:user_auth\">"
@@ -79,7 +69,7 @@ private Q_SLOTS:
               "</user_auth>"
               "<application_name xsi:type=\"xsd:string\">application</application_name>"
             "</n1:login>"
-            "</soap:Body>" + xmlEnvEnd
+            "</soap:Body>" + xmlEnvEnd()
             + '\n'; // added by QXmlStreamWriter::writeEndDocument
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
     }
@@ -122,7 +112,7 @@ private Q_SLOTS:
     }
 
     static QByteArray arrayResponse() {
-        return QByteArray(xmlEnvBegin) + " xmlns:tns=\"http://www.sugarcrm.com/sugarcrm\"><soap:Body>"
+        return QByteArray(xmlEnvBegin11()) + " xmlns:tns=\"http://www.sugarcrm.com/sugarcrm\"><soap:Body>"
                 "<ns1:get_available_modulesResponse xmlns:ns1=\"http://www.sugarcrm.com/sugarcrm\">"
                 "<return xsi:type=\"tns:module_list\">"
                 "<modules xsi:type=\"soap-enc:Array\" soap-enc:arrayType=\"xsd:string[4]\">"
@@ -138,13 +128,13 @@ private Q_SLOTS:
                 "</error>"
                 "</return>"
                 "</ns1:get_available_modulesResponse>"
-                "</soap:Body>" + xmlEnvEnd;
+                "</soap:Body>" + xmlEnvEnd();
     }
 
 
 private:
     static QByteArray complexTypeResponse() {
-        return QByteArray(xmlEnvBegin) + "><soap:Body xmlns:tns=\"http://www.sugarcrm.com/sugarcrm\">"
+        return QByteArray(xmlEnvBegin11()) + "><soap:Body xmlns:tns=\"http://www.sugarcrm.com/sugarcrm\">"
                 "<ns1:loginResponse xmlns:ns1=\"http://www.sugarcrm.com/sugarcrm\">"
                 "  <return xsi:type=\"tns:set_entry_result\">"
                 "    <id xsi:type=\"xsd:string\">12345</id>"
@@ -155,7 +145,7 @@ private:
                 "    </error>"
                 "  </return>"
                 "</ns1:loginResponse>"
-                "</soap:Body>" + xmlEnvEnd;
+                "</soap:Body>" + xmlEnvEnd();
     }
 };
 

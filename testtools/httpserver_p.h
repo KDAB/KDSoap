@@ -45,6 +45,9 @@ namespace KDSoapUnitTestHelpers
     void httpGet(const QUrl& url);
     bool setSslConfiguration();
     void initHashSeed();
+    const char* xmlEnvBegin11();
+    const char* xmlEnvBegin12();
+    const char* xmlEnvEnd();
 }
 
 class HttpServerThread : public QThread

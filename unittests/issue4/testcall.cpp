@@ -9,21 +9,11 @@ TestCall::TestCall()
 {
 }
 
-static const char* xmlEnvBegin =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-        "<soap:Envelope"
-        " xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\""
-        " xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\""
-        " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\""
-        " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
-        " soap:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\"";
-static const char* xmlEnvEnd = "</soap:Envelope>";
-
 static QByteArray updateObjsResponse() {
-    return QByteArray(xmlEnvBegin) + "><soap:Body>"
+    return QByteArray(xmlEnvBegin11()) + "><soap:Body>"
             "<updateObjResponseElement xmlns=\"http://test.example.com/types/\">"
             "</updateObjResponseElement>"
-            "</soap:Body>" + xmlEnvEnd;
+            "</soap:Body>" + xmlEnvEnd();
 }
 
 void TestCall::test()
@@ -44,7 +34,7 @@ void TestCall::test()
     obj_el.setCredential(credential);
     this->test_client.updateObjs(obj_el);
 
-    const QByteArray expectedData = QByteArray(xmlEnvBegin) + "><soap:Body>"
+    const QByteArray expectedData = QByteArray(xmlEnvBegin11()) + "><soap:Body>"
     "<n1:updateObjElement xmlns:n1=\"http://test.example.com/types/\">"
      "<n1:arrayOfObj>"
        "<n1:Id>1</n1:Id>"

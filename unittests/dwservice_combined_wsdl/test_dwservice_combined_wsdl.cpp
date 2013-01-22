@@ -34,17 +34,6 @@
 
 using namespace KDSoapUnitTestHelpers;
 
-// SOAP 1.2 namespaces
-static const char* xmlEnvBegin =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-        "<soap:Envelope"
-        " xmlns:soap=\"http://www.w3.org/2003/05/soap-envelope\""
-        " xmlns:soap-enc=\"http://www.w3.org/2003/05/soap-encoding\""
-        " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\""
-        " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
-        " soap:encodingStyle=\"http://www.w3.org/2003/05/soap-encoding\"";
-static const char* xmlEnvEnd = "</soap:Envelope>";
-
 class DWServiceTest : public QObject
 {
     Q_OBJECT
@@ -66,14 +55,14 @@ private Q_SLOTS:
 
         // Check what we sent
         QByteArray expectedRequestXml =
-            QByteArray(xmlEnvBegin) +
+            QByteArray(xmlEnvBegin12()) +
             "><soap:Body>"
             "<n1:Login xmlns:n1=\"http://tempuri.org/\">"
                 "<n1:userName>Foo</n1:userName>"
                 "<n1:password>Bar</n1:password>"
                 "<n1:organization>KDAB</n1:organization>"
             "</n1:Login>"
-            "</soap:Body>" + xmlEnvEnd
+            "</soap:Body>" + xmlEnvEnd()
             + '\n'; // added by QXmlStreamWriter::writeEndDocument
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
 
@@ -99,12 +88,12 @@ private Q_SLOTS:
 
         // Check what we sent
         QByteArray expectedRequestXml =
-            QByteArray(xmlEnvBegin) +
+            QByteArray(xmlEnvBegin12()) +
             "><soap:Body>"
             "<n1:Logoff xmlns:n1=\"http://tempuri.org/\">"
               "<n1:clientSession><n2:SessionID xmlns:n2=\"http://schemas.datacontract.org/2004/07/DocuWare.WebServices.GAPIFunctionality.DataContracts\">65a65c1f-2613-47d0-89ec-1c7b1fe34777</n2:SessionID></n1:clientSession>"
             "</n1:Logoff>"
-            "</soap:Body>" + xmlEnvEnd
+            "</soap:Body>" + xmlEnvEnd()
             + '\n'; // added by QXmlStreamWriter::writeEndDocument
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
 
@@ -113,11 +102,11 @@ private Q_SLOTS:
 private:
     static QByteArray loginResponse()
     {
-        return QByteArray(xmlEnvBegin) + " xmlns:dw=\"http://schemas.novell.com/2005/01/GroupWise/groupwise.wsdl\"><soap:Body>"
+        return QByteArray(xmlEnvBegin12()) + " xmlns:dw=\"http://schemas.novell.com/2005/01/GroupWise/groupwise.wsdl\"><soap:Body>"
               "<dw:LoginResponse>"
                 "<dw:LoginResult><dw:SessionID>65a65c1f-2613-47d0-89ec-1c7b1fe34777</dw:SessionID></dw:LoginResult>"
                "</dw:LoginResponse>"
-              "</soap:Body>" + xmlEnvEnd;
+              "</soap:Body>" + xmlEnvEnd();
     }
 
 };
