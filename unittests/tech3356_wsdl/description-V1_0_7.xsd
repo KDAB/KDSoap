@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+	xmlns:desc="http://description.fims.tv"
+	targetNamespace="http://description.fims.tv" elementFormDefault="qualified">
+	
+	<import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd"/>
+
+	<element name="bmContentDescription" type="desc:bmContentDescriptionType"> </element>
+	<complexType name="bmContentDescriptionType">
+		<sequence>
+			<element name="title" type="desc:textElementType" minOccurs="0" maxOccurs="unbounded"/> 
+			<element name="alternativeTitle" type="desc:titleType" minOccurs="0" maxOccurs="unbounded"/> 
+			<element name="creator" type="desc:entityType" minOccurs="0" maxOccurs="unbounded"/> 
+			<element name="subject" type="desc:subjectType" minOccurs="0" maxOccurs="unbounded"/> 
+			<element name="description" type="desc:descriptionType" minOccurs="0" maxOccurs="unbounded"/> 
+			<element name="publisher" type="desc:entityType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="contributor" type="desc:entityType" minOccurs="0"	maxOccurs="unbounded"/> 
+			<element name="date" type="desc:dateType" minOccurs="0" maxOccurs="unbounded"/> 
+			<element name="type" type="desc:typeType" minOccurs="0" maxOccurs="unbounded"/> 
+			<element name="identifier" type="desc:identifierType" minOccurs="0" maxOccurs="unbounded"/> 
+			<element name="language" type="desc:languageType" minOccurs="0" maxOccurs="unbounded"/> 
+			<element name="coverage" type="desc:coverageType" minOccurs="0" maxOccurs="unbounded"/> 
+			<element name="rights" type="desc:rightsType" minOccurs="0" maxOccurs="unbounded"/> 
+			<element name="version" type="string" minOccurs="0"/> 
+		</sequence>
+		<attribute ref="xml:lang"></attribute>
+	</complexType>
+
+<complexType name="titleType">
+	<complexContent>
+		<extension base="desc:textElementType">
+			<attributeGroup ref="desc:typeGroup"/> 
+		</extension>
+	</complexContent>
+</complexType>
+	<complexType name="identifierType">
+		<simpleContent>
+			<extension base="string">
+				<attributeGroup ref="desc:typeGroup"/> 
+				<attributeGroup ref="desc:formatGroup"/> 
+			</extension>
+		</simpleContent>
+	</complexType>
+	<complexType name="subjectType">
+		<complexContent>
+			<extension base="desc:textElementType">
+				<attributeGroup ref="desc:typeGroup"/> 
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="typeType">
+		<sequence>
+			<element name="genre" minOccurs="0" maxOccurs="unbounded">
+				<complexType>	
+					<complexContent>
+					<extension base="desc:textElementType">
+						<attributeGroup ref="desc:typeGroup"/> 
+					</extension>
+				</complexContent>
+				</complexType>
+			</element>
+			<element name="objectType" minOccurs="0" maxOccurs="unbounded">
+				<complexType>	
+					<complexContent>
+						<extension base="desc:textElementType">
+							<attributeGroup ref="desc:typeGroup"/> 
+						</extension>
+					</complexContent>
+				</complexType>
+			</element>
+			<element name="targetAudience" minOccurs="0" maxOccurs="unbounded">
+				<complexType>	
+					<complexContent>
+						<extension base="desc:textElementType">
+							<attributeGroup ref="desc:typeGroup"/> 
+						</extension>
+					</complexContent>
+				</complexType>
+			</element>
+		</sequence>
+	</complexType>
+	<complexType name="descriptionType">
+			<complexContent>
+				<extension base="desc:textElementType">
+					<attributeGroup ref="desc:typeGroup"/> 
+				</extension>
+			</complexContent>
+	</complexType>
+	<complexType name="coverageType">
+		<sequence>
+			<element name="temporal" minOccurs="0">
+				<complexType>
+					<complexContent>
+						<extension base="desc:textElementType">
+							<attributeGroup ref="desc:typeGroup"/> 
+						</extension>
+					</complexContent>
+				</complexType>
+			</element>
+			<element name="spatial" minOccurs="0">
+				<complexType>
+					<sequence>
+						<element name="locationName">
+							<complexType>
+								<complexContent>
+									<extension base="desc:textElementType">
+										<attributeGroup ref="desc:typeGroup"/>
+									</extension>
+								</complexContent>
+							</complexType>
+						</element>
+						<element name="coordinates" minOccurs="0">
+							<annotation>
+								<documentation> Optional geospatial coordinates. 'posy'
+									is the latitude. 'posx' is the longitude. Both are
+									expressed in digital degrees</documentation>
+							</annotation>
+							<complexType>
+								<sequence>
+									<element name="posy" type="float"/>
+									<element name="posx" type="float"/>
+								</sequence>
+								<attributeGroup ref="desc:formatGroup"/>
+							</complexType>
+						</element>
+					</sequence>
+				</complexType>
+			</element>
+		</sequence>
+	</complexType>
+	<complexType name="rightsType">
+				<sequence>
+					<element name="rightsExpression" type="desc:textElementType" minOccurs="0" maxOccurs="unbounded"/>
+					<element name="rightsLink" type="anyURI" minOccurs="0"/> 
+					<element name="rightsHolder" type="desc:entityType" minOccurs="0"/> 
+					<element name="exploitationIssues" type="desc:textElementType" minOccurs="0"/> 
+					<element name="coverage" type="desc:coverageType" minOccurs="0"/> 
+					<element name="rightsClearanceFlag" type="boolean" minOccurs="0"/> 
+					<element name="disclaimer" type="desc:textElementType" minOccurs="0" maxOccurs="unbounded"/> 
+					<element name="rightsId" type="desc:identifierType" minOccurs="0" maxOccurs="unbounded"/> 
+					<element name="contactDetails" type="desc:contactDetailsType" minOccurs="0"
+						maxOccurs="unbounded"/> 
+				</sequence>
+				<attributeGroup ref="desc:typeGroup"/> 
+	</complexType>
+
+<complexType name="textElementType">
+	<simpleContent>
+		<extension base="string">
+			<attribute ref="xml:lang"></attribute>
+		</extension>
+	</simpleContent>
+</complexType>
+
+	<complexType name="dateType">
+		<sequence>
+			<element name="created" minOccurs="0">
+				<complexType>
+					<attributeGroup ref="desc:dateGroup"/>
+				</complexType>
+			</element>
+			<element name="modified" minOccurs="0">
+				<complexType>
+					<attributeGroup ref="desc:dateGroup"/>
+				</complexType>
+			</element>
+			<element name="issued" minOccurs="0">
+				<complexType>
+					<attributeGroup ref="desc:dateGroup"/>
+				</complexType>
+			</element>
+			<element name="alternative" minOccurs="0">
+				<complexType>
+					<attributeGroup ref="desc:dateGroup"/>
+					<attributeGroup ref="desc:typeGroup"></attributeGroup>
+				</complexType>
+			</element>
+		</sequence>
+	</complexType>
+	<complexType name="entityType">
+		<sequence>
+			<element name="contactDetails" type="desc:contactDetailsType" minOccurs="0"
+				maxOccurs="unbounded"/>
+			
+			<element name="organisationDetails" type="desc:organisationDetailsType" minOccurs="0"
+				maxOccurs="unbounded"/>
+			
+			<element name="role" minOccurs="0" maxOccurs="unbounded">
+				<complexType>
+					<attributeGroup ref="desc:typeGroup"/>
+				</complexType>
+			</element>
+		</sequence>
+		<attribute name="entityId" type="anyURI"/>
+	</complexType>
+	<complexType name="contactDetailsType">
+		<sequence>
+			<choice>
+				<element name="name" type="string">
+				</element>
+				<sequence>
+					<element name="givenName" type="string" minOccurs="0"/>
+					<element name="familyName" type="string" minOccurs="0"/>
+					<element name="otherGivenName" type="string" minOccurs="0" maxOccurs="unbounded"/>
+					<element name="suffix" type="string" minOccurs="0"/>
+					<element name="salutation" type="string" minOccurs="0"/>
+				</sequence>
+			</choice>
+			<element name="username" type="desc:textElementType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="occupation" type="desc:textElementType" minOccurs="0"/>
+			
+			<element name="details" type="desc:detailsType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="stageName" type="desc:textElementType" minOccurs="0" maxOccurs="unbounded">
+				<annotation>
+					<documentation>For example, in the case the contact is a performing
+						actor/actress, the stage name will be the fictitious character's
+						name</documentation>
+				</annotation>
+			</element>
+			<element name="relatedContacts" type="desc:entityType" minOccurs="0"
+				maxOccurs="unbounded">
+				<annotation>
+					<documentation> This is used to identify contacts related to the contact being
+						described </documentation>
+				</annotation>
+			</element>
+		</sequence>
+		<attribute name="contactId" type="anyURI"/>
+		<attributeGroup ref="desc:typeGroup"/>
+	</complexType>
+	<complexType name="organisationDetailsType">
+		<sequence>
+			<element name="organisationName" type="desc:textElementType" minOccurs="0"
+				maxOccurs="unbounded">
+				<annotation>
+					<documentation>The organisation name is optional as an organisation maybe
+						identified by its OrganisationId</documentation>
+				</annotation>
+			</element>
+			<element name="organisationCode" type="anyURI" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="organisationDepartment" minOccurs="0">
+				<annotation>
+					<documentation>To identify one or more production area / department / service
+						where the resource was created/originated, in free text</documentation>
+				</annotation>
+				<complexType>
+					<complexContent>
+						<extension base="desc:textElementType">
+							<attribute name="departmentId" type="anyURI"/>
+						</extension>
+					</complexContent>
+				</complexType>
+			</element>
+			<element name="details" type="desc:detailsType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="contacts" type="desc:entityType" minOccurs="0" maxOccurs="unbounded">
+				<annotation>
+					<documentation> Useful to provide contact information particularly is no other
+						person information is otherwise provided. </documentation>
+				</annotation>
+			</element>
+		</sequence>
+		<attribute name="organisationId" type="anyURI"/>
+		<attributeGroup ref="desc:typeGroup"/>
+	</complexType>
+	<complexType name="detailsType">
+		<sequence>
+			<element name="emailAddress" type="string" minOccurs="0" maxOccurs="unbounded">
+				<annotation>
+					<documentation>The e-mail address through which the contact can be directly
+						accessed</documentation>
+				</annotation>
+			</element>
+			<element name="webAddress" type="string" minOccurs="0">
+				<annotation>
+					<documentation> The web address where additional information can be found
+						regarding the company </documentation>
+				</annotation>
+			</element>
+			<element name="address" type="desc:addressType" minOccurs="0">
+				<annotation>
+					<documentation>The organisation address is also the professional address of the
+						contact in the context of the content being described and in relation to the
+						contact occupation provided in the contact details</documentation>
+				</annotation>
+			</element>
+			<element name="telephoneNumber" type="string" minOccurs="0"/>
+			<element name="mobileTelephoneNumber" type="string" minOccurs="0"/>
+		</sequence>
+		<attributeGroup ref="desc:typeGroup"/>
+	</complexType>
+	<complexType name="addressType">
+		<annotation>
+			<documentation xml:lang="EN"> Provides address details for an organisation
+			</documentation>
+		</annotation>
+		<sequence>
+			<element name="addressLine" minOccurs="0" type="desc:textElementType" maxOccurs="unbounded"/>
+			<element name="addressTownCity" type="desc:textElementType" minOccurs="0"/>
+			<element name="addressCountyState" type="desc:textElementType" minOccurs="0"/>
+			<element name="addressDeliveryCode" type="string" minOccurs="0"/>
+			<element name="country" minOccurs="0">
+				<complexType>
+					<attributeGroup ref="desc:typeGroup"/>
+				</complexType>
+			</element>
+		</sequence>
+	</complexType>
+	<attributeGroup name="typeGroup">
+		<attribute name="typeLabel" type="string"/>
+		<attribute name="typeDefinition" type="string"/>
+		<attribute name="typeLink" type="anyURI"/>
+		<attribute name="typeLanguage" type="language"/>
+	</attributeGroup>
+	<attributeGroup name="formatGroup">
+		<attribute name="formatLabel" type="string"/>
+		<attribute name="formatDefinition" type="string"/>
+		<attribute name="formatLink" type="anyURI"/>
+		<attribute name="formatLanguage" type="language"/>
+	</attributeGroup>
+	<attributeGroup name="statusGroup">
+		<attribute name="statusLabel" type="string"/>
+		<attribute name="statusDefinition" type="string"/>
+		<attribute name="statusLink" type="anyURI"/>
+		<attribute name="statusLanguage" type="language"/>
+	</attributeGroup>
+	<attributeGroup name="dateGroup">
+		<attribute name="startYear" type="gYear"/>
+		<attribute name="startDate" type="date"/>
+		<attribute name="startTime" type="time"/>
+		<attribute name="endYear" type="gYear"/>
+		<attribute name="endDate" type="date"/>
+		<attribute name="endTime" type="time"/>
+		<attribute name="period" type="string"/>
+	</attributeGroup>
+	<complexType name="languageType">
+		<attributeGroup ref="desc:typeGroup"/>
+		<attribute ref="xml:lang"/>
+	</complexType>
+	
+</schema>

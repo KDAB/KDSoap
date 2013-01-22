@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="TransformMedia" targetNamespace="http://transformmedia.fims.tv" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns="http://www.w3.org/2001/XMLSchema" xmlns:bms="http://base.fims.tv" xmlns:tfms="http://transformmedia.fims.tv" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+
+	<wsdl:types>
+	   <schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+			<import namespace="http://base.fims.tv" schemaLocation="baseMediaService-V1_0_7.xsd">
+			</import>
+		</schema>	
+		<schema targetNamespace="http://transformmedia.fims.tv" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+			xmlns:tns="http://transformmedia.fims.tv">
+			<include schemaLocation="transformMedia-V1_0_7.xsd"></include>
+		</schema>
+	</wsdl:types>
+
+	<wsdl:message name="transformRequestMsg">
+		<wsdl:part name="in" element="tfms:transformRequest">
+			<wsdl:documentation>This message represents a request to the transform media service for transforming content from a source format to a target format.</wsdl:documentation></wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="transformAckMsg">
+		<wsdl:part name="ack" element="tfms:transformAck">
+			<wsdl:documentation>This message represents the acknowledgment sent back from the transform media service when the transform job is submitted.</wsdl:documentation></wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="transformFaultMsg">
+		<wsdl:part name="fault" element="tfms:transformFault">
+			<wsdl:documentation>This message represents a fault which may be sent by the transform media service when a job is submitted.</wsdl:documentation></wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="transformNotificationMsg">
+		<wsdl:part name="in" element="tfms:transformNotification">
+			<wsdl:documentation>This message represents a job completion notification that the transform media service sends to a specified endpoint when the transform job ends.</wsdl:documentation></wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="transformFaultNotificationMsg">
+		<wsdl:part name="fault" element="tfms:transformFaultNotification">
+			<wsdl:documentation>This message represents a fault notification that the transform media service sends to a specified endpoint if the transform job fails.</wsdl:documentation></wsdl:part>
+	</wsdl:message>
+
+   <wsdl:message name="manageJobRequestMsg">
+		<wsdl:part name="in" element="bms:manageJobRequest" >
+			<wsdl:documentation>This message allows to submit jobs management requests, such as getting the status or pausing a job.</wsdl:documentation></wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="manageJobResponseMsg">
+		<wsdl:part name="out" element="bms:manageJobResponse" >
+			<wsdl:documentation>This message provides the response to job management requests, which includes the current status of the job.</wsdl:documentation></wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="manageQueueRequestMsg">
+		<wsdl:part name="in" element="bms:manageQueueRequest" >
+			<wsdl:documentation>This message allowsto submit queue management requests, such as getting the status or locking a queue.</wsdl:documentation></wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="manageQueueResponseMsg">
+		<wsdl:part name="out" element="bms:manageQueueResponse" >
+			<wsdl:documentation>This messag provides the response to queue management requests, which includes the status and lenght of the queue.</wsdl:documentation></wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="queryJobRequestMsg">
+		<wsdl:part name="in" element="bms:queryJobRequest" >
+			<wsdl:documentation>This message is used to request a list of submitted jobs.</wsdl:documentation></wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="queryJobResponseMsg">
+		<wsdl:part name="out" element="bms:queryJobResponse" >
+			<wsdl:documentation>This message provides a list of jobs.</wsdl:documentation></wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="FaultMsg">
+		<wsdl:part name="fault" element="bms:fault" >
+			<wsdl:documentation>This message represents a fault which might occur for a  management request.</wsdl:documentation></wsdl:part>
+	</wsdl:message>    
+
+	<wsdl:portType name="TransformMedia">
+		<wsdl:documentation>This port type allows to send job requests to the transform media service. The transform media service has the capability to transform 
+one or more content items into one or more different formats. The operation input parameters are: a BMO (which has reference(s) to 
+one or more content items) and the target format specification(s). The output of the transform media service is a BMO with one or more content items.</wsdl:documentation>
+		<wsdl:operation name="transform">
+			<wsdl:documentation>The transform operation transforms media format essences referenced by a BMO to produce new media essences in the specified format and resolution.</wsdl:documentation>
+			<wsdl:input message="tfms:transformRequestMsg"></wsdl:input>
+			<wsdl:output message="tfms:transformAckMsg"></wsdl:output>
+			<wsdl:fault name="transformFault" message="tfms:transformFaultMsg"></wsdl:fault>
+		</wsdl:operation>
+	</wsdl:portType>
+
+	<wsdl:portType name="TransformMediaNotification">
+		<wsdl:documentation>This port type defines the operations used by the transform media service to send back a notification to the endpoint specified in the notifyAt request element.</wsdl:documentation>
+		<wsdl:operation name="notifyTransformResult">
+			<wsdl:documentation>This operation allows the transform media service to send a notification with information about the transform job completion to the endpoint specified
+in the notifyAt element of the job request.</wsdl:documentation>
+			<wsdl:input message="tfms:transformNotificationMsg"></wsdl:input>
+		</wsdl:operation>
+		<wsdl:operation name="notifyFault">
+			<wsdl:documentation>This operation allows the transform media service to send a fault notification with information about the transform job failure to the endpoint 
+specified in the notifyAt element of the job request.</wsdl:documentation>
+			<wsdl:input message="tfms:transformFaultNotificationMsg"></wsdl:input>
+		</wsdl:operation>
+	</wsdl:portType>
+	
+	 <wsdl:portType name="MediaServiceStatus">
+		<wsdl:documentation>The MediaServiceStatus interface provides a common SOAP interface for all FIMS services for managing jobs and queues.</wsdl:documentation>
+		<wsdl:operation name="manageJob">
+			<wsdl:documentation>This operation provides the managements of jobs, for example requesting the status of a job or pausing a job.</wsdl:documentation>
+			<wsdl:input name="jobIn" message="tfms:manageJobRequestMsg" />
+			<wsdl:output name="jobOut" message="tfms:manageJobResponseMsg" />
+			<wsdl:fault name="fault" message="tfms:FaultMsg" />
+		</wsdl:operation>
+		<wsdl:operation name="manageQueue">
+			<wsdl:documentation>This operation provides the managements of the job queue, for example requesting the status of the queue or starting the queue.</wsdl:documentation>
+			<wsdl:input name="queueIn" message="tfms:manageQueueRequestMsg" />
+			<wsdl:output name="queueOut" message="tfms:manageQueueResponseMsg" />
+			<wsdl:fault name="fault" message="tfms:FaultMsg" />
+		</wsdl:operation>
+		<wsdl:operation name="queryJob">
+			<wsdl:documentation>This operation allows to list submitted jobs and get summary status information for each job.</wsdl:documentation>
+			<wsdl:input name="queryIn" message="tfms:queryJobRequestMsg" />
+			<wsdl:output name="queryOut" message="tfms:queryJobResponseMsg" />
+			<wsdl:fault name="fault" message="tfms:FaultMsg" />
+		</wsdl:operation>
+	</wsdl:portType>
+	 
+	 <wsdl:binding name="TransformMediaBinding" type="tfms:TransformMedia">
+	 	<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+	 	<wsdl:operation name="transform">
+	 		<soap:operation soapAction="http://transformmedia.fims.tv/transform" />
+	 		<wsdl:input>
+	 			<soap:body use="literal" />
+	 		</wsdl:input>
+	 		<wsdl:output>
+	 			<soap:body use="literal" />
+	 		</wsdl:output>
+	 		<wsdl:fault name="transformFault">
+	 			<soap:fault use="literal" name="transformFault" />
+	 		</wsdl:fault>
+	 	</wsdl:operation>
+	 </wsdl:binding>
+	 <wsdl:binding name="TransformMediaNotificationBinding" type="tfms:TransformMediaNotification">
+	 	<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+	 	<wsdl:operation name="notifyTransformResult">
+	 		<soap:operation soapAction="http://transformmedia.fims.tv/notifyTransformResult" />
+	 		<wsdl:input>
+	 			<soap:body use="literal" />
+	 		</wsdl:input>
+	 	</wsdl:operation>
+	 	<wsdl:operation name="notifyFault">
+	 		<soap:operation soapAction="http://transformmedia.fims.tv/notifyFault" />
+	 		<wsdl:input>
+	 			<soap:body use="literal" />
+	 		</wsdl:input>
+	 	</wsdl:operation>
+	 </wsdl:binding>
+	 <wsdl:binding name="TransformMediaStatusBinding" type="tfms:MediaServiceStatus">
+	 	<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+	 	<wsdl:operation name="manageJob">
+	 		<soap:operation soapAction="http://transformmedia.fims.tv/manageJob" />
+	 		<wsdl:input name="jobIn">
+	 			<soap:body use="literal" />
+	 		</wsdl:input>
+	 		<wsdl:output name="jobOut">
+	 			<soap:body use="literal" />
+	 		</wsdl:output>
+	 		<wsdl:fault name="fault">
+	 			<soap:fault use="literal" name="fault" />
+	 		</wsdl:fault>
+	 	</wsdl:operation>
+	 	<wsdl:operation name="manageQueue">
+	 		<soap:operation soapAction="http://transformmedia.fims.tv/manageQueue" />
+	 		<wsdl:input name="queueIn">
+	 			<soap:body use="literal" />
+	 		</wsdl:input>
+	 		<wsdl:output name="queueOut">
+	 			<soap:body use="literal" />
+	 		</wsdl:output>
+	 		<wsdl:fault name="fault">
+	 			<soap:fault use="literal" name="fault" />
+	 		</wsdl:fault>
+	 	</wsdl:operation>
+	 	<wsdl:operation name="queryJob">
+	 		<soap:operation soapAction="http://transformmedia.fims.tv/queryJob" />
+	 		<wsdl:input name="queryIn">
+	 			<soap:body use="literal" />
+	 		</wsdl:input>
+	 		<wsdl:output name="queryOut">
+	 			<soap:body use="literal" />
+	 		</wsdl:output>
+	 		<wsdl:fault name="fault">
+	 			<soap:fault use="literal" name="fault" />
+	 		</wsdl:fault>
+	 	</wsdl:operation>
+	 </wsdl:binding>
+	 <wsdl:service name="TransformMediaService">
+	 	<wsdl:port name="TransformMediaPort" binding="tfms:TransformMediaBinding">
+	 		<soap:address location="http://host/path/TransformMediaPort" />
+	 	</wsdl:port>
+	 	<wsdl:port name="TransformMediaStatusPort" binding="tfms:TransformMediaStatusBinding">
+	 		<soap:address location="http://host/path/TransformMediaStatusPort" />
+	 	</wsdl:port>
+	 </wsdl:service>
+	 <wsdl:service name="TransformMediaNotificationService">
+	 	<wsdl:port name="TransformMediaNotificationPort" binding="tfms:TransformMediaNotificationBinding">
+	 		<soap:address location="http://host/path/TransformMediaNotificationPort" />
+	 	</wsdl:port>
+	 </wsdl:service>
+</wsdl:definitions>

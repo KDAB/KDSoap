@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:bms="http://base.fims.tv"
+	xmlns:tfms="http://transformmedia.fims.tv" targetNamespace="http://transformmedia.fims.tv">
+	<import namespace="http://base.fims.tv" schemaLocation="baseMediaService-V1_0_7.xsd"/>
+	<!-- **************************** FIMS-defined resources ****************************** -->
+	<complexType name="TransformProfileType">
+		<annotation>
+			<documentation source="urn:x-fims:description">Profile used by the transform media service to 
+				perform a transformation on media content. The profile specifies the media format to be output.</documentation>
+			<documentation source="urn:x-fims:normativeRequirement"/>
+			<documentation source="urn:x-fims:serviceDescription"/>
+			<documentation source="urn:x-fims:contentOfServiceDescription"/>
+		</annotation>
+		<complexContent>
+			<extension base="bms:ProfileType">
+				<sequence>
+					<element name="transformAtom" type="bms:TransformAtomType" minOccurs="1" maxOccurs="1">
+						<annotation>
+							<documentation source="urn:x-fims:description">Set of parameters specific to the transform media service,
+								describing the media format to be output.</documentation>
+							<documentation source="urn:x-fims:normativeRequirement"/>
+							<documentation source="urn:x-fims:serviceDescription"/>
+							<documentation source="urn:x-fims:contentOfServiceDescription"/>
+							<documentation source="urn:x-fims:inclusionInRequest">Mandatory</documentation>
+							<documentation source="urn:x-fims:inclusionInResponse">Mandatory</documentation>
+						</annotation>
+					</element>
+					<element name="transferAtom" type="bms:TransferAtomType" minOccurs="1" maxOccurs="unbounded">
+						<annotation>
+							<documentation source="urn:x-fims:description">Set of parameters specific to transfer
+								aspects of the transform service, providing a destination for output files.</documentation>
+							<documentation source="urn:x-fims:normativeRequirement"/>
+							<documentation source="urn:x-fims:serviceDescription"/>
+							<documentation source="urn:x-fims:contentOfServiceDescription"/>
+							<documentation source="urn:x-fims:inclusionInRequest">Mandatory</documentation>
+							<documentation source="urn:x-fims:inclusionInResponse">Mandatory</documentation>
+						</annotation>
+					</element>
+					<element name="outputFileNamePattern" type="string" minOccurs="0" maxOccurs="1">
+						<annotation>
+							<documentation source="urn:x-fims:description">Specifies a name for the file and,
+								where applicable, a pattern for the names of the files to be output.</documentation>
+							<documentation source="urn:x-fims:normativeRequirement">If the name is not provided,
+								the service shall automatically generate a file name. 
+								The pattern should be specified using a regular expression (IEEE POSIX Basic Regular Expressions (BRE) standard)
+								to specify a pattern to build the output file name. The regular expression should allow to reference the following 
+								variables in the expression: 
+								- Source file name;
+								- Date;
+								- Profile name used for the transformation;
+								- Format name used for the transformation;
+								- Frame reference;
+								- AutoIncrementCounter that is incremented by 1 for each new file.</documentation>
+							<documentation source="urn:x-fims:serviceDescription">Required</documentation>
+							<documentation source="urn:x-fims:contentOfServiceDescription">Support or not for this parameter. 
+								When multiple output files are produced, include details of the patterns.</documentation>
+							<documentation source="urn:x-fims:inclusionInRequest">Optional</documentation>
+							<documentation source="urn:x-fims:inclusionInResponse">Optional</documentation>
+						</annotation>
+					</element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="TransformJobType">
+		<annotation>
+			<documentation source="urn:x-fims:description">Describes a transform job.</documentation>
+			<documentation source="urn:x-fims:normativeRequirement"/>
+			<documentation source="urn:x-fims:serviceDescription"/>
+			<documentation source="urn:x-fims:contentOfServiceDescription"/>
+		</annotation>
+		<complexContent>
+			<extension base="bms:JobType">
+				<sequence>
+					<element name="profiles" minOccurs="0" maxOccurs="1">
+						<annotation>
+							<documentation source="urn:x-fims:description">Transform profiles associated with
+								this job.</documentation>
+							<documentation source="urn:x-fims:normativeRequirement"/>
+							<documentation source="urn:x-fims:serviceDescription"/>
+							<documentation source="urn:x-fims:contentOfServiceDescription"/>
+							<documentation source="urn:x-fims:inclusionInRequest">Mandatory</documentation>
+							<documentation source="urn:x-fims:inclusionInResponse">Optional</documentation>
+						</annotation>
+						<complexType>
+							<sequence>
+								<element name="transformProfile" type="tfms:TransformProfileType" minOccurs="1" maxOccurs="unbounded">
+									<annotation>
+										<documentation source="urn:x-fims:description">Transform profiles associated with this job.</documentation>
+										<documentation source="urn:x-fims:normativeRequirement"/>
+										<documentation source="urn:x-fims:serviceDescription"/>
+										<documentation source="urn:x-fims:contentOfServiceDescription"/>
+										<documentation source="urn:x-fims:inclusionInRequest">Mandatory</documentation>
+										<documentation source="urn:x-fims:inclusionInResponse">Mandatory</documentation>
+									</annotation>
+								</element>
+							</sequence>
+						</complexType>
+					</element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<!-- **************************** FIMS-defined enumerations **************************** -->
+	<simpleType name="TransformErrorCodeType">
+		<annotation>
+			<documentation source="urn:x-fims:description">Specific error codes for the transform service
+				- INF_S02_xxxx: Infrastructure errors (system, storage, network, memory, processor)
+				- DAT_S02_xxxx: Data errors (validation, missing,  duplication)
+				- SVC_S02_xxxx: Operation errors (existence, support, lock, connection, failure)
+				- SEC_S02_xxxx: Security errors (authentication, authorization)</documentation>
+			<documentation source="urn:x-fims:normativeRequirement"/>
+			<documentation source="urn:x-fims:serviceDescription"/>
+			<documentation source="urn:x-fims:contentOfServiceDescription"/>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="SVC_S02_0001">
+				<annotation>
+					<documentation source="urn:x-fims:description">Invalid target media format.</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+	<!-- **************************** FIMS-defined messages and faults **************************** -->
+	<complexType name="TransformRequestType">
+		<annotation>
+			<documentation source="urn:x-fims:description">A request to
+				the transform media service to transform content from a source
+				format to a target format.</documentation>
+			<documentation source="urn:x-fims:normativeRequirement"/>
+			<documentation source="urn:x-fims:serviceDescription"/>
+			<documentation source="urn:x-fims:contentOfServiceDescription"/>
+		</annotation>
+		<sequence>
+			<element name="transformJob" type="tfms:TransformJobType" minOccurs="1" maxOccurs="1">
+				<annotation>
+					<documentation source="urn:x-fims:description">Describes a transform job.</documentation>
+					<documentation source="urn:x-fims:normativeRequirement"/>
+					<documentation source="urn:x-fims:serviceDescription"/>
+					<documentation source="urn:x-fims:contentOfServiceDescription"/>
+					<documentation source="urn:x-fims:inclusionInRequest">Mandatory</documentation>
+					<documentation source="urn:x-fims:inclusionInResponse">Not applicable</documentation>
+				</annotation>
+			</element>
+		</sequence>
+	</complexType>
+	<complexType name="TransformResponseType">
+		<annotation>
+			<documentation source="urn:x-fims:description">Represents the
+				acknowledgment sent back from the transform media service when the
+				transform job is submitted.</documentation>
+			<documentation source="urn:x-fims:normativeRequirement"/>
+			<documentation source="urn:x-fims:serviceDescription"/>
+			<documentation source="urn:x-fims:contentOfServiceDescription"/>
+		</annotation>
+		<sequence>
+			<element name="transformJob" type="tfms:TransformJobType" minOccurs="1" maxOccurs="1">
+				<annotation>
+					<documentation source="urn:x-fims:description">Describes a transform job.</documentation>
+					<documentation source="urn:x-fims:normativeRequirement"/>
+					<documentation source="urn:x-fims:serviceDescription"/>
+					<documentation source="urn:x-fims:contentOfServiceDescription"/>
+					<documentation source="urn:x-fims:inclusionInRequest">Not applicable</documentation>
+					<documentation source="urn:x-fims:inclusionInResponse">Mandatory</documentation>
+				</annotation>
+			</element>
+		</sequence>
+	</complexType>
+	<complexType name="TransformFaultType">
+		<annotation>
+			<documentation source="urn:x-fims:description">Fault
+				information for the transform media service.</documentation>
+			<documentation source="urn:x-fims:normativeRequirement">If
+				an exception is generated when the transform request message is submitted to the service, 
+				it shall respond with a message based on the TransformFaultType.</documentation>
+			<documentation source="urn:x-fims:serviceDescription"/>
+			<documentation source="urn:x-fims:contentOfServiceDescription"/>
+		</annotation>
+		<complexContent>
+			<extension base="bms:FaultType">
+				<sequence>
+					<element name="extendedCode" type="tfms:TransformErrorCodeType" minOccurs="0">
+						<annotation>
+							<documentation source="urn:x-fims:description">Transform service-specific 
+								error codes, as detailed in the TransformErrorCodeType.</documentation>
+							<documentation source="urn:x-fims:normativeRequirement">This element shall be set if
+								the service needs to provide service-specific error codes which
+								are not specified in the fault 'code' element. In this
+								case, the code element shall be set to 'EXT_S00_0000' and
+								the extendedCode shall be set to one of the codes described in
+								TransformErrorCodeType. If the 'code'; element is set
+								to any other value than 'EXT_S00_0000'; then this element
+								shall not be set.</documentation>
+							<documentation source="urn:x-fims:serviceDescription"/>
+							<documentation source="urn:x-fims:contentOfServiceDescription"/>
+							<documentation source="urn:x-fims:inclusionInRequest">Not applicable</documentation>
+							<documentation source="urn:x-fims:inclusionInResponse">Optional</documentation>
+						</annotation>
+					</element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="TransformNotificationType">
+		<annotation>
+			<documentation source="urn:x-fims:description">Notification of the successful completion of a
+				transform job.</documentation>
+			<documentation source="urn:x-fims:normativeRequirement">If one or more "notifyAt" 
+				elements are set for the associated transform job, then the service shall respond with a
+				notification to the specified endpoints when the job completes. (If notification is supported.)</documentation>
+			<documentation source="urn:x-fims:serviceDescription"/>
+			<documentation source="urn:x-fims:contentOfServiceDescription"/>
+		</annotation>
+		<sequence>
+			<element name="transformJob" type="tfms:TransformJobType" minOccurs="1" maxOccurs="1">
+				<annotation>
+					<documentation source="urn:x-fims:description">Describes a transform job.</documentation>
+					<documentation source="urn:x-fims:normativeRequirement"/>
+					<documentation source="urn:x-fims:serviceDescription"/>
+					<documentation source="urn:x-fims:contentOfServiceDescription"/>
+					<documentation source="urn:x-fims:inclusionInRequest">Not applicable</documentation>
+					<documentation source="urn:x-fims:inclusionInResponse">Mandatory</documentation>
+				</annotation>
+			</element>
+		</sequence>
+	</complexType>
+	<complexType name="TransformFaultNotificationType">
+		<annotation>
+			<documentation source="urn:x-fims:description">Fault
+				notification for the transform service, including
+				the related capture job and the fault code.</documentation>
+			<documentation source="urn:x-fims:normativeRequirement">If one or more
+				"notifyAt" elements are set for the transform job and a failure
+				occurs during the job execution, then the service shall respond with
+				a transform fault notification to the endpoint specified by
+				'faultTo'.</documentation>
+			<documentation source="urn:x-fims:serviceDescription"/>
+			<documentation source="urn:x-fims:contentOfServiceDescription"/>
+		</annotation>
+		<sequence>
+			<sequence>
+				<element name="transformJob" type="tfms:TransformJobType" minOccurs="1" maxOccurs="1">
+					<annotation>
+						<documentation source="urn:x-fims:description">Describes a transform job.</documentation>
+						<documentation source="urn:x-fims:normativeRequirement"/>
+						<documentation source="urn:x-fims:serviceDescription"/>
+						<documentation source="urn:x-fims:contentOfServiceDescription"/>
+						<documentation source="urn:x-fims:inclusionInRequest">Not applicable</documentation>
+						<documentation source="urn:x-fims:inclusionInResponse">Mandatory</documentation>
+					</annotation>
+				</element>
+			</sequence>
+			<element name="fault" type="tfms:TransformFaultType" minOccurs="1" maxOccurs="1">
+				<annotation>
+					<documentation source="urn:x-fims:description">Fault information.</documentation>
+					<documentation source="urn:x-fims:normativeRequirement"/>
+					<documentation source="urn:x-fims:serviceDescription"/>
+					<documentation source="urn:x-fims:contentOfServiceDescription"/>
+					<documentation source="urn:x-fims:inclusionInRequest">Not applicable</documentation>
+					<documentation source="urn:x-fims:inclusionInResponse">Mandatory</documentation>
+				</annotation>
+			</element>
+		</sequence>
+	</complexType>
+	<element name="transformRequest" type="tfms:TransformRequestType">
+		<annotation>
+			<documentation source="urn:x-fims:description">A request
+				to the transform media service for transforming content from a
+				source format to a target format.</documentation>
+			<documentation source="urn:x-fims:normativeRequirement"/>
+			<documentation source="urn:x-fims:serviceDescription"/>
+			<documentation source="urn:x-fims:contentOfServiceDescription"/>
+		</annotation>
+	</element>
+	<element name="transformAck" type="tfms:TransformResponseType">
+		<annotation>
+			<documentation source="urn:x-fims:description">Represents the
+				acknowledgment sent back from the transform media service when the
+				transform job is submitted.</documentation>
+			<documentation source="urn:x-fims:normativeRequirement"/>
+			<documentation source="urn:x-fims:serviceDescription"/>
+			<documentation source="urn:x-fims:contentOfServiceDescription"/>
+		</annotation>
+	</element>
+	<element name="transformFault" type="tfms:TransformFaultType">
+		<annotation>
+			<documentation source="urn:x-fims:description">A fault that may be sent by the
+				transform media service when a job is submitted.</documentation>
+			<documentation source="urn:x-fims:normativeRequirement"/>
+			<documentation source="urn:x-fims:serviceDescription">-</documentation>
+			<documentation source="urn:x-fims:contentOfServiceDescription">-</documentation>
+		</annotation>
+	</element>
+	<element name="transformNotification" type="tfms:TransformNotificationType">
+		<annotation>
+			<documentation source="urn:x-fims:description">A job
+				completion notification that the transform media service sends to a
+				specified endpoint when the transform job ends.</documentation>
+			<documentation source="urn:x-fims:normativeRequirement">This notification shall be sent 
+				to all &quot;notifyAt&quot; element is associated with the transform job.</documentation>
+			<documentation source="urn:x-fims:serviceDescription"/>
+			<documentation source="urn:x-fims:contentOfServiceDescription"/>
+		</annotation>
+	</element>
+	<element name="transformFaultNotification" type="tfms:TransformFaultNotificationType">
+		<annotation>
+			<documentation source="urn:x-fims:description">A fault
+				notification that the transform media service sends to a specified
+				endpoint if the transform job fails.
+				</documentation>
+			<documentation source="urn:x-fims:normativeRequirement">This fault notification shall be sent 
+				to all &quot;notifyAt&quot; element is associated with the transform job.</documentation>
+			<documentation source="urn:x-fims:serviceDescription"/>
+			<documentation source="urn:x-fims:contentOfServiceDescription"/>
+		</annotation>
+	</element>
+</schema>
