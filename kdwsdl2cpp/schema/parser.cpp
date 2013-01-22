@@ -174,8 +174,6 @@ bool Parser::parse( ParserContext *context, QXmlInputSource *source )
   QXmlSimpleReader reader;
   reader.setFeature( QLatin1String("http://xml.org/sax/features/namespace-prefixes"), true );
 
-  QDomDocument document( QLatin1String("KWSDL") );
-
   QString errorMsg;
   int errorLine, errorCol;
   QDomDocument doc;
@@ -1149,14 +1147,13 @@ bool Parser::resolveForwardDeclarations()
       }
     }
 
-    AttributeGroup::List attributeGroups =
-      d->mComplexTypes[ i ].attributeGroups();
-    foreach( AttributeGroup group, attributeGroups ) {
+    AttributeGroup::List attributeGroups = d->mComplexTypes[ i ].attributeGroups();
+    foreach( const AttributeGroup& group, attributeGroups ) {
       if ( !group.isResolved() ) {
         AttributeGroup refAttributeGroup =
           findAttributeGroup( group.reference() );
         Attribute::List groupAttributes = refAttributeGroup.attributes();
-        foreach ( Attribute ga, groupAttributes ) {
+        foreach ( const Attribute& ga, groupAttributes ) {
           attributes.append( ga );
         }
       }

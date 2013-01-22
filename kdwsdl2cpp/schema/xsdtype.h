@@ -45,7 +45,7 @@ class SCHEMA_EXPORT XSDType : public XmlElement
       COMPLEX,
       MIXED
     };
-
+/*
     enum
     {
       INVALID = 0,
@@ -78,7 +78,7 @@ class SCHEMA_EXPORT XSDType : public XmlElement
       ANYTYPE,
       ANYURI
     };
-
+*/
     XSDType();
     XSDType( const QString& );
     XSDType( const XSDType &other );
