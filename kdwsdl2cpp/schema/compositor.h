@@ -49,6 +49,9 @@ class SCHEMA_EXPORT Compositor
 
     bool isValid() const;
 
+    void setMaxOccurs( int maxOccurs );
+    int maxOccurs() const;
+
     void setType( Type type );
     Type type() const;
 

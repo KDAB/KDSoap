@@ -70,7 +70,7 @@ private:
         KDAB__EmployeeType employeeType;
         employeeType.setType(KDAB__EmployeeTypeEnum::Developer);
         employeeType.setOtherRoles(QList<KDAB__EmployeeTypeEnum>() << KDAB__EmployeeTypeEnum::TeamLeader);
-        employeeType.setTeam(QString::fromLatin1("Minitel"));
+        employeeType.setTeam(QList<KDAB__TeamName>() << QString::fromLatin1("Minitel"));
 
         KDAB__AddEmployee addEmployeeParams;
         addEmployeeParams.setEmployeeType(employeeType);
@@ -364,7 +364,7 @@ private Q_SLOTS:
         if (!service.lastError().isEmpty())
             qDebug() << service.lastError();
         QVERIFY(service.lastError().isEmpty());
-        QCOMPARE(employeeType.team().value().value(), QLatin1String("Minitel"));
+        QCOMPARE(employeeType.team().first().value().value(), QLatin1String("Minitel"));
         QCOMPARE(employeeType.otherRoles().count(), 1);
         QCOMPARE(employeeType.otherRoles().at(0).type(), KDAB__EmployeeTypeEnum::TeamLeader);
         QCOMPARE((int)employeeType.type().type(), (int)KDAB__EmployeeTypeEnum::Developer);
@@ -715,7 +715,7 @@ public:
     KDAB__EmployeeType getEmployeeType( const KDAB__EmployeeNameParams& employeeNameParams ) {
         KDAB__EmployeeType type;
         if (QString(employeeNameParams.employeeName().value()) == QLatin1String("David")) {
-            type.setTeam(KDAB__TeamName(QString::fromLatin1("Minitel")));
+            type.setTeam(QList<KDAB__TeamName>() << KDAB__TeamName(QString::fromLatin1("Minitel")));
         }
         return type;
     }

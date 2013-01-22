@@ -70,7 +70,7 @@ private Q_SLOTS:
         KDAB__LottoNumbers lottoNumbers;
         lottoNumbers.setEntries(QList<int>() << 7 << 21 << 30 << 42);
         employeeType.setLottoNumbers(lottoNumbers);
-        employeeType.setTeam(QString::fromLatin1("Minitel"));
+        employeeType.setTeam(QList<KDAB__TeamName>() << QString::fromLatin1("Minitel"));
         KDAB__AnonListType anonList;
         anonList.setEntries(QList<KDAB__AnonListTypeListItem>() << KDAB__AnonListTypeListItem::Detailed << KDAB__AnonListTypeListItem::DetailedMerged);
         employeeType.setAnonList(anonList);
@@ -170,7 +170,7 @@ private Q_SLOTS:
         service.setEndPoint(server.endPoint());
         const KDAB__Employee employee = service.getEmployee(QString::fromLatin1("David Faure"));
         const KDAB__EmployeeType employeeType = employee.employeeType();
-        QCOMPARE(employeeType.team().value().value(), QString::fromLatin1("Minitel"));
+        QCOMPARE(employeeType.team().first().value().value(), QString::fromLatin1("Minitel"));
         QCOMPARE(employeeType.type().type(), KDAB__EmployeeTypeEnum::Developer);
         QCOMPARE(employeeType.otherRoles(), QList<KDAB__EmployeeTypeEnum>() << KDAB__EmployeeTypeEnum::TeamLeader);
         QCOMPARE(employeeType.otherRolesAsList().entries(), QList<KDAB__EmployeeTypeEnum>() << KDAB__EmployeeTypeEnum::TeamLeader << KDAB__EmployeeTypeEnum::Developer);
@@ -217,7 +217,7 @@ private Q_SLOTS:
         if (!service.lastError().isEmpty())
             qDebug() << service.lastError();
         QVERIFY(service.lastError().isEmpty());
-        QCOMPARE(employeeType.team().value().value(), QLatin1String("Minitel"));
+        QCOMPARE(employeeType.team().first().value().value(), QLatin1String("Minitel"));
         QCOMPARE(employeeType.otherRoles().count(), 1);
         QCOMPARE(employeeType.otherRoles().at(0).type(), KDAB__EmployeeTypeEnum::TeamLeader);
         QCOMPARE((int)employeeType.type().type(), (int)KDAB__EmployeeTypeEnum::Developer);

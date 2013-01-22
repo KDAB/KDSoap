@@ -387,6 +387,15 @@ void Parser::all( ParserContext *context, const QDomElement &element, ComplexTyp
   }
 }
 
+static int readMaxOccurs( const QDomElement& element )
+{
+    const QString value = element.attribute( QLatin1String("maxOccurs"), QLatin1String("1") );
+    if ( value == QLatin1String("unbounded") )
+        return Parser::UNBOUNDED;
+    else
+        return value.toInt();
+}
+
 void Parser::parseCompositor( ParserContext *context,
   const QDomElement &element, ComplexType &ct )
 {
@@ -397,10 +406,10 @@ void Parser::parseCompositor( ParserContext *context,
   Compositor compositor;
   if ( isChoice ) compositor.setType( Compositor::Choice );
   else if ( isSequence ) compositor.setType( Compositor::Sequence );
+  compositor.setMaxOccurs( readMaxOccurs( element ) );
 
   if ( isChoice || isSequence ) {
     Element::List newElements;
-
     QDomElement childElement = element.firstChildElement();
 
     while ( !childElement.isNull() ) {
@@ -528,13 +537,8 @@ void Parser::addAny( ParserContext*, const QDomElement &element, ComplexType &co
 void Parser::setOccurrenceAttributes( Element &newElement,
   const QDomElement &element )
 {
-  newElement.setMinOccurs( element.attribute( QLatin1String("minOccurs"), QLatin1String("1") ).toInt() );
-
-  QString value = element.attribute( QLatin1String("maxOccurs"), QLatin1String("1") );
-  if ( value == QLatin1String("unbounded") )
-    newElement.setMaxOccurs( UNBOUNDED );
-  else
-    newElement.setMaxOccurs( value.toInt() );
+    newElement.setMinOccurs( element.attribute( QLatin1String("minOccurs"), QLatin1String("1") ).toInt() );
+    newElement.setMaxOccurs( readMaxOccurs( element ) );
 }
 
 void Parser::addAnyAttribute( ParserContext*, const QDomElement &element, ComplexType &complexType )

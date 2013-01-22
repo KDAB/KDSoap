@@ -88,7 +88,6 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
     const XSD::Element::List elements = type->elements();
     Q_FOREACH( const XSD::Element &elemIt, elements ) {
 
-        //qDebug() << elemIt.name() << elemIt.qualifiedName() << elemIt.type();
         if (elemIt.type().isEmpty()) {
             qDebug() << "ERROR: Element with no type:" << elemIt.name() << "(skipping)";
             Q_ASSERT(false);
@@ -101,7 +100,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
         {
             QString inputTypeName = mTypeMap.localInputType( elemIt.type(), QName() );
 
-            if ( elemIt.maxOccurs() > 1 ) {
+            if ( elemIt.maxOccurs() > 1 || elemIt.compositor().maxOccurs() > 1 ) {
                 typeName = listTypeFor(typeName, newClass);
                 inputTypeName = QLatin1String("const ") + typeName + QLatin1String("&");
             }
@@ -142,7 +141,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
         // include header
         newClass.addIncludes( QStringList(), mTypeMap.forwardDeclarations( elemIt.type() ) );
         newClass.addHeaderIncludes( mTypeMap.headerIncludes( elemIt.type() ) );
-        if ( elemIt.maxOccurs() > 1 )
+        if ( elemIt.maxOccurs() > 1 || elemIt.compositor().maxOccurs() > 1 )
             newClass.addHeaderIncludes(QStringList() << QLatin1String("QtCore/QList"));
     }
 
@@ -405,7 +404,7 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
             demarshalCode.addBlock( demarshalNameTest( elem.type(), elemName, &first ) );
             demarshalCode.indent();
 
-            if ( elem.maxOccurs() > 1 ) {
+            if ( elem.maxOccurs() > 1 || elem.compositor().maxOccurs() > 1 ) {
                 //const QString typePrefix = mNSManager.prefix( elem.type().nameSpace() );
 
                 marshalCode += QLatin1String("for (int i = 0; i < ") + variableName + QLatin1String(".count(); ++i) {");

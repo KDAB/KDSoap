@@ -49,3 +49,4 @@ Code generator changes, applying to both client and server side:
 * Fix hashing of QNames
 * Fix conflict between complex type "Foo" and anonymous complex type "foo",
    both leading to a C++ class called "Foo".
+* Ensure that <sequence maxOccurs="unbounded"> (or any value > 1) leads to a QList.

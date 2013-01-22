@@ -63,11 +63,11 @@ private Q_SLOTS:
         TransformMediaNotificationService service;
         service.setEndPoint(server.endPoint());
 
-#if 0
+        // check that <sequence minOccurs="1" maxOccurs="unbounded"> actually created a QList.
         BMS__JobsType jobsType;
-        BMS__JobType jobType;
-        jobsType.setJob(jobType);
-#endif
+        BMS__JobType jobType1;
+        BMS__JobType jobType2;
+        jobsType.setJob(QList<BMS__JobType>() << jobType1 << jobType2);
 
 #if 0
         const QString resp = service.sayHello("World");
