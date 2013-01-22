@@ -686,46 +686,49 @@ void Converter::convertClientOutputMessage( const Operation &operation,
   slotCode += "} else {";
   slotCode.indent();
 
-  const Message message = mWSDL.findMessage( operation.output().message() );
-
   QStringList partNames;
-  const Part::List parts = selectedParts( binding, message, operation, false /*output*/ );
-  Q_FOREACH( const Part& part, parts ) {
-    const QString partType = mTypeMap.localType( part.type(), part.element() );
-    if ( partType.isEmpty() ) {
-        qWarning("Skipping part '%s'", qPrintable(part.name()));
-        continue;
-    }
 
-    if ( partType == QLatin1String("void") )
-        continue;
+  if (operation.operationType() != Operation::OneWayOperation) {
+      const Message message = mWSDL.findMessage( operation.output().message() );
 
-    QString lowerName = mNameMapper.escape( lowerlize( part.name() ) );
-    doneSignal.addArgument( mTypeMap.localInputType( part.type(), part.element() ) + QLatin1Char(' ') + lowerName );
+      const Part::List parts = selectedParts( binding, message, operation, false /*output*/ );
+      Q_FOREACH( const Part& part, parts ) {
+          const QString partType = mTypeMap.localType( part.type(), part.element() );
+          if ( partType.isEmpty() ) {
+              qWarning("Skipping part '%s'", qPrintable(part.name()));
+              continue;
+          }
 
-    // WARNING: if you change the logic below, also adapt the result parsing for sync calls, above
+          if ( partType == QLatin1String("void") )
+              continue;
 
-    if ( soapStyle(binding) == SoapBinding::DocumentStyle /*no wrapper*/ ) {
-        slotCode += partType + QLatin1String(" ret;"); // local var
-        slotCode.addBlock(deserializeRetVal(part, QLatin1String("reply"), partType, QLatin1String("ret")));
-        partNames << QLatin1String("ret");
-    } else { // RPC style (adds a wrapper) or simple value
-        QString value = QLatin1String("reply.childValues().child(QLatin1String(\"") + part.name() + QLatin1String("\"))");
-        const bool isBuiltin = mTypeMap.isBuiltinType( part.type(), part.element() );
-        if ( isBuiltin ) {
-            partNames << value + QLatin1String(".value().value<") + partType + QLatin1String(">()");
-        } else {
-            slotCode += partType + QLatin1String(" ret;"); // local var. TODO ret1/ret2 etc. if more than one.
-            const bool isComplex = mTypeMap.isComplexType( part.type(), part.element() );
-            if (!isComplex)
-                value += QLatin1String(".value()");
-                slotCode += QLatin1String("ret.deserialize(") + value + QLatin1String(");") + COMMENT;
-            partNames << QLatin1String("ret");
-        }
-    }
+          QString lowerName = mNameMapper.escape( lowerlize( part.name() ) );
+          doneSignal.addArgument( mTypeMap.localInputType( part.type(), part.element() ) + QLatin1Char(' ') + lowerName );
 
-    // Forward declaration of element class
-    //newClass.addIncludes( QStringList(), mTypeMap.forwardDeclarationsForElement( part.element() ) );
+          // WARNING: if you change the logic below, also adapt the result parsing for sync calls, above
+
+          if ( soapStyle(binding) == SoapBinding::DocumentStyle /*no wrapper*/ ) {
+              slotCode += partType + QLatin1String(" ret;"); // local var
+              slotCode.addBlock(deserializeRetVal(part, QLatin1String("reply"), partType, QLatin1String("ret")));
+              partNames << QLatin1String("ret");
+          } else { // RPC style (adds a wrapper) or simple value
+              QString value = QLatin1String("reply.childValues().child(QLatin1String(\"") + part.name() + QLatin1String("\"))");
+              const bool isBuiltin = mTypeMap.isBuiltinType( part.type(), part.element() );
+              if ( isBuiltin ) {
+                  partNames << value + QLatin1String(".value().value<") + partType + QLatin1String(">()");
+              } else {
+                  slotCode += partType + QLatin1String(" ret;"); // local var. TODO ret1/ret2 etc. if more than one.
+                  const bool isComplex = mTypeMap.isComplexType( part.type(), part.element() );
+                  if (!isComplex)
+                      value += QLatin1String(".value()");
+                  slotCode += QLatin1String("ret.deserialize(") + value + QLatin1String(");") + COMMENT;
+                  partNames << QLatin1String("ret");
+              }
+          }
+
+          // Forward declaration of element class
+          //newClass.addIncludes( QStringList(), mTypeMap.forwardDeclarationsForElement( part.element() ) );
+      }
   }
 
   newClass.addFunction( doneSignal );
