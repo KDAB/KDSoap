@@ -138,6 +138,61 @@ private:
     QSet<QName> m_alsoUsedTypes; // The list of types to process in the next iteration
 };
 
+class MessageCollector
+{
+public:
+    MessageCollector() {}
+
+    QSet<QName> collectMessages(const WSDL& wsdl)
+    {
+        Q_FOREACH( const Service& service, wsdl.definitions().services() ) {
+            Q_FOREACH( const Port& port, service.ports() ) {
+                Binding binding = wsdl.findBinding( port.bindingName() );
+                //portTypeNames.insert( binding.portTypeName() );
+                //qDebug() << "binding" << port.bindingName() << binding.name() << "port type" << binding.portTypeName();
+                PortType portType = wsdl.findPortType( binding.portTypeName() );
+                const Operation::List operations = portType.operations();
+                //qDebug() << "portType" << portType.name() << operations.count() << "operations";
+                Q_FOREACH( const Operation& operation, operations ) {
+                    //qDebug() << "  operation" << operation.operationType() << operation.name();
+                    switch(operation.operationType()) {
+                    case Operation::OneWayOperation:
+                        addMessage(operation.input().message());
+                        break;
+                    case Operation::RequestResponseOperation:
+                    case Operation::SolicitResponseOperation:
+                        addMessage(operation.input().message());
+                        addMessage(operation.output().message());
+                        break;
+                    case Operation::NotificationOperation:
+                        addMessage(operation.output().message());
+                        break;
+                    };
+                    if ( binding.type() == Binding::SOAPBinding ) {
+                        const SoapBinding soapBinding( binding.soapBinding() );
+                        const SoapBinding::Operation op = soapBinding.operations().value( operation.name() );
+                        Q_FOREACH(const SoapBinding::Header& header, op.inputHeaders()) {
+                            addMessage(header.message());
+                        }
+                        Q_FOREACH(const SoapBinding::Header& header, op.outputHeaders()) {
+                            addMessage(header.message());
+                        }
+                    }
+                }
+            }
+        }
+        return m_usedMessageNames;
+    }
+private:
+    void addMessage(const QName& messageName) {
+        Q_ASSERT(!messageName.isEmpty());
+        m_usedMessageNames.insert(messageName);
+    }
+
+    QSet<QName> m_usedMessageNames;
+
+};
+
 void Converter::cleanupUnusedTypes()
 {
     // Keep only the portTypes, messages, and types that are actually used, no point in generating unused classes.
@@ -162,44 +217,9 @@ void Converter::cleanupUnusedTypes()
         //}
     }
 
-    QSet<QName> usedMessageNames;
+    MessageCollector messageCollector;
+    QSet<QName> usedMessageNames = messageCollector.collectMessages(mWSDL);
     //QSet<QName> portTypeNames;
-    Q_FOREACH( const Service& service, definitions.services() ) {
-        Q_FOREACH( const Port& port, service.ports() ) {
-            Binding binding = mWSDL.findBinding( port.bindingName() );
-            //portTypeNames.insert( binding.portTypeName() );
-            //qDebug() << "binding" << port.bindingName() << binding.name() << "port type" << binding.portTypeName();
-            PortType portType = mWSDL.findPortType( binding.portTypeName() );
-            const Operation::List operations = portType.operations();
-            //qDebug() << "portType" << portType.name() << operations.count() << "operations";
-            Q_FOREACH( const Operation& operation, operations ) {
-                //qDebug() << "  operation" << operation.operationType() << operation.name();
-                switch(operation.operationType()) {
-                case Operation::OneWayOperation:
-                    usedMessageNames.insert(operation.input().message());
-                    break;
-                case Operation::RequestResponseOperation:
-                case Operation::SolicitResponseOperation:
-                    usedMessageNames.insert(operation.input().message());
-                    usedMessageNames.insert(operation.output().message());
-                    break;
-                case Operation::NotificationOperation:
-                    usedMessageNames.insert(operation.output().message());
-                    break;
-                };
-                if ( binding.type() == Binding::SOAPBinding ) {
-                    const SoapBinding soapBinding( binding.soapBinding() );
-                    const SoapBinding::Operation op = soapBinding.operations().value( operation.name() );
-                    Q_FOREACH(const SoapBinding::Header& header, op.inputHeaders()) {
-                        usedMessageNames.insert(header.message());
-                    }
-                    Q_FOREACH(const SoapBinding::Header& header, op.outputHeaders()) {
-                        usedMessageNames.insert(header.message());
-                    }
-                }
-            }
-        }
-    }
 
     // Keep only the messages in usedMessageNames
     QSet<QName> usedTypes;
