@@ -147,4 +147,10 @@ bool Attribute::isResolved() const
   return !d->mType.isEmpty();
 }
 
+} // namespace XSD
+
+QDebug operator<<(QDebug dbg, const XSD::Attribute &attr)
+{
+    dbg << attr.qualifiedName();
+    return dbg;
 }

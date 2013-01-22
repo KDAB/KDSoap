@@ -202,4 +202,11 @@ bool ComplexType::isEmpty() const
     return d->mAttributeGroups.isEmpty() && d->mAttributes.isEmpty() && d->mElements.isEmpty() && d->mBaseTypeName.isEmpty() && d->mArrayType.isEmpty();
 }
 
+} // namespace XSD
+
+QDebug operator<<(QDebug dbg, const XSD::ComplexType &type)
+{
+    dbg << type.qualifiedName();
+    // dbg << type.attributes();
+    return dbg;
 }

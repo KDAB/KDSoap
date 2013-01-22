@@ -25,6 +25,7 @@
 
 #include <QString>
 #include <QList>
+#include <QDebug>
 
 #include "xmlelement.h"
 #include <kode_export.h>
@@ -72,5 +73,7 @@ class SCHEMA_EXPORT Attribute : public XmlElement
 };
 
 }
+
+SCHEMA_EXPORT QDebug operator<<(QDebug dbg, const XSD::Attribute &attr);
 
 #endif

@@ -93,6 +93,8 @@ class SCHEMA_EXPORT ComplexType : public XSDType
     Private *d;
 };
 
-}
+} // namespace XSD
+
+SCHEMA_EXPORT QDebug operator<<(QDebug dbg, const XSD::ComplexType &type);
 
 #endif
