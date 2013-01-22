@@ -109,12 +109,22 @@ void Parser::init(ParserContext *context)
 #else
   Q_UNUSED(context);
 #endif
+
+    // From the XML schema XSD
     {
         Element schema(XMLSchemaURI);
         schema.setName(QLatin1String("schema"));
         schema.setType(QName(XMLSchemaURI, QLatin1String("anyType")));
         d->mElements.append(schema);
     }
+
+    {
+        Attribute arrayTypeAttr(XMLSchemaURI);
+        arrayTypeAttr.setName(QLatin1String("lang"));
+        arrayTypeAttr.setType(QName(XMLSchemaURI, QLatin1String("string")));
+        d->mAttributes.append(arrayTypeAttr);
+    }
+
 
   // From http://schemas.xmlsoap.org/wsdl/soap/encoding
   {
