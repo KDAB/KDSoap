@@ -47,22 +47,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
             newClass.addIncludes( QStringList(), mTypeMap.forwardDeclarations( baseName ) );
             newClass.addHeaderIncludes( mTypeMap.headerIncludes( baseName ) );
 
-            // member variables
-            KODE::MemberVariable variable( QLatin1String("value"), typeName );
-            addVariableInitializer( variable );
-            newClass.addMemberVariable( variable );
-
-            const QString variableName = QLatin1String("d_ptr->") + variable.name();
-
-            // setter method
-            KODE::Function setter( QLatin1String("setValue"), QLatin1String("void") );
-            setter.addArgument( inputTypeName + QLatin1String(" value") );
-            setter.setBody( variableName + QLatin1String(" = value;") );
-
-            // getter method
-            KODE::Function getter( QLatin1String("value"), typeName );
-            getter.setBody( QLatin1String("return ") + variableName + QLatin1Char(';') );
-            getter.setConst( true );
+            const QString variableName = generateMemberVariable( "value", typeName, inputTypeName, newClass );
 
             // convenience constructor
             KODE::Function conctor( upperlize( newClass.name() ) );
@@ -76,8 +61,6 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
 
             newClass.addFunction( conctor );
             newClass.addFunction( op );
-            newClass.addFunction( setter );
-            newClass.addFunction( getter );
         }
     }
 
@@ -114,28 +97,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
                 inputTypeName = QLatin1String("const ") + typeName + QLatin1Char('&');
             }
 
-            // member variables
-            KODE::MemberVariable variable( elemIt.name(), typeName );
-            addVariableInitializer( variable );
-            newClass.addMemberVariable( variable );
-
-            const QString variableName = QLatin1String("d_ptr->") + variable.name();
-
-            const QString upperName = upperlize( elemIt.name() );
-            const QString lowerName = lowerlize( elemIt.name() );
-
-            // setter method
-            KODE::Function setter( QLatin1String("set") + upperName, QLatin1String("void") );
-            setter.addArgument( inputTypeName + QLatin1Char(' ') + mNameMapper.escape( lowerName ) );
-            setter.setBody( variableName + QLatin1String(" = ") + mNameMapper.escape( lowerName ) + QLatin1Char(';') );
-
-            // getter method
-            KODE::Function getter( mNameMapper.escape( lowerName ), typeName );
-            getter.setBody( QLatin1String("return ") + variableName + QLatin1Char(';') );
-            getter.setConst( true );
-
-            newClass.addFunction( setter );
-            newClass.addFunction( getter );
+            generateMemberVariable( elemIt.name(), typeName, inputTypeName, newClass );
         }
 
         // include header
@@ -157,27 +119,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
         inputTypeName = mTypeMap.localInputType( attribute.type(), QName() );
         //qDebug() << "Attribute" << attribute.name();
 
-        // member variables
-        KODE::MemberVariable variable( attribute.name(), typeName );
-        addVariableInitializer( variable );
-        newClass.addMemberVariable( variable );
-        const QString variableName = QLatin1String("d_ptr->") + variable.name();
-
-        QString upperName = upperlize( attribute.name() );
-        QString lowerName = lowerlize( attribute.name() );
-
-        // setter method
-        KODE::Function setter( QLatin1String("set") + upperName, QLatin1String("void") );
-        setter.addArgument( inputTypeName + QLatin1Char(' ') + mNameMapper.escape( lowerName ) );
-        setter.setBody( variableName + QLatin1String(" = ") + mNameMapper.escape( lowerName ) + QLatin1Char(';') );
-
-        // getter method
-        KODE::Function getter( mNameMapper.escape( lowerName ), typeName );
-        getter.setBody( QLatin1String("return ") + variableName + QLatin1Char(';') );
-        getter.setConst( true );
-
-        newClass.addFunction( setter );
-        newClass.addFunction( getter );
+        generateMemberVariable( attribute.name(), typeName, inputTypeName, newClass );
 
         // include header
         newClass.addIncludes( QStringList(), mTypeMap.forwardDeclarations( attribute.type() ) );
@@ -204,6 +146,33 @@ static QString namespaceString(const QString& ns)
     //qDebug() << "got namespace" << ns;
     // TODO register into KDSoapNamespaceManager? This means generating code in the clientinterface ctor...
     return QLatin1String("QString::fromLatin1(\"") + ns + QLatin1String("\")");
+}
+
+QString Converter::generateMemberVariable( const QString &rawName, const QString &typeName, const QString &inputTypeName, KODE::Class &newClass )
+{
+    // member variable
+    KODE::MemberVariable variable( rawName, typeName );
+    Converter::addVariableInitializer( variable );
+    newClass.addMemberVariable( variable );
+
+    const QString variableName = QLatin1String("d_ptr->") + variable.name();
+    const QString upperName = upperlize( rawName );
+    const QString lowerName = lowerlize( rawName );
+
+    // setter method
+    KODE::Function setter( QLatin1String("set") + upperName, QLatin1String("void") );
+    setter.addArgument( inputTypeName + QLatin1Char(' ') + mNameMapper.escape( lowerName ) );
+    setter.setBody( variableName + QLatin1String(" = ") + mNameMapper.escape( lowerName ) + QLatin1Char(';') );
+
+    // getter method
+    KODE::Function getter( mNameMapper.escape( lowerName ), typeName );
+    getter.setBody( QLatin1String("return ") + variableName + QLatin1Char(';') );
+    getter.setConst( true );
+
+    newClass.addFunction( setter );
+    newClass.addFunction( getter );
+
+    return variableName;
 }
 
 // Helper method for the generation of the serialize() method, also used in addMessageArgument.
