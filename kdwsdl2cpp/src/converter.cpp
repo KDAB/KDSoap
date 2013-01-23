@@ -66,7 +66,7 @@ public:
         QSet<QName> typesToProcess = m_allUsedTypes;
         do {
             m_alsoUsedTypes.clear();
-            Q_FOREACH(const QName& typeName, typesToProcess.toList() /*slow!*/) {
+            Q_FOREACH(const QName& typeName, typesToProcess) {
                 if (typeName.isEmpty())
                     continue;
                 if (typeMap.isBuiltinType(typeName))
@@ -226,7 +226,7 @@ void Converter::cleanupUnusedTypes()
     QSet<QString> usedTypesStrings; // for debug
     QSet<QName> usedElementNames;
     Message::List newMessages;
-    Q_FOREACH(const QName& messageName, usedMessageNames.toList() /*slow!*/) {
+    Q_FOREACH(const QName& messageName, usedMessageNames) {
         //qDebug() << "used message:" << messageName;
         Message message = mWSDL.findMessage(messageName);
         newMessages.append(message);
