@@ -59,9 +59,35 @@ void Converter::setWSDL( const WSDL &wsdl )
 class TypeCollector
 {
 public:
-    TypeCollector(const QSet<QName>& usedTypes) : m_allUsedTypes(usedTypes) {}
+    TypeCollector(XSD::Types &allTypes, const QSet<QName> &usedTypes)
+    : m_allTypes(allTypes),
+      m_allUsedTypes(usedTypes)
+    {}
 
-    void collectDependentTypes(const TypeMap& typeMap, const XSD::Types& types)
+    // In case of inheritance, the parser simply set the base class in the derived class.
+    // We need to register the other way round (list of derived classes in a base class)
+    // in order to make up a tree that can be navigated down, so that we collect all derived
+    // classes that the application might want to use where a base class is expected
+    // (rather than clean them up as unused)
+    void registerDerivedClasses()
+    {
+        XSD::ComplexType::List complexTypes = m_allTypes.complexTypes();
+        Q_FOREACH(const XSD::ComplexType& derivedType, complexTypes) {
+            const QName base = derivedType.baseTypeName();
+            if (!base.isEmpty()) {
+                // Look for the base class and register type. Linear search, maybe we should use a QHash...
+                for (int i = 0; i < complexTypes.count(); ++i) {
+                    XSD::ComplexType& t = complexTypes[i];
+                    if (base == t.qualifiedName())
+                        //qDebug() << "Adding derived type" << derivedType.name() << "to base" << base;
+                        t.addDerivedType(derivedType.qualifiedName());
+                }
+            }
+        }
+        m_allTypes.setComplexTypes(complexTypes);
+    }
+
+    void collectDependentTypes(const TypeMap& typeMap)
     {
         QSet<QName> typesToProcess = m_allUsedTypes;
         do {
@@ -72,12 +98,16 @@ public:
                 if (typeMap.isBuiltinType(typeName))
                     continue;
                 //qDebug() << "used type:" << typeName;
-                XSD::ComplexType complexType = types.complexType(typeName);
+                XSD::ComplexType complexType = m_allTypes.complexType(typeName);
                 if (!complexType.name().isEmpty()) { // found it as a complex type
                     fixupComplexType(complexType);
                     usedComplexTypes.insert(typeName, complexType);
 
                     addDependency(complexType.baseTypeName());
+                    Q_FOREACH(const QName &derivedTypeName, complexType.derivedTypes()) {
+                        addDependency(derivedTypeName);
+                    }
+
                     Q_FOREACH(const XSD::Element& element, complexType.elements()) {
                         addDependency(element.type());
                     }
@@ -87,7 +117,7 @@ public:
                     addDependency(complexType.arrayType());
 
                 } else {
-                    XSD::SimpleType simpleType = types.simpleType(typeName);
+                    XSD::SimpleType simpleType = m_allTypes.simpleType(typeName);
                     if (!simpleType.name().isEmpty()) {
                         usedSimpleTypes.append(simpleType);
                         addDependency(simpleType.baseTypeName());
@@ -103,6 +133,7 @@ public:
 
     QHash<QName, XSD::ComplexType> usedComplexTypes;
     XSD::SimpleType::List usedSimpleTypes;
+    XSD::Types &m_allTypes;
 
 private:
     void addDependency(const QName& type) {
@@ -253,8 +284,9 @@ void Converter::cleanupUnusedTypes()
     //qDebug() << "usedTypes:" << usedTypesStrings.toList();
 
     // keep only the types used in these messages
-    TypeCollector collector(usedTypes);
-    collector.collectDependentTypes(mTypeMap, types);
+    TypeCollector collector(types, usedTypes);
+    collector.registerDerivedClasses();
+    collector.collectDependentTypes(mTypeMap);
 
     XSD::Element::List usedElements;
     QSetIterator<QName> elemIt(usedElementNames);

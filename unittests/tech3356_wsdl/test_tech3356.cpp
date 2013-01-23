@@ -69,6 +69,10 @@ private Q_SLOTS:
         BMS__JobType jobType2;
         jobsType.setJob(QList<BMS__JobType>() << jobType1 << jobType2);
 
+        // check that derived types don't get cleaned up
+        BMS__QueryJobRequestByIDType req;
+        BMS__QueryJobResponseType respType;
+
 #if 0
         const QString resp = service.sayHello("World");
         QCOMPARE(resp, QString::fromLatin1("Hello, World!"));

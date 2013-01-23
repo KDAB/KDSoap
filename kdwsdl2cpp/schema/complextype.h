@@ -69,6 +69,9 @@ class SCHEMA_EXPORT ComplexType : public XSDType
     void setBaseTypeName( const QName &baseTypeName );
     QName baseTypeName() const;
 
+    void addDerivedType( const QName& derivedTypeName );
+    QList<QName> derivedTypes() const;
+
     void setElements( const Element::List &elements );
     Element::List elements() const;
 

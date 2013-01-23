@@ -45,6 +45,7 @@ public:
     Derivation mBaseDerivation;
     QName mBaseTypeName;
     QName mArrayType;
+    QList<QName> mDerivedTypes;
 };
 
 ComplexType::ComplexType( const QString &nameSpace )
@@ -95,7 +96,17 @@ void ComplexType::setBaseTypeName( const QName &baseTypeName )
 
 QName ComplexType::baseTypeName() const
 {
-  return d->mBaseTypeName;
+    return d->mBaseTypeName;
+}
+
+void ComplexType::addDerivedType(const QName &derivedTypeName)
+{
+    d->mDerivedTypes.append(derivedTypeName);
+}
+
+QList<QName> ComplexType::derivedTypes() const
+{
+    return d->mDerivedTypes;
 }
 
 void ComplexType::setBaseDerivation( Derivation derivation )
