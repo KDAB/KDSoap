@@ -50,3 +50,6 @@ Code generator changes, applying to both client and server side:
 * Fix conflict between complex type "Foo" and anonymous complex type "foo",
    both leading to a C++ class called "Foo".
 * Ensure that <sequence maxOccurs="unbounded"> (or any value > 1) leads to a QList.
+* Do not throw away derived classes during the "cleanup" phase
+* Inheritance between complex types no longer uses a value() accessor,
+  but actual C++ inheritance, with virtual serialize/deserialize.

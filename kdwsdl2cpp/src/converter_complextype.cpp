@@ -137,6 +137,8 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
     newClass.addFunction( ctor );
 
     KODE::Function dtor( QLatin1Char('~') + upperlize( newClass.name() ) );
+    if ( !type->derivedTypes().isEmpty() )
+        dtor.setVirtualMode( KODE::Function::Virtual );
     newClass.addFunction( dtor );
 
     mClasses.addClass( newClass );
@@ -278,10 +280,14 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
 
     KODE::Function serializeFunc( QLatin1String("serialize"), QLatin1String("KDSoapValue") );
     serializeFunc.addArgument( QLatin1String("const QString& valueName") );
+    if ( !type->derivedTypes().isEmpty() )
+        serializeFunc.setVirtualMode( KODE::Function::Virtual );
     serializeFunc.setConst( true );
 
     KODE::Function deserializeFunc( QLatin1String("deserialize"), QLatin1String("void") );
     deserializeFunc.addArgument( QLatin1String("const KDSoapValue& mainValue") );
+    if ( !type->derivedTypes().isEmpty() )
+        deserializeFunc.setVirtualMode( KODE::Function::Virtual );
 
     KODE::Code marshalCode, demarshalCode;
 
