@@ -6,6 +6,7 @@ General:
   Usage: ./configure [...] -hostqmake /opt/host-qt4/bin/qmake
 * Fix compilation with custom build systems who do not set include paths to QtCore and QtNetwork.
 Similarly, do not requiring including the KDSoapClient and KDSoapServer subdirs, only the toplevel.
+* Add optional cmake-based build system.
 * More steps towards SOAP-1.2 support (different namespaces)
 
 Client-side:
