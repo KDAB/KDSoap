@@ -47,20 +47,25 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
             newClass.addIncludes( QStringList(), mTypeMap.forwardDeclarations( baseName ) );
             newClass.addHeaderIncludes( mTypeMap.headerIncludes( baseName ) );
 
-            const QString variableName = generateMemberVariable( "value", typeName, inputTypeName, newClass );
+            if ( mTypeMap.isComplexType( baseName ) ) {
+                const QString baseClassName = mTypeMap.localType( baseName );
+                newClass.addBaseClass( baseClassName );
+            } else {
+                const QString variableName = generateMemberVariable( "value", typeName, inputTypeName, newClass );
 
-            // convenience constructor
-            KODE::Function conctor( upperlize( newClass.name() ) );
-            conctor.addArgument( inputTypeName + QLatin1String(" value") );
-            conctor.setBody( variableName + QLatin1String(" = value;") );
+                // convenience constructor
+                KODE::Function conctor( upperlize( newClass.name() ) );
+                conctor.addArgument( inputTypeName + QLatin1String(" value") );
+                conctor.setBody( variableName + QLatin1String(" = value;") );
 
-            // type operator
-            KODE::Function op( QLatin1String("operator ") + typeName );
-            op.setBody( QLatin1String("return ") + variableName + QLatin1Char(';') );
-            op.setConst( true );
+                // type operator
+                KODE::Function op( QLatin1String("operator ") + typeName );
+                op.setBody( QLatin1String("return ") + variableName + QLatin1Char(';') );
+                op.setConst( true );
 
-            newClass.addFunction( conctor );
-            newClass.addFunction( op );
+                newClass.addFunction( conctor );
+                newClass.addFunction( op );
+            }
         }
     }
 
@@ -296,8 +301,14 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
         const QString variableName = QLatin1String("d_ptr->") + variable.name();
 
         if ( mTypeMap.isComplexType( baseName ) ) {
-            marshalCode += QLatin1String("KDSoapValue mainValue = ") + variableName + QLatin1String(".serialize(valueName);") + COMMENT;
+            //marshalCode += QLatin1String("KDSoapValue mainValue = ") + variableName + QLatin1String(".serialize(valueName);") + COMMENT;
+            //marshalCode += QLatin1String("mainValue.setType(") + typeArgs + QLatin1String(");");
+            marshalCode += QLatin1String("KDSoapValue mainValue = ") + typeName + QLatin1String("::serialize(valueName);") + COMMENT;
             marshalCode += QLatin1String("mainValue.setType(") + typeArgs + QLatin1String(");");
+            //demarshalCode += demarshalVar( baseName, QName(), variableName, typeName, QLatin1String("mainValue") );
+
+            demarshalCode += typeName + "::deserialize(mainValue);";
+            //demarshalCode += demarshalVar( baseName, QName(), variableName, typeName, QLatin1String("mainValue") );
         } else {
             QString value;
             if ( mTypeMap.isBuiltinType( baseName ) )
@@ -305,9 +316,9 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
             else
                 value += variableName + QLatin1String(".serialize()");
             marshalCode += QLatin1String("KDSoapValue mainValue(valueName, ") + value + QLatin1String(", ") + typeArgs + QLatin1String(");") + COMMENT;
+            demarshalCode += demarshalVar( baseName, QName(), variableName, typeName, QLatin1String("mainValue") );
         }
 
-        demarshalCode += demarshalVar( baseName, QName(), variableName, typeName, QLatin1String("mainValue") );
     } else {
         marshalCode += QLatin1String("KDSoapValue mainValue(valueName, QVariant(), ") + typeArgs + QLatin1String(");") + COMMENT;
     }
