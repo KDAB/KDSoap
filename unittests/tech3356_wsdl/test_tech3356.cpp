@@ -38,7 +38,21 @@ class Tech3356Test : public QObject
     Q_OBJECT
 
 private:
-    static QByteArray helloResponse()
+    static QByteArray expectedQueryJobRequest()
+    {
+        return QByteArray(xmlEnvBegin11()) + ">"
+        "<soap:Body>"
+           "<n1:queryJobRequest xmlns:n1=\"http://base.fims.tv\">" // MISSING: xsi:type=\"n1:QueryJobRequestByIDType\">"
+             "<n1:jobInfoSelection>mandatory</n1:jobInfoSelection>"
+             "<n1:ExtensionGroup xsi:nil=\"true\"/>"
+             "<n1:ExtensionAttributes xsi:nil=\"true\"/>"
+             "<n1:jobID>1</n1:jobID>"
+           "</n1:queryJobRequest>"
+        "</soap:Body>" + xmlEnvEnd()
+        + '\n'; // added by QXmlStreamWriter::writeEndDocument;
+    }
+
+    static QByteArray queryJobResponse()
     {
         return "<?xml version='1.0' encoding='UTF-8'?>"
         "<SOAP-ENV:Envelope "
@@ -59,8 +73,8 @@ private Q_SLOTS:
 
     void testHello() // http://oreilly.com/catalog/webservess/chapter/ch06.html
     {
-        HttpServerThread server(helloResponse(), HttpServerThread::Public);
-        TransformMediaNotificationService service;
+        HttpServerThread server(queryJobResponse(), HttpServerThread::Public);
+        TransformMediaService::TransformMediaStatusBinding service;
         service.setEndPoint(server.endPoint());
 
         // check that <sequence minOccurs="1" maxOccurs="unbounded"> actually created a QList.
@@ -71,18 +85,18 @@ private Q_SLOTS:
 
         // check that derived types don't get cleaned up
         BMS__QueryJobRequestByIDType req;
+        BMS__UID uid; uid.setValue(1);
+        req.setJobID(QList<BMS__UID>() << uid);
         BMS__QueryJobResponseType respType;
 
-#if 0
-        const QString resp = service.sayHello("World");
-        QCOMPARE(resp, QString::fromLatin1("Hello, World!"));
+        // check that we can pass a derived class where a base class is expected
+        respType = service.queryJob(req);
 
         // Check what we sent
         {
-            QVERIFY(xmlBufferCompare(server.receivedData(), expectedHelloRequest()));
-            QCOMPARE(QString::fromUtf8(server.receivedData().constData()), QString::fromUtf8(expectedHelloRequest().constData()));
+            QVERIFY(xmlBufferCompare(server.receivedData(), expectedQueryJobRequest()));
+            QCOMPARE(QString::fromUtf8(server.receivedData().constData()), QString::fromUtf8(expectedQueryJobRequest().constData()));
         }
-#endif
     }
 };
 
