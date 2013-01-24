@@ -571,7 +571,7 @@ QString Printer::functionSignature( const Function &function,
     s += QLatin1String("static ");
   }
 
-  if ( function.virtualMode() != Function::NotVirtual ) {
+  if ( function.virtualMode() != Function::NotVirtual && !includeClassQualifier /* i.e. not for cpp file */) {
     s += QLatin1String("virtual ");
   }
 
