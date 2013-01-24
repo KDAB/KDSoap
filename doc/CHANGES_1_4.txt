@@ -1,0 +1,14 @@
+General:
+========
+
+Client-side:
+============
+
+Server-side:
+============
+
+Code generator changes, applying to both client and server side:
+================================================================
+* Do not throw away derived classes during the "cleanup" phase
+* Inheritance between complex types no longer uses a value() accessor,
+  but actual C++ inheritance.

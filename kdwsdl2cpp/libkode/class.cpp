@@ -354,7 +354,7 @@ static QStringList dependenciesForClass( const Class& aClass, const QStringList&
 {
     QStringList lst;
     Q_FOREACH( const Class& baseClass, aClass.baseClasses() ) {
-        const QString baseName = baseClass.name();
+        const QString baseName = baseClass.qualifiedName();
         if ( !baseName.startsWith(QLatin1Char('Q')) && !excludedClasses.contains( baseName ) )
             lst.append( baseClass.name() );
     }
@@ -392,7 +392,7 @@ static Class::List sortByDependenciesHelper( const Class::List &classes, const Q
     Class::List allClasses( classes );
     QStringList allClassNames;
     Q_FOREACH( const Class& c, classes )
-        allClassNames.append( c.name() );
+        allClassNames.append( c.qualifiedName() );
 
     Class::List retval;
 
@@ -403,7 +403,7 @@ static Class::List sortByDependenciesHelper( const Class::List &classes, const Q
     for ( it = allClasses.begin(); it != allClasses.end(); ++it ) {
       if ( dependenciesForClass( *it, allClassNames, excludedClasses ).isEmpty() ) {
         retval.append( *it );
-        classNames.append( (*it).name() );
+        classNames.append( (*it).qualifiedName() );
 
         it = allClasses.erase( it );
         it--;
@@ -419,7 +419,7 @@ static Class::List sortByDependenciesHelper( const Class::List &classes, const Q
         const QStringList deps = dependenciesForClass( *it, allClassNames, excludedClasses );
         if ( allKnown( deps, classNames ) ) {
           retval.append( *it );
-          classNames.append( (*it).name() );
+          classNames.append( (*it).qualifiedName() );
 
           it = allClasses.erase( it );
           it--;
@@ -429,7 +429,7 @@ static Class::List sortByDependenciesHelper( const Class::List &classes, const Q
           // We didn't resolve anything this time around, so let's not loop forever
           qDebug() << "ERROR: Couldn't find class dependencies (base classes, member vars) for classes" << allClasses.classNames();
           Q_FOREACH(const Class& c, allClasses) {
-              qDebug() << c.name() << "depends on" << dependenciesForClass( c, allClassNames, excludedClasses );
+              qDebug() << c.qualifiedName() << "depends on" << dependenciesForClass( c, allClassNames, excludedClasses );
           }
 
           return retval;
