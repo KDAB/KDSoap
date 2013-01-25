@@ -43,7 +43,7 @@ private:
         return QByteArray(xmlEnvBegin11()) + ">"
         "<soap:Body>"
            "<n1:queryJobRequest xmlns:n1=\"http://base.fims.tv\">" // MISSING: xsi:type=\"n1:QueryJobRequestByIDType\">"
-             "<n1:jobInfoSelection>mandatory</n1:jobInfoSelection>"
+             "<n1:jobInfoSelection>all</n1:jobInfoSelection>"
              "<n1:ExtensionGroup xsi:nil=\"true\"/>"
              "<n1:ExtensionAttributes xsi:nil=\"true\"/>"
              "<n1:jobID>1</n1:jobID>"
@@ -71,7 +71,7 @@ private:
 
 private Q_SLOTS:
 
-    void testHello() // http://oreilly.com/catalog/webservess/chapter/ch06.html
+    void testQueryJob()
     {
         HttpServerThread server(queryJobResponse(), HttpServerThread::Public);
         TransformMediaService::TransformMediaStatusBinding service;
@@ -83,14 +83,24 @@ private Q_SLOTS:
         BMS__JobType jobType2;
         jobsType.setJob(QList<BMS__JobType>() << jobType1 << jobType2);
 
-        // check that derived types don't get cleaned up
+        // check that derived types are defined (i.e. don't get cleaned up as unused)
         BMS__QueryJobRequestByIDType req;
         BMS__UID uid; uid.setValue(1);
         req.setJobID(QList<BMS__UID>() << uid);
-        BMS__QueryJobResponseType respType;
+        req.setJobInfoSelection(BMS__JobInfoSelectionType::All); // setter in base class
+
+        // check the operator= and copy ctor of derived types
+        BMS__QueryJobRequestByIDType reqCopy(req);
+        QCOMPARE(reqCopy.jobID().count(), 1);
+        QCOMPARE(int(reqCopy.jobInfoSelection()), int(req.jobInfoSelection()));
+        reqCopy = req;
+        BMS__QueryJobRequestByIDType reqCopy2;
+        reqCopy2 = req;
+        QCOMPARE(reqCopy2.jobID().count(), 1);
+        QCOMPARE(int(reqCopy2.jobInfoSelection()), int(req.jobInfoSelection()));
 
         // check that we can pass a derived class where a base class is expected
-        respType = service.queryJob(req);
+        BMS__QueryJobResponseType respType = service.queryJob(req);
 
         // Check what we sent
         {
