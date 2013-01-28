@@ -77,8 +77,8 @@ File& File::operator=( const File &other )
 
 void File::setFilename( const QString& filename )
 {
-  d->mImplFilename = filename + QLatin1String(".cpp");
-  d->mHeaderFilename = filename + QLatin1String(".h");
+  d->mImplFilename = filename + ".cpp";
+  d->mHeaderFilename = filename + ".h";
 }
 
 void File::setImplementationFilename( const QString &filename )
@@ -98,7 +98,7 @@ QString File::filenameHeader() const
 
     if ( !d->mClasses.isEmpty() ) {
       QString className = d->mClasses[ 0 ].name();
-      return className.toLower() + QLatin1String(".h");
+      return className.toLower() + ".h";
     }
 
     return QString();
@@ -111,7 +111,7 @@ QString File::filenameImplementation() const
 
     if ( !d->mClasses.isEmpty() ) {
       QString className = d->mClasses[ 0 ].name();
-      return className.toLower() + QLatin1String(".cpp");
+      return className.toLower() + ".cpp";
     }
 
     return QString();
@@ -142,8 +142,8 @@ QString File::project() const
 
 void File::addCopyright( int year, const QString &name, const QString &email )
 {
-  QString str = QLatin1String("Copyright (c) ") + QString::number( year ) + QLatin1Char(' ') + name + QLatin1String(" <")
-                + email + QLatin1Char('>');
+  QString str = "Copyright (c) " + QString::number( year ) + ' ' + name + " <"
+                + email + '>';
 
   d->mCopyrightStrings.append( str );
 }
@@ -166,8 +166,8 @@ License File::license() const
 void File::addInclude( const QString &_include )
 {
   QString include = _include;
-  if ( !include.endsWith( QLatin1String(".h") ) )
-    include.append( QLatin1String(".h") );
+  if ( !include.endsWith( ".h" ) )
+    include.append( ".h" );
 
   if ( !d->mIncludes.contains( include ) )
     d->mIncludes.append( include );

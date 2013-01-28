@@ -79,7 +79,7 @@ QString License::text() const
   switch ( d->mType ) {
     case GPL:
       txt +=
-            QLatin1String("This program is free software; you can redistribute it and/or modify\n"
+            "This program is free software; you can redistribute it and/or modify\n"
             "it under the terms of the GNU General Public License as published by\n"
             "the Free Software Foundation; either version 2 of the License, or\n"
             "(at your option) any later version.\n"
@@ -91,18 +91,18 @@ QString License::text() const
             "\n"
             "You should have received a copy of the GNU General Public License\n"
             "along with this program; if not, write to the Free Software\n"
-            "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,\n" "USA.\n");
+            "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,\n" "USA.\n";
 
       if ( d->mQtException ) {
-        txt += QLatin1Char('\n');
+        txt += '\n';
         txt +=
-            QLatin1String("As a special exception, permission is given to link this program\n"
+            "As a special exception, permission is given to link this program\n"
             "with any edition of Qt, and distribute the resulting executable,\n"
-            "without including the source code for Qt in the source distribution.\n");
+            "without including the source code for Qt in the source distribution.\n";
       }
       break;
     case LGPL:
-      txt += QLatin1String(
+      txt +=
             "This library is free software; you can redistribute it and/or\n"
             "modify it under the terms of the GNU Library General Public\n"
             "License as published by the Free Software Foundation; either\n"
@@ -116,10 +116,10 @@ QString License::text() const
             "You should have received a copy of the GNU Library General Public License\n"
             "along with this library; see the file COPYING.LIB.  If not, write to\n"
             "the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,\n"
-            "Boston, MA 02110-1301, USA.\n");
+            "Boston, MA 02110-1301, USA.\n";
       break;
     case BSD:
-      txt += QLatin1String(
+      txt +=
             "Permission is hereby granted, free of charge, to any person obtaining\n"
             "a copy of this software and associated documentation files (the\n"
             "\"Software\"), to deal in the Software without restriction, including\n"
@@ -137,7 +137,7 @@ QString License::text() const
             "IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR\n"
             "OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,\n"
             "ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR\n"
-            "OTHER DEALINGS IN THE SOFTWARE.");
+            "OTHER DEALINGS IN THE SOFTWARE.";
       break;
     default:
       break;
