@@ -128,14 +128,10 @@ class KODE_EXPORT Printer
      *
      * If @param forImplementation is true, the class qualifier
      * is part of the signature as well, and default args are removed.
-     *
-     * If @param includeDefaultArguments is true, the default argument
-     * is part of the signature as well.
      */
     QString functionSignature( const Function &function,
                                const QString &className = QString(),
-                               bool includeClassQualifier = false,
-                               bool includeDefaultArguments = false );
+                               bool forImplementation = false );
 
   protected:
     /**

@@ -486,7 +486,7 @@ void Printer::Private::addFunctionHeaders( Code& code,
         code.unindent();
         code += " */";
       }
-      code += mParent->functionSignature( *it, className, false, true ) + ';';
+      code += mParent->functionSignature( *it, className, false ) + ';';
       if ( mLabelsDefineIndent )
         code.unindent();
       needNewLine = true;
@@ -565,16 +565,15 @@ void Printer::setIndentLabels( bool b )
 
 QString Printer::functionSignature( const Function &function,
                                     const QString &className,
-                                    bool includeClassQualifier,
-                                    bool includeDefaultArguments )
+                                    bool forImplementation )
 {
   QString s;
 
-  if ( function.isStatic() && !includeClassQualifier ) {
+  if ( function.isStatic() && !forImplementation ) {
     s += "static ";
   }
 
-  if ( function.virtualMode() != Function::NotVirtual ) {
+  if ( function.virtualMode() != Function::NotVirtual && !forImplementation ) {
     s += "virtual ";
   }
 
@@ -583,7 +582,7 @@ QString Printer::functionSignature( const Function &function,
     s += d->formatType( ret );
   }
 
-  if ( includeClassQualifier )
+  if ( forImplementation )
     s += className + "::";
 
   s += function.name();
@@ -592,7 +591,7 @@ QString Printer::functionSignature( const Function &function,
   if ( function.hasArguments() ) {
     QStringList arguments;
     foreach( Function::Argument argument, function.arguments() ) {
-      if ( includeDefaultArguments ) {
+      if ( !forImplementation ) {
         arguments.append( argument.headerDeclaration() );
       } else {
         arguments.append( argument.bodyDeclaration() );
@@ -752,7 +751,7 @@ void Printer::printHeader( const File &file )
     }
 
     if (!clas.isNull()) {
-      const bool isQtClass = clas.startsWith('Q');
+      const bool isQtClass = clas.startsWith(QLatin1Char('Q'));
       if (isQtClass)
         out += QLatin1String("QT_BEGIN_NAMESPACE");
       out += "class " + clas + ';';
