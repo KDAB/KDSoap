@@ -1,0 +1,43 @@
+Source: kdsoap
+Section: devel
+Priority: extra
+Build-Depends: libqt4-dev (>= 4.7),
+               debhelper (>= 5.0.37.2)
+Standards-Version: 3.7.2
+Homepage: http://www.kdab.com/kdab-products/kd-soap/
+Vcs-Git: https://github.com/KDAB/KDSoap.git
+Vcs-Browser: https://github.com/KDAB/KDSoap
+
+Package: kdsoap
+Section: devel
+Architecture: any
+Depends: libqtcore4 (>= 4.7),
+         ${shlibs:Depends},
+         ${misc:Depends}
+Description: KD Soap is a Qt-based client-side and server-side SOAP component.
+ It can be used to create client applications for web services and also provides
+ the means to create web services without the need for any further component such
+ as a dedicated web server.
+ .
+ For a full description of KDSoap, see http://www.kdab.com/kdab-products/kd-soap/
+
+Package: libkdsoap
+Section: libs
+Architecture: any
+Depends: libqtcore4 (>= 4.7),
+         ${shlibs:Depends},
+         ${misc:Depends}
+Description: KD Soap is a Qt-based client-side and server-side SOAP component.
+ It can be used to create client applications for web services and also provides
+ the means to create web services without the need for any further component such
+ as a dedicated web server.
+ .
+ For a full description of KDSoap, see http://www.kdab.com/kdab-products/kd-soap/
+
+Package: libkdsoap-dev
+Section: libdevel
+Architecture: any
+Depends: kdsoap (= ${binary:Version}),
+         libkdsoap (= ${binary:Version}),
+Description: Development files for libkdsoap
+
