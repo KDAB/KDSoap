@@ -803,7 +803,7 @@ void WsdlDocumentTest::testServerAddEmployee()
     QCOMPARE(service.lastError(), QString());
     QCOMPARE(QString::fromLatin1(ret.constData()), QString::fromLatin1("added David Faure"));
     KDSoapMessage sessionHeader = service.clientInterface()->lastResponseHeaders().header(QLatin1String("SessionElement"));
-    KDSoapValue sessionIdValue = sessionHeader.arguments().child("sessionId");
+    KDSoapValue sessionIdValue = sessionHeader.arguments().child(QLatin1String("sessionId"));
     QCOMPARE(sessionIdValue.value().toString(), QLatin1String("returned_id"));
 }
 
