@@ -35,6 +35,11 @@
 # include <algorithm>
 #endif
 
+// Qt-4.7 errors on QVariant::fromValue<signed char>(), but later versions support it.
+#if QT_VERSION < 0x040800
+Q_DECLARE_METATYPE(signed char)
+#endif
+
 class KDSoapValueList;
 class KDSoapNamespacePrefixes;
 QT_BEGIN_NAMESPACE

@@ -46,7 +46,7 @@ NameMapper::NameMapper()
 QString NameMapper::escape( const QString &name ) const
 {
   if ( mKeyWords.contains( name ) )
-    return '_' + name;
+    return name + '_';
   else
     return name;
 }

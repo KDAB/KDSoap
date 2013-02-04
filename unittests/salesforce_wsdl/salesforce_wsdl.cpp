@@ -53,6 +53,11 @@ private Q_SLOTS:
             TNS__DescribeLayoutResponse describeResponse;
             (void)describeResponse.result().layouts().first().id();
         }
+
+        // Test for the use of reserved C++ keywords such as inline
+        TNS__EmailFileAttachment attach;
+        attach.setInline(true);
+        QVERIFY(attach.inline_());
     }
 
     void testParseComplexReplyWsdl()

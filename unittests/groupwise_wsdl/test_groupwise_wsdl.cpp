@@ -20,13 +20,6 @@
 **
 **********************************************************************/
 
-#include <QtCore/QtGlobal>
-#include <QtCore/QMetaType>
-
-#if QT_VERSION < 0x040800
-Q_DECLARE_METATYPE(signed char)
-#endif
-
 #include "KDSoapClientInterface.h"
 #include "KDSoapMessage.h"
 #include "KDSoapValue.h"

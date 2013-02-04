@@ -465,7 +465,7 @@ private Q_SLOTS:
         inputSchema.setNamespaceUri(KDSoapNamespaceManager::xmlSchema2001());
         anyType.setSchema(inputSchema);
         const KDAB__AnyTypeResponse response = service.testAnyType(anyType);
-        const QList<KDSoapValue> values = response._return();
+        const QList<KDSoapValue> values = response.return_();
         QCOMPARE(values.count(), 4);
         QCOMPARE(values.at(0).value().toInt(), 42);
         QCOMPARE(values.at(1).value().toString(), QString::fromLatin1("Forty-two"));
