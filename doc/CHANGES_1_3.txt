@@ -54,4 +54,6 @@ Code generator changes, applying to both client and server side:
 * Do not throw away derived classes during the "cleanup" phase
 * Inheritance between complex types no longer uses a value() accessor,
   but actual C++ inheritance, with virtual serialize/deserialize.
+* Change mapping of C++ reserved keywords (e.g. "inline", used in a WSDL file) to generate
+   inline_() rather than _inline(), since _inline is also reserved by MSVC)
 
