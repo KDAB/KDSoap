@@ -1,6 +1,7 @@
 Source: kdsoap
 Section: devel
 Priority: extra
+Maintainer: Devon IT Developers <development@devonit.com>
 Build-Depends: libqt4-dev (>= 4.7),
                debhelper (>= 5.0.37.2)
 Standards-Version: 3.7.2
