@@ -124,6 +124,14 @@ public:
     virtual void processRequestWithPath(const KDSoapMessage& request, KDSoapMessage& response, const QByteArray& soapAction, const QString& path);
 
     /**
+     * Call this after processRequestWithPath has finished handling a request,
+     * in order to copy response headers, faults, etc. from the secondary object interface
+     * into this one.
+     * \since 1.4
+     */
+    void doneProcessingRequestWithPath(const KDSoapServerObjectInterface &otherInterface);
+
+    /**
      * Returns the SOAP headers that were provided together with the SOAP request.
      * This can be used to retrieve authentication headers, or any kind of session
      * (per-client) data.

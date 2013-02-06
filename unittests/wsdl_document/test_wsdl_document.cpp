@@ -537,6 +537,7 @@ private Q_SLOTS:
     void testSyncCallAfterServerDelayedCall();
     void testServerTwoDelayedCalls();
     void testServerDifferentPath();
+    void testServerDifferentPathFault();
 
 public slots:
     void slotFinished(KDSoapPendingCallWatcher* watcher)
@@ -742,9 +743,10 @@ public:
     void processRequestWithPath(const KDSoapMessage &request, KDSoapMessage &response, const QByteArray &soapAction, const QString &path) {
         Q_UNUSED(request);
         Q_UNUSED(response);
-        if (path == QLatin1String("/xml/NamesService?foo")
-            && soapAction == "http://namesservice.thomas_bayer.com/getCountries") {
+        if (path == QLatin1String("/xml/NamesService?foo")) {
+            /*&& soapAction == "http://namesservice.thomas_bayer.com/getCountries"*/
             m_nameServiceServerObject.processRequest(request, response, soapAction);
+            doneProcessingRequestWithPath(m_nameServiceServerObject);
         } else {
             setFault(QLatin1String("Client.Data"),
                      QString::fromLatin1("Action %1 not found in path %2").arg(QLatin1String(soapAction.constData()), path));
@@ -1025,7 +1027,22 @@ void WsdlDocumentTest::testServerDifferentPath()
     QCOMPARE(countries.count(), 2);
     QCOMPARE(countries[0], QString::fromLatin1("Great Britain"));
     QCOMPARE(countries[1], QString::fromLatin1("Ireland"));
+}
 
+// now with a fault
+void WsdlDocumentTest::testServerDifferentPathFault()
+{
+    TestServerThread<DocServer> serverThread;
+    DocServer* server = serverThread.startThread();
+
+    NamesServiceService serv;
+    QString endPoint = server->endPoint(); // ends with "/xml"
+    endPoint += QLatin1String("/../xml/./NamesService?foo");
+    serv.setEndPoint(endPoint);
+    TNS__GetNameInfo req;
+    req.setName("DOESNOTEXIST");
+    const TNS__NameInfo names = serv.getNameInfo(req).nameinfo();
+    QCOMPARE(serv.lastError(), QString("Fault code Server.Implementation: Not implemented (NameServiceServerObject)"));
 }
 
 QTEST_MAIN(WsdlDocumentTest)

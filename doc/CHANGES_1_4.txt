@@ -6,6 +6,9 @@ Client-side:
 
 Server-side:
 ============
+* Add doneProcessingRequestWithPath() for copying fault info and response headers from secondary object to primary one.
+  The method is to be called after processRequestWithPath delegates the request to another object interface.
+
 
 Code generator changes, applying to both client and server side:
 ================================================================
