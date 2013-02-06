@@ -6,7 +6,7 @@
 using namespace KWSDL;
 
 static QString escapeEnum( const QString& );
-static KODE::Code createRangeCheckCode( const XSD::SimpleType*, const QString&, KODE::Class& );
+static KODE::Code createRangeCheckCode( const XSD::SimpleType*, const QString &baseTypeName, const QString&, KODE::Class& );
 
 void Converter::addVariableInitializer( KODE::MemberVariable& variable ) const
 {
@@ -143,10 +143,11 @@ void Converter::convertSimpleType( const XSD::SimpleType *type, const XSD::Simpl
 
       // setter method
       KODE::Function setter( "setValue", "void" );
-      setter.addArgument( mTypeMap.localInputType( baseName, QName() ) + " value" );
+      const QString inputType = mTypeMap.localInputType( baseName, QName() );
+      setter.addArgument( inputType + " value" );
       KODE::Code setterBody;
       if ( type->facetType() != XSD::SimpleType::NONE ) {
-        setterBody += createRangeCheckCode( type, "(value)", newClass );
+        setterBody += createRangeCheckCode( type, baseTypeName, "(value)", newClass );
         setterBody.newLine();
         setterBody += "if (!rangeOk)";
         setterBody.indent();
@@ -166,7 +167,7 @@ void Converter::convertSimpleType( const XSD::SimpleType *type, const XSD::Simpl
 
       // convenience constructor
       KODE::Function conctor( newClass.name() );
-      conctor.addArgument( mTypeMap.localInputType( baseName, QName() ) + " value" );
+      conctor.addArgument( inputType + " value" );
       conctor.addBodyLine( "setValue(value);" );
       newClass.addFunction( conctor );
 
@@ -450,7 +451,7 @@ static QString escapeRegExp( const QString &str )
     return reg;
 }
 
-static KODE::Code createRangeCheckCode( const XSD::SimpleType *type, const QString &variableName, KODE::Class &parentClass )
+static KODE::Code createRangeCheckCode( const XSD::SimpleType *type, const QString &baseTypeName, const QString &variableName, KODE::Class &parentClass )
 {
   KODE::Code code;
   code += "bool rangeOk = true;";
@@ -463,8 +464,11 @@ static KODE::Code createRangeCheckCode( const XSD::SimpleType *type, const QStri
     int facetFractionDigits() const;
   */
 
-  if ( type->facetType() & XSD::SimpleType::MININC )
-    code += "rangeOk = rangeOk && (" + variableName + " >= " + QString::number( type->facetMinimumInclusive() ) + ");";
+  if (type->facetType() & XSD::SimpleType::MININC) {
+      // Don't generate if (uint >= 0) code, it does nothing, and warns
+      if (!(type->facetMinimumInclusive() == 0 && (baseTypeName == "quint64" || baseTypeName.startsWith("unsigned "))))
+          code += "rangeOk = rangeOk && (" + variableName + " >= " + QString::number( type->facetMinimumInclusive() ) + ");";
+  }
   if ( type->facetType() & XSD::SimpleType::MINEX )
     code += "rangeOk = rangeOk && (" + variableName + " > " + QString::number( type->facetMinimumExclusive() ) + ");";
   if ( type->facetType() & XSD::SimpleType::MAXINC )
