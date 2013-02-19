@@ -76,6 +76,11 @@ void Compiler::download()
     parse( doc.documentElement() );
 
     provider.cleanUp();
+  } else {
+    qDebug("Unable to download file %s", Settings::self()->wsdlUrl().toEncoded().constData());
+    provider.cleanUp();
+    QCoreApplication::exit( 1 );
+    return;
   }
 }
 
