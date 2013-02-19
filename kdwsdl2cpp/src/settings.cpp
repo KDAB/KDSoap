@@ -57,11 +57,15 @@ void Settings::setWsdlFile(const QString &wsdlFile)
 {
     QString path = QDir::fromNativeSeparators(wsdlFile);
 
+    // Check first for files, since on Windows drive letters can be interpretted as schemes
+    if (QDir::isAbsolutePath(path)) {
+        mWsdlUrl = QUrl::fromLocalFile(path);
+        return;
+    }
+
     QUrl u(path);
     if (u.isRelative()) { // no scheme yet in the URL
-        if (QDir::isRelativePath(path)) {
-            path = QDir::current().path() + QLatin1Char('/') + path;
-        }
+        path = QDir::current().path() + QLatin1Char('/') + path;
         mWsdlUrl = QUrl::fromLocalFile(path);
     } else {
         mWsdlUrl = u;
