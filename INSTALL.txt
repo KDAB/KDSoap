@@ -1,6 +1,7 @@
 KD SOAP 1.x requires a Qt version >= 4.6 with Network and XML support enabled.
 
-0) From the top directory of your KD SOAP installation run the "configure" scripts.
+
+1) From the top directory of your KD SOAP installation run the "configure" scripts.
 
    On Windows use depending on the kind of build one of the following;
      configure.bat -shared -debug
@@ -18,8 +19,21 @@ KD SOAP 1.x requires a Qt version >= 4.6 with Network and XML support enabled.
      configure.bat -shared -debug -prefix c:/kdsoap
      ./configure.sh -shared -debug -prefix /opt/kdsoap
 
+   If this succeeded, jump to step 2.
 
-1) Unix
+1-bis) If you are building KD Soap from a github clone rather than a release tarball,
+the configure.bat/configure.sh script doesn't exist (it's generated at release time),
+
+you need to do this instead:
+
+  git submodule update --init
+  ./autogen.py [options]
+  make
+
+autogen.py supports a number of command-line options, including -prefix <dir>
+to specify an installation prefix for KD Soap. This affects make install.
+
+2) Unix
 
 set your LD_LIBRARY_PATH to point to your KD SOAP installation lib directory.
 
@@ -29,12 +43,12 @@ export LD_LIBRARY_PATH
 
 The above has to be added into your .bashrc or similar to remain. It may also of course be run from a shell just before building software using KD SOAP, but in this case your settings will only be available for this shell.
 
-2) MacOS
+3) MacOS
 
 Proceed as described above, but using DYLD_LIBRARY_PATH instead
 of LD_LIBRARY_PATH
 
-3) Windows
+4) Windows
 
 Add the path to KD SOAP lib into your LIB environment variable and the path
 to KD SOAP bin into your PATH environment variable.
@@ -44,13 +58,13 @@ set PATH=\path\to\kdsoap\bin;%PATH%
 set LIB=\path\to\kdsoap\lib;%LIB%
 
 
-4) Build everything by typing:
+5) Build everything by typing:
 
 make    # Unix,
 nmake   # Windows
 
 
-5) (optionally:) Install KD SOAP:
+6) (optionally:) Install KD SOAP:
 
    From your top-level KD SOAP directory just type
 
@@ -63,7 +77,7 @@ nmake install  # Windows
    For Windows that is: C:\KDAB\KDSoap-VERSION\
 
 
-6) Symbian
+7) Symbian
 
 Here is a step by step introduction how to compile KD Soap with the Symbian-Toolchain on Windows.
 
@@ -103,4 +117,5 @@ for root, subFolders, files in os.walk(sys.argv[1]):
    to workaround that known qmake+Symbian^3 bug. 
 
 
-6) Have a look at the examples applications. They will get you started with KD SOAP 1.x.
+7) Have a look at the examples applications. They will get you started with KD SOAP.
+
