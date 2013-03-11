@@ -67,6 +67,9 @@ if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
       KDSoapMacros.cmake
     DESTINATION "${INSTALL_LIBRARY_DIR}/cmake/KDSoap"
   )
+  install(EXPORT KDSoapTargets NAMESPACE KDSoap::
+    DESTINATION "${INSTALL_LIBRARY_DIR}/cmake/KDSoap"
+  )
 endif()
 
 add_subdirectory(src)
