@@ -14,8 +14,6 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 # setup default install locations
 include(InstallLocation)
 
-configure_file(KDSoapConfig.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/KDSoapConfig.cmake @ONLY)
-
 find_package(Qt4 4.7 QUIET REQUIRED QtCore QtMain QtGui)
 
 set(CMAKE_INCLUDE_CURRENT_DIR TRUE)
@@ -59,6 +57,13 @@ if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
   write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/KDSoapConfigVersion.cmake"
     VERSION ${${PROJECT_NAME}_VERSION}
     COMPATIBILITY AnyNewerVersion
+  )
+
+  configure_package_config_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/KDSoapConfig.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/KDSoapConfig.cmake"
+    INSTALL_DESTINATION  "${INSTALL_LIBRARY_DIR}/cmake/KDSoap"
+    PATH_VARS  INSTALL_INCLUDE_DIR
   )
 
   install(FILES
