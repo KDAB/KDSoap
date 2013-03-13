@@ -1040,9 +1040,9 @@ void WsdlDocumentTest::testServerDifferentPathFault()
     endPoint += QLatin1String("/../xml/./NamesService?foo");
     serv.setEndPoint(endPoint);
     TNS__GetNameInfo req;
-    req.setName("DOESNOTEXIST");
+    req.setName(QLatin1String("DOESNOTEXIST"));
     const TNS__NameInfo names = serv.getNameInfo(req).nameinfo();
-    QCOMPARE(serv.lastError(), QString("Fault code Server.Implementation: Not implemented (NameServiceServerObject)"));
+    QCOMPARE(serv.lastError(), QLatin1String("Fault code Server.Implementation: Not implemented (NameServiceServerObject)"));
 }
 
 QTEST_MAIN(WsdlDocumentTest)
