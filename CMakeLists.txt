@@ -54,21 +54,31 @@ if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
   install(FILES LICENSE.GPL.txt LICENSE.US.txt LICENSE.txt README.txt kdsoap.pri kdwsdl2cpp.pri DESTINATION .)
 
   include(CMakePackageConfigHelpers)
-  write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/KDSoapConfigVersion.cmake"
+  write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/KDSoap/KDSoapConfigVersion.cmake"
     VERSION ${${PROJECT_NAME}_VERSION}
     COMPATIBILITY AnyNewerVersion
   )
 
+  configure_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/KDSoapConfig-buildtree.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/KDSoap/KDSoapConfig.cmake"
+    @ONLY
+  )
+  file(COPY
+    "${CMAKE_CURRENT_SOURCE_DIR}/KDSoapMacros.cmake"
+    DESTINATION
+    "${CMAKE_CURRENT_BINARY_DIR}/KDSoap/"
+  )
   configure_package_config_file(
     "${CMAKE_CURRENT_SOURCE_DIR}/KDSoapConfig.cmake.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/KDSoapConfig.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/install/KDSoapConfig.cmake"
     INSTALL_DESTINATION  "${INSTALL_LIBRARY_DIR}/cmake/KDSoap"
     PATH_VARS  INSTALL_INCLUDE_DIR
   )
 
   install(FILES
-      "${CMAKE_CURRENT_BINARY_DIR}/KDSoapConfig.cmake"
-      "${CMAKE_CURRENT_BINARY_DIR}/KDSoapConfigVersion.cmake"
+      "${CMAKE_CURRENT_BINARY_DIR}/install/KDSoapConfig.cmake"
+      "${CMAKE_CURRENT_BINARY_DIR}/KDSoap/KDSoapConfigVersion.cmake"
       KDSoapMacros.cmake
     DESTINATION "${INSTALL_LIBRARY_DIR}/cmake/KDSoap"
   )
@@ -80,6 +90,11 @@ endif()
 add_subdirectory(src)
 add_subdirectory(kdwsdl2cpp)
 if(${PROJECT_NAME}_IS_ROOT_PROJECT)
+
+  export(TARGETS kdsoap kdsoap-server kdwsdl2cpp NAMESPACE KDSoap::
+    FILE "${CMAKE_CURRENT_BINARY_DIR}/KDSoap/KDSoapTargets.cmake"
+  )
+
   add_subdirectory(features)
   if(${PROJECT_NAME}_TESTS)
     enable_testing()
