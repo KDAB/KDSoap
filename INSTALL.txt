@@ -1,5 +1,6 @@
 KD SOAP 1.x requires a Qt version >= 4.6 with Network and XML support enabled.
 
+The same source code compiles with either Qt 4 or Qt 5.
 
 1) From the top directory of your KD SOAP installation run the "configure" scripts.
 
@@ -77,7 +78,7 @@ nmake install  # Windows
    For Windows that is: C:\KDAB\KDSoap-VERSION\
 
 
-7) Symbian
+7) Symbian (Qt4 only)
 
 Here is a step by step introduction how to compile KD Soap with the Symbian-Toolchain on Windows.
 

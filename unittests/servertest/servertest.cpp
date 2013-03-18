@@ -220,15 +220,19 @@ private Q_SLOTS:
     void initTestCase()
     {
 #ifndef QT_NO_OPENSSL
-        QVERIFY(KDSoapUnitTestHelpers::setSslConfiguration());
-        QSslConfiguration defaultConfig = QSslConfiguration::defaultConfiguration();
-        QFile certFile(QString::fromLatin1(":/certs/test-127.0.0.1-cert.pem"));
-        if (certFile.open(QIODevice::ReadOnly))
-            defaultConfig.setLocalCertificate(QSslCertificate(certFile.readAll()));
-        QFile keyFile(QString::fromLatin1(":/certs/test-127.0.0.1-key.pem"));
-        if (keyFile.open(QIODevice::ReadOnly))
-            defaultConfig.setPrivateKey(QSslKey(keyFile.readAll(), QSsl::Rsa));
-        QSslConfiguration::setDefaultConfiguration(defaultConfig);
+        if (!QSslSocket::supportsSsl()) {
+            qWarning("No SSL support on this machine, check that ssleay.so/ssleay32.dll is installed");
+        } else {
+            QVERIFY(KDSoapUnitTestHelpers::setSslConfiguration());
+            QSslConfiguration defaultConfig = QSslConfiguration::defaultConfiguration();
+            QFile certFile(QString::fromLatin1(":/certs/test-127.0.0.1-cert.pem"));
+            if (certFile.open(QIODevice::ReadOnly))
+                defaultConfig.setLocalCertificate(QSslCertificate(certFile.readAll()));
+            QFile keyFile(QString::fromLatin1(":/certs/test-127.0.0.1-key.pem"));
+            if (keyFile.open(QIODevice::ReadOnly))
+                defaultConfig.setPrivateKey(QSslKey(keyFile.readAll(), QSsl::Rsa));
+            QSslConfiguration::setDefaultConfiguration(defaultConfig);
+        }
 #endif
     }
 
@@ -896,6 +900,8 @@ private Q_SLOTS:
 #ifndef QT_NO_OPENSSL
     void testSsl()
     {
+        if (!QSslSocket::supportsSsl())
+            return;
         CountryServerThread serverThread;
         CountryServer* server = serverThread.startThread();
         server->setFeatures(KDSoapServer::Ssl);
