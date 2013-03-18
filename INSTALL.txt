@@ -63,7 +63,7 @@ nmake install  # Windows
    For Windows that is: C:\KDAB\KDSoap-VERSION\
 
 
-6) Symbian
+6) Symbian (Qt4 only)
 
 Here is a step by step introduction how to compile KD Soap with the Symbian-Toolchain on Windows.
 
