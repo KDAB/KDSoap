@@ -111,9 +111,12 @@ static QByteArray httpResponseHeaders(bool fault, const QByteArray& contentType,
     if (fault) {
         // http://www.w3.org/TR/2007/REC-soap12-part0-20070427 and look for 500
         httpResponse += "HTTP/1.1 500 Internal Server Error\r\n";
+    } else if (responseDataSize == 0) {
+        httpResponse += "HTTP/1.1 204 No Content\r\n";
     } else {
         httpResponse += "HTTP/1.1 200 OK\r\n";
     }
+
     httpResponse += "Content-Type: ";
     httpResponse += contentType;
     httpResponse += "\r\nContent-Length: ";
