@@ -317,6 +317,10 @@ private Q_SLOTS:
         QSignalSpy spy(&service, SIGNAL(heartbeatDone()));
         QVERIFY(spy.isValid());
 
+        qRegisterMetaType<KDSoapMessage>("KDSoapMessage");
+        QSignalSpy errorSpy(&service, SIGNAL(heartbeatError(KDSoapMessage)));
+        QVERIFY(errorSpy.isValid());
+
         // Qt5: use spy.wait() instead.
         QEventLoop eventLoop;
         connect(&service, SIGNAL(heartbeatDone()), &eventLoop, SLOT(quit()));
@@ -325,6 +329,7 @@ private Q_SLOTS:
         eventLoop.exec();
 
         QVERIFY(server->lastServerObject()->heartbeatCalled());
+        QCOMPARE(errorSpy.count(), 0);
     }
 
     // Using wsdl-generated code, make a call, and check the xml that was sent,
