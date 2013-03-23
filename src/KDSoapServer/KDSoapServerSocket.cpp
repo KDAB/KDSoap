@@ -328,22 +328,26 @@ void KDSoapServerSocket::sendReply(KDSoapServerObjectInterface* serverObjectInte
 {
     const bool isFault = replyMsg.isFault();
 
-    KDSoapMessageWriter msgWriter;
-    // Note that the kdsoap client parsing code doesn't care for the name (except if it's fault), even in
-    // Document mode. Other implementations do, though.
-    QString responseName = isFault ? QString::fromLatin1("Fault") : replyMsg.name();
-    if (responseName.isEmpty())
-        responseName = m_method;
-    QString responseNamespace = m_messageNamespace;
-    KDSoapHeaders responseHeaders;
-    if (serverObjectInterface) {
-        responseHeaders = serverObjectInterface->responseHeaders();
-        if (!serverObjectInterface->responseNamespace().isEmpty()) {
-            responseNamespace = serverObjectInterface->responseNamespace();
+    QByteArray xmlResponse;
+    if (!replyMsg.isNull()) {
+        KDSoapMessageWriter msgWriter;
+        // Note that the kdsoap client parsing code doesn't care for the name (except if it's fault), even in
+        // Document mode. Other implementations do, though.
+        QString responseName = isFault ? QString::fromLatin1("Fault") : replyMsg.name();
+        if (responseName.isEmpty())
+            responseName = m_method;
+        QString responseNamespace = m_messageNamespace;
+        KDSoapHeaders responseHeaders;
+        if (serverObjectInterface) {
+            responseHeaders = serverObjectInterface->responseHeaders();
+            if (!serverObjectInterface->responseNamespace().isEmpty()) {
+                responseNamespace = serverObjectInterface->responseNamespace();
+            }
         }
+        msgWriter.setMessageNamespace(responseNamespace);
+        xmlResponse = msgWriter.messageToXml(replyMsg, responseName, responseHeaders, QMap<QString, KDSoapMessage>());
     }
-    msgWriter.setMessageNamespace(responseNamespace);
-    const QByteArray xmlResponse = msgWriter.messageToXml(replyMsg, responseName, responseHeaders, QMap<QString, KDSoapMessage>());
+
     const QByteArray response = httpResponseHeaders(isFault, "text/xml", xmlResponse.size());
     if (m_doDebug) {
         qDebug() << "KDSoapServerSocket: writing" << response << xmlResponse;

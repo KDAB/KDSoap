@@ -304,9 +304,6 @@ private Q_SLOTS:
         QVERIFY(returnMessage.childValues().isEmpty());
         QVERIFY(returnMessage.childValues().attributes().isEmpty());
         QVERIFY(returnMessage.value().isNull());
-
-        // ensure there is no response message
-        QVERIFY(returnMessage.toXml().isEmpty());
     }
 
     void asyncOneWay() // client/server call for a one-way call, using async methods
