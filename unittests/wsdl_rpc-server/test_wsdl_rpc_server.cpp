@@ -31,6 +31,8 @@
 #include <KDSoapMessage.h>
 #include <KDSoapServer.h>
 #include <KDSoapNamespaceManager.h>
+#include <KDSoapPendingCallWatcher.h>
+#include <KDSoapPendingCall.h>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -271,6 +273,40 @@ private Q_SLOTS:
         service.heartbeat(params);
 
         QVERIFY(server->lastServerObject()->heartbeatCalled());
+    }
+
+    void asyncOneWayCheckNoResponse()
+    {
+        TestServerThread<RpcExampleServer> serverThread;
+        RpcExampleServer* server = serverThread.startThread();
+
+        RpcExample service;
+        service.setEndPoint(server->endPoint());
+
+        // emulate service.asyncHeartbeat
+        RPCEXAMPLE__HeartbeatParams params;
+        KDSoapMessage message;
+        message.setUse(KDSoapMessage::EncodedUse);
+        KDSoapValue _valueParams(params.serialize(QString::fromLatin1("params")));// /Users/mbroadst/Development/devonit/echosupport/KDSoap/kdwsdl2cpp/src/converter_complextype.cpp:209
+        _valueParams.setNamespaceUri(QString::fromLatin1("urn:RpcExample"));
+        message.childValues().append(_valueParams);// /Users/mbroadst/Development/devonit/echosupport/KDSoap/kdwsdl2cpp/src/converter_complextype.cpp:223
+
+        QEventLoop eventLoop;
+        KDSoapPendingCall pendingCall = service.clientInterface()->asyncCall(QLatin1String("heartbeat"), message);
+        KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);
+        connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher*)), &eventLoop, SLOT(quit()));
+        eventLoop.exec();
+
+        KDSoapMessage returnMessage = watcher->returnMessage();
+        watcher->deleteLater();
+
+        // same checks as private KDSoapMessage::isNull
+        QVERIFY(returnMessage.childValues().isEmpty());
+        QVERIFY(returnMessage.childValues().attributes().isEmpty());
+        QVERIFY(returnMessage.value().isNull());
+
+        // ensure there is no response message
+        QVERIFY(returnMessage.toXml().isEmpty());
     }
 
     void asyncOneWay() // client/server call for a one-way call, using async methods
