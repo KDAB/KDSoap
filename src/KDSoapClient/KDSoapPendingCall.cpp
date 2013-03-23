@@ -110,6 +110,8 @@ void KDSoapPendingCall::Private::parseReply()
     if (doDebug)
         qDebug() << data;
 
-    KDSoapMessageReader reader;
-    reader.xmlToMessage(data, &replyMessage, 0, &replyHeaders);
+    if (!data.isEmpty()) {
+        KDSoapMessageReader reader;
+        reader.xmlToMessage(data, &replyMessage, 0, &replyHeaders);
+    }
 }
