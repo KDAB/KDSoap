@@ -42,13 +42,16 @@ using namespace KDSoapUnitTestHelpers;
 class HelloServerObject : public Hello_ServiceServerBase
 {
 public:
-    virtual QString sayHello( const QString& firstName ) {
+    virtual QString sayHello( const QString& firstName, const QString& lastName ) {
         m_receivedFirstName = firstName;
-        return QString::fromLatin1("Hello, ") + firstName + QLatin1String("!");
+        m_receivedLastName = lastName;
+        return QString::fromLatin1("You said: ") + firstName + QLatin1Char(' ') + lastName + QLatin1String("!");
     }
     QString receivedFirstName() const { return m_receivedFirstName; }
+    QString receivedLastName() const { return m_receivedLastName; }
 private:
     QString m_receivedFirstName;
+    QString m_receivedLastName;
 };
 
 class HelloServer : public KDSoapServer
@@ -177,7 +180,8 @@ private:
         "<soap:Body>"
         "<n1:sayHello xmlns:n1=\"http://www.ecerami.com/wsdl/HelloService.wsdl\">"
         /*"<n1:sayHello xmlns:n1=\"urn:examples:helloservice\">" // TODO! Add support for * namespace="urn:examples:helloservice" */
-             "<firstName xsi:type=\"xsd:string\">World</firstName>"
+             "<firstName xsi:type=\"xsd:string\">Hello</firstName>"
+             "<lastName xsi:type=\"xsd:string\">World</lastName>"
         "</n1:sayHello>"
         "</soap:Body>" + xmlEnvEnd()
             + '\n'; // added by QXmlStreamWriter::writeEndDocument
@@ -193,7 +197,7 @@ private:
               "<ns1:sayHelloResponse "
                  "xmlns:ns1=\"urn:examples:helloservice\" "
                  "SOAP-ENV:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\">"
-        "<return xsi:type=\"xsd:string\">Hello, World!</return>"
+        "<return xsi:type=\"xsd:string\">You said: Hello World!</return>"
               "</ns1:sayHelloResponse>"
            "</SOAP-ENV:Body>"
         "</SOAP-ENV:Envelope>";
@@ -236,8 +240,8 @@ private Q_SLOTS:
         Hello_Service service;
         service.setEndPoint(server.endPoint());
 
-        const QString resp = service.sayHello("World");
-        QCOMPARE(resp, QString::fromLatin1("Hello, World!"));
+        const QString resp = service.sayHello("Hello", "World");
+        QCOMPARE(resp, QString::fromLatin1("You said: Hello World!"));
 
         // Check what we sent
         {
@@ -254,11 +258,12 @@ private Q_SLOTS:
         Hello_Service service;
         service.setEndPoint(server->endPoint());
 
-        const QString resp = service.sayHello("World");
+        const QString resp = service.sayHello("Hello", "World");
 
-        QCOMPARE(server->lastServerObject()->receivedFirstName(), QString::fromLatin1("World"));
+        QCOMPARE(server->lastServerObject()->receivedFirstName(), QString::fromLatin1("Hello"));
+        QCOMPARE(server->lastServerObject()->receivedLastName(), QString::fromLatin1("World"));
 
-        QCOMPARE(resp, QString::fromLatin1("Hello, World!"));
+        QCOMPARE(resp, QString::fromLatin1("You said: Hello World!"));
     }
 
     void syncOneWay() // client/server call for a one-way call

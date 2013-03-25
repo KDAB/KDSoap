@@ -112,10 +112,9 @@ void Converter::generateServerMethod(KODE::Code& code, const Binding& binding, c
 
     QStringList inputVars;
     const Part::List parts = message.parts();
-    if (parts.count() > 1) {
-        qWarning("ERROR: multiple input parameters are not supported - please report this with your wsdl file to kdsoap-support@kdab.com");
-    }
-    Q_FOREACH( const Part& part, parts ) {
+    qDebug() << parts.count() << "parts";
+    for (int partNum = 0; partNum < parts.count(); ++partNum) {
+        const Part part = parts.at(partNum);
         const QString lowerName = lowerlize( part.name() );
         const QString argType = mTypeMap.localType( part.type(), part.element() );
         //qDebug() << "localInputType" << part.type().qname() << part.element().qname() << "->" << argType;
@@ -127,8 +126,11 @@ void Converter::generateServerMethod(KODE::Code& code, const Binding& binding, c
             QString soapValueVarName = "request";
             if (soapStyle(binding) == SoapBinding::RPCStyle) {
                 // RPC comes with a wrapper element, dig into it here
-                code += QLatin1String("const KDSoapValue val = request.childValues().first();") + COMMENT;
                 soapValueVarName = "val";
+                if (partNum > 0) {
+                    soapValueVarName += QString::number(partNum+1);
+                }
+                code += QString::fromLatin1("const KDSoapValue %1 = request.childValues().at(%2);").arg(soapValueVarName).arg(partNum) + COMMENT;
             }
 
             // what if there's more than one?

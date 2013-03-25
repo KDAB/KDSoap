@@ -9,6 +9,7 @@
  
    <message name="SayHelloRequest">
       <part name="firstName" type="xsd:string"/>
+      <part name="lastName" type="xsd:string"/>
    </message>
    <message name="SayHelloResponse">
       <part name="greeting" type="xsd:string"/>
