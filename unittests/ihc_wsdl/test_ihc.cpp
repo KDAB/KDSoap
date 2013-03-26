@@ -33,7 +33,7 @@
 
 using namespace KDSoapUnitTestHelpers;
 
-class WattooTest : public QObject
+class IHCResourceInteractionTest : public QObject
 {
     Q_OBJECT
 
@@ -59,6 +59,6 @@ private Q_SLOTS:
     }
 };
 
-QTEST_MAIN(WattooTest)
+QTEST_MAIN(IHCResourceInteractionTest)
 
-#include "test_wattoo.moc"
+#include "test_ihc.moc"

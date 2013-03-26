@@ -1,6 +1,6 @@
 include( $${TOP_SOURCE_DIR}/unittests/unittests.pri )
 QT += network xml
-SOURCES = test_wattoo.cpp
+SOURCES = test_ihc.cpp
 test.target = test
 test.commands = ./$(TARGET)
 test.depends = $(TARGET)
