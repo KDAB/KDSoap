@@ -7,3 +7,5 @@ bin
 generated
 .qmake.cache
 CMakeLists.txt.user
+_moc
+_obj
