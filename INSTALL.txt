@@ -27,12 +27,28 @@ the configure.bat/configure.sh script doesn't exist (it's generated at release t
 
 you need to do this instead:
 
-  git submodule update --init
-  ./autogen.py [options]
-  make
+   First, a working Python (Python version 2 or 3 should work) is required
+   and must be found in your execute path.  Either a 32-bit or 64-bit version
+   of Python is fine, but run python --version to make sure it is found
+   before continuing.
 
-autogen.py supports a number of command-line options, including -prefix <dir>
-to specify an installation prefix for KD Soap. This affects make install.
+   Next, you need to checkout the autogen submodule from the git repository.
+   like so:
+     git submodule update --init
+
+   And now run autogen.py to create the configure tool.
+
+   On Windows:
+     autogen.py [options]
+   On Linux:
+     ./autogen.py [options]
+
+Pass the same options to autogen.py as you would for configure.sh/configure.bat
+as shown above in step 1).
+
+After running autogen.py, a configure.sh/configure.bat script will exist and
+you can use that to re-configure later, as needed.  Then you can continue on
+to the platform-specific setup instructions in step 2, 3 or 4.
 
 2) Unix
 
