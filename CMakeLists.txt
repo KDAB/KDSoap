@@ -1,5 +1,5 @@
 project(KDSoap CXX)
-cmake_minimum_required(VERSION 2.8.8)
+cmake_minimum_required(VERSION 2.8.7)
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/ ${CMAKE_MODULE_PATH}")
 
 option(${PROJECT_NAME}_STATIC "Build statically" OFF)
@@ -53,7 +53,12 @@ if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
 
   install(FILES LICENSE.GPL.txt LICENSE.US.txt LICENSE.txt README.txt kdsoap.pri kdwsdl2cpp.pri DESTINATION .)
 
-  include(CMakePackageConfigHelpers)
+  if (CMAKE_VERSION VERSION_LESS 2.8.8)
+    include("${CMAKE_SOURCE_DIR}/cmake/CMakePackageConfigHelpers.cmake")
+  else()
+    include(CMakePackageConfigHelpers)
+  endif()
+
   write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/KDSoap/KDSoapConfigVersion.cmake"
     VERSION ${${PROJECT_NAME}_VERSION}
     COMPATIBILITY AnyNewerVersion
