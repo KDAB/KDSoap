@@ -7,6 +7,8 @@ Client-side:
 
 Server-side:
 ============
+* Fix crash when sending delayed reply to disconnected client (SOAP-34/SOAP-67)
+
 * Add doneProcessingRequestWithPath() for copying fault info and response headers from secondary object to primary one.
   The method is to be called after processRequestWithPath delegates the request to another object interface.
 

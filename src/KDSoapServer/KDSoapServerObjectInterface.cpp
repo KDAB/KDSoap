@@ -22,6 +22,7 @@
 #include "KDSoapServerObjectInterface.h"
 #include "KDSoapServerSocket_p.h"
 #include <QDebug>
+#include <QPointer>
 
 class KDSoapServerObjectInterface::Private
 {
@@ -39,7 +40,8 @@ public:
     QString m_detail;
     QString m_responseNamespace;
     QByteArray m_soapAction;
-    KDSoapServerSocket* m_serverSocket;
+    // QPointer in case the client disconnects during a delayed response
+    QPointer<KDSoapServerSocket> m_serverSocket;
 };
 
 KDSoapServerObjectInterface::KDSoapServerObjectInterface()
@@ -152,7 +154,9 @@ void KDSoapServerObjectInterface::setServerSocket(KDSoapServerSocket *serverSock
 
 void KDSoapServerObjectInterface::sendDelayedResponse(const KDSoapDelayedResponseHandle& responseHandle, const KDSoapMessage &response)
 {
-    responseHandle.serverSocket()->sendDelayedReply(this, response);
+    KDSoapServerSocket* socket = responseHandle.serverSocket();
+    if (socket)
+        socket->sendDelayedReply(this, response);
 }
 
 void KDSoapServerObjectInterface::setResponseNamespace(const QString& ns)

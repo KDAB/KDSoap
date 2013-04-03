@@ -23,13 +23,15 @@
 #include "KDSoapDelayedResponseHandle.h"
 #include "KDSoapServerSocket_p.h"
 #include <QSharedData>
+#include <QPointer>
 
 class KDSoapDelayedResponseHandleData : public QSharedData {
 public:
     KDSoapDelayedResponseHandleData(KDSoapServerSocket* s)
         : socket(s)
     {}
-    KDSoapServerSocket* socket;
+    // QPointer in case the client disconnects during a delayed response
+    QPointer<KDSoapServerSocket> socket;
 };
 
 KDSoapDelayedResponseHandle::KDSoapDelayedResponseHandle() : data(new KDSoapDelayedResponseHandleData(0))

@@ -536,6 +536,7 @@ private Q_SLOTS:
     void testServerDelayedCall();
     void testSyncCallAfterServerDelayedCall();
     void testServerTwoDelayedCalls();
+    void testDisconnectDuringDelayedCall();
     void testServerDifferentPath();
     void testServerDifferentPathFault();
 
@@ -618,7 +619,7 @@ public:
     MyJob(const KDSoapDelayedResponseHandle& handle)
         : m_handle(handle)
     {
-        QTimer::singleShot(20, this, SLOT(slotDone()));
+        QTimer::singleShot(200, this, SLOT(slotDone()));
     }
     KDSoapDelayedResponseHandle responseHandle() const { return m_handle; }
 Q_SIGNALS:
@@ -683,6 +684,7 @@ public:
     QByteArray delayedAddEmployee( const KDAB__AddEmployee& parameters ) {
         //qDebug() << "delayedAddEmployee called";
         Q_UNUSED(parameters);
+        m_lastMethodCalled = QLatin1String("delayedAddEmployee");
 
         KDSoapDelayedResponseHandle handle = prepareDelayedResponse();
         MyJob* job = new MyJob(handle);
@@ -763,6 +765,7 @@ private Q_SLOTS:
         delayedAddEmployeeResponse(job->responseHandle(), QByteArray("delayed reply works"));
         job->deleteLater();
         // TODO test delayed fault.
+        m_lastMethodCalled = "slotDelayedResponse";
     }
 private:
     NameServiceServerObject m_nameServiceServerObject;
@@ -1011,6 +1014,47 @@ void WsdlDocumentTest::testServerTwoDelayedCalls()
     const QString expected = QString::fromLatin1("delayed reply works");
     QCOMPARE(QString::fromLatin1(m_delayedData.at(0).constData()), expected);
     QCOMPARE(QString::fromLatin1(m_delayedData.at(1).constData()), expected);
+}
+
+// SOAP-34 / SOAP-67
+void WsdlDocumentTest::testDisconnectDuringDelayedCall()
+{
+    TestServerThread<DocServer> serverThread;
+    DocServer* server = serverThread.startThread();
+    {
+        MyWsdlDocument service;
+        service.setEndPoint(server->endPoint());
+
+        DelayedAddEmployeeJob* job = new DelayedAddEmployeeJob(&service);
+        job->setParameters(addEmployeeParameters());
+        job->start();
+        // Wait until the server method is called
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+        QTRY_VERIFY(server->lastServerObject());
+        QTRY_COMPARE(server->lastServerObject()->m_lastMethodCalled, QString::fromLatin1("delayedAddEmployee"));
+#else
+        do {
+            QTest::qWait(100);
+        } while ( !server->lastServerObject() || server->lastServerObject()->m_lastMethodCalled != QLatin1String("delayedAddEmployee") );
+#endif
+
+        /* connect(job, SIGNAL(finished(KDSoapJob*)), this, SLOT(slotAddEmployeeJobFinished(KDSoapJob*)));
+        m_eventLoop.exec();
+        const QByteArray ret = job->resultParameters();
+        QCOMPARE(service.lastError(), QString());
+        QCOMPARE(QString::fromLatin1(ret.constData()), QString::fromLatin1("delayed reply works")); */
+        delete job;
+    } // Disconnect the client
+
+    // Let the server continue
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+    QTRY_COMPARE(server->lastServerObject()->m_lastMethodCalled, QString::fromLatin1("slotDelayedResponse"));
+#else
+    do {
+        QTest::qWait(100);
+    } while ( server->lastServerObject()->m_lastMethodCalled != QLatin1String("slotDelayedResponse") );
+#endif
 }
 
 // Same as testSequenceInResponse (thomas-bayer.wsdl), but as a server test, by calling DocServer on a different path
