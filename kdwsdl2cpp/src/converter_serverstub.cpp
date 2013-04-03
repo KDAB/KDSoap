@@ -112,7 +112,6 @@ void Converter::generateServerMethod(KODE::Code& code, const Binding& binding, c
 
     QStringList inputVars;
     const Part::List parts = message.parts();
-    qDebug() << parts.count() << "parts";
     for (int partNum = 0; partNum < parts.count(); ++partNum) {
         const Part part = parts.at(partNum);
         const QString lowerName = lowerlize( part.name() );
