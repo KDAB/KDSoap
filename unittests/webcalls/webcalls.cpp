@@ -62,7 +62,7 @@ private slots:
         connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher*)),
                 this, SLOT(slotFinished(KDSoapPendingCallWatcher*)));
         m_eventLoop.exec();
-        QVERIFY(!m_returnMessage.isFault());
+        QVERIFY2(!m_returnMessage.isFault(), qPrintable(m_returnMessage.faultAsString()));
         QCOMPARE(m_returnMessage.arguments().first().value().toInt(), 85);
         QCOMPARE(watcher->returnValue().toInt(), 85);
     }
@@ -77,6 +77,7 @@ private slots:
         message.addArgument(QLatin1String("number1"), 42);
         message.addArgument(QLatin1String("number2"), 43);
         KDSoapMessage ret = client.call(QLatin1String("AddInteger"), message);
+        QVERIFY2(!ret.isFault(), qPrintable(ret.faultAsString()));
         QCOMPARE(ret.arguments().first().value().toInt(), 85);
     }
 
@@ -153,6 +154,7 @@ private slots:
         m_eventLoop.exec();
         //qDebug() << m_returnMessage;
 
+        QVERIFY2(!m_returnMessage.isFault(), qPrintable(m_returnMessage.faultAsString()));
         const QString retVal = m_returnMessage.arguments()[0].value().toString();
         QCOMPARE(retVal, QString::fromLatin1("Berlin;Berlstedt"));
     }
