@@ -14,7 +14,18 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 # setup default install locations
 include(InstallLocation)
 
-find_package(Qt4 4.7 QUIET REQUIRED QtCore QtMain QtGui)
+find_package(Qt5Widgets QUIET)
+if (Qt5Widgets_FOUND)
+  set(QT_LIBRARIES Qt5::Widgets)
+  set(QT_USE_FILE "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Qt5Portability.cmake")
+
+  if(Qt5_POSITION_INDEPENDENT_CODE)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+  endif()
+
+else()
+  find_package(Qt4 4.7 QUIET REQUIRED QtCore QtMain QtGui)
+endif()
 
 set(CMAKE_INCLUDE_CURRENT_DIR TRUE)
 set(CMAKE_AUTOMOC TRUE)
