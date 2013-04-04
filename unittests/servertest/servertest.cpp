@@ -89,7 +89,9 @@ public:
         if ((path == QLatin1String("/") || path == QLatin1String("/path/to/file_download.txt")) && auth.user() == QLatin1String("kdab"))
             return auth.password() == QLatin1String("pass42");
         return false;
-    } public: // SOAP-accessible methods
+    }
+
+public: // SOAP-accessible methods
     QString getEmployeeCountry(const QString& employeeName) {
         // Should be called in same thread as constructor
         s_serverObjectsMutex.lock();
@@ -710,7 +712,7 @@ private Q_SLOTS:
         for (int i = 0; i < numClients; ++i) {
             KDSoapClientInterface* client = new KDSoapClientInterface(server->endPoint(), countryMessageNamespace());
             clients[i] = client;
-            makeAsyncCalls(*client, 1);
+            makeAsyncCalls(*client, 1, true);
         }
         m_eventLoop.exec();
         QTest::qWait(1000);
@@ -968,11 +970,11 @@ private:
         QCOMPARE(response.arguments().child(QLatin1String("faultcode")).value().toString(), QString::fromLatin1("Client.Data"));
     }
 
-    QList<KDSoapPendingCallWatcher*> makeAsyncCalls(KDSoapClientInterface& client, int numRequests)
+    QList<KDSoapPendingCallWatcher*> makeAsyncCalls(KDSoapClientInterface& client, int numRequests, bool slow = false)
     {
         QList<KDSoapPendingCallWatcher*> watchers;
         for (int i = 0; i < numRequests; ++i) {
-            KDSoapPendingCall pendingCall = client.asyncCall(QLatin1String("getEmployeeCountry"), countryMessage());
+            KDSoapPendingCall pendingCall = client.asyncCall(QLatin1String("getEmployeeCountry"), countryMessage(slow));
             KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);
             connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher*)),
                     this, SLOT(slotFinished(KDSoapPendingCallWatcher*)));
