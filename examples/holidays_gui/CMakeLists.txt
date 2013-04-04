@@ -5,8 +5,6 @@ set(holidays_gui_SRCS holidays_gui.cpp mainwindow.cpp)
 
 KDSOAP_GENERATE_WSDL(holidays_gui_SRCS holidays.wsdl)
 
-qt4_automoc(${holidays_gui_SRCS})
-
 qt4_add_resources(holidays_gui_SRCS resources.qrc)
 
 add_executable(holidays_gui ${holidays_gui_SRCS})

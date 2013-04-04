@@ -6,7 +6,6 @@ include_directories(.. ../src/KDSoapClient)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(testtools_srcs httpserver_p.cpp)
-qt4_automoc(${testtools_srcs})
 
 qt4_add_resources(testtools_srcs testtools.qrc)
 
