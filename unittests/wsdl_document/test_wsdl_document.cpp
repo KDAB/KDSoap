@@ -765,7 +765,7 @@ private Q_SLOTS:
         delayedAddEmployeeResponse(job->responseHandle(), QByteArray("delayed reply works"));
         job->deleteLater();
         // TODO test delayed fault.
-        m_lastMethodCalled = "slotDelayedResponse";
+        m_lastMethodCalled = QString::fromLatin1("slotDelayedResponse");
     }
 private:
     NameServiceServerObject m_nameServiceServerObject;
