@@ -20,7 +20,11 @@ if (Qt5Widgets_FOUND)
   set(QT_USE_FILE "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Qt5Portability.cmake")
 
   if(Qt5_POSITION_INDEPENDENT_CODE)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+    if(CMAKE_VERSION VERSION_LESS 2.8.9)
+      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+    elseif(CMAKE_VERSION VERSION_LESS 2.8.11)
+      set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+    endif()
   endif()
 
 else()
