@@ -27,10 +27,9 @@ the configure.bat/configure.sh script doesn't exist (it's generated at release t
 
 you need to do this instead:
 
-   First, a working Python (Python version 2 or 3 should work) is required
-   and must be found in your execute path.  Either a 32-bit or 64-bit version
-   of Python is fine, but run python --version to make sure it is found
-   before continuing.
+   First, a working Python (version2) is required and must be found in your
+   execute path.  Either a 32-bit or 64-bit version of Python is fine, but run
+   python --version to make sure it is found and is python2 before continuing.
 
    Next, you need to checkout the autogen submodule from the git repository.
    like so:
@@ -39,7 +38,7 @@ you need to do this instead:
    And now run autogen.py to create the configure tool.
 
    On Windows:
-     autogen.py [options]
+     python autogen.py [options]
    On Linux:
      ./autogen.py [options]
 
