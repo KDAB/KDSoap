@@ -1,3 +1,4 @@
+KDWSDL_OPTIONS = -server
 include( $${TOP_SOURCE_DIR}/unittests/unittests.pri )
 QT += network xml
 SOURCES = test_ihc.cpp
@@ -8,3 +9,4 @@ QMAKE_EXTRA_TARGETS += test
 
 KDWSDL = resourceinteraction.wsdl
 OTHER_FILES += $$KDWSDL
+LIBS        += -L$${TOP_BUILD_DIR}/lib -l$$KDSOAPSERVERLIB

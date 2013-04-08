@@ -33,6 +33,81 @@
 
 using namespace KDSoapUnitTestHelpers;
 
+class IHCServerObject : public ResourceInteractionServiceServiceServerBase
+{
+public:
+
+    virtual TNS__WSResourceValueEnvelope getRuntimeValue( int parameter1 ) {
+        return TNS__WSResourceValueEnvelope(); }
+    virtual TNS__ArrayOfWSResourceValueEnvelope getRuntimeValues( const XSD__ArrayOfint& parameter2 ) {
+        return TNS__ArrayOfWSResourceValueEnvelope(); }
+    virtual TNS__ArrayOfWSResourceValueEnvelope getInitialValues( const XSD__ArrayOfint& parameter3 ) {
+        return TNS__ArrayOfWSResourceValueEnvelope();
+    }
+    virtual bool setResourceValue( const TNS__WSResourceValueEnvelope& parameter4 ) {
+        qDebug() << parameter4.typeString();
+        //qDebug() << dynamic_cast<WPNS1__WSEnumValue *>(&parameter4.value());
+        return (parameter4.typeString() == "type");
+    }
+    virtual bool setResourceValues( const TNS__ArrayOfWSResourceValueEnvelope& parameter5 ) {
+        return false;
+    }
+    virtual TNS__ArrayOfWSResourceValueEnvelope enableRuntimeValueNotifications( const XSD__ArrayOfint& parameter6 ) {
+        return TNS__ArrayOfWSResourceValueEnvelope();
+    }
+    virtual bool disableRuntimeValueNotifactions( const XSD__ArrayOfint& parameter7 ) {
+        return false;
+    }
+    virtual TNS__ArrayOfWSResourceValueEnvelope enableInitialValueNotifications( const XSD__ArrayOfint& parameter8 ) {
+        return TNS__ArrayOfWSResourceValueEnvelope();
+    }
+    virtual bool disableInitialValueNotifactions( const XSD__ArrayOfint& parameter9 ) {
+        return false;
+    }
+    virtual TNS__ArrayOfWSResourceValueEnvelope waitForResourceValueChanges( int parameter10 ) {
+        return TNS__ArrayOfWSResourceValueEnvelope();
+    }
+    virtual TNS__ArrayOfWSSceneResourceIdAndLocationURLs getSceneGroupResourceIdAndPositions( int parameter11 ) {
+        return TNS__ArrayOfWSSceneResourceIdAndLocationURLs();
+    }
+    virtual TNS__WSSceneResourceIdAndLocationURLs getScenePositionsForSceneValueResource( int parameter12 ) {
+        return TNS__WSSceneResourceIdAndLocationURLs();
+    }
+    virtual WPNS1__ArrayOfWSEnumDefinition getEnumeratorDefinitions() {
+        return WPNS1__ArrayOfWSEnumDefinition();
+    }
+    virtual QString getResourceType( int parameter13 ) {
+        return QString();
+    }
+    virtual TNS__ArrayOfWSDatalineResource getExtraDatalineInputs() {
+        return TNS__ArrayOfWSDatalineResource();
+    }
+    virtual TNS__ArrayOfWSDatalineResource getExtraDatalineOutputs() {
+        return TNS__ArrayOfWSDatalineResource();
+    }
+    virtual TNS__ArrayOfWSDatalineResource getAllDatalineInputs() {
+        return TNS__ArrayOfWSDatalineResource();
+    }
+    virtual TNS__ArrayOfWSDatalineResource getAllDatalineOutputs() {
+        return TNS__ArrayOfWSDatalineResource();
+    }
+    virtual TNS__WSResourceValueEnvelope getInitialValue( int parameter14 ) {
+        return TNS__WSResourceValueEnvelope();
+    }
+};
+
+class IHCServer : public KDSoapServer
+{
+    Q_OBJECT
+public:
+    IHCServer() : KDSoapServer(), m_lastServerObject(0) {
+    }
+    virtual QObject* createServerObject() { m_lastServerObject = new IHCServerObject; return m_lastServerObject; }
+    IHCServerObject* lastServerObject() { return m_lastServerObject; }
+private:
+    IHCServerObject* m_lastServerObject;
+};
+
 class IHCResourceInteractionTest : public QObject
 {
     Q_OBJECT
@@ -43,19 +118,24 @@ private Q_SLOTS:
 
     void testInheritance()
     {
+        TestServerThread<IHCServer> serverThread;
+        IHCServer* server = serverThread.startThread();
+
         ResourceInteractionServiceService service;
-        if (false) { // check compilation, not runtime
-            //service.setEndPoint(server.endPoint());
-            TNS__WSResourceValueEnvelope env;
-            env.setResourceID(54);
-            env.setTypeString(QLatin1String("type"));
-            WPNS1__WSEnumValue myEnum;
-            myEnum.setDefinitionTypeID(2);
-            myEnum.setEnumName("enum1");
-            myEnum.setEnumValueID(42);
-            env.setValue(myEnum);
-            service.setResourceValue(env);
-        }
+        service.setEndPoint(server->endPoint());
+
+        TNS__WSResourceValueEnvelope env;
+        env.setResourceID(54);
+        env.setTypeString(QLatin1String("type"));
+        WPNS1__WSEnumValue myEnum;
+        myEnum.setDefinitionTypeID(2);
+        myEnum.setEnumName("enum1");
+        myEnum.setEnumValueID(42);
+        env.setValue(myEnum);
+        qDebug() << dynamic_cast<WPNS1__WSEnumValue *>(&myEnum);
+        service.setResourceValue(env);
+
+        //qDebug() << server->lastServerObject()-> ...;
     }
 
     void testBuiltinInitialization()
