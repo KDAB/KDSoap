@@ -1,5 +1,11 @@
 import os, sys, subprocess
 
+if sys.version_info[0] != 2:
+  print ("Autogen detected that you are not using Python2.")
+  print ("Please make sure you have Python2 installed and run:")
+  print ("  python2 autogen.py")
+  sys.exit(0)
+
 from cpack import CPackGenerateConfiguration 
 from configure import ConfigureScriptGenerator
 from header import ForwardHeaderGenerator
