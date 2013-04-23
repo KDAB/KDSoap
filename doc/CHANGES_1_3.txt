@@ -1,7 +1,7 @@
 General:
 ========
 * KDSoap now supports both Qt4 and Qt5
-* Added support for cross-compilation with Qt5's qmake
+* Added support for cross-compilation with qmake
   (so that kdwsdl2cpp is compiled as a host tool)
   Usage: ./configure [...] -hostqmake /opt/host-qt4/bin/qmake
 * Fix compilation with custom build systems who do not set include paths to QtCore and QtNetwork.
