@@ -291,6 +291,7 @@ bool KDSoapServerSocket::handleFileDownload(KDSoapServerObjectInterface *serverO
         return false;
     if (!device->open(QIODevice::ReadOnly)) {
         handleError(replyMsg, "Server.File", QString::fromLatin1("File (or device) associated with path %1 could not be opened for reading.").arg(path));
+        sendReply(0, replyMsg);
         delete device;
         return true; // handled!
     }
