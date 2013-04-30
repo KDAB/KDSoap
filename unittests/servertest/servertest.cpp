@@ -760,21 +760,21 @@ private Q_SLOTS:
     {
         QTest::addColumn<QString>("fileToDownload"); // client
         QTest::addColumn<QFileDevice::Permissions>("permissions"); // server
-        QTest::addColumn<bool>("expectedSuccess");
+        QTest::addColumn<QNetworkReply::NetworkError>("expectedReplyCode");
 
         QFileDevice::Permissions readable = QFileDevice::ReadOwner | QFileDevice::ReadUser;
         QFileDevice::Permissions writable = QFileDevice::WriteOwner | QFileDevice::WriteUser;
 
-        QTest::newRow("readable") << "file_download.txt" << readable << true;
-        QTest::newRow("nonexistent") << "nonexistent.txt" << readable << false;
-        QTest::newRow("unreadable") << "file_download.txt" << writable << false;
+        QTest::newRow("readable") << "file_download.txt" << readable << QNetworkReply::NoError;
+        QTest::newRow("nonexistent") << "nonexistent.txt" << readable << QNetworkReply::ContentNotFoundError;
+        QTest::newRow("unreadable") << "file_download.txt" << writable << QNetworkReply::ContentOperationNotPermittedError;
     }
 
     void testFileDownload()
     {
         QFETCH(QString, fileToDownload);
         QFETCH(QFileDevice::Permissions, permissions);
-        QFETCH(bool, expectedSuccess);
+        QFETCH(QNetworkReply::NetworkError, expectedReplyCode);
 
         QTimer download_timeout;
         download_timeout.setInterval(5000); // 5 seconds
@@ -812,11 +812,9 @@ private Q_SLOTS:
         QFile::remove(fileName);
 
         QCOMPARE(timeout_spy.count(), 0);
-        if (expectedSuccess) {
-            QCOMPARE((int)reply->error(), (int)QNetworkReply::NoError);
+        QCOMPARE((int)reply->error(), (int)expectedReplyCode);
+        if (expectedReplyCode == QNetworkReply::NoError) {
             QCOMPARE(reply->readAll(), QByteArray("Hello world"));
-        } else {
-            QVERIFY((int)reply->error() != (int)QNetworkReply::NoError);
         }
     }
 
