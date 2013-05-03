@@ -41,7 +41,10 @@
 #endif
 using namespace KDSoapUnitTestHelpers;
 
-Q_DECLARE_METATYPE(QFileDevice::Permissions)
+Q_DECLARE_METATYPE(QFile::Permissions)
+#if QT_VERSION < QT_VERSION_CHECK(5,0,0)
+Q_DECLARE_METATYPE(QNetworkReply::NetworkError)
+#endif
 
 static const char* myWsdlNamespace = "http://www.kdab.com/xml/MyWsdl/";
 
@@ -759,11 +762,11 @@ private Q_SLOTS:
     void testFileDownload_data()
     {
         QTest::addColumn<QString>("fileToDownload"); // client
-        QTest::addColumn<QFileDevice::Permissions>("permissions"); // server
+        QTest::addColumn<QFile::Permissions>("permissions"); // server
         QTest::addColumn<QNetworkReply::NetworkError>("expectedReplyCode");
 
-        QFileDevice::Permissions readable = QFileDevice::ReadOwner | QFileDevice::ReadUser;
-        QFileDevice::Permissions writable = QFileDevice::WriteOwner | QFileDevice::WriteUser;
+        QFile::Permissions readable = QFile::ReadOwner | QFile::ReadUser;
+        QFile::Permissions writable = QFile::WriteOwner | QFile::WriteUser;
 
         QTest::newRow("readable") << "file_download.txt" << readable << QNetworkReply::NoError;
         QTest::newRow("nonexistent") << "nonexistent.txt" << readable << QNetworkReply::ContentNotFoundError;
@@ -773,7 +776,7 @@ private Q_SLOTS:
     void testFileDownload()
     {
         QFETCH(QString, fileToDownload);
-        QFETCH(QFileDevice::Permissions, permissions);
+        QFETCH(QFile::Permissions, permissions);
         QFETCH(QNetworkReply::NetworkError, expectedReplyCode);
 
         QTimer download_timeout;
@@ -805,10 +808,10 @@ private Q_SLOTS:
         download_timeout.start();
         loop.exec();
 
-        file.setPermissions(QFileDevice::ReadOwner |
-                            QFileDevice::ReadUser |
-                            QFileDevice::WriteOwner |
-                            QFileDevice::WriteUser);
+        file.setPermissions(QFile::ReadOwner |
+                            QFile::ReadUser |
+                            QFile::WriteOwner |
+                            QFile::WriteUser);
         QFile::remove(fileName);
 
         QCOMPARE(timeout_spy.count(), 0);
@@ -901,15 +904,14 @@ private Q_SLOTS:
         request.setRawHeader("SoapAction", "http://www.kdab.com/xml/MyWsdl/getEmployeeCountry");
         QString soapHeader = QString::fromLatin1("text/xml;charset=utf-8");
         request.setHeader(QNetworkRequest::ContentTypeHeader, soapHeader.toUtf8());
-        QTest::ignoreMessage(QtWarningMsg, "Support for GET requests not implemented yet.");
         QNetworkAccessManager accessManager;
         QNetworkReply* reply = accessManager.get(request);
         QEventLoop loop;
         connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
         loop.exec();
         const QByteArray response = reply->readAll();
-        const QByteArray expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" soap:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\"><soap:Body><Fault><faultcode>Client.Data</faultcode><faultstring>Support for GET requests not implemented yet.</faultstring></Fault></soap:Body></soap:Envelope>\n";
-        QCOMPARE(response.constData(), expected.constData());
+        QCOMPARE(response.constData(), "");
+        QCOMPARE((int)reply->error(), (int)QNetworkReply::ContentNotFoundError);
     }
 
     void testHeadShouldFail()
