@@ -308,9 +308,25 @@ bool Converter::convertClientService()
                 ctor.addArgument( KODE::Function::Argument( QLatin1String("QObject* parent"), QLatin1String("0") ) );
                 ctor.addInitializer( QLatin1String("KDSoapJob(parent)") );
                 ctor.addInitializer( QLatin1String("mService(service)") );
-                jobClass.addFunction( ctor );
 
                 const Message message = mWSDL.findMessage( operation.input().message() );
+                Q_FOREACH( const Part& part, selectedParts( binding, message, operation, true /*input*/ ) ) {
+                    const QString varType = mTypeMap.localType( part.type(), part.element() );
+                    const QString partName = part.name();
+                    const KODE::MemberVariable member( partName, varType );
+                    ctor.addInitializer( member.name() + "()" );
+                }
+
+                const Message outputMsg = mWSDL.findMessage( operation.output().message() );
+
+                Q_FOREACH( const Part& part, selectedParts( binding, outputMsg, operation, false /*output*/ ) ) {
+                    const QString varType = mTypeMap.localType( part.type(), part.element() );
+                    const QString varName = mNameMapper.escape( QLatin1String("result") + upperlize( part.name() ) );
+                    const KODE::MemberVariable member( varName, varType );
+                    ctor.addInitializer( member.name() + "()" );
+                }
+
+                jobClass.addFunction( ctor );
 
                 QStringList inputGetters;
 
@@ -335,8 +351,6 @@ bool Converter::convertClientService()
                     getter.setBody( gc );
                     jobClass.addFunction( getter );
                 }
-
-                const Message outputMsg = mWSDL.findMessage( operation.output().message() );
 
                 KODE::Function doStart( QLatin1String("doStart"), QLatin1String("void"), KODE::Function::Protected );
                 KODE::Code doStartCode;
