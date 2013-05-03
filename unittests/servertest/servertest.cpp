@@ -41,7 +41,8 @@
 #endif
 using namespace KDSoapUnitTestHelpers;
 
-Q_DECLARE_METATYPE(QFileDevice::Permissions)
+Q_DECLARE_METATYPE(QFile::Permissions)
+Q_DECLARE_METATYPE(QNetworkReply::NetworkError)
 
 static const char* myWsdlNamespace = "http://www.kdab.com/xml/MyWsdl/";
 
@@ -759,11 +760,11 @@ private Q_SLOTS:
     void testFileDownload_data()
     {
         QTest::addColumn<QString>("fileToDownload"); // client
-        QTest::addColumn<QFileDevice::Permissions>("permissions"); // server
+        QTest::addColumn<QFile::Permissions>("permissions"); // server
         QTest::addColumn<QNetworkReply::NetworkError>("expectedReplyCode");
 
-        QFileDevice::Permissions readable = QFileDevice::ReadOwner | QFileDevice::ReadUser;
-        QFileDevice::Permissions writable = QFileDevice::WriteOwner | QFileDevice::WriteUser;
+        QFile::Permissions readable = QFile::ReadOwner | QFile::ReadUser;
+        QFile::Permissions writable = QFile::WriteOwner | QFile::WriteUser;
 
         QTest::newRow("readable") << "file_download.txt" << readable << QNetworkReply::NoError;
         QTest::newRow("nonexistent") << "nonexistent.txt" << readable << QNetworkReply::ContentNotFoundError;
@@ -773,7 +774,7 @@ private Q_SLOTS:
     void testFileDownload()
     {
         QFETCH(QString, fileToDownload);
-        QFETCH(QFileDevice::Permissions, permissions);
+        QFETCH(QFile::Permissions, permissions);
         QFETCH(QNetworkReply::NetworkError, expectedReplyCode);
 
         QTimer download_timeout;
@@ -805,10 +806,10 @@ private Q_SLOTS:
         download_timeout.start();
         loop.exec();
 
-        file.setPermissions(QFileDevice::ReadOwner |
-                            QFileDevice::ReadUser |
-                            QFileDevice::WriteOwner |
-                            QFileDevice::WriteUser);
+        file.setPermissions(QFile::ReadOwner |
+                            QFile::ReadUser |
+                            QFile::WriteOwner |
+                            QFile::WriteUser);
         QFile::remove(fileName);
 
         QCOMPARE(timeout_spy.count(), 0);
