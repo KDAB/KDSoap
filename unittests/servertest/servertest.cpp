@@ -42,7 +42,9 @@
 using namespace KDSoapUnitTestHelpers;
 
 Q_DECLARE_METATYPE(QFile::Permissions)
+#if QT_VERSION < QT_VERSION_CHECK(5,0,0)
 Q_DECLARE_METATYPE(QNetworkReply::NetworkError)
+#endif
 
 static const char* myWsdlNamespace = "http://www.kdab.com/xml/MyWsdl/";
 
@@ -902,15 +904,14 @@ private Q_SLOTS:
         request.setRawHeader("SoapAction", "http://www.kdab.com/xml/MyWsdl/getEmployeeCountry");
         QString soapHeader = QString::fromLatin1("text/xml;charset=utf-8");
         request.setHeader(QNetworkRequest::ContentTypeHeader, soapHeader.toUtf8());
-        QTest::ignoreMessage(QtWarningMsg, "Support for GET requests not implemented yet.");
         QNetworkAccessManager accessManager;
         QNetworkReply* reply = accessManager.get(request);
         QEventLoop loop;
         connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
         loop.exec();
         const QByteArray response = reply->readAll();
-        const QByteArray expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" soap:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\"><soap:Body><Fault><faultcode>Client.Data</faultcode><faultstring>Support for GET requests not implemented yet.</faultstring></Fault></soap:Body></soap:Envelope>\n";
-        QCOMPARE(response.constData(), expected.constData());
+        QCOMPARE(response.constData(), "");
+        QCOMPARE((int)reply->error(), (int)QNetworkReply::ContentNotFoundError);
     }
 
     void testHeadShouldFail()
