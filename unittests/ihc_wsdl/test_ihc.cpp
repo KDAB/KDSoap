@@ -57,6 +57,20 @@ private Q_SLOTS:
             service.setResourceValue(env);
         }
     }
+
+    void testBuiltinInitialization()
+    {
+        QCOMPARE(SetResourceValueJob(0, 0).return_(), false);
+        QCOMPARE(SetResourceValuesJob(0, 0).return_(), false);
+        QCOMPARE(DisableRuntimeValueNotifactionsJob(0, 0).return_(), false);
+        QCOMPARE(DisableInitialValueNotifactionsJob(0, 0).return_(), false);
+        QCOMPARE(GetRuntimeValueJob(0, 0).parameter1(), 0);
+        QCOMPARE(WaitForResourceValueChangesJob(0, 0).parameter10(), 0);
+        QCOMPARE(GetSceneGroupResourceIdAndPositionsJob(0, 0).parameter11(), 0);
+        QCOMPARE(GetScenePositionsForSceneValueResourceJob(0, 0).parameter12(), 0);
+        QCOMPARE(GetResourceTypeJob(0, 0).parameter13(), 0);
+        QCOMPARE(GetInitialValueJob(0, 0).parameter14(), 0);
+    }
 };
 
 QTEST_MAIN(IHCResourceInteractionTest)
