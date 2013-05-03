@@ -287,10 +287,14 @@ bool KDSoapServerSocket::handleFileDownload(KDSoapServerObjectInterface *serverO
 {
     QByteArray contentType;
     QIODevice* device = serverObjectInterface->processFileRequest(path, contentType);
-    if (!device)
-        return false;
+    if (!device) {
+        const QByteArray notFound = "HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\n\r\n";
+        write(notFound);
+        return true;
+    }
     if (!device->open(QIODevice::ReadOnly)) {
-        handleError(replyMsg, "Server.File", QString::fromLatin1("File (or device) associated with path %1 could not be opened for reading.").arg(path));
+        const QByteArray forbidden = "HTTP/1.1 403 Forbidden\r\nContent-Length: 0\r\n\r\n";
+        write(forbidden);
         delete device;
         return true; // handled!
     }

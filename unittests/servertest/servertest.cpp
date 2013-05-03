@@ -41,6 +41,8 @@
 #endif
 using namespace KDSoapUnitTestHelpers;
 
+Q_DECLARE_METATYPE(QFileDevice::Permissions)
+
 static const char* myWsdlNamespace = "http://www.kdab.com/xml/MyWsdl/";
 
 class CountryServerObject;
@@ -756,6 +758,68 @@ private Q_SLOTS:
 
     void testFileDownload_data()
     {
+        QTest::addColumn<QString>("fileToDownload"); // client
+        QTest::addColumn<QFileDevice::Permissions>("permissions"); // server
+        QTest::addColumn<QNetworkReply::NetworkError>("expectedReplyCode");
+
+        QFileDevice::Permissions readable = QFileDevice::ReadOwner | QFileDevice::ReadUser;
+        QFileDevice::Permissions writable = QFileDevice::WriteOwner | QFileDevice::WriteUser;
+
+        QTest::newRow("readable") << "file_download.txt" << readable << QNetworkReply::NoError;
+        QTest::newRow("nonexistent") << "nonexistent.txt" << readable << QNetworkReply::ContentNotFoundError;
+        QTest::newRow("unreadable") << "file_download.txt" << writable << QNetworkReply::ContentOperationNotPermittedError;
+    }
+
+    void testFileDownload()
+    {
+        QFETCH(QString, fileToDownload);
+        QFETCH(QFileDevice::Permissions, permissions);
+        QFETCH(QNetworkReply::NetworkError, expectedReplyCode);
+
+        QTimer download_timeout;
+        download_timeout.setInterval(5000); // 5 seconds
+        download_timeout.setSingleShot(true);
+        QSignalSpy timeout_spy(&download_timeout, SIGNAL(timeout()));
+        CountryServerThread serverThread;
+        CountryServer* server = serverThread.startThread();
+
+        server->setRequireAuth(false);
+
+        const QString fileName = QString::fromLatin1("file_download.txt");
+        QFile file(fileName);
+        QVERIFY(file.open(QIODevice::WriteOnly));
+        file.write("Hello world");
+        file.flush();
+        file.setPermissions(permissions);
+        QString pathInUrl = QString::fromLatin1("/path/to/") + fileToDownload;
+        QString url = server->endPoint();
+        url.chop(1) /*trailing slash*/;
+        url += pathInUrl;
+
+        QNetworkAccessManager manager;
+        QNetworkRequest request(url);
+        QNetworkReply* reply = manager.get(request);
+        QEventLoop loop;
+        connect(&download_timeout, SIGNAL(timeout()), &loop, SLOT(quit()));
+        connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+        download_timeout.start();
+        loop.exec();
+
+        file.setPermissions(QFileDevice::ReadOwner |
+                            QFileDevice::ReadUser |
+                            QFileDevice::WriteOwner |
+                            QFileDevice::WriteUser);
+        QFile::remove(fileName);
+
+        QCOMPARE(timeout_spy.count(), 0);
+        QCOMPARE((int)reply->error(), (int)expectedReplyCode);
+        if (expectedReplyCode == QNetworkReply::NoError) {
+            QCOMPARE(reply->readAll(), QByteArray("Hello world"));
+        }
+    }
+
+    void testFileDownloadAuth_data()
+    {
         QTest::addColumn<bool>("requireAuth"); // server
         QTest::addColumn<bool>("provideCorrectAuth"); // client
         QTest::addColumn<bool>("expectedSuccess");
@@ -765,7 +829,7 @@ private Q_SLOTS:
         QTest::newRow("correct_auth") << true << true << true;
     }
 
-    void testFileDownload()
+    void testFileDownloadAuth()
     {
         QFETCH(bool, requireAuth);
         QFETCH(bool, provideCorrectAuth);
