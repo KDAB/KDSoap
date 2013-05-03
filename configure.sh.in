@@ -137,14 +137,20 @@ EOF
     exit 1
 }
 
-if [ -z "$QTDIR" ] ;  then
-    QTDIR="$(qmake -query QT_INSTALL_PREFIX)"
-    if [ $? -ne 0 ] ; then
-	QTDIR=
+for qmk in qmake qmake-qt5 qmake-qt4
+do
+    which "$qmk" >/dev/null 2>&1
+    if [ $? -eq 0 -a -z "$QTDIR" ]
+    then
+        QTDIR="$($qmk -query QT_INSTALL_PREFIX)"
+        if [ $? -eq 0 ]
+        then
+            break
+        fi
     fi
-fi
+done
 
-[ -z "$QTDIR" ] && die "You need QTDIR defined, or qmake in the PATH"
+[ -z "$QTDIR" ] && die "You need QTDIR defined, or either qmake or qmake-qt5 or qmake-qt4 in the PATH"
 
 while [ $# -ne 0 ] ; do
     case "$1" in
