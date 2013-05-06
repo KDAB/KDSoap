@@ -63,7 +63,7 @@ private Q_SLOTS:
 
 private:
     bool handleWsdlDownload();
-    bool handleFileDownload(KDSoapServerObjectInterface* serverObjectInterface, KDSoapMessage& replyMsg, const QString& path);
+    bool handleFileDownload(KDSoapServerObjectInterface* serverObjectInterface, const QString& path);
     void makeCall(KDSoapServerObjectInterface* serverObjectInterface,
                   const KDSoapMessage& requestMsg, KDSoapMessage& replyMsg,
                   const KDSoapHeaders& requestHeaders,

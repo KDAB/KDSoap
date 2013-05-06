@@ -209,7 +209,7 @@ void KDSoapServerSocket::slotReadyRead()
     if (requestType == "GET") {
         if (path == server->wsdlPathInUrl() && handleWsdlDownload()) {
             return;
-        } else if (handleFileDownload(serverObjectInterface, replyMsg, path)) {
+        } else if (handleFileDownload(serverObjectInterface, path)) {
             return;
         }
 
@@ -283,7 +283,7 @@ bool KDSoapServerSocket::handleWsdlDownload()
     return false;
 }
 
-bool KDSoapServerSocket::handleFileDownload(KDSoapServerObjectInterface *serverObjectInterface, KDSoapMessage &replyMsg, const QString &path)
+bool KDSoapServerSocket::handleFileDownload(KDSoapServerObjectInterface *serverObjectInterface, const QString &path)
 {
     QByteArray contentType;
     QIODevice* device = serverObjectInterface->processFileRequest(path, contentType);
