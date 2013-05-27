@@ -819,7 +819,7 @@ private Q_SLOTS:
         if (permissions & QFile::WriteOwner) {
             // on Windows, setting permissions to writeonly using QFile::setPermissions does not work
             // this has been confirmed in tst_qfile.cpp in the Qt unittests
-            QEXPECT_FAIL("unwriteable", "Windows does not currently support non-readable files.", Abort);
+            QEXPECT_FAIL("unreadable", "Windows does not currently support non-readable files.", Abort);
         }
 #endif
         QCOMPARE((int)reply->error(), (int)expectedReplyCode);
