@@ -815,6 +815,13 @@ private Q_SLOTS:
         QFile::remove(fileName);
 
         QCOMPARE(timeout_spy.count(), 0);
+#if defined(Q_OS_WIN)
+        if (permissions & QFile::WriteOwner) {
+            // on Windows, setting permissions to writeonly using QFile::setPermissions does not work
+            // this has been confirmed in tst_qfile.cpp in the Qt unittests
+            QEXPECT_FAIL("unwriteable", "Windows does not currently support non-readable files.", Abort);
+        }
+#endif
         QCOMPARE((int)reply->error(), (int)expectedReplyCode);
         if (expectedReplyCode == QNetworkReply::NoError) {
             QCOMPARE(reply->readAll(), QByteArray("Hello world"));
