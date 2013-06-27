@@ -35,7 +35,7 @@ def checkVCS( sourceDirectory ):
 
 		repositoryUrl = stdout.splitlines()[1].split( ':', 1 )[1]
 		repositoryRevision = stdout.splitlines()[4].split( ':', 1 )[1].strip()
-		isTagged = repositoryUrl.find('/tags/') != -1
+		isTagged = repositoryUrl.find('tags/') != -1
 	except:
 		pass
 	return ( repositoryRevision, isTagged )
