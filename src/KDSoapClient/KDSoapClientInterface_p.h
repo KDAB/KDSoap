@@ -45,7 +45,7 @@ public:
 
     // Warning: this accessManager is only used by asyncCall and callNoReply.
     // For blocking calls, the thread has its own accessManager.
-    QNetworkAccessManager m_accessManager;
+    QNetworkAccessManager* m_accessManager;
     QString m_endPoint;
     QString m_messageNamespace;
     KDSoapClientThread m_thread;
@@ -60,6 +60,7 @@ public:
 #endif
     KDSoapSslHandler* m_sslHandler;
 
+    QNetworkAccessManager* accessManager();
     QNetworkRequest prepareRequest(const QString &method, const QString& action);
     QBuffer* prepareRequestBuffer(const QString& method, const KDSoapMessage& message, const KDSoapHeaders& headers);
     void writeElementContents(KDSoapNamespacePrefixes& namespacePrefixes, QXmlStreamWriter& writer, const KDSoapValue& element, KDSoapMessage::Use use);

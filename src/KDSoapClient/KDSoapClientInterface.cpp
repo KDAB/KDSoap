@@ -61,16 +61,14 @@ KDSoapClientInterface::SoapVersion KDSoapClientInterface::soapVersion()
 
 
 KDSoapClientInterfacePrivate::KDSoapClientInterfacePrivate()
-    : m_authentication(),
+    : m_accessManager(0),
+      m_authentication(),
       m_style(KDSoapClientInterface::RPCStyle),
       m_ignoreSslErrors(false)
 {
 #ifndef QT_NO_OPENSSL
     m_sslHandler = 0;
 #endif
-    connect(&m_accessManager, SIGNAL(authenticationRequired(QNetworkReply*,QAuthenticator*)),
-            this, SLOT(_kd_slotAuthenticationRequired(QNetworkReply*,QAuthenticator*)));
-    m_accessManager.cookieJar(); // create it in the right thread...
 }
 
 KDSoapClientInterfacePrivate::~KDSoapClientInterfacePrivate()
@@ -78,6 +76,16 @@ KDSoapClientInterfacePrivate::~KDSoapClientInterfacePrivate()
 #ifndef QT_NO_OPENSSL
     delete m_sslHandler;
 #endif
+}
+
+QNetworkAccessManager *KDSoapClientInterfacePrivate::accessManager()
+{
+    if (!m_accessManager) {
+        m_accessManager = new QNetworkAccessManager(this);
+        connect(m_accessManager, SIGNAL(authenticationRequired(QNetworkReply*,QAuthenticator*)),
+                this, SLOT(_kd_slotAuthenticationRequired(QNetworkReply*,QAuthenticator*)));
+    }
+    return m_accessManager;
 }
 
 QNetworkRequest KDSoapClientInterfacePrivate::prepareRequest(const QString &method, const QString& action)
@@ -139,13 +147,14 @@ KDSoapPendingCall KDSoapClientInterface::asyncCall(const QString &method, const 
     QBuffer* buffer = d->prepareRequestBuffer(method, message, headers);
     QNetworkRequest request = d->prepareRequest(method, soapAction);
     //qDebug() << "post()";
-    QNetworkReply* reply = d->m_accessManager.post(request, buffer);
+    QNetworkReply* reply = d->accessManager()->post(request, buffer);
     d->setupReply(reply);
     return KDSoapPendingCall(reply, buffer);
 }
 
 KDSoapMessage KDSoapClientInterface::call(const QString& method, const KDSoapMessage &message, const QString& soapAction, const KDSoapHeaders& headers)
 {
+    d->accessManager()->cookieJar(); // create it in the right thread, the secondary thread will use it
     // Problem is: I don't want a nested event loop here. Too dangerous for GUI programs.
     // I wanted a socket->waitFor... but we don't have access to the actual socket in QNetworkAccess.
     // So the only option that remains is a thread and acquiring a semaphore...
@@ -165,7 +174,7 @@ void KDSoapClientInterface::callNoReply(const QString &method, const KDSoapMessa
 {
     QBuffer* buffer = d->prepareRequestBuffer(method, message, headers);
     QNetworkRequest request = d->prepareRequest(method, soapAction);
-    QNetworkReply* reply = d->m_accessManager.post(request, buffer);
+    QNetworkReply* reply = d->accessManager()->post(request, buffer);
     d->setupReply(reply);
     QObject::connect(reply, SIGNAL(finished()), reply, SLOT(deleteLater()));
 }
@@ -231,24 +240,24 @@ KDSoapClientInterface::Style KDSoapClientInterface::style() const
 
 QNetworkCookieJar * KDSoapClientInterface::cookieJar() const
 {
-    return d->m_accessManager.cookieJar();
+    return d->accessManager()->cookieJar();
 }
 
 void KDSoapClientInterface::setCookieJar(QNetworkCookieJar *jar)
 {
     QObject* oldParent = jar->parent();
-    d->m_accessManager.setCookieJar(jar);
+    d->accessManager()->setCookieJar(jar);
     jar->setParent(oldParent); // see comment in QNAM::setCookieJar...
 }
 
 QNetworkProxy KDSoapClientInterface::proxy() const
 {
-    return d->m_accessManager.proxy();
+    return d->accessManager()->proxy();
 }
 
 void KDSoapClientInterface::setProxy(const QNetworkProxy &proxy)
 {
-    d->m_accessManager.setProxy(proxy);
+    d->accessManager()->setProxy(proxy);
 }
 
 #ifndef QT_NO_OPENSSL
