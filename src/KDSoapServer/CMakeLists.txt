@@ -35,7 +35,7 @@ if(KDSoap_IS_ROOT_PROJECT)
     KDSoapServerAuthInterface.h
     KDSoapServerObjectInterface.h
     KDSoapServerGlobal.h
-    DESTINATION ${INSTALL_INCLUDE_DIR}
+    DESTINATION ${INSTALL_INCLUDE_DIR}/KDSoapServer
   )
 
   install(TARGETS kdsoap-server EXPORT KDSoapTargets

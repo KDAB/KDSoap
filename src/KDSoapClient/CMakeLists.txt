@@ -44,7 +44,7 @@ if(KDSoap_IS_ROOT_PROJECT)
     KDDateTime.h
     KDSoap.h
     KDSoapSslHandler.h
-    DESTINATION ${INSTALL_INCLUDE_DIR}
+    DESTINATION ${INSTALL_INCLUDE_DIR}/KDSoapClient
   )
 
   install(TARGETS kdsoap EXPORT KDSoapTargets
