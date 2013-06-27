@@ -57,7 +57,7 @@ def checkVCS( sourceDirectory ):
 		else:
 			raise Exception("Unknown repository type")
 	except:
-		print_stderr( "Error: Not a valid SVN or Git repository: {0}".format( sourceDirectory ) )
+		print( "Error: Not a valid SVN or Git repository: {0}".format( sourceDirectory ) )
 		sys.exit( 1 )
 
 	return ( repositoryRevision, isTagged )
