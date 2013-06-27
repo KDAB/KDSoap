@@ -10,34 +10,56 @@ from cpack import CPackGenerateConfiguration
 from configure import ConfigureScriptGenerator
 from header import ForwardHeaderGenerator
 
+def parseSvnInfo( stdout ):
+	repositoryUrl = stdout.splitlines()[1].split( ':', 1 )[ 1 ]
+	isTagged = repositoryUrl.find( 'tags/' ) != -1
+	repositoryRevision = stdout.splitlines()[ 4 ].split( ':', 1 )[ 1 ].strip()
+	return isTagged, repositoryRevision
+
 def checkVCS( sourceDirectory ):
+	repositoryType = ''
+	for i in xrange( 20 ):
+		listing = os.listdir( sourceDirectory + '/..' * i )
+		if '.svn' in listing:
+			repositoryType = 'svn'
+			break
+		elif '.git' in listing:
+			repositoryType = 'git'
+			break
+
 	isTagged = False
 	repositoryRevision = "unknown"
 	try:
-		p = subprocess.Popen( ["git", "rev-parse", "HEAD"], cwd = sourceDirectory, stdout = subprocess.PIPE, stderr = subprocess.PIPE )
-		( stdout, stderr ) = p.communicate()
-		if p.returncode == 0:
-			revision = stdout.strip()[:8]
-			return ( revision, False ) #TODO check if tagged
+		if repositoryType == 'git':
+			p = subprocess.Popen( ["git", "describe", "--exact-match"], cwd = sourceDirectory, stdout = subprocess.PIPE, stderr = subprocess.PIPE )
+			stdout, stderr = p.communicate()
+			if p.returncode == 0:
+				# git tag
+				isTagged = True
+				repositoryRevision = stdout.strip()
+			if p.returncode != 0:
+				p = subprocess.Popen( ["git", "svn", "info"], cwd = sourceDirectory, stdout = subprocess.PIPE, stderr = subprocess.PIPE )
+				stdout, stderr = p.communicate()
+				if p.returncode == 0:
+					 # git-svn revision
+					isTagged, repositoryRevision = parseSvnInfo( stdout )
+			if p.returncode != 0:
+				p = subprocess.Popen( ["git", "rev-parse", "HEAD"], cwd = sourceDirectory, stdout = subprocess.PIPE, stderr = subprocess.PIPE )
+				stdout, stderr = p.communicate()
+				if p.returncode == 0:
+					# svn revision
+					repositoryRevision = stdout.strip()[:8]
+		elif repositoryType == 'svn':
+			p = subprocess.Popen( ["svn", "info"], cwd = sourceDirectory, stdout = subprocess.PIPE, stderr = subprocess.PIPE )
+			stdout, stderr = p.communicate()
+			if p.returncode == 0:
+				isTagged, repositoryRevision = parseSvnInfo( stdout )
+		else:
+			raise Exception("Unknown repository type")
 	except:
-		pass
+		print( "Error: Not a valid SVN or Git repository: {0}".format( sourceDirectory ) )
+		sys.exit( 1 )
 
-	try:
-		# check repository URL
-		p = subprocess.Popen( ["svn", "info"], cwd = sourceDirectory, stdout = subprocess.PIPE, stderr = subprocess.PIPE )
-		( stdout, stderr ) = p.communicate()
-		if p.returncode != 0:
-			p = subprocess.Popen( ["git", "svn", "info"], cwd = sourceDirectory, stdout = subprocess.PIPE, stderr = subprocess.PIPE )
-			( stdout, stderr ) = p.communicate()
-		if p.returncode != 0:
-			print_stderr( "Error: Not an SVN nor Git repository: {0}".format( sourceDirectory ) )
-			sys.exit( 1 )
-
-		repositoryUrl = stdout.splitlines()[1].split( ':', 1 )[1]
-		repositoryRevision = stdout.splitlines()[4].split( ':', 1 )[1].strip()
-		isTagged = repositoryUrl.find('/tags/') != -1
-	except:
-		pass
 	return ( repositoryRevision, isTagged )
 
 def autogen(project, version, subprojects, prefixed, forwardHeaderMap = {}, steps=["generate-cpack", "generate-configure", "generate-forward-headers"], installPrefix="$$INSTALL_PREFIX", policyVersion = 1):
