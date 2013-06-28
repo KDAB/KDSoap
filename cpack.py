@@ -48,11 +48,8 @@ class CPackGenerateConfiguration():
 		patchVersion = versionList[2] or 0
 		if not self._isTaggedRevision:
 			patchVersion += '-r' + self._revision
-		print 'self._isTaggedRevision:', self._isTaggedRevision, ' patchVersion: ', patchVersion
 		config = config.replace( "@CPACK_PACKAGE_VERSION_PATCH@", patchVersion, 1 )
 		installDirectory = self.fixCMakeWindowsPaths( self._sourceDirectory )
-		print 'installDirectory: ', installDirectory
-		print 'versionList: ', versionList
 		config = config.replace( "@CPACK_INSTALL_DIRECTORY@", installDirectory, 1 )
 		config = config.replace( "@CPACK_EXTRA_IGNORE_FILES@", self.ignoreString(), 1 )
 
