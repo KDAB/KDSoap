@@ -18,6 +18,7 @@ release=yes
 prefix=
 unittests=no
 hostqmake=
+targetqmake=
 
 [ -d "$PACKSCRIPTS_DIR" ] && unittests=yes
 
@@ -125,6 +126,10 @@ cat <<EOF 1>&2
   -[no-]unittests
       enable/disable compiled-in unittests
 
+  -qmake </qt/bin/qmake>
+      explicitly sets the qmake location, instead of using the
+      qmake in the path.
+
   -hostqmake </host/qt/bin/qmake>
       when cross-compiling, the qmake in the path will be used for
       compiling the product's code, but the host qmake will be used
@@ -137,18 +142,28 @@ EOF
     exit 1
 }
 
-for qmk in qmake qmake-qt5 qmake-qt4
-do
-    which "$qmk" >/dev/null 2>&1
-    if [ $? -eq 0 -a -z "$QTDIR" ]
-    then
-        QTDIR="$($qmk -query QT_INSTALL_PREFIX)"
-        if [ $? -eq 0 ]
-        then
-            break
+if [ "$targetqmake" != "" ] ; then
+    if [ -z "$QTDIR" ] ;  then
+        QTDIR="$($targetqmake -query QT_INSTALL_PREFIX)"
+        if [ $? -ne 0 ] ; then
+            QTDIR=
         fi
     fi
-done
+else
+    for qmk in qmake qmake-qt5 qmake-qt4
+    do
+        which "$qmk" >/dev/null 2>&1
+        if [ $? -eq 0 -a -z "$QTDIR" ]
+        then
+            QTDIR="$($qmk -query QT_INSTALL_PREFIX)"
+            if [ $? -eq 0 ]
+            then
+                targetqmake=$qmk
+                break
+            fi
+        fi
+    done
+fi
 
 [ -z "$QTDIR" ] && die "You need QTDIR defined, or either qmake or qmake-qt5 or qmake-qt4 in the PATH"
 
@@ -215,6 +230,14 @@ while [ $# -ne 0 ] ; do
                 usage
             fi
             hostqmake="$1"
+            ;;
+        -qmake)
+            shift
+            if [ $# -eq 0 ] ; then
+                echo "-make needs an argument" 2>&1
+                usage
+            fi
+            targetqmake="$1"
             ;;
         *)
             usage "$1"
@@ -307,7 +330,7 @@ cat <<EOF 1>&2
 
 EOF
 
-"$QTDIR"/bin/qmake ${SPEC} "$SOURCE_DIR"/$product.pro -recursive $QMAKE_ARGS "${PRODUCT}_BASE=`pwd`" || die "qmake failed"
+"$targetqmake" ${SPEC} "$SOURCE_DIR"/$product.pro -recursive $QMAKE_ARGS "${PRODUCT}_BASE=`pwd`" || die "qmake failed"
 
 if [ "$hostqmake" != "" -a -d "$SOURCE_DIR"/kdwsdl2cpp ]; then
    [ -d kdwsdl2cpp ] || mkdir kdwsdl2cpp
