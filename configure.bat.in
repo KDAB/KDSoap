@@ -152,6 +152,12 @@ if "%1" == "/debug_and_release"  goto :Debug_And_Release
 if "%1" == "-debug"    goto :Debug
 if "%1" == "/debug"    goto :Debug
 
+if "%1" == "-hostqmake"    goto :HostQMake
+if "%1" == "/hostqmake"    goto :HostQMake
+
+if "%1" == "-qmake"    goto :QMake
+if "%1" == "/qmake"    goto :QMake
+
 if "%1" == "-help"     goto :Help
 if "%1" == "/help"     goto :Help
 if "%1" == "--help"    goto :Help
@@ -211,6 +217,13 @@ if "%STATIC_BUILD_SUPPORTED%" == "true" (
   echo Static build not supported, -static option not allowed
   goto :usage
 )
+:HostQMake
+    set host_qmake=%2
+    goto :OptionWithArg
+:QMake
+    set target_qmake=%2
+    goto :OptionWithArg
+:Unittests
 :Help
     goto :usage
 
@@ -271,6 +284,11 @@ if exist "%KDAB_QT_PATH%\include\Qt\private" (
     rem echo Some features will not be available.
 )
 
+if not "%host_qmake%" == "" (
+    set HOST_QMAKE_ARGS=%QMAKE_ARGS%
+    set QMAKE_ARGS=%QMAKE_ARGS% CONFIG+=crosscompiling CONFIG+=win32crosscompiling
+}
+
 echo %Product_mix% v%VERSION% configuration:
 echo.
 echo   Debug...................: %debug% (default: no)
@@ -279,11 +297,19 @@ echo   Shared build............: %shared% (default: yes)
 echo   Compiled-In Unit Tests..: %unittests% (default: no)
 echo.
 
-%KDAB_QT_PATH%\bin\qmake %SOURCE_DIR%\%product_low%.pro -recursive %QMAKE_ARGS% "%PRODUCT_CAP%_BASE=%CD%"
+if "%target_qmake%" == "" set target_qmake=%KDAB_QT_PATH%\bin\qmake
+
+%target_qmake% %SOURCE_DIR%\%product_low%.pro -recursive %QMAKE_ARGS% "%PRODUCT_CAP%_BASE=%CD%"
 
 if errorlevel 1 (
     echo qmake failed
     goto :CleanEnd
+)
+
+if not "%host_qmake%" == "" (
+    mkdir kdwsdl2cpp
+    cd kdwsdl2cpp
+    %host_qmake% %SOURCE_DIR%\kdwsdl2cpp -recursive %HOST_QMAKE_ARGS%
 )
 
 echo Ok, now run nmake (for Visual Studio) or mingw32-make (for mingw) to build the framework.
@@ -305,6 +331,15 @@ echo       build static/shared libraries (default shared)
 echo.
 echo   -unittests / -no-unittests
 echo       enable/disable compiled-in unittests (default is disabled)
+echo 
+echo   -qmake ^<path^>
+echo       explicitly sets the qmake location, instead of using the
+echo       qmake in the path.
+echo.
+echo   -hostqmake ^<path^>
+echo       when cross-compiling, the qmake in the path will be used for
+echo       compiling the product's code, but the host qmake will be used
+echo       to compile the host tools (code generators).
 echo.
 
 :CleanEnd
