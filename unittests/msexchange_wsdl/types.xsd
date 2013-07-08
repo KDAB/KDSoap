@@ -3378,7 +3378,7 @@
       <xs:element minOccurs="0" maxOccurs="1" name="Message" type="xs:string" />
     </xs:sequence>
 
-    <!--    <xs:attribute ref="xml:lang" use="optional" />-->
+    <xs:attribute ref="xml:lang" use="optional" />
   </xs:complexType>
 
   <xs:complexType name="UserOofSettings">
