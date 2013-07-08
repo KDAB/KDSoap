@@ -119,10 +119,10 @@ void Parser::init(ParserContext *context)
     }
 
     {
-        Attribute arrayTypeAttr(XMLSchemaURI);
-        arrayTypeAttr.setName(QLatin1String("lang"));
-        arrayTypeAttr.setType(QName(XMLSchemaURI, QLatin1String("string")));
-        d->mAttributes.append(arrayTypeAttr);
+        Attribute langAttr(XMLSchemaURI);
+        langAttr.setName(QLatin1String("lang"));
+        langAttr.setType(QName(XMLSchemaURI, QLatin1String("string")));
+        d->mAttributes.append(langAttr);
     }
 
 
@@ -1157,7 +1157,13 @@ bool Parser::resolveForwardDeclarations()
     for ( int j = 0; j < attributes.count(); ++j ) {
       if ( !attributes[ j ].isResolved() ) {
         Attribute refAttribute = findAttribute( attributes[ j ].reference() );
-        attributes[ j ] = refAttribute;
+        if (refAttribute.qualifiedName().isEmpty()) {
+            qWarning("ERROR in %s: resolving attribute ref to '%s': not found!", qPrintable(d->mComplexTypes[i].qualifiedName().qname()), qPrintable(attributes[j].reference().qname()));
+            d->mAttributes.dump();
+            return false;
+        } else {
+           attributes[ j ] = refAttribute;
+        }
       }
     }
 

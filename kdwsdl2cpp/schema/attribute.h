@@ -35,7 +35,11 @@ namespace XSD {
 class SCHEMA_EXPORT Attribute : public XmlElement
 {
   public:
-    typedef QList<Attribute> List;
+    class SCHEMA_EXPORT List : public QList<Attribute>
+    {
+    public:
+        void dump();
+    };
 
     Attribute();
     Attribute( const QString &nameSpace );

@@ -144,7 +144,13 @@ QName Attribute::reference() const
 
 bool Attribute::isResolved() const
 {
-  return !d->mType.isEmpty();
+    return !d->mType.isEmpty();
+}
+
+void Attribute::List::dump()
+{
+    Q_FOREACH (const Attribute& attr, *this)
+        qDebug() << attr.nameSpace() << attr.name();
 }
 
 } // namespace XSD
