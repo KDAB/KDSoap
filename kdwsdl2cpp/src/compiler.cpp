@@ -88,9 +88,6 @@ void Compiler::parse( const QDomElement &element )
 {
   NSManager namespaceManager;
 
-  // MS Exchange doesn't define the xml prefix, and yet uses xml:lang...
-  namespaceManager.setPrefix( QLatin1String("xml"), QLatin1String("http://www.w3.org/2001/XMLSchema") );
-
   MessageHandler messageHandler;
   ParserContext context;
   context.setNamespaceManager( &namespaceManager );

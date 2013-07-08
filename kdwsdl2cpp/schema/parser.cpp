@@ -582,6 +582,10 @@ Attribute Parser::parseAttribute( ParserContext *context,
     reference = element.attribute( QLatin1String("ref") );
     reference.setNameSpace( context->namespaceManager()->uri( reference.prefix() ) );
 
+    // MS Exchange doesn't define the xml prefix, and yet uses xml:lang...
+    if (reference.nameSpace().isEmpty() && reference.prefix() == "xml")
+        reference.setNameSpace( XMLSchemaURI );
+
     newAttribute.setReference( reference );
   }
 
