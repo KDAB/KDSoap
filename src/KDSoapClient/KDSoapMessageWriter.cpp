@@ -63,7 +63,9 @@ QByteArray KDSoapMessageWriter::messageToXml(const KDSoapMessage& message, const
     }
 
     writer.writeStartElement(soapEnvelope, QLatin1String("Envelope"));
-    writer.writeAttribute(soapEnvelope, QLatin1String("encodingStyle"), soapEncoding);
+
+    // This has been removed, see http://msdn.microsoft.com/en-us/library/ms995710.aspx for details
+    //writer.writeAttribute(soapEnvelope, QLatin1String("encodingStyle"), soapEncoding);
 
     QString messageNamespace = m_messageNamespace;
     if (!message.namespaceUri().isEmpty() && messageNamespace != message.namespaceUri()) {

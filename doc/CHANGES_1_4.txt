@@ -4,6 +4,8 @@ General:
 
 Client-side:
 ============
+* Remove encodingStyle attribute, as Microsoft EWS servers reject it. Please contact
+KDSoap support if this causes a regression with any other SOAP server.
 
 Server-side:
 ============

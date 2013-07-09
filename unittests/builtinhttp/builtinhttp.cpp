@@ -80,7 +80,7 @@ private Q_SLOTS:
         KDSoapMessage ret = client.call(QLatin1String("Method1"), message);
         QVERIFY(ret.isFault());
         QCOMPARE(ret.faultAsString(), QString::fromLatin1(
-                     "Fault code 3: XML error: [1:354] Opening and ending tag mismatch."));
+                     "Fault code 3: XML error: [1:291] Opening and ending tag mismatch."));
     }
 
     // Test for basic auth, with async call
@@ -414,8 +414,7 @@ private:
 
     static QByteArray complexTypeResponse() {
         return QByteArray(xmlEnvBegin11()) + "><soap:Body xmlns:tns=\"http://www.sugarcrm.com/sugarcrm\">"
-                "<ns1:loginResponse xmlns:ns1=\"http://www.sugarcrm.com/sugarcrm\""
-                " soap:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\">" // useless, but seen in the SoapResponder
+                "<ns1:loginResponse xmlns:ns1=\"http://www.sugarcrm.com/sugarcrm\">"
                 "  <return xsi:type=\"tns:set_entry_result\">"
                 "    <id xsi:type=\"xsd:string\">12345</id>"
                 "    <error xsi:type=\"tns:error_value\">"

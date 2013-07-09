@@ -448,8 +448,7 @@ const char* KDSoapUnitTestHelpers::xmlEnvBegin11()
             " xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\""
             " xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\""
             " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\""
-            " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
-            " soap:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\"";
+            " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"";
 }
 
 const char* KDSoapUnitTestHelpers::xmlEnvBegin12()
@@ -459,8 +458,7 @@ const char* KDSoapUnitTestHelpers::xmlEnvBegin12()
            " xmlns:soap=\"http://www.w3.org/2003/05/soap-envelope\""
            " xmlns:soap-enc=\"http://www.w3.org/2003/05/soap-encoding\""
            " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\""
-           " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
-           " soap:encodingStyle=\"http://www.w3.org/2003/05/soap-encoding\"";
+           " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"";
 }
 
 const char* KDSoapUnitTestHelpers::xmlEnvEnd()
