@@ -201,7 +201,6 @@ KODE::Code Converter::serializeElementArg( const QName& type, const QName& eleme
         block += "}";
     } else {
         const QString nameArg = QLatin1String("QString::fromLatin1(\"") + name.localName() + QLatin1String("\")");
-        const QString namespaceArg = namespaceString(name.nameSpace());
         const QName actualType = type.isEmpty() ? elementType : type;
         const QString typeArgs = namespaceString(actualType.nameSpace()) + QLatin1String(", QString::fromLatin1(\"") + actualType.localName() + QLatin1String("\")");
         const QString valueVarName = QLatin1String("_value") + upperlize(name.localName());
@@ -217,7 +216,8 @@ KODE::Code Converter::serializeElementArg( const QName& type, const QName& eleme
                 block += QLatin1String("KDSoapValue ") + valueVarName + QLatin1String("(") + nameArg + QLatin1String(", ") + localVariableName + QLatin1String(".serialize(), ") + typeArgs + QLatin1String(");") + COMMENT;
             }
         }
-        block += valueVarName + QLatin1String(".setNamespaceUri(") + namespaceArg + QLatin1String(");");
+        if ( !name.nameSpace().isEmpty() )
+            block += valueVarName + QLatin1String(".setNamespaceUri(") + namespaceString(name.nameSpace()) + QLatin1String(");");
         if ( isQualified )
             block += valueVarName + QLatin1String(".setQualified(true);");
         if ( nillable )
