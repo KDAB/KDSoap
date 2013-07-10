@@ -10,3 +10,4 @@ QMAKE_EXTRA_TARGETS += test
 
 
 KDWSDL = DWServiceCombined.wsdl
+OTHER_FILES += $$KDWSDL

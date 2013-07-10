@@ -13,6 +13,6 @@ unix:PRE_TARGETDEPS = $${TOP_BUILD_DIR}/lib/libtesttools.a
 
 KDWSDL = transformMedia-V1_0_7.wsdl
 
-OTHER_FILES = $$KDWSDL
+OTHER_FILES = $$KDWSDL *.xsd
 LIBS        += -L$${TOP_BUILD_DIR}/lib -l$$KDSOAPSERVERLIB
 

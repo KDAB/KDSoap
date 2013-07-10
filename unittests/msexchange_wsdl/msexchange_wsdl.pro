@@ -7,4 +7,4 @@ test.depends = $(TARGET)
 QMAKE_EXTRA_TARGETS += test
 
 KDWSDL = Services.wsdl
-OTHER_FILES += $$KDWSDL
+OTHER_FILES += $$KDWSDL *.xsd
