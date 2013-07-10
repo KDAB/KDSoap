@@ -202,7 +202,7 @@ public:
     ~BlockingHttpServer() {}
 
     QTcpSocket* waitForNextConnectionSocket() {
-        if (!waitForNewConnection(10000)) // 2000 would be enough, except in valgrind
+        if (!waitForNewConnection(20000)) // 2000 would be enough, except in valgrind
             return 0;
         if (doSsl) {
             Q_ASSERT(sslSocket);
