@@ -122,6 +122,12 @@ public:
     bool isNull() const;
 
     /**
+     * Write out xsi:nil if the KDSoapValue has no content.
+     * See http://www.w3.org/TR/xmlschema-1/#xsi_nil
+     */
+    void setNillable(bool nillable);
+
+    /**
      * Returns the name of the argument, as passed to the constructor.
      */
     QString name() const;

@@ -65,7 +65,7 @@ private Q_SLOTS:
               "<user_auth xsi:type=\"n1:user_auth\">"
                 "<user_name xsi:type=\"xsd:string\">user å</user_name>"
                 "<password xsi:type=\"xsd:string\">pass</password>"
-                "<version xsi:type=\"xsd:string\" xsi:nil=\"true\"></version>"
+                "<version xsi:type=\"xsd:string\"></version>"
               "</user_auth>"
               "<application_name xsi:type=\"xsd:string\">application</application_name>"
             "</n1:login>"

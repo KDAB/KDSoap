@@ -46,7 +46,6 @@ private Q_SLOTS:
 
         KDAB::TNS__Login loginParams;
         loginParams.setUserName(QString::fromLatin1("Foo"));
-        loginParams.setPassword(QString::fromLatin1("Bar"));
         loginParams.setOrganization(QString::fromLatin1("KDAB"));
         const KDAB::TNS__LoginResponse resp = service.login(loginParams);
 
@@ -56,7 +55,7 @@ private Q_SLOTS:
             "><soap:Body>"
             "<n1:Login xmlns:n1=\"http://tempuri.org/\">"
                 "<n1:userName>Foo</n1:userName>"
-                "<n1:password>Bar</n1:password>"
+                "<n1:password xsi:nil=\"true\"></n1:password>"
                 "<n1:organization>KDAB</n1:organization>"
             "</n1:Login>"
             "</soap:Body>" + xmlEnvEnd()

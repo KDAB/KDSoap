@@ -32,7 +32,7 @@ class KDSoapValue::Private : public QSharedData
 public:
     Private(): m_qualified(false) {}
     Private(const QString& n, const QVariant& v, const QString& typeNameSpace, const QString& typeName)
-        : m_name(n), m_value(v), m_typeNamespace(typeNameSpace), m_typeName(typeName), m_qualified(false) {}
+      : m_name(n), m_value(v), m_typeNamespace(typeNameSpace), m_typeName(typeName), m_qualified(false), m_nillable(false) {}
 
     QString m_name;
     QString m_nameNamespace;
@@ -41,6 +41,7 @@ public:
     QString m_typeName;
     KDSoapValueList m_childValues;
     bool m_qualified;
+    bool m_nillable;
 };
 
 uint qHash( const KDSoapValue& value ) { return qHash( value.name() ); }
@@ -74,6 +75,11 @@ KDSoapValue::KDSoapValue(const KDSoapValue& other)
 bool KDSoapValue::isNull() const
 {
     return d->m_name.isEmpty() && d->m_childValues.isEmpty();
+}
+
+void KDSoapValue::setNillable(bool nillable)
+{
+    d->m_nillable = nillable;
 }
 
 QString KDSoapValue::name() const
@@ -259,7 +265,7 @@ void KDSoapValue::writeElementContents(KDSoapNamespacePrefixes& namespacePrefixe
     const QVariant value = this->value();
     const KDSoapValueList list = this->childValues();
 
-    if (value.isNull() && list.isEmpty())
+    if (value.isNull() && list.isEmpty() && d->m_nillable)
         writer.writeAttribute(KDSoapNamespaceManager::xmlSchemaInstance2001(), QLatin1String("nil"), QLatin1String("true"));
 
     if (use == EncodedUse) {

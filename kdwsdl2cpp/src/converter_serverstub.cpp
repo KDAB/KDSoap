@@ -171,15 +171,15 @@ void Converter::generateServerMethod(KODE::Code& code, const Binding& binding, c
         code += "if (!hasFault()) {";
         code.indent();
 
-        bool qualified;
-        const QName elemName = elementNameForPart( retPart, &qualified );
-
+        // TODO factorize with same code in next method
+        bool qualified, nillable;
+        const QName elemName = elementNameForPart( retPart, &qualified, &nillable );
         if (soapStyle(binding) == SoapBinding::RPCStyle) {
             code += QString("KDSoapValue wrapper(\"%1\", QVariant());").arg(outputMessage.name());
-            code.addBlock( serializeElementArg( retPart.type(), retPart.element(), elemName, "ret", "wrapper.childValues()", true, qualified ) );
+            code.addBlock( serializeElementArg( retPart.type(), retPart.element(), elemName, "ret", "wrapper.childValues()", true, qualified, nillable ) );
             code += "response = wrapper;";
         } else {
-            code.addBlock( serializeElementArg( retPart.type(), retPart.element(), elemName, "ret", "response", false, qualified ) );
+            code.addBlock( serializeElementArg( retPart.type(), retPart.element(), elemName, "ret", "response", false, qualified, nillable ) );
         }
 
         code.unindent();
@@ -207,14 +207,14 @@ void Converter::generateDelayedReponseMethod(const QString& methodName, const QS
     KODE::Code code;
     code.addLine("KDSoapMessage response;");
 
-    bool qualified;
-    const QName elemName = elementNameForPart( retPart, &qualified );
+    bool qualified, nillable;
+    const QName elemName = elementNameForPart( retPart, &qualified, &nillable );
     if (soapStyle(binding) == SoapBinding::RPCStyle) {
         code += QString("KDSoapValue wrapper(\"%1\", QVariant(), \"%2\");").arg(outputMessage.name()).arg(outputMessage.nameSpace());
-        code.addBlock( serializeElementArg( retPart.type(), retPart.element(), elemName, "ret", "wrapper.childValues()", true, qualified ) );
+        code.addBlock( serializeElementArg( retPart.type(), retPart.element(), elemName, "ret", "wrapper.childValues()", true, qualified, nillable ) );
         code += "response = wrapper;";
     } else {
-        code.addBlock(serializeElementArg(retPart.type(), retPart.element(), elemName, "ret", "response", false, qualified));
+        code.addBlock( serializeElementArg( retPart.type(), retPart.element(), elemName, "ret", "response", false, qualified, nillable ) );
     }
 
     code.addLine("sendDelayedResponse(responseHandle, response);");

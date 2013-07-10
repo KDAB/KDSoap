@@ -37,7 +37,7 @@ void AutoTestSoap12::test()
     service12.version();
 
     const QByteArray expectedData = QByteArray(xmlEnvBegin11()) + "><soap:Body>"
-    "<n1:version xmlns:n1=\"http://kdab.com/test/\" xsi:nil=\"true\"/>"
+    "<n1:version xmlns:n1=\"http://kdab.com/test/\"/>"
     "</soap:Body></soap:Envelope>";
 
     QByteArray expectedData12 = expectedData;

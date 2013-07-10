@@ -73,6 +73,9 @@ class SCHEMA_EXPORT Element : public XmlElement
     void setIsQualified( bool isQualified );
     bool isQualified() const;
 
+    void setNillable( bool nillable );
+    bool nillable() const;
+
     void setOccurrence( int occurrence );
     int occurrence() const;
 

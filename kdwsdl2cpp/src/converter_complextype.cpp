@@ -183,7 +183,7 @@ QString Converter::generateMemberVariable( const QString &rawName, const QString
 }
 
 // Helper method for the generation of the serialize() method, also used in addMessageArgument.
-KODE::Code Converter::serializeElementArg( const QName& type, const QName& elementType, const QName& name, const QString& localVariableName, const QByteArray& varName, bool append, bool isQualified )
+KODE::Code Converter::serializeElementArg( const QName& type, const QName& elementType, const QName& name, const QString& localVariableName, const QByteArray& varName, bool append, bool isQualified, bool nillable )
 {
     const QString varAndMethodBefore = varName + (append ? QLatin1String(".append(") : QLatin1String(" = "));
     const QString varAndMethodAfter = (append ? QLatin1String(")") : QString());
@@ -220,6 +220,8 @@ KODE::Code Converter::serializeElementArg( const QName& type, const QName& eleme
         block += valueVarName + QLatin1String(".setNamespaceUri(") + namespaceArg + QLatin1String(");");
         if ( isQualified )
             block += valueVarName + QLatin1String(".setQualified(true);");
+        if ( nillable )
+            block += valueVarName + QLatin1String(".setNillable(true);");
         block += varAndMethodBefore + valueVarName + varAndMethodAfter + QLatin1String(";") + COMMENT;
     }
     return block;
@@ -370,7 +372,7 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
         marshalCode += QLatin1String("for (int i = 0; i < ") + variableName + QLatin1String(".count(); ++i) {");
         marshalCode.indent();
         const QString nameSpace = elem.nameSpace();
-        marshalCode.addBlock( serializeElementArg( arrayType, QName(), QName(nameSpace, QLatin1String("item")), variableName + QLatin1String(".at(i)"), "args", true, elem.isQualified() ) );
+        marshalCode.addBlock( serializeElementArg( arrayType, QName(), QName(nameSpace, QLatin1String("item")), variableName + QLatin1String(".at(i)"), "args", true, elem.isQualified(), elem.nillable() ) );
         marshalCode.unindent();
         marshalCode += '}';
 
@@ -395,13 +397,13 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
 
                 marshalCode += QLatin1String("for (int i = 0; i < ") + variableName + QLatin1String(".count(); ++i) {");
                 marshalCode.indent();
-                marshalCode.addBlock( serializeElementArg( elem.type(), QName(), elem.qualifiedName(), variableName + QLatin1String(".at(i)"), "args", true, elem.isQualified() ) );
+                marshalCode.addBlock( serializeElementArg( elem.type(), QName(), elem.qualifiedName(), variableName + QLatin1String(".at(i)"), "args", true, elem.isQualified(), elem.nillable() ) );
                 marshalCode.unindent();
                 marshalCode += '}';
 
                 demarshalCode.addBlock( demarshalArrayVar( elem.type(), variableName, typeName ) );
             } else {
-                marshalCode.addBlock( serializeElementArg( elem.type(), QName(), elem.qualifiedName(), variableName, "args", true, elem.isQualified() ) );
+                marshalCode.addBlock( serializeElementArg( elem.type(), QName(), elem.qualifiedName(), variableName, "args", true, elem.isQualified(), elem.nillable() ) );
                 demarshalCode.addBlock( demarshalVar( elem.type(), QName(), variableName, typeName ) );
             }
 
@@ -434,7 +436,7 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
             demarshalCode.addBlock( demarshalNameTest( attribute.type(), attrName, &first ) );
             demarshalCode.indent();
 
-            marshalCode.addBlock( serializeElementArg( attribute.type(), QName(), attribute.qualifiedName(), variableName, "attribs", true, attribute.isQualified() ) );
+            marshalCode.addBlock( serializeElementArg( attribute.type(), QName(), attribute.qualifiedName(), variableName, "attribs", true, attribute.isQualified(), false /*nillable*/ ) );
 
             const QString typeName = mTypeMap.localType( attribute.type() );
             Q_ASSERT(!typeName.isEmpty());

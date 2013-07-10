@@ -469,14 +469,16 @@ bool Converter::clientAddAction( KODE::Code& code, const Binding &binding, const
 
 // Maybe the "qualified" bool isn't useful after all, now that we make sure
 // that all messages are qualified (it's really only configurable for child elements)
-QName Converter::elementNameForPart(const Part& part, bool* qualified) const
+QName Converter::elementNameForPart(const Part& part, bool* qualified, bool *nillable) const
 {
     if (part.type().isEmpty()) { // element (document style)
         XSD::Element element = mWSDL.findElement(part.element());
         *qualified = element.isQualified();
+        *nillable = element.nillable();
         return element.qualifiedName();
     } else { // type (rpc style)
         *qualified = false;
+        *nillable = false;
         return QName(part.nameSpace(), part.name());
     }
 }
@@ -484,16 +486,16 @@ QName Converter::elementNameForPart(const Part& part, bool* qualified) const
 void Converter::addMessageArgument( KODE::Code& code, const SoapBinding::Style& bindingStyle, const Part& part, const QString& localVariableName, const QByteArray& messageName, bool varIsMember )
 {
     const QString partname = varIsMember ? QLatin1Char('m') + upperlize( localVariableName ) :  lowerlize( localVariableName );
-    bool qualified;
-    const QName elemName = elementNameForPart(part, &qualified);
+    bool qualified, nillable;
+    const QName elemName = elementNameForPart( part, &qualified, &nillable );
     // In document style, the "part" is directly added as arguments
     // See http://www.ibm.com/developerworks/webservices/library/ws-whichwsdl/
     if ( bindingStyle == SoapBinding::DocumentStyle )
-        code.addBlock( serializeElementArg( part.type(), part.element(), elemName, partname, messageName, false, qualified ) );
+        code.addBlock( serializeElementArg( part.type(), part.element(), elemName, partname, messageName, false, qualified, nillable ) );
     else {
         const QString argType = mTypeMap.localType( part.type(), part.element() );
         if ( argType != QLatin1String("void") ) {
-            code.addBlock( serializeElementArg( part.type(), part.element(), elemName, partname, messageName + ".childValues()", true, qualified ) );
+            code.addBlock( serializeElementArg( part.type(), part.element(), elemName, partname, messageName + ".childValues()", true, qualified, nillable ) );
         }
     }
 }

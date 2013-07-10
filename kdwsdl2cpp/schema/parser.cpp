@@ -41,6 +41,11 @@ static const QString soap12EncNs = QLatin1String("http://www.w3.org/2003/05/soap
 
 namespace XSD {
 
+static bool stringToBoolean(const QString &str)
+{
+    return str == QLatin1String("true") || str == QChar::fromLatin1('1');
+}
+
 class Parser::Private
 {
 public:
@@ -474,10 +479,7 @@ Element Parser::parseElement( ParserContext *context,
 
   newElement.setDefaultValue( element.attribute( QLatin1String("default") ) );
   newElement.setFixedValue( element.attribute( QLatin1String("fixed") ) );
-
-  //bool nill = false;
-  //if ( element.hasAttribute( "nillable" ) )
-    //nill = true;
+  newElement.setNillable( stringToBoolean( element.attribute( QLatin1String("nillable") ) ) );
 
   if ( element.hasAttribute( QLatin1String("type") ) ) {
     QName typeName( element.attribute( QLatin1String("type") ) );
@@ -820,7 +822,7 @@ void Parser::parseComplexContent( ParserContext *context, const QDomElement &ele
 
     childElement = childElement.nextSiblingElement();
   }
-  if ( element.attribute( QLatin1String("mixed") ) == QLatin1String("true") ) {
+  if ( stringToBoolean( element.attribute( QLatin1String("mixed") ) ) ) {
     qDebug( "<complexContent>: No support for mixed=true" );
   }
 }

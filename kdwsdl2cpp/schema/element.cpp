@@ -29,7 +29,7 @@ class Element::Private
 {
 public:
     Private()
-      : mMinOccurs( 1 ), mMaxOccurs( 1 ), mQualified( false ), mOccurrence( 0 )
+      : mMinOccurs( 1 ), mMaxOccurs( 1 ), mQualified( false ), mNillable( false ), mOccurrence( 0 )
     {}
 
     QName mType;
@@ -38,6 +38,7 @@ public:
     int mMinOccurs;
     int mMaxOccurs;
     bool mQualified;
+    bool mNillable;
     QString mDefaultValue;
     QString mFixedValue;
     int mOccurrence;
@@ -155,7 +156,17 @@ void Element::setIsQualified( bool isQualified )
 
 bool Element::isQualified() const
 {
-  return d->mQualified;
+    return d->mQualified;
+}
+
+void Element::setNillable(bool nillable)
+{
+    d->mNillable = nillable;
+}
+
+bool Element::nillable() const
+{
+    return d->mNillable;
 }
 
 void Element::setOccurrence( int occurrence )

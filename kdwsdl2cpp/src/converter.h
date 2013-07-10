@@ -70,14 +70,14 @@ class Converter
     void addMessageArgument( KODE::Code& code, const SoapBinding::Style& bindingStyle, const Part& part, const QString& localVariableName, const QByteArray& messageName, bool varIsMember=false );
     void createHeader( const SoapBinding::Header& header, KODE::Class& newClass );
     void addJobResultMember(KODE::Class& jobClass, const Part& part, const QString& varName, const QStringList &inputGetters);
-    KODE::Code serializeElementArg( const QName& type, const QName& elementType, const QName& name, const QString& localVariableName, const QByteArray& varName, bool append, bool qualified );
+    KODE::Code serializeElementArg(const QName& type, const QName& elementType, const QName& name, const QString& localVariableName, const QByteArray& varName, bool append, bool qualified , bool nillable);
     KODE::Code demarshalVar( const QName& type, const QName& elementType, const QString& variableName, const QString& typeName, const QString& soapValueVarName = "val" ) const;
     KODE::Code demarshalArrayVar( const QName& type, const QString& variableName, const QString& typeName ) const;
     void addVariableInitializer( KODE::MemberVariable& variable ) const;
     QString generateMemberVariable(const QString &rawName, const QString &typeName, const QString &inputTypeName, KODE::Class& newClass );
     QString listTypeFor(const QString& itemTypeName, KODE::Class& newClass);
     KODE::Code deserializeRetVal(const KWSDL::Part& part, const QString& replyMsgName, const QString& qtRetType, const QString& varName) const;
-    QName elementNameForPart(const Part& part, bool* qualified) const;
+    QName elementNameForPart(const Part& part, bool* qualified, bool *nillable) const;
     bool isQualifiedPart(const Part& part) const;
 
     // Server Stub
