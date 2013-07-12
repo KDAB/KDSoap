@@ -50,7 +50,8 @@ class Parser::Private
 {
 public:
     QString mNameSpace;
-    bool mDefaultQualified;
+    bool mDefaultQualifiedElements;
+    bool mDefaultQualifiedAttributes;
 
     SimpleType::List mSimpleTypes;
     ComplexType::List mComplexTypes;
@@ -68,7 +69,8 @@ Parser::Parser( ParserContext *context, const QString &nameSpace )
   : d(new Private)
 {
   d->mNameSpace = nameSpace;
-  d->mDefaultQualified = false;
+  d->mDefaultQualifiedElements = false;
+  d->mDefaultQualifiedAttributes = false;
   init(context);
 }
 
@@ -223,9 +225,11 @@ bool Parser::parseSchemaTag( ParserContext *context, const QDomElement &root )
   if ( root.hasAttribute( QLatin1String("targetNamespace") ) )
     d->mNameSpace = root.attribute( QLatin1String("targetNamespace") );
 
-  if ( root.hasAttribute( QLatin1String("elementFormDefault") ) )
-      if (root.attribute( QLatin1String("elementFormDefault") ) == QLatin1String("qualified"))
-          d->mDefaultQualified = true;
+  if (root.attribute( QLatin1String("elementFormDefault") ) == QLatin1String("qualified"))
+      d->mDefaultQualifiedElements = true;
+
+  if (root.attribute( QLatin1String("attributeFormDefault") ) == QLatin1String("qualified"))
+      d->mDefaultQualifiedAttributes = true;
 
  // mTypesTable.setTargetNamespace( mNameSpace );
 
@@ -457,16 +461,13 @@ Element Parser::parseElement( ParserContext *context,
 
   newElement.setName( element.attribute( QLatin1String("name") ) );
   if (debugParsing())
-      qDebug() << "newElement namespace=" << nameSpace << "name=" << newElement.name() << "defaultQualified=" << d->mDefaultQualified;
+      qDebug() << "newElement namespace=" << nameSpace << "name=" << newElement.name() << "defaultQualified=" << d->mDefaultQualifiedElements;
 
-  newElement.setIsQualified(d->mDefaultQualified);
+  // http://www.w3.org/TR/xmlschema-0/#NS
   if ( element.hasAttribute( QLatin1String("form") ) ) {
-    if ( element.attribute( QLatin1String("form") ) == QLatin1String("qualified") )
-      newElement.setIsQualified( true );
-    else if ( element.attribute( QLatin1String("form") ) == QLatin1String("unqualified") )
-      newElement.setIsQualified( false );
-    else
-      newElement.setIsQualified( false );
+    newElement.setIsQualified( element.attribute( QLatin1String("form") ) == QLatin1String("qualified") );
+  } else {
+    newElement.setIsQualified( d->mDefaultQualifiedElements );
   }
 
   if ( element.hasAttribute( QLatin1String("ref") ) ) {
@@ -570,13 +571,11 @@ Attribute Parser::parseAttribute( ParserContext *context,
     newAttribute.setType( typeName );
   }
 
+  // http://www.w3.org/TR/xmlschema-0/#NS
   if ( element.hasAttribute( QLatin1String("form") ) ) {
-    if ( element.attribute( QLatin1String("form") ) == QLatin1String("qualified") )
-      newAttribute.setIsQualified( true );
-    else if ( element.attribute( QLatin1String("form") ) == QLatin1String("unqualified") )
-      newAttribute.setIsQualified( false );
-    else
-      newAttribute.setIsQualified( false );
+    newAttribute.setIsQualified( element.attribute( QLatin1String("form") ) == QLatin1String("qualified"));
+  } else {
+    newAttribute.setIsQualified( d->mDefaultQualifiedAttributes );
   }
 
   if ( element.hasAttribute( QLatin1String("ref") ) ) {
