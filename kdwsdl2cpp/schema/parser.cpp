@@ -250,7 +250,7 @@ bool Parser::parseSchemaTag( ParserContext *context, const QDomElement &root )
       SimpleType st = parseSimpleType( context, element );
       d->mSimpleTypes.append( st );
     } else if ( name.localName() == QLatin1String("attribute") ) {
-      addGlobalAttribute( parseAttribute( context, element ) );
+      addGlobalAttribute( parseAttribute( context, element, d->mNameSpace ) );
     } else if ( name.localName() == QLatin1String("attributeGroup") ) {
       d->mAttributeGroups.append( parseAttributeGroup( context, element ) );
     } else if ( name.localName() == QLatin1String("annotation") ) {
@@ -352,7 +352,7 @@ ComplexType Parser::parseComplexType( ParserContext *context, const QDomElement 
     } else if ( name.localName() == QLatin1String("choice") ) {
       parseCompositor( context, childElement, newType );
     } else if ( name.localName() == QLatin1String("attribute") ) {
-      newType.addAttribute( parseAttribute( context, childElement ) );
+      newType.addAttribute( parseAttribute( context, childElement, d->mNameSpace ) );
     } else if ( name.localName() == QLatin1String("attributeGroup") ) {
       AttributeGroup g = parseAttributeGroup( context, childElement );
       attributeGroups.append( g );
@@ -558,11 +558,12 @@ void Parser::addAnyAttribute( ParserContext*, const QDomElement &element, Comple
 }
 
 Attribute Parser::parseAttribute( ParserContext *context,
-  const QDomElement &element )
+  const QDomElement &element, const QString &nameSpace )
 {
   Attribute newAttribute;
 
   newAttribute.setName( element.attribute( QLatin1String("name") ) );
+  newAttribute.setNameSpace( nameSpace );
 
   if ( element.hasAttribute( QLatin1String("type") ) ) {
     // TODO pass nsmanager to QName so that it can resolve namespaces?
@@ -579,8 +580,7 @@ Attribute Parser::parseAttribute( ParserContext *context,
   }
 
   if ( element.hasAttribute( QLatin1String("ref") ) ) {
-    QName reference;
-    reference = element.attribute( QLatin1String("ref") );
+    QName reference( element.attribute( QLatin1String("ref") ) );
     reference.setNameSpace( context->namespaceManager()->uri( reference.prefix() ) );
 
     // MS Exchange doesn't define the xml prefix, and yet uses xml:lang...
@@ -809,7 +809,7 @@ void Parser::parseComplexContent( ParserContext *context, const QDomElement &ele
           } else if ( name.localName() == QLatin1String("choice") ) {
             parseCompositor( context, ctElement, complexType );
           } else if ( name.localName() == QLatin1String("attribute") ) {
-            complexType.addAttribute( parseAttribute( context, ctElement ) );
+            complexType.addAttribute( parseAttribute( context, ctElement, complexType.nameSpace() ) );
           } else if ( name.localName() == QLatin1String("anyAttribute") ) {
             addAnyAttribute( context, ctElement, complexType );
           }
@@ -859,7 +859,7 @@ void Parser::parseSimpleContent( ParserContext *context, const QDomElement &elem
           NSManager namespaceManager( context, ctElement );
           const QName name( ctElement.tagName() );
           if ( name.localName() == QLatin1String("attribute") )
-            complexType.addAttribute( parseAttribute( context, ctElement ) );
+            complexType.addAttribute( parseAttribute( context, ctElement, complexType.nameSpace() ) );
 
           ctElement = ctElement.nextSiblingElement();
         }
@@ -926,7 +926,7 @@ AttributeGroup Parser::parseAttributeGroup( ParserContext *context,
     QDomElement e = n.toElement();
     QName childName = QName( e.tagName() );
     if ( childName.localName() == QLatin1String("attribute") ) {
-      Attribute a = parseAttribute( context, e );
+      Attribute a = parseAttribute( context, e, group.nameSpace() );
       addGlobalAttribute( a );
       attributes.append( a );
     }

@@ -7,7 +7,7 @@
          xmlns:wsdl='http://schemas.xmlsoap.org/wsdl/'
          xmlns='http://schemas.xmlsoap.org/wsdl/'>
   <types>
-    <xsd:schema elementFormDefault="qualified" targetNamespace='http://www.kdab.com/xml/MyWsdl/' xmlns='http://www.w3.org/2001/XMLSchema'>
+    <xsd:schema elementFormDefault="qualified" attributeFormDefault="qualified" targetNamespace='http://www.kdab.com/xml/MyWsdl/' xmlns='http://www.w3.org/2001/XMLSchema'>
       <element name="HelloWorld">
         <complexType>
           <sequence>

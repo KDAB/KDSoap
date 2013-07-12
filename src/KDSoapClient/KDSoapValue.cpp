@@ -292,15 +292,21 @@ void KDSoapValue::writeElementContents(KDSoapNamespacePrefixes& namespacePrefixe
 
 void KDSoapValue::writeChildren(KDSoapNamespacePrefixes& namespacePrefixes, QXmlStreamWriter& writer, KDSoapValue::Use use, const QString& messageNamespace, bool forceQualified) const
 {
+    const QString elementNamespace = d->m_nameNamespace.isEmpty() ? messageNamespace : d->m_nameNamespace;
     const KDSoapValueList& args = childValues();
     Q_FOREACH(const KDSoapValue& attr, args.attributes()) {
         //Q_ASSERT(!attr.value().isNull());
-        QString ns;
-        if ( !d->m_nameNamespace.isEmpty() && d->m_nameNamespace != messageNamespace )
+
+        const QString attributeNamespace = attr.namespaceUri();
+        if ( !attributeNamespace.isEmpty() && attributeNamespace != elementNamespace ) {
             forceQualified = true;
-        if (d->m_qualified || forceQualified)
-            ns = d->m_nameNamespace.isEmpty() ? messageNamespace : d->m_nameNamespace;
-        writer.writeAttribute(ns, attr.name(), variantToTextValue(attr.value(), attr.typeNs(), attr.type()));
+        }
+
+        if (attr.isQualified() || forceQualified) {
+            writer.writeAttribute(attributeNamespace, attr.name(), variantToTextValue(attr.value(), attr.typeNs(), attr.type()));
+        } else {
+            writer.writeAttribute(attr.name(), variantToTextValue(attr.value(), attr.typeNs(), attr.type()));
+        }
     }
     KDSoapValueListIterator it(args);
     while (it.hasNext()) {

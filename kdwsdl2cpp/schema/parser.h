@@ -99,7 +99,8 @@ class SCHEMA_EXPORT Parser
     Element parseElement( ParserContext *context, const QDomElement &,
       const QString &nameSpace, const QDomElement &occurrenceElement );
 
-    Attribute parseAttribute( ParserContext *context, const QDomElement& );
+    Attribute parseAttribute( ParserContext *context, const QDomElement&,
+      const QString &nameSpace);
     void addAny( ParserContext *context, const QDomElement&, ComplexType& );
     void addAnyAttribute( ParserContext *context, const QDomElement&, ComplexType& );
 
