@@ -25,7 +25,6 @@
 #include <QtCore/QtGlobal>
 
 # ifdef KDSOAP_STATICLIB
-#  undef KDSOAP_SHARED  LIB
 #  define KDSOAP_EXPORT
 # else
 #  ifdef KDSOAP_BUILD_KDSOAP_LIB

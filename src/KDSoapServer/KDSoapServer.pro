@@ -37,7 +37,8 @@ SOURCES = KDSoapServer.cpp \
     KDSoapServerObjectInterface.cpp \
     KDSoapDelayedResponseHandle.cpp
 
-DEFINES += KDSOAP_BUILD_KDSOAPSERVER_LIB
+static: DEFINES += KDSOAPSERVER_STATICLIB
+else: DEFINES += KDSOAP_BUILD_KDSOAPSERVER_LIB
 
 # We use the soap client library, for xml parsing
 INCLUDEPATH += . $${TOP_SOURCE_DIR}/src
