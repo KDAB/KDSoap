@@ -117,9 +117,17 @@ public:
     }
 
     /**
-     * Returns true if this KDSoapValue was created with the default constructor.
+     * Returns true if this KDSoapValue was created with the default constructor
+     * (no name and is nil)
      */
     bool isNull() const;
+
+    /**
+     * Returns true if this KDSoapValue has a name, but no content.
+     * I.e. if the value is nillable, xsi:nil will be set to true.
+     * \since 1.4
+     */
+    bool isNil() const;
 
     /**
      * Write out xsi:nil if the KDSoapValue has no content.

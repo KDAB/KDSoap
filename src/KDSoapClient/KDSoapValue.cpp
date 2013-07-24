@@ -74,7 +74,12 @@ KDSoapValue::KDSoapValue(const KDSoapValue& other)
 
 bool KDSoapValue::isNull() const
 {
-    return d->m_name.isEmpty() && d->m_childValues.isEmpty();
+    return d->m_name.isEmpty() && isNil();
+}
+
+bool KDSoapValue::isNil() const
+{
+    return d->m_value.isNull() && d->m_childValues.isEmpty() && d->m_childValues.attributes().isEmpty();
 }
 
 void KDSoapValue::setNillable(bool nillable)
@@ -263,9 +268,8 @@ void KDSoapValue::writeElement(KDSoapNamespacePrefixes& namespacePrefixes, QXmlS
 void KDSoapValue::writeElementContents(KDSoapNamespacePrefixes& namespacePrefixes, QXmlStreamWriter& writer, KDSoapValue::Use use, const QString& messageNamespace) const
 {
     const QVariant value = this->value();
-    const KDSoapValueList list = this->childValues();
 
-    if (value.isNull() && list.isEmpty() && d->m_nillable)
+    if (isNil() && d->m_nillable)
         writer.writeAttribute(KDSoapNamespaceManager::xmlSchemaInstance2001(), QLatin1String("nil"), QLatin1String("true"));
 
     if (use == EncodedUse) {
@@ -279,6 +283,7 @@ void KDSoapValue::writeElementContents(KDSoapNamespacePrefixes& namespacePrefixe
             writer.writeAttribute(KDSoapNamespaceManager::xmlSchemaInstance2001(), QLatin1String("type"), type);
         }
 
+        const KDSoapValueList list = this->childValues();
         const bool isArray = !list.arrayType().isEmpty();
         if (isArray) {
             writer.writeAttribute(KDSoapNamespaceManager::soapEncoding(), QLatin1String("arrayType"), namespacePrefixes.resolve(list.arrayTypeNs(), list.arrayType()) + QLatin1Char('[') + QString::number(list.count()) + QLatin1Char(']'));

@@ -94,6 +94,35 @@ private Q_SLOTS:
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
     }
 
+    void testNoParentFolderIds()
+    {
+        HttpServerThread server(queryResponse(), HttpServerThread::Public);
+        ExchangeServices service(this);
+        service.setEndPoint(server.endPoint());
+
+        TNS__ResolveNamesType req;
+        req.setReturnFullContactData(true);
+
+        T__NonEmptyStringType unresolvedEntry;
+        unresolvedEntry.setValue("test");
+        req.setUnresolvedEntry(unresolvedEntry);
+
+        service.resolveNames(req);
+
+        // Check what we sent
+        // If this contains <n1:ParentFolderIds/>, the MS Exchange server will reject it:
+        // The element 'ParentFolderIds' in namespace '.../2006/messages' has incomplete content.
+        QByteArray expectedRequestXml =
+            QByteArray(xmlEnvBegin11()) + ">"
+                "<soap:Body>"
+                  "<n1:ResolveNames ReturnFullContactData=\"true\" SearchScope=\"ActiveDirectory\" xmlns:n1=\"http://schemas.microsoft.com/exchange/services/2006/messages\">"
+                  "<n1:UnresolvedEntry>test</n1:UnresolvedEntry>"
+                "</n1:ResolveNames>"
+                "</soap:Body>" + xmlEnvEnd()
+            + '\n'; // added by QXmlStreamWriter::writeEndDocument
+        QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
+    }
+
 private:
     static QByteArray queryResponse() {
         return QByteArray(xmlEnvBegin11()) + " xmlns:sf=\"urn:sobject.partner.soap.sforce.com\"><soap:Body>"

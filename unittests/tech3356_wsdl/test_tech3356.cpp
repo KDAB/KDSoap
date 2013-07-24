@@ -44,8 +44,6 @@ private:
         "<soap:Body>"
            "<n1:queryJobRequest xmlns:n1=\"http://base.fims.tv\">" // MISSING: xsi:type=\"n1:QueryJobRequestByIDType\">"
              "<n1:jobInfoSelection>all</n1:jobInfoSelection>"
-             "<n1:ExtensionGroup/>"
-             "<n1:ExtensionAttributes/>"
              "<n1:jobID>1</n1:jobID>"
            "</n1:queryJobRequest>"
         "</soap:Body>" + xmlEnvEnd()

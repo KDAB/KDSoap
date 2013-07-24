@@ -204,7 +204,8 @@ KODE::Code Converter::serializeElementArg( const QName& type, const QName& eleme
         const QName actualType = type.isEmpty() ? elementType : type;
         const QString typeArgs = namespaceString(actualType.nameSpace()) + QLatin1String(", QString::fromLatin1(\"") + actualType.localName() + QLatin1String("\")");
         const QString valueVarName = QLatin1String("_value") + upperlize(name.localName());
-        if ( mTypeMap.isComplexType( type, elementType ) ) {
+        const bool isComplex = mTypeMap.isComplexType( type, elementType );
+        if ( isComplex ) {
             block += QLatin1String("KDSoapValue ") + valueVarName + QLatin1Char('(') + localVariableName + QLatin1String(".serialize(") + nameArg + QLatin1String("));") + COMMENT;
         } else {
             if ( mTypeMap.isBuiltinType( type, elementType ) ) {
@@ -222,6 +223,8 @@ KODE::Code Converter::serializeElementArg( const QName& type, const QName& eleme
             block += valueVarName + QLatin1String(".setQualified(true);");
         if ( nillable )
             block += valueVarName + QLatin1String(".setNillable(true);");
+        if ( append && isComplex && !nillable ) // omit empty complex types (testcase: MSExchange, no <ParentFolderIds/>)
+            block += "if (!" + valueVarName + ".isNil())";
         block += varAndMethodBefore + valueVarName + varAndMethodAfter + QLatin1String(";") + COMMENT;
     }
     return block;
