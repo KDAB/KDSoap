@@ -355,3 +355,11 @@ void Converter::convertTypes()
   for ( int i = 0; i < complexTypes.count(); ++i )
     convertComplexType( &(complexTypes[ i ]) );
 }
+
+// Helper for clientstub and serverstub
+KODE::Code Converter::serializePart(const Part &part, const QString &localVariableName, const QByteArray &varName, bool append)
+{
+    bool qualified, nillable;
+    const QName elemName = elementNameForPart( part, &qualified, &nillable );
+    return serializeElementArg( part.type(), part.element(), elemName, localVariableName, varName, append, qualified, nillable );
+}

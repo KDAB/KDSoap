@@ -486,16 +486,14 @@ QName Converter::elementNameForPart(const Part& part, bool* qualified, bool *nil
 void Converter::addMessageArgument( KODE::Code& code, const SoapBinding::Style& bindingStyle, const Part& part, const QString& localVariableName, const QByteArray& messageName, bool varIsMember )
 {
     const QString partname = varIsMember ? QLatin1Char('m') + upperlize( localVariableName ) :  lowerlize( localVariableName );
-    bool qualified, nillable;
-    const QName elemName = elementNameForPart( part, &qualified, &nillable );
     // In document style, the "part" is directly added as arguments
     // See http://www.ibm.com/developerworks/webservices/library/ws-whichwsdl/
     if ( bindingStyle == SoapBinding::DocumentStyle )
-        code.addBlock( serializeElementArg( part.type(), part.element(), elemName, partname, messageName, false, qualified, nillable ) );
+        code.addBlock( serializePart(part, partname, messageName, false ) );
     else {
         const QString argType = mTypeMap.localType( part.type(), part.element() );
         if ( argType != QLatin1String("void") ) {
-            code.addBlock( serializeElementArg( part.type(), part.element(), elemName, partname, messageName + ".childValues()", true, qualified, nillable ) );
+            code.addBlock( serializePart(part, partname, messageName + ".childValues()", true) );
         }
     }
 }
