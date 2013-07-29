@@ -48,9 +48,7 @@ SOURCES = KDSoapMessage.cpp \
     KDDateTime.cpp \
     KDSoapJob.cpp \
     KDSoapSslHandler.cpp
-
-static: DEFINES += KDSOAP_STATICLIB
-else: DEFINES += KDSOAP_BUILD_KDSOAP_LIB
+DEFINES += KDSOAP_BUILD_KDSOAP_LIB
 
 # installation targets:
 target.path = $$INSTALL_PREFIX/lib
