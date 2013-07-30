@@ -37,11 +37,11 @@ class IHCServerObject : public ResourceInteractionServiceServiceServerBase
 {
 public:
 
-    virtual TNS__WSResourceValueEnvelope getRuntimeValue( int parameter1 ) {
+    virtual TNS__WSResourceValueEnvelope getRuntimeValue( int ) {
         return TNS__WSResourceValueEnvelope(); }
-    virtual TNS__ArrayOfWSResourceValueEnvelope getRuntimeValues( const XSD__ArrayOfint& parameter2 ) {
+    virtual TNS__ArrayOfWSResourceValueEnvelope getRuntimeValues( const XSD__ArrayOfint& ) {
         return TNS__ArrayOfWSResourceValueEnvelope(); }
-    virtual TNS__ArrayOfWSResourceValueEnvelope getInitialValues( const XSD__ArrayOfint& parameter3 ) {
+    virtual TNS__ArrayOfWSResourceValueEnvelope getInitialValues( const XSD__ArrayOfint& ) {
         return TNS__ArrayOfWSResourceValueEnvelope();
     }
     virtual bool setResourceValue( const TNS__WSResourceValueEnvelope& parameter4 ) {
@@ -49,34 +49,34 @@ public:
         //qDebug() << dynamic_cast<WPNS1__WSEnumValue *>(&parameter4.value());
         return (parameter4.typeString() == "type");
     }
-    virtual bool setResourceValues( const TNS__ArrayOfWSResourceValueEnvelope& parameter5 ) {
+    virtual bool setResourceValues( const TNS__ArrayOfWSResourceValueEnvelope& ) {
         return false;
     }
-    virtual TNS__ArrayOfWSResourceValueEnvelope enableRuntimeValueNotifications( const XSD__ArrayOfint& parameter6 ) {
+    virtual TNS__ArrayOfWSResourceValueEnvelope enableRuntimeValueNotifications( const XSD__ArrayOfint& ) {
         return TNS__ArrayOfWSResourceValueEnvelope();
     }
-    virtual bool disableRuntimeValueNotifactions( const XSD__ArrayOfint& parameter7 ) {
+    virtual bool disableRuntimeValueNotifactions( const XSD__ArrayOfint& ) {
         return false;
     }
-    virtual TNS__ArrayOfWSResourceValueEnvelope enableInitialValueNotifications( const XSD__ArrayOfint& parameter8 ) {
+    virtual TNS__ArrayOfWSResourceValueEnvelope enableInitialValueNotifications( const XSD__ArrayOfint& ) {
         return TNS__ArrayOfWSResourceValueEnvelope();
     }
-    virtual bool disableInitialValueNotifactions( const XSD__ArrayOfint& parameter9 ) {
+    virtual bool disableInitialValueNotifactions( const XSD__ArrayOfint& ) {
         return false;
     }
-    virtual TNS__ArrayOfWSResourceValueEnvelope waitForResourceValueChanges( int parameter10 ) {
+    virtual TNS__ArrayOfWSResourceValueEnvelope waitForResourceValueChanges( int ) {
         return TNS__ArrayOfWSResourceValueEnvelope();
     }
-    virtual TNS__ArrayOfWSSceneResourceIdAndLocationURLs getSceneGroupResourceIdAndPositions( int parameter11 ) {
+    virtual TNS__ArrayOfWSSceneResourceIdAndLocationURLs getSceneGroupResourceIdAndPositions( int ) {
         return TNS__ArrayOfWSSceneResourceIdAndLocationURLs();
     }
-    virtual TNS__WSSceneResourceIdAndLocationURLs getScenePositionsForSceneValueResource( int parameter12 ) {
+    virtual TNS__WSSceneResourceIdAndLocationURLs getScenePositionsForSceneValueResource( int ) {
         return TNS__WSSceneResourceIdAndLocationURLs();
     }
     virtual WPNS1__ArrayOfWSEnumDefinition getEnumeratorDefinitions() {
         return WPNS1__ArrayOfWSEnumDefinition();
     }
-    virtual QString getResourceType( int parameter13 ) {
+    virtual QString getResourceType( int ) {
         return QString();
     }
     virtual TNS__ArrayOfWSDatalineResource getExtraDatalineInputs() {
@@ -91,7 +91,7 @@ public:
     virtual TNS__ArrayOfWSDatalineResource getAllDatalineOutputs() {
         return TNS__ArrayOfWSDatalineResource();
     }
-    virtual TNS__WSResourceValueEnvelope getInitialValue( int parameter14 ) {
+    virtual TNS__WSResourceValueEnvelope getInitialValue( int ) {
         return TNS__WSResourceValueEnvelope();
     }
 };
