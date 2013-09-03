@@ -86,8 +86,7 @@ private Q_SLOTS:
                 "</soap:Header>"
                 "<soap:Body>"
                   "<n1:ResolveNames ReturnFullContactData=\"true\" SearchScope=\"ActiveDirectory\">"
-                  "<n1:ParentFolderIds><n3:FolderId xmlns:n3=\"http://schemas.microsoft.com/exchange/services/2006/types\" Id=\"folderId\" ChangeKey=\"\"/></n1:ParentFolderIds>"
-                  "<n1:UnresolvedEntry/>"
+                  "<n1:ParentFolderIds><n3:FolderId xmlns:n3=\"http://schemas.microsoft.com/exchange/services/2006/types\" Id=\"folderId\"/></n1:ParentFolderIds>"
                 "</n1:ResolveNames>"
                 "</soap:Body>" + xmlEnvEnd()
             + '\n'; // added by QXmlStreamWriter::writeEndDocument
@@ -118,6 +117,59 @@ private Q_SLOTS:
                   "<n1:ResolveNames ReturnFullContactData=\"true\" SearchScope=\"ActiveDirectory\" xmlns:n1=\"http://schemas.microsoft.com/exchange/services/2006/messages\">"
                   "<n1:UnresolvedEntry>test</n1:UnresolvedEntry>"
                 "</n1:ResolveNames>"
+                "</soap:Body>" + xmlEnvEnd()
+            + '\n'; // added by QXmlStreamWriter::writeEndDocument
+        QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
+    }
+
+    void testSyncFolder()
+    {
+        HttpServerThread server(queryResponse(), HttpServerThread::Public);
+        ExchangeServices service(this);
+        service.setEndPoint(server.endPoint());
+
+        T__TargetFolderIdType folder;
+        T__DistinguishedFolderIdType distinguishedFolder;
+        distinguishedFolder.setId(T__DistinguishedFolderIdNameType::Calendar);
+        T__EmailAddressType mailbox;
+        mailbox.setEmailAddress(QString("Chef@labex.fitformobility.de")); //TODO replace with option
+        distinguishedFolder.setMailbox(mailbox);
+        folder.setDistinguishedFolderId(distinguishedFolder);
+
+        //prepare call
+        TNS__SyncFolderItemsType request;
+        //item shape
+        T__ItemResponseShapeType itemShape;
+        itemShape.setBaseShape(T__DefaultShapeNamesType::Default);
+        request.setItemShape(itemShape);
+        request.setSyncFolderId(folder);
+        //syncstate
+        request.setSyncState("MySyncState");
+        //max items
+        request.setMaxChangesReturned(10);
+        service.syncFolderItems(request);
+
+        // Check what we sent
+        QByteArray expectedRequestXml =
+            QByteArray(xmlEnvBegin11()) + ">"
+                "<soap:Body>"
+                "<n1:SyncFolderItems xmlns:n1=\"http://schemas.microsoft.com/exchange/services/2006/messages\">"
+                "<n1:ItemShape>"
+                "<n2:BaseShape xmlns:n2=\"http://schemas.microsoft.com/exchange/services/2006/types\">Default</n2:BaseShape>"
+                "<n3:IncludeMimeContent xmlns:n3=\"http://schemas.microsoft.com/exchange/services/2006/types\">false</n3:IncludeMimeContent>"
+                "<n4:BodyType xmlns:n4=\"http://schemas.microsoft.com/exchange/services/2006/types\">Best</n4:BodyType>"
+                "</n1:ItemShape>"
+                "<n1:SyncFolderId>"
+                  "<n5:DistinguishedFolderId xmlns:n5=\"http://schemas.microsoft.com/exchange/services/2006/types\" Id=\"calendar\">"
+                    "<n5:Mailbox>"
+                      "<n5:EmailAddress>Chef@labex.fitformobility.de</n5:EmailAddress>"
+                      "<n5:MailboxType>Mailbox</n5:MailboxType>"
+                    "</n5:Mailbox>"
+                  "</n5:DistinguishedFolderId>"
+                "</n1:SyncFolderId>"
+                "<n1:SyncState>MySyncState</n1:SyncState>"
+                "<n1:MaxChangesReturned>10</n1:MaxChangesReturned>"
+                "</n1:SyncFolderItems>"
                 "</soap:Body>" + xmlEnvEnd()
             + '\n'; // added by QXmlStreamWriter::writeEndDocument
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));

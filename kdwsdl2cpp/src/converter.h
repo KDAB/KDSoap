@@ -71,7 +71,7 @@ class Converter
     void createHeader( const SoapBinding::Header& header, KODE::Class& newClass );
     void addJobResultMember(KODE::Class& jobClass, const Part& part, const QString& varName, const QStringList &inputGetters);
     KODE::Code serializePart(const Part& part, const QString& localVariableName, const QByteArray& varName, bool append);
-    KODE::Code serializeElementArg(const QName& type, const QName& elementType, const QName& name, const QString& localVariableName, const QByteArray& varName, bool append, bool qualified , bool nillable);
+    KODE::Code serializeElementArg(const QName& type, const QName& elementType, const QName& name, const QString& localVariableName, const QByteArray& varName, bool append, bool qualified , bool nillable, bool omitIfEmpty);
     KODE::Code demarshalVar( const QName& type, const QName& elementType, const QString& variableName, const QString& typeName, const QString& soapValueVarName = "val" ) const;
     KODE::Code demarshalArrayVar( const QName& type, const QString& variableName, const QString& typeName ) const;
     void addVariableInitializer( KODE::MemberVariable& variable ) const;

@@ -361,5 +361,6 @@ KODE::Code Converter::serializePart(const Part &part, const QString &localVariab
 {
     bool qualified, nillable;
     const QName elemName = elementNameForPart( part, &qualified, &nillable );
-    return serializeElementArg( part.type(), part.element(), elemName, localVariableName, varName, append, qualified, nillable );
+    bool omitIfEmpty = false; // Don't omit entire parts, this especially breaks the wrappers for RPC messages
+    return serializeElementArg( part.type(), part.element(), elemName, localVariableName, varName, append, qualified, nillable, omitIfEmpty );
 }
