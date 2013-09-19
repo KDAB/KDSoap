@@ -85,13 +85,14 @@ class SCHEMA_EXPORT Parser
     void addGlobalElement( const Element & );
     void addGlobalAttribute( const Attribute & );
     AttributeGroup parseAttributeGroup( ParserContext *context, const QDomElement& );
+    Group parseGroup(ParserContext *context, const QDomElement& , const QString &nameSpace);
 
     Annotation::List parseAnnotation( ParserContext *context, const QDomElement& );
     ComplexType parseComplexType( ParserContext *context, const QDomElement& );
 
     void all( ParserContext *context, const QDomElement&, ComplexType& );
-    void parseCompositor( ParserContext *context,
-      const QDomElement&, ComplexType& );
+    void parseCompositor(ParserContext *context, const QDomElement &element,
+                                   const QString &nameSpace , Element::List *elements, Group::List *groups);
 
     void setOccurrenceAttributes( Element &newElement,
       const QDomElement &element );
@@ -101,7 +102,7 @@ class SCHEMA_EXPORT Parser
 
     Attribute parseAttribute( ParserContext *context, const QDomElement&,
       const QString &nameSpace);
-    void addAny( ParserContext *context, const QDomElement&, ComplexType& );
+    Element parseAny(ParserContext *context, const QDomElement& , const QString &nameSpace);
     void addAnyAttribute( ParserContext *context, const QDomElement&, ComplexType& );
 
     SimpleType parseSimpleType( ParserContext *context, const QDomElement& );
@@ -119,9 +120,10 @@ class SCHEMA_EXPORT Parser
     void includeSchema( ParserContext *context, const QString &location );
     QStringList joinNamespaces( const QStringList&, const QStringList& );
 
-    Element findElement( const QName &name );
-    Attribute findAttribute( const QName &name );
-    AttributeGroup findAttributeGroup( const QName &name );
+    Element findElement( const QName &name ) const;
+    Group findGroup( const QName &name ) const;
+    Attribute findAttribute( const QName &name ) const;
+    AttributeGroup findAttributeGroup( const QName &name ) const;
     void init(ParserContext *context);
     void clear();
     bool resolveForwardDeclarations();

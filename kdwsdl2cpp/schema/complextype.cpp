@@ -37,6 +37,7 @@ public:
 
     Element::List mElements;
     Attribute::List mAttributes;
+    Group::List mGroups;
     AttributeGroup::List mAttributeGroups;
 
     bool mAnonymous;
@@ -169,6 +170,21 @@ Element::List ComplexType::elements() const
   return d->mElements;
 }
 
+void ComplexType::setGroups( const Group::List &groups )
+{
+  d->mGroups = groups;
+}
+
+void ComplexType::addGroup(const Group &group)
+{
+  d->mGroups.append( group );
+}
+
+Group::List ComplexType::groups() const
+{
+  return d->mGroups;
+}
+
 void ComplexType::setAttributes( const Attribute::List &attributes )
 {
   d->mAttributes = attributes;
@@ -210,7 +226,7 @@ void ComplexType::addElement( const Element &element )
 
 bool ComplexType::isEmpty() const
 {
-    return d->mAttributeGroups.isEmpty() && d->mAttributes.isEmpty() && d->mElements.isEmpty() && d->mBaseTypeName.isEmpty() && d->mArrayType.isEmpty();
+    return d->mAttributeGroups.isEmpty() && d->mGroups.isEmpty() && d->mAttributes.isEmpty() && d->mElements.isEmpty() && d->mBaseTypeName.isEmpty() && d->mArrayType.isEmpty();
 }
 
 } // namespace XSD

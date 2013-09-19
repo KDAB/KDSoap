@@ -27,6 +27,7 @@
 
 #include <schema/attribute.h>
 #include <schema/attributegroup.h>
+#include <schema/group.h>
 #include <schema/element.h>
 #include <schema/xsdtype.h>
 
@@ -74,6 +75,10 @@ class SCHEMA_EXPORT ComplexType : public XSDType
 
     void setElements( const Element::List &elements );
     Element::List elements() const;
+
+    void setGroups( const Group::List &groups );
+    void addGroup( const Group& group );
+    Group::List groups() const;
 
     void setAttributes( const Attribute::List &attributes );
     Attribute::List attributes() const;

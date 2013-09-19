@@ -99,11 +99,13 @@ QString Element::documentation() const
   return d->mDocumentation;
 }
 
+// unused
 void Element::setGroupId( int group )
 {
   d->mGroupId = group;
 }
 
+// unused
 int Element::groupId() const
 {
   return d->mGroupId;

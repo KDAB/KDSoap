@@ -13,7 +13,8 @@ SOURCES = \
    xmlelement.cpp \
    xsdtype.cpp \
    attributegroup.cpp \
-   compositor.cpp
+   compositor.cpp \
+   group.cpp
 
 QT -= gui
 QT += xml
@@ -22,4 +23,18 @@ INCLUDEPATH += $${TOP_SOURCE_DIR}/kdwsdl2cpp
 
 include($${TOP_SOURCE_DIR}/variables.pri)
 DEFINES -= QT_NO_CAST_TO_ASCII QBA_NO_CAST_TO_VOID QBA_NO_CAST_TO_ASCII QT_NO_CAST_FROM_ASCII
+
+HEADERS += \
+	annotation.h \
+	attribute.h \
+	complextype.h \
+	element.h \
+	parser.h \
+	simpletype.h \
+	types.h \
+	xmlelement.h \
+	xsdtype.h \
+	attributegroup.h \
+	compositor.h \
+	group.h
 

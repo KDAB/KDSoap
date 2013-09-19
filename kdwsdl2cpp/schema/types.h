@@ -51,8 +51,11 @@ class SCHEMA_EXPORT Types
     void setAttributes( const Attribute::List &attributes );
     Attribute::List attributes() const;
 
-    void setAttributeGroups( const AttributeGroup::List &attributeGroups );
-    AttributeGroup::List attributeGroups() const;
+    // unused void setAttributeGroups( const AttributeGroup::List &attributeGroups );
+    // unused AttributeGroup::List attributeGroups() const;
+
+    // unused void setGroups( const Group::List &groups );
+    // unused Group::List groups() const;
 
     void setNamespaces( const QStringList &namespaces );
     QStringList namespaces() const;

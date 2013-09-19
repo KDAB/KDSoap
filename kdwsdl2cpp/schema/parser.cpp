@@ -57,6 +57,7 @@ public:
     ComplexType::List mComplexTypes;
     Element::List mElements;
     Attribute::List mAttributes;
+    Group::List mGroups;
     AttributeGroup::List mAttributeGroups;
     Annotation::List mAnnotations;
 
@@ -103,6 +104,7 @@ void Parser::clear()
   d->mComplexTypes.clear();
   d->mSimpleTypes.clear();
   d->mElements.clear();
+  d->mGroups.clear();
   d->mAttributes.clear();
   d->mAttributeGroups.clear();
 }
@@ -253,10 +255,14 @@ bool Parser::parseSchemaTag( ParserContext *context, const QDomElement &root )
       addGlobalAttribute( parseAttribute( context, element, d->mNameSpace ) );
     } else if ( name.localName() == QLatin1String("attributeGroup") ) {
       d->mAttributeGroups.append( parseAttributeGroup( context, element ) );
+    } else if ( name.localName() == QLatin1String("group") ) {
+      d->mGroups.append( parseGroup( context, element, d->mNameSpace ) );
     } else if ( name.localName() == QLatin1String("annotation") ) {
       d->mAnnotations = parseAnnotation( context, element );
     } else if ( name.localName() == QLatin1String("include") ) {
       parseInclude( context, element );
+    } else {
+        qWarning() << "Unsupported schema element" << name.localName();
     }
 
     element = element.nextSiblingElement();
@@ -341,21 +347,24 @@ ComplexType Parser::parseComplexType( ParserContext *context, const QDomElement 
   QDomElement childElement = element.firstChildElement();
 
   AttributeGroup::List attributeGroups;
+  Group::List groups;
 
   while ( !childElement.isNull() ) {
     NSManager namespaceManager( context, childElement );
     const QName name( childElement.tagName() );
     if ( name.localName() == QLatin1String("all") ) {
       all( context, childElement, newType );
-    } else if ( name.localName() == QLatin1String("sequence") ) {
-      parseCompositor( context, childElement, newType );
-    } else if ( name.localName() == QLatin1String("choice") ) {
-      parseCompositor( context, childElement, newType );
+    } else if ( name.localName() == QLatin1String("sequence") || name.localName() == QLatin1String("choice") ) {
+      Element::List elems;
+      parseCompositor( context, childElement, newType.nameSpace(), &elems, &groups );
+      foreach ( const Element& elem, elems )
+          newType.addElement( elem );
     } else if ( name.localName() == QLatin1String("attribute") ) {
       newType.addAttribute( parseAttribute( context, childElement, d->mNameSpace ) );
     } else if ( name.localName() == QLatin1String("attributeGroup") ) {
-      AttributeGroup g = parseAttributeGroup( context, childElement );
-      attributeGroups.append( g );
+      attributeGroups.append( parseAttributeGroup( context, childElement ) );
+    } else if ( name.localName() == QLatin1String("group") ) {
+      groups.append( parseGroup( context, childElement, newType.nameSpace() ) );
     } else if ( name.localName() == QLatin1String("anyAttribute") ) {
       addAnyAttribute( context, childElement, newType );
     } else if ( name.localName() == QLatin1String("complexContent") ) {
@@ -366,12 +375,15 @@ ComplexType Parser::parseComplexType( ParserContext *context, const QDomElement 
       Annotation::List annotations = parseAnnotation( context, childElement );
       newType.setDocumentation( annotations.documentation() );
       newType.setAnnotations( annotations );
+    } else {
+        qWarning() << "Unsupported complextype element" << name.localName();
     }
 
     childElement = childElement.nextSiblingElement();
   }
 
   newType.setAttributeGroups( attributeGroups );
+  newType.setGroups( groups );
 
   return newType;
 }
@@ -390,6 +402,8 @@ void Parser::all( ParserContext *context, const QDomElement &element, ComplexTyp
       Annotation::List annotations = parseAnnotation( context, childElement );
       ct.setDocumentation( annotations.documentation() );
       ct.setAnnotations( annotations );
+    } else {
+      qWarning() << "Unsupported all element" << name.localName();
     }
 
     childElement = childElement.nextSiblingElement();
@@ -405,8 +419,7 @@ static int readMaxOccurs( const QDomElement& element )
         return value.toInt();
 }
 
-void Parser::parseCompositor( ParserContext *context,
-  const QDomElement &element, ComplexType &ct )
+void Parser::parseCompositor( ParserContext *context, const QDomElement &element, const QString &nameSpace, Element::List *elements, Group::List *groups )
 {
   const QName name( element.tagName() );
   bool isChoice = name.localName() == QLatin1String("choice");
@@ -418,37 +431,35 @@ void Parser::parseCompositor( ParserContext *context,
   compositor.setMaxOccurs( readMaxOccurs( element ) );
 
   if ( isChoice || isSequence ) {
-    Element::List newElements;
     QDomElement childElement = element.firstChildElement();
 
     while ( !childElement.isNull() ) {
       NSManager namespaceManager( context, childElement );
       const QName csName( childElement.tagName() );
-      if ( csName.localName() == QLatin1String("element") ) {
+      const QString localName = csName.localName();
+      if ( localName == QLatin1String("element") ) {
         Element newElement;
         if ( isChoice ) {
           newElement = parseElement( context, childElement,
-            ct.nameSpace(), element );
+            nameSpace, element );
         } else {
           newElement = parseElement( context, childElement,
-            ct.nameSpace(), childElement );
+            nameSpace, childElement );
         }
-        newElements.append( newElement );
+        newElement.setCompositor( compositor );
+        elements->append( newElement );
         compositor.addChild( csName );
-      } else if ( csName.localName() == QLatin1String("any") ) {
-        addAny( context, childElement, ct );
-      } else if ( isChoice ) {
-        parseCompositor( context, childElement, ct );
-      } else if ( isSequence ) {
-        parseCompositor( context, childElement, ct );
+      } else if ( localName == QLatin1String("any") ) {
+        elements->append( parseAny( context, childElement, nameSpace ) );
+      } else if ( localName == QLatin1String("choice") || localName == QLatin1String("sequence") ) {
+        parseCompositor( context, childElement, nameSpace, elements, groups );
+      } else if ( localName == QLatin1String("group") ) {
+        groups->append( parseGroup( context, childElement, nameSpace ) );
+      } else {
+        qDebug() << "Unsupported element in" << name << ":" << csName;
       }
 
       childElement = childElement.nextSiblingElement();
-    }
-
-    foreach( Element e, newElements ) {
-      e.setCompositor( compositor );
-      ct.addElement( e );
     }
   }
 }
@@ -526,15 +537,14 @@ Element Parser::parseElement( ParserContext *context,
 }
 
 // Testcase: salesforce-partner.wsdl has <any namespace="##targetNamespace" [...]/>
-void Parser::addAny( ParserContext*, const QDomElement &element, ComplexType &complexType )
+Element Parser::parseAny( ParserContext*, const QDomElement &element, const QString &nameSpace )
 {
-  Element newElement( complexType.nameSpace() );
+  Element newElement( nameSpace );
   newElement.setName( QLatin1String("any") );
   QName anyType( QLatin1String("http://www.w3.org/2001/XMLSchema"), QLatin1String("any") );
   newElement.setType( anyType );
   setOccurrenceAttributes( newElement, element );
-
-  complexType.addElement( newElement );
+  return newElement;
 }
 
 void Parser::setOccurrenceAttributes( Element &newElement,
@@ -804,14 +814,20 @@ void Parser::parseComplexContent( ParserContext *context, const QDomElement &ele
 
           if ( name.localName() == QLatin1String("all") ) {
             all( context, ctElement, complexType );
-          } else if ( name.localName() == QLatin1String("sequence") ) {
-            parseCompositor( context, ctElement, complexType );
-          } else if ( name.localName() == QLatin1String("choice") ) {
-            parseCompositor( context, ctElement, complexType );
+          } else if ( name.localName() == QLatin1String("sequence") || name.localName() == QLatin1String("choice") ) {
+              Element::List elems;
+              Group::List groups;
+              parseCompositor( context, ctElement, complexType.nameSpace(), &elems, &groups );
+              foreach ( const Element& elem, elems )
+                  complexType.addElement( elem );
+              foreach ( const Group& group, groups )
+                  complexType.addGroup( group );
           } else if ( name.localName() == QLatin1String("attribute") ) {
             complexType.addAttribute( parseAttribute( context, ctElement, complexType.nameSpace() ) );
           } else if ( name.localName() == QLatin1String("anyAttribute") ) {
             addAnyAttribute( context, ctElement, complexType );
+          } else {
+            qWarning() << "Unsupported content element" << name.localName();
           }
 
           ctElement = ctElement.nextSiblingElement();
@@ -921,9 +937,7 @@ AttributeGroup Parser::parseAttributeGroup( ParserContext *context,
     return group;
   }
 
-  QDomNode n;
-  for( n = element.firstChild(); !n.isNull(); n = n.nextSibling() ) {
-    QDomElement e = n.toElement();
+  for ( QDomElement e = element.firstChildElement(); !e.isNull(); e = e.nextSiblingElement() ) {
     QName childName = QName( e.tagName() );
     if ( childName.localName() == QLatin1String("attribute") ) {
       Attribute a = parseAttribute( context, e, group.nameSpace() );
@@ -936,6 +950,41 @@ AttributeGroup Parser::parseAttributeGroup( ParserContext *context,
   group.setAttributes( attributes );
 
   return group;
+}
+
+// <group> http://www.w3.org/TR/xmlschema-0/#ref17
+Group Parser::parseGroup( ParserContext *context, const QDomElement &element, const QString &nameSpace )
+{
+    Element::List elements;
+    Group group;
+
+    if ( element.hasAttribute( QLatin1String("ref") ) ) {
+      QName reference( element.attribute( QLatin1String("ref") ) );
+      reference.setNameSpace(
+        context->namespaceManager()->uri( reference.prefix() ) );
+      group.setReference( reference );
+
+      return group;
+    }
+
+    for ( QDomElement e = element.firstChildElement(); !e.isNull(); e = e.nextSiblingElement() ) {
+      QName childName = QName( e.tagName() );
+      const QString localName = childName.localName();
+      // can contain all, choice or sequence
+      if ( localName == QLatin1String("sequence") || localName == QLatin1String("choice") ) {
+          parseCompositor( context, e, nameSpace, &elements, NULL /*can't nest groups*/ );
+      } else if ( localName == QLatin1String("all") ) {
+          qWarning() << "Unsupported element in group:" << localName; // TODO
+      } else {
+          qWarning() << "Unexpected element in group:" << localName;
+      }
+    }
+
+    group.setName( element.attribute( QLatin1String("name") ) );
+    group.setNameSpace( nameSpace );
+    group.setElements( elements );
+
+    return group;
 }
 
 QString Parser::targetNamespace() const
@@ -1084,31 +1133,42 @@ QStringList Parser::joinNamespaces( const QStringList &list, const QStringList &
   return retval;
 }
 
-Element Parser::findElement( const QName &name )
+Element Parser::findElement( const QName &name ) const
 {
-  for ( int i = 0; i < d->mElements.count(); ++i ) {
-    if ( d->mElements[ i ].nameSpace() == name.nameSpace() && d->mElements[ i ].name() == name.localName() )
-      return d->mElements[ i ];
+  foreach ( const Element& e, d->mElements ) {
+    if ( e.nameSpace() == name.nameSpace() && e.name() == name.localName() ) {
+      return e;
+    }
   }
-
-  qDebug() << "Not found:" << name.nameSpace() << name.localName();
-
+  qDebug() << "Element not found:" << name.nameSpace() << name.localName();
   return Element();
 }
 
-Attribute Parser::findAttribute( const QName &name )
+Group Parser::findGroup(const QName &name) const
 {
-  for ( int i = 0; i < d->mAttributes.count(); ++i ) {
-    if ( d->mAttributes[ i ].nameSpace() == name.nameSpace() && d->mAttributes[ i ].name() == name.localName() )
-      return d->mAttributes[ i ];
+  foreach ( const Group& g, d->mGroups ) {
+    if ( g.nameSpace() == name.nameSpace() && g.name() == name.localName() ) {
+      return g;
+    }
   }
+  qDebug() << "Group not found:" << name.nameSpace() << name.localName();
+  return Group();
+}
 
+Attribute Parser::findAttribute( const QName &name ) const
+{
+  foreach ( const Attribute& attr, d->mAttributes ) {
+    if ( attr.nameSpace() == name.nameSpace() && attr.name() == name.localName() ) {
+      return attr;
+    }
+  }
+  qDebug() << "Attribute not found:" << name.nameSpace() << name.localName();
   return Attribute();
 }
 
-AttributeGroup Parser::findAttributeGroup( const QName &name )
+AttributeGroup Parser::findAttributeGroup( const QName &name ) const
 {
-  foreach ( AttributeGroup g, d->mAttributeGroups ) {
+  foreach ( const AttributeGroup& g, d->mAttributeGroups ) {
     if ( g.nameSpace() == name.nameSpace() && g.name() == name.localName() ) {
       return g;
     }
@@ -1123,14 +1183,16 @@ bool Parser::resolveForwardDeclarations()
   //const QName anyType( "http://www.w3.org/2001/XMLSchema", "anyType" );
   for ( int i = 0; i < d->mComplexTypes.count(); ++i ) {
 
-    Element::List elements = d->mComplexTypes[ i ].elements();
+    ComplexType & complexType = d->mComplexTypes[i];
+
+    Element::List elements = complexType.elements();
     Element::List finalElementList;
     for ( int j = 0; j < elements.count(); ++j ) {
       Element element = elements[ j ];
       if ( !element.isResolved() ) {
         Element resolvedElement = findElement( element.reference() );
         if (resolvedElement.qualifiedName().isEmpty()) {
-            qWarning("ERROR in %s: resolving element ref to '%s': not found!", qPrintable(d->mComplexTypes[i].qualifiedName().qname()), qPrintable(element.reference().qname()));
+            qWarning("ERROR in %s: resolving element ref to '%s': not found!", qPrintable(complexType.qualifiedName().qname()), qPrintable(element.reference().qname()));
             d->mElements.dump();
             return false;
         } else {
@@ -1155,9 +1217,18 @@ bool Parser::resolveForwardDeclarations()
           finalElementList.append( element );
       }
     }
-    d->mComplexTypes[ i ].setElements( finalElementList );
 
-    Attribute::List attributes = d->mComplexTypes[ i ].attributes();
+    foreach( const Group& group, complexType.groups() ) {
+      if ( !group.isResolved() ) {
+        const Group refGroup = findGroup( group.reference() );
+        foreach ( const Element& elem, refGroup.elements() ) {
+          finalElementList.append( elem );
+        }
+      }
+    }
+    complexType.setElements( finalElementList );
+
+    Attribute::List attributes = complexType.attributes();
 
     for ( int j = 0; j < attributes.count(); ++j ) {
       if ( !attributes[ j ].isResolved() ) {
@@ -1172,8 +1243,7 @@ bool Parser::resolveForwardDeclarations()
       }
     }
 
-    AttributeGroup::List attributeGroups = d->mComplexTypes[ i ].attributeGroups();
-    foreach( const AttributeGroup& group, attributeGroups ) {
+    foreach( const AttributeGroup& group, complexType.attributeGroups() ) {
       if ( !group.isResolved() ) {
         AttributeGroup refAttributeGroup =
           findAttributeGroup( group.reference() );
@@ -1184,7 +1254,7 @@ bool Parser::resolveForwardDeclarations()
       }
     }
 
-    d->mComplexTypes[ i ].setAttributes( attributes );
+    complexType.setAttributes( attributes );
   }
   return true;
 }
@@ -1198,8 +1268,9 @@ Types Parser::types() const
   //qDebug() << "Parser::types: elements:";
   //d->mElements.dump();
   types.setElements( d->mElements );
+  //types.setGroups( d->mGroups );
   types.setAttributes( d->mAttributes );
-  types.setAttributeGroups( d->mAttributeGroups );
+  //types.setAttributeGroups( d->mAttributeGroups );
   types.setNamespaces( d->mNamespaces );
 
   return types;
