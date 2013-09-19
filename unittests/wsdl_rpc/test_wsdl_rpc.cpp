@@ -204,8 +204,8 @@ private Q_SLOTS:
         QByteArray responseData = QByteArray(xmlEnvBegin11()) + "><soap:Body>"
                                   "<kdab:getEmployeeTypeResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl/\">"
                                     "<kdab:employeeType kdab:type=\"Developer\">"
-                                      "<kdab:team>Minitel</kdab:team>"
                                       "<kdab:otherRoles>TeamLeader</kdab:otherRoles>"
+                                      "<kdab:team>Minitel</kdab:team>"
                                     "</kdab:employeeType>"
                                   "</kdab:getEmployeeTypeResponse>"
                                   "</soap:Body>" + xmlEnvEnd();
@@ -253,10 +253,10 @@ private:
     static QByteArray serializedEmployeeType() {
         return QByteArray(
                 "<employeeType xsi:type=\"n1:EmployeeType\" type=\"Developer\">"
-                "<team xsi:type=\"n1:TeamName\">Minitel</team>"
                 "<otherRoles xsi:type=\"n1:EmployeeTypeEnum\">TeamLeader</otherRoles>"
                 "<otherRolesAsList xsi:type=\"n1:EmployeeTypeEnumList\">TeamLeader Developer</otherRolesAsList>"
                 "<lottoNumbers xsi:type=\"n1:LottoNumbers\">7 21 30 42</lottoNumbers>"
+                "<team xsi:type=\"n1:TeamName\">Minitel</team>"
                 "<anonList xsi:type=\"n1:AnonListType\">Detailed DetailedMerged</anonList>"
                 "</employeeType>");
     }
