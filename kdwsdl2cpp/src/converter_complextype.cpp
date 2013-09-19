@@ -77,7 +77,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
     Q_FOREACH( const XSD::Element &elemIt, elements ) {
 
         if (elemIt.type().isEmpty()) {
-            qDebug() << "ERROR: Element with no type:" << elemIt.name() << "(skipping)";
+            qDebug() << "ERROR: Element from" << *type << "with no type:" << elemIt << "(skipping)";
             Q_ASSERT(false);
             continue;
         }

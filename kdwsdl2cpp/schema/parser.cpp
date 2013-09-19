@@ -980,7 +980,9 @@ Group Parser::parseGroup( ParserContext *context, const QDomElement &element, co
       }
     }
 
-    group.setName( element.attribute( QLatin1String("name") ) );
+    const QString name = element.attribute( QLatin1String("name") );
+    Q_ASSERT( !name.isEmpty() );
+    group.setName( name );
     group.setNameSpace( nameSpace );
     group.setElements( elements );
 
@@ -1186,9 +1188,11 @@ bool Parser::resolveForwardDeclarations()
     ComplexType & complexType = d->mComplexTypes[i];
 
     Element::List elements = complexType.elements();
+    //qDebug() << i << "looking at" << complexType << " " << elements.count() << "elements";
     Element::List finalElementList;
     for ( int j = 0; j < elements.count(); ++j ) {
-      Element element = elements[ j ];
+      Element element = elements.at( j );
+      //qDebug() << "  " << element;
       if ( !element.isResolved() ) {
         Element resolvedElement = findElement( element.reference() );
         if (resolvedElement.qualifiedName().isEmpty()) {
@@ -1221,11 +1225,18 @@ bool Parser::resolveForwardDeclarations()
     foreach( const Group& group, complexType.groups() ) {
       if ( !group.isResolved() ) {
         const Group refGroup = findGroup( group.reference() );
-        foreach ( const Element& elem, refGroup.elements() ) {
-          finalElementList.append( elem );
+        if (!refGroup.isNull()) {
+          //qDebug() << "  resolved group" << group.reference() << "got these elements" << refGroup.elements();
+          foreach ( const Element& elem, refGroup.elements() ) {
+            Q_ASSERT(!elem.type().isEmpty());
+            finalElementList.append( elem );
+          }
+          //qDebug() << "  finalElementList" << finalElementList;
         }
       }
     }
+    // groups were resolved, don't do it again if resolveForwardDeclarations() is called again
+    complexType.setGroups( Group::List() );
     complexType.setElements( finalElementList );
 
     Attribute::List attributes = complexType.attributes();
@@ -1254,6 +1265,8 @@ bool Parser::resolveForwardDeclarations()
       }
     }
 
+    // groups were resolved, don't do it again if resolveForwardDeclarations() is called again
+    complexType.setAttributeGroups(AttributeGroup::List());
     complexType.setAttributes( attributes );
   }
   return true;
