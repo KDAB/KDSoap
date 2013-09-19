@@ -4,6 +4,7 @@
 #include <schema/xmlelement.h>
 #include <schema/element.h>
 #include <common/qname.h>
+#include <qdebug.h>
 
 #include <kode_export.h>
 
@@ -34,4 +35,7 @@ class SCHEMA_EXPORT Group : public XmlElement
 };
 
 }
+
+SCHEMA_EXPORT QDebug operator<<(QDebug dbg, const XSD::Group &group);
+
 #endif // GROUP_H

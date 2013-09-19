@@ -94,4 +94,6 @@ class SCHEMA_EXPORT Element : public XmlElement
 
 }
 
+SCHEMA_EXPORT QDebug operator<<(QDebug dbg, const XSD::Element &element);
+
 #endif

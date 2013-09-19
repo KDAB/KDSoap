@@ -81,3 +81,9 @@ bool Group::isResolved() const
 }
 
 }
+
+QDebug operator<<(QDebug dbg, const XSD::Group &group)
+{
+  dbg << group.qualifiedName();
+  return dbg;
+}

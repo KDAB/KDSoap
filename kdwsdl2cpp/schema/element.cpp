@@ -214,3 +214,10 @@ void Element::List::dump()
 }
 
 }
+
+
+QDebug operator<<(QDebug dbg, const XSD::Element &element)
+{
+  dbg << element.name();
+  return dbg;
+}
