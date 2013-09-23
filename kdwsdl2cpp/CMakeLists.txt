@@ -34,6 +34,7 @@ set(SOURCES
   schema/xsdtype.cpp
   schema/attributegroup.cpp
   schema/compositor.cpp
+  schema/group.cpp
   wsdl/binding.cpp
   wsdl/bindingoperation.cpp
   wsdl/definitions.cpp
