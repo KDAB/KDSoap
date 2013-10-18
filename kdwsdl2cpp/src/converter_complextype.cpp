@@ -6,6 +6,12 @@
 
 using namespace KWSDL;
 
+// Return true if the generated code should remember whether this elem was set by the user.
+static bool isElementOptional( const XSD::Element &elem )
+{
+    return elem.minOccurs() == 0 || elem.compositor().type() == XSD::Compositor::Choice;
+}
+
 void Converter::convertComplexType( const XSD::ComplexType *type )
 {
     // An empty type is still useful, in document mode: it serializes the element name
@@ -51,7 +57,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
                 const QString baseClassName = mTypeMap.localType( baseName );
                 newClass.addBaseClass( baseClassName );
             } else {
-                const QString variableName = generateMemberVariable( "value", typeName, inputTypeName, newClass );
+                const QString variableName = generateMemberVariable( "value", typeName, inputTypeName, newClass, 1 );
 
                 // convenience constructor
                 KODE::Function conctor( upperlize( newClass.name() ) );
@@ -102,7 +108,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
                 inputTypeName = QLatin1String("const ") + typeName + QLatin1Char('&');
             }
 
-            generateMemberVariable( elemIt.name(), typeName, inputTypeName, newClass );
+            generateMemberVariable( elemIt.name(), typeName, inputTypeName, newClass, isElementOptional( elemIt ) );
         }
 
         // include header
@@ -124,7 +130,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
         inputTypeName = mTypeMap.localInputType( attribute.type(), QName() );
         //qDebug() << "Attribute" << attribute.name();
 
-        generateMemberVariable( attribute.name(), typeName, inputTypeName, newClass );
+        generateMemberVariable( attribute.name(), typeName, inputTypeName, newClass, attribute.attributeUse() == XSD::Attribute::Optional );
 
         // include header
         newClass.addIncludes( QStringList(), mTypeMap.forwardDeclarations( attribute.type() ) );
@@ -155,12 +161,19 @@ static QString namespaceString(const QString& ns)
     return QLatin1String("QString::fromLatin1(\"") + ns + QLatin1String("\")");
 }
 
-QString Converter::generateMemberVariable( const QString &rawName, const QString &typeName, const QString &inputTypeName, KODE::Class &newClass )
+// Called for each element and for each attribute of a complex type, as well as for the base class "value".
+QString Converter::generateMemberVariable( const QString &rawName, const QString &typeName, const QString &inputTypeName, KODE::Class &newClass, bool optional )
 {
     // member variable
     KODE::MemberVariable variable( rawName, typeName );
-    Converter::addVariableInitializer( variable );
+    addVariableInitializer( variable );
     newClass.addMemberVariable( variable );
+
+    if ( optional ) {
+        KODE::MemberVariable nilVariable( rawName + "_nil", "bool" );
+        nilVariable.setInitializer( "true" );
+        newClass.addMemberVariable( nilVariable );
+    }
 
     const QString variableName = QLatin1String("d_ptr->") + variable.name();
     const QString upperName = upperlize( rawName );
@@ -169,7 +182,12 @@ QString Converter::generateMemberVariable( const QString &rawName, const QString
     // setter method
     KODE::Function setter( QLatin1String("set") + upperName, QLatin1String("void") );
     setter.addArgument( inputTypeName + QLatin1Char(' ') + mNameMapper.escape( lowerName ) );
-    setter.setBody( variableName + QLatin1String(" = ") + mNameMapper.escape( lowerName ) + QLatin1Char(';') );
+    KODE::Code code;
+    if ( optional ) {
+        code += variableName + "_nil = false;";
+    }
+    code += variableName + QLatin1String(" = ") + mNameMapper.escape( lowerName ) + QLatin1Char(';');
+    setter.setBody( code );
 
     // getter method
     KODE::Function getter( mNameMapper.escape( lowerName ), typeName );
@@ -205,6 +223,12 @@ KODE::Code Converter::serializeElementArg( const QName& type, const QName& eleme
         const QString typeArgs = namespaceString(actualType.nameSpace()) + QLatin1String(", QString::fromLatin1(\"") + actualType.localName() + QLatin1String("\")");
         const QString valueVarName = QLatin1String("_value") + upperlize(name.localName());
         const bool isComplex = mTypeMap.isComplexType( type, elementType );
+
+        if ( append && omitIfEmpty ) {
+            block += "if (!" + localVariableName + "_nil) {";
+            block.indent();
+        }
+
         if ( isComplex ) {
             block += QLatin1String("KDSoapValue ") + valueVarName + QLatin1Char('(') + localVariableName + QLatin1String(".serialize(") + nameArg + QLatin1String("));") + COMMENT;
         } else {
@@ -223,9 +247,16 @@ KODE::Code Converter::serializeElementArg( const QName& type, const QName& eleme
             block += valueVarName + QLatin1String(".setQualified(true);");
         if ( nillable )
             block += valueVarName + QLatin1String(".setNillable(true);");
-        if ( append && omitIfEmpty ) // omit empty children (testcase: MSExchange, no <ParentFolderIds/>)
+        if ( append && omitIfEmpty ) { // omit empty children (testcase: MSExchange, no <ParentFolderIds/>)
             block += "if (!" + valueVarName + ".isNil())";
+        }
         block += varAndMethodBefore + valueVarName + varAndMethodAfter + QLatin1String(";") + COMMENT;
+
+        if ( append && omitIfEmpty ) {
+            block.unindent();
+            block += "}";
+        }
+
     }
     return block;
 }
@@ -375,7 +406,7 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
         marshalCode += QLatin1String("for (int i = 0; i < ") + variableName + QLatin1String(".count(); ++i) {");
         marshalCode.indent();
         const QString nameSpace = elem.nameSpace();
-        marshalCode.addBlock( serializeElementArg( arrayType, QName(), QName(nameSpace, QLatin1String("item")), variableName + QLatin1String(".at(i)"), "args", true, elem.isQualified(), elem.nillable(), !elem.nillable() ) );
+        marshalCode.addBlock( serializeElementArg( arrayType, QName(), QName(nameSpace, QLatin1String("item")), variableName + QLatin1String(".at(i)"), "args", true, elem.isQualified(), elem.nillable(), false /*if not set, not in array*/ ) );
         marshalCode.unindent();
         marshalCode += '}';
 
@@ -400,13 +431,14 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
 
                 marshalCode += QLatin1String("for (int i = 0; i < ") + variableName + QLatin1String(".count(); ++i) {");
                 marshalCode.indent();
-                marshalCode.addBlock( serializeElementArg( elem.type(), QName(), elem.qualifiedName(), variableName + QLatin1String(".at(i)"), "args", true, elem.isQualified(), elem.nillable(), !elem.nillable() ) );
+                marshalCode.addBlock( serializeElementArg( elem.type(), QName(), elem.qualifiedName(), variableName + QLatin1String(".at(i)"), "args", true, elem.isQualified(), elem.nillable(), false /*if not set, not in array*/ ) );
                 marshalCode.unindent();
                 marshalCode += '}';
 
                 demarshalCode.addBlock( demarshalArrayVar( elem.type(), variableName, typeName ) );
             } else {
-                marshalCode.addBlock( serializeElementArg( elem.type(), QName(), elem.qualifiedName(), variableName, "args", true, elem.isQualified(), elem.nillable(), !elem.nillable() ) );
+                const bool optional = isElementOptional( elem );
+                marshalCode.addBlock( serializeElementArg( elem.type(), QName(), elem.qualifiedName(), variableName, "args", true, elem.isQualified(), elem.nillable(), optional ) );
                 demarshalCode.addBlock( demarshalVar( elem.type(), QName(), variableName, typeName ) );
             }
 
@@ -439,7 +471,7 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
             demarshalCode.addBlock( demarshalNameTest( attribute.type(), attrName, &first ) );
             demarshalCode.indent();
 
-            marshalCode.addBlock( serializeElementArg( attribute.type(), QName(), attribute.qualifiedName(), variableName, "attribs", true, attribute.isQualified(), false /*nillable*/, true ) );
+            marshalCode.addBlock( serializeElementArg( attribute.type(), QName(), attribute.qualifiedName(), variableName, "attribs", true, attribute.isQualified(), false /*nillable*/, attribute.attributeUse() == XSD::Attribute::Optional ) );
 
             const QString typeName = mTypeMap.localType( attribute.type() );
             Q_ASSERT(!typeName.isEmpty());

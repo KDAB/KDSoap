@@ -58,7 +58,7 @@ private Q_SLOTS:
             "><soap:Body>"
             "<n1:Login xmlns:n1=\"http://tempuri.org/\">"
                 "<n1:userName>Foo</n1:userName>"
-                "<n1:password xsi:nil=\"true\"></n1:password>"
+                // minoccurs=0, so we don't need this: "<n1:password xsi:nil=\"true\"></n1:password>"
                 "<n1:organization>KDAB</n1:organization>"
             "</n1:Login>"
             "</soap:Body>" + xmlEnvEnd()

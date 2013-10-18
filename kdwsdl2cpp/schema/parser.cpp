@@ -604,12 +604,15 @@ Attribute Parser::parseAttribute( ParserContext *context,
   newAttribute.setFixedValue( element.attribute( QLatin1String("fixed") ) );
 
   if ( element.hasAttribute( QLatin1String("use") ) ) {
-    if ( element.attribute( QLatin1String("use") ) == QLatin1String("optional") )
-      newAttribute.setIsUsed( false );
-    else if ( element.attribute( QLatin1String("use") ) == QLatin1String("required") )
-      newAttribute.setIsUsed( true );
-    else
-      newAttribute.setIsUsed( false );
+    const QString use = element.attribute( QLatin1String("use") );
+    if ( use == QLatin1String("optional") )
+      newAttribute.setAttributeUse( Attribute::Optional );
+    else if ( use == QLatin1String("required") )
+      newAttribute.setAttributeUse( Attribute::Required );
+    else if ( use == QLatin1String("prohibited") ) {
+      qWarning("prohibited attributes are not supported"); // TODO skip parsing the attribute altogether
+      newAttribute.setAttributeUse( Attribute::Prohibited );
+    }
   }
 
   QDomElement childElement = element.firstChildElement();

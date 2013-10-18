@@ -155,7 +155,6 @@ private Q_SLOTS:
             "<n1:getTimestampRequest xmlns:n1=\"http://schemas.novell.com/2005/01/GroupWise/methods\">"
                 "<n1:backup>true</n1:backup>"
                 "<n1:retention>true</n1:retention>"
-                "<n1:noop>false</n1:noop>"
             "</n1:getTimestampRequest>"
             "</soap:Body>" + xmlEnvEnd()
             + '\n'; // added by QXmlStreamWriter::writeEndDocument

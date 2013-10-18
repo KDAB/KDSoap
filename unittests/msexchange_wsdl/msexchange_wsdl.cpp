@@ -85,8 +85,9 @@ private Q_SLOTS:
                   "<n2:RequestServerVersion xmlns:n2=\"http://schemas.microsoft.com/exchange/services/2006/types\" Version=\"Exchange2007_SP1\"/>"
                 "</soap:Header>"
                 "<soap:Body>"
-                  "<n1:ResolveNames ReturnFullContactData=\"true\" SearchScope=\"ActiveDirectory\">"
+                  "<n1:ResolveNames ReturnFullContactData=\"true\">"
                   "<n1:ParentFolderIds><n3:FolderId xmlns:n3=\"http://schemas.microsoft.com/exchange/services/2006/types\" Id=\"folderId\"/></n1:ParentFolderIds>"
+                  "<n1:UnresolvedEntry/>"
                 "</n1:ResolveNames>"
                 "</soap:Body>" + xmlEnvEnd()
             + '\n'; // added by QXmlStreamWriter::writeEndDocument
@@ -114,12 +115,24 @@ private Q_SLOTS:
         QByteArray expectedRequestXml =
             QByteArray(xmlEnvBegin11()) + ">"
                 "<soap:Body>"
-                  "<n1:ResolveNames ReturnFullContactData=\"true\" SearchScope=\"ActiveDirectory\" xmlns:n1=\"http://schemas.microsoft.com/exchange/services/2006/messages\">"
+                  "<n1:ResolveNames ReturnFullContactData=\"true\" xmlns:n1=\"http://schemas.microsoft.com/exchange/services/2006/messages\">"
                   "<n1:UnresolvedEntry>test</n1:UnresolvedEntry>"
                 "</n1:ResolveNames>"
                 "</soap:Body>" + xmlEnvEnd()
             + '\n'; // added by QXmlStreamWriter::writeEndDocument
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
+    }
+
+    T__TargetFolderIdType targetFolder()
+    {
+        T__TargetFolderIdType folder;
+        T__DistinguishedFolderIdType distinguishedFolder;
+        distinguishedFolder.setId(T__DistinguishedFolderIdNameType::Calendar);
+        T__EmailAddressType mailbox;
+        mailbox.setEmailAddress(QString("Chef@labex.fitformobility.de"));
+        distinguishedFolder.setMailbox(mailbox);
+        folder.setDistinguishedFolderId(distinguishedFolder);
+        return folder;
     }
 
     void testSyncFolder()
@@ -128,13 +141,7 @@ private Q_SLOTS:
         ExchangeServices service(this);
         service.setEndPoint(server.endPoint());
 
-        T__TargetFolderIdType folder;
-        T__DistinguishedFolderIdType distinguishedFolder;
-        distinguishedFolder.setId(T__DistinguishedFolderIdNameType::Calendar);
-        T__EmailAddressType mailbox;
-        mailbox.setEmailAddress(QString("Chef@labex.fitformobility.de")); //TODO replace with option
-        distinguishedFolder.setMailbox(mailbox);
-        folder.setDistinguishedFolderId(distinguishedFolder);
+        T__TargetFolderIdType folder = targetFolder();
 
         //prepare call
         TNS__SyncFolderItemsType request;
@@ -156,20 +163,57 @@ private Q_SLOTS:
                 "<n1:SyncFolderItems xmlns:n1=\"http://schemas.microsoft.com/exchange/services/2006/messages\">"
                 "<n1:ItemShape>"
                 "<n2:BaseShape xmlns:n2=\"http://schemas.microsoft.com/exchange/services/2006/types\">Default</n2:BaseShape>"
-                "<n3:IncludeMimeContent xmlns:n3=\"http://schemas.microsoft.com/exchange/services/2006/types\">false</n3:IncludeMimeContent>"
-                "<n4:BodyType xmlns:n4=\"http://schemas.microsoft.com/exchange/services/2006/types\">Best</n4:BodyType>"
                 "</n1:ItemShape>"
                 "<n1:SyncFolderId>"
-                  "<n5:DistinguishedFolderId xmlns:n5=\"http://schemas.microsoft.com/exchange/services/2006/types\" Id=\"calendar\">"
-                    "<n5:Mailbox>"
-                      "<n5:EmailAddress>Chef@labex.fitformobility.de</n5:EmailAddress>"
-                      "<n5:MailboxType>Mailbox</n5:MailboxType>"
-                    "</n5:Mailbox>"
-                  "</n5:DistinguishedFolderId>"
+                  /* FolderId should not be there because it's a choice... */
+                  "<n3:DistinguishedFolderId xmlns:n3=\"http://schemas.microsoft.com/exchange/services/2006/types\" Id=\"calendar\">"
+                    "<n3:Mailbox>"
+                      "<n3:EmailAddress>Chef@labex.fitformobility.de</n3:EmailAddress>"
+                    "</n3:Mailbox>"
+                  "</n3:DistinguishedFolderId>"
                 "</n1:SyncFolderId>"
                 "<n1:SyncState>MySyncState</n1:SyncState>"
                 "<n1:MaxChangesReturned>10</n1:MaxChangesReturned>"
                 "</n1:SyncFolderItems>"
+                "</soap:Body>" + xmlEnvEnd()
+            + '\n'; // added by QXmlStreamWriter::writeEndDocument
+        QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
+    }
+
+    void testCreateItem() // SOAP-93
+    {
+        HttpServerThread server(queryResponse(), HttpServerThread::Public);
+        ExchangeServices service(this);
+        service.setEndPoint(server.endPoint());
+
+        TNS__CreateItemType request;
+        T__TargetFolderIdType folder = targetFolder();
+        request.setSavedItemFolderId(folder);
+        T__NonEmptyArrayOfAllItemsType array;
+        T__CalendarItemType item;
+        item.setSubject("Subject");
+        array.setCalendarItem(QList<T__CalendarItemType>() << item);
+        request.setItems(array);
+        service.createItem(request);
+
+        // Check what we sent
+        QByteArray expectedRequestXml =
+            QByteArray(xmlEnvBegin11()) + ">"
+                "<soap:Body>"
+                "<n1:CreateItem xmlns:n1=\"http://schemas.microsoft.com/exchange/services/2006/messages\">"
+                  "<n1:SavedItemFolderId>"
+                    "<n2:DistinguishedFolderId xmlns:n2=\"http://schemas.microsoft.com/exchange/services/2006/types\" Id=\"calendar\">"
+                      "<n2:Mailbox>"
+                        "<n2:EmailAddress>Chef@labex.fitformobility.de</n2:EmailAddress>"
+                      "</n2:Mailbox>"
+                    "</n2:DistinguishedFolderId>"
+                  "</n1:SavedItemFolderId>"
+                  "<n1:Items>"
+                    "<n3:CalendarItem xmlns:n3=\"http://schemas.microsoft.com/exchange/services/2006/types\">"
+                      "<n3:Subject>Subject</n3:Subject>"
+                    "</n3:CalendarItem>"
+                  "</n1:Items>"
+                "</n1:CreateItem>"
                 "</soap:Body>" + xmlEnvEnd()
             + '\n'; // added by QXmlStreamWriter::writeEndDocument
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));

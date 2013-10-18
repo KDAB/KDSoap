@@ -28,7 +28,7 @@ class Attribute::Private
 {
 public:
     Private()
-     : mQualified(false), mUse(false)
+     : mQualified(false), mUse(Optional)
     {}
 
     QName mType;
@@ -36,7 +36,7 @@ public:
     QString mDefaultValue;
     QString mFixedValue;
     bool mQualified;
-    bool mUse;
+    AttributeUse mUse;
     QName mReference;
 };
 
@@ -122,12 +122,13 @@ bool Attribute::isQualified() const
   return d->mQualified;
 }
 
-void Attribute::setIsUsed( bool isUsed )
+// http://www.w3.org/TR/xmlschema-0/#ref36
+void Attribute::setAttributeUse( AttributeUse use )
 {
-  d->mUse = isUsed;
+  d->mUse = use;
 }
 
-bool Attribute::isUsed() const
+Attribute::AttributeUse Attribute::attributeUse() const
 {
   return d->mUse;
 }

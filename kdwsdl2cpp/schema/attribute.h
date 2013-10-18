@@ -63,8 +63,10 @@ class SCHEMA_EXPORT Attribute : public XmlElement
     void setIsQualified( bool isQualified );
     bool isQualified() const;
 
-    void setIsUsed( bool isUsed );
-    bool isUsed() const;
+    enum AttributeUse { Optional, Required, Prohibited };
+
+    void setAttributeUse( AttributeUse use );
+    AttributeUse attributeUse() const;
 
     void setReference( const QName &reference );
     QName reference() const;
