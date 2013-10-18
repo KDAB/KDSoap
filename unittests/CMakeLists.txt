@@ -7,6 +7,8 @@ include(${QT_USE_FILE})
 include_directories(../src/ ../src/KDSoapClient/ ../src/KDSoapServer/ ../testtools/)
 include(../KDSoapMacros.cmake)
 
+remove_definitions(-DQT_NO_CAST_FROM_ASCII)
+
 macro(add_unittest _source)
   set(_test ${_source})
   get_filename_component(_name ${_source} NAME_WE)
