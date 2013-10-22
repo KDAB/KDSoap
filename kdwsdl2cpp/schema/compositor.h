@@ -49,6 +49,8 @@ class SCHEMA_EXPORT Compositor
 
     bool isValid() const;
 
+    void setMinOccurs( int minOccurs );
+    int minOccurs() const;
     void setMaxOccurs( int maxOccurs );
     int maxOccurs() const;
 

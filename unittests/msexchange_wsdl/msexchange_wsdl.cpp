@@ -193,6 +193,11 @@ private Q_SLOTS:
         T__CalendarItemType item;
         item.setSubject("Subject");
         array.setCalendarItem(QList<T__CalendarItemType>() << item);
+        T__MeetingRequestMessageType meetingRequest;
+        T__TimeZoneType meetingTimeZone;
+        meetingTimeZone.setTimeZoneName("W. Europe Standard Time");
+        meetingRequest.setMeetingTimeZone(meetingTimeZone);
+        array.setMeetingRequest(QList<T__MeetingRequestMessageType>() << meetingRequest);
         request.setItems(array);
         service.createItem(request);
 
@@ -212,6 +217,9 @@ private Q_SLOTS:
                     "<n3:CalendarItem xmlns:n3=\"http://schemas.microsoft.com/exchange/services/2006/types\">"
                       "<n3:Subject>Subject</n3:Subject>"
                     "</n3:CalendarItem>"
+                    "<n4:MeetingRequest xmlns:n4=\"http://schemas.microsoft.com/exchange/services/2006/types\">"
+                      "<n4:MeetingTimeZone TimeZoneName=\"W. Europe Standard Time\"/>"
+                    "</n4:MeetingRequest>"
                   "</n1:Items>"
                 "</n1:CreateItem>"
                 "</soap:Body>" + xmlEnvEnd()

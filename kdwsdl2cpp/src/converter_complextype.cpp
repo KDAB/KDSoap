@@ -9,7 +9,7 @@ using namespace KWSDL;
 // Return true if the generated code should remember whether this elem was set by the user.
 static bool isElementOptional( const XSD::Element &elem )
 {
-    return elem.minOccurs() == 0 || elem.compositor().type() == XSD::Compositor::Choice;
+    return elem.minOccurs() == 0 || elem.compositor().type() == XSD::Compositor::Choice || elem.compositor().minOccurs() == 0;
 }
 
 void Converter::convertComplexType( const XSD::ComplexType *type )

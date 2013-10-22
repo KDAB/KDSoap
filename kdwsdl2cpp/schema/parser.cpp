@@ -428,6 +428,7 @@ void Parser::parseCompositor( ParserContext *context, const QDomElement &element
   Compositor compositor;
   if ( isChoice ) compositor.setType( Compositor::Choice );
   else if ( isSequence ) compositor.setType( Compositor::Sequence );
+  compositor.setMinOccurs( element.attribute( QLatin1String("minOccurs"), QLatin1String("1") ).toInt() );
   compositor.setMaxOccurs( readMaxOccurs( element ) );
 
   if ( isChoice || isSequence ) {

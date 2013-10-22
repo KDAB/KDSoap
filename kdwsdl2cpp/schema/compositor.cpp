@@ -28,11 +28,13 @@ class Compositor::Private
 public:
     Private()
      : mType( Invalid ),
+       mMinOccurs( 1 ),
        mMaxOccurs( 1 )
     {}
 
     Type mType;
     QName::List mChildren;
+    int mMinOccurs;
     int mMaxOccurs;
 };
 
@@ -71,6 +73,16 @@ Compositor &Compositor::operator=( const Compositor &other )
 bool Compositor::isValid() const
 {
     return d->mType != Invalid;
+}
+
+void Compositor::setMinOccurs(int minOccurs)
+{
+    d->mMinOccurs = minOccurs;
+}
+
+int Compositor::minOccurs() const
+{
+    return d->mMinOccurs;
 }
 
 void Compositor::setMaxOccurs(int maxOccurs)
