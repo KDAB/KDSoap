@@ -245,7 +245,7 @@ private slots:
 #ifndef QT_NO_OPENSSL
     void slotSslErrors(const QList<QSslError>& errors)
     {
-        qDebug() << "slotSslErrors" << sslSocket->errorString() << errors;
+        qDebug() << "server-side: slotSslErrors" << sslSocket->errorString() << errors;
     }
 #endif
 private:

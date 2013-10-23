@@ -242,10 +242,11 @@ private Q_SLOTS:
 #endif
     }
 
-    void testSslErrorHandled()
+    void testSslErrorHandledBySlot()
     {
         if (!QSslSocket::supportsSsl())
             return; // see above
+        m_errors.clear();
         // Use SSL on the server, without adding the CA certificate (done by setSslConfiguration())
         HttpServerThread server(addEmployeeResponse(), HttpServerThread::Ssl);
         MyWsdlDocument service;
@@ -264,6 +265,33 @@ private Q_SLOTS:
         QCOMPARE(QString::fromLatin1(job->resultParameters().constData()), QString::fromLatin1("Foo"));
     }
 
+#ifdef Q_OS_UNIX
+    void testSslErrorIgnoredUpfront()
+    {
+        if (!QSslSocket::supportsSsl())
+            return; // see above
+        m_errors.clear();
+        // Use SSL on the server, without adding the CA certificate (done by setSslConfiguration())
+        HttpServerThread server(addEmployeeResponse(), HttpServerThread::Ssl);
+        MyWsdlDocument service;
+        service.setEndPoint(server.endPoint());
+        QList<QSslCertificate> certs = QSslCertificate::fromPath(QString::fromLatin1(":/certs/test-127.0.0.1-cert.pem"));
+        QCOMPARE(certs.count(), 1);
+        service.clientInterface()->ignoreSslErrors(QList<QSslError>() << QSslError(QSslError::UnableToGetLocalIssuerCertificate, certs.at(0))
+                                                   << QSslError(QSslError::CertificateUntrusted, certs.at(0))
+                                                   << QSslError(QSslError::UnableToVerifyFirstCertificate, certs.at(0)));
+        AddEmployeeJob *job = new AddEmployeeJob(&service);
+        job->setParameters(addEmployeeParameters());
+        connect(job, SIGNAL(finished(KDSoapJob*)), this, SLOT(slotAddEmployeeJobFinished(KDSoapJob*)));
+        job->start();
+        m_eventLoop.exec();
+        // Disable SSL so that termination can happen normally (do it asap, in case of failure below)
+        server.disableSsl();
+        QCOMPARE(m_errors.count(), 0);
+        QCOMPARE(job->faultAsString(), QString());
+        QCOMPARE(QString::fromLatin1(job->resultParameters().constData()), QString::fromLatin1("Foo"));
+    }
+#endif
 
     void testMyWsdlSSL()
     {

@@ -210,12 +210,20 @@ void KDSoapClientInterface::ignoreSslErrors()
     d->m_ignoreSslErrors = true;
 }
 
+#ifndef QT_NO_OPENSSL
+void KDSoapClientInterface::ignoreSslErrors(const QList<QSslError> &errors)
+{
+    d->m_ignoreErrorsList = errors;
+}
+#endif
+
 void KDSoapClientInterfacePrivate::setupReply(QNetworkReply *reply)
 {
     if (m_ignoreSslErrors) {
         QObject::connect(reply, SIGNAL(sslErrors(const QList<QSslError>&)), reply, SLOT(ignoreSslErrors()));
     } else {
 #ifndef QT_NO_OPENSSL
+        reply->ignoreSslErrors(m_ignoreErrorsList);
         if (m_sslHandler) {
             QObject::connect(reply, SIGNAL(sslErrors(QList<QSslError>)), m_sslHandler, SLOT(slotSslErrors(QList<QSslError>)));
         }

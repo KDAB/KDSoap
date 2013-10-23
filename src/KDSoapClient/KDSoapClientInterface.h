@@ -26,6 +26,9 @@
 #include <QtCore/QString>
 #include "KDSoapMessage.h"
 #include "KDSoapPendingCall.h"
+#ifndef QT_NO_OPENSSL
+#include <QSslError>
+#endif
 
 class KDSoapAuthentication;
 class KDSoapSslHandler;
@@ -277,6 +280,19 @@ public:
      * only!
      */
     void ignoreSslErrors();
+
+#ifndef QT_NO_OPENSSL
+    /**
+     * \brief ignoreSslErrors
+     * If this function is called, the SSL errors given in \p errors will be ignored.
+     * Note that you can set the expected certificate in the SSL error.
+     * See QNetworkReply::ignoreSslErrors() for more information.
+     *
+     * \param errors list of errors to ignore
+     * \since 1.4
+     */
+    void ignoreSslErrors(const QList<QSslError> &errors);
+#endif
 
     /**
      * Returns the ssl handler object, which can be used for notification
