@@ -26,14 +26,13 @@
 #include <QtCore/QString>
 #include "KDSoapMessage.h"
 #include "KDSoapPendingCall.h"
-#ifndef QT_NO_OPENSSL
-#include <QSslError>
-#endif
+
 
 class KDSoapAuthentication;
 class KDSoapSslHandler;
 class KDSoapClientInterfacePrivate;
 QT_BEGIN_NAMESPACE
+class QSslError;
 class QSslConfiguration;
 class QNetworkCookieJar;
 class QNetworkProxy;
