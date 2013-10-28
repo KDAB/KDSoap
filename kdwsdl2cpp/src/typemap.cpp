@@ -36,6 +36,25 @@ static QString adaptLocalTypeName( const QString &str )
   return result;
 }
 
+static QString correctSyntaxCpp(const QString& str)
+{
+  Q_ASSERT(!str.isEmpty());
+
+  QStringList nameSpaceAndTypePart = str.split("::");
+  QString cl = nameSpaceAndTypePart.last();
+  cl = cl[0].toUpper() + cl.mid(1);
+  cl.replace(QLatin1Char('-'), QLatin1Char('_'));
+  cl.replace(QLatin1Char(';'), QLatin1Char('_'));
+  cl.replace(QLatin1Char(':'), QLatin1Char('_'));
+  cl.replace(QLatin1Char('.'), QLatin1Char('_'));
+
+  if (nameSpaceAndTypePart.size() > 1) {
+    nameSpaceAndTypePart[nameSpaceAndTypePart.size()-1] = cl;
+    cl = nameSpaceAndTypePart.join("::");
+  }
+  return cl;
+}
+
 TypeMap::TypeMap()
   : mNSManager( 0 )
 {
@@ -165,7 +184,11 @@ QString TypeMap::localType( const QName &typeName ) const
       qDebug() << "ERROR: basic type not found:" << typeName;
       return QString();
   }
-  return (*it).localType;
+  if ( !(*it).builtinType ) {
+    return correctSyntaxCpp((*it).localType);
+  } else {
+    return (*it).localType;
+  }
 }
 
 QString TypeMap::baseType(const QName &typeName) const
@@ -187,7 +210,11 @@ QStringList TypeMap::headers( const QName &typeName ) const
 QStringList TypeMap::forwardDeclarations( const QName &typeName ) const
 {
   QList<Entry>::ConstIterator it = typeEntry( typeName );
-  return it != mTypeMap.constEnd() ? (*it).forwardDeclarations : QStringList();
+  QStringList ret;
+  Q_FOREACH (const QString& str, (*it).forwardDeclarations) {
+    ret.append(correctSyntaxCpp(str));
+  }
+  return it != mTypeMap.constEnd() ? ret : QStringList();
 }
 
 QStringList TypeMap::headerIncludes( const QName &typeName ) const
@@ -445,9 +472,16 @@ QString TypeMap::localInputType( const QName &typeName, const QName& elementName
             return QString();
         }
     }
-    QString argType = (*it).localType;
-    if (!(*it).basicType && argType != "void")
-        argType = "const " + argType + '&';
+
+    QString argType;
+    if ( !(*it).builtinType ) {
+      argType = correctSyntaxCpp((*it).localType);
+    } else {
+	argType = (*it).localType;
+    }
+    if ( !(*it).basicType && argType != "void" ) {
+	  argType = "const " + argType + '&';
+    }
     return argType;
 }
 
@@ -505,4 +539,3 @@ QString KWSDL::TypeMap::serializeBuiltin( const QName &typeName, const QName& el
         return "QVariant::fromValue(" + var + ")";
     }
 }
-

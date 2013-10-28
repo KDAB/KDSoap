@@ -16,6 +16,7 @@ SUBDIRS = \
   dwservice_combined_wsdl \
   issue1 \
   issue4 \
+  issue38 \
   soap12 \
   tech3356_wsdl \
   ihc_wsdl

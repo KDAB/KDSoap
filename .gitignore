@@ -34,6 +34,7 @@ configure.sh
 /unittests/ihc_wsdl/ihc_wsdl
 /unittests/issue1/issue1
 /unittests/issue4/issue4
+/unittests/issue38/issue38
 /unittests/logbook_wsdl/logbook_wsdl
 /unittests/messagereader/messagereader
 /unittests/msexchange_wsdl/msexchange_wsdl
