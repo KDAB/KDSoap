@@ -46,7 +46,7 @@ private Q_SLOTS:
     void testExchangeMessage()
     {
         HttpServerThread server(queryResponse(), HttpServerThread::Public);
-        ExchangeServices service(this);
+        ExchangeServiceBindingService service(this);
         service.setEndPoint(server.endPoint());
 
         TNS__ResolveNamesType req;
@@ -58,6 +58,10 @@ private Q_SLOTS:
         folderIdList << folderId;
         folderIds.setFolderId(folderIdList);
         req.setParentFolderIds(folderIds);
+
+        T__RequestServerVersion requestServerVersion;
+        requestServerVersion.setVersion(T__ExchangeVersionType(T__ExchangeVersionType::Exchange2007_SP1));
+        service.setRequestVersionHeader(requestServerVersion);
 
         T__ExchangeImpersonationType impersonation;
         T__ConnectingSIDType sid;
@@ -78,11 +82,12 @@ private Q_SLOTS:
                     "<n2:SID>sid</n2:SID>"
                     "<n2:PrimarySmtpAddress>david.faure@kdab.com</n2:PrimarySmtpAddress>"
                   "</n2:ConnectingSID></n2:ExchangeImpersonation>"
+                  "<n2:RequestServerVersion xmlns:n2=\"http://schemas.microsoft.com/exchange/services/2006/types\" Version=\"Exchange2007_SP1\"/>"
                 "</soap:Header>"
                 "<soap:Body>"
-                  "<n1:ResolveNames n1:ReturnFullContactData=\"true\" n1:SearchScope=\"ActiveDirectory\">"
-                  "<n1:ParentFolderIds><n2:FolderId xmlns:n2=\"http://schemas.microsoft.com/exchange/services/2006/types\" n2:Id=\"folderId\" n2:ChangeKey=\"\" xsi:nil=\"true\"/></n1:ParentFolderIds>"
-                  "<n1:UnresolvedEntry xsi:nil=\"true\"/>"
+                  "<n1:ResolveNames ReturnFullContactData=\"true\">"
+                  "<n1:ParentFolderIds><n3:FolderId xmlns:n3=\"http://schemas.microsoft.com/exchange/services/2006/types\" Id=\"folderId\"/></n1:ParentFolderIds>"
+                  "<n1:UnresolvedEntry/>"
                 "</n1:ResolveNames>"
                 "</soap:Body>" + xmlEnvEnd()
             + '\n'; // added by QXmlStreamWriter::writeEndDocument

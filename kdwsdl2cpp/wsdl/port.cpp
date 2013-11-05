@@ -42,24 +42,20 @@ Port::~Port()
 {
 }
 
-#if 0
 void Port::setName( const QString &name )
 {
   mName = name;
 }
-#endif
 
 QString Port::name() const
 {
   return mName;
 }
 
-#if 0
 void Port::setBindingName( const QName &bindingName )
 {
   mBindingName = bindingName;
 }
-#endif
 
 QName Port::bindingName() const
 {

@@ -19,11 +19,14 @@
     Boston, MA 02110-1301, USA.
 */
 
+#include "definitions.h"
+
 #include <common/messagehandler.h>
 #include <common/nsmanager.h>
 #include <common/parsercontext.h>
 
-#include "definitions.h"
+#include <wsdl/port.h>
+
 #include <QDebug>
 
 using namespace KWSDL;
@@ -175,8 +178,24 @@ bool Definitions::loadXML( ParserContext *context, const QDomElement &element )
   }
 
   if ( mServices.isEmpty() ) {
-    qDebug() << "WARNING: no service tags found. There is nothing to generate!";
-    return false;
+    // create one service for each binding
+    Q_ASSERT(!mBindings.isEmpty());
+    Q_FOREACH (const Binding& bind, mBindings)
+    {
+      Service service(mTargetNamespace);
+      service.setName(bind.name() + "Service");
+
+      Port port( mTargetNamespace );
+      port.setName(bind.name() + "Port");
+      QName bindingName( bind.portTypeName().prefix() + ":" + bind.name());
+      bindingName.setNameSpace(bind.nameSpace());
+      port.setBindingName( bindingName );
+
+      Port::List portList;
+      portList.append( port );
+      service.setPorts( portList );
+      mServices.append( service );
+    }
   }
   return true;
 }

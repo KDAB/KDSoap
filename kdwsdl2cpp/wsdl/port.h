@@ -44,10 +44,10 @@ class KWSDL_EXPORT Port : public Element
     Port( const QString &nameSpace );
     ~Port();
 
-    //void setName( const QString &name );
+    void setName( const QString &name );
     QString name() const;
 
-    //void setBindingName( const QName &bindingName );
+    void setBindingName( const QName &bindingName );
     QName bindingName() const;
 
     void loadXML( ParserContext *context, Binding::List *bindings, const QDomElement &element );

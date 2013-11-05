@@ -9,6 +9,7 @@ SUBDIRS = \
   logbook_wsdl \
   messagereader \
   servertest \
+  msexchange_noservice_wsdl \
   msexchange_wsdl \
   wsdl_document \
   dwservice_wsdl \

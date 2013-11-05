@@ -24,4 +24,5 @@ Code generator changes, applying to both client and server side:
 * Omit non-nillable empty elements of a complex type.
 * Support for minOccurs=0 for elements and use=optional for attributes:
    omit such elements/attributes when they haven't been set by the C++ code explicitely. (SOAP-93/SOAP-80)
+* Generate <service> element automatically if there's none in the WSDL file. (SOAP-60/issue9)
 
