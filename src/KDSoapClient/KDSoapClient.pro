@@ -35,6 +35,7 @@ HEADERS = $$INSTALLHEADERS \
     $$PRIVATEHEADERS \
     KDSoapReplySslHandler_p.h
 
+# Note: remember to add files into CMakeLists.txt!
 SOURCES = KDSoapMessage.cpp \
     KDSoapClientInterface.cpp \
     KDSoapPendingCall.cpp \

@@ -24,6 +24,7 @@ set(SOURCES
   KDSoapNamespacePrefixes.cpp
   KDSoapJob.cpp
   KDSoapSslHandler.cpp
+  KDSoapReplySslHandler.cpp
 )
 
 add_library(kdsoap ${KDSoap_LIBRARY_MODE} ${SOURCES})
