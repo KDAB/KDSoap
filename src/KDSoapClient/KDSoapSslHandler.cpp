@@ -24,6 +24,7 @@
 
 #ifndef QT_NO_OPENSSL
 #include "KDSoapSslHandler.h"
+#include <QDebug>
 
 KDSoapSslHandler::KDSoapSslHandler(QObject *parent)
     : QObject(parent)
@@ -40,9 +41,9 @@ void KDSoapSslHandler::ignoreSslErrors()
     m_reply->ignoreSslErrors();
 }
 
-void KDSoapSslHandler::slotSslErrors(const QList<QSslError> &errors)
+void KDSoapSslHandler::handleSslErrors(QNetworkReply *reply, const QList<QSslError> &errors)
 {
-    m_reply = qobject_cast<QNetworkReply *>(sender());
+    m_reply = reply;
     Q_ASSERT(m_reply);
     Q_EMIT sslErrors(this, errors);
 }

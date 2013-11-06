@@ -293,6 +293,27 @@ private Q_SLOTS:
     }
 #endif
 
+    // SOAP-79 / issue29
+    void testSslErrorSyncCall()
+    {
+        if (!QSslSocket::supportsSsl())
+            return; // see above
+        m_errors.clear();
+        // Use SSL on the server, without adding the CA certificate (done by setSslConfiguration())
+        HttpServerThread server(addEmployeeResponse(), HttpServerThread::Ssl);
+        MyWsdlDocument service;
+        service.setEndPoint(server.endPoint());
+        QSignalSpy sslErrorsSpy(service.clientInterface()->sslHandler(), SIGNAL(sslErrors(KDSoapSslHandler*, QList<QSslError>)));
+        QByteArray ret = service.addEmployee(addEmployeeParameters());
+        QVERIFY(ret.isEmpty());
+        QVERIFY2(service.lastError().contains(QLatin1String("SSL handshake failed")), qPrintable(service.lastError()));
+        // Disable SSL so that termination can happen normally (do it asap, in case of failure below)
+        server.disableSsl();
+        QCOMPARE(m_errors.count(), 0);
+        QCOMPARE(sslErrorsSpy.count(), 1);
+        QTest::qWait(100); // process some events
+    }
+
     void testMyWsdlSSL()
     {
         if (!QSslSocket::supportsSsl()) {
@@ -342,7 +363,7 @@ private Q_SLOTS:
         QVERIFY(server.receivedHeaders().contains("SoapAction: \"http://www.kdab.com/AddEmployee\""));
     }
 
-#endif
+#endif // QT_NO_OPENSSL
 
     void testSimpleType()
     {

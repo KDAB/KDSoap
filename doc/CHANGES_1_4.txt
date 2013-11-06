@@ -9,6 +9,8 @@ KDSoap support if this causes a regression with any other SOAP server.
 
 * Add support for ignoring a specific list of SSL errors: KDSoapClientInterface::ignoreSslErrors(QList<QSslError>) (SOAP-92)
 
+* Fix crash when using sslHandler() and making a synchronous call (SOAP-79/issue29)
+
 Server-side:
 ============
 * Fix crash when sending delayed reply to disconnected client (SOAP-34/SOAP-67)

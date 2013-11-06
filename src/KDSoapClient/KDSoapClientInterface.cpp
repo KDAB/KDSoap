@@ -25,6 +25,7 @@
 #include "KDSoapMessageWriter_p.h"
 #ifndef QT_NO_OPENSSL
 #include "KDSoapSslHandler.h"
+#include "KDSoapReplySslHandler_p.h"
 #endif
 #include <QSslConfiguration>
 #include <QNetworkRequest>
@@ -225,7 +226,10 @@ void KDSoapClientInterfacePrivate::setupReply(QNetworkReply *reply)
 #ifndef QT_NO_OPENSSL
         reply->ignoreSslErrors(m_ignoreErrorsList);
         if (m_sslHandler) {
-            QObject::connect(reply, SIGNAL(sslErrors(QList<QSslError>)), m_sslHandler, SLOT(slotSslErrors(QList<QSslError>)));
+            // create a child object of the reply, which will forward to m_sslHandler.
+            // this is a workaround for the lack of the reply pointer in the signal,
+            // and sender() doesn't work for sync calls (from another thread) (SOAP-79/issue29)
+            new KDSoapReplySslHandler(reply, m_sslHandler);
         }
 #endif
     }

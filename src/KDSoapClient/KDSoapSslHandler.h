@@ -32,6 +32,8 @@ class QNetworkReply;
 QT_END_NAMESPACE
 
 #ifndef QT_NO_OPENSSL
+
+class KDSoapReplySslHandler;
 /**
  * \brief A class for handling SSL errors during SOAP calls
  *
@@ -72,8 +74,9 @@ public Q_SLOTS:
      */
     void ignoreSslErrors();
 
-private Q_SLOTS:
-    void slotSslErrors(const QList<QSslError> &errors);
+private:
+    friend class KDSoapReplySslHandler;
+    void handleSslErrors(QNetworkReply *reply, const QList<QSslError> &errors);
 
 private:
     friend class KDSoapClientInterface;
