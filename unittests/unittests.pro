@@ -20,7 +20,8 @@ SUBDIRS = \
   issue38 \
   soap12 \
   tech3356_wsdl \
-  ihc_wsdl
+  unqualified_formdefault \
+  ihc_wsdl 
 
 # These need internet access
 SUBDIRS += webcalls webcalls_wsdl

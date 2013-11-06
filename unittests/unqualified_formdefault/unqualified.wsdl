@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions
+    targetNamespace="http://something.mydomain.com"
+    xmlns="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:cfw="http://something.mydomain.com"
+    xmlns:cfwt="http://something.mydomain.com/types"
+    xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+    xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <wsdl:types>
+    <xsd:schema
+        targetNamespace="http://something.mydomain.com/types"
+        xmlns="http://something.mydomain.com/types"
+        xmlns:cfw="http://something.mydomain.com"
+        xmlns:cfwt="http://something.mydomain.com/types"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        elementFormDefault="unqualified"
+        attributeFormDefault="unqualified">
+      <xsd:complexType name="Authenticate">
+        <xsd:all>
+          <xsd:element name="name"            type="xsd:string" />
+          <xsd:element name="phrase"          type="xsd:string" />
+        </xsd:all>
+      </xsd:complexType>
+
+      <xs:element name="MyAuthenticate">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="request"        type="Authenticate" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+
+      <xs:element name="MyAuthenticateResponse">
+        <xs:complexType>
+          <xs:all>
+            <xs:element name="message"        type="xsd:string" />
+          </xs:all>
+        </xs:complexType>
+      </xs:element>
+
+      <xs:element name="MyAuthenticateFault">
+        <xs:complexType>
+          <xs:all>
+            <xs:element name="errorMessage"   type="xs:string" />
+          </xs:all>
+        </xs:complexType>
+      </xs:element>
+    </xsd:schema>
+  </wsdl:types>
+
+
+  <wsdl:message name="msgMyAuthenticateRequest">
+    <wsdl:part name="body" element="cfwt:MyAuthenticate" />
+  </wsdl:message>
+
+  <wsdl:message name="msgMyAuthenticateResponse">
+    <wsdl:part name="body" element="cfwt:MyAuthenticateResponse" />
+  </wsdl:message>
+
+
+  <wsdl:portType name="IExampleServiceEndpoint">
+    <!-- Authenticate the given name / phrase combination -->
+    <wsdl:operation name="MyAuthenticate">
+      <wsdl:input  message="cfw:msgMyAuthenticateRequest" />
+      <wsdl:output message="cfw:msgMyAuthenticateResponse" />
+    </wsdl:operation>
+  </wsdl:portType>
+
+
+  <wsdl:binding name="ExampleBindingSoap"
+                type="cfw:IExampleServiceEndpoint">
+    <soap:binding style="document"
+                  transport="http://schemas.xmlsoap.org/soap/http" />
+
+    <wsdl:operation name="MyAuthenticate">
+      <soap:operation soapAction="/MyAuthenticate" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+
+
+  <wsdl:service name="ExampleService">
+    <wsdl:port name="ExampleServicePortSoap"
+               binding="cfw:ExampleBindingSoap">
+      <soap:address location="http://localhost/ExampleService" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

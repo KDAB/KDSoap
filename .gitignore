@@ -47,4 +47,5 @@ configure.sh
 /unittests/webcalls_wsdl/webcalls_wsdl
 /unittests/wsdl_document/wsdl_document
 /unittests/wsdl_rpc-server/wsdl_rpc-server
+/unittests/unqualified_formdefault/unqualified_formdefault
 /unittests/wsdl_rpc/wsdl_rpc
