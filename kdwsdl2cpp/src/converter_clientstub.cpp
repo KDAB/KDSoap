@@ -597,7 +597,7 @@ bool Converter::convertClientCall( const Operation &operation, const Binding &bi
 
               code += retType + QLatin1String(" ret;"); // local var
               code += QLatin1String("const KDSoapValue val = d_ptr->m_lastReply.childValues().first();") + COMMENT;
-              code += demarshalVar( retPart.type(), retPart.element(), QLatin1String("ret"), retType );
+              code += demarshalVar( retPart.type(), retPart.element(), QLatin1String("ret"), retType, "val", false );
               code += "return ret;";
           }
       }

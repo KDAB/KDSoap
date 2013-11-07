@@ -33,6 +33,39 @@
 
 using namespace KDSoapUnitTestHelpers;
 
+class TransformMediaBindingServerObject : public TransformMediaBindingServerBase /* generated from wsdl */
+{
+    Q_OBJECT
+public:
+    virtual TFMS__TransformResponseType transform( const TFMS__TransformRequestType& in ) {
+        TFMS__TransformJobType copyJob = in.transformJob();
+        Q_ASSERT(copyJob.operationName() == "operation");
+        BMS__QueueType queueType;
+        queueType.setLength(10);
+        copyJob.setQueueReference(queueType);
+        TFMS__TransformResponseType response;
+        response.setTransformJob(copyJob);
+        Q_ASSERT(response.transformJob().operationName() == "operation");
+        return response;
+    }
+};
+
+class TransformMediaBindingServer : public KDSoapServer
+{
+    Q_OBJECT
+public:
+    TransformMediaBindingServer() : KDSoapServer(), m_lastServerObject(0) {
+        setPath(QLatin1String("/xml"));
+    }
+    virtual QObject* createServerObject() { m_lastServerObject = new TransformMediaBindingServerObject; return m_lastServerObject; }
+
+    TransformMediaBindingServerObject* lastServerObject() { return m_lastServerObject; }
+
+private:
+    TransformMediaBindingServerObject* m_lastServerObject; // only for unittest purposes
+};
+
+
 class Tech3356Test : public QObject
 {
     Q_OBJECT
@@ -105,6 +138,23 @@ private Q_SLOTS:
             QVERIFY(xmlBufferCompare(server.receivedData(), expectedQueryJobRequest()));
             QCOMPARE(QString::fromUtf8(server.receivedData().constData()), QString::fromUtf8(expectedQueryJobRequest().constData()));
         }
+    }
+
+    void testTransformJob() // SOAP-80
+    {
+        TestServerThread<TransformMediaBindingServer> serverThread;
+        TransformMediaBindingServer* server = serverThread.startThread();
+
+        TransformMediaService::TransformMediaBinding service;
+        service.setEndPoint(server->endPoint());
+
+        TFMS__TransformJobType transformJob;
+        transformJob.setOperationName(QLatin1String("operation"));
+
+        TFMS__TransformRequestType request;
+        request.setTransformJob(transformJob);
+        TFMS__TransformResponseType response = service.transform(request);
+        QCOMPARE(response.transformJob().operationName(), QString::fromLatin1("operation"));
     }
 };
 
