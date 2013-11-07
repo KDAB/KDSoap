@@ -57,7 +57,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
                 const QString baseClassName = mTypeMap.localType( baseName );
                 newClass.addBaseClass( baseClassName );
             } else {
-                const QString variableName = generateMemberVariable( "value", typeName, inputTypeName, newClass, 1 );
+                const QString variableName = generateMemberVariable( "value", typeName, inputTypeName, newClass, false );
 
                 // convenience constructor
                 KODE::Function conctor( upperlize( newClass.name() ) );
