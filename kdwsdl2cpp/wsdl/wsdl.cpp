@@ -126,13 +126,7 @@ XSD::Element WSDL::findElement( const QName &elementName ) const
 
 XSD::ComplexType WSDL::findComplexType( const QName &typeName ) const
 {
-    const XSD::ComplexType::List types = mDefinitions.type().types().complexTypes();
-    Q_FOREACH( const XSD::ComplexType& ctype, types ) {
-        if ( ctype.qualifiedName() == typeName ) {
-            return ctype;
-        }
-    }
-    return XSD::ComplexType();
+    return mDefinitions.type().types().complexType( typeName );
 }
 
 QSet<QName> WSDL::uniqueBindings(const Service& service) const
