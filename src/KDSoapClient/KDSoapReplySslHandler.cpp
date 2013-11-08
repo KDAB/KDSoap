@@ -2,6 +2,8 @@
 #include "KDSoapSslHandler.h"
 #include <QNetworkReply>
 
+#ifndef QT_NO_OPENSSL
+
 KDSoapReplySslHandler::KDSoapReplySslHandler(QNetworkReply *reply, KDSoapSslHandler *handler) :
     QObject(reply), m_handler(handler)
 {
@@ -16,3 +18,5 @@ void KDSoapReplySslHandler::slotReplySslErrors(const QList<QSslError> &errors)
     Q_ASSERT(reply);
     m_handler->handleSslErrors(reply, errors);
 }
+
+#endif
