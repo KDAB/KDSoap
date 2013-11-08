@@ -104,7 +104,7 @@ void Converter::generateServerMethod(KODE::Code& code, const Binding& binding, c
         const SoapBinding soapBinding( binding.soapBinding() );
         const SoapBinding::Operation op = soapBinding.operations().value( operation.name() );
         if (!op.action().isEmpty()) {
-            condition += "|| soapAction == \"" + op.action() + "\"";
+            condition += " || soapAction == \"" + op.action() + "\"";
         }
     }
     code += QString(first ? "" : "else ") + "if (" + condition + ") {";
