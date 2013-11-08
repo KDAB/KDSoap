@@ -340,7 +340,7 @@ bool Converter::convertClientService()
 
                     const QString getterName = mNameMapper.escape( lowerlize( part.name() ) );
                     inputGetters.append( getterName );
-                    KODE::Function getter( getterName, mTypeMap.localType( part.type(), part.element() ) );
+                    KODE::Function getter( getterName, varType );
                     getter.setConst( true );
                     KODE::Code gc;
                     gc += QString::fromLatin1("return %1;").arg( member.name() );
@@ -811,7 +811,7 @@ void Converter::addJobResultMember(KODE::Class& jobClass, const Part& part, cons
     while ( inputGetters.contains( getterName ) )
         getterName = mNameMapper.escape( QLatin1String("result") + upperlize( getterName ) );
 
-    KODE::Function getter( getterName, mTypeMap.localType( part.type(), part.element() ) );
+    KODE::Function getter( getterName, varType );
     getter.setConst( true );
     KODE::Code gc;
     gc += QString::fromLatin1("return %1;").arg( member.name() );
