@@ -157,6 +157,12 @@ bool TypeMap::isComplexType( const QName &typeName ) const
   return it != mTypeMap.constEnd() ? (*it).complexType : false;
 }
 
+bool TypeMap::isPolymorphic(const QName &typeName) const
+{
+    QList<Entry>::ConstIterator it = typeEntry( typeName );
+    return it != mTypeMap.constEnd() ? (*it).isPolymorphic : false;
+}
+
 bool TypeMap::isBuiltinType( const QName &typeName, const QName& elementName ) const
 {
     if (!typeName.isEmpty()) {
@@ -164,6 +170,16 @@ bool TypeMap::isBuiltinType( const QName &typeName, const QName& elementName ) c
     } else {
         QList<Entry>::ConstIterator it = elementEntry( elementName );
         return it != mElementMap.constEnd() ? (*it).builtinType : false;
+    }
+}
+
+bool TypeMap::isPolymorphic( const QName &typeName, const QName &elementName ) const
+{
+    if (!typeName.isEmpty()) {
+        return isPolymorphic( typeName );
+    } else {
+        QList<Entry>::ConstIterator it = elementEntry( elementName );
+        return it != mElementMap.constEnd() ? (*it).isPolymorphic : false;
     }
 }
 
@@ -191,6 +207,7 @@ QString TypeMap::localType( const QName &typeName ) const
   }
 }
 
+#if 0
 QString TypeMap::baseType(const QName &typeName) const
 {
   QList<Entry>::ConstIterator it = typeEntry( typeName );
@@ -200,6 +217,7 @@ QString TypeMap::baseType(const QName &typeName) const
   const QName base = (*it).baseType;
   return localType( base );
 }
+#endif
 
 QStringList TypeMap::headers( const QName &typeName ) const
 {
@@ -277,7 +295,7 @@ QString TypeMap::localTypeForElement( const QName &elementName ) const
   return QString();
 }
 
-QName TypeMap::typeForElement( const QName &elementName ) const
+QName TypeMap::baseTypeForElement( const QName &elementName ) const
 {
   QList<Entry>::ConstIterator it = elementEntry( elementName );
   if ( it != mElementMap.constEnd() ) {
@@ -330,25 +348,24 @@ void TypeMap::addSchemaTypes( const XSD::Types &types, const QString& ns )
     mTypeMap.append( entry );
   }
 
-  XSD::ComplexType::List complexTypes = types.complexTypes();
-  XSD::ComplexType::List::ConstIterator complexIt;
-  for ( complexIt = complexTypes.constBegin(); complexIt != complexTypes.constEnd(); ++complexIt ) {
+  foreach ( const XSD::ComplexType &complex, types.complexTypes() ) {
     Entry entry;
     entry.basicType = false;
     entry.builtinType = false;
     entry.complexType = true;
-    entry.nameSpace = (*complexIt).nameSpace();
-    entry.typeName = (*complexIt).name();
+    entry.nameSpace = complex.nameSpace();
+    entry.typeName = complex.name();
+    entry.isPolymorphic = complex.isPolymorphicBaseClass();
 
-    //qDebug() << "TypeMap: adding complex type" << entry.nameSpace << entry.typeName;
+    //qDebug() << "TypeMap: adding complex type" << entry.nameSpace << entry.typeName << "derived types:" << complex.derivedTypes();
 
     // Keep empty complex types, useful for document mode.
     /*if ( (*complexIt).isEmpty() )
         entry.localType = "void";
     else*/ {
-        entry.localType = prefixNamespace( mNSManager->prefix( entry.nameSpace ).toUpper() + "__" + adaptLocalTypeName( (*complexIt).name() ), ns );
-        if ((*complexIt).isConflicting()) {
-            entry.localType += (*complexIt).isAnonymous() ? "Element" : "Type";
+        entry.localType = prefixNamespace( mNSManager->prefix( entry.nameSpace ).toUpper() + "__" + adaptLocalTypeName( complex.name() ), ns );
+        if (complex.isConflicting()) {
+            entry.localType += complex.isAnonymous() ? "Element" : "Type";
         }
         //entry.headers << (*complexIt).name().toLower() + ".h";
         entry.forwardDeclarations << entry.localType;
@@ -506,7 +523,7 @@ QString KWSDL::TypeMap::Entry::dumpBools() const
 
 QString KWSDL::TypeMap::deserializeBuiltin( const QName &typeName, const QName& elementName, const QString& var, const QString& qtTypeName ) const
 {
-    const QName type = typeName.isEmpty() ? typeForElement(elementName) : typeName;
+    const QName type = typeName.isEmpty() ? baseTypeForElement(elementName) : typeName;
     if (type.nameSpace() == XMLSchemaURI && type.localName() == "hexBinary") {
         return "QByteArray::fromHex(" + var + ".toString().toLatin1())";
     } else if (type.nameSpace() == XMLSchemaURI && type.localName() == "base64Binary") {
@@ -524,7 +541,7 @@ QString KWSDL::TypeMap::deserializeBuiltin( const QName &typeName, const QName& 
 QString KWSDL::TypeMap::serializeBuiltin( const QName &typeName, const QName& elementName, const QString& var, const QString& qtTypeName ) const
 {
     Q_UNUSED(qtTypeName);
-    const QName type = typeName.isEmpty() ? typeForElement(elementName) : typeName;
+    const QName type = typeName.isEmpty() ? baseTypeForElement(elementName) : typeName;
     // variantToTextValue also has support for calling toHex/toBase64 at runtime, but this fails
     // when the type derives from hexBinary and is named differently, see Telegram testcase.
     if (type.nameSpace() == XMLSchemaURI && type.localName() == "hexBinary") {

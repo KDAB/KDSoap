@@ -30,9 +30,9 @@
 #include "typemap.h"
 
 #ifdef NDEBUG
-#define COMMENT QLatin1String("")
+#define COMMENT QString()
 #else
-#define COMMENT QLatin1String("// ") +  QLatin1String(__FILE__) + QLatin1String(":")  + QString::number(__LINE__)
+#define COMMENT QLatin1String("// ") + QLatin1String(__FILE__) + QLatin1String(":") + QString::number(__LINE__)
 #endif
 
 namespace KWSDL {
@@ -71,11 +71,12 @@ class Converter
     void createHeader( const SoapBinding::Header& header, KODE::Class& newClass );
     void addJobResultMember(KODE::Class& jobClass, const Part& part, const QString& varName, const QStringList &inputGetters);
     KODE::Code serializePart(const Part& part, const QString& localVariableName, const QByteArray& varName, bool append);
-    KODE::Code serializeElementArg(const QName& type, const QName& elementType, const QName& name, const QString& localVariableName, const QByteArray& varName, bool append, bool qualified , bool nillable, bool omitIfEmpty);
+    KODE::Code serializeElementArg(const QName& type, const QName& elementType, const QName& name, const QString& localVariableName, const QByteArray& varName, bool append, bool qualified, bool nillable, bool omitIfEmpty);
+    KODE::Code demarshalVarHelper( const QName& type, const QName& elementType, const QString& variableName, const QString& qtTypeName, const QString& soapValueVarName, bool optional ) const;
     KODE::Code demarshalVar(const QName& type, const QName& elementType, const QString& variableName, const QString& typeName, const QString& soapValueVarName, bool optional) const;
-    KODE::Code demarshalArrayVar( const QName& type, const QString& variableName, const QString& typeName ) const;
+    KODE::Code demarshalArrayVar(const QName& type, const QString& variableName, const QString& qtTypeName ) const;
     void addVariableInitializer( KODE::MemberVariable& variable ) const;
-    QString generateMemberVariable(const QString &rawName, const QString &typeName, const QString &inputTypeName, KODE::Class& newClass , bool optional);
+    QString generateMemberVariable(const QString &rawName, const QString &typeName, const QString &inputTypeName, KODE::Class& newClass, bool optional, bool polymorphic);
     QString listTypeFor(const QString& itemTypeName, KODE::Class& newClass);
     KODE::Code deserializeRetVal(const KWSDL::Part& part, const QString& replyMsgName, const QString& qtRetType, const QString& varName) const;
     QName elementNameForPart(const Part& part, bool* qualified, bool *nillable) const;

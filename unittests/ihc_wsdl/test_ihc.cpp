@@ -45,9 +45,30 @@ public:
         return TNS__ArrayOfWSResourceValueEnvelope();
     }
     virtual bool setResourceValue( const TNS__WSResourceValueEnvelope& parameter4 ) {
-        qDebug() << parameter4.typeString();
-        //qDebug() << dynamic_cast<WPNS1__WSEnumValue *>(&parameter4.value());
-        return (parameter4.typeString() == "type");
+        Q_ASSERT(parameter4.typeString() == "enum");
+        Q_ASSERT(&parameter4.value() != 0);
+
+        const KDSoapValue value = parameter4.value_as_kdsoap_value();
+
+        // Custom deserialization: given the typeString() we know we can create a WPNS1__WSEnumValue
+        WPNS1__WSEnumValue enumValue;
+        enumValue.deserialize(value);
+        Q_ASSERT(enumValue.enumValueID() == 42);
+
+        // Alternatively: dynamic introspection
+        const KDSoapValueList children = value.childValues();
+        const int enumValueID = children.child("enumValueID").value().toInt();
+        return (parameter4.typeString() == "enum" && enumValueID == 42 && enumValue.enumValueID() == 42);
+
+        // This cannot be done, the generated code can't know which subclass to create, when using "literal"
+        // ("encoded" would give us the information, but isn't used here)
+        /*
+        const WPNS1__WSEnumValue *inputValue = dynamic_cast<const WPNS1__WSEnumValue *>(&parameter4.value());
+        qDebug() << inputValue;
+        Q_ASSERT(inputValue);
+        Q_ASSERT(inputValue->enumValueID() == 42);
+        return (parameter4.typeString() == "enum" && inputValue->enumValueID() == 42);
+        */
     }
     virtual bool setResourceValues( const TNS__ArrayOfWSResourceValueEnvelope& ) {
         return false;
@@ -116,7 +137,30 @@ private:
 
 private Q_SLOTS:
 
-    void testInheritance()
+    void testInheritanceClientSide()
+    {
+        HttpServerThread server(fakeResponse(), HttpServerThread::Public);
+
+        ResourceInteractionServiceService service;
+        service.setEndPoint(server.endPoint());
+
+        TNS__WSResourceValueEnvelope env = resourceValueEnvelope();
+
+        // check that we can extract the derived class again, i.e. it was correctly stored
+        const WPNS1__WSEnumValue *storedValue = dynamic_cast<const WPNS1__WSEnumValue *>(&env.value());
+        QVERIFY(storedValue);
+        QCOMPARE(storedValue->enumValueID(), 42);
+
+        service.setResourceValue(env);
+
+        // Check what we sent
+        {
+            QVERIFY(xmlBufferCompare(server.receivedData(), expectedSetResourceValueRequest()));
+            QCOMPARE(QString::fromUtf8(server.receivedData().constData()), QString::fromUtf8(expectedSetResourceValueRequest().constData()));
+        }
+    }
+
+    void testInheritanceServerSide()
     {
         TestServerThread<IHCServer> serverThread;
         IHCServer* server = serverThread.startThread();
@@ -124,17 +168,16 @@ private Q_SLOTS:
         ResourceInteractionServiceService service;
         service.setEndPoint(server->endPoint());
 
-        TNS__WSResourceValueEnvelope env;
-        env.setResourceID(54);
-        env.setTypeString(QLatin1String("type"));
-        WPNS1__WSEnumValue myEnum;
-        myEnum.setDefinitionTypeID(2);
-        myEnum.setEnumName("enum1");
-        myEnum.setEnumValueID(42);
-        env.setValue(myEnum);
-        qDebug() << dynamic_cast<WPNS1__WSEnumValue *>(&myEnum);
-        service.setResourceValue(env);
+        TNS__WSResourceValueEnvelope env = resourceValueEnvelope();
 
+        // check that we can extract the derived class again, i.e. it was correctly stored
+        const WPNS1__WSEnumValue *storedValue = dynamic_cast<const WPNS1__WSEnumValue *>(&env.value());
+        QVERIFY(storedValue);
+        QCOMPARE(storedValue->enumValueID(), 42);
+
+        bool ret = service.setResourceValue(env);
+
+        QVERIFY(ret);
         //qDebug() << server->lastServerObject()-> ...;
     }
 
@@ -150,6 +193,47 @@ private Q_SLOTS:
         QCOMPARE(GetScenePositionsForSceneValueResourceJob(0, 0).parameter12(), 0);
         QCOMPARE(GetResourceTypeJob(0, 0).parameter13(), 0);
         QCOMPARE(GetInitialValueJob(0, 0).parameter14(), 0);
+    }
+
+private:
+
+    static TNS__WSResourceValueEnvelope resourceValueEnvelope()
+    {
+        TNS__WSResourceValueEnvelope env;
+        env.setResourceID(54);
+        env.setTypeString(QLatin1String("enum"));
+        WPNS1__WSEnumValue myEnum; // derives from WSResourceValue
+        myEnum.setDefinitionTypeID(2);
+        myEnum.setEnumName("enum1");
+        myEnum.setEnumValueID(42);
+        env.setValue(myEnum); // takes a WSResourceValue
+
+        return env;
+    }
+
+    static QByteArray expectedSetResourceValueRequest()
+    {
+        return QByteArray(xmlEnvBegin11()) + ">"
+                "<soap:Body>"
+                "<n1:setResourceValue1 xmlns:n1=\"utcs\">"
+                  "<n1:resourceID>54</n1:resourceID>"
+                  "<n1:isValueRuntime>false</n1:isValueRuntime>"
+                  "<n1:typeString>enum</n1:typeString>"
+                  "<n1:value>"
+                    "<n2:definitionTypeID xmlns:n2=\"utcs.values\">2</n2:definitionTypeID>"
+                    "<n3:enumValueID xmlns:n3=\"utcs.values\">42</n3:enumValueID>"
+                    "<n4:enumName xmlns:n4=\"utcs.values\">enum1</n4:enumName>"
+                  "</n1:value>"
+                "</n1:setResourceValue1>"
+                "</soap:Body>" + xmlEnvEnd()
+                + '\n'; // added by QXmlStreamWriter::writeEndDocument
+    }
+
+    static QByteArray fakeResponse()
+    {
+        return QByteArray(xmlEnvBegin11()) + ">"
+                "<soap:Body>"
+                " </soap:Body>" + xmlEnvEnd();
     }
 };
 

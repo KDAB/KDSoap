@@ -56,12 +56,18 @@ class TypeMap
     bool isComplexType( const QName &typeName ) const;
 
     /**
+     * Returns true if @p typeName refers to a complex type with derived classes
+     * i.e. storing it as a value would lead to truncation. A shared pointer has to be used instead.
+     */
+    bool isPolymorphic( const QName &typeName ) const;
+
+    /**
      * Returns true if @p typeName is the special type "any" or "anyType".
      */
     bool isTypeAny( const QName &typeName ) const;
 
     QString localType( const QName &typeName ) const;
-    QString baseType( const QName &typeName ) const;
+    // unused QString baseType( const QName &typeName ) const;
     QStringList headers( const QName &typeName ) const;
     QStringList forwardDeclarations( const QName &typeName ) const;
     QStringList headerIncludes( const QName &typeName ) const;
@@ -92,6 +98,12 @@ class TypeMap
     bool isBuiltinType( const QName &typeName, const QName& elementName ) const;
 
     /**
+     * Returns true if @p typeName (or @p elementName, only one is set) refers to a complex type with derived classes
+     * i.e. storing it as a value would lead to truncation
+     */
+    bool isPolymorphic( const QName &typeName, const QName& elementName ) const;
+
+    /**
      * Return C++ code for converting the variant in "var" into the right type.
      */
     QString deserializeBuiltin( const QName &typeName, const QName& elementName, const QString& var, const QString& qtTypeName ) const;
@@ -109,15 +121,18 @@ class TypeMap
   private:
     void addBuiltinType( const char* typeName, const char* localType );
     QString localTypeForElement( const QName &elementName ) const;
-    QName typeForElement( const QName& elementName ) const;
+
+    /// If this element derives from a simple type (e.g. xml:hexBinary, xml:base64Binary, xml:dateTime), return that.
+    QName baseTypeForElement( const QName& elementName ) const;
 
     class Entry
     {
       public:
-        Entry() : basicType(false), builtinType(false), complexType(false) {}
+        Entry() : basicType(false), builtinType(false), complexType(false), isPolymorphic(false) {}
         bool basicType;   // POD (int, bool, etc.)
         bool builtinType; // types defined in xmlschema
         bool complexType;
+        bool isPolymorphic; // has derived classes -> store as shared pointer
         QString nameSpace;
         QString typeName;
         QString localType;

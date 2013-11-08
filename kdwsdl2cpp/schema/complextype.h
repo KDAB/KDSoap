@@ -58,6 +58,9 @@ class SCHEMA_EXPORT ComplexType : public XSDType
 
     bool isSimple() const;
 
+    // True if this is the base class for other (derived) complex types
+    bool isPolymorphicBaseClass() const;
+
     void setAnonymous( bool anonymous );
     bool isAnonymous() const;
 

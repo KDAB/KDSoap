@@ -523,10 +523,12 @@ KODE::Code Converter::deserializeRetVal(const KWSDL::Part& part, const QString& 
     KODE::Code code;
     const bool isBuiltin = mTypeMap.isBuiltinType( part.type(), part.element() );
     const bool isComplex = mTypeMap.isComplexType( part.type(), part.element() );
+    const bool isPolymorphic = mTypeMap.isPolymorphic( part.type(), part.element() );
     if ( isBuiltin ) {
         code += varName + QLatin1String(" = ") + mTypeMap.deserializeBuiltin( part.type(), part.element(), replyMsgName + QLatin1String(".value()"), qtRetType ) + QLatin1String(";")+ COMMENT;
     } else if ( isComplex ) {
-        code += varName + QLatin1String(".deserialize(") + replyMsgName + QLatin1String(");")+ COMMENT;
+        const QString op = isPolymorphic ? "->" : ".";
+        code += varName + op + QLatin1String("deserialize(") + replyMsgName + QLatin1String(");") + COMMENT;
     } else {
         // testcase: MyWsdlDocument::sendTelegram
         code += varName + QLatin1String(".deserialize(") + replyMsgName + QLatin1String(".value());") + COMMENT;

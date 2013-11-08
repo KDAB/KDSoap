@@ -122,7 +122,12 @@ ComplexType::Derivation ComplexType::baseDerivation() const
 
 bool ComplexType::isSimple() const
 {
-  return false;
+    return false;
+}
+
+bool ComplexType::isPolymorphicBaseClass() const
+{
+    return !isArray() && !d->mDerivedTypes.isEmpty() && d->mBaseTypeName.isEmpty();
 }
 
 void ComplexType::setArrayType( const QName &arrayType )

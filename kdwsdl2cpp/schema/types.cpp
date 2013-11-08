@@ -170,6 +170,16 @@ ComplexType Types::complexType( const QName &typeName ) const
   return ComplexType();
 }
 
+ComplexType Types::polymorphicBaseClass( const ComplexType &derivedType ) const
+{
+    if (derivedType.isPolymorphicBaseClass())
+        return derivedType;
+    ComplexType base = complexType( derivedType.baseTypeName() );
+    if ( !base.isNull() )
+        return polymorphicBaseClass( base ); // recurse
+    return ComplexType();
+}
+
 SimpleType Types::simpleType( const QName &typeName ) const
 {
   foreach( const SimpleType& type, d->mSimpleTypes ) {

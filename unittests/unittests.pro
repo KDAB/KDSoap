@@ -4,6 +4,7 @@ SUBDIRS = \
   builtinhttp \
   wsdl_rpc \
   sugar_wsdl \
+  ihc_wsdl \
   salesforce_wsdl \
   groupwise_wsdl \
   logbook_wsdl \
@@ -15,13 +16,12 @@ SUBDIRS = \
   dwservice_wsdl \
   dwservice_12_wsdl \
   dwservice_combined_wsdl \
+  tech3356_wsdl \
   issue1 \
   issue4 \
   issue38 \
   soap12 \
-  tech3356_wsdl \
   unqualified_formdefault \
-  ihc_wsdl 
 
 # These need internet access
 SUBDIRS += webcalls webcalls_wsdl
