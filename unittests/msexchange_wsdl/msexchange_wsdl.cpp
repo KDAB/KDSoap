@@ -180,6 +180,63 @@ private Q_SLOTS:
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
     }
 
+    void testGetFolder() // SOAP-87
+    {
+        HttpServerThread server(queryResponse(), HttpServerThread::Public);
+        ExchangeServices service(this);
+        service.setEndPoint(server.endPoint());
+
+        TNS__GetFolderType request;
+
+        //folder shape
+        T__FolderResponseShapeType folderShape;
+        folderShape.setBaseShape(T__DefaultShapeNamesType::IdOnly);
+        T__PathToUnindexedFieldType pathToUnindexedField;
+        pathToUnindexedField.setFieldURI(T__UnindexedFieldURIType::Folder_TotalCount);
+        QList< QSharedPointer<T__BasePathToElementType> > paths;
+        paths.append(QSharedPointer<T__BasePathToElementType>(new T__BasePathToElementType(pathToUnindexedField)));
+        T__NonEmptyArrayOfPathsToElementType additionalProperties;
+        additionalProperties.setPath(paths);
+        folderShape.setAdditionalProperties(additionalProperties);
+        request.setFolderShape(folderShape);
+
+        //folder id
+        T__DistinguishedFolderIdType distinguishedFolderId;
+        distinguishedFolderId.setId(T__DistinguishedFolderIdNameType::Calendar);
+        T__EmailAddressType mailbox;
+        mailbox.setEmailAddress(QString("email@nowhere.com"));
+        distinguishedFolderId.setMailbox(mailbox);
+        QList<T__DistinguishedFolderIdType> distinguishedFolderIds;
+        distinguishedFolderIds.append(distinguishedFolderId);
+        T__NonEmptyArrayOfBaseFolderIdsType folderIds;
+        folderIds.setDistinguishedFolderId(distinguishedFolderIds);
+        request.setFolderIds(folderIds);
+
+        //request folder
+        service.getFolder(request);
+
+        // Check what we sent
+        QByteArray expectedRequestXml =
+            QByteArray(xmlEnvBegin11()) + ">"
+                "<soap:Body>"
+                "<n1:GetFolder xmlns:n1=\"http://schemas.microsoft.com/exchange/services/2006/messages\">"
+                  "<n1:FolderShape>"
+                    "<n2:BaseShape xmlns:n2=\"http://schemas.microsoft.com/exchange/services/2006/types\">IdOnly</n2:BaseShape>"
+                    "<n3:AdditionalProperties xmlns:n3=\"http://schemas.microsoft.com/exchange/services/2006/types\"><n3:Path/></n3:AdditionalProperties>"
+                  "</n1:FolderShape>"
+                  "<n1:FolderIds>"
+                    "<n4:DistinguishedFolderId xmlns:n4=\"http://schemas.microsoft.com/exchange/services/2006/types\" Id=\"calendar\">"
+                      "<n4:Mailbox>"
+                        "<n4:EmailAddress>email@nowhere.com</n4:EmailAddress>"
+                      "</n4:Mailbox>"
+                    "</n4:DistinguishedFolderId>"
+                  "</n1:FolderIds>"
+                "</n1:GetFolder>"
+                "</soap:Body>" + xmlEnvEnd()
+            + '\n'; // added by QXmlStreamWriter::writeEndDocument
+        QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
+    }
+
     void testCreateItem() // SOAP-93
     {
         HttpServerThread server(queryResponse(), HttpServerThread::Public);
