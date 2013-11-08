@@ -43,22 +43,7 @@ MemberVariable::MemberVariable( const QString &name, const QString &type,
                                 bool isStatic )
   : Variable( name, type, isStatic ), d( 0 )
 {
-  QString n;
-
-  if ( name.isEmpty() ) {
-    n = QLatin1String("mUndefined");
-  } else if ( name.length() >= 2  && name[ 0 ] == QLatin1Char( 'm' ) &&
-              ( name[ 1 ].toUpper() == name[ 1 ] ) ) {
-    n = name;
-  } else if ( name == QLatin1String("q") || name == QLatin1String("d") ) {
-    n = name;
-  } else {
-    n = QLatin1String("m");
-    n += name[ 0 ].toUpper();
-    n += name.mid( 1 );
-  }
-
-  setName( n );
+    setName( memberVariableName( name ) );
 }
 
 MemberVariable::~MemberVariable()
@@ -75,4 +60,23 @@ MemberVariable& MemberVariable::operator=( const MemberVariable &other )
   // *d = *other.d;
 
   return *this;
+}
+
+QString MemberVariable::memberVariableName( const QString &name )
+{
+    QString n;
+
+    if ( name.isEmpty() ) {
+      n = QLatin1String("mUndefined");
+    } else if ( name.length() >= 2  && name[ 0 ] == QLatin1Char( 'm' ) &&
+                ( name[ 1 ].toUpper() == name[ 1 ] ) ) {
+      n = name;
+    } else if ( name == QLatin1String("q") || name == QLatin1String("d") ) {
+      n = name;
+    } else {
+      n = QLatin1String("m");
+      n += name[ 0 ].toUpper();
+      n += name.mid( 1 );
+    }
+    return n;
 }

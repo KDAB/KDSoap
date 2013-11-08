@@ -397,10 +397,7 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
         }
         Q_ASSERT(elements.count() == 1);
         const XSD::Element elem = elements.first();
-        //const QString typeName = mTypeMap.localType( elem.type() );
-        //Q_ASSERT(!typeName.isEmpty());
-        KODE::MemberVariable variable( elem.name(), QLatin1String("whatever") ); // was already added; this is just for the naming
-        const QString variableName = QLatin1String("d_ptr->") + variable.name(); // always d_ptr->mEntries, actually
+        const QString variableName = QLatin1String("d_ptr->") + KODE::MemberVariable::memberVariableName( elem.name() ); // always d_ptr->mEntries, actually
         const QName arrayType = type->arrayType();
         const QString typeName = mTypeMap.localType( arrayType );
 
@@ -422,8 +419,7 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
             Q_ASSERT(!typeName.isEmpty());
             Q_ASSERT(typeName != QLatin1String("void")); // removed earlier in this file
 
-            KODE::MemberVariable variable( elemName, typeName ); // was already added; this is just for the naming
-            const QString variableName = QLatin1String("d_ptr->") + variable.name();
+            const QString variableName = QLatin1String("d_ptr->") + KODE::MemberVariable::memberVariableName( elemName );
 
             demarshalCode.addBlock( demarshalNameTest( elem.type(), elemName, &first ) );
             demarshalCode.indent();
@@ -467,8 +463,7 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
         bool first = true;
         Q_FOREACH( const XSD::Attribute& attribute, attributes ) {
             const QString attrName = attribute.name();
-            KODE::MemberVariable variable( attrName, QLatin1String("doesnotmatter") ); // was already added; this is just for the naming
-            const QString variableName = QLatin1String("d_ptr->") + variable.name();
+            const QString variableName = QLatin1String("d_ptr->") + KODE::MemberVariable::memberVariableName( attrName );
 
             demarshalCode.addBlock( demarshalNameTest( attribute.type(), attrName, &first ) );
             demarshalCode.indent();

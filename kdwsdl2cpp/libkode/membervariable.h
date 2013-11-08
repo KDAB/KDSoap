@@ -70,6 +70,12 @@ class KODE_EXPORT MemberVariable : public Variable
      */
     MemberVariable& operator=( const MemberVariable &other );
 
+    /**
+     * Returns the name that will be used for a member variable.
+     * This is the same result as creating a MemberVariable(inputName, someType) and extracting the name() afterwards.
+     */
+    static QString memberVariableName( const QString& inputName );
+
   private:
     class Private;
     Private *d;

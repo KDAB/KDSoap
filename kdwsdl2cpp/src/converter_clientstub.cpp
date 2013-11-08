@@ -311,19 +311,15 @@ bool Converter::convertClientService()
 
                 const Message message = mWSDL.findMessage( operation.input().message() );
                 Q_FOREACH( const Part& part, selectedParts( binding, message, operation, true /*input*/ ) ) {
-                    const QString varType = mTypeMap.localType( part.type(), part.element() );
                     const QString partName = part.name();
-                    const KODE::MemberVariable member( partName, varType );
-                    ctor.addInitializer( member.name() + "()" );
+                    ctor.addInitializer( KODE::MemberVariable::memberVariableName( partName ) + "()" );
                 }
 
                 const Message outputMsg = mWSDL.findMessage( operation.output().message() );
 
                 Q_FOREACH( const Part& part, selectedParts( binding, outputMsg, operation, false /*output*/ ) ) {
-                    const QString varType = mTypeMap.localType( part.type(), part.element() );
                     const QString varName = mNameMapper.escape( QLatin1String("result") + upperlize( part.name() ) );
-                    const KODE::MemberVariable member( varName, varType );
-                    ctor.addInitializer( member.name() + "()" );
+                    ctor.addInitializer( KODE::MemberVariable::memberVariableName( varName ) + "()" );
                 }
 
                 jobClass.addFunction( ctor );
