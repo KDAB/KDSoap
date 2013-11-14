@@ -328,7 +328,12 @@ void Converter::cleanupUnusedTypes()
 
 KODE::Class::List Converter::classes() const
 {
-  return mClasses;
+    return mClasses;
+}
+
+QString Converter::shortenFilename(const QString &path)
+{
+    return path.section(QLatin1Char('/'), -1);
 }
 
 bool Converter::convert()

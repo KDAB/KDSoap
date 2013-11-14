@@ -32,7 +32,7 @@
 #ifdef NDEBUG
 #define COMMENT QString()
 #else
-#define COMMENT QLatin1String("// ") + QLatin1String(__FILE__) + QLatin1String(":") + QString::number(__LINE__)
+#define COMMENT QLatin1String("// ") + Converter::shortenFilename(QLatin1String(__FILE__)) + QLatin1String(":") + QString::number(__LINE__)
 #endif
 
 namespace KWSDL {
@@ -48,7 +48,10 @@ class Converter
 
     KODE::Class::List classes() const;
 
+    static QString shortenFilename( const QString &path );
+
   private:
+
     void cleanupUnusedTypes();
     void convertTypes();
 
