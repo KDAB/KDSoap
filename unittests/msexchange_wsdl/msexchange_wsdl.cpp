@@ -191,10 +191,10 @@ private Q_SLOTS:
         //folder shape
         T__FolderResponseShapeType folderShape;
         folderShape.setBaseShape(T__DefaultShapeNamesType::IdOnly);
-        T__PathToUnindexedFieldType pathToUnindexedField;
-        pathToUnindexedField.setFieldURI(T__UnindexedFieldURIType::Folder_TotalCount);
+        T__PathToUnindexedFieldType *pathToUnindexedField = new T__PathToUnindexedFieldType; // ownership will transfer to QSharedPointer
+        pathToUnindexedField->setFieldURI(T__UnindexedFieldURIType::Folder_TotalCount);
         QList< QSharedPointer<T__BasePathToElementType> > paths;
-        paths.append(QSharedPointer<T__BasePathToElementType>(new T__BasePathToElementType(pathToUnindexedField)));
+        paths.append(QSharedPointer<T__BasePathToElementType>(pathToUnindexedField));
         T__NonEmptyArrayOfPathsToElementType additionalProperties;
         additionalProperties.setPath(paths);
         folderShape.setAdditionalProperties(additionalProperties);
@@ -222,7 +222,9 @@ private Q_SLOTS:
                 "<n1:GetFolder xmlns:n1=\"http://schemas.microsoft.com/exchange/services/2006/messages\">"
                   "<n1:FolderShape>"
                     "<n2:BaseShape xmlns:n2=\"http://schemas.microsoft.com/exchange/services/2006/types\">IdOnly</n2:BaseShape>"
-                    "<n3:AdditionalProperties xmlns:n3=\"http://schemas.microsoft.com/exchange/services/2006/types\"><n3:Path/></n3:AdditionalProperties>"
+                    "<n3:AdditionalProperties xmlns:n3=\"http://schemas.microsoft.com/exchange/services/2006/types\">"
+                    "<n3:Path FieldURI=\"folder:TotalCount\"/>"
+                    "</n3:AdditionalProperties>"
                   "</n1:FolderShape>"
                   "<n1:FolderIds>"
                     "<n4:DistinguishedFolderId xmlns:n4=\"http://schemas.microsoft.com/exchange/services/2006/types\" Id=\"calendar\">"
