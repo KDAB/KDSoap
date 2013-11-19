@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions
+  targetNamespace="http://something.mydomain.com"
+  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+  xmlns:import="http://something.mydomain.com/wsdl/import"
+  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+  xmlns:cfwt="http://something.mydomain.com/types"
+  xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+  xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema" >
+
+  <wsdl:types>
+    <xsd:schema>
+      <xsd:import schemaLocation="import_definition_schema.xsd" namespace="http://something.mydomain.com/types"/>
+    </xsd:schema>
+  </wsdl:types>
+
+  <wsdl:message name="msgMyAuthenticateRequest">
+    <wsdl:part name="body" element="cfwt:MyAuthenticate" />
+  </wsdl:message>
+
+  <wsdl:message name="msgMyAuthenticateResponse">
+    <wsdl:part name="body" element="cfwt:MyAuthenticateResponse" />
+  </wsdl:message>
+
+
+  <wsdl:portType name="IExampleServiceEndpoint">
+    <!-- Authenticate the given name / phrase combination -->
+    <wsdl:operation name="MyAuthenticate">
+      <wsdl:input  message="msgMyAuthenticateRequest" />
+      <wsdl:output message="msgMyAuthenticateResponse" />
+    </wsdl:operation>
+  </wsdl:portType>
+
+  <import namespace="http://something.mydomain.com" location="import_definition_wsdl.wsdl"/>
+
+  <wsdl:service name="ExampleService">
+    <wsdl:port name="ExampleServicePortSoap"
+               binding="ExampleBindingSoap">
+      <soap:address location="http://localhost/ExampleService" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

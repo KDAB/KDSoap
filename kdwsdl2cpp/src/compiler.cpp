@@ -98,6 +98,8 @@ void Compiler::parse( const QDomElement &element )
   definitions.setWantedService( Settings::self()->wantedService() );
   if ( definitions.loadXML( &context, element ) ) {
 
+      definitions.fixUpDefinitions( &context, element );
+
       KODE::Code::setDefaultIndentation( 4 );
 
       WSDL wsdl;

@@ -21,8 +21,14 @@
 
 #include "definitions.h"
 
-#include <common/messagehandler.h>
+#include <QDir>
+#include <QFile>
+#include <QUrl>
+
+#include <QXmlSimpleReader>
 #include <common/nsmanager.h>
+#include <common/fileprovider.h>
+#include <common/messagehandler.h>
 #include <common/parsercontext.h>
 
 #include <wsdl/port.h>
@@ -139,10 +145,11 @@ bool Definitions::loadXML( ParserContext *context, const QDomElement &element )
     NSManager namespaceManager( context, child );
     const QName tagName( child.tagName() );
     if ( tagName.localName() == QLatin1String("import") ) {
-      Import import( mTargetNamespace );
-      import.loadXML( context, child );
-      qFatal("Unsupported <import> element in <definitions> - TODO");
-      //mImports.append( import );
+      QString oldTn = targetNamespace();
+      QString oldName = mName;
+      importDefinition( context, child.attribute( QLatin1String("location") ) );
+      setTargetNamespace(oldTn);
+      mName = oldName;
     } else if ( tagName.localName() == QLatin1String("types") ) {
       if ( !mType.loadXML( context, child ) )
           return false;
@@ -173,13 +180,16 @@ bool Definitions::loadXML( ParserContext *context, const QDomElement &element )
     } else {
       context->messageHandler()->warning( QString::fromLatin1( "Definitions: unknown tag %1" ).arg( child.tagName() ) );
     }
-
     child = child.nextSiblingElement();
   }
+  return true;
+}
 
+void Definitions::fixUpDefinitions( ParserContext *context, const QDomElement &element )
+{
   if ( mServices.isEmpty() ) {
-    // create one service for each binding
     Q_ASSERT(!mBindings.isEmpty());
+    qDebug() << "No service tag found in the wsdl file, generating one service per binding";
     Q_FOREACH (const Binding& bind, mBindings)
     {
       Service service(mTargetNamespace);
@@ -197,7 +207,69 @@ bool Definitions::loadXML( ParserContext *context, const QDomElement &element )
       mServices.append( service );
     }
   }
-  return true;
+}
+
+static QUrl urlForLocation( ParserContext *context, const QString& location )
+{
+    QUrl url( location );
+    if ((url.scheme().isEmpty() || url.isLocalFile())) {
+        QDir dir( location );
+        if (dir.isRelative()) {
+            url = context->documentBaseUrl();
+            url.setPath( url.path() + QLatin1Char('/') + location );
+        }
+    }
+    return url;
+}
+
+void Definitions::importDefinition( ParserContext *context, const QString &location )
+{
+  if ( location.isEmpty() ) {
+    context->messageHandler()->warning( QString::fromLatin1( "Definitions import: location tag required: %1" ).arg( location ) );
+    return;
+  }
+  FileProvider provider;
+  QString fileName;
+  const QUrl locationUrl = urlForLocation(context, location);
+  qDebug("Importing wsdl definition at %s", locationUrl.toEncoded().constData());
+
+  if ( provider.get( locationUrl, fileName ) ) {
+    QFile file( fileName );
+    if ( !file.open( QIODevice::ReadOnly ) ) {
+      qDebug( "Unable to open file %s", qPrintable( file.fileName() ) );
+      return;
+    }
+
+    QXmlInputSource source( &file );
+    QXmlSimpleReader reader;
+    reader.setFeature( QLatin1String("http://xml.org/sax/features/namespace-prefixes"), true );
+
+    QDomDocument doc( QLatin1String("kwsdl") );
+    QString errorMsg;
+    int errorLine, errorColumn;
+    bool ok = doc.setContent( &source, &reader, &errorMsg, &errorLine, &errorColumn );
+    if ( !ok ) {
+      qDebug( "Error[%d:%d] %s", errorLine, errorColumn, qPrintable( errorMsg ) );
+      return;
+    }
+
+    // prepare the new context to avoid infinite recursion
+    QDomElement rootNode = doc.documentElement();
+    NSManager namespaceManager( context, rootNode );
+
+    const QName tagName( rootNode.tagName() );
+    if ( tagName.localName() == QLatin1String("definitions") ) {
+      // recursivity
+      context->namespaceManager()->enterChild(rootNode);
+      loadXML(context, rootNode);
+    } else {
+      qDebug( "No definition tag found in imported wsdl file %s", locationUrl.toEncoded().constData());
+    }
+
+    file.close();
+
+    provider.cleanUp();
+  }
 }
 
 #if 0

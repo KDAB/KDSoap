@@ -1001,7 +1001,7 @@ QString Parser::targetNamespace() const
 static QUrl urlForLocation(ParserContext *context, const QString& location)
 {
     QUrl url( location );
-    if ((url.scheme().isEmpty() || url.scheme() == QLatin1String("file"))) {
+    if ((url.scheme().isEmpty() || url.isLocalFile())) {
         QDir dir( location );
         if (dir.isRelative()) {
             url = context->documentBaseUrl();

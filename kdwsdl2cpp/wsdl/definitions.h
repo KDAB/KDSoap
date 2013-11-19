@@ -74,7 +74,11 @@ class KWSDL_EXPORT Definitions
     bool loadXML( ParserContext *context, const QDomElement &element );
     //void saveXML( ParserContext *context, QDomDocument &document ) const;
 
+    void fixUpDefinitions( ParserContext *context, const QDomElement &element );
+
   private:
+    void importDefinition( ParserContext *context, const QString &location );
+
     Binding::List mBindings;
     //Import::List mImports;
     Message::List mMessages;

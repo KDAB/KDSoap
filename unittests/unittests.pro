@@ -21,6 +21,7 @@ SUBDIRS = \
   issue4 \
   issue38 \
   soap12 \
+  import_definition \
   unqualified_formdefault \
 
 # These need internet access

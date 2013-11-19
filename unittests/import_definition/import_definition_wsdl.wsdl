@@ -1,0 +1,19 @@
+<wsdl:definitions
+    targetNamespace="http://something.mydomain.com"
+    xmlns:origin="http://something.mydomain.com/"
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+
+ <wsdl:binding name="ExampleBindingSoap" type="IExampleServiceEndpoint">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="MyAuthenticate">
+      <soap:operation soapAction="/MyAuthenticate" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+ </wsdl:binding>
+</wsdl:definitions>

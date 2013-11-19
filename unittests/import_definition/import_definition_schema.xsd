@@ -1,0 +1,40 @@
+<xsd:schema
+	targetNamespace="http://something.mydomain.com/types"
+        xmlns="http://something.mydomain.com/types"
+        xmlns:cfw="http://something.mydomain.com"
+        xmlns:cfwt="http://something.mydomain.com/types"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        elementFormDefault="unqualified"
+        attributeFormDefault="unqualified">
+
+  <xsd:complexType name="Authenticate">
+    <xsd:all>
+      <xsd:element name="name" type="xsd:string" />
+      <xsd:element name="phrase" type="xsd:string" />
+    </xsd:all>
+  </xsd:complexType>
+
+  <xs:element name="MyAuthenticate">
+    <xs:complexType>
+      <xs:sequence>
+	<xs:element name="request" type="Authenticate" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="MyAuthenticateResponse">
+    <xs:complexType>
+      <xs:all>
+	<xs:element name="message" type="xsd:string" />
+      </xs:all>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="MyAuthenticateFault">
+    <xs:complexType>
+      <xs:all>
+	<xs:element name="errorMessage" type="xs:string" />
+      </xs:all>
+    </xs:complexType>
+  </xs:element>
+</xsd:schema>
