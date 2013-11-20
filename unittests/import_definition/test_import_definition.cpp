@@ -69,6 +69,7 @@ private Q_SLOTS:
                   "</n1:MyAuthenticate>"
                 "</soap:Body>" + xmlEnvEnd()
             + '\n'; // added by QXmlStreamWriter::writeEndDocument
+        QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
     }
 
 private:
