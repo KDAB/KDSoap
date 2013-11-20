@@ -1,0 +1,96 @@
+<wsdl:definitions name="SIWebService"
+targetNamespace="http://www.demcare.eu/services/siwebservice"
+xmlns:ns1="http://www.demcare.eu/services/exception"
+xmlns:ns2="http://schemas.xmlsoap.org/soap/http"
+xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+xmlns:tns="http://www.demcare.eu/services/siwebservice"
+xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <wsdl:types>
+
+    <xs:schema targetNamespace="http://www.demcare.eu/services/siwebservice/types" version="1.0" xmlns:tns="http://www.demcare.eu/services/siwebservice/types" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:element name="BooleanResponse" type="tns:BooleanResponseType"/>
+      <xs:element name="DailyAnalysisParameters">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="subjectId" type="xs:string"/>
+            <xs:element name="date" type="xs:dateTime"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+
+      <xs:simpleType name="BooleanResponseType">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="TRUE"/>
+          <xs:enumeration value="FALSE"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:schema>
+
+    <xs:schema elementFormDefault="unqualified" targetNamespace="http://www.demcare.eu/services/siwebservice" version="1.0" xmlns:ns1="http://www.demcare.eu/services/siwebservice/types" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:import namespace="http://www.demcare.eu/services/siwebservice/types"/>
+      <xs:element name="StartDailyAnalysis" type="tns:StartDailyAnalysis"/>
+      <xs:element name="StartDailyAnalysisResponse" type="tns:StartDailyAnalysisResponse"/>
+      <xs:complexType name="StartDailyAnalysis">
+        <xs:sequence>
+          <xs:element minOccurs="0" ref="ns1:DailyAnalysisParameters"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="StartDailyAnalysisResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" ref="ns1:BooleanResponse"/>
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+
+    <xs:schema targetNamespace="http://www.demcare.eu/services/exception" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:element name="AccessDeniedMessage" type="xs:string"/>
+      <xs:element name="InvalidParameterMessage" type="xs:string"/>
+      <xs:element name="NoAvailableDataMessage" type="xs:string"/>
+      <xs:element name="NoAvailableObservationMessage" type="xs:string"/>
+      <xs:element name="SensorFailureMessage" type="xs:string"/>
+      <xs:element name="UnexpectedMessage" type="xs:string"/>
+      <xs:element name="UnsupportedRequestMessage" type="xs:string"/>
+    </xs:schema>
+
+  </wsdl:types>
+  <wsdl:message name="UnexpectedException">
+    <wsdl:part element="ns1:UnexpectedMessage" name="UnexpectedException"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="StartDailyAnalysisResponse">
+    <wsdl:part element="tns:StartDailyAnalysisResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="StartDailyAnalysis">
+    <wsdl:part element="tns:StartDailyAnalysis" name="parameters"></wsdl:part>
+  </wsdl:message>
+
+  <wsdl:portType name="SIPort">
+    <wsdl:operation name="StartDailyAnalysis">
+      <wsdl:input message="tns:StartDailyAnalysis" name="StartDailyAnalysis"></wsdl:input>
+      <wsdl:output message="tns:StartDailyAnalysisResponse" name="StartDailyAnalysisResponse"></wsdl:output>
+      <wsdl:fault message="tns:UnexpectedException" name="UnexpectedException"></wsdl:fault>
+    </wsdl:operation>
+  </wsdl:portType>
+
+  <wsdl:binding name="SIWebServiceSoapBinding" type="tns:SIPort">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="StartDailyAnalysis">
+      <soap:operation soapAction="StartDailyAnalysis" style="document"/>
+      <wsdl:input name="StartDailyAnalysis">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="StartDailyAnalysisResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="UnexpectedException">
+        <soap:fault name="UnexpectedException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+
+  <wsdl:service name="SIWebService">
+    <wsdl:port binding="tns:SIWebServiceSoapBinding" name="SIWebServicePortName">
+      <soap:address location="http://160.40.50.196:8181/cxf/SIWebService"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

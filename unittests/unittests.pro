@@ -21,6 +21,7 @@ SUBDIRS = \
   issue4 \
   issue38 \
   soap12 \
+  literal_true_false \
   import_definition \
   unqualified_formdefault \
 

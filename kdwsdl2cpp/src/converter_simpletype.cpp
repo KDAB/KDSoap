@@ -60,10 +60,10 @@ void Converter::convertSimpleType( const XSD::SimpleType *type, const XSD::Simpl
      */
     if ( type->facetType() & XSD::SimpleType::ENUM ) {
       classDocumentation = "This class is a wrapper for an enumeration.\n";
-
+      NameMapper nameMapper;
       QStringList enums = type->facetEnums();
       for ( int i = 0; i < enums.count(); ++i )
-        enums[ i ] = escapeEnum( enums[ i ] );
+        enums[ i ] = nameMapper.escape( escapeEnum( enums[ i ] ) );
 
       newClass.addEnum( KODE::Enum( "Type", enums ) );
 
@@ -285,9 +285,10 @@ void Converter::createSimpleTypeSerializer( KODE::Class& newClass, const XSD::Si
         // is an enumeration
         if ( type->facetType() & XSD::SimpleType::ENUM ) {
             const QStringList enums = type->facetEnums();
+            NameMapper nameMapper;
             QStringList escapedEnums;
             for ( int i = 0; i < enums.count(); ++i )
-                escapedEnums.append( escapeEnum( enums[ i ] ) );
+                escapedEnums.append( nameMapper.escape( escapeEnum( enums[ i ] ) ) );
 
             const QString variableName = KODE::MemberVariable::memberVariableName( "type" );
 
