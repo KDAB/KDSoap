@@ -162,12 +162,7 @@ ComplexType Types::complexType( const Element &element ) const
 
 ComplexType Types::complexType( const QName &typeName ) const
 {
-   //qDebug() << "looking for" << typeName << "ns=" << typeName.nameSpace();
-  foreach( const ComplexType& type, d->mComplexTypes ) {
-    //qDebug() << type.nameSpace() << "qualifiedName=" << type.qualifiedName();
-    if( typeName == type.qualifiedName() ) return type;
-  }
-  return ComplexType();
+    return d->mComplexTypes.findComplexType( typeName );
 }
 
 ComplexType Types::polymorphicBaseClass( const ComplexType &derivedType ) const
@@ -182,11 +177,7 @@ ComplexType Types::polymorphicBaseClass( const ComplexType &derivedType ) const
 
 SimpleType Types::simpleType( const QName &typeName ) const
 {
-  foreach( const SimpleType& type, d->mSimpleTypes ) {
-    if ( type.qualifiedName() == typeName ) return type;
-  }
-  qDebug() << "Types::simpleType():" << typeName << "not found";
-  return SimpleType();
+    return d->mSimpleTypes.findSimpleType( typeName );
 }
 
-}
+} // namespace XSD

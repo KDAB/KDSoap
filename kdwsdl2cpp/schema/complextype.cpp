@@ -234,6 +234,18 @@ bool ComplexType::isEmpty() const
     return d->mAttributeGroups.isEmpty() && d->mGroups.isEmpty() && d->mAttributes.isEmpty() && d->mElements.isEmpty() && d->mBaseTypeName.isEmpty() && d->mArrayType.isEmpty();
 }
 
+ComplexType ComplexTypeList::findComplexType( const QName &qualifiedName ) const
+{
+    //qDebug() << "looking for" << typeName << "ns=" << typeName.nameSpace();
+    foreach( const ComplexType& type, *this ) {
+        //qDebug() << type.nameSpace() << "qualifiedName=" << type.qualifiedName();
+        if ( qualifiedName == type.qualifiedName() )
+            return type;
+    }
+    //qDebug() << "Complex type" << qualifiedName << "not found";
+    return ComplexType();
+}
+
 } // namespace XSD
 
 QDebug operator<<(QDebug dbg, const XSD::ComplexType &type)

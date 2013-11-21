@@ -35,11 +35,12 @@
 #include <kode_export.h>
 
 namespace XSD {
+class ComplexTypeList;
 
 class SCHEMA_EXPORT ComplexType : public XSDType
 {
   public:
-    typedef QList<ComplexType> List;
+    typedef ComplexTypeList List;
 
     typedef enum {
       Restriction,
@@ -102,6 +103,15 @@ class SCHEMA_EXPORT ComplexType : public XSDType
   private:
     class Private;
     Private *d;
+};
+
+class SCHEMA_EXPORT ComplexTypeList : public QList<ComplexType>
+{
+public:
+    ComplexTypeList( const QList<ComplexType> &arg ) : QList<ComplexType>(arg) {}
+    ComplexTypeList() : QList<ComplexType>() {}
+
+    ComplexType findComplexType( const QName& qualifiedName ) const;
 };
 
 } // namespace XSD

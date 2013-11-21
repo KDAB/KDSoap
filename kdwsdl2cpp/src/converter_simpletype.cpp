@@ -121,9 +121,9 @@ void Converter::convertSimpleType( const XSD::SimpleType *type, const XSD::Simpl
       parentBasicTypes.append(baseName);
       QName currentType = baseName;
       Q_FOREVER {
-          XSD::SimpleType::List::const_iterator it = simpleTypeList.findSimpleType( currentType );
-          if ( it != simpleTypeList.constEnd() && (*it).isRestriction() ) {
-              currentType = (*it).baseTypeName();
+          const XSD::SimpleType simpleType = simpleTypeList.findSimpleType( currentType );
+          if ( !simpleType.isNull() && simpleType.isRestriction() ) {
+              currentType = simpleType.baseTypeName();
               parentBasicTypes.append( currentType );
               continue;
           }

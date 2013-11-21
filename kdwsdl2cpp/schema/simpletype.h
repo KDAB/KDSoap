@@ -123,7 +123,7 @@ class SCHEMA_EXPORT SimpleType : public XSDType
 class SCHEMA_EXPORT SimpleTypeList : public QList<SimpleType>
 {
 public:
-    const_iterator findSimpleType(const QName& qualifiedName) const;
+    SimpleType findSimpleType(const QName& qualifiedName) const;
 };
 
 }

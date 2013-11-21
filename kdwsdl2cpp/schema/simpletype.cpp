@@ -302,13 +302,14 @@ bool SimpleType::isRestriction() const
             && !(d->mFacetId & ENUM);
 }
 
-SimpleTypeList::const_iterator SimpleTypeList::findSimpleType(const QName &qualifiedName) const
+SimpleType SimpleTypeList::findSimpleType( const QName &qualifiedName ) const
 {
   const_iterator it = constBegin();
   for ( ; it != constEnd(); ++it )
     if ((*it).qualifiedName() == qualifiedName)
-      break;
-  return it;
+      return *it;
+  //qDebug() << "Simple type" << qualifiedName << "not found";
+  return SimpleType();
 }
 
 }
