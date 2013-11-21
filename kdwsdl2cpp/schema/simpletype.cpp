@@ -302,7 +302,7 @@ bool SimpleType::isRestriction() const
             && !(d->mFacetId & ENUM);
 }
 
-SimpleType SimpleTypeList::findSimpleType( const QName &qualifiedName ) const
+SimpleType SimpleTypeList::simpleType( const QName &qualifiedName ) const
 {
   const_iterator it = constBegin();
   for ( ; it != constEnd(); ++it )
@@ -310,6 +310,14 @@ SimpleType SimpleTypeList::findSimpleType( const QName &qualifiedName ) const
       return *it;
   //qDebug() << "Simple type" << qualifiedName << "not found";
   return SimpleType();
+}
+
+SimpleTypeList::iterator XSD::SimpleTypeList::SimpleTypeList::findSimpleType(const QName &qualifiedName)
+{
+    for ( iterator it = begin(); it != end() ; ++it )
+        if ( (*it).qualifiedName() == qualifiedName )
+            return it;
+    return end();
 }
 
 }

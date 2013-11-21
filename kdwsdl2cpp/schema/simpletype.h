@@ -123,7 +123,11 @@ class SCHEMA_EXPORT SimpleType : public XSDType
 class SCHEMA_EXPORT SimpleTypeList : public QList<SimpleType>
 {
 public:
-    SimpleType findSimpleType(const QName& qualifiedName) const;
+    // Readonly lookup, returns null type if not found
+    SimpleType simpleType(const QName& qualifiedName) const;
+
+    // Mutable lookup (for making changes), returns end() if not found
+    iterator findSimpleType( const QName &qualifiedName );
 };
 
 }

@@ -234,7 +234,7 @@ bool ComplexType::isEmpty() const
     return d->mAttributeGroups.isEmpty() && d->mGroups.isEmpty() && d->mAttributes.isEmpty() && d->mElements.isEmpty() && d->mBaseTypeName.isEmpty() && d->mArrayType.isEmpty();
 }
 
-ComplexType ComplexTypeList::findComplexType( const QName &qualifiedName ) const
+ComplexType ComplexTypeList::complexType( const QName &qualifiedName ) const
 {
     //qDebug() << "looking for" << typeName << "ns=" << typeName.nameSpace();
     foreach( const ComplexType& type, *this ) {
@@ -244,6 +244,14 @@ ComplexType ComplexTypeList::findComplexType( const QName &qualifiedName ) const
     }
     //qDebug() << "Complex type" << qualifiedName << "not found";
     return ComplexType();
+}
+
+ComplexTypeList::iterator ComplexTypeList::findComplexType( const QName &qualifiedName )
+{
+    for ( iterator it = begin(); it != end() ; ++it )
+        if ( (*it).qualifiedName() == qualifiedName )
+            return it;
+    return end();
 }
 
 } // namespace XSD

@@ -111,7 +111,11 @@ public:
     ComplexTypeList( const QList<ComplexType> &arg ) : QList<ComplexType>(arg) {}
     ComplexTypeList() : QList<ComplexType>() {}
 
-    ComplexType findComplexType( const QName& qualifiedName ) const;
+    // Readonly lookup, returns null type if not found
+    ComplexType complexType( const QName& qualifiedName ) const;
+
+    // Mutable lookup (for making changes), returns end() if not found
+    iterator findComplexType( const QName& qualifiedName );
 };
 
 } // namespace XSD
