@@ -312,7 +312,7 @@ SimpleType SimpleTypeList::simpleType( const QName &qualifiedName ) const
   return SimpleType();
 }
 
-SimpleTypeList::iterator XSD::SimpleTypeList::SimpleTypeList::findSimpleType(const QName &qualifiedName)
+SimpleTypeList::iterator SimpleTypeList::findSimpleType(const QName &qualifiedName)
 {
     for ( iterator it = begin(); it != end() ; ++it )
         if ( (*it).qualifiedName() == qualifiedName )
