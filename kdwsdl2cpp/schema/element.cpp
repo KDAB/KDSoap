@@ -206,15 +206,33 @@ Compositor Element::compositor() const
   return d->mCompositor;
 }
 
-void Element::List::dump()
+Element ElementList::element( const QName &qualifiedName ) const
+{
+    const_iterator it = constBegin();
+    for ( ; it != constEnd(); ++it )
+      if ((*it).qualifiedName() == qualifiedName)
+        return *it;
+    //qDebug() << "Simple type" << qualifiedName << "not found";
+    return Element();
+}
+
+ElementList::iterator ElementList::findElement( const QName &qualifiedName )
+{
+    for ( iterator it = begin(); it != end() ; ++it )
+        if ( (*it).qualifiedName() == qualifiedName )
+            return it;
+    return end();
+
+}
+
+void ElementList::dump()
 {
     Q_FOREACH(const Element& element, *this) {
         qDebug() << element.nameSpace() << element.name();
     }
 }
 
-}
-
+} // namespace XSD
 
 QDebug operator<<(QDebug dbg, const XSD::Element &element)
 {

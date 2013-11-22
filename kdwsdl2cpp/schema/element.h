@@ -32,15 +32,12 @@
 
 namespace XSD {
 
+class ElementList;
+
 class SCHEMA_EXPORT Element : public XmlElement
 {
   public:
-    class SCHEMA_EXPORT List : public QList<Element>
-    {
-    public:
-        void dump();
-    };
-
+    typedef ElementList List;
 
     Element();
     Element( const QString &nameSpace );
@@ -90,6 +87,19 @@ class SCHEMA_EXPORT Element : public XmlElement
   private:
     class Private;
     Private *d;
+};
+
+class SCHEMA_EXPORT ElementList : public QList<Element>
+{
+public:
+    // Readonly lookup, returns null element if not found
+    Element element( const QName& qualifiedName ) const;
+
+    // Mutable lookup (for making changes), returns end() if not found
+    iterator findElement( const QName &qualifiedName );
+
+    // For debugging
+    void dump();
 };
 
 }
