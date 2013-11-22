@@ -1,5 +1,5 @@
 #include "settings.h"
-
+#include "elementargumentserializer.h"
 #include "converter.h"
 #include <QDebug>
 
@@ -14,6 +14,18 @@ QString lowerlize( const QString &str )
 {
   return str[ 0 ].toLower() + str.mid( 1 );
 }
+
+QString namespaceString(const QString& ns)
+{
+    if (ns == QLatin1String("http://www.w3.org/1999/XMLSchema"))
+        return QLatin1String("KDSoapNamespaceManager::xmlSchema1999()");
+    if (ns == QLatin1String("http://www.w3.org/2001/XMLSchema"))
+        return QLatin1String("KDSoapNamespaceManager::xmlSchema2001()");
+    //qDebug() << "got namespace" << ns;
+    // TODO register into KDSoapNamespaceManager? This means generating code in the clientinterface ctor...
+    return QLatin1String("QString::fromLatin1(\"") + ns + QLatin1String("\")");
+}
+
 
 
 Converter::Converter()
@@ -366,6 +378,11 @@ KODE::Code Converter::serializePart(const Part &part, const QString &localVariab
 {
     bool qualified, nillable;
     const QName elemName = elementNameForPart( part, &qualified, &nillable );
-    bool omitIfEmpty = false; // Don't omit entire parts, this especially breaks the wrappers for RPC messages
-    return serializeElementArg( part.type(), part.element(), elemName, localVariableName, varName, append, qualified, nillable, omitIfEmpty );
+    ElementArgumentSerializer serializer( mTypeMap, part.type(), part.element(), localVariableName );
+    serializer.setElementName( elemName );
+    serializer.setOutputVariable( varName, append );
+    serializer.setIsQualified( qualified );
+    serializer.setNillable( nillable );
+    serializer.setOmitIfEmpty( false ); // Don't omit entire parts, this especially breaks the wrappers for RPC messages
+    return serializer.generate();
 }

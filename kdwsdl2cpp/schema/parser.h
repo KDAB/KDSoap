@@ -99,6 +99,7 @@ class SCHEMA_EXPORT Parser
 
     Element parseElement( ParserContext *context, const QDomElement &,
       const QString &nameSpace, const QDomElement &occurrenceElement );
+    void setSubstitutionElementName(const QName &typeName, const QName &elemName );
 
     Attribute parseAttribute( ParserContext *context, const QDomElement&,
       const QString &nameSpace);

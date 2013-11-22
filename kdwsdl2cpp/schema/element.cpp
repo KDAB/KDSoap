@@ -29,7 +29,12 @@ class Element::Private
 {
 public:
     Private()
-      : mMinOccurs( 1 ), mMaxOccurs( 1 ), mQualified( false ), mNillable( false ), mOccurrence( 0 )
+      : mMinOccurs( 1 ),
+        mMaxOccurs( 1 ),
+        mQualified( false ),
+        mNillable( false ),
+        mHasSubstitutions( false ),
+        mOccurrence( 0 )
     {}
 
     QName mType;
@@ -39,6 +44,7 @@ public:
     int mMaxOccurs;
     bool mQualified;
     bool mNillable;
+    bool mHasSubstitutions;
     QString mDefaultValue;
     QString mFixedValue;
     int mOccurrence;
@@ -204,6 +210,16 @@ void Element::setCompositor( const Compositor &c )
 Compositor Element::compositor() const
 {
   return d->mCompositor;
+}
+
+void Element::setHasSubstitutions( bool hasSub )
+{
+    d->mHasSubstitutions = hasSub;
+}
+
+bool Element::hasSubstitutions() const
+{
+    return d->mHasSubstitutions;
 }
 
 Element ElementList::element( const QName &qualifiedName ) const

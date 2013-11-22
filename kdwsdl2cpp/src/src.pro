@@ -10,9 +10,11 @@ SOURCES = compiler.cpp \
     main.cpp \
     namemapper.cpp \
     settings.cpp \
-    typemap.cpp
+    typemap.cpp \
+    elementargumentserializer.cpp
 HEADERS = compiler.h \
-    converter.h
+    converter.h \
+    elementargumentserializer.h
 INCLUDEPATH += $${TOP_SOURCE_DIR}/kdwsdl2cpp
 QT -= gui
 QT += xml

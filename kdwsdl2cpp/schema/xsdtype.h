@@ -89,6 +89,20 @@ class SCHEMA_EXPORT XSDType : public XmlElement
     void setContentModel( ContentModel contentModel);
     ContentModel contentModel() const;
 
+    /**
+     * Sets the name of the substitution element associated with this type.
+     *
+     * Example: <xs:element name="FieldURI" type="t:PathToUnindexedFieldType" substitutionGroup="t:Path"/>
+     * will set the element name to "FieldURI" in the type "PathToUnindexedFieldType".
+     *
+     * @param name element name
+     */
+    void setSubstitutionElementName( const QName &name );
+    /**
+     * @return the substitution element name associated with this type, if any.
+     */
+    QName substitutionElementName() const;
+
     virtual bool isSimple() const
     {
       return true;

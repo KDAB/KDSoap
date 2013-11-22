@@ -223,7 +223,7 @@ private Q_SLOTS:
                   "<n1:FolderShape>"
                     "<n2:BaseShape xmlns:n2=\"http://schemas.microsoft.com/exchange/services/2006/types\">IdOnly</n2:BaseShape>"
                     "<n3:AdditionalProperties xmlns:n3=\"http://schemas.microsoft.com/exchange/services/2006/types\">"
-                    "<n3:Path FieldURI=\"folder:TotalCount\"/>"
+                    "<n3:FieldURI FieldURI=\"folder:TotalCount\"/>"
                     "</n3:AdditionalProperties>"
                   "</n1:FolderShape>"
                   "<n1:FolderIds>"

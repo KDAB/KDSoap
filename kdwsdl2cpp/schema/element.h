@@ -84,6 +84,20 @@ class SCHEMA_EXPORT Element : public XmlElement
     void setCompositor( const Compositor & );
     Compositor compositor() const;
 
+    /**
+     * Makes a note that this element has substitutions available.
+     *
+     * Example:
+     *  <xs:element name="Path" abstract="true" type="t:BasePathToElementType"/>
+     *  <xs:element name="FieldURI" type="t:PathToUnindexedFieldType" substitutionGroup="t:Path"/>
+     * will note in the element "Path" that substitutions exist.
+     */
+    void setHasSubstitutions( bool hasSub );
+    /**
+     * @return true if this element is the base element of a substitution group.
+     */
+    bool hasSubstitutions() const;
+
   private:
     class Private;
     Private *d;

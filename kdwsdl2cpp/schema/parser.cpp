@@ -500,6 +500,25 @@ Element Parser::parseElement( ParserContext *context,
     if (debugParsing())
         qDebug() << "typeName=" << typeName.qname() << "namespace=" << context->namespaceManager()->uri( typeName.prefix() );
     newElement.setType( typeName );
+
+    if ( element.hasAttribute( QLatin1String("substitutionGroup") ) ) {
+        QName baseElementName( element.attribute( QLatin1String("substitutionGroup") ) );
+        baseElementName.setNameSpace( context->namespaceManager()->uri( baseElementName.prefix() ) );
+        XSD::Element::List::iterator ctit_base = d->mElements.findElement( baseElementName );
+        if ( ctit_base != d->mElements.end() ) {
+            XSD::Element& baseElem = *ctit_base;
+            // Record that the base element has substitutions
+            baseElem.setHasSubstitutions( true );
+            // Its type will need a virtual method _kd_substitutionElementName so fill in the base type too.
+            // (OK, we do that for each derived type, but well)
+            const QName baseType = baseElem.type();
+            setSubstitutionElementName( baseType, baseElem.qualifiedName() );
+        } else {
+            qWarning() << "Element" << newElement.qualifiedName() << "uses undefined element as substitutionGroup" << baseElementName;
+        }
+
+        setSubstitutionElementName( typeName, newElement.qualifiedName() );
+    }
   } else {
     QDomElement childElement = element.firstChildElement();
 
@@ -535,6 +554,23 @@ Element Parser::parseElement( ParserContext *context,
   }
 
   return newElement;
+}
+
+void Parser::setSubstitutionElementName( const QName &typeName, const QName &elemName )
+{
+  XSD::ComplexType::List::iterator ctit = d->mComplexTypes.findComplexType( typeName );
+  if ( ctit != d->mComplexTypes.end() ) {
+    // If this type already has an element name associated, they are aliases, any one will do.
+    // (see http://www.w3schools.com/schema/schema_complex_subst.asp)
+    (*ctit).setSubstitutionElementName( elemName );
+  } else {
+    XSD::SimpleType::List::iterator stit = d->mSimpleTypes.findSimpleType( typeName );
+    if ( stit != d->mSimpleTypes.end() ) {
+      (*stit).setSubstitutionElementName( elemName );
+    } else {
+      qWarning() << "Element" << elemName << "uses undefined type" << typeName;
+    }
+  }
 }
 
 // Testcase: salesforce-partner.wsdl has <any namespace="##targetNamespace" [...]/>

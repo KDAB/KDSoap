@@ -28,10 +28,12 @@ class XSDType::Private
 {
 public:
     Private()
-      : mContentModel( SIMPLE )
+      : mContentModel( SIMPLE ),
+        mSubstitutionElementName()
     {}
 
     ContentModel mContentModel;
+    QName mSubstitutionElementName;
 };
 
 XSDType::XSDType()
@@ -72,7 +74,17 @@ void XSDType::setContentModel( ContentModel contentModel )
 
 XSDType::ContentModel XSDType::contentModel() const
 {
-  return d->mContentModel;
+    return d->mContentModel;
 }
 
+void XSDType::setSubstitutionElementName(const QName &name)
+{
+    d->mSubstitutionElementName = name;
 }
+
+QName XSDType::substitutionElementName() const
+{
+    return d->mSubstitutionElementName;
+}
+
+} // namespace XSD
