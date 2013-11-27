@@ -42,6 +42,7 @@ configure.sh
 /unittests/servertest/servertest
 /unittests/soap12/soap12
 /unittests/sugar_wsdl/sugar_wsdl
+/unittests/import_definition/import_definition
 /unittests/tech3356_wsdl/tech3356_wsdl
 /unittests/webcalls/webcalls
 /unittests/webcalls_wsdl/webcalls_wsdl
