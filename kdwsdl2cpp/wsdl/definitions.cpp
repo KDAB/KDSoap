@@ -185,7 +185,7 @@ bool Definitions::loadXML( ParserContext *context, const QDomElement &element )
   return true;
 }
 
-void Definitions::fixUpDefinitions( ParserContext *context, const QDomElement &element )
+void Definitions::fixUpDefinitions( /*ParserContext *context, const QDomElement &element */)
 {
   if ( mServices.isEmpty() ) {
     Q_ASSERT(!mBindings.isEmpty());
