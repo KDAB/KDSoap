@@ -33,6 +33,7 @@
 
 using namespace KDSoapUnitTestHelpers;
 
+// Server side to perform job operation request
 class TransformMediaBindingServerObject : public TransformMediaBindingServerBase /* generated from wsdl */
 {
     Q_OBJECT
@@ -64,6 +65,57 @@ public:
 private:
     TransformMediaBindingServerObject* m_lastServerObject; // only for unittest purposes
 };
+
+// Server side to perform job status request
+class TransformMediaStatusBindingServerObject : public TransformMediaStatusBindingServerBase /* generated from wsdl */
+{
+      Q_OBJECT
+public:
+    virtual BMS__ManageJobResponseType manageJob( const BMS__ManageJobRequestType& in ) {
+      // check what was sent
+      Q_UNUSED (in);
+      Q_ASSERT(in.jobID().value().toInt() == 1);
+      Q_ASSERT(in.jobCommand().type() == BMS__JobCommandType::Restart);
+      // prepare response containing a job status
+      BMS__ManageJobResponseType response;
+      BMS__JobType myJob ;
+      myJob.setStatus(BMS__JobStatusType::Running);
+      response.setJob(myJob);
+      Q_ASSERT(response.job().status().type() == BMS__JobStatusType::Running);
+      return response;
+    }
+    virtual BMS__ManageQueueResponseType manageQueue( const BMS__ManageQueueRequestType& in )
+    {
+      Q_UNUSED (in);
+      BMS__ManageQueueResponseType qrt;
+      return qrt;
+    }
+    virtual BMS__QueryJobResponseType queryJob( const BMS__QueryJobRequestType& in )
+    {
+      Q_UNUSED (in);
+      BMS__QueryJobResponseType jrt;
+      return jrt;
+    }
+};
+
+class TransformMediaStatusBindingServer : public KDSoapServer
+{
+    Q_OBJECT
+public:
+    TransformMediaStatusBindingServer() : KDSoapServer(), m_lastServerObject(0) {
+        setPath(QLatin1String("/xml"));
+    }
+    virtual QObject* createServerObject() { m_lastServerObject = new TransformMediaStatusBindingServerObject; return m_lastServerObject; }
+
+    TransformMediaStatusBindingServerObject* lastServerObject() { return m_lastServerObject; }
+
+private:
+    TransformMediaStatusBindingServerObject* m_lastServerObject; // only for unittest purposes
+};
+
+
+//TFMS__TransformResponseType TransformMediaService::TransformMediaBinding::transform( const TFMS__TransformRequestType& in )
+//BMS__ManageJobResponseType TransformMediaService::TransformMediaStatusBinding::manageJob( const BMS__ManageJobRequestType& in )
 
 
 class Tech3356Test : public QObject
@@ -160,9 +212,11 @@ private Q_SLOTS:
 
     void testJobStatusRequest() // SOAP-80
     {
-      HttpServerThread server(queryJobResponse(), HttpServerThread::Public);
+      TestServerThread<TransformMediaStatusBindingServer> serverThread;
+      TransformMediaStatusBindingServer* server = serverThread.startThread();
+
       TransformMediaService::TransformMediaStatusBinding service;
-      service.setEndPoint(server.endPoint());
+      service.setEndPoint(server->endPoint());
 
       //TransformMediaService::TransformMediaStatusBindingJobs::ManageJobJob jobManager(&service);
       BMS__ManageJobRequestType requestType;
@@ -176,26 +230,8 @@ private Q_SLOTS:
       requestType.setJobCommand(jt);
 
       BMS__ManageJobResponseType myResp = service.manageJob( requestType );
-
-      // let's check wether we have our job status
-      static const struct { const char* name; BMS__JobStatusType::Type value; } status[9] = {
-      { "queued", BMS__JobStatusType::Queued },
-      { "running", BMS__JobStatusType::Running },
-      { "paused", BMS__JobStatusType::Paused },
-      { "completed", BMS__JobStatusType::Completed },
-      { "canceled", BMS__JobStatusType::Canceled },
-      { "stopped", BMS__JobStatusType::Stopped },
-      { "failed", BMS__JobStatusType::Failed },
-      { "cleaned", BMS__JobStatusType::Cleaned },
-      { "unknown", BMS__JobStatusType::Unknown }
-      };
-      bool hasStatus = false ;
-      const QString str =  myResp.job().status().serialize().toString() ;
-      for ( int i = 0; i < 9; ++i ) { // or is enough no need of xor operator
-          hasStatus = hasStatus || (str == QLatin1String(status[i].name));
-      }
-      QVERIFY(hasStatus);
-      qDebug() << "Type of the status job :"<< qPrintable( str ) ;
+      QCOMPARE(myResp.job().status().type() , BMS__JobStatusType::Running);
+      //qDebug() << "Type of the status job :"<< qPrintable( str ) ;
     }
 };
 
