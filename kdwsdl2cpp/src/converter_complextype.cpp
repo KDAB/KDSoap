@@ -346,6 +346,8 @@ KODE::Code Converter::demarshalVarHelper( const QName& type, const QName& elemen
         code += variableName + QLatin1String(".deserialize(") + soapValueVarName + QLatin1String(");") + COMMENT;
     } else {
         code += variableName + QLatin1String(".deserialize(") + soapValueVarName + QLatin1String(".value());" ) + COMMENT;
+        if ( optional )
+            code += variableName + QLatin1String("_nil = false;") + COMMENT;
     }
     return code;
 }

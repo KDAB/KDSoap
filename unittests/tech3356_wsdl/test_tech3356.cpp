@@ -71,6 +71,7 @@ class Tech3356Test : public QObject
     Q_OBJECT
 
 private:
+
     static QByteArray expectedQueryJobRequest()
     {
         return QByteArray(xmlEnvBegin11()) + ">"
@@ -155,6 +156,46 @@ private Q_SLOTS:
         request.setTransformJob(transformJob);
         TFMS__TransformResponseType response = service.transform(request);
         QCOMPARE(response.transformJob().operationName(), QString::fromLatin1("operation"));
+    }
+
+    void testJobStatusRequest() // SOAP-80
+    {
+      HttpServerThread server(queryJobResponse(), HttpServerThread::Public);
+      TransformMediaService::TransformMediaStatusBinding service;
+      service.setEndPoint(server.endPoint());
+
+      //TransformMediaService::TransformMediaStatusBindingJobs::ManageJobJob jobManager(&service);
+      BMS__ManageJobRequestType requestType;
+      // mandatory ID
+      BMS__UID uid; uid.setValue(1);
+      requestType.setJobID(uid);
+      BMS__ExtensionAttributes ext;
+      // mandatory JobCommand
+      BMS__JobCommandType jt;
+      jt.setType(BMS__JobCommandType::Restart);
+      requestType.setJobCommand(jt);
+
+      BMS__ManageJobResponseType myResp = service.manageJob( requestType );
+
+      // let's check wether we have our job status
+      static const struct { const char* name; BMS__JobStatusType::Type value; } status[9] = {
+      { "queued", BMS__JobStatusType::Queued },
+      { "running", BMS__JobStatusType::Running },
+      { "paused", BMS__JobStatusType::Paused },
+      { "completed", BMS__JobStatusType::Completed },
+      { "canceled", BMS__JobStatusType::Canceled },
+      { "stopped", BMS__JobStatusType::Stopped },
+      { "failed", BMS__JobStatusType::Failed },
+      { "cleaned", BMS__JobStatusType::Cleaned },
+      { "unknown", BMS__JobStatusType::Unknown }
+      };
+      bool hasStatus = false ;
+      const QString str =  myResp.job().status().serialize().toString() ;
+      for ( int i = 0; i < 9; ++i ) { // or is enough no need of xor operator
+          hasStatus = hasStatus || (str == QLatin1String(status[i].name));
+      }
+      QVERIFY(hasStatus);
+      qDebug() << "Type of the status job :"<< qPrintable( str ) ;
     }
 };
 
