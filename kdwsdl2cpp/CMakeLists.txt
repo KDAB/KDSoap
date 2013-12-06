@@ -58,6 +58,7 @@ set(SOURCES
   src/converter_serverstub.cpp
   src/converter_simpletype.cpp
   src/creator.cpp
+  src/elementargumentserializer.cpp
   src/main.cpp
   src/namemapper.cpp
   src/settings.cpp
