@@ -6,6 +6,7 @@
 using namespace KWSDL;
 
 static QString escapeEnum( const QString& );
+static QString escapeNumbers( const QString& );
 static KODE::Code createRangeCheckCode( const XSD::SimpleType*, const QString &baseTypeName, const QString&, KODE::Class& );
 
 void Converter::addVariableInitializer( KODE::MemberVariable& variable ) const
@@ -442,7 +443,14 @@ static QString escapeEnum( const QString &str )
   QString enumStr = upperlize( str );
   enumStr.replace( "-", "_" );
   enumStr.replace( ":", "_" ); // xsd:int -> xsd_int  (testcase: salesforce-partner.wsdl)
-  return enumStr;
+  return escapeNumbers( enumStr );
+}
+
+static QString escapeNumbers( const QString &str )
+{
+    bool ok;
+    str.toInt( &ok , 10 );
+    return ok ? QLatin1Char('_') + str : str;
 }
 
 static QString escapeRegExp( const QString &str )
