@@ -1,6 +1,5 @@
 #include "httpserver_p.h"
 #include <QtTest/QtTest>
-#include <QDebug>
 #include "wsdl_test_number.h"
 
 class TestIssue42 : public QObject
@@ -31,7 +30,7 @@ void TestIssue42::test()
   QVariant var = ar.serialize();
   ar.deserialize(var);
 
-  QVERIFY (ar.type() == TNS__AudienceRating::_16 );
+  QCOMPARE(ar.type(), TNS__AudienceRating::_16);
 }
 
 QTEST_MAIN(TestIssue42)

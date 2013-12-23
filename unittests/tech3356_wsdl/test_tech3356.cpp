@@ -73,12 +73,15 @@ class TransformMediaStatusBindingServerObject : public TransformMediaStatusBindi
 public:
     virtual BMS__ManageJobResponseType manageJob( const BMS__ManageJobRequestType& in ) {
       // check what was sent
-      Q_UNUSED (in);
-      Q_ASSERT(in.jobID().value().toInt() == 1);
+      Q_UNUSED(in);
+      if(in.jobID().value().toInt() != 1) {
+        // use faults when implemented !
+        return BMS__ManageJobResponseType();
+      }
       Q_ASSERT(in.jobCommand().type() == BMS__JobCommandType::Restart);
       // prepare response containing a job status
       BMS__ManageJobResponseType response;
-      BMS__JobType myJob ;
+      BMS__JobType myJob;
       myJob.setStatus(BMS__JobStatusType::Running);
       response.setJob(myJob);
       Q_ASSERT(response.job().status().type() == BMS__JobStatusType::Running);
@@ -112,11 +115,6 @@ public:
 private:
     TransformMediaStatusBindingServerObject* m_lastServerObject; // only for unittest purposes
 };
-
-
-//TFMS__TransformResponseType TransformMediaService::TransformMediaBinding::transform( const TFMS__TransformRequestType& in )
-//BMS__ManageJobResponseType TransformMediaService::TransformMediaStatusBinding::manageJob( const BMS__ManageJobRequestType& in )
-
 
 class Tech3356Test : public QObject
 {
@@ -218,7 +216,6 @@ private Q_SLOTS:
       TransformMediaService::TransformMediaStatusBinding service;
       service.setEndPoint(server->endPoint());
 
-      //TransformMediaService::TransformMediaStatusBindingJobs::ManageJobJob jobManager(&service);
       BMS__ManageJobRequestType requestType;
       // mandatory ID
       BMS__UID uid; uid.setValue(1);
@@ -230,8 +227,7 @@ private Q_SLOTS:
       requestType.setJobCommand(jt);
 
       BMS__ManageJobResponseType myResp = service.manageJob( requestType );
-      QCOMPARE(myResp.job().status().type() , BMS__JobStatusType::Running);
-      //qDebug() << "Type of the status job :"<< qPrintable( str ) ;
+      QCOMPARE(myResp.job().status().type(), BMS__JobStatusType::Running);
     }
 };
 

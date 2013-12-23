@@ -449,7 +449,7 @@ static QString escapeEnum( const QString &str )
 static QString escapeNumbers( const QString &str )
 {
     bool ok;
-    str.toInt( &ok , 10 );
+    str.toInt( &ok, 10 );
     return ok ? QLatin1Char('_') + str : str;
 }
 
