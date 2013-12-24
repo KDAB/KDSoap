@@ -2,6 +2,9 @@ KD SOAP 1.x requires a Qt version >= 4.6 with Network and XML support enabled.
 
 The same source code compiles with either Qt 4 or Qt 5.
 
+If you are using sources from github (via a git clone or a generated zip file), jump
+to section 1-bis). Commercial users, start at section 1).
+
 1) From the top directory of your KD SOAP installation run the "configure" scripts.
 
    On Windows use depending on the kind of build one of the following;
@@ -24,7 +27,6 @@ The same source code compiles with either Qt 4 or Qt 5.
 
 1-bis) If you are building KD Soap from a github clone rather than a release tarball,
 the configure.bat/configure.sh script doesn't exist (it's generated at release time),
-
 you need to do this instead:
 
    First, a working Python (version2) is required and must be found in your
