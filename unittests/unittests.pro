@@ -20,7 +20,7 @@ SUBDIRS = \
   issue1 \
   issue4 \
   issue38 \
-  issue42 \
+  enum_escape \
   soap12 \
   literal_true_false \
   import_definition \

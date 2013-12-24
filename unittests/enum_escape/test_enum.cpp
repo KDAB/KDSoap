@@ -1,12 +1,12 @@
 #include "httpserver_p.h"
 #include <QtTest/QtTest>
-#include "wsdl_test_number.h"
+#include "wsdl_test_enum.h"
 
-class TestIssue42 : public QObject
+class TestEnum : public QObject
 {
     Q_OBJECT
 public:
-    explicit TestIssue42();
+    explicit TestEnum();
 
 private slots:
     void test();
@@ -14,11 +14,11 @@ private slots:
 
 using namespace KDSoapUnitTestHelpers;
 
-TestIssue42::TestIssue42()
+TestEnum::TestEnum()
 {
 }
 
-void TestIssue42::test()
+void TestEnum::test()
 {
   // bunch of tests to prove numbers are well handled
   TNS__AudienceRating ar;
@@ -26,13 +26,15 @@ void TestIssue42::test()
   ar.setType(TNS__AudienceRating::_6);
   ar.setType(TNS__AudienceRating::_18);
   ar.setType(TNS__AudienceRating::_16);
+  ar.setType(TNS__AudienceRating::Http___f_q_d_n_ext_enum2);
+  ar.setType(TNS__AudienceRating::_6Bis);
 
   QVariant var = ar.serialize();
   ar.deserialize(var);
 
-  QCOMPARE(ar.type(), TNS__AudienceRating::_16);
+  QCOMPARE(ar.type(), TNS__AudienceRating::_6Bis);
 }
 
-QTEST_MAIN(TestIssue42)
+QTEST_MAIN(TestEnum)
 
-#include "test_issue42.moc"
+#include "test_enum.moc"

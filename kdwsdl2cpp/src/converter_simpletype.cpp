@@ -442,15 +442,17 @@ static QString escapeEnum( const QString &str )
 {
   QString enumStr = upperlize( str );
   enumStr.replace( "-", "_" );
+  enumStr.replace( ".", "_" );
+  enumStr.replace( "/", "_" );
   enumStr.replace( ":", "_" ); // xsd:int -> xsd_int  (testcase: salesforce-partner.wsdl)
+
   return escapeNumbers( enumStr );
 }
 
 static QString escapeNumbers( const QString &str )
 {
-    bool ok;
-    str.toInt( &ok, 10 );
-    return ok ? QLatin1Char('_') + str : str;
+    int firstNum = str.at(0).digitValue();
+    return (firstNum != -1)? QLatin1Char('_') + str : str;
 }
 
 static QString escapeRegExp( const QString &str )

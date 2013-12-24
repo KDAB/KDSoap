@@ -362,10 +362,12 @@
 					<xs:enumeration value="NR"/>
 					<xs:enumeration value="Unrated"/>
 					<xs:enumeration value="6"/>
+                                        <xs:enumeration value="6Bis"/>
 					<xs:enumeration value="12"/>
 					<xs:enumeration value="16"/>
 					<xs:enumeration value="18"/>
 					<xs:enumeration value="FamilyViewing"/>
+                                        <xsd:enumeration value="http://f.q.d.n/ext/enum2" />
 				</xs:restriction>
 			</xs:simpleType>
 		</xs:element>
