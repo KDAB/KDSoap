@@ -11,6 +11,8 @@ KDSoap support if this causes a regression with any other SOAP server.
 
 * Fix crash when using sslHandler() and making a synchronous call (SOAP-79/issue29)
 
+* Fix race conditions in KDSoapNamespaceManager on Windows, because MSVC doesn't implement threadsafe statics (issue41).
+
 Server-side:
 ============
 * Fix crash when sending delayed reply to disconnected client (SOAP-34/SOAP-67)
