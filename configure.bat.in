@@ -16,6 +16,8 @@ set debug_and_release=no
 set prefix=
 set unittests=no
 set static_qt=no
+set host_qmake=
+set target_qmake=
 
 if exist %PACKSCRIPTS_DIR% (
     set unittests=yes
