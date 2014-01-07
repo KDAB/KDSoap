@@ -1,10 +1,10 @@
 include( $${TOP_SOURCE_DIR}/unittests/unittests.pri )
 QT += network xml
-SOURCES = msexchange_wsdl.cpp
+SOURCES = msexchange_noservice_wsdl.cpp
 test.target = test
 test.commands = ./$(TARGET)
 test.depends = $(TARGET)
 QMAKE_EXTRA_TARGETS += test
 
-KDWSDL = Services.wsdl
+KDWSDL = Services_noservice.wsdl
 OTHER_FILES += $$KDWSDL

@@ -25,7 +25,7 @@
 #include "KDSoapValue.h"
 #include "KDSoapPendingCallWatcher.h"
 #include "KDSoapAuthentication.h"
-#include "wsdl_Services.h"
+#include "wsdl_Services_noservice.h"
 #include "httpserver_p.h"
 #include <QtTest/QtTest>
 #include <QEventLoop>
@@ -33,7 +33,7 @@
 
 using namespace KDSoapUnitTestHelpers;
 
-class MSExchangeTest : public QObject
+class MSExchangeNoServiceTest : public QObject
 {
     Q_OBJECT
 
@@ -103,6 +103,6 @@ private:
     }
 };
 
-QTEST_MAIN(MSExchangeTest)
+QTEST_MAIN(MSExchangeNoServiceTest)
 
-#include "msexchange_wsdl.moc"
+#include "msexchange_noservice_wsdl.moc"
