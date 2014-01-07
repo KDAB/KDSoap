@@ -465,11 +465,11 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
             serializer.setOutputVariable( "args", true );
             serializer.setIsQualified( elem.isQualified() );
             serializer.setNillable( elem.nillable() );
+            const QName qualName = elem.qualifiedName();
 
             if ( elem.maxOccurs() > 1 || elem.compositor().maxOccurs() > 1 ) {
                 //const QString typePrefix = mNSManager.prefix( elem.type().nameSpace() );
 
-                QName qualName = elem.qualifiedName();
                 QString localVariableName = variableName + QLatin1String(".at(i)");
 
                 marshalCode += QLatin1String("for (int i = 0; i < ") + variableName + QLatin1String(".count(); ++i) {") + COMMENT;
@@ -491,7 +491,12 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
                 demarshalCode.addBlock( demarshalArrayVar( elem.type(), variableName, typeName ) );
             } else {
                 const bool optional = isElementOptional( elem );
-                serializer.setElementName( elem.qualifiedName() );
+                if ( elem.hasSubstitutions() )
+                  serializer.setDynamicElementName( variableName + "->_kd_substitutionElementName()",
+                                                    variableName + "->_kd_substitutionElementNameSpace()",
+                                                    qualName );
+                else
+                  serializer.setElementName( qualName );
                 serializer.setOmitIfEmpty( optional );
                 marshalCode.addBlock( serializer.generate() );
 

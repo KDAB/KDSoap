@@ -286,6 +286,65 @@ private Q_SLOTS:
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
     }
 
+    void testUpdateItem() // SOAP-97
+    {
+        HttpServerThread server(queryResponse(), HttpServerThread::Public);
+        ExchangeServices service(this);
+        service.setEndPoint(server.endPoint());
+
+        TNS__UpdateItemType request;
+        T__TargetFolderIdType folder = targetFolder();
+        request.setSavedItemFolderId(folder);
+
+        T__ItemChangeType itemChange;
+
+        T__SetItemFieldType setItemField;
+        T__PathToUnindexedFieldType path;
+        path.setFieldURI(T__UnindexedFieldURIType::Item_Subject);
+        setItemField.setPath(path);
+        T__CalendarItemType calendarItem;
+        calendarItem.setSubject("newSubject");
+        setItemField.setCalendarItem(calendarItem);
+
+        T__NonEmptyArrayOfItemChangeDescriptionsType updates;
+        updates.setSetItemField(QList<T__SetItemFieldType>() << setItemField);
+        itemChange.setUpdates(updates);
+
+        T__NonEmptyArrayOfItemChangesType array;
+        array.setItemChange(QList<T__ItemChangeType>() << itemChange);
+        request.setItemChanges(array);
+        service.updateItem(request);
+
+        // Check what we sent
+        QByteArray expectedRequestXml =
+            QByteArray(xmlEnvBegin11()) + ">"
+                "<soap:Body>"
+                "<n1:UpdateItem ConflictResolution=\"NeverOverwrite\" xmlns:n1=\"http://schemas.microsoft.com/exchange/services/2006/messages\">"
+                  "<n1:SavedItemFolderId>"
+                    "<n2:DistinguishedFolderId xmlns:n2=\"http://schemas.microsoft.com/exchange/services/2006/types\" Id=\"calendar\">"
+                      "<n2:Mailbox>"
+                        "<n2:EmailAddress>Chef@labex.fitformobility.de</n2:EmailAddress>"
+                      "</n2:Mailbox>"
+                    "</n2:DistinguishedFolderId>"
+                  "</n1:SavedItemFolderId>"
+                  "<n1:ItemChanges>"
+                    "<n3:ItemChange xmlns:n3=\"http://schemas.microsoft.com/exchange/services/2006/types\">"
+                      "<n3:Updates>"
+                        "<n3:SetItemField>"
+                           "<n3:FieldURI FieldURI=\"item:Subject\"/>"
+                           "<n3:CalendarItem>"
+                             "<n3:Subject>newSubject</n3:Subject>"
+                           "</n3:CalendarItem>"
+                        "</n3:SetItemField>"
+                      "</n3:Updates>"
+                    "</n3:ItemChange>"
+                  "</n1:ItemChanges>"
+                "</n1:UpdateItem>"
+                "</soap:Body>" + xmlEnvEnd()
+            + '\n'; // added by QXmlStreamWriter::writeEndDocument
+        QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
+    }
+
 private:
     static QByteArray queryResponse() {
         return QByteArray(xmlEnvBegin11()) + " xmlns:sf=\"urn:sobject.partner.soap.sforce.com\"><soap:Body>"
