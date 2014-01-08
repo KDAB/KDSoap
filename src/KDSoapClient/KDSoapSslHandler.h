@@ -74,6 +74,19 @@ public Q_SLOTS:
      */
     void ignoreSslErrors();
 
+    /**
+     * If this function is called, the SSL errors given in \p errors will be ignored.
+     * Note that you can set the expected certificate in the SSL error.
+     * See QNetworkReply::ignoreSslErrors() for more information.
+     *
+     * This function can be called from the slot connected to the sslErrors() signal, which
+     * indicates which errors were found.
+     *
+     * \param errors list of errors to ignore
+     * \since 1.4
+     */
+    void ignoreSslErrors(const QList<QSslError> &errors);
+
 private:
     friend class KDSoapReplySslHandler;
     void handleSslErrors(QNetworkReply *reply, const QList<QSslError> &errors);

@@ -620,9 +620,16 @@ public slots:
     {
         // This is just for testing error handling. Don't write this in your actual code...
 #ifdef Q_OS_UNIX // Windows seems to get "Unknown error". Bah...
-        if (errors.at(0).error() == QSslError::UnableToGetLocalIssuerCertificate)
+        //if (errors.at(0).error() == QSslError::UnableToGetLocalIssuerCertificate)
+        QList<QSslCertificate> certs = QSslCertificate::fromPath(QString::fromLatin1(":/certs/test-127.0.0.1-cert.pem"));
+        QCOMPARE(certs.count(), 1);
+        handler->ignoreSslErrors(QList<QSslError>()
+            << QSslError(QSslError::UnableToGetLocalIssuerCertificate, certs.at(0))
+            << QSslError(QSslError::CertificateUntrusted, certs.at(0))
+            << QSslError(QSslError::UnableToVerifyFirstCertificate, certs.at(0)));
+#else
+        handler->ignoreSslErrors();
 #endif
-            handler->ignoreSslErrors();
         m_errors = errors;
     }
 #endif

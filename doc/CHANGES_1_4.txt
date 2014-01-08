@@ -7,7 +7,8 @@ Client-side:
 * Remove encodingStyle attribute, as Microsoft EWS servers reject it. Please contact
 KDSoap support if this causes a regression with any other SOAP server.
 
-* Add support for ignoring a specific list of SSL errors: KDSoapClientInterface::ignoreSslErrors(QList<QSslError>) (SOAP-92)
+* Add support for ignoring a specific list of SSL errors: KDSoapClientInterface::ignoreSslErrors(QList<QSslError>)
+and KDSoapSslHandler::ignoreSslErrors(QList<QSslError>) (SOAP-92)
 
 * Fix crash when using sslHandler() and making a synchronous call (SOAP-79/issue29)
 
