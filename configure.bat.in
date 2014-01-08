@@ -290,7 +290,7 @@ if exist "%KDAB_QT_PATH%\include\Qt\private" (
 if not "%host_qmake%" == "" (
     set HOST_QMAKE_ARGS=%QMAKE_ARGS%
     set QMAKE_ARGS=%QMAKE_ARGS% CONFIG+=crosscompiling CONFIG+=win32crosscompiling
-}
+)
 
 echo %Product_mix% v%VERSION% configuration:
 echo.
