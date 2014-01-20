@@ -11,9 +11,10 @@ from configure import ConfigureScriptGenerator
 from header import ForwardHeaderGenerator
 
 def parseSvnInfo( stdout ):
-	repositoryUrl = stdout.splitlines()[1].split( ':', 1 )[ 1 ]
+	lines = stdout.splitlines()
+	repositoryUrl = [line for line in lines if line.startswith('URL:')][0].split( ':', 1 )[ 1 ]
 	isTagged = repositoryUrl.find( 'tags/' ) != -1
-	repositoryRevision = stdout.splitlines()[ 4 ].split( ':', 1 )[ 1 ].strip()
+	repositoryRevision = [line for line in lines if line.startswith('Revision:')][0].split( ':', 1 )[ 1 ].strip()
 	return isTagged, repositoryRevision
 
 def checkVCS( sourceDirectory ):
