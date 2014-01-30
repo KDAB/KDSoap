@@ -32,11 +32,11 @@ function check_license {
     [ -d "$PACKSCRIPTS_DIR" ] && return 0 
     [ -f .license.accepted ] && return 0
 
-    if [ -f "$SOURCE_DIR"/LICENSE.GPL.txt -a -f "$SOURCE_DIR"/LICENSE.US.txt -a -f "$SOURCE_DIR"/LICENSE.txt ] ; then
+    if [ -f "$SOURCE_DIR"/LICENSE.@PRODUCT_LICENSE_FREE@.txt -a -f "$SOURCE_DIR"/LICENSE.US.txt -a -f "$SOURCE_DIR"/LICENSE.txt ] ; then
         echo
         echo "Please choose your license."
         echo
-        echo "Type 1 for the GNU General Public License (GPL)."
+        echo "Type 1 for the @PRODUCT_LICENSE_FREE_NAME@ (@PRODUCT_LICENSE_FREE@)."
         echo "Type 2 for the $ProductSpace Commercial License for USA/Canada."
         echo "Type 3 for the $ProductSpace Commercial License for anywhere outside USA/Canada."
         echo "Anything else cancels."
@@ -44,7 +44,7 @@ function check_license {
         echo -n "Select: "
         read license
 
-    elif [ -f "$SOURCE_DIR"/LICENSE.GPL.txt ] ; then
+    elif [ -f "$SOURCE_DIR"/LICENSE.@PRODUCT_LICENSE_FREE@.txt ] ; then
         license="1"
 
     elif [ -f "$SOURCE_DIR"/LICENSE.US.txt ] ; then
@@ -57,8 +57,8 @@ function check_license {
     fi
 
     if [ "$license" = "1" ]; then
-        license_name="GNU General Public License (GPL)"
-        license_file="$SOURCE_DIR"/LICENSE.GPL.txt
+        license_name="@PRODUCT_LICENSE_FREE_NAME@ (@PRODUCT_LICENSE_FREE@)"
+        license_file="$SOURCE_DIR"/LICENSE.@PRODUCT_LICENSE_FREE@.txt
     elif [ "$license" = "2" ]; then
         license_name="$ProductSpace USA/Canada Commercial License"
         license_file="$SOURCE_DIR"/LICENSE.US.txt
