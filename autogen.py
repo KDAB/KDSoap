@@ -77,7 +77,14 @@ def autogen(project, version, subprojects, prefixed, forwardHeaderMap = {}, step
 
 	if "generate-cpack" in steps:
 		licensePath = os.path.join( sourceDirectory, "LICENSE.txt" )
-		cpackConfigurationGenerator = CPackGenerateConfiguration( project, version, sourceDirectory,
+
+		# if this is a tag, use the tagname provided in repositoryRevision so that cpack can generate the correct filename
+		if isTagged:
+			realVersion = repositoryRevision.replace( project.lower() + "-", "" )
+		else:
+			realVersion = version
+
+		cpackConfigurationGenerator = CPackGenerateConfiguration( project, realVersion, sourceDirectory,
 								    buildDirectory, repositoryRevision, licensePath, isTaggedRevision = isTagged )
 		cpackConfigurationGenerator.run()
 
