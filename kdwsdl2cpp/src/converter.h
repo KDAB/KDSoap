@@ -78,7 +78,7 @@ class Converter
     KODE::Code demarshalVar(const QName& type, const QName& elementType, const QString& variableName, const QString& typeName, const QString& soapValueVarName, bool optional) const;
     KODE::Code demarshalArrayVar(const QName& type, const QString& variableName, const QString& qtTypeName ) const;
     void addVariableInitializer( KODE::MemberVariable& variable ) const;
-    QString generateMemberVariable(const QString &rawName, const QString &typeName, const QString &inputTypeName, KODE::Class& newClass, bool optional, bool polymorphic);
+    QString generateMemberVariable(const QString &rawName, const QString &typeName, const QString &inputTypeName, KODE::Class& newClass, XSD::Attribute::AttributeUse, bool polymorphic);
     QString listTypeFor(const QString& itemTypeName, KODE::Class& newClass);
     KODE::Code deserializeRetVal(const KWSDL::Part& part, const QString& replyMsgName, const QString& qtRetType, const QString& varName) const;
     QName elementNameForPart(const Part& part, bool* qualified, bool *nillable) const;

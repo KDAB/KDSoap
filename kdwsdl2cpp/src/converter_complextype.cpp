@@ -67,7 +67,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
             if ( mTypeMap.isComplexType( baseName ) ) {
                 newClass.addBaseClass( typeName );
             } else {
-                const QString variableName = generateMemberVariable( "value", typeName, inputTypeName, newClass, false, false );
+                const QString variableName = generateMemberVariable( "value", typeName, inputTypeName, newClass, XSD::Attribute::Required, false );
 
                 // convenience constructor
                 KODE::Function conctor( upperlize( newClass.name() ) );
@@ -129,8 +129,8 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
                 qWarning() << "Shouldn't happen: polymorphic" << typeName << ". Comes from element" << elemIt.name() << "type" << elemIt.type();
                 Q_ASSERT(0);
             }
-
-            generateMemberVariable( elemIt.name(), typeName, inputTypeName, newClass, isElementOptional( elemIt ), polymorphic );
+            XSD::Attribute::AttributeUse use = isElementOptional( elemIt ) ? XSD::Attribute::Optional : XSD::Attribute::Required;
+            generateMemberVariable( elemIt.name(), typeName, inputTypeName, newClass, use, polymorphic );
         }
 
         // include header
@@ -152,7 +152,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
         inputTypeName = mTypeMap.localInputType( attribute.type(), QName() );
         //qDebug() << "Attribute" << attribute.name();
 
-        generateMemberVariable( attribute.name(), typeName, inputTypeName, newClass, attribute.attributeUse() == XSD::Attribute::Optional, false );
+        generateMemberVariable( attribute.name(), typeName, inputTypeName, newClass, attribute.attributeUse(), false );
 
         // include header
         newClass.addIncludes( QStringList(), mTypeMap.forwardDeclarations( attribute.type() ) );
@@ -203,7 +203,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
 }
 
 // Called for each element and for each attribute of a complex type, as well as for the base class "value".
-QString Converter::generateMemberVariable(const QString &rawName, const QString &typeName, const QString &inputTypeName, KODE::Class &newClass, bool optional, bool polymorphic)
+QString Converter::generateMemberVariable(const QString &rawName, const QString &typeName, const QString &inputTypeName, KODE::Class &newClass, XSD::Attribute::AttributeUse use, bool polymorphic)
 {
     // member variable
     const QString storageType = polymorphic ? polymorphicStorageType(typeName) : typeName;
@@ -217,6 +217,10 @@ QString Converter::generateMemberVariable(const QString &rawName, const QString 
     const QString lowerName = lowerlize( rawName );
     const QString argName = mNameMapper.escape( lowerName );
 
+    bool optional = ( use == XSD::Attribute::Optional );
+    bool prohibited = ( use == XSD::Attribute::Prohibited );
+    const KODE::Function::AccessSpecifier access = ( prohibited ) ? KODE::Function::Private : KODE::Function::Public;
+
     if ( polymorphic ) {
         newClass.addInclude("QSharedPointer");
 
@@ -229,15 +233,14 @@ QString Converter::generateMemberVariable(const QString &rawName, const QString 
         newClass.addFunction( getterSoapValue );
     }
 
-    if ( optional ) {
+    if ( optional || prohibited ) {
         KODE::MemberVariable nilVariable( rawName + "_nil", "bool" );
         nilVariable.setInitializer( "true" );
         newClass.addMemberVariable( nilVariable );
     }
 
-
     // setter method
-    KODE::Function setter( QLatin1String("set") + upperName, QLatin1String("void") );
+    KODE::Function setter( QLatin1String("set") + upperName, QLatin1String("void"), access );
     setter.addArgument( inputTypeName + QLatin1Char(' ') + argName );
     KODE::Code code;
     if ( optional ) {
@@ -250,7 +253,7 @@ QString Converter::generateMemberVariable(const QString &rawName, const QString 
     setter.setBody( code );
 
     // getter method
-    KODE::Function getter( argName, polymorphic ? QString("const " + typeName + '&') : typeName );
+    KODE::Function getter( argName, polymorphic ? QString("const " + typeName + '&') : typeName, access );
     if ( polymorphic )
         getter.setBody( QLatin1String("return *") + variableName + QLatin1Char(';') );
     else
@@ -536,7 +539,7 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
             serializer.setOutputVariable( "attribs", true );
             serializer.setIsQualified( attribute.isQualified() );
             serializer.setNillable( false );
-            serializer.setOmitIfEmpty( attribute.attributeUse() == XSD::Attribute::Optional );
+            serializer.setOmitIfEmpty( attribute.attributeUse() == XSD::Attribute::Optional || attribute.attributeUse() == XSD::Attribute::Prohibited );
             marshalCode.addBlock( serializer.generate() );
 
             const QString typeName = mTypeMap.localType( attribute.type() );

@@ -257,6 +257,8 @@ private Q_SLOTS:
         meetingTimeZone.setTimeZoneName("W. Europe Standard Time");
         meetingRequest.setMeetingTimeZone(meetingTimeZone);
         array.setMeetingRequest(QList<T__MeetingRequestMessageType>() << meetingRequest);
+        T__AcceptItemType acceptItem;
+        array.setAcceptItem(QList<T__AcceptItemType>() << acceptItem);
         request.setItems(array);
         service.createItem(request);
 
@@ -279,6 +281,7 @@ private Q_SLOTS:
                     "<n4:MeetingRequest xmlns:n4=\"http://schemas.microsoft.com/exchange/services/2006/types\">"
                       "<n4:MeetingTimeZone TimeZoneName=\"W. Europe Standard Time\"/>"
                     "</n4:MeetingRequest>"
+                    "<n5:AcceptItem xmlns:n5=\"http://schemas.microsoft.com/exchange/services/2006/types\"/>"
                   "</n1:Items>"
                 "</n1:CreateItem>"
                 "</soap:Body>" + xmlEnvEnd()
