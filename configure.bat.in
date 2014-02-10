@@ -96,7 +96,7 @@ if "%answer%" == "yes" (
     echo. > .license.accepted
     goto :CheckLicenseComplete
 )
-if "%answer%" == "?" more %license_file%
+if "%answer%" == "?" more %SOURCE_DIR%\%license_file%
 goto :CheckLicense
 
 :CheckLicenseFailed
