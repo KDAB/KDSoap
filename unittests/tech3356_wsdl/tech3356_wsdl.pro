@@ -9,8 +9,6 @@ test.commands = ./$(TARGET)
 test.depends = $(TARGET)
 QMAKE_EXTRA_TARGETS += test
 
-unix:PRE_TARGETDEPS = $${TOP_BUILD_DIR}/lib/libtesttools.a
-
 KDWSDL = transformMedia-V1_0_7.wsdl
 
 OTHER_FILES = $$KDWSDL *.xsd

@@ -7,8 +7,6 @@ test.commands = ./$(TARGET)
 test.depends = $(TARGET)
 QMAKE_EXTRA_TARGETS += test
 
-unix:PRE_TARGETDEPS = $${TOP_BUILD_DIR}/lib/libtesttools.a
-
 KDWSDL = rpcexample.wsdl sayhello.wsdl
 
 OTHER_FILES = $$KDWSDL

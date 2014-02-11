@@ -7,8 +7,6 @@ test.commands = ./$(TARGET)
 test.depends = $(TARGET)
 QMAKE_EXTRA_TARGETS += test
 
-unix:PRE_TARGETDEPS = $${TOP_BUILD_DIR}/lib/libtesttools.a
-
 KDWSDL = thomas-bayer.wsdl mywsdl_document.wsdl
 
 OTHER_FILES = $$KDWSDL thomas-bayer.xsd
