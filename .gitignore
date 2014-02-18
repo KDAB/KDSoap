@@ -1,6 +1,7 @@
 Makefile
 *.moc
 *.obj
+*.directory
 testtools/qrc_testtools.cpp
 lib
 bin
@@ -50,5 +51,9 @@ configure.sh
 /unittests/wsdl_document/wsdl_document
 /unittests/wsdl_rpc-server/wsdl_rpc-server
 /unittests/unqualified_formdefault/unqualified_formdefault
+/unittests/faults_support/faults_support
 /unittests/wsdl_rpc/wsdl_rpc
 /unittests/enum_escape/enum_escape
+/unittests/literal_true_false/literal_true_false
+/unittests/msexchange_noservice_wsdl/msexchange_noservice_wsdl
+
