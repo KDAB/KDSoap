@@ -25,6 +25,7 @@ set(SOURCES
   KDSoapJob.cpp
   KDSoapSslHandler.cpp
   KDSoapReplySslHandler.cpp
+  KDSoapFaultException.cpp
 )
 
 add_library(kdsoap ${KDSoap_LIBRARY_MODE} ${SOURCES})
@@ -45,6 +46,7 @@ if(KDSoap_IS_ROOT_PROJECT)
     KDDateTime.h
     KDSoap.h
     KDSoapSslHandler.h
+    KDSoapFaultException.h
     DESTINATION ${INSTALL_INCLUDE_DIR}/KDSoapClient
   )
 

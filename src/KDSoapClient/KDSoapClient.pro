@@ -22,7 +22,8 @@ INSTALLHEADERS = KDSoapMessage.h \
     KDSoapAuthentication.h \
     KDSoapNamespaceManager.h \
     KDSoapSslHandler.h \
-    KDDateTime.h
+    KDDateTime.h \
+    KDSoapFaultException.h
 PRIVATEHEADERS = KDSoapPendingCall_p.h \
     KDSoapPendingCallWatcher_p.h \
     KDSoapClientInterface_p.h \
@@ -30,10 +31,9 @@ PRIVATEHEADERS = KDSoapPendingCall_p.h \
     KDSoapMessageReader_p.h \
     KDSoapMessageWriter_p.h \
     KDSoapNamespacePrefixes_p.h
-
 HEADERS = $$INSTALLHEADERS \
     $$PRIVATEHEADERS \
-    KDSoapReplySslHandler_p.h
+    KDSoapReplySslHandler_p.h \
 
 # Note: remember to add files into CMakeLists.txt!
 SOURCES = KDSoapMessage.cpp \
@@ -50,7 +50,8 @@ SOURCES = KDSoapMessage.cpp \
     KDDateTime.cpp \
     KDSoapJob.cpp \
     KDSoapSslHandler.cpp \
-    KDSoapReplySslHandler.cpp
+    KDSoapReplySslHandler.cpp \
+    KDSoapFaultException.cpp
 DEFINES += KDSOAP_BUILD_KDSOAP_LIB
 
 # installation targets:
