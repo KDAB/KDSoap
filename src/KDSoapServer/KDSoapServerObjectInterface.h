@@ -171,6 +171,19 @@ public:
     void setFault(const QString& faultCode, const QString& faultString, const QString& faultActor = QString(), const QString& detail = QString());
 
     /**
+     * Instructs KD SOAP to return a fault message instead of the return value of the slot.
+     *
+     * \param faultCode A code for identifying the fault. Example: "Server.EntryNotFound", or
+     *                  "Client.Authentication". Must not be empty.
+     * \param faultString A human-readable explanation of the fault
+     * \param faultActor Information about who caused the fault to happen
+     * \param detail Holds application-specific error information related to the Body element, it is given as a KDSoapValue and hence can be parsed
+     *
+     * See http://www.w3.org/TR/2000/NOTE-SOAP-20000508/#_Toc478383507 for more details.
+     */
+    void setFault(const QString& faultCode, const QString& faultString, const QString& faultActor, const KDSoapValue& detail);
+
+    /**
      * Returns true if setFault was called in the current method invocation.
      */
     bool hasFault() const;

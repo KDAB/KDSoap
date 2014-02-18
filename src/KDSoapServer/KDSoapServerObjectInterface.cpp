@@ -38,6 +38,7 @@ public:
     QString m_faultString;
     QString m_faultActor;
     QString m_detail;
+    KDSoapValue m_detailValue;
     QString m_responseNamespace;
     QByteArray m_soapAction;
     // QPointer in case the client disconnects during a delayed response
@@ -100,12 +101,29 @@ void KDSoapServerObjectInterface::setFault(const QString &faultCode, const QStri
     d->m_detail = detail;
 }
 
+void KDSoapServerObjectInterface::setFault(const QString &faultCode, const QString &faultString, const QString &faultActor, const KDSoapValue &detail)
+{
+    Q_ASSERT(!faultCode.isEmpty());
+    d->m_faultCode = faultCode;
+    d->m_faultString = faultString;
+    d->m_faultActor = faultActor;
+    d->m_detailValue = detail;
+}
+
 void KDSoapServerObjectInterface::storeFaultAttributes(KDSoapMessage& message) const
 {
+    // SOAP 1.1  <faultcode>, <faultstring>, <faultfactor>, <detail>
     message.addArgument(QString::fromLatin1("faultcode"), d->m_faultCode);
     message.addArgument(QString::fromLatin1("faultstring"), d->m_faultString);
     message.addArgument(QString::fromLatin1("faultactor"), d->m_faultActor);
-    message.addArgument(QString::fromLatin1("detail"), d->m_detail);
+    if (d->m_detailValue.isNil() || d->m_detailValue.isNull())
+        message.addArgument(QString::fromLatin1("detail"), d->m_detail);
+    else {
+        KDSoapValueList detailAsList;
+        detailAsList.append( d->m_detailValue );
+        message.addArgument(QString::fromLatin1("detail"), detailAsList);
+    }
+    // TODO  : Answer SOAP 1.2  <Code> , <Reason> , <Node> , <Role> , <Detail>
 }
 
 bool KDSoapServerObjectInterface::hasFault() const
