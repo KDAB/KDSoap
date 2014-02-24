@@ -233,7 +233,7 @@ if "%STATIC_BUILD_SUPPORTED%" == "true" (
 :EndOfOptions
 
 if "%debug_and_release%" == "yes" (
-	set QMAKE_ARGS=%QMAKE_ARGS% CONFIG+=debug_and_release CONFIG-=build_all
+	set QMAKE_ARGS=%QMAKE_ARGS% CONFIG+=debug_and_release CONFIG+=build_all
 	goto :END_BUILDTYPE
 )
 
