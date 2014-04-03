@@ -1,5 +1,11 @@
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 include(${QT_USE_FILE})
+if (Qt5Core_FOUND)
+  find_package(Qt5Widgets REQUIRED)
+  set(QT_QTWIDGETS_LIBRARY Qt5::Widgets)
+else()
+  set(QT_QTWIDGETS_LIBRARY)
+endif()
 
 include(../KDSoapMacros.cmake)
 include_directories(../src/ ../src/KDSoapClient/ ../src/KDSoapServer/)
