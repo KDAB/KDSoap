@@ -117,6 +117,16 @@ QString Settings::outputDirectory() const
   return mOutputDirectory;
 }
 
+void Settings::setOptionalElementType( Settings::OptionalElementType optionalElementType )
+{
+    mOptionalElementType = optionalElementType;
+}
+
+Settings::OptionalElementType Settings::optionalElementType() const
+{
+    return mOptionalElementType;
+}
+
 void Settings::setNamespaceMapping( const NSMapping &namespaceMapping )
 {
   mNamespaceMapping = namespaceMapping;

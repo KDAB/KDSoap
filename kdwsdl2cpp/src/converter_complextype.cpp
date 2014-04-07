@@ -253,10 +253,41 @@ QString Converter::generateMemberVariable(const QString &rawName, const QString 
     setter.setBody( code );
 
     // getter method
-    KODE::Function getter( argName, polymorphic ? QString("const " + typeName + '&') : typeName, access );
+    QString optionalTypeName;
+    if (optional)
+        if (Settings::self()->optionalElementType() == Settings::ERawPointer) 
+            optionalTypeName = "const " + typeName + QLatin1Char('*');
+        else if (Settings::self()->optionalElementType() == Settings::EBoostOptional)
+            optionalTypeName = "boost::optional<" + typeName + " >";
+    KODE::Function getter( argName, polymorphic ? QString("const " + typeName + '&') : (optional ? optionalTypeName : typeName), access );
     if ( polymorphic )
         getter.setBody( QLatin1String("return *") + variableName + QLatin1Char(';') );
-    else
+    else if ( optional ) {
+        if (Settings::self()->optionalElementType() == Settings::ERawPointer) {
+            KODE::Code getterCode;
+            getterCode += QLatin1String("if (!") + variableName + QLatin1String("_nil)");
+            getterCode.indent();
+            getterCode += QLatin1String("return &") + variableName + QLatin1Char(';');
+            getterCode.unindent();
+            getterCode += QLatin1String("else");
+            getterCode.indent();
+            getterCode += "return 0;";
+            getter.setBody( getterCode );
+        } else if (Settings::self()->optionalElementType() == Settings::EBoostOptional) {
+            KODE::Code getterCode;
+            getterCode += QLatin1String("if (!") + variableName + QLatin1String("_nil)");
+            getterCode.indent();
+            getterCode += QLatin1String("return ") + variableName + QLatin1Char(';');
+            getterCode.unindent();
+            getterCode += QLatin1String("else");
+            getterCode.indent();
+            getterCode += "return boost::optional<" + typeName + " >();";
+            getter.setBody( getterCode );
+    
+        } else {
+            getter.setBody( QLatin1String("return ") + variableName + QLatin1Char(';') );
+        }
+    } else
         getter.setBody( QLatin1String("return ") + variableName + QLatin1Char(';') );
     getter.setConst( true );
 

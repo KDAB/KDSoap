@@ -41,7 +41,8 @@ static void showHelp(const char *appName)
             "  -impl <headerfile>        generate the implementation file, and #include <headerfile>\n"
             "  -server                   generate server-side base class, instead of client service\n"
             "  -exportMacro <macroname>  set the export declaration to use for generated classes\n"
-            "  -namespace <ns>           put all generated classes into the given C++ namespace"
+            "  -namespace <ns>           put all generated classes into the given C++ namespace\n"
+            "  -optional-element-type <type> use <type> as the getter return value for optional elements. <type> can be either raw-pointer or boost-optional"
             "\n", appName);
 }
 
@@ -57,6 +58,7 @@ int main( int argc, char **argv )
     QString serviceName;
     QString exportMacro;
     QString nameSpace;
+    Settings::OptionalElementType optionalElementType = Settings::ENone;
 
     int arg = 1;
     while (arg < argc) {
@@ -105,6 +107,18 @@ int main( int argc, char **argv )
                 return 1;
             }
             nameSpace = argv[arg];
+        } else if ( opt == QLatin1String("-optional-element-type") ) {
+            ++arg;
+            if (!argv[arg]) {
+                showHelp(argv[0]);
+                return 1;
+            }
+            QLatin1String optType(argv[arg]);
+            if ( optType == QLatin1String("raw-pointer") ) {
+                optionalElementType = Settings::ERawPointer;
+            } else if ( optType == QLatin1String("boost-optional") ) {
+                optionalElementType = Settings::EBoostOptional;
+            } 
         } else if (!fileName) {
             fileName = argv[arg];
         } else {
@@ -128,6 +142,7 @@ int main( int argc, char **argv )
     Settings::self()->setWantedService(serviceName);
     Settings::self()->setExportDeclaration(exportMacro);
     Settings::self()->setNameSpace(nameSpace);
+    Settings::self()->setOptionalElementType(optionalElementType);
     KWSDL::Compiler compiler;
 
     // so that we have an event loop, for downloads
