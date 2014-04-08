@@ -259,6 +259,8 @@ QString Converter::generateMemberVariable(const QString &rawName, const QString 
             optionalTypeName = "const " + typeName + QLatin1Char('*');
         else if (Settings::self()->optionalElementType() == Settings::EBoostOptional)
             optionalTypeName = "boost::optional<" + typeName + " >";
+        else
+            optionalTypeName = typeName;
     KODE::Function getter( argName, polymorphic ? QString("const " + typeName + '&') : (optional ? optionalTypeName : typeName), access );
     if ( polymorphic )
         getter.setBody( QLatin1String("return *") + variableName + QLatin1Char(';') );
