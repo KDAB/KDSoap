@@ -20,6 +20,7 @@
 */
 
 #include "membervariable.h"
+#include "style.h"
 
 using namespace KODE;
 
@@ -78,5 +79,6 @@ QString MemberVariable::memberVariableName( const QString &name )
       n += name[ 0 ].toUpper();
       n += name.mid( 1 );
     }
-    return n;
+
+    return Style::makeIdentifier(n);
 }

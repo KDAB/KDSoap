@@ -130,7 +130,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
                 Q_ASSERT(0);
             }
             XSD::Attribute::AttributeUse use = isElementOptional( elemIt ) ? XSD::Attribute::Optional : XSD::Attribute::Required;
-            generateMemberVariable( elemIt.name(), typeName, inputTypeName, newClass, use, polymorphic );
+            generateMemberVariable( KODE::Style::makeIdentifier(elemIt.name()), typeName, inputTypeName, newClass, use, polymorphic );
         }
 
         // include header
@@ -152,7 +152,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
         inputTypeName = mTypeMap.localInputType( attribute.type(), QName() );
         //qDebug() << "Attribute" << attribute.name();
 
-        generateMemberVariable( attribute.name(), typeName, inputTypeName, newClass, attribute.attributeUse(), false );
+        generateMemberVariable( KODE::Style::makeIdentifier(attribute.name()), typeName, inputTypeName, newClass, attribute.attributeUse(), false );
 
         // include header
         newClass.addIncludes( QStringList(), mTypeMap.forwardDeclarations( attribute.type() ) );
