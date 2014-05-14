@@ -25,6 +25,7 @@ SUBDIRS = \
   literal_true_false \
   import_definition \
   unqualified_formdefault \
+  onvif.org \
 
 # These need internet access
 SUBDIRS += webcalls webcalls_wsdl
