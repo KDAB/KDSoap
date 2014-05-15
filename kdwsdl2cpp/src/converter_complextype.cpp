@@ -275,6 +275,7 @@ QString Converter::generateMemberVariable(const QString &rawName, const QString 
             getterCode.indent();
             getterCode += "return 0;";
             getter.setBody( getterCode );
+            getter.setDocs("Ownership is not transferred, clients shall not delete the pointer.");
         } else if (Settings::self()->optionalElementType() == Settings::EBoostOptional) {
             KODE::Code getterCode;
             getterCode += QLatin1String("if (!") + variableName + QLatin1String("_nil)");

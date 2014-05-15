@@ -42,7 +42,9 @@ static void showHelp(const char *appName)
             "  -server                   generate server-side base class, instead of client service\n"
             "  -exportMacro <macroname>  set the export declaration to use for generated classes\n"
             "  -namespace <ns>           put all generated classes into the given C++ namespace\n"
-            "  -optional-element-type <type> use <type> as the getter return value for optional elements. <type> can be either raw-pointer or boost-optional"
+            "  -optional-element-type <type>\n"
+            "                            use <type> as the getter return value for optional elements.\n" 
+            "                            <type> can be either raw-pointer or boost-optional\n"
             "\n", appName);
 }
 
