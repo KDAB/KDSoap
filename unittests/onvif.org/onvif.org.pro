@@ -1,5 +1,6 @@
 KDWSDL_OPTIONS = -server
 include( $${TOP_SOURCE_DIR}/unittests/unittests.pri )
+TARGET = onvif.org
 QT += network xml
 SOURCES = test_onvif.cpp
 test.target = test
