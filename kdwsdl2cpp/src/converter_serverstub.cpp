@@ -143,8 +143,8 @@ void Converter::generateServerMethod(KODE::Code& code, const Binding& binding, c
 
     const Part::List outParts = outputMessage.parts();
     if (outParts.count() > 1) {
-        qWarning("ERROR: multiple output parameters are not supported (operation %s) - please report"
-                 " this with your wsdl file to kdsoap-support@kdab.com", qPrintable(operation.name()));
+        qWarning("ERROR: multiple output parameters are not supported (operation %s) - please file"
+                "an issue on github with your wsdl file", qPrintable(operation.name()));
         virtualMethod.setReturnType("void /*UNSUPPORTED*/");
     } else if (outParts.isEmpty()) {
         code += operationName + '(' + inputVars.join(", ") + ");";
