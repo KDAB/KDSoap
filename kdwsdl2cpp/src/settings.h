@@ -29,6 +29,8 @@ class Settings
   public:
     typedef QMap<QString, QString> NSMapping;
 
+    enum OptionalElementType { ENone, ERawPointer, EBoostOptional };
+
     ~Settings();
 
     static Settings* self();
@@ -50,6 +52,9 @@ class Settings
 
     void setOutputDirectory( const QString &outputDirectory );
     QString outputDirectory() const;
+
+    void setOptionalElementType( OptionalElementType optionalElementType );
+    OptionalElementType optionalElementType() const;
 
     // UNUSED
     void setNamespaceMapping( const NSMapping &namespaceMapping );
@@ -78,6 +83,7 @@ private:
     NSMapping mNamespaceMapping;
     bool mImpl;
     bool mServer;
+    OptionalElementType mOptionalElementType;
 };
 
 #endif
