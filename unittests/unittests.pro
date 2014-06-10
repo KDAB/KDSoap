@@ -19,7 +19,7 @@ SUBDIRS = \
   tech3356_wsdl \
   issue1 \
   issue4 \
-  issue38 \
+  specialchars_wsdl \
   optionaltype_wsdl/regular \
   optionaltype_wsdl/pointer \
   enum_escape \
