@@ -29,6 +29,7 @@ Code generator changes, applying to both client and server side:
 * Omit non-nillable empty elements of a complex type.
 * Support for minOccurs=0 for elements and use=optional for attributes:
    omit such elements/attributes when they haven't been set by the C++ code explicitely. (SOAP-93/SOAP-80)
+   optionally wrap them in a boost::optional or use raw pointers so apps can find out the element is missing (issue43).
 * Support for attributes marked as "prohibited", ensuring they are not settable nor sent in the request. (SOAP-102)
 * Generate <service> element automatically if there's none in the WSDL file. (SOAP-60/issue9)
 * Implement support for inheritance between complex types, using QSharedPointer as internal storage. (issue26/SOAP-87/SOAP-62)
