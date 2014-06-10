@@ -18,7 +18,7 @@ SUBDIRS = \
   dwservice_combined_wsdl \
   tech3356_wsdl \
   empty_response_wsdl \
-  issue4 \
+  element_ns_wsdl \
   specialchars_wsdl \
   optionaltype_wsdl/regular \
   optionaltype_wsdl/pointer \
