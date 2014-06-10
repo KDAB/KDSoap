@@ -15,10 +15,7 @@ under the terms of:
 * the KDAB commercial license, provided that you buy a license, see
 http://www.kdab.com/kdab-products/prices/
 
-KD Soap requires Qt 4.6.0 or newer.
-
-Note: the use of the cookie jar requires Qt 4.7.0 or newer.
-Note: large multithreaded kdsoap servers should use Qt 4.7.0 or newer.
+KD Soap requires Qt 4.7.0 or newer.
 
 See INSTALL.txt for installation instructions.
 
