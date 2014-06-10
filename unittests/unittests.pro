@@ -17,7 +17,7 @@ SUBDIRS = \
   dwservice_12_wsdl \
   dwservice_combined_wsdl \
   tech3356_wsdl \
-  issue1 \
+  empty_response_wsdl \
   issue4 \
   specialchars_wsdl \
   optionaltype_wsdl/regular \
