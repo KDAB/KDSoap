@@ -123,6 +123,11 @@ QNetworkRequest KDSoapClientInterfacePrivate::prepareRequest(const QString &meth
     // when the response seems to reach a certain size threshold
     request.setRawHeader( "Accept-Encoding", "compress" );
 
+    for (QMap<QByteArray, QByteArray>::const_iterator it = m_httpHeaders.constBegin(); it != m_httpHeaders.constEnd(); ++it) {
+        request.setRawHeader(it.key(), it.value());
+    }
+
+
 #ifndef QT_NO_OPENSSL
     if (!m_sslConfiguration.isNull())
         request.setSslConfiguration(m_sslConfiguration);
@@ -260,6 +265,11 @@ void KDSoapClientInterface::setCookieJar(QNetworkCookieJar *jar)
     QObject* oldParent = jar->parent();
     d->accessManager()->setCookieJar(jar);
     jar->setParent(oldParent); // see comment in QNAM::setCookieJar...
+}
+
+void KDSoapClientInterface::setRawHTTPHeaders( const QMap<QByteArray, QByteArray>& headers )
+{
+    d->m_httpHeaders = headers;
 }
 
 QNetworkProxy KDSoapClientInterface::proxy() const

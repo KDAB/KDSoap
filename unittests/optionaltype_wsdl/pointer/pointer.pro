@@ -1,14 +1,8 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2012-08-28T15:13:47
-#
-#-------------------------------------------------
-
-QT       += core
-
 QT       -= gui
 
-include(../unittests.pri)
+KDWSDL_OPTIONS = -optional-element-type raw-pointer
+
+include(../../unittests.pri)
 
 CONFIG   += console
 CONFIG   -= app_bundle
@@ -16,9 +10,10 @@ CONFIG   -= app_bundle
 TEMPLATE = app
 
 SOURCES += \
-    testconversion.cpp
+    testpointerapi.cpp
 
 HEADERS += \
+    testpointerapi.h
 
 KDWSDL = test.wsdl
 

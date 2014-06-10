@@ -1,5 +1,6 @@
 #include "elementargumentserializer.h"
 #include "converter.h" // upperlize(), COMMENT
+#include <libkode/style.h>
 
 using namespace KWSDL;
 
@@ -25,14 +26,14 @@ void ElementArgumentSerializer::setElementName( const QName &name )
 {
   mNameArg = QLatin1String("QString::fromLatin1(\"") + name.localName() + QLatin1String("\")");
   mNameNamespace = namespaceString(name.nameSpace());
-  mValueVarName = QLatin1String("_value") + upperlize(name.localName());
+  mValueVarName = QLatin1String("_value") + upperlize(KODE::Style::makeIdentifier(name.localName()));
 }
 
 void ElementArgumentSerializer::setDynamicElementName(const QString &codeLocalName, const QString &codeNamespace, const QName &baseName )
 {
   mNameArg = codeLocalName;
   mNameNamespace = codeNamespace;
-  mValueVarName = QLatin1String("_value") + upperlize(baseName.localName());
+  mValueVarName = QLatin1String("_value") + upperlize(KODE::Style::makeIdentifier(baseName.localName()));
 }
 
 void ElementArgumentSerializer::setOutputVariable( const QString &outputVarName, bool append )

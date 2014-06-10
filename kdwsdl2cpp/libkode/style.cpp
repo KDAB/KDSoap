@@ -79,3 +79,19 @@ QString Style::lowerFirst( const QString &str )
 
   return str[ 0 ].toLower() + str.mid( 1 );
 }
+
+QString Style::makeIdentifier( const QString &str )
+{
+  QString identifier = str;
+  identifier.replace( "-", "_" );
+  identifier.replace( ".", "_" );
+  identifier.replace( "/", "_" );
+  identifier.replace( ":", "_" ); // xsd:int -> xsd_int  (testcase: salesforce-partner.wsdl)
+  identifier.replace( " ", "_" );
+
+  // Can't start with a number, either.
+  const int firstNum = identifier.at(0).digitValue();
+  identifier = (firstNum != -1)? QLatin1Char('_') + identifier : identifier;
+
+  return identifier;
+}

@@ -238,6 +238,13 @@ public:
     void setProxy( const QNetworkProxy & proxy );
 
     /**
+      * Sets additional HTTP headers in the requests
+      * \since 1.4
+      * \sa QNetworkAccessManager::setRawHeader()
+      */
+    void setRawHTTPHeaders( const QMap<QByteArray, QByteArray>& headers );
+
+    /**
      * WSDL style. See the "style" attribute for soap:binding, in the WSDL file.
      * See http://www.ibm.com/developerworks/webservices/library/ws-whichwsdl/ for a discussion
      * on the pros and cons of both styles.

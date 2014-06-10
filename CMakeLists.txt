@@ -14,9 +14,10 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 # setup default install locations
 include(InstallLocation)
 
-find_package(Qt5Widgets QUIET)
-if (Qt5Widgets_FOUND)
-  set(QT_LIBRARIES Qt5::Widgets)
+find_package(Qt5Core QUIET)
+if (Qt5Core_FOUND)
+  find_package(Qt5Network REQUIRED)
+  set(QT_LIBRARIES Qt5::Core)
   set(QT_USE_FILE "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Qt5Portability.cmake")
 
   if(Qt5_POSITION_INDEPENDENT_CODE)

@@ -52,7 +52,7 @@ void KDSoapClientThread::run()
 
     while ( true ) {
         QMutexLocker locker( &m_mutex );
-        if (!m_stopThread && m_queue.isEmpty()) {
+        while (!m_stopThread && m_queue.isEmpty()) {
             m_queueNotEmpty.wait( &m_mutex );
         }
         if (m_stopThread) {

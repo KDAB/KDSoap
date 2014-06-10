@@ -43,7 +43,7 @@ static void showHelp(const char *appName)
             "  -exportMacro <macroname>  set the export declaration to use for generated classes\n"
             "  -namespace <ns>           put all generated classes into the given C++ namespace\n"
             "  -optional-element-type <type>\n"
-            "                            use <type> as the getter return value for optional elements.\n" 
+            "                            use <type> as the getter return value for optional elements.\n"
             "                            <type> can be either raw-pointer or boost-optional\n"
             "\n", appName);
 }
@@ -120,7 +120,7 @@ int main( int argc, char **argv )
                 optionalElementType = Settings::ERawPointer;
             } else if ( optType == QLatin1String("boost-optional") ) {
                 optionalElementType = Settings::EBoostOptional;
-            } 
+            }
         } else if (!fileName) {
             fileName = argv[arg];
         } else {

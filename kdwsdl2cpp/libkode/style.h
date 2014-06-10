@@ -62,19 +62,25 @@ class KODE_EXPORT Style
      * The default implementation upper cases the first
      * character of the name.
      */
-    /*virtual*/ static QString className( const QString &str );
+    /*virtual*/ static QString className( const QString &str ) Q_REQUIRED_RESULT;
 
     /**
      * Returns a new version of @param str with the first
      * character be uppercase.
      */
-    static QString upperFirst( const QString &str );
+    static QString upperFirst( const QString &str ) Q_REQUIRED_RESULT;
 
     /**
      * Returns a new version of @param str with the first
      * character be lowercase.
      */
-    static QString lowerFirst( const QString &str );
+    static QString lowerFirst( const QString &str ) Q_REQUIRED_RESULT;
+
+    /**
+     * Returns a new version of @param str after making it suitable for usage
+     * as a C++ identifier.
+     */
+    static QString makeIdentifier( const QString &str ) Q_REQUIRED_RESULT;
 
   private:
     class Private;

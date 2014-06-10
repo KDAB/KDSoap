@@ -17,27 +17,30 @@ SUBDIRS = \
   dwservice_12_wsdl \
   dwservice_combined_wsdl \
   tech3356_wsdl \
-  issue1 \
-  issue4 \
-  issue38 \
-  issue43/regular \
-  issue43/pointer \
-  issue43/boost-optional \
+  empty_response_wsdl \
+  element_ns_wsdl \
+  specialchars_wsdl \
+  optionaltype_wsdl/regular \
+  optionaltype_wsdl/pointer \
   enum_escape \
   soap12 \
   literal_true_false \
   import_definition \
   unqualified_formdefault \
+  onvif.org \
 
 # These need internet access
 SUBDIRS += webcalls webcalls_wsdl
+
+# If boost optional is installed
+SUBDIRS += optionaltype_wsdl/boost-optional
 
 SUBDIRS += wsdl_rpc-server
 
 test.target=test
 unix:!macx {
     LIB_PATH=$${TOP_BUILD_DIR}/lib:\$\$LD_LIBRARY_PATH
-    test.commands=for d in $${SUBDIRS}; do pushd . && cd "\$$d" && LD_LIBRARY_PATH=$$LIB_PATH && $(MAKE) test && popd || exit 1; done
+    test.commands=for d in $${SUBDIRS}; do origdir="\$$PWD" && cd "\$$d" && LD_LIBRARY_PATH=$$LIB_PATH && $(MAKE) test && cd "\$$origdir" || exit 1; done
 }
 unix:macx {
     LIB_PATH=$${TOP_BUILD_DIR}/lib:\$\$DYLD_LIBRARY_PATH
@@ -53,7 +56,6 @@ win32 {
     RUNTEST=$$replace(RUNTEST, /, \\) 
 	test.commands=for %d in ($${SUBDIRS}); do $$RUNTEST "%d" $$WIN_BINDIR || exit 1; done
 }
-unix:test.commands=for d in $${SUBDIRS}; do pushd . && cd "\$$d" && $(MAKE) test && popd || exit 1; done
 test.depends = first
 QMAKE_EXTRA_TARGETS += test
 
