@@ -18,6 +18,7 @@
 */
 
 #include <libkode/file.h>
+#include <libkode/license.h>
 #include <libkode/printer.h>
 
 #include "settings.h"
@@ -56,6 +57,8 @@ void Creator::create( const KODE::Class::List &classes )
   } else {
       file.setHeaderFilename( Settings::self()->outputFileName() );
   }
+
+  file.setLicense(KODE::License::GeneratedNoRestriction);
 
   KODE::Class::List::ConstIterator it;
   for ( it = classes.constBegin(); it != classes.constEnd(); ++it ) {

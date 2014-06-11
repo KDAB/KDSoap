@@ -139,6 +139,9 @@ QString License::text() const
             "ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR\n"
             "OTHER DEALINGS IN THE SOFTWARE.";
       break;
+    case GeneratedNoRestriction:
+      txt +=
+            "You may use and relicense this generated file without restriction.";
     default:
       break;
   }

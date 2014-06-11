@@ -31,8 +31,6 @@ namespace KODE {
  * @brief Represent a license clause.
  * Use this class to setup a license clause for your generated file.
  *
- * Possible type of licenses are GPL, LGPL and BSD.
- *
  * @author Cornelius Schumacher <schumacher@kde.org>
  */
 class KODE_EXPORT License
@@ -43,11 +41,13 @@ class KODE_EXPORT License
      * @li GPL  - The GNU General Public License.
      * @li LGPL - The GNU Lesser/Library General Public License.
      * @li BSD  - Berkeley Software Distribution
+     * @li GeneratedNoRestriction - Generated code with no restrictions.
      */
     enum Type {
        GPL,
        LGPL,
        BSD,
+       GeneratedNoRestriction,
        NoLicense
     };
 
