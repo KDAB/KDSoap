@@ -32,8 +32,8 @@ SUBDIRS = \
 # These need internet access
 SUBDIRS += webcalls webcalls_wsdl
 
-# If boost optional is installed
-SUBDIRS += optionaltype_wsdl/boost-optional
+# TODO: If boost optional is installed
+#SUBDIRS += optionaltype_wsdl/boost-optional
 
 SUBDIRS += wsdl_rpc-server
 
