@@ -52,9 +52,10 @@ win32 {
         WIN_BINDIR=release
     }
 
-	RUNTEST=$${TOP_SOURCE_DIR}/unittests/runTest.bat
-    RUNTEST=$$replace(RUNTEST, /, \\) 
-	test.commands=for %d in ($${SUBDIRS}); do $$RUNTEST "%d" $$WIN_BINDIR || exit 1; done
+    RUNTEST=$${TOP_SOURCE_DIR}/unittests/runTest.bat
+    RUNTEST=$$replace(RUNTEST, /, \\)
+    SUBDIRS_BACKSLASH=$$replace($${SUBDIRS}, /, \\)
+    test.commands=for %d in ($${SUBDIRS_BACKSLASH}); do $$RUNTEST "%d" $$WIN_BINDIR || exit 1; done
 }
 test.depends = first
 QMAKE_EXTRA_TARGETS += test
