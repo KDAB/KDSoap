@@ -308,7 +308,9 @@ void HttpServerThread::run()
 {
     m_server = new BlockingHttpServer(m_features & Ssl);
     m_server->listen();
+    QMutexLocker lock(&m_mutex);
     m_port = m_server->serverPort();
+    lock.unlock();
     m_ready.release();
 
     const bool doDebug = qgetenv("KDSOAP_DEBUG").toInt();
@@ -346,6 +348,7 @@ void HttpServerThread::run()
         }
 
         // Split headers and request xml
+        lock.relock();
         const bool splitOK = splitHeadersAndData(request, m_receivedHeaders, m_receivedData);
         if (!splitOK) {
             //if (doDebug)
@@ -377,6 +380,7 @@ void HttpServerThread::run()
             qDebug() << "ERROR: no SoapAction set for Soap 1.2";
             break;
         }
+        lock.unlock();
 
         //qDebug() << "headers received:" << m_receivedHeaders;
         //qDebug() << headers;

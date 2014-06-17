@@ -26,6 +26,7 @@
 #include "KDSoapGlobal.h"
 #include <QBuffer>
 #include <QThread>
+#include <QMutex>
 #include <QSemaphore>
 #include <QTcpServer>
 #include <QTcpSocket>
@@ -77,7 +78,10 @@ public:
     }
 
     void disableSsl();
-    inline int serverPort() const { return m_port; }
+    inline int serverPort() const {
+        QMutexLocker lock(&m_mutex);
+        return m_port;
+    }
     QString endPoint() const {
         return QString::fromLatin1("%1://127.0.0.1:%2/path")
                            .arg(QString::fromLatin1((m_features & Ssl)?"https":"http"))
@@ -88,14 +92,22 @@ public:
         KDSoapUnitTestHelpers::httpGet(endPoint() + QLatin1String("/terminateThread"));
     }
 
-    QByteArray receivedData() const { return m_receivedData; }
-    QByteArray receivedHeaders() const { return m_receivedHeaders; }
+    QByteArray receivedData() const {
+        QMutexLocker lock(&m_mutex);
+        return m_receivedData;
+    }
+    QByteArray receivedHeaders() const {
+        QMutexLocker lock(&m_mutex);
+        return m_receivedHeaders;
+    }
     void resetReceivedBuffers() {
+        QMutexLocker lock(&m_mutex);
         m_receivedData.clear();
         m_receivedHeaders.clear();
     }
 
     QByteArray header(const QByteArray& value) const {
+        QMutexLocker lock(&m_mutex);
         return m_headers.value(value);
     }
 
@@ -150,10 +162,13 @@ private:
     QByteArray m_partialRequest;
     QSemaphore m_ready;
     QByteArray m_dataToSend;
+
+    mutable QMutex m_mutex; // protects the 4 vars below
     QByteArray m_receivedData;
     QByteArray m_receivedHeaders;
     QMap<QByteArray, QByteArray> m_headers;
     int m_port;
+
     Features m_features;
     BlockingHttpServer* m_server;
 };
