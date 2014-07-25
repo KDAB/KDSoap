@@ -348,6 +348,50 @@ private Q_SLOTS:
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
     }
 
+    void testAttachmentMessage() // SOAP-111
+    {
+        HttpServerThread server(queryResponse(), HttpServerThread::Public);
+        ExchangeServices service(this);
+        service.setEndPoint(server.endPoint());
+
+        TNS__CreateAttachmentType request;
+        T__ItemIdType itemId;
+        itemId.setId("id");
+        itemId.setChangeKey("changeKey");
+        request.setParentItemId(itemId);
+        T__NonEmptyArrayOfAttachmentsType attachmentsType;
+        QList<T__FileAttachmentType> attachments;
+        T__FileAttachmentType attachment;
+        attachment.setName("fileName");
+        attachment.setContent(QByteArray("content"));
+        attachments.append(attachment);
+
+        attachmentsType.setFileAttachment(attachments);
+        request.setAttachments(attachmentsType);
+
+        service.createAttachment(request);
+
+        //qDebug() << "received data" << server.receivedData();
+
+        // Check what we sent
+        QByteArray expectedRequestXml = QByteArray(xmlEnvBegin11()) + ">" +
+        "<soap:Body>"
+         "<n1:CreateAttachment xmlns:n1=\"http://schemas.microsoft.com/exchange/services/2006/messages\">"
+          "<n1:ParentItemId Id=\"id\" ChangeKey=\"changeKey\"/>"
+          "<n1:Attachments>"
+           "<n2:FileAttachment xmlns:n2=\"http://schemas.microsoft.com/exchange/services/2006/types\">"
+            "<n2:Name>fileName</n2:Name>"
+            "<n2:Content>Y29udGVudA==</n2:Content>"
+           "</n2:FileAttachment>"
+          "</n1:Attachments>"
+         "</n1:CreateAttachment>"
+        "</soap:Body>"
+            + + xmlEnvEnd()
+           + '\n'; // added by QXmlStreamWriter::writeEndDocument
+        QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
+    }
+
+
 private:
     static QByteArray queryResponse() {
         return QByteArray(xmlEnvBegin11()) + " xmlns:sf=\"urn:sobject.partner.soap.sforce.com\"><soap:Body>"

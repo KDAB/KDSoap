@@ -297,16 +297,11 @@ void KDSoapValue::writeElementContents(KDSoapNamespacePrefixes& namespacePrefixe
 
 void KDSoapValue::writeChildren(KDSoapNamespacePrefixes& namespacePrefixes, QXmlStreamWriter& writer, KDSoapValue::Use use, const QString& messageNamespace, bool forceQualified) const
 {
-    const QString elementNamespace = d->m_nameNamespace.isEmpty() ? messageNamespace : d->m_nameNamespace;
     const KDSoapValueList& args = childValues();
     Q_FOREACH(const KDSoapValue& attr, args.attributes()) {
         //Q_ASSERT(!attr.value().isNull());
 
         const QString attributeNamespace = attr.namespaceUri();
-        if ( !attributeNamespace.isEmpty() && attributeNamespace != elementNamespace ) {
-            forceQualified = true;
-        }
-
         if (attr.isQualified() || forceQualified) {
             writer.writeAttribute(attributeNamespace, attr.name(), variantToTextValue(attr.value(), attr.typeNs(), attr.type()));
         } else {

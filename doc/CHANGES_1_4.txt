@@ -2,6 +2,8 @@ General:
 ========
 * Better support for "one-way" operations, both on the client side and on the server side (now using "HTTP 204 No Content").
 
+* Fix writing out prefixes on unqualified attributes (e.g. with the MSExchange WSDL) (SOAP-111)
+
 Client-side:
 ============
 * Remove encodingStyle attribute, as Microsoft EWS servers reject it. Please contact
