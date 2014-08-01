@@ -1,3 +1,17 @@
+# This is the top-level CMakeLists.txt file for the KDSoap project.
+#
+# Pass the following variables to cmake to control the build:
+# (See INSTALL-cmake.txt for more information)
+#
+# -DKDSoap_ENFORCE_QT4_BUILD=[true|false]
+#  Force building against Qt4, even if Qt5 is found.
+#  Default=false
+#
+# -DKDSoap_-DKDSoap_TESTS=[true|false]
+#  Build the test harness.
+#  Default=false
+#
+
 if ("${CMAKE_INSTALL_PREFIX}" STREQUAL "")
   set(USE_DEFAULT_INSTALL_LOCATION True)
 else()
@@ -5,6 +19,13 @@ else()
 endif()
 
 project(KDSoap CXX)
+
+option(
+  ${PROJECT_NAME}_ENFORCE_QT4_BUILD
+  "Enable if you want to enforce a build with Qt4"
+  OFF
+)
+
 cmake_minimum_required(VERSION 2.8.7)
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/ ${CMAKE_MODULE_PATH}")
 
@@ -20,7 +41,11 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 # setup default install locations
 include(InstallLocation)
 
-find_package(Qt5Core QUIET)
+# try Qt5 first, and prefer that (if found), but only if not disabled via option
+if(NOT ${PROJECT_NAME}_ENFORCE_QT4_BUILD)
+  find_package(Qt5Core QUIET)
+endif()
+
 if (Qt5Core_FOUND)
   find_package(Qt5Network REQUIRED)
   set(QT_LIBRARIES Qt5::Core)
