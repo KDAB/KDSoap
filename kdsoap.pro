@@ -99,17 +99,20 @@ win32:test.commands=(cd unittests && $(MAKE) test)
 test.depends = first
 QMAKE_EXTRA_TARGETS += test
 
-# install licenses: 
+INSTALL_DOC_DIR = $$INSTALL_PREFIX/share/doc/KDSoap
+# install licenses:
 licenses.files = LICENSE.GPL.txt LICENSE.US.txt LICENSE.txt
-licenses.path = $$INSTALL_PREFIX
+licenses.path = $$INSTALL_DOC_DIR
 INSTALLS += licenses
 
+# install readme:
 readme.files = README.txt
-readme.path = $$INSTALL_PREFIX
+readme.path = $$INSTALL_DOC_DIR
 INSTALLS += readme
 
+# install qmake project includes
 prifiles.files = kdsoap.pri kdwsdl2cpp.pri
-prifiles.path = $$INSTALL_PREFIX
+prifiles.path = $$INSTALL_DOC_DIR
 INSTALLS += prifiles
 
 OTHER_FILES += configure.sh configure.bat kdsoap.pri kdwsdl2cpp.pri doc/CHANGES*
