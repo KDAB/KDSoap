@@ -12,7 +12,7 @@
 #  Default=false
 #
 
-if ("${CMAKE_INSTALL_PREFIX}" STREQUAL "")
+if("${CMAKE_INSTALL_PREFIX}" STREQUAL "")
   set(USE_DEFAULT_INSTALL_LOCATION True)
 else()
   set(USE_DEFAULT_INSTALL_LOCATION False)
@@ -46,7 +46,7 @@ if(NOT ${PROJECT_NAME}_ENFORCE_QT4_BUILD)
   find_package(Qt5Core QUIET)
 endif()
 
-if (Qt5Core_FOUND)
+if(Qt5Core_FOUND)
   find_package(Qt5Network REQUIRED)
   set(QT_LIBRARIES Qt5::Core)
   set(QT_USE_FILE "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Qt5Portability.cmake")
@@ -55,7 +55,7 @@ if (Qt5Core_FOUND)
     if(CMAKE_VERSION VERSION_LESS 2.8.9)
       set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
     elseif(NOT CMAKE_VERSION VERSION_LESS 2.8.11)
-      if (Qt5Core_VERSION VERSION_LESS 5.1)
+      if(Qt5Core_VERSION VERSION_LESS 5.1)
         set_property(TARGET Qt5::Core PROPERTY INTERFACE_POSITION_INDEPENDENT_CODE ON)
       endif()
     else()
@@ -106,7 +106,7 @@ if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
 
   install(FILES LICENSE.GPL.txt LICENSE.US.txt LICENSE.txt README.txt kdsoap.pri kdwsdl2cpp.pri DESTINATION ${INSTALL_DOC_DIR})
 
-  if (CMAKE_VERSION VERSION_LESS 2.8.8)
+  if(CMAKE_VERSION VERSION_LESS 2.8.8)
     include("${CMAKE_SOURCE_DIR}/cmake/CMakePackageConfigHelpers.cmake")
   else()
     include(CMakePackageConfigHelpers)
@@ -130,8 +130,8 @@ if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
   configure_package_config_file(
     "${CMAKE_CURRENT_SOURCE_DIR}/KDSoapConfig.cmake.in"
     "${CMAKE_CURRENT_BINARY_DIR}/install/KDSoapConfig.cmake"
-    INSTALL_DESTINATION  "${INSTALL_LIBRARY_DIR}/cmake/KDSoap"
-    PATH_VARS  INSTALL_INCLUDE_DIR
+    INSTALL_DESTINATION "${INSTALL_LIBRARY_DIR}/cmake/KDSoap"
+    PATH_VARS INSTALL_INCLUDE_DIR
   )
 
   install(FILES
@@ -142,6 +142,42 @@ if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
   )
   install(EXPORT KDSoapTargets NAMESPACE KDSoap::
     DESTINATION "${INSTALL_LIBRARY_DIR}/cmake/KDSoap"
+  )
+
+  # install forwarding class headers for client api
+  set(APINAME "KDSoapClient")
+  set(API_HEADER_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include/${APINAME}")
+  install(FILES
+    ${API_HEADER_DIR}/KDDateTime
+    ${API_HEADER_DIR}/KDSoap
+    ${API_HEADER_DIR}/KDSoapAuthentication
+    ${API_HEADER_DIR}/KDSoapClient
+    ${API_HEADER_DIR}/KDSoapClientInterface
+    ${API_HEADER_DIR}/KDSoapFaultException
+    ${API_HEADER_DIR}/KDSoapGlobal
+    ${API_HEADER_DIR}/KDSoapHeaders
+    ${API_HEADER_DIR}/KDSoapJob
+    ${API_HEADER_DIR}/KDSoapMessage
+    ${API_HEADER_DIR}/KDSoapNamespaceManager
+    ${API_HEADER_DIR}/KDSoapPendingCall
+    ${API_HEADER_DIR}/KDSoapPendingCallWatcher
+    ${API_HEADER_DIR}/KDSoapSslHandler
+    ${API_HEADER_DIR}/KDSoapValue
+    ${API_HEADER_DIR}/KDSoapValueList
+    DESTINATION ${INSTALL_INCLUDE_DIR}/${APINAME}
+  )
+
+  # install forwarding class headers for server api
+  set(APINAME "KDSoapServer")
+  set(API_HEADER_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include/${APINAME}")
+  install(FILES
+    ${API_HEADER_DIR}/KDSoapDelayedResponseHandle
+    ${API_HEADER_DIR}/KDSoapServer
+    ${API_HEADER_DIR}/KDSoapServerAuthInterface
+    ${API_HEADER_DIR}/KDSoapServerGlobal
+    ${API_HEADER_DIR}/KDSoapServerObjectInterface
+    ${API_HEADER_DIR}/KDSoapThreadPool
+    DESTINATION ${INSTALL_INCLUDE_DIR}/${APINAME}
   )
 endif()
 
