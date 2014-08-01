@@ -1,0 +1,77 @@
+These are the instructions for installing KD SOAP using the CMake buildsystem.
+CMake version 2.8.7 or higher is required.
+
+KD SOAP 1.x requires a Qt version >= 4.6 with Network and XML support enabled.
+
+The same source code compiles with either Qt 4 or Qt 5.
+
+1) From the top directory of your KD SOAP installation create a build directory:
+
+     mkdir build
+
+   and change directory into that build directory:
+
+     cd build
+
+2) Now run 'cmake' depending on the kind of build one of the following:
+     cmake -DCMAKE_BUILD_TYPE=Debug ..
+     cmake -DCMAKE_BUILD_TYPE=Release ..
+     cmake -DKDSOAP_STATIC=True -DCMAKE_BUILD_TYPE=Debug ..
+     cmake -DKDSOAP_STATIC=True -DCMAKE_BUILD_TYPE=Release ..
+
+   To define the install-location use for example:
+     cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=C:/kdsoap ..
+     cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=/opt/kdsoap ..
+
+3) Unix
+
+set your LD_LIBRARY_PATH to point to your KD SOAP installation lib directory.
+
+If you do not have LD_LIBRARY_PATH set already then use this line:
+LD_LIBRARY_PATH=/path/to/kdsoap/lib:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH
+
+The above has to be added into your .bashrc or similar to remain. It may also of course be run from a shell just before building software using KD SOAP, but in this case your settings will only be available for this shell.
+
+4) MacOS
+
+Proceed as described above, but using DYLD_LIBRARY_PATH instead
+of LD_LIBRARY_PATH
+
+5) Windows
+
+Add the path to KD SOAP lib into your LIB environment variable and the path
+to KD SOAP bin into your PATH environment variable.
+
+Or run:
+  set PATH=\path\to\kdsoap\bin;%PATH%
+  set LIB=\path\to\kdsoap\lib;%LIB%
+
+
+6) Build everything by typing:
+
+make    # Unix,
+nmake   # Windows
+
+
+7) (optionally:) Install KD SOAP:
+
+   From your top-level KD SOAP directory just type
+
+make install   # Unix,
+nmake install  # Windows
+
+   This will copy the necessary files into the sub-directories of
+   your installation path:
+   For Unix/Linux, Mac: /usr/local/KDAB/KDSoap-VERSION/
+   For Windows that is: C:\KDAB\KDSoap-VERSION\
+
+
+8) Symbian (Qt4 only)
+
+A CMake build is not available for Symbian platforms.  Refer to the INSTALL.txt
+file for instructions on using autotools for a Symbian install.
+
+
+9) Have a look at the examples applications. They will get you started with KD SOAP.
+
