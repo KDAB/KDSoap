@@ -1,6 +1,7 @@
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(QT_USE_QTNETWORK TRUE)
 set(QT_USE_QTXML TRUE)
+set(QT_USE_QTTEST TRUE)
 
 include(${QT_USE_FILE})
 
@@ -24,7 +25,7 @@ macro(add_unittest _source)
   add_executable(${_name} ${_source} ${_test})
 
   add_test(NAME kdsoap-${_name} COMMAND ${_name})
-  target_link_libraries(${_name} ${QT_QTCORE_LIBRARY} ${QT_QTTEST_LIBRARY} ${QT_QTGUI_LIBRARY} kdsoap testtools)
+  target_link_libraries(${_name} ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${QT_LIBRARIES} kdsoap testtools)
   if(EXTRA_LIBS)
     target_link_libraries(${_name} ${EXTRA_LIBS} )
   endif(EXTRA_LIBS)
