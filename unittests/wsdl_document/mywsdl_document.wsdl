@@ -104,6 +104,8 @@
         </sequence>
        </complexType>
 
+      <element name="elementWithoutType"/> <!-- test that this is ok  -->
+
       <element name="addEmployee" type="kdab:AddEmployee"/>
       <element name="delayedAddEmployee" type="kdab:AddEmployee"/>
       <element name="addEmployeeMyResponse" type="xsd:hexBinary"/>

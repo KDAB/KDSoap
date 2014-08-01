@@ -553,6 +553,16 @@ Element Parser::parseElement( ParserContext *context,
     }
   }
 
+  // Fixup elements without a type
+  if (newElement.type().isEmpty() && newElement.reference().isEmpty()) {
+    ComplexType ct;
+    Q_ASSERT(!newElement.name().isEmpty());
+    ct.setName( newElement.name() );
+    ct.setAnonymous( true );
+    d->mComplexTypes.append( ct );
+    newElement.setType( ct.qualifiedName() );
+  }
+
   return newElement;
 }
 
