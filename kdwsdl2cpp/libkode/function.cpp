@@ -42,6 +42,11 @@ Function::Argument::Argument( const QString &declaration,
   d->defaultArgument = defaultArgument;
 }
 
+Function::Argument::~Argument()
+{
+  // delete d; comment out for now, causes segfault
+}
+
 QString Function::Argument::headerDeclaration() const
 {
   if ( d->defaultArgument.isEmpty() ) {

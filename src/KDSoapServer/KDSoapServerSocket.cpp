@@ -408,7 +408,7 @@ void KDSoapServerSocket::makeCall(KDSoapServerObjectInterface* serverObjectInter
         // Oh well, just use the incoming fault :-)
         replyMsg = requestMsg;
         handleError(replyMsg, "Client.Data", QString::fromLatin1("Request was a fault"));
-    } else {
+    } else if (serverObjectInterface) {
 
         // Call method on m_serverObject
         serverObjectInterface->setRequestHeaders(requestHeaders, soapAction);

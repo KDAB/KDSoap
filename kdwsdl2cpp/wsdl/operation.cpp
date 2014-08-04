@@ -33,7 +33,7 @@ Operation::Operation()
 }
 
 Operation::Operation( const QString &nameSpace )
-  : Element( nameSpace )
+  : Element( nameSpace ), mType( OneWayOperation )
 {
   mInput.setNameSpace( nameSpace );
   mOutput.setNameSpace( nameSpace );

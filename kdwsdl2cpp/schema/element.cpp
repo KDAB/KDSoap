@@ -29,7 +29,8 @@ class Element::Private
 {
 public:
     Private()
-      : mMinOccurs( 1 ),
+      : mGroupId( 0 ),
+        mMinOccurs( 1 ),
         mMaxOccurs( 1 ),
         mQualified( false ),
         mNillable( false ),
