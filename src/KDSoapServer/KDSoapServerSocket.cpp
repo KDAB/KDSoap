@@ -202,6 +202,8 @@ void KDSoapServerSocket::slotReadyRead()
     if (!serverObjectInterface) {
         const QString error = QString::fromLatin1("Server object %1 does not implement KDSoapServerObjectInterface!").arg(QString::fromLatin1(m_serverObject->metaObject()->className()));
         handleError(replyMsg, "Server.ImplementationError", error);
+        sendReply(0, replyMsg);
+        return;
     } else {
         serverObjectInterface->setServerSocket(this);
     }

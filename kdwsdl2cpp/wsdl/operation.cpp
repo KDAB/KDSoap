@@ -29,6 +29,7 @@
 using namespace KWSDL;
 
 Operation::Operation()
+  : mType( OneWayOperation )
 {
 }
 
@@ -141,10 +142,8 @@ void Operation::loadXML( ParserContext *context, const QDomElement &element )
         mType = OneWayOperation;
     } else if ( !hasInput && hasOutput ) {
         mType = NotificationOperation;
-    } else if ( inputWasFirst ) {
+    } else { // inputWasFirst must be true
         mType = RequestResponseOperation;
-    } else {
-        mType = SolicitResponseOperation;
     }
 }
 
