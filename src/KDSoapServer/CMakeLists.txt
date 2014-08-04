@@ -33,8 +33,10 @@ if(KDSoap_IS_ROOT_PROJECT)
   install(FILES
     KDSoapServer.h
     KDSoapServerAuthInterface.h
+    KDSoapDelayedResponseHandle.h
     KDSoapServerObjectInterface.h
     KDSoapServerGlobal.h
+    KDSoapThreadPool.h
     DESTINATION ${INSTALL_INCLUDE_DIR}/KDSoapServer
   )
 

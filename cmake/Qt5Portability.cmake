@@ -13,6 +13,12 @@ if(QT_USE_QTXML)
   include_directories(${Qt5Xml_INCLUDE_DIRS})
 endif()
 
+if(QT_USE_QTTEST)
+  find_package(Qt5Test REQUIRED)
+  list(APPEND QT_LIBRARIES Qt5::Test)
+  include_directories(${Qt5Test_INCLUDE_DIRS})
+endif()
+
 macro(qt4_wrap_ui)
   qt5_wrap_ui(${ARGN})
 endmacro()

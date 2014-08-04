@@ -135,5 +135,5 @@ for root, subFolders, files in os.walk(sys.argv[1]):
    to workaround that known qmake+Symbian^3 bug. 
 
 
-7) Have a look at the examples applications. They will get you started with KD SOAP.
+8) Have a look at the examples applications. They will get you started with KD SOAP.
 
