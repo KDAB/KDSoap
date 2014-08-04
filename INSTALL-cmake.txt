@@ -79,7 +79,7 @@ file for instructions on using autotools for a Symbian install.
 To build the testing harness, pass -DKDSoap_TESTS=true to CMake, like so:
   % cmake -DKDSoap_TESTS=true
 
-The run 'make test' to run the unit tests.
+Then run 'make test' to run the unit tests.
 
 == Force a Qt4 build ==
 On systems with both Qt4 and Qt5 available, the CMake buildsystem will always

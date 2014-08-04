@@ -7,7 +7,7 @@
 #  Force building against Qt4, even if Qt5 is found.
 #  Default=false
 #
-# -DKDSoap_-DKDSoap_TESTS=[true|false]
+# -DKDSoap_TESTS=[true|false]
 #  Build the test harness.
 #  Default=false
 #
