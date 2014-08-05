@@ -97,7 +97,7 @@ const KDSoapValue &KDSoapFaultException::faultDetails(const KDSoapValue &faultVa
 {
     static KDSoapValue emptyValue;
 
-// Find and return the <detail> element under faultElement
+    // Find and return the <detail> element under faultElement
     const KDSoapValueList& args = faultValue.childValues();
     for (int argNr = 0; argNr < args.count(); ++argNr) {
         const KDSoapValue& val = args.at(argNr);

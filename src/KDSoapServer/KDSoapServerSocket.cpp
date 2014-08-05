@@ -402,6 +402,7 @@ void KDSoapServerSocket::handleError(KDSoapMessage &replyMsg, const char *errorC
 
 void KDSoapServerSocket::makeCall(KDSoapServerObjectInterface* serverObjectInterface, const KDSoapMessage &requestMsg, KDSoapMessage& replyMsg, const KDSoapHeaders& requestHeaders, const QByteArray& soapAction, const QString& path)
 {
+    Q_ASSERT(serverObjectInterface);
     //const QString method = requestMsg.name();
 
     if (requestMsg.isFault()) {
@@ -410,7 +411,7 @@ void KDSoapServerSocket::makeCall(KDSoapServerObjectInterface* serverObjectInter
         // Oh well, just use the incoming fault :-)
         replyMsg = requestMsg;
         handleError(replyMsg, "Client.Data", QString::fromLatin1("Request was a fault"));
-    } else if (serverObjectInterface) {
+    } else {
 
         // Call method on m_serverObject
         serverObjectInterface->setRequestHeaders(requestHeaders, soapAction);

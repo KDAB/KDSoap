@@ -42,7 +42,10 @@ class KODE_EXPORT Function
 
         Argument( const QString &declaration,
           const QString &defaultArgument = QString() );
+        Argument( const Argument &other );
         ~Argument();
+
+        Argument& operator=( const Argument &other );
         QString headerDeclaration() const;
         QString bodyDeclaration() const;
 

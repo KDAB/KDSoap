@@ -115,8 +115,8 @@ void Operation::loadXML( ParserContext *context, const QDomElement &element )
         const QString tagName = namespaceManager.localName(child);
         if ( tagName == QLatin1String("input") ) {
             Q_ASSERT( !hasInput );
-            if ( !hasOutput ) {
-                inputWasFirst = true;
+            if ( hasOutput ) {
+                inputWasFirst = false;
             }
             hasInput = true;
             mInput.loadXML( context, child );
@@ -142,8 +142,10 @@ void Operation::loadXML( ParserContext *context, const QDomElement &element )
         mType = OneWayOperation;
     } else if ( !hasInput && hasOutput ) {
         mType = NotificationOperation;
-    } else { // inputWasFirst must be true
+    } else if ( inputWasFirst ) {
         mType = RequestResponseOperation;
+    } else {
+        mType = SolicitResponseOperation;
     }
 }
 

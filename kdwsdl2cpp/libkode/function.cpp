@@ -42,9 +42,10 @@ Function::Argument::Argument( const QString &declaration,
   d->defaultArgument = defaultArgument;
 }
 
-Function::Argument::~Argument()
+Function::Argument::Argument( const Function::Argument &other )
+  : d( new ArgumentPrivate )
 {
-  // delete d; comment out for now, causes segfault
+  *d = *other.d;
 }
 
 QString Function::Argument::headerDeclaration() const
@@ -61,6 +62,20 @@ QString Function::Argument::bodyDeclaration() const
   return d->declaration;
 }
 
+Function::Argument& Function::Argument::operator=( const Function::Argument &other )
+{
+  if ( this == &other )
+    return *this;
+
+  *d = *other.d;
+
+  return *this;
+}
+
+Function::Argument::~Argument()
+{
+  delete d;
+}
 
 class Function::FunctionPrivate
 {
