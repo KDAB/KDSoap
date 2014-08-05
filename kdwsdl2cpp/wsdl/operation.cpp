@@ -29,11 +29,12 @@
 using namespace KWSDL;
 
 Operation::Operation()
+  : mType( OneWayOperation )
 {
 }
 
 Operation::Operation( const QString &nameSpace )
-  : Element( nameSpace )
+  : Element( nameSpace ), mType( OneWayOperation )
 {
   mInput.setNameSpace( nameSpace );
   mOutput.setNameSpace( nameSpace );
@@ -114,8 +115,8 @@ void Operation::loadXML( ParserContext *context, const QDomElement &element )
         const QString tagName = namespaceManager.localName(child);
         if ( tagName == QLatin1String("input") ) {
             Q_ASSERT( !hasInput );
-            if ( !hasOutput ) {
-                inputWasFirst = true;
+            if ( hasOutput ) {
+                inputWasFirst = false;
             }
             hasInput = true;
             mInput.loadXML( context, child );

@@ -27,7 +27,7 @@
 #include <QDebug>
 
 KDSoapSslHandler::KDSoapSslHandler(QObject *parent)
-    : QObject(parent)
+    : QObject(parent), m_reply(0)
 {
 }
 

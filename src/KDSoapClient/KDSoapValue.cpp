@@ -30,7 +30,7 @@
 class KDSoapValue::Private : public QSharedData
 {
 public:
-    Private(): m_qualified(false) {}
+    Private(): m_qualified(false), m_nillable(false) {}
     Private(const QString& n, const QVariant& v, const QString& typeNameSpace, const QString& typeName)
       : m_name(n), m_value(v), m_typeNamespace(typeNameSpace), m_typeName(typeName), m_qualified(false), m_nillable(false) {}
 

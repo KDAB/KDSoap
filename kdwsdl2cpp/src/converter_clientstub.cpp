@@ -564,7 +564,7 @@ bool Converter::convertClientCall( const Operation &operation, const Binding &bi
   const Part::List outParts = selectedParts( binding, outputMessage, operation, false /*output*/ );
   const int numReturnValues = outParts.count();
 
-  if (numReturnValues) {
+  if (numReturnValues == 1) {
       const Part retPart = outParts.first();
       const QString retType = mTypeMap.localType( retPart.type(), retPart.element() );
       if ( retType.isEmpty() ) {

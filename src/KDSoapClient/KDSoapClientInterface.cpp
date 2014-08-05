@@ -64,6 +64,7 @@ KDSoapClientInterface::SoapVersion KDSoapClientInterface::soapVersion()
 KDSoapClientInterfacePrivate::KDSoapClientInterfacePrivate()
     : m_accessManager(0),
       m_authentication(),
+      m_version(KDSoapClientInterface::SOAP1_1),
       m_style(KDSoapClientInterface::RPCStyle),
       m_ignoreSslErrors(false)
 {
