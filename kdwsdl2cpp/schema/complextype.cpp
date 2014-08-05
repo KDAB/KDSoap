@@ -30,7 +30,8 @@ class ComplexType::Private
 public:
     Private()
        : mAnonymous(false),
-         mConflicting(false)
+         mConflicting(false),
+         mBaseDerivation(Restriction)
     {}
 
     QString mDocumentation;

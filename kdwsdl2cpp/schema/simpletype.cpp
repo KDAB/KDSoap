@@ -45,7 +45,7 @@ public:
     struct FacetValueType
     {
       FacetValueType()
-          : length(0), tot(0), frac(0)
+          : length(0), wsp(PRESERVE), tot(0), frac(0)
       {}
       int length;
       struct LenRange
@@ -54,8 +54,9 @@ public:
         int minlen, maxlen;
       } lenRange;
       WhiteSpaceType wsp;
-      struct
+      struct ValueRange
       {
+        ValueRange() : maxinc(-1), mininc(-1), maxex(-1), minex(-1) {}
         int maxinc, mininc, maxex, minex;
       } valRange;
       int tot;
@@ -214,8 +215,6 @@ void SimpleType::setFacetValue( FacetType ft, const QString &value )
         d->mFacetValue.valRange.mininc = number;
     } else if ( ft == MINEX ) {
         d->mFacetValue.valRange.minex = number;
-    } else if ( ft == MAXEX ) {
-        d->mFacetValue.valRange.maxex = number;
     } else if ( ft == LENGTH ) {
         d->mFacetValue.length = number;
     } else if ( ft == MINLEN ) {

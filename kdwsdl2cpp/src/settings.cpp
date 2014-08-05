@@ -42,6 +42,7 @@ Settings::Settings()
   mOutputFileName = QString::fromLatin1("kwsdl_generated");
   mImpl = false;
   mServer = false;
+  mOptionalElementType = Settings::ENone;
 }
 
 Settings::~Settings()

@@ -94,7 +94,10 @@ QString KDSoapFaultException::faultCode() const
 }
 
 const KDSoapValue &KDSoapFaultException::faultDetails(const KDSoapValue &faultValue)
-{   // Find and return the <detail> element under faultElement
+{
+    static KDSoapValue emptyValue;
+
+    // Find and return the <detail> element under faultElement
     const KDSoapValueList& args = faultValue.childValues();
     for (int argNr = 0; argNr < args.count(); ++argNr) {
         const KDSoapValue& val = args.at(argNr);
@@ -103,7 +106,6 @@ const KDSoapValue &KDSoapFaultException::faultDetails(const KDSoapValue &faultVa
             return val;
         }
     }
-    const KDSoapValue &emptyValue = KDSoapValue();
     return emptyValue;
 }
 
