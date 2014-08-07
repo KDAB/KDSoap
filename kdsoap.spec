@@ -63,12 +63,13 @@ cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
 %files
 %defattr(-,root,root)
 %{_prefix}/share/doc/KDSoap
-%{_libdir}/libkdsoap-so.%{version}
+%{_libdir}/libkdsoap.so.%{version}
 %{_libdir}/libkdsoap-server.so.%{version}
 
 %files devel
 %defattr(-,root,root)
 %{_bindir}/kdwsdl2cpp
+%{_prefix}/share/mkspecs
 %{_prefix}/share/mkspecs/features
 %{_prefix}/share/mkspecs/features/kdsoap.prf
 %{_includedir}/KDSoapClient
