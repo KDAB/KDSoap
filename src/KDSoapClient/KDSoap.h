@@ -20,6 +20,9 @@
 **
 **********************************************************************/
 
+#ifndef KDSOAP_H
+#define KDSOAP_H
+
 #include "KDSoapClientInterface.h"
 #include "KDSoapMessage.h"
 #include "KDSoapPendingCall.h"
@@ -28,3 +31,4 @@
 #include "KDSoapAuthentication.h"
 #include "KDSoapNamespaceManager.h"
 
+#endif
