@@ -1,5 +1,5 @@
 Name:           kdsoap
-Version:        1.3.1
+Version:        1.3.98
 Release:        1
 Summary:        A Qt-based client-side and server-side SOAP component
 Source:         %{name}-%{version}.tar.gz
@@ -79,6 +79,8 @@ cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
 %{_libdir}/cmake/KDSoap
 
 %changelog
+* Tue Aug 12 2014 Allen Winter <allen.winter@kdab.com> 1.3.98
+  1.4.0 RC1
 * Thu Aug 07 2014 Allen Winter <allen.winter@kdab.com> 1.3.1
   1.3.1 final
 * Mon Aug 04 2014 Allen Winter <allen.winter@kdab.com> 1.3.0
