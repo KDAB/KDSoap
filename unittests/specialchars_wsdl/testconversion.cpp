@@ -38,7 +38,7 @@ private slots:
 
 TestConversion::TestConversion()
 {
- 
+
 }
 
 
