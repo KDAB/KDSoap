@@ -45,7 +45,7 @@ public:
      * Implicit constructor from a QDateTime.
      * Sets the timeZone to "local", i.e. empty
      */
-    KDDateTime(const QDateTime &);
+    KDDateTime(const QDateTime &); //keep this implicit
     KDDateTime &operator=(const KDDateTime &);
     ~KDDateTime();
 
