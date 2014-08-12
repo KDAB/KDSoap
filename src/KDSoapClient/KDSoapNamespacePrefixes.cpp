@@ -19,8 +19,8 @@
 ** clear to you.
 **
 **********************************************************************/
-#include "KDSoapClientInterface_p.h"
 #include "KDSoapNamespacePrefixes_p.h"
+#include "KDSoapClientInterface_p.h"
 #include "KDSoapNamespaceManager.h"
 
 void KDSoapNamespacePrefixes::writeStandardNamespaces(QXmlStreamWriter& writer,
