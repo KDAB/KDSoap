@@ -237,19 +237,19 @@ void KDSoapServerSocket::slotReadyRead()
     // check soap version and extract soapAction header
     QByteArray soapAction;
     const QByteArray contentType = httpHeaders.value("content-type");
-    if (contentType.startsWith("text/xml")) {
+    if (contentType.startsWith("text/xml")) { //krazy:exclude=strings
         // SOAP 1.1
         soapAction = httpHeaders.value("soapaction");
         // The SOAP standard allows quotation marks around the SoapAction, so we have to get rid of these.
         if (soapAction.startsWith('\"'))
             soapAction = soapAction.mid(1, soapAction.length() - 2);
 
-    } else if (contentType.startsWith("application/soap+xml")) {
+    } else if (contentType.startsWith("application/soap+xml")) { //krazy:exclude=strings
         // SOAP 1.2
         // Example: application/soap+xml;charset=utf-8;action=ActionHex
         const QList<QByteArray> parts = contentType.split(';');
         Q_FOREACH(const QByteArray& part, parts) {
-            if (part.startsWith("action=")) {
+            if (part.startsWith("action=")) { //krazy:exclude=strings
                 soapAction = part.mid(strlen("action="));
             }
         }

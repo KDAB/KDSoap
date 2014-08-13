@@ -159,7 +159,7 @@ private:
  * Set of headers that can be provided when making a SOAP call.
  * \see KDSoapClientInterface
  */
-class KDSOAP_EXPORT KDSoapHeaders : public QList<KDSoapMessage>
+class KDSOAP_EXPORT KDSoapHeaders : public QList<KDSoapMessage> //krazy:exclude=dpointer
 {
 public:
     /**
