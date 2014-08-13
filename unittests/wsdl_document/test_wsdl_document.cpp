@@ -223,7 +223,7 @@ private Q_SLOTS:
         MyWsdlDocument service;
         service.setEndPoint(server.endPoint());
         QVERIFY(server.endPoint().startsWith(QLatin1String("https")));
-        QSignalSpy sslErrorsSpy(service.clientInterface()->sslHandler(), SIGNAL(sslErrors(KDSoapSslHandler*, QList<QSslError>)));
+        QSignalSpy sslErrorsSpy(service.clientInterface()->sslHandler(), SIGNAL(sslErrors(KDSoapSslHandler*,QList<QSslError>)));
         // We need to use async API to test sslHandler, see documentation there.
         ListEmployeesJob *job = new ListEmployeesJob(&service);
         connect(job, SIGNAL(finished(KDSoapJob*)), this, SLOT(slotListEmployeesJobFinished(KDSoapJob*)));
@@ -251,8 +251,8 @@ private Q_SLOTS:
         HttpServerThread server(addEmployeeResponse(), HttpServerThread::Ssl);
         MyWsdlDocument service;
         service.setEndPoint(server.endPoint());
-        connect(service.clientInterface()->sslHandler(), SIGNAL(sslErrors(KDSoapSslHandler*, QList<QSslError>)),
-                this, SLOT(slotSslHandlerErrors(KDSoapSslHandler*, QList<QSslError>)));
+        connect(service.clientInterface()->sslHandler(), SIGNAL(sslErrors(KDSoapSslHandler*,QList<QSslError>)),
+                this, SLOT(slotSslHandlerErrors(KDSoapSslHandler*,QList<QSslError>)));
         AddEmployeeJob *job = new AddEmployeeJob(&service);
         job->setParameters(addEmployeeParameters());
         connect(job, SIGNAL(finished(KDSoapJob*)), this, SLOT(slotAddEmployeeJobFinished(KDSoapJob*)));
@@ -303,7 +303,7 @@ private Q_SLOTS:
         HttpServerThread server(addEmployeeResponse(), HttpServerThread::Ssl);
         MyWsdlDocument service;
         service.setEndPoint(server.endPoint());
-        QSignalSpy sslErrorsSpy(service.clientInterface()->sslHandler(), SIGNAL(sslErrors(KDSoapSslHandler*, QList<QSslError>)));
+        QSignalSpy sslErrorsSpy(service.clientInterface()->sslHandler(), SIGNAL(sslErrors(KDSoapSslHandler*,QList<QSslError>)));
         QByteArray ret = service.addEmployee(addEmployeeParameters());
         QVERIFY(ret.isEmpty());
         QVERIFY2(service.lastError().contains(QLatin1String("SSL handshake failed")), qPrintable(service.lastError()));
@@ -942,10 +942,10 @@ void WsdlDocumentTest::testServerFault() // test the error signals emitted on er
     MyWsdlDocument service;
     service.setEndPoint(server->endPoint());
     QSignalSpy addEmployeeErrorSpy(&service, SIGNAL(addEmployeeError(KDSoapMessage)));
-    QSignalSpy soapErrorSpy(&service, SIGNAL(soapError(QString, KDSoapMessage)));
+    QSignalSpy soapErrorSpy(&service, SIGNAL(soapError(QString,KDSoapMessage)));
     service.asyncAddEmployee(KDAB__AddEmployee());
 
-    connect(&service, SIGNAL(soapError(QString, KDSoapMessage)), &m_eventLoop, SLOT(quit()));
+    connect(&service, SIGNAL(soapError(QString,KDSoapMessage)), &m_eventLoop, SLOT(quit()));
     m_eventLoop.exec();
 
     QCOMPARE(soapErrorSpy.count(), 1);

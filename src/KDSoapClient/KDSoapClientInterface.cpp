@@ -227,7 +227,7 @@ void KDSoapClientInterface::ignoreSslErrors(const QList<QSslError> &errors)
 void KDSoapClientInterfacePrivate::setupReply(QNetworkReply *reply)
 {
     if (m_ignoreSslErrors) {
-        QObject::connect(reply, SIGNAL(sslErrors(const QList<QSslError>&)), reply, SLOT(ignoreSslErrors()));
+        QObject::connect(reply, SIGNAL(sslErrors(QList<QSslError>)), reply, SLOT(ignoreSslErrors()));
     } else {
 #ifndef QT_NO_OPENSSL
         reply->ignoreSslErrors(m_ignoreErrorsList);
