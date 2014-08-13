@@ -235,7 +235,7 @@ private Q_SLOTS:
         HttpServerThread server(emptyResponse(), HttpServerThread::Public);
         KDSoapClientInterface client(server.endPoint(), countryMessageNamespace());
         KDSoapMessage message;
-        message.setUse(KDSoapMessage::EncodedUse); // write out types explicitely
+        message.setUse(KDSoapMessage::EncodedUse); // write out types explicitly
 
         // Test simpletype element
         message.addArgument(QString::fromLatin1("testString"), QString::fromUtf8("Hello Klarälvdalens"));
