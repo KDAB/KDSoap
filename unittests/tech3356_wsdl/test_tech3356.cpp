@@ -124,7 +124,7 @@ private:
 
     static QByteArray expectedQueryJobRequest()
     {
-        return QByteArray(xmlEnvBegin11()) + ">"
+        return QByteArray(xmlEnvBegin11()) + '>'
         "<soap:Body>"
            "<n1:queryJobRequest xmlns:n1=\"http://base.fims.tv\">" // MISSING: xsi:type=\"n1:QueryJobRequestByIDType\">"
              "<n1:jobInfoSelection>all</n1:jobInfoSelection>"

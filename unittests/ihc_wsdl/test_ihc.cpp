@@ -213,7 +213,7 @@ private:
 
     static QByteArray expectedSetResourceValueRequest()
     {
-        return QByteArray(xmlEnvBegin11()) + ">"
+        return QByteArray(xmlEnvBegin11()) + '>' +
                 "<soap:Body>"
                 "<n1:setResourceValue1 xmlns:n1=\"utcs\">"
                   "<n1:resourceID>54</n1:resourceID>"
@@ -231,7 +231,7 @@ private:
 
     static QByteArray fakeResponse()
     {
-        return QByteArray(xmlEnvBegin11()) + ">"
+        return QByteArray(xmlEnvBegin11()) + '>' +
                 "<soap:Body>"
                 " </soap:Body>" + xmlEnvEnd();
     }

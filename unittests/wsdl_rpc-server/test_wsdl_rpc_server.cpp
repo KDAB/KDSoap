@@ -176,7 +176,7 @@ private:
 
     static QByteArray expectedHelloRequest() // http://oreilly.com/catalog/webservess/chapter/ch06.html
     {
-        return QByteArray(xmlEnvBegin11()) + ">"
+        return QByteArray(xmlEnvBegin11()) + '>'
         "<soap:Body>"
         "<n1:sayHello xmlns:n1=\"http://www.ecerami.com/wsdl/HelloService.wsdl\">"
         /*"<n1:sayHello xmlns:n1=\"urn:examples:helloservice\">" // TODO! Add support for * namespace="urn:examples:helloservice" */
@@ -205,7 +205,7 @@ private:
 
     static QByteArray expectedListKeysRequest()
     {
-        return QByteArray(xmlEnvBegin12()) + ">"
+        return QByteArray(xmlEnvBegin12()) + '>'
         "<soap:Body>"
          "<n1:listKeys xmlns:n1=\"urn:RpcExample\">"
           "<params xsi:type=\"n1:listKeysParams\">"

@@ -126,7 +126,7 @@ private:
                           "</soap:Header>");
     }
     static QByteArray addEmployeeResponse() {
-        return QByteArray(xmlEnvBegin11()) + ">"
+        return QByteArray(xmlEnvBegin11()) + '>' +
         "<soap:Header xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl/\">"
         "<kdab:SessionElement sessionId=\"returned_id\"/>"
         "</soap:Header>"
@@ -462,7 +462,7 @@ private Q_SLOTS:
         QCOMPARE(countries[1], QString::fromLatin1("Ireland"));
 
         const QByteArray expectedRequestXml =
-            QByteArray(xmlEnvBegin11()) + ">"
+            QByteArray(xmlEnvBegin11()) + '>' +
             "<soap:Body>"
             "<n1:getCountries xmlns:n1=\"http://namesservice.thomas_bayer.com/\"/>"
             "</soap:Body>" + xmlEnvEnd();
@@ -525,7 +525,7 @@ private Q_SLOTS:
         QCOMPARE(achievements.at(1).value().toString(), QString::fromLatin1("Management"));
 
         const QByteArray expectedRequestXml =
-            QByteArray(xmlEnvBegin11()) + ">"
+            QByteArray(xmlEnvBegin11()) + '>' +
             "<soap:Body>"
             "<n1:AnyType xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
             "<xsd:schema><xsd:test>input</xsd:test></xsd:schema>"
@@ -566,7 +566,7 @@ private Q_SLOTS:
         QCOMPARE(ret.value(), QByteArray("Foo"));
 
         const QByteArray expectedRequestXml =
-            QByteArray(xmlEnvBegin11()) + ">"
+            QByteArray(xmlEnvBegin11()) + '>' +
             "<soap:Body>"
             "<n1:Telegram xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">48656c6c6f</n1:Telegram>"
             "</soap:Body>" + xmlEnvEnd();
@@ -973,7 +973,7 @@ void WsdlDocumentTest::testSendTelegram()
 
     // Check the request as received by the server.
     const QByteArray expectedRequestXml =
-        QByteArray(xmlBegin) + "<TelegramRequest " + xmlNamespaces + ">"
+        QByteArray(xmlBegin) + "<TelegramRequest " + xmlNamespaces + '>' +
            "<TelegramHex>48656c6c6f</TelegramHex>"
            "<TelegramBase64>SGVsbG8=</TelegramBase64>"
           "</TelegramRequest>";
