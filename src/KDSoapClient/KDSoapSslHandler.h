@@ -101,7 +101,7 @@ private:
     explicit KDSoapSslHandler(QObject *parent = 0);
     virtual ~KDSoapSslHandler();
 
-    QNetworkReply* m_reply; // krazy:exclude=dpointer could be replaced with a d pointer if needed
+    QNetworkReply* m_reply;
 };
 
 #if QT_VERSION < 0x050000
