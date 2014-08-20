@@ -20,9 +20,10 @@
 **
 **********************************************************************/
 
+#include <QNetworkReply> //may define QT_NO_OPENSSL. krazy:exclude=includes
+
 #ifndef QT_NO_OPENSSL
 #include "KDSoapSslHandler.h"
-#include <QNetworkReply>
 
 KDSoapSslHandler::KDSoapSslHandler(QObject *parent)
     : QObject(parent), m_reply(0)
