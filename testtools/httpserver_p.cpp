@@ -368,7 +368,7 @@ void HttpServerThread::run()
 
         m_partialRequest.clear();
 
-        if (m_headers.value("_path").endsWith("terminateThread")) //krazy:exclude=strings
+        if (m_headers.value("_path").endsWith("terminateThread")) // we're asked to exit
             break; // normal exit
 
         // TODO compared with expected SoapAction
