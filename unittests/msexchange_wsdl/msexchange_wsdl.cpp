@@ -113,7 +113,7 @@ private Q_SLOTS:
         // If this contains <n1:ParentFolderIds/>, the MS Exchange server will reject it:
         // The element 'ParentFolderIds' in namespace '.../2006/messages' has incomplete content.
         QByteArray expectedRequestXml =
-            QByteArray(xmlEnvBegin11()) + '>' +
+            QByteArray(xmlEnvBegin11()) + ">"
                 "<soap:Body>"
                   "<n1:ResolveNames ReturnFullContactData=\"true\" xmlns:n1=\"http://schemas.microsoft.com/exchange/services/2006/messages\">"
                   "<n1:UnresolvedEntry>test</n1:UnresolvedEntry>"
@@ -158,7 +158,7 @@ private Q_SLOTS:
 
         // Check what we sent
         QByteArray expectedRequestXml =
-            QByteArray(xmlEnvBegin11()) + '>' +
+            QByteArray(xmlEnvBegin11()) + ">"
                 "<soap:Body>"
                 "<n1:SyncFolderItems xmlns:n1=\"http://schemas.microsoft.com/exchange/services/2006/messages\">"
                 "<n1:ItemShape>"
@@ -217,7 +217,7 @@ private Q_SLOTS:
 
         // Check what we sent
         QByteArray expectedRequestXml =
-            QByteArray(xmlEnvBegin11()) + '>' +
+            QByteArray(xmlEnvBegin11()) + ">"
                 "<soap:Body>"
                 "<n1:GetFolder xmlns:n1=\"http://schemas.microsoft.com/exchange/services/2006/messages\">"
                   "<n1:FolderShape>"
@@ -264,7 +264,7 @@ private Q_SLOTS:
 
         // Check what we sent
         QByteArray expectedRequestXml =
-            QByteArray(xmlEnvBegin11()) + '>' +
+            QByteArray(xmlEnvBegin11()) + ">"
                 "<soap:Body>"
                 "<n1:CreateItem xmlns:n1=\"http://schemas.microsoft.com/exchange/services/2006/messages\">"
                   "<n1:SavedItemFolderId>"
@@ -320,7 +320,7 @@ private Q_SLOTS:
 
         // Check what we sent
         QByteArray expectedRequestXml =
-            QByteArray(xmlEnvBegin11()) + '>' +
+            QByteArray(xmlEnvBegin11()) + ">"
                 "<soap:Body>"
                 "<n1:UpdateItem ConflictResolution=\"NeverOverwrite\" xmlns:n1=\"http://schemas.microsoft.com/exchange/services/2006/messages\">"
                   "<n1:SavedItemFolderId>"
@@ -374,7 +374,7 @@ private Q_SLOTS:
         //qDebug() << "received data" << server.receivedData();
 
         // Check what we sent
-        QByteArray expectedRequestXml = QByteArray(xmlEnvBegin11()) + '>' +
+        QByteArray expectedRequestXml = QByteArray(xmlEnvBegin11()) + ">" +
         "<soap:Body>"
          "<n1:CreateAttachment xmlns:n1=\"http://schemas.microsoft.com/exchange/services/2006/messages\">"
           "<n1:ParentItemId Id=\"id\" ChangeKey=\"changeKey\"/>"

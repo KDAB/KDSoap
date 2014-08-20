@@ -59,7 +59,7 @@ private Q_SLOTS:
 
         // Check what we sent
         QByteArray expectedRequestXml =
-            QByteArray(xmlEnvBegin11()) + '>' +
+            QByteArray(xmlEnvBegin11()) + ">"
                 "<soap:Body>"
                   "<n1:MyAuthenticate xmlns:n1=\"http://something.mydomain.com/types\">"
                      "<request>"

@@ -240,7 +240,7 @@ private Q_SLOTS:
         QCOMPARE(ret.value(), QByteArray("Foo"));
 
         const QByteArray expectedRequestXml =
-            QByteArray(xmlEnvBegin11()) + '>' +
+            QByteArray(xmlEnvBegin11()) + ">"
             "<soap:Body>"
             "<n1:sendTelegram xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
                "<telegram>48656c6c6f</telegram>"
