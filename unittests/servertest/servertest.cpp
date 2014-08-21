@@ -84,7 +84,7 @@ public:
             contentType = "text/plain";
             return file; // will be deleted by KDSoap
         }
-        return 0;
+        return NULL;
     }
 
     virtual bool validateAuthentication(const KDSoapAuthentication& auth, const QString& path) {
