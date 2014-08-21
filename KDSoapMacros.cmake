@@ -1,3 +1,7 @@
+# Copyright (c) 2011-2014 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
+
+# Redistribution and use is allowed according to the terms of the BSD license.
+
 macro( KDSOAP_GENERATE_WSDL _sources )
   set(KDWSDL2CPP kdwsdl2cpp)
   if (TARGET KDSoap::kdwsdl2cpp)
