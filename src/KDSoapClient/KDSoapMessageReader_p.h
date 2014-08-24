@@ -21,8 +21,8 @@
 **
 **********************************************************************/
 
-#ifndef KSOAPMESSAGEREADER_P_H
-#define KSOAPMESSAGEREADER_P_H
+#ifndef KDSOAPMESSAGEREADER_P_H
+#define KDSOAPMESSAGEREADER_P_H
 
 #include "KDSoapMessage.h"
 

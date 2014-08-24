@@ -270,7 +270,7 @@ namespace std {
  * In other words, it corresponds to a list of XML elements in a SOAP
  * message. It also supports XML attributes.
  */
-class KDSOAP_EXPORT KDSoapValueList : public QList<KDSoapValue>
+class KDSOAP_EXPORT KDSoapValueList : public QList<KDSoapValue> //krazy:exclude=dpointer
 {
 public:
     /**

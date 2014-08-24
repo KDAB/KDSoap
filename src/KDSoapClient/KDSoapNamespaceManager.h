@@ -29,7 +29,7 @@
 /**
  * Repository of namespaces
  */
-class KDSOAP_EXPORT KDSoapNamespaceManager
+class KDSOAP_EXPORT KDSoapNamespaceManager //krazy:exclude=dpointer
 {
 public:
     static QString xmlSchema1999();
@@ -41,7 +41,7 @@ public:
     static QString soapEncoding();
     static QString soapEncoding200305();
 
-private: // TODO instanciate to handle custom namespaces per clientinterface
+private: // TODO instantiate to handle custom namespaces per clientinterface
     KDSoapNamespaceManager();
 };
 

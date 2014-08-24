@@ -20,8 +20,8 @@
 ** clear to you.
 **
 **********************************************************************/
-#ifndef KDSOAPNAMESPACESPREFIXES_H
-#define KDSOAPNAMESPACESPREFIXES_H
+#ifndef KDSOAPNAMESPACEPREFIXES_P_H
+#define KDSOAPNAMESPACEPREFIXES_P_H
 
 #include <QtCore/QMap>
 #include <QtCore/QXmlStreamWriter>

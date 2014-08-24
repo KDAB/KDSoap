@@ -64,7 +64,7 @@ class KDSoapThreadTask : public QObject
 {
     Q_OBJECT
 public:
-    KDSoapThreadTask(KDSoapThreadTaskData* data)
+    explicit KDSoapThreadTask(KDSoapThreadTaskData* data)
         : m_data(data) {}
 
     void process(QNetworkAccessManager& accessManager);
