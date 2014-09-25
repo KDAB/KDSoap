@@ -199,6 +199,9 @@ QString KDSoapServer::logFileName() const
 
 void KDSoapServer::log(const QByteArray &text)
 {
+    if (d->m_logLevel == KDSoapServer::LogNothing)
+        return;
+
     QMutexLocker lock(&d->m_logMutex);
     if (!d->m_logFile.isOpen() && !d->m_logFileName.isEmpty()) {
         d->m_logFile.setFileName(d->m_logFileName);
@@ -213,12 +216,14 @@ void KDSoapServer::log(const QByteArray &text)
 
 void KDSoapServer::flushLogFile()
 {
-    d->m_logFile.flush();
+    if (d->m_logFile.isOpen())
+        d->m_logFile.flush();
 }
 
 void KDSoapServer::closeLogFile()
 {
-    d->m_logFile.close();
+    if (d->m_logFile.isOpen())
+        d->m_logFile.close();
 }
 
 bool KDSoapServer::setExpectedSocketCount(int sockets)
