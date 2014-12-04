@@ -55,9 +55,11 @@ void Binding::loadXML( ParserContext *context, const QDomElement &element )
   mPortTypeName = element.attribute( QLatin1String("type") );
   if ( mPortTypeName.isEmpty() )
     context->messageHandler()->warning( QLatin1String("Binding: 'type' required" ));
-  else
+  else {
+    mPortTypeName.setNameSpace( context->namespaceManager()->uri( mPortTypeName.prefix() ) );
     if ( mPortTypeName.nameSpace().isEmpty() )
       mPortTypeName.setNameSpace( nameSpace() );
+  }
 
   QDomElement child = element.firstChildElement();
   while ( !child.isNull() ) {

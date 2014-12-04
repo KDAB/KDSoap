@@ -82,9 +82,11 @@ BindingOperation WSDL::findBindingOperation( const Binding &binding, const QStri
 
 PortType WSDL::findPortType( const QName &portTypeName ) const
 {
+  // qDebug() << "Looking for portType" << portTypeName.nameSpace() << portTypeName.localName();
   const PortType::List list = mDefinitions.portTypes();
   PortType::List::ConstIterator it;
   for ( it = list.begin(); it != list.end(); ++it ) {
+    // qDebug() << "available portType:" << (*it).nameSpace() << (*it).name();
     if ( (*it).name() == portTypeName.localName() && (*it).nameSpace() == portTypeName.nameSpace() ) {
       return *it;
     }
