@@ -136,7 +136,7 @@ void Converter::generateServerMethod(KODE::Code& code, const Binding& binding, c
             code.addBlock( demarshalVar( part.type(), part.element(), varName, argType, soapValueVarName, false ) );
 
             inputVars += varName;
-            newClass.addIncludes( mTypeMap.headerIncludes( part.type() ) );
+            newClass.addIncludes( mTypeMap.headerIncludes( part.type() ), mTypeMap.forwardDeclarationsForElement( part.element() ) );
             virtualMethod.addArgument( mTypeMap.localInputType( part.type(), part.element() ) + ' ' + varName );
         }
     }
@@ -184,6 +184,8 @@ void Converter::generateServerMethod(KODE::Code& code, const Binding& binding, c
         code += "}";
         Q_ASSERT(!retType.isEmpty());
         virtualMethod.setReturnType(retType);
+
+        newClass.addIncludes( mTypeMap.headerIncludes( retPart.type() ), mTypeMap.forwardDeclarationsForElement( retPart.element() ) );
 
         generateDelayedReponseMethod(methodName, retInputType, retPart, newClass, binding, outputMessage);
     }

@@ -416,6 +416,8 @@ void TypeMap::addSchemaTypes( const XSD::Types &types, const QString& ns )
     entry.builtinType = (*it).builtinType;
     entry.complexType = (*it).complexType;
     entry.baseType = type;
+    if ( !entry.basicType )
+        entry.forwardDeclarations << entry.localType;
 
     // The "FooElement" type isn't necessary, we just point to the resolved type
     // directly, this is much simpler.
