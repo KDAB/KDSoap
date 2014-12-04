@@ -228,11 +228,13 @@ QStringList TypeMap::headers( const QName &typeName ) const
 QStringList TypeMap::forwardDeclarations( const QName &typeName ) const
 {
   QList<Entry>::ConstIterator it = typeEntry( typeName );
+  if ( it == mTypeMap.constEnd() )
+      return QStringList();
   QStringList ret;
   Q_FOREACH (const QString& str, (*it).forwardDeclarations) {
     ret.append(correctSyntaxCpp(str));
   }
-  return it != mTypeMap.constEnd() ? ret : QStringList();
+  return ret;
 }
 
 QStringList TypeMap::headerIncludes( const QName &typeName ) const
