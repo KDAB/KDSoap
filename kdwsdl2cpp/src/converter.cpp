@@ -42,7 +42,7 @@ void Converter::setWSDL( const WSDL &wsdl )
   mNSManager = wsdl.namespaceManager();
 
   // overwrite some default prefixes
-  mNSManager.setPrefix( QLatin1String( "soapenc"), QLatin1String("http://schemas.xmlsoap.org/soap/encoding/") );
+  mNSManager.setPrefix( QLatin1String("soapenc"), QLatin1String("http://schemas.xmlsoap.org/soap/encoding/") );
   mNSManager.setPrefix( QLatin1String("http"), QLatin1String("http://schemas.xmlsoap.org/wsdl/http/") );
   mNSManager.setPrefix( QLatin1String("soap"), QLatin1String("http://schemas.xmlsoap.org/wsdl/soap/") );
   mNSManager.setPrefix( QLatin1String("xsd"), QLatin1String("http://www.w3.org/2001/XMLSchema") );
