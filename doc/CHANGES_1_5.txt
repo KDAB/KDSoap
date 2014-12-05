@@ -16,4 +16,6 @@ Server-side:
 WSDL parser / code generator changes, applying to both client and server side:
 ================================================================
 * Parse namespace on portType correctly
+* Fix infinite recursion when type A contains a member A with minoccurs=0
+
 

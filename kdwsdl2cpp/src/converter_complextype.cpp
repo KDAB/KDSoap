@@ -13,7 +13,33 @@ static bool isElementOptional( const XSD::Element &elem )
     return elem.minOccurs() == 0 || elem.compositor().type() == XSD::Compositor::Choice || elem.compositor().minOccurs() == 0;
 }
 
-static QString polymorphicStorageType(const QString &typeName)
+static bool isElementPolymorphic( const XSD::Element &elem, const KWSDL::TypeMap &typeMap, bool isList )
+{
+    const QString typeName = typeMap.localType( elem.type() );
+    bool polymorphic = typeMap.isPolymorphic( elem.type() ) && !isList;
+    if (polymorphic && (typeName == "QString" || typeName == "bool")) {
+        qWarning() << "Shouldn't happen: polymorphic" << typeName << ". Comes from element" << elem.name() << "type" << elem.type();
+        Q_ASSERT(0);
+    }
+    return polymorphic;
+}
+
+static bool usePointerForElement( const XSD::Element &elem, const KODE::Class &newClass, const KWSDL::TypeMap &typeMap, bool isList )
+{
+    const QString typeName = typeMap.localType( elem.type() );
+    const bool polymorphic = isElementPolymorphic( elem, typeMap, isList );
+    if ( !isList && isElementOptional( elem ) && newClass.name() == typeName ) {
+        if (qgetenv("KDSOAP_TYPE_DEBUG").toInt())
+            qDebug() << "Making element polymorphic:" << typeName << "in" << newClass.name();
+        // Optional "Foo" in class "Foo" - can't just have a value and bool, we need a pointer, to avoid infinite recursion
+        //use == XSD::Attribute::Required;
+        return true;
+    }
+    return polymorphic;
+}
+
+
+static QString pointerStorageType(const QString &typeName)
 {
     if (typeName == "QString" || typeName == "bool") {
         qWarning() << "Should not happen: polymorphic" << typeName;
@@ -67,7 +93,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
             if ( mTypeMap.isComplexType( baseName ) ) {
                 newClass.addBaseClass( typeName );
             } else {
-                const QString variableName = generateMemberVariable( "value", typeName, inputTypeName, newClass, XSD::Attribute::Required, false );
+                const QString variableName = generateMemberVariable( "value", typeName, inputTypeName, newClass, XSD::Attribute::Required, false, false );
 
                 // convenience constructor
                 KODE::Function conctor( upperlize( newClass.name() ) );
@@ -106,7 +132,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
 
             bool isList = false;
             if ( elemIt.maxOccurs() > 1 || elemIt.compositor().maxOccurs() > 1 ) {
-                QString itemType = mTypeMap.isPolymorphic( elemIt.type() ) ? polymorphicStorageType( typeName ) : typeName;
+                QString itemType = mTypeMap.isPolymorphic( elemIt.type() ) ? pointerStorageType( typeName ) : typeName;
                 typeName = listTypeFor(itemType, newClass);
                 inputTypeName = QLatin1String("const ") + typeName + QLatin1String("&");
                 isList = true;
@@ -115,7 +141,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
                 QString arrayTypeName = mTypeMap.localType( type->arrayType() );
                 Q_ASSERT(!arrayTypeName.isEmpty());
                 if ( mTypeMap.isPolymorphic( type->arrayType() ) )
-                    arrayTypeName = polymorphicStorageType( arrayTypeName );
+                    arrayTypeName = pointerStorageType( arrayTypeName );
                 //qDebug() << "array of" << attribute.arrayType() << "->" << arrayTypeName;
                 typeName = listTypeFor(arrayTypeName, newClass);
                 newClass.addInclude(QString(), arrayTypeName); // add forward declaration
@@ -124,13 +150,10 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
                 isList = true;
             }
 
-            const bool polymorphic = mTypeMap.isPolymorphic( elemIt.type() ) && !isList;
-            if (polymorphic && (typeName == "QString" || typeName == "bool")) {
-                qWarning() << "Shouldn't happen: polymorphic" << typeName << ". Comes from element" << elemIt.name() << "type" << elemIt.type();
-                Q_ASSERT(0);
-            }
             XSD::Attribute::AttributeUse use = isElementOptional( elemIt ) ? XSD::Attribute::Optional : XSD::Attribute::Required;
-            generateMemberVariable( KODE::Style::makeIdentifier(elemIt.name()), typeName, inputTypeName, newClass, use, polymorphic );
+            const bool polymorphic = isElementPolymorphic( elemIt, mTypeMap, isList );
+            const bool usePointer = usePointerForElement( elemIt, newClass, mTypeMap, isList );
+            generateMemberVariable( KODE::Style::makeIdentifier(elemIt.name()), typeName, inputTypeName, newClass, use, usePointer, polymorphic );
         }
 
         // include header
@@ -152,7 +175,7 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
         inputTypeName = mTypeMap.localInputType( attribute.type(), QName() );
         //qDebug() << "Attribute" << attribute.name();
 
-        generateMemberVariable( KODE::Style::makeIdentifier(attribute.name()), typeName, inputTypeName, newClass, attribute.attributeUse(), false );
+        generateMemberVariable( KODE::Style::makeIdentifier(attribute.name()), typeName, inputTypeName, newClass, attribute.attributeUse(), false, false );
 
         // include header
         newClass.addIncludes( QStringList(), mTypeMap.forwardDeclarations( attribute.type() ) );
@@ -203,10 +226,10 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
 }
 
 // Called for each element and for each attribute of a complex type, as well as for the base class "value".
-QString Converter::generateMemberVariable(const QString &rawName, const QString &typeName, const QString &inputTypeName, KODE::Class &newClass, XSD::Attribute::AttributeUse use, bool polymorphic)
+QString Converter::generateMemberVariable(const QString &rawName, const QString &typeName, const QString &inputTypeName, KODE::Class &newClass, XSD::Attribute::AttributeUse use, bool usePointer, bool polymorphic)
 {
     // member variable
-    const QString storageType = polymorphic ? polymorphicStorageType(typeName) : typeName;
+    const QString storageType = usePointer ? pointerStorageType(typeName) : typeName;
     KODE::MemberVariable variable( rawName, storageType );
     addVariableInitializer( variable );
     newClass.addMemberVariable( variable );
@@ -221,7 +244,7 @@ QString Converter::generateMemberVariable(const QString &rawName, const QString 
     bool prohibited = ( use == XSD::Attribute::Prohibited );
     const KODE::Function::AccessSpecifier access = ( prohibited ) ? KODE::Function::Private : KODE::Function::Public;
 
-    if ( polymorphic ) {
+    if ( usePointer ) {
         newClass.addInclude("QSharedPointer");
 
         // Give server-side implementations a way to dig into the received data
@@ -246,10 +269,14 @@ QString Converter::generateMemberVariable(const QString &rawName, const QString 
     if ( optional ) {
         code += variableName + "_nil = false;" + COMMENT;
     }
-    if ( polymorphic )
-        code += variableName + QLatin1String(" = ") + storageType + QLatin1Char('(') + argName + QLatin1String("._kd_clone());");
-    else
+    if ( usePointer ) {
+        if ( polymorphic )
+            code += variableName + QLatin1String(" = ") + storageType + QLatin1Char('(') + argName + QLatin1String("._kd_clone());");
+        else
+            code += variableName + QLatin1String(" = ") + storageType + QLatin1String("(new ") + typeName + QLatin1Char('(') + argName + QLatin1String("));");
+    }else {
         code += variableName + QLatin1String(" = ") + argName + QLatin1Char(';');
+    }
     setter.setBody( code );
 
     // getter method
@@ -262,8 +289,8 @@ QString Converter::generateMemberVariable(const QString &rawName, const QString 
         else
             optionalTypeName = typeName;
     }
-    KODE::Function getter( argName, polymorphic ? QString("const " + typeName + '&') : (optional ? optionalTypeName : typeName), access );
-    if ( polymorphic )
+    KODE::Function getter( argName, usePointer ? QString("const " + typeName + '&') : (optional ? optionalTypeName : typeName), access );
+    if ( usePointer )
         getter.setBody( QLatin1String("return *") + variableName + QLatin1Char(';') );
     else if ( optional ) {
         if (Settings::self()->optionalElementType() == Settings::ERawPointer) {
@@ -334,11 +361,11 @@ KODE::Code Converter::demarshalVarHelper( const QName& type, const QName& elemen
 }
 
 // Helper method for the generation of the deserialize() method, also used by convertClientCall
-KODE::Code Converter::demarshalVar( const QName& type, const QName& elementType, const QString& variableName, const QString& qtTypeName, const QString& soapValueVarName, bool optional ) const
+KODE::Code Converter::demarshalVar( const QName& type, const QName& elementType, const QString& variableName, const QString& qtTypeName, const QString& soapValueVarName, bool optional, bool usePointer ) const
 {
     const bool isPolymorphic = mTypeMap.isPolymorphic( type, elementType );
-    if ( isPolymorphic ) {
-        const QString storageType = polymorphicStorageType( qtTypeName );
+    if ( usePointer || isPolymorphic ) {
+        const QString storageType = pointerStorageType( qtTypeName );
         KODE::Code code;
         code += variableName + "_as_kdsoap_value = " + soapValueVarName + ";" + COMMENT;
         code += "if (!" + variableName + ")";
@@ -370,7 +397,7 @@ KODE::Code Converter::demarshalArrayVar( const QName& type, const QString& varia
         QString toAppend = tempVar;
         const bool isPolymorphic = mTypeMap.isPolymorphic( type );
         if ( isPolymorphic ) {
-            const QString storageType = polymorphicStorageType( qtTypeName );
+            const QString storageType = pointerStorageType( qtTypeName );
             toAppend = storageType + "(new " + qtTypeName + "(" + tempVar + "))";
         }
         code += variableName + QLatin1String(".append(") + toAppend + QLatin1String(");") + COMMENT;
@@ -420,7 +447,7 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
             else
                 value += variableName + QLatin1String(".serialize()");
             marshalCode += QLatin1String("KDSoapValue mainValue(valueName, ") + value + QLatin1String(", ") + typeArgs + QLatin1String(");") + COMMENT;
-            demarshalCode += demarshalVar( baseName, QName(), variableName, typeName, QLatin1String("mainValue"), false );
+            demarshalCode += demarshalVar( baseName, QName(), variableName, typeName, QLatin1String("mainValue"), false, false );
         }
 
     } else {
@@ -535,9 +562,11 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
                 else
                   serializer.setElementName( qualName );
                 serializer.setOmitIfEmpty( optional );
+                const bool usePointer = usePointerForElement( elem, newClass, mTypeMap, false );
+                serializer.setUsePointer( usePointer );
                 marshalCode.addBlock( serializer.generate() );
 
-                demarshalCode.addBlock( demarshalVar( elem.type(), QName(), variableName, typeName, "val", optional ) );
+                demarshalCode.addBlock( demarshalVar( elem.type(), QName(), variableName, typeName, "val", optional, usePointer ) );
             }
 
             demarshalCode.unindent();
@@ -578,7 +607,7 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
 
             const QString typeName = mTypeMap.localType( attribute.type() );
             Q_ASSERT(!typeName.isEmpty());
-            demarshalCode.addBlock( demarshalVar( attribute.type(), QName(), variableName, typeName, "val", attribute.attributeUse() == XSD::Attribute::Optional ) );
+            demarshalCode.addBlock( demarshalVar( attribute.type(), QName(), variableName, typeName, "val", attribute.attributeUse() == XSD::Attribute::Optional, false ) );
 
             demarshalCode.unindent();
             demarshalCode += "}";

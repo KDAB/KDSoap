@@ -136,7 +136,7 @@ void Converter::generateServerMethod(KODE::Code& code, const Binding& binding, c
             }
 
             // what if there's more than one?
-            code.addBlock( demarshalVar( part.type(), part.element(), varName, argType, soapValueVarName, false ) );
+            code.addBlock( demarshalVar( part.type(), part.element(), varName, argType, soapValueVarName, false, false ) );
 
             inputVars += varName;
             newClass.addIncludes( mTypeMap.headerIncludes( part.type() ), mTypeMap.forwardDeclarationsForElement( part.element() ) );

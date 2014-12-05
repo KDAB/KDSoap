@@ -72,6 +72,13 @@ public:
   void setIsQualified( bool qualified );
 
   /**
+   * @brief sets whether to use -> instead of . because the variable is a pointer
+   * @param qualified
+   * The default is false.
+   */
+  void setUsePointer( bool usePointer );
+
+  /**
    * The main method: generate!
    * @return the generated code
    */
@@ -90,6 +97,7 @@ private:
   bool mIsQualified;
   bool mNillable;
   bool mOmitIfEmpty;
+  bool mUsePointer;
 };
 
 #endif // ELEMENTARGUMENTSERIALIZER_H

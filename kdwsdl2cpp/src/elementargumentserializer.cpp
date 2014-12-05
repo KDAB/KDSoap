@@ -12,7 +12,8 @@ ElementArgumentSerializer::ElementArgumentSerializer( const TypeMap &typeMap, co
   mAppend(false),
   mIsQualified(false),
   mNillable(false),
-  mOmitIfEmpty(false)
+  mOmitIfEmpty(false),
+  mUsePointer(false)
 {
 
 }
@@ -57,6 +58,11 @@ void ElementArgumentSerializer::setIsQualified( bool qualified )
   mIsQualified = qualified;
 }
 
+void ElementArgumentSerializer::setUsePointer(bool usePointer)
+{
+  mUsePointer = usePointer;
+}
+
 KODE::Code ElementArgumentSerializer::generate() const
 {
   Q_ASSERT(!mLocalVarName.isEmpty());
@@ -88,7 +94,7 @@ KODE::Code ElementArgumentSerializer::generate() const
     }
 
     if ( isComplex ) {
-      const QString op = isPolymorphic ? "->" : ".";
+      const QString op = (isPolymorphic || mUsePointer) ? "->" : ".";
       block += QLatin1String("KDSoapValue ") + mValueVarName + QLatin1Char('(') + mLocalVarName + op + QLatin1String("serialize(") + mNameArg + QLatin1String("));") + COMMENT;
     } else {
       if ( mTypeMap.isBuiltinType( mType, mElementType ) ) {
