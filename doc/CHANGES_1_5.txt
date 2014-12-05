@@ -1,0 +1,19 @@
+General:
+========
+*
+
+Client-side:
+============
+*
+
+Server-side:
+============
+* Rename request and response to _request and _response in order to avoid clashes
+  with variable names coming from the WSDL.
+
+* Add missing fwd decls for the args used in server methods.
+
+WSDL parser / code generator changes, applying to both client and server side:
+================================================================
+* Parse namespace on portType correctly
+
