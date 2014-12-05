@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8'?><!-- Published by JAX-WS RI at http://jax-ws.dev.java.net. RI's version is JAX-WS RI 2.1.7-b01-. --><xs:schema xmlns:tns="urn:encap:server:1.0:authstateless" xmlns:ns1="urn:oasis:names:tc:SAML:2.0:protocol" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" version="1.0" targetNamespace="urn:encap:server:1.0:authstateless">
+
+<xs:import namespace="urn:oasis:names:tc:SAML:2.0:protocol" schemaLocation="file0.xsd" />
+
+<xs:element name="ContextRequest" type="tns:ContextRequestType" />
+
+<xs:element name="ContextResponse" type="tns:ContextResponseType" />
+
+<xs:element name="NameValuePair" type="tns:NameValuePairType" />
+
+<xs:element name="PlatformContext" type="tns:PlatformContextType" />
+
+<xs:complexType name="ContextResponseType">
+<xs:complexContent>
+<xs:extension base="ns1:StatusResponseType">
+<xs:sequence>
+<xs:element name="PlatformContext" type="tns:PlatformContextType" />
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="PlatformContextType">
+<xs:sequence>
+<xs:element name="NameValuePair" type="tns:NameValuePairType" minOccurs="0" maxOccurs="unbounded" />
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="NameValuePairType">
+<xs:sequence />
+<xs:attribute name="Name" type="xs:string" use="required" />
+<xs:attribute name="Value" type="xs:string" use="required" />
+</xs:complexType>
+
+<xs:complexType name="ContextRequestType">
+<xs:sequence>
+<xs:element name="PlatformContext" type="tns:PlatformContextType" />
+</xs:sequence>
+</xs:complexType>
+</xs:schema>

@@ -1,0 +1,128 @@
+<?xml version='1.0' encoding='UTF-8'?><!-- Published by JAX-WS RI at http://jax-ws.dev.java.net. RI's version is JAX-WS RI 2.1.7-b01-. --><xs:schema xmlns:tns="http://www.w3.org/2001/04/xmlenc#" xmlns:ns1="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" version="1.0" targetNamespace="http://www.w3.org/2001/04/xmlenc#">
+
+<xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="file4.xsd" />
+
+<xs:element name="AgreementMethod" type="tns:AgreementMethodType" />
+
+<xs:element name="CipherData" type="tns:CipherDataType" />
+
+<xs:element name="CipherReference" type="tns:CipherReferenceType" />
+
+<xs:element name="EncryptedData" type="tns:EncryptedDataType" />
+
+<xs:element name="EncryptedKey" type="tns:EncryptedKeyType" />
+
+<xs:element name="EncryptionProperties" type="tns:EncryptionPropertiesType" />
+
+<xs:element name="EncryptionProperty" type="tns:EncryptionPropertyType" />
+
+<xs:element name="ReferenceList">
+<xs:complexType>
+<xs:sequence>
+<xs:choice minOccurs="0" maxOccurs="unbounded">
+<xs:element name="KeyReference" type="tns:ReferenceType" />
+<xs:element name="DataReference" type="tns:ReferenceType" />
+</xs:choice>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+
+<xs:complexType name="EncryptedDataType">
+<xs:complexContent>
+<xs:extension base="tns:EncryptedType">
+<xs:sequence />
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="EncryptedType" abstract="true">
+<xs:sequence>
+<xs:element name="EncryptionMethod" type="tns:EncryptionMethodType" minOccurs="0" />
+<xs:element ref="ns1:KeyInfo" minOccurs="0" />
+<xs:element name="CipherData" type="tns:CipherDataType" />
+<xs:element name="EncryptionProperties" type="tns:EncryptionPropertiesType" minOccurs="0" />
+</xs:sequence>
+<xs:attribute name="Id" type="xs:ID" />
+<xs:attribute name="Type" type="xs:anyURI" />
+<xs:attribute name="MimeType" type="xs:string" />
+<xs:attribute name="Encoding" type="xs:anyURI" />
+</xs:complexType>
+
+<xs:complexType name="EncryptionMethodType" mixed="true">
+<xs:sequence>
+<xs:choice minOccurs="0" maxOccurs="unbounded">
+<xs:element name="KeySize" type="xs:integer" />
+<xs:element name="OAEPparams" type="xs:base64Binary" />
+<xs:any processContents="lax" namespace="##other" />
+</xs:choice>
+</xs:sequence>
+<xs:attribute name="Algorithm" type="xs:anyURI" use="required" />
+</xs:complexType>
+
+<xs:complexType name="EncryptedKeyType">
+<xs:complexContent>
+<xs:extension base="tns:EncryptedType">
+<xs:sequence>
+<xs:element ref="tns:ReferenceList" minOccurs="0" />
+<xs:element name="CarriedKeyName" type="xs:string" minOccurs="0" />
+</xs:sequence>
+<xs:attribute name="Recipient" type="xs:string" />
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="CipherDataType">
+<xs:sequence>
+<xs:element name="CipherValue" type="xs:base64Binary" minOccurs="0" />
+<xs:element name="CipherReference" type="tns:CipherReferenceType" minOccurs="0" />
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="CipherReferenceType">
+<xs:sequence>
+<xs:element name="Transforms" type="tns:TransformsType" minOccurs="0" />
+</xs:sequence>
+<xs:attribute name="URI" type="xs:anyURI" use="required" />
+</xs:complexType>
+
+<xs:complexType name="TransformsType">
+<xs:sequence>
+<xs:element ref="ns1:Transform" maxOccurs="unbounded" />
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="EncryptionPropertiesType">
+<xs:sequence>
+<xs:element name="EncryptionProperty" type="tns:EncryptionPropertyType" maxOccurs="unbounded" />
+</xs:sequence>
+<xs:attribute name="Id" type="xs:ID" />
+</xs:complexType>
+
+<xs:complexType name="EncryptionPropertyType" mixed="true">
+<xs:sequence>
+<xs:any processContents="lax" namespace="##other" minOccurs="0" maxOccurs="unbounded" />
+</xs:sequence>
+<xs:attribute name="Target" type="xs:anyURI" />
+<xs:attribute name="Id" type="xs:ID" />
+<xs:anyAttribute namespace="##other" processContents="skip" />
+</xs:complexType>
+
+<xs:complexType name="ReferenceType">
+<xs:sequence>
+<xs:any processContents="lax" namespace="##other" minOccurs="0" maxOccurs="unbounded" />
+</xs:sequence>
+<xs:attribute name="URI" type="xs:anyURI" use="required" />
+</xs:complexType>
+
+<xs:complexType name="AgreementMethodType" mixed="true">
+<xs:sequence>
+<xs:choice minOccurs="0" maxOccurs="unbounded">
+<xs:element name="RecipientKeyInfo" type="ns1:KeyInfoType" />
+<xs:element name="KA-Nonce" type="xs:base64Binary" />
+<xs:element name="OriginatorKeyInfo" type="ns1:KeyInfoType" />
+<xs:any processContents="lax" namespace="##other" />
+</xs:choice>
+</xs:sequence>
+<xs:attribute name="Algorithm" type="xs:anyURI" use="required" />
+</xs:complexType>
+</xs:schema>

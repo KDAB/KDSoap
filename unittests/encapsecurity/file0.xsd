@@ -1,0 +1,335 @@
+<?xml version='1.0' encoding='UTF-8'?><!-- Published by JAX-WS RI at http://jax-ws.dev.java.net. RI's version is JAX-WS RI 2.1.7-b01-. --><xs:schema xmlns:tns="urn:oasis:names:tc:SAML:2.0:protocol" xmlns:ns2="http://www.w3.org/2000/09/xmldsig#" xmlns:ns1="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" version="1.0" targetNamespace="urn:oasis:names:tc:SAML:2.0:protocol">
+
+<xs:import namespace="urn:oasis:names:tc:SAML:2.0:assertion" schemaLocation="file1.xsd" />
+
+<xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="file4.xsd" />
+
+<xs:element name="Artifact" type="xs:string" />
+
+<xs:element name="ArtifactResolve" type="tns:ArtifactResolveType" />
+
+<xs:element name="ArtifactResponse" type="tns:ArtifactResponseType" />
+
+<xs:element name="AssertionIDRequest" type="tns:AssertionIDRequestType" />
+
+<xs:element name="AttributeQuery" type="tns:AttributeQueryType" />
+
+<xs:element name="AuthnQuery" type="tns:AuthnQueryType" />
+
+<xs:element name="AuthnRequest" type="tns:AuthnRequestType" />
+
+<xs:element name="AuthzDecisionQuery" type="tns:AuthzDecisionQueryType" />
+
+<xs:element name="Extensions" type="tns:ExtensionsType" />
+
+<xs:element name="GetComplete" type="xs:string" />
+
+<xs:element name="IDPEntry" type="tns:IDPEntryType" />
+
+<xs:element name="IDPList" type="tns:IDPListType" />
+
+<xs:element name="LogoutRequest" type="tns:LogoutRequestType" />
+
+<xs:element name="LogoutResponse" type="tns:StatusResponseType" />
+
+<xs:element name="ManageNameIDRequest" type="tns:ManageNameIDRequestType" />
+
+<xs:element name="ManageNameIDResponse" type="tns:StatusResponseType" />
+
+<xs:element name="NameIDMappingRequest" type="tns:NameIDMappingRequestType" />
+
+<xs:element name="NameIDMappingResponse" type="tns:NameIDMappingResponseType" />
+
+<xs:element name="NameIDPolicy" type="tns:NameIDPolicyType" />
+
+<xs:element name="NewEncryptedID" type="ns1:EncryptedElementType" />
+
+<xs:element name="NewID" type="xs:string" />
+
+<xs:element name="RequestedAuthnContext" type="tns:RequestedAuthnContextType" />
+
+<xs:element name="RequesterID" type="xs:string" />
+
+<xs:element name="Response" type="tns:ResponseType" />
+
+<xs:element name="Scoping" type="tns:ScopingType" />
+
+<xs:element name="SessionIndex" type="xs:string" />
+
+<xs:element name="Status" type="tns:StatusType" />
+
+<xs:element name="StatusCode" type="tns:StatusCodeType" />
+
+<xs:element name="StatusDetail" type="tns:StatusDetailType" />
+
+<xs:element name="StatusMessage" type="xs:string" />
+
+<xs:element name="SubjectQuery" type="tns:SubjectQueryAbstractType" />
+
+<xs:element name="Terminate" type="tns:TerminateType" />
+
+<xs:complexType name="StatusResponseType">
+<xs:sequence>
+<xs:element ref="ns1:Issuer" minOccurs="0" />
+<xs:element ref="ns2:Signature" minOccurs="0" />
+<xs:element name="Extensions" type="tns:ExtensionsType" minOccurs="0" />
+<xs:element name="Status" type="tns:StatusType" />
+</xs:sequence>
+<xs:attribute name="ID" type="xs:ID" use="required" />
+<xs:attribute name="InResponseTo" type="xs:NCName" />
+<xs:attribute name="Version" type="xs:string" use="required" />
+<xs:attribute name="IssueInstant" type="xs:dateTime" use="required" />
+<xs:attribute name="Destination" type="xs:anyURI" />
+<xs:attribute name="Consent" type="xs:anyURI" />
+</xs:complexType>
+
+<xs:complexType name="ExtensionsType">
+<xs:sequence>
+<xs:any processContents="lax" namespace="##other" minOccurs="0" maxOccurs="unbounded" />
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="IDPListType">
+<xs:sequence>
+<xs:element name="IDPEntry" type="tns:IDPEntryType" maxOccurs="unbounded" />
+<xs:element name="GetComplete" type="xs:anyURI" minOccurs="0" />
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="IDPEntryType">
+<xs:sequence />
+<xs:attribute name="ProviderID" type="xs:anyURI" use="required" />
+<xs:attribute name="Name" type="xs:string" />
+<xs:attribute name="Loc" type="xs:anyURI" />
+</xs:complexType>
+
+<xs:complexType name="LogoutRequestType">
+<xs:complexContent>
+<xs:extension base="tns:RequestAbstractType">
+<xs:sequence>
+<xs:element ref="ns1:BaseID" minOccurs="0" />
+<xs:element ref="ns1:NameID" minOccurs="0" />
+<xs:element ref="ns1:EncryptedID" minOccurs="0" />
+<xs:element name="SessionIndex" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+</xs:sequence>
+<xs:attribute name="Reason" type="xs:string" />
+<xs:attribute name="NotOnOrAfter" type="xs:dateTime" />
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="RequestAbstractType" abstract="true">
+<xs:sequence>
+<xs:element ref="ns1:Issuer" minOccurs="0" />
+<xs:element ref="ns2:Signature" minOccurs="0" />
+<xs:element name="Extensions" type="tns:ExtensionsType" minOccurs="0" />
+</xs:sequence>
+<xs:attribute name="ID" type="xs:ID" use="required" />
+<xs:attribute name="Version" type="xs:string" use="required" />
+<xs:attribute name="IssueInstant" type="xs:dateTime" use="required" />
+<xs:attribute name="Destination" type="xs:anyURI" />
+<xs:attribute name="Consent" type="xs:anyURI" />
+</xs:complexType>
+
+<xs:complexType name="ArtifactResolveType">
+<xs:complexContent>
+<xs:extension base="tns:RequestAbstractType">
+<xs:sequence>
+<xs:element name="Artifact" type="xs:string" />
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="ManageNameIDRequestType">
+<xs:complexContent>
+<xs:extension base="tns:RequestAbstractType">
+<xs:sequence>
+<xs:element ref="ns1:NameID" minOccurs="0" />
+<xs:element ref="ns1:EncryptedID" minOccurs="0" />
+<xs:element name="NewID" type="xs:string" minOccurs="0" />
+<xs:element name="NewEncryptedID" type="ns1:EncryptedElementType" minOccurs="0" />
+<xs:element name="Terminate" type="tns:TerminateType" minOccurs="0" />
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="TerminateType">
+<xs:sequence />
+</xs:complexType>
+
+<xs:complexType name="AuthnRequestType">
+<xs:complexContent>
+<xs:extension base="tns:RequestAbstractType">
+<xs:sequence>
+<xs:element ref="ns1:Subject" minOccurs="0" />
+<xs:element name="NameIDPolicy" type="tns:NameIDPolicyType" minOccurs="0" />
+<xs:element ref="ns1:Conditions" minOccurs="0" />
+<xs:element name="RequestedAuthnContext" type="tns:RequestedAuthnContextType" minOccurs="0" />
+<xs:element name="Scoping" type="tns:ScopingType" minOccurs="0" />
+</xs:sequence>
+<xs:attribute name="ForceAuthn" type="xs:boolean" />
+<xs:attribute name="IsPassive" type="xs:boolean" />
+<xs:attribute name="ProtocolBinding" type="xs:anyURI" />
+<xs:attribute name="AssertionConsumerServiceIndex" type="xs:unsignedShort" />
+<xs:attribute name="AssertionConsumerServiceURL" type="xs:anyURI" />
+<xs:attribute name="AttributeConsumingServiceIndex" type="xs:unsignedShort" />
+<xs:attribute name="ProviderName" type="xs:string" />
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="NameIDPolicyType">
+<xs:sequence />
+<xs:attribute name="Format" type="xs:anyURI" />
+<xs:attribute name="SPNameQualifier" type="xs:string" />
+<xs:attribute name="AllowCreate" type="xs:boolean" />
+</xs:complexType>
+
+<xs:complexType name="RequestedAuthnContextType">
+<xs:sequence>
+<xs:element ref="ns1:AuthnContextClassRef" minOccurs="0" maxOccurs="unbounded" />
+<xs:element ref="ns1:AuthnContextDeclRef" minOccurs="0" maxOccurs="unbounded" />
+</xs:sequence>
+<xs:attribute name="Comparison" type="tns:AuthnContextComparisonType" />
+</xs:complexType>
+
+<xs:complexType name="ScopingType">
+<xs:sequence>
+<xs:element name="IDPList" type="tns:IDPListType" minOccurs="0" />
+<xs:element name="RequesterID" type="xs:anyURI" minOccurs="0" maxOccurs="unbounded" />
+</xs:sequence>
+<xs:attribute name="ProxyCount" type="xs:nonNegativeInteger" />
+</xs:complexType>
+
+<xs:complexType name="AssertionIDRequestType">
+<xs:complexContent>
+<xs:extension base="tns:RequestAbstractType">
+<xs:sequence>
+<xs:element ref="ns1:AssertionIDRef" maxOccurs="unbounded" />
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="SubjectQueryAbstractType" abstract="true">
+<xs:complexContent>
+<xs:extension base="tns:RequestAbstractType">
+<xs:sequence>
+<xs:element ref="ns1:Subject" />
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="AuthzDecisionQueryType">
+<xs:complexContent>
+<xs:extension base="tns:SubjectQueryAbstractType">
+<xs:sequence>
+<xs:element ref="ns1:Action" maxOccurs="unbounded" />
+<xs:element ref="ns1:Evidence" minOccurs="0" />
+</xs:sequence>
+<xs:attribute name="Resource" type="xs:anyURI" use="required" />
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="AuthnQueryType">
+<xs:complexContent>
+<xs:extension base="tns:SubjectQueryAbstractType">
+<xs:sequence>
+<xs:element name="RequestedAuthnContext" type="tns:RequestedAuthnContextType" minOccurs="0" />
+</xs:sequence>
+<xs:attribute name="SessionIndex" type="xs:string" />
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="AttributeQueryType">
+<xs:complexContent>
+<xs:extension base="tns:SubjectQueryAbstractType">
+<xs:sequence>
+<xs:element ref="ns1:Attribute" minOccurs="0" maxOccurs="unbounded" />
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="NameIDMappingRequestType">
+<xs:complexContent>
+<xs:extension base="tns:RequestAbstractType">
+<xs:sequence>
+<xs:element ref="ns1:BaseID" minOccurs="0" />
+<xs:element ref="ns1:NameID" minOccurs="0" />
+<xs:element ref="ns1:EncryptedID" minOccurs="0" />
+<xs:element name="NameIDPolicy" type="tns:NameIDPolicyType" />
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="ArtifactResponseType">
+<xs:complexContent>
+<xs:extension base="tns:StatusResponseType">
+<xs:sequence>
+<xs:any processContents="lax" namespace="##other" />
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="StatusCodeType">
+<xs:sequence>
+<xs:element name="StatusCode" type="tns:StatusCodeType" minOccurs="0" />
+</xs:sequence>
+<xs:attribute name="Value" type="xs:anyURI" use="required" />
+</xs:complexType>
+
+<xs:complexType name="NameIDMappingResponseType">
+<xs:complexContent>
+<xs:extension base="tns:StatusResponseType">
+<xs:sequence>
+<xs:element ref="ns1:NameID" minOccurs="0" />
+<xs:element ref="ns1:EncryptedID" minOccurs="0" />
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="StatusDetailType">
+<xs:sequence>
+<xs:any processContents="lax" namespace="##other" minOccurs="0" maxOccurs="unbounded" />
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="StatusType">
+<xs:sequence>
+<xs:element name="StatusCode" type="tns:StatusCodeType" />
+<xs:element name="StatusMessage" type="xs:string" minOccurs="0" />
+<xs:element name="StatusDetail" type="tns:StatusDetailType" minOccurs="0" />
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="ResponseType">
+<xs:complexContent>
+<xs:extension base="tns:StatusResponseType">
+<xs:sequence>
+<xs:choice minOccurs="0" maxOccurs="unbounded">
+<xs:element ref="ns1:EncryptedAssertion" />
+<xs:element ref="ns1:Assertion" />
+</xs:choice>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:simpleType name="AuthnContextComparisonType">
+<xs:restriction base="xs:string">
+<xs:enumeration value="exact" />
+<xs:enumeration value="minimum" />
+<xs:enumeration value="maximum" />
+<xs:enumeration value="better" />
+</xs:restriction>
+</xs:simpleType>
+</xs:schema>

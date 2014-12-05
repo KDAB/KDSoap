@@ -1,0 +1,313 @@
+<?xml version='1.0' encoding='UTF-8'?><!-- Published by JAX-WS RI at http://jax-ws.dev.java.net. RI's version is JAX-WS RI 2.1.7-b01-. --><xs:schema xmlns:tns="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:ns2="http://www.w3.org/2000/09/xmldsig#" xmlns:ns1="http://www.w3.org/2001/04/xmlenc#" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" version="1.0" targetNamespace="urn:oasis:names:tc:SAML:2.0:assertion">
+
+<xs:import namespace="http://www.w3.org/2001/04/xmlenc#" schemaLocation="file3.xsd" />
+
+<xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="file4.xsd" />
+
+<xs:element name="Action" type="tns:ActionType" />
+
+<xs:element name="Advice" type="tns:AdviceType" />
+
+<xs:element name="Assertion" type="tns:AssertionType" />
+
+<xs:element name="AssertionIDRef" type="xs:string" />
+
+<xs:element name="AssertionURIRef" type="xs:string" />
+
+<xs:element name="Attribute" type="tns:AttributeType" />
+
+<xs:element name="AttributeStatement" type="tns:AttributeStatementType" />
+
+<xs:element name="AttributeValue" type="xs:anyType" />
+
+<xs:element name="Audience" type="xs:string" />
+
+<xs:element name="AudienceRestriction" type="tns:AudienceRestrictionType" />
+
+<xs:element name="AuthenticatingAuthority" type="xs:string" />
+
+<xs:element name="AuthnContext" type="tns:AuthnContextType" />
+
+<xs:element name="AuthnContextClassRef" type="xs:string" />
+
+<xs:element name="AuthnContextDecl" type="xs:anyType" />
+
+<xs:element name="AuthnContextDeclRef" type="xs:string" />
+
+<xs:element name="AuthnStatement" type="tns:AuthnStatementType" />
+
+<xs:element name="AuthzDecisionStatement" type="tns:AuthzDecisionStatementType" />
+
+<xs:element name="BaseID" type="tns:BaseIDAbstractType" />
+
+<xs:element name="Condition" type="tns:ConditionAbstractType" />
+
+<xs:element name="Conditions" type="tns:ConditionsType" />
+
+<xs:element name="EncryptedAssertion" type="tns:EncryptedElementType" />
+
+<xs:element name="EncryptedAttribute" type="tns:EncryptedElementType" />
+
+<xs:element name="EncryptedID" type="tns:EncryptedElementType" />
+
+<xs:element name="Evidence" type="tns:EvidenceType" />
+
+<xs:element name="Issuer" type="tns:NameIDType" />
+
+<xs:element name="NameID" type="tns:NameIDType" />
+
+<xs:element name="OneTimeUse" type="tns:OneTimeUseType" />
+
+<xs:element name="ProxyRestriction" type="tns:ProxyRestrictionType" />
+
+<xs:element name="Statement" type="tns:StatementAbstractType" />
+
+<xs:element name="Subject" type="tns:SubjectType" />
+
+<xs:element name="SubjectConfirmation" type="tns:SubjectConfirmationType" />
+
+<xs:element name="SubjectConfirmationData" type="tns:SubjectConfirmationDataType" />
+
+<xs:element name="SubjectLocality" type="tns:SubjectLocalityType" />
+
+<xs:complexType name="AttributeType">
+<xs:sequence>
+<xs:element name="AttributeValue" type="xs:anyType" nillable="true" minOccurs="0" maxOccurs="unbounded" />
+</xs:sequence>
+<xs:attribute name="Name" type="xs:string" use="required" />
+<xs:attribute name="NameFormat" type="xs:anyURI" />
+<xs:attribute name="FriendlyName" type="xs:string" />
+<xs:anyAttribute namespace="##other" processContents="skip" />
+</xs:complexType>
+
+<xs:complexType name="ConditionAbstractType" abstract="true">
+<xs:sequence />
+</xs:complexType>
+
+<xs:complexType name="ProxyRestrictionType">
+<xs:complexContent>
+<xs:extension base="tns:ConditionAbstractType">
+<xs:sequence>
+<xs:element name="Audience" type="xs:anyURI" minOccurs="0" maxOccurs="unbounded" />
+</xs:sequence>
+<xs:attribute name="Count" type="xs:nonNegativeInteger" />
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="OneTimeUseType">
+<xs:complexContent>
+<xs:extension base="tns:ConditionAbstractType">
+<xs:sequence />
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="AudienceRestrictionType">
+<xs:complexContent>
+<xs:extension base="tns:ConditionAbstractType">
+<xs:sequence>
+<xs:element name="Audience" type="xs:anyURI" maxOccurs="unbounded" />
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="SubjectConfirmationType">
+<xs:sequence>
+<xs:element name="BaseID" type="tns:BaseIDAbstractType" minOccurs="0" />
+<xs:element name="NameID" type="tns:NameIDType" minOccurs="0" />
+<xs:element name="EncryptedID" type="tns:EncryptedElementType" minOccurs="0" />
+<xs:element name="SubjectConfirmationData" type="tns:SubjectConfirmationDataType" minOccurs="0" />
+</xs:sequence>
+<xs:attribute name="Method" type="xs:anyURI" use="required" />
+</xs:complexType>
+
+<xs:complexType name="BaseIDAbstractType" abstract="true">
+<xs:sequence />
+<xs:attribute name="NameQualifier" type="xs:string" />
+<xs:attribute name="SPNameQualifier" type="xs:string" />
+</xs:complexType>
+
+<xs:complexType name="NameIDType">
+<xs:simpleContent>
+<xs:extension base="xs:string">
+<xs:attribute name="Format" type="xs:anyURI" />
+<xs:attribute name="SPProvidedID" type="xs:string" />
+<xs:attribute name="NameQualifier" type="xs:string" />
+<xs:attribute name="SPNameQualifier" type="xs:string" />
+</xs:extension>
+</xs:simpleContent>
+</xs:complexType>
+
+<xs:complexType name="EncryptedElementType">
+<xs:sequence>
+<xs:element ref="ns1:EncryptedData" />
+<xs:element ref="ns1:EncryptedKey" minOccurs="0" maxOccurs="unbounded" />
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="SubjectConfirmationDataType" mixed="true">
+<xs:sequence>
+<xs:any processContents="lax" namespace="##other" minOccurs="0" maxOccurs="unbounded" />
+</xs:sequence>
+<xs:attribute name="NotBefore" type="xs:dateTime" />
+<xs:attribute name="NotOnOrAfter" type="xs:dateTime" />
+<xs:attribute name="Recipient" type="xs:anyURI" />
+<xs:attribute name="InResponseTo" type="xs:NCName" />
+<xs:attribute name="Address" type="xs:string" />
+<xs:anyAttribute namespace="##other" processContents="skip" />
+</xs:complexType>
+
+<xs:complexType name="KeyInfoConfirmationDataType">
+<xs:complexContent>
+<xs:extension base="tns:SubjectConfirmationDataType">
+<xs:sequence />
+<xs:anyAttribute namespace="##other" processContents="skip" />
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="ActionType">
+<xs:simpleContent>
+<xs:extension base="xs:string">
+<xs:attribute name="Namespace" type="xs:anyURI" use="required" />
+</xs:extension>
+</xs:simpleContent>
+</xs:complexType>
+
+<xs:complexType name="SubjectType">
+<xs:sequence>
+<xs:choice minOccurs="0" maxOccurs="unbounded">
+<xs:element ref="tns:BaseID" />
+<xs:element ref="tns:SubjectConfirmation" />
+<xs:element ref="tns:NameID" />
+<xs:element ref="tns:EncryptedID" />
+</xs:choice>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="AuthnStatementType">
+<xs:complexContent>
+<xs:extension base="tns:StatementAbstractType">
+<xs:sequence>
+<xs:element name="SubjectLocality" type="tns:SubjectLocalityType" minOccurs="0" />
+<xs:element name="AuthnContext" type="tns:AuthnContextType" />
+</xs:sequence>
+<xs:attribute name="AuthnInstant" type="xs:dateTime" use="required" />
+<xs:attribute name="SessionIndex" type="xs:string" />
+<xs:attribute name="SessionNotOnOrAfter" type="xs:dateTime" />
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="StatementAbstractType" abstract="true">
+<xs:sequence />
+</xs:complexType>
+
+<xs:complexType name="SubjectLocalityType">
+<xs:sequence />
+<xs:attribute name="Address" type="xs:string" />
+<xs:attribute name="DNSName" type="xs:string" />
+</xs:complexType>
+
+<xs:complexType name="AuthnContextType">
+<xs:sequence>
+<xs:choice minOccurs="0" maxOccurs="unbounded">
+<xs:element ref="tns:AuthenticatingAuthority" />
+<xs:element ref="tns:AuthnContextDeclRef" />
+<xs:element ref="tns:AuthnContextDecl" />
+<xs:element ref="tns:AuthnContextClassRef" />
+</xs:choice>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="AuthzDecisionStatementType">
+<xs:complexContent>
+<xs:extension base="tns:StatementAbstractType">
+<xs:sequence>
+<xs:element name="Action" type="tns:ActionType" maxOccurs="unbounded" />
+<xs:element name="Evidence" type="tns:EvidenceType" minOccurs="0" />
+</xs:sequence>
+<xs:attribute name="Resource" type="xs:anyURI" use="required" />
+<xs:attribute name="Decision" type="tns:DecisionType" use="required" />
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="EvidenceType">
+<xs:sequence>
+<xs:choice minOccurs="0" maxOccurs="unbounded">
+<xs:element ref="tns:Assertion" />
+<xs:element ref="tns:AssertionIDRef" />
+<xs:element ref="tns:EncryptedAssertion" />
+<xs:element ref="tns:AssertionURIRef" />
+</xs:choice>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="AttributeStatementType">
+<xs:complexContent>
+<xs:extension base="tns:StatementAbstractType">
+<xs:sequence>
+<xs:choice minOccurs="0" maxOccurs="unbounded">
+<xs:element name="Attribute" type="tns:AttributeType" />
+<xs:element name="EncryptedAttribute" type="tns:EncryptedElementType" />
+</xs:choice>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="ConditionsType">
+<xs:sequence>
+<xs:choice minOccurs="0" maxOccurs="unbounded">
+<xs:element name="AudienceRestriction" type="tns:AudienceRestrictionType" />
+<xs:element name="ProxyRestriction" type="tns:ProxyRestrictionType" />
+<xs:element name="Condition" type="tns:ConditionAbstractType" />
+<xs:element name="OneTimeUse" type="tns:OneTimeUseType" />
+</xs:choice>
+</xs:sequence>
+<xs:attribute name="NotBefore" type="xs:dateTime" />
+<xs:attribute name="NotOnOrAfter" type="xs:dateTime" />
+</xs:complexType>
+
+<xs:complexType name="AssertionType">
+<xs:sequence>
+<xs:element name="Issuer" type="tns:NameIDType" />
+<xs:element ref="ns2:Signature" minOccurs="0" />
+<xs:element name="Subject" type="tns:SubjectType" minOccurs="0" />
+<xs:element name="Conditions" type="tns:ConditionsType" minOccurs="0" />
+<xs:element name="Advice" type="tns:AdviceType" minOccurs="0" />
+<xs:choice minOccurs="0" maxOccurs="unbounded">
+<xs:element name="Statement" type="tns:StatementAbstractType" />
+<xs:element name="AuthnStatement" type="tns:AuthnStatementType" />
+<xs:element name="AttributeStatement" type="tns:AttributeStatementType" />
+<xs:element name="AuthzDecisionStatement" type="tns:AuthzDecisionStatementType" />
+</xs:choice>
+</xs:sequence>
+<xs:attribute name="Version" type="xs:string" use="required" />
+<xs:attribute name="ID" type="xs:ID" use="required" />
+<xs:attribute name="IssueInstant" type="xs:dateTime" use="required" />
+</xs:complexType>
+
+<xs:complexType name="AdviceType">
+<xs:sequence>
+<xs:choice minOccurs="0" maxOccurs="unbounded">
+<xs:element ref="tns:Assertion" />
+<xs:element ref="tns:AssertionIDRef" />
+<xs:element ref="tns:EncryptedAssertion" />
+<xs:element ref="tns:AssertionURIRef" />
+<xs:any processContents="lax" namespace="##other" />
+</xs:choice>
+</xs:sequence>
+</xs:complexType>
+
+<xs:simpleType name="DecisionType">
+<xs:restriction base="xs:string">
+<xs:enumeration value="Permit" />
+<xs:enumeration value="Deny" />
+<xs:enumeration value="Indeterminate" />
+</xs:restriction>
+</xs:simpleType>
+</xs:schema>
