@@ -456,6 +456,11 @@ void Parser::parseCompositor( ParserContext *context, const QDomElement &element
         parseCompositor( context, childElement, nameSpace, elements, groups );
       } else if ( localName == QLatin1String("group") ) {
         groups->append( parseGroup( context, childElement, nameSpace ) );
+      } else if ( localName == QLatin1String("annotation") ) {
+        // Not implemented
+        //Annotation::List annotations = parseAnnotation( context, childElement );
+        //compositor.setDocumentation( annotations.documentation() );
+        //compositor.setAnnotations( annotations );
       } else {
         qDebug() << "Unsupported element in" << name << ":" << csName;
       }
