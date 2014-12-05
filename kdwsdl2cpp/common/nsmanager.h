@@ -57,7 +57,8 @@ class KXMLCOMMON_EXPORT NSManager
     QString localName( const QDomElement& element ) const;
 
     QStringList prefixes() const;
-    QStringList uris() const;
+    QMap<QString, QString> prefixMap() const;
+    void addPrefixes(const QMap<QString, QString>& prefixes);
 
     void reset();
 

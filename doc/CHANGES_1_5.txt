@@ -15,7 +15,12 @@ Server-side:
 
 WSDL parser / code generator changes, applying to both client and server side:
 ================================================================
-* Parse namespace on portType correctly
-* Fix infinite recursion when type A contains a member A with minoccurs=0
+* Try harder to find a prefix for some namespaces.
+  Important: this can rename some generated classes from __Class to PREFIX__Class.
+  This source incompatible change was necessary to fix clashes between unprefixed
+  classes coming from different namespaces, in some WSDL files.
 
+* Parse namespace on portType correctly
+
+* Fix infinite recursion when type A contains a member A with minoccurs=0
 

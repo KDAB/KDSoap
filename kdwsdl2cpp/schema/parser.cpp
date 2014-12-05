@@ -63,7 +63,6 @@ public:
 
     QStringList mImportedSchemas;
     QStringList mIncludedSchemas;
-    QStringList mNamespaces;
 };
 
 Parser::Parser( ParserContext *context, const QString &nameSpace )
@@ -100,7 +99,6 @@ Parser &Parser::operator=( const Parser &other )
 void Parser::clear()
 {
   d->mImportedSchemas.clear();
-  d->mNamespaces.clear();
   d->mComplexTypes.clear();
   d->mSimpleTypes.clear();
   d->mElements.clear();
@@ -168,6 +166,7 @@ void Parser::init(ParserContext *context)
 
 }
 
+// currently unused
 bool Parser::parseFile( ParserContext *context, const QString &fileName )
 {
     QFile file(fileName);
@@ -188,6 +187,7 @@ bool Parser::parseString( ParserContext *context, const QString &data )
   return parse( context, &source );
 }
 
+// currently unused
 bool Parser::parse( ParserContext *context, QXmlInputSource *source )
 {
   QXmlSimpleReader reader;
@@ -267,9 +267,6 @@ bool Parser::parseSchemaTag( ParserContext *context, const QDomElement &root )
 
     element = element.nextSiblingElement();
   }
-
-  d->mNamespaces = joinNamespaces( d->mNamespaces, context->namespaceManager()->uris() );
-  d->mNamespaces = joinNamespaces( d->mNamespaces, QStringList( d->mNameSpace ) );
 
   if (!resolveForwardDeclarations())
       return false;
@@ -1111,8 +1108,6 @@ void Parser::importSchema( ParserContext *context, const QString &location )
       qDebug( "No schema tag found in schema file %s", schemaLocation.toEncoded().constData());
     }
 
-    d->mNamespaces = joinNamespaces( d->mNamespaces, namespaceManager.uris() );
-
     file.close();
 
     provider.cleanUp();
@@ -1165,8 +1160,6 @@ void Parser::includeSchema( ParserContext *context, const QString &location )
       qDebug("No schema tag found in schema file %s", schemaLocation.toEncoded().constData());
     }
 
-    d->mNamespaces = joinNamespaces( d->mNamespaces, namespaceManager.uris() );
-
     file.close();
 
     provider.cleanUp();
@@ -1176,18 +1169,6 @@ void Parser::includeSchema( ParserContext *context, const QString &location )
 QString Parser::schemaUri()
 {
   return XMLSchemaURI;
-}
-
-QStringList Parser::joinNamespaces( const QStringList &list, const QStringList &namespaces )
-{
-  QStringList retval( list );
-
-  for ( int i = 0; i < namespaces.count(); ++i ) {
-    if ( !retval.contains( namespaces[ i ] ) )
-      retval.append( namespaces[ i ] );
-  }
-
-  return retval;
 }
 
 Element Parser::findElement( const QName &name ) const
@@ -1339,7 +1320,6 @@ Types Parser::types() const
   //types.setGroups( d->mGroups );
   types.setAttributes( d->mAttributes );
   //types.setAttributeGroups( d->mAttributeGroups );
-  types.setNamespaces( d->mNamespaces );
 
   return types;
 }

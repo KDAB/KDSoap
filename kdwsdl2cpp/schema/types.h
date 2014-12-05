@@ -57,9 +57,6 @@ class SCHEMA_EXPORT Types
     // unused void setGroups( const Group::List &groups );
     // unused Group::List groups() const;
 
-    void setNamespaces( const QStringList &namespaces );
-    QStringList namespaces() const;
-
     //ComplexType complexType( const Element & ) const;
     ComplexType complexType( const QName & ) const;
 

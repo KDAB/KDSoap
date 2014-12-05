@@ -36,7 +36,6 @@ public:
     AttributeGroup::List mAttributeGroups;
     Group::List mGroups;
 #endif
-    QStringList mNamespaces;
 };
 
 Types::Types()
@@ -76,7 +75,6 @@ Types &Types::operator +=(const Types &other)
     d->mAttributes += other.d->mAttributes;
     // unused d->mAttributeGroups += other.d->mAttributeGroups;
     // unused d->mGroups += other.d->mGroups;
-    d->mNamespaces += other.d->mNamespaces;
 
     return *this;
 }
@@ -141,19 +139,7 @@ Group::List Types::groups() const
 {
     return d->mGroups;
 }
-#endif
 
-void Types::setNamespaces( const QStringList &namespaces )
-{
-  d->mNamespaces = namespaces;
-}
-
-QStringList Types::namespaces() const
-{
-  return d->mNamespaces;
-}
-
-#if 0
 ComplexType Types::complexType( const Element &element ) const
 {
   return complexType( element.type() );

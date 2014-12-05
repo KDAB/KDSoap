@@ -119,7 +119,6 @@ class SCHEMA_EXPORT Parser
      * @param localtion Schema location.
      */
     void includeSchema( ParserContext *context, const QString &location );
-    QStringList joinNamespaces( const QStringList&, const QStringList& );
 
     Element findElement( const QName &name ) const;
     Group findGroup( const QName &name ) const;

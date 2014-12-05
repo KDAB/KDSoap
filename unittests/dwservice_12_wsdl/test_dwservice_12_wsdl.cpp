@@ -64,8 +64,8 @@ private Q_SLOTS:
             + '\n'; // added by QXmlStreamWriter::writeEndDocument
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
 
-        const KDAB::__ClientServiceSession session = resp.loginResult();
-        const KDAB::__Guid sessionId = session.sessionID();
+        const KDAB::Q1__ClientServiceSession session = resp.loginResult();
+        const KDAB::SER__Guid sessionId = session.sessionID();
         QCOMPARE(sessionId.value(), QString::fromLatin1("65a65c1f-2613-47d0-89ec-1c7b1fe34777"));
     }
 
@@ -76,8 +76,8 @@ private Q_SLOTS:
         service.setSoapVersion(KDSoapClientInterface::SOAP1_2);
         service.setEndPoint(server.endPoint());
 
-        KDAB::__ClientServiceSession session;
-        session.setSessionID(KDAB::__Guid(QString::fromLatin1("65a65c1f-2613-47d0-89ec-1c7b1fe34777")));
+        KDAB::Q1__ClientServiceSession session;
+        session.setSessionID(KDAB::SER__Guid(QString::fromLatin1("65a65c1f-2613-47d0-89ec-1c7b1fe34777")));
         KDAB::TNS__Logoff logoffParams;
         //logoffParams.setClientSession(session);
         service.logoff(logoffParams);

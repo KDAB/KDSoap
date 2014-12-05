@@ -379,6 +379,8 @@ void TypeMap::addSchemaTypes( const XSD::Types &types, const QString& ns )
   XSD::Attribute::List attributes = types.attributes();
   XSD::Attribute::List::ConstIterator attrIt;
   for ( attrIt = attributes.constBegin(); attrIt != attributes.constEnd(); ++attrIt ) {
+    if ( (*attrIt).nameSpace() == "http://www.w3.org/2003/05/soap-encoding" ) // e.g. soap-enc:arrayType
+      continue;
     Entry entry;
     entry.basicType = false;
     entry.builtinType = false;

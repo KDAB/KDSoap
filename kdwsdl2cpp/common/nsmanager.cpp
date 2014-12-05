@@ -45,8 +45,13 @@ NSManager::NSManager( ParserContext* context, const QDomElement& child )
 NSManager::~NSManager()
 {
     // Restore parent namespaces
-    if (mContext)
+    if (mContext) {
         mContext->setNamespaceManager(mParentManager);
+
+        // Remember the prefixes used for the namespaces, even afterwards
+        //qDebug() << this << "adding prefixes into parent manager" << mParentManager;
+        mParentManager->addPrefixes( mMap );
+    }
 }
 
 void NSManager::setCurrentNamespace( const QString& uri )
@@ -63,7 +68,11 @@ QString NSManager::prefix( const QString &uri ) const
 {
     // Note that it's allowed to have two prefixes for the same namespace uri.
     // So we just pick one.
-    return mMap.key( uri ); // linear search
+    QString pref = mMap.key( uri ); // linear search
+    if (pref.isEmpty() && uri != "http://schemas.xmlsoap.org/wsdl/") {
+        qWarning() << "ERROR: No prefix found for" << uri;
+    }
+    return pref;
 }
 
 QString NSManager::uri( const QString &prefix ) const
@@ -103,9 +112,22 @@ QStringList NSManager::prefixes() const
   return mMap.keys();
 }
 
-QStringList NSManager::uris() const
+QMap<QString, QString> NSManager::prefixMap() const
 {
-  return mMap.values();
+    return mMap;
+}
+
+void NSManager::addPrefixes(const QMap<QString, QString> &prefixes)
+{
+    for (QMap<QString, QString>::const_iterator it = prefixes.constBegin() ; it != prefixes.constEnd() ; ++it) {
+        const QString prefix = it.key();
+        const QString ns = it.value();
+        // Only write down this prefix if we don't have it yet
+        // and if we don't have another prefix for this NS (this is mostly for backwards compat,
+        // so that msexchange still uses TNS rather than 'M' or 'T'...)
+        if (!mMap.contains(prefix) && mMap.key(ns).isEmpty())
+            mMap.insert(prefix, ns);
+    }
 }
 
 QStringList NSManager::soapEncNamespaces()

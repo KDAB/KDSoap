@@ -355,7 +355,7 @@ void KDSoapServerSocket::sendReply(KDSoapServerObjectInterface* serverObjectInte
         xmlResponse = msgWriter.messageToXml(replyMsg, responseName, responseHeaders, QMap<QString, KDSoapMessage>());
     }
 
-    const QByteArray response = httpResponseHeaders(isFault, "text/xml", xmlResponse.size());
+    const QByteArray response = httpResponseHeaders(isFault, "text/xml", xmlResponse.size()); // TODO return application/soap+xml;charset=utf-8 instead for SOAP 1.2
     if (m_doDebug) {
         qDebug() << "KDSoapServerSocket: writing" << response << xmlResponse;
     }
