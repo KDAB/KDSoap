@@ -510,9 +510,15 @@ void Converter::clientGenerateMessage( KODE::Code& code, const Binding& binding,
         //qDebug() << "input headers:" << op.inputHeaders().count();
     }
 
+    bool isBuiltin = false;
+
     Q_FOREACH( const Part& part, selectedParts( binding, message, operation, true /*input*/ ) ) {
+        isBuiltin = isBuiltin || mTypeMap.isBuiltinType( part.type(), part.element() );
         addMessageArgument( code, soapStyle(binding), part, part.name(), "message", varsAreMembers );
     }
+
+    if (soapStyle(binding) == SoapBinding::DocumentStyle && message.parts().size() > 1 && isBuiltin )
+        qWarning("A Document style cannot be formed with multiple parts of builtin type (eg : multiple parts xsd:string), please correct your WSDL file");
 }
 
 KODE::Code Converter::deserializeRetVal(const KWSDL::Part& part, const QString& replyMsgName, const QString& qtRetType, const QString& varName) const
