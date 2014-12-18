@@ -12,6 +12,7 @@ SUBDIRS = \
   servertest \
   msexchange_noservice_wsdl \
   msexchange_wsdl \
+  multiple_input_param \
   wsdl_document \
   dwservice_wsdl \
   dwservice_12_wsdl \
