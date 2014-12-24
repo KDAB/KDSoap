@@ -878,6 +878,8 @@ void Parser::parseComplexContent( ParserContext *context, const QDomElement &ele
             complexType.addAttribute( parseAttribute( context, ctElement, complexType.nameSpace() ) );
           } else if ( name.localName() == QLatin1String("anyAttribute") ) {
             addAnyAttribute( context, ctElement, complexType );
+          } else if ( name.localName() == QLatin1String("attributeGroup") ) {
+            complexType.addAttributeGroups(parseAttributeGroup(context, ctElement, complexType.nameSpace()));
           } else {
             qWarning() << "Unsupported content element" << name.localName();
           }
@@ -996,6 +998,9 @@ AttributeGroup Parser::parseAttributeGroup( ParserContext *context, const QDomEl
       attributes.append( a );
     }
   }
+
+  if (!element.hasAttribute(QLatin1String("name") ) )
+      qWarning() << "Attribute Group without reference nor name, invalid XML schema ";
 
   group.setName( element.attribute( QLatin1String("name") ) );
   group.setNameSpace( nameSpace );
@@ -1211,7 +1216,7 @@ AttributeGroup Parser::findAttributeGroup( const QName &name ) const
       return g;
     }
   }
-
+  qDebug() << "Attribute Group not found:" << name.nameSpace() << name.localName();
   return AttributeGroup();
 }
 
@@ -1289,16 +1294,13 @@ bool Parser::resolveForwardDeclarations()
         }
       }
     }
-
-    foreach( const AttributeGroup& group, complexType.attributeGroups() ) {
-      if ( !group.isResolved() ) {
-        AttributeGroup refAttributeGroup =
-          findAttributeGroup( group.reference() );
+      foreach( const AttributeGroup& group, complexType.attributeGroups() ) {
+        Q_ASSERT(!group.reference().isEmpty());
+        AttributeGroup refAttributeGroup = findAttributeGroup( group.reference() );
         Attribute::List groupAttributes = refAttributeGroup.attributes();
         foreach ( const Attribute& ga, groupAttributes ) {
           attributes.append( ga );
         }
-      }
     }
 
     // groups were resolved, don't do it again if resolveForwardDeclarations() is called again

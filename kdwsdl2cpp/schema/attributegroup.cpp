@@ -75,9 +75,4 @@ Attribute::List AttributeGroup::attributes() const
   return d->mAttributes;
 }
 
-bool AttributeGroup::isResolved() const
-{
-  return !d->mAttributes.isEmpty();
-}
-
 }

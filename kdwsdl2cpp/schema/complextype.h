@@ -88,6 +88,7 @@ class SCHEMA_EXPORT ComplexType : public XSDType
     Attribute::List attributes() const;
     Attribute attribute( const QName& attrName ) const;
 
+    void addAttributeGroups( const AttributeGroup& attributeGroups );
     void setAttributeGroups( const AttributeGroup::List &attributeGroups );
     AttributeGroup::List attributeGroups() const;
 

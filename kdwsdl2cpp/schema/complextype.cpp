@@ -201,6 +201,11 @@ Attribute::List ComplexType::attributes() const
   return d->mAttributes;
 }
 
+void ComplexType::addAttributeGroups(const AttributeGroup &attributeGroups)
+{
+  d->mAttributeGroups.append(attributeGroups);
+}
+
 void ComplexType::setAttributeGroups( const AttributeGroup::List &attributeGroups )
 {
   d->mAttributeGroups = attributeGroups;

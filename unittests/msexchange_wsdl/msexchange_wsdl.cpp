@@ -392,7 +392,21 @@ private Q_SLOTS:
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
     }
 
+    void testAttributeGroup() // SOAP-117
+    {
+//        <xs:attributeGroup name="FindResponsePagingAttributes">
+//          <xs:attribute name="IncludesLastItemInRange" type="xs:boolean" use="optional"/> [...]
+//        </xs:attributeGroup>
 
+        T__FindItemParentType fipt; // has attributes from a AttributeGroup tag
+        fipt.setAbsoluteDenominator(42);
+        fipt.setNumeratorOffset(42);
+        fipt.setIncludesLastItemInRange(true);
+
+        QCOMPARE(fipt.absoluteDenominator(), 42);
+        QCOMPARE(fipt.numeratorOffset(), 42);
+        QVERIFY(fipt.includesLastItemInRange());
+    }
 private:
     static QByteArray queryResponse() {
         return QByteArray(xmlEnvBegin11()) + " xmlns:sf=\"urn:sobject.partner.soap.sforce.com\"><soap:Body>"

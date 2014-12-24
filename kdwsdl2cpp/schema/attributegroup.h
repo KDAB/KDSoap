@@ -45,8 +45,6 @@ class SCHEMA_EXPORT AttributeGroup : public XmlElement
     void setAttributes( const Attribute::List &attributes );
     Attribute::List attributes() const;
 
-    bool isResolved() const;
-
   private:
     class Private;
     Private *d;
