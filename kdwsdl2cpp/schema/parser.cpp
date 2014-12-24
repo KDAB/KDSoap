@@ -254,7 +254,7 @@ bool Parser::parseSchemaTag( ParserContext *context, const QDomElement &root )
     } else if ( name.localName() == QLatin1String("attribute") ) {
       addGlobalAttribute( parseAttribute( context, element, d->mNameSpace ) );
     } else if ( name.localName() == QLatin1String("attributeGroup") ) {
-      d->mAttributeGroups.append( parseAttributeGroup( context, element ) );
+      d->mAttributeGroups.append( parseAttributeGroup( context, element, d->mNameSpace ) );
     } else if ( name.localName() == QLatin1String("group") ) {
       d->mGroups.append( parseGroup( context, element, d->mNameSpace ) );
     } else if ( name.localName() == QLatin1String("annotation") ) {
@@ -359,7 +359,7 @@ ComplexType Parser::parseComplexType( ParserContext *context, const QDomElement 
     } else if ( name.localName() == QLatin1String("attribute") ) {
       newType.addAttribute( parseAttribute( context, childElement, d->mNameSpace ) );
     } else if ( name.localName() == QLatin1String("attributeGroup") ) {
-      attributeGroups.append( parseAttributeGroup( context, childElement ) );
+      attributeGroups.append( parseAttributeGroup( context, childElement, d->mNameSpace ) );
     } else if ( name.localName() == QLatin1String("group") ) {
       groups.append( parseGroup( context, childElement, newType.nameSpace() ) );
     } else if ( name.localName() == QLatin1String("anyAttribute") ) {
@@ -972,8 +972,7 @@ void Parser::addGlobalAttribute( const Attribute &newAttribute )
   }
 }
 
-AttributeGroup Parser::parseAttributeGroup( ParserContext *context,
-  const QDomElement &element )
+AttributeGroup Parser::parseAttributeGroup( ParserContext *context, const QDomElement &element, const QString &nameSpace )
 {
   Attribute::List attributes;
 
@@ -992,13 +991,14 @@ AttributeGroup Parser::parseAttributeGroup( ParserContext *context,
   for ( QDomElement e = element.firstChildElement(); !e.isNull(); e = e.nextSiblingElement() ) {
     QName childName = QName( e.tagName() );
     if ( childName.localName() == QLatin1String("attribute") ) {
-      Attribute a = parseAttribute( context, e, group.nameSpace() );
+      Attribute a = parseAttribute( context, e, nameSpace );
       addGlobalAttribute( a );
       attributes.append( a );
     }
   }
 
   group.setName( element.attribute( QLatin1String("name") ) );
+  group.setNameSpace( nameSpace );
   group.setAttributes( attributes );
 
   return group;

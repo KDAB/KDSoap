@@ -84,7 +84,7 @@ class SCHEMA_EXPORT Parser
     void parseInclude( ParserContext *context, const QDomElement& element);
     void addGlobalElement( const Element & );
     void addGlobalAttribute( const Attribute & );
-    AttributeGroup parseAttributeGroup( ParserContext *context, const QDomElement& );
+    AttributeGroup parseAttributeGroup( ParserContext *context, const QDomElement&, const QString &nameSpace );
     Group parseGroup(ParserContext *context, const QDomElement& , const QString &nameSpace);
 
     Annotation::List parseAnnotation( ParserContext *context, const QDomElement& );
