@@ -73,6 +73,7 @@ TypeMap::TypeMap()
   // TODO: add duration class
   addBuiltinType("duration", "QString");
   addBuiltinType("float", "float");
+  addBuiltinType("gYear", "QString");
   addBuiltinType("hexBinary", "QByteArray");
   addBuiltinType("integer", "qint64");
   addBuiltinType("int", "int"); // 32 bits
