@@ -192,7 +192,7 @@ public:
 
     /**
      * Returns a pointer to the server socket. Only valid during processRequest().
-     * When you want information from the server socket, for instance peerAddress etc.
+     * This can be used to retrieve information from the server socket, such as peerAddress etc.
      * \since 1.3
      */
     QAbstractSocket *serverSocket() const;
