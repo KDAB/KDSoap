@@ -1000,7 +1000,7 @@ AttributeGroup Parser::parseAttributeGroup( ParserContext *context, const QDomEl
   }
 
   if (!element.hasAttribute(QLatin1String("name") ) )
-      qWarning() << "Attribute Group without reference nor name, invalid XML schema ";
+      qWarning() << "Attribute Group without reference nor name, invalid XML schema";
 
   group.setName( element.attribute( QLatin1String("name") ) );
   group.setNameSpace( nameSpace );
@@ -1294,13 +1294,13 @@ bool Parser::resolveForwardDeclarations()
         }
       }
     }
-      foreach( const AttributeGroup& group, complexType.attributeGroups() ) {
-        Q_ASSERT(!group.reference().isEmpty());
-        AttributeGroup refAttributeGroup = findAttributeGroup( group.reference() );
-        Attribute::List groupAttributes = refAttributeGroup.attributes();
-        foreach ( const Attribute& ga, groupAttributes ) {
-          attributes.append( ga );
-        }
+    foreach( const AttributeGroup& group, complexType.attributeGroups() ) {
+      Q_ASSERT(!group.reference().isEmpty());
+      AttributeGroup refAttributeGroup = findAttributeGroup( group.reference() );
+      Attribute::List groupAttributes = refAttributeGroup.attributes();
+      foreach ( const Attribute& ga, groupAttributes ) {
+        attributes.append( ga );
+      }
     }
 
     // groups were resolved, don't do it again if resolveForwardDeclarations() is called again
