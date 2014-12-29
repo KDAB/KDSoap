@@ -132,6 +132,11 @@ bool KDSoapServerObjectInterface::hasFault() const
     return !d->m_faultCode.isEmpty();
 }
 
+QAbstractSocket *KDSoapServerObjectInterface::serverSocket() const
+{
+    return d->m_serverSocket;
+}
+
 KDSoapHeaders KDSoapServerObjectInterface::requestHeaders() const
 {
     return d->m_requestHeaders;

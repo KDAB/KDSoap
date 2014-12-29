@@ -31,6 +31,7 @@
 #include <QIODevice>
 
 class KDSoapServerSocket;
+class QAbstractSocket;
 
 /**
  * Base class for server objects, i.e. objects implementing the methods
@@ -188,6 +189,13 @@ public:
      * Returns true if setFault was called in the current method invocation.
      */
     bool hasFault() const;
+
+    /**
+     * Returns a pointer to the server socket. Only valid during processRequest().
+     * When you want information from the server socket, for instance peerAddress etc.
+     * \since 1.3
+     */
+    QAbstractSocket *serverSocket() const;
 
     /**
      * When a server object wants to implement a SOAP method
