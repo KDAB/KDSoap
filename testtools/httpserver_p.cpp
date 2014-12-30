@@ -243,11 +243,6 @@ public:
     }
     void disableSsl() { doSsl = false; }
 
-    // Workaround for moc issue, can't comment out the whole slot
-#ifndef QT_NO_OPENSSL
-    typedef int QSslError;
-#endif
-
 private slots:
     void slotSslErrors(const QList<QSslError>& errors)
     {

@@ -609,12 +609,6 @@ private Q_SLOTS:
     void testServerDifferentPath();
     void testServerDifferentPathFault();
 
-public:
-    // Workaround for moc issue, can't comment out the whole slot
-#ifndef QT_NO_OPENSSL
-    typedef int QSslError;
-#endif
-
 public slots:
     void slotFinished(KDSoapPendingCallWatcher* watcher)
     {
