@@ -1,16 +1,16 @@
 @echo off
 
-cd %1
+cd %2
 set OLD_PATH=%PATH%
-set PATH=..\..\lib;%PATH%
+set PATH=%1;%PATH%
 
-if (%2)==() (
-  set TEST_EXE=%1.exe
+if (%3)==() (
+  set TEST_EXE=%2.exe
 ) else (
-  set TEST_EXE=%2\%1.exe
+  set TEST_EXE=%3\%2.exe
 )
 
-echo Running %1 %CD%\%TEST_EXE%
+echo Running %2 %CD%\%TEST_EXE%
 %TEST_EXE%
 
 set RETURNCODE=%ERRORLEVEL%
