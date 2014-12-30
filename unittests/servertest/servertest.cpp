@@ -973,9 +973,9 @@ private Q_SLOTS:
         }
     }
 
-#ifndef QT_NO_OPENSSL
     void testSsl()
     {
+#ifndef QT_NO_OPENSSL
         if (!QSslSocket::supportsSsl())
             return;
         CountryServerThread serverThread;
@@ -983,8 +983,8 @@ private Q_SLOTS:
         server->setFeatures(KDSoapServer::Ssl);
         QVERIFY(server->endPoint().startsWith(QLatin1String("https")));
         makeSimpleCall(server->endPoint());
-    }
 #endif
+    }
 
 public Q_SLOTS:
     void slotFinished(KDSoapPendingCallWatcher* watcher)

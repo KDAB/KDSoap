@@ -37,6 +37,10 @@
 #ifndef QT_NO_OPENSSL
 #include <KDSoapSslHandler.h>
 #include <QSslSocket>
+#else
+// workaround moc issue
+class KDSoapSslHandler { };
+Q_DECLARE_METATYPE(KDSoapSslHandler *)
 #endif
 
 using namespace KDSoapUnitTestHelpers;
@@ -214,9 +218,11 @@ private Q_SLOTS:
         }
     }
 
-#ifndef QT_NO_OPENSSL
     void testSslError()
     {
+#ifdef QT_NO_OPENSSL
+        return;
+#else
         if (!QSslSocket::supportsSsl())
             return; // see above
         // Use SSL on the server, without adding the CA certificate (done by setSslConfiguration())
@@ -241,10 +247,14 @@ private Q_SLOTS:
         QCOMPARE((int)errors.at(1).error(), (int)QSslError::CertificateUntrusted);
         QCOMPARE((int)errors.at(2).error(), (int)QSslError::UnableToVerifyFirstCertificate);
 #endif
+#endif
     }
 
     void testSslErrorHandledBySlot()
     {
+#ifdef QT_NO_OPENSSL
+        return;
+#else
         if (!QSslSocket::supportsSsl())
             return; // see above
         m_errors.clear();
@@ -264,11 +274,15 @@ private Q_SLOTS:
         QCOMPARE(m_errors.count(), 3);
         QCOMPARE(job->faultAsString(), QString());
         QCOMPARE(QString::fromLatin1(job->resultParameters().constData()), QString::fromLatin1("Foo"));
+#endif
     }
 
 #ifdef Q_OS_UNIX
     void testSslErrorIgnoredUpfront()
     {
+#ifdef QT_NO_OPENSSL
+        return;
+#else
         if (!QSslSocket::supportsSsl())
             return; // see above
         m_errors.clear();
@@ -291,12 +305,16 @@ private Q_SLOTS:
         QCOMPARE(m_errors.count(), 0);
         QCOMPARE(job->faultAsString(), QString());
         QCOMPARE(QString::fromLatin1(job->resultParameters().constData()), QString::fromLatin1("Foo"));
+#endif
     }
 #endif
 
     // SOAP-79 / issue29
     void testSslErrorSyncCall()
     {
+#ifdef QT_NO_OPENSSL
+        return;
+#else
         if (!QSslSocket::supportsSsl())
             return; // see above
         m_errors.clear();
@@ -313,10 +331,14 @@ private Q_SLOTS:
         QCOMPARE(m_errors.count(), 0);
         QCOMPARE(sslErrorsSpy.count(), 1);
         QTest::qWait(100); // process some events
+#endif
     }
 
     void testMyWsdlSSL()
     {
+#ifdef QT_NO_OPENSSL
+        return;
+#else
         if (!QSslSocket::supportsSsl()) {
 #if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
             QSKIP("No SSL support on this machine, check that ssleay.so/ssleay32.dll is installed");
@@ -325,9 +347,7 @@ private Q_SLOTS:
 #endif
         }
 
-#ifndef QT_NO_SSLSOCKET
         QVERIFY(KDSoapUnitTestHelpers::setSslConfiguration());
-#endif
 
         HttpServerThread server(addEmployeeResponse(), HttpServerThread::Ssl);
 
@@ -362,9 +382,8 @@ private Q_SLOTS:
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
         QCOMPARE(QString::fromUtf8(server.receivedData().constData()), QString::fromUtf8(expectedRequestXml.constData()));
         QVERIFY(server.receivedHeaders().contains("SoapAction: \"http://www.kdab.com/AddEmployee\""));
+#endif
     }
-
-#endif // QT_NO_OPENSSL
 
     void testSimpleType()
     {
@@ -590,6 +609,12 @@ private Q_SLOTS:
     void testServerDifferentPath();
     void testServerDifferentPathFault();
 
+public:
+    // Workaround for moc issue, can't comment out the whole slot
+#ifndef QT_NO_OPENSSL
+    typedef int QSslError;
+#endif
+
 public slots:
     void slotFinished(KDSoapPendingCallWatcher* watcher)
     {
@@ -616,9 +641,12 @@ public slots:
         m_eventLoop.quit();
     }
 
-#ifndef QT_NO_OPENSSL
     void slotSslHandlerErrors(KDSoapSslHandler* handler, const QList<QSslError>& errors)
     {
+#ifdef QT_NO_OPENSSL
+        Q_UNUSED(handler);
+        Q_UNUSED(errors);
+#else
         // This is just for testing error handling. Don't write this in your actual code...
 #ifdef Q_OS_UNIX // Windows seems to get "Unknown error". Bah...
         //if (errors.at(0).error() == QSslError::UnableToGetLocalIssuerCertificate)
@@ -632,8 +660,8 @@ public slots:
         handler->ignoreSslErrors();
 #endif
         m_errors = errors;
-    }
 #endif
+    }
 
 private:
     QEventLoop m_eventLoop;

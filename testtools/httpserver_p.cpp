@@ -242,13 +242,21 @@ public:
             QTcpServer::incomingConnection(socketDescriptor);
     }
     void disableSsl() { doSsl = false; }
-private slots:
+
+    // Workaround for moc issue, can't comment out the whole slot
 #ifndef QT_NO_OPENSSL
+    typedef int QSslError;
+#endif
+
+private slots:
     void slotSslErrors(const QList<QSslError>& errors)
     {
+#ifndef QT_NO_OPENSSL
         qDebug() << "server-side: slotSslErrors" << sslSocket->errorString() << errors;
-    }
+#else
+        Q_UNUSED(errors);
 #endif
+    }
 private:
     bool doSsl;
     QTcpSocket* sslSocket;
