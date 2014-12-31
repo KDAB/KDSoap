@@ -3,6 +3,7 @@ SUBDIRS = \
   basic \
   builtinhttp \
   wsdl_rpc \
+  wsdl_rpc-server \
   sugar_wsdl \
   ihc_wsdl \
   salesforce_wsdl \
@@ -21,8 +22,8 @@ SUBDIRS = \
   empty_response_wsdl \
   element_ns_wsdl \
   specialchars_wsdl \
-  optionaltype_wsdl/regular \
-  optionaltype_wsdl/pointer \
+  optionaltype_regular \
+  optionaltype_pointer \
   enum_escape \
   soap12 \
   literal_true_false \
@@ -35,9 +36,7 @@ SUBDIRS = \
 SUBDIRS += webcalls webcalls_wsdl
 
 # TODO: If boost optional is installed
-#SUBDIRS += optionaltype_wsdl/boost-optional
-
-SUBDIRS += wsdl_rpc-server
+#SUBDIRS += optionaltype_boost_optional
 
 test.target=test
 unix:!macx {
