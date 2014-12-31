@@ -125,8 +125,9 @@ void Parser::init(ParserContext *context)
         d->mElements.append(schema);
     }
 
+    // Define xml:lang, since we don't parse xml.xsd
     {
-        Attribute langAttr(XMLSchemaURI);
+        Attribute langAttr(NSManager::xmlNamespace());
         langAttr.setName(QLatin1String("lang"));
         langAttr.setType(QName(XMLSchemaURI, QLatin1String("string")));
         d->mAttributes.append(langAttr);
@@ -641,11 +642,6 @@ Attribute Parser::parseAttribute( ParserContext *context,
   if ( element.hasAttribute( QLatin1String("ref") ) ) {
     QName reference( element.attribute( QLatin1String("ref") ) );
     reference.setNameSpace( context->namespaceManager()->uri( reference.prefix() ) );
-
-    // MS Exchange doesn't define the xml prefix, and yet uses xml:lang...
-    if (reference.nameSpace().isEmpty() && reference.prefix() == "xml")
-        reference.setNameSpace( XMLSchemaURI );
-
     newAttribute.setReference( reference );
   }
 

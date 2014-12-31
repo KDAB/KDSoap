@@ -70,7 +70,7 @@ QString NSManager::prefix( const QString &uri ) const
     // So we just pick one.
     QString pref = mMap.key( uri ); // linear search
     if (pref.isEmpty() && uri != "http://schemas.xmlsoap.org/wsdl/") {
-        qWarning() << "ERROR: No prefix found for" << uri;
+        qWarning() << "WARNING: No prefix found for" << uri;
     }
     return pref;
 }
@@ -140,6 +140,11 @@ QStringList NSManager::soapNamespaces()
 {
     return QStringList() << QLatin1String("http://schemas.xmlsoap.org/wsdl/soap/")
                          << QLatin1String("http://schemas.xmlsoap.org/wsdl/soap12/");
+}
+
+QString NSManager::xmlNamespace()
+{
+    return QLatin1String("http://www.w3.org/XML/1998/namespace");
 }
 
 void NSManager::reset()

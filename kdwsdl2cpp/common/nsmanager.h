@@ -67,6 +67,7 @@ class KXMLCOMMON_EXPORT NSManager
     // Repository of namespaces
     static QStringList soapEncNamespaces();
     static QStringList soapNamespaces();
+    static QString xmlNamespace();
 
   private:
     void splitName( const QString &qname, QString &prefix, QString &localname ) const;

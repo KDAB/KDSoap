@@ -88,6 +88,9 @@ void Compiler::parse( const QDomElement &element )
 {
   NSManager namespaceManager;
 
+  // we don't parse xml.xsd, so hardcode the xml prefix (for xml:lang)
+  namespaceManager.setPrefix( QLatin1String("xml"), NSManager::xmlNamespace() );
+
   MessageHandler messageHandler;
   ParserContext context;
   context.setNamespaceManager( &namespaceManager );
