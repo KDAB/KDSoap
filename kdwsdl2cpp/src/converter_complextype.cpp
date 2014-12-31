@@ -255,9 +255,7 @@ QString Converter::generateMemberVariable(const QString &rawName, const QString 
         getterSoapValue.setBody( QLatin1String("return d_ptr->") + variableAsSoapValue.name() + QLatin1Char(';') );
         getterSoapValue.setConst( true );
         newClass.addFunction( getterSoapValue );
-    }
-
-    if ( optional || prohibited ) {
+    } else if ( optional || prohibited ) {
         KODE::MemberVariable nilVariable( rawName + "_nil", "bool" );
         nilVariable.setInitializer( "true" );
         newClass.addMemberVariable( nilVariable );
@@ -267,33 +265,50 @@ QString Converter::generateMemberVariable(const QString &rawName, const QString 
     KODE::Function setter( QLatin1String("set") + upperName, QLatin1String("void"), access );
     setter.addArgument( inputTypeName + QLatin1Char(' ') + argName );
     KODE::Code code;
-    if ( optional ) {
-        code += variableName + "_nil = false;" + COMMENT;
-    }
+
     if ( usePointer ) {
         if ( polymorphic )
             code += variableName + QLatin1String(" = ") + storageType + QLatin1Char('(') + argName + QLatin1String("._kd_clone());");
         else
             code += variableName + QLatin1String(" = ") + storageType + QLatin1String("(new ") + typeName + QLatin1Char('(') + argName + QLatin1String("));");
-    }else {
+    } else {
+        if ( optional ) {
+            code += variableName + "_nil = false;" + COMMENT;
+        }
         code += variableName + QLatin1String(" = ") + argName + QLatin1Char(';');
     }
     setter.setBody( code );
 
     // getter method
-    QString optionalTypeName;
-    if (optional) {
-        if (Settings::self()->optionalElementType() == Settings::ERawPointer)
-            optionalTypeName = "const " + typeName + QLatin1Char('*');
-        else if (Settings::self()->optionalElementType() == Settings::EBoostOptional)
-            optionalTypeName = "boost::optional<" + typeName + " >";
-        else
-            optionalTypeName = typeName;
+    QString getterTypeName = typeName;
+    if ( optional ) {
+        if ( Settings::self()->optionalElementType() == Settings::EBoostOptional )
+            getterTypeName = "boost::optional<" + typeName + " >";
+        else if ( usePointer || Settings::self()->optionalElementType() == Settings::ERawPointer )
+            getterTypeName = "const " + typeName + QLatin1Char('*');
+    } else if ( usePointer ) {
+        getterTypeName = QString("const " + typeName + '&');
     }
-    KODE::Function getter( argName, usePointer ? QString("const " + typeName + '&') : (optional ? optionalTypeName : typeName), access );
-    if ( usePointer )
-        getter.setBody( QLatin1String("return *") + variableName + QLatin1Char(';') );
-    else if ( optional ) {
+    KODE::Function getter( argName, getterTypeName, access );
+    if ( usePointer ) {
+        if ( optional ) {
+            if (Settings::self()->optionalElementType() == Settings::EBoostOptional) {
+                KODE::Code getterCode;
+                getterCode += QLatin1String("if (") + variableName + QLatin1String(")");
+                getterCode.indent();
+                getterCode += QLatin1String("return *") + variableName + QLatin1Char(';');
+                getterCode.unindent();
+                getterCode += QLatin1String("else");
+                getterCode.indent();
+                getterCode += "return boost::optional<" + typeName + " >();";
+                getter.setBody( getterCode );
+            } else { // Regular isn't an option here. It would crash when the value is not set! So assume ERawPointer.
+                getter.setBody( QLatin1String("return ") + variableName + QLatin1String(".data();") );
+            }
+        } else { // not optional -> API takes const ref
+            getter.setBody( QLatin1String("return *") + variableName + QLatin1Char(';') );
+        }
+    } else if ( optional ) {
         if (Settings::self()->optionalElementType() == Settings::ERawPointer) {
             KODE::Code getterCode;
             getterCode += QLatin1String("if (!") + variableName + QLatin1String("_nil)");

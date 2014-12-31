@@ -182,6 +182,11 @@ private Q_SLOTS:
         QCOMPARE(reqCopy2.jobID().count(), 1);
         QCOMPARE(int(reqCopy2.jobInfoSelection()), int(req.jobInfoSelection()));
 
+        // check that <element name="processed" type="bms:ProcessedInfoType" minOccurs="0">
+        // leads to a method that returns a pointer, rather than a const ref (which would be a null ref then, when not set...)
+        const BMS__ProcessedInfoType* proc = jobType1.processed();
+        QCOMPARE(proc, static_cast<BMS__ProcessedInfoType *>(0));
+
         // check that we can pass a derived class where a base class is expected
         BMS__QueryJobResponseType respType = service.queryJob(req);
 

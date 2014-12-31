@@ -15,6 +15,11 @@ Server-side:
 
 WSDL parser / code generator changes, applying to both client and server side:
 ================================================================
+* Source incompatible change: methods that return an
+  optional polymorphic type will now return a pointer instead of a
+  const reference. Null references lead to crashes and therefore the change
+  was unavoidable.
+
 * Try harder to find a prefix for some namespaces.
   Important: this can rename some generated classes from __Class to PREFIX__Class.
   This source incompatible change was necessary to fix clashes between unprefixed

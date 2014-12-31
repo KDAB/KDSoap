@@ -89,7 +89,11 @@ KODE::Code ElementArgumentSerializer::generate() const
     const bool isPolymorphic = mTypeMap.isPolymorphic( mType, mElementType );
 
     if ( mAppend && mOmitIfEmpty ) {
-      block += "if (!" + mLocalVarName + "_nil) {";
+      if ( mUsePointer ) {
+          block += "if (" + mLocalVarName + ") {";
+      } else {
+          block += "if (!" + mLocalVarName + "_nil) {";
+      }
       block.indent();
     }
 
