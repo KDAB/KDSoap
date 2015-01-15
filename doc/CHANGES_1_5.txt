@@ -29,3 +29,5 @@ WSDL parser / code generator changes, applying to both client and server side:
 
 * Fix infinite recursion when type A contains a member A with minoccurs=0
 
+* Improve generated code so that it compiles without warnings when enabling -Wshadow
+

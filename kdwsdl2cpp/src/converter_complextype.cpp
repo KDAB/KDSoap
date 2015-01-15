@@ -239,7 +239,7 @@ QString Converter::generateMemberVariable(const QString &rawName, const QString 
     const QString variableName = QLatin1String("d_ptr->") + variable.name();
     const QString upperName = upperlize( rawName );
     const QString lowerName = lowerlize( rawName );
-    const QString argName = mNameMapper.escape( lowerName );
+    const QString memberName = mNameMapper.escape( lowerName );
 
     bool optional = ( use == XSD::Attribute::Optional );
     bool prohibited = ( use == XSD::Attribute::Prohibited );
@@ -251,7 +251,7 @@ QString Converter::generateMemberVariable(const QString &rawName, const QString 
         // Give server-side implementations a way to dig into the received data
         KODE::MemberVariable variableAsSoapValue( rawName + "_as_kdsoap_value", "KDSoapValue" );
         newClass.addMemberVariable( variableAsSoapValue );
-        KODE::Function getterSoapValue( argName + "_as_kdsoap_value", "KDSoapValue" );
+        KODE::Function getterSoapValue( memberName + "_as_kdsoap_value", "KDSoapValue" );
         getterSoapValue.setBody( QLatin1String("return d_ptr->") + variableAsSoapValue.name() + QLatin1Char(';') );
         getterSoapValue.setConst( true );
         newClass.addFunction( getterSoapValue );
@@ -262,6 +262,7 @@ QString Converter::generateMemberVariable(const QString &rawName, const QString 
     }
 
     // setter method
+    const QString argName = '_' + memberName;
     KODE::Function setter( QLatin1String("set") + upperName, QLatin1String("void"), access );
     setter.addArgument( inputTypeName + QLatin1Char(' ') + argName );
     KODE::Code code;
@@ -289,7 +290,7 @@ QString Converter::generateMemberVariable(const QString &rawName, const QString 
     } else if ( usePointer ) {
         getterTypeName = QString("const " + typeName + '&');
     }
-    KODE::Function getter( argName, getterTypeName, access );
+    KODE::Function getter( memberName, getterTypeName, access );
     if ( usePointer ) {
         if ( optional ) {
             if (Settings::self()->optionalElementType() == Settings::EBoostOptional) {
@@ -350,7 +351,7 @@ static KODE::Code demarshalNameTest( const QName& type, const QString& tagName, 
     if ( type.nameSpace() == XMLSchemaURI && (type.localName() == QLatin1String("any")) ) {
         demarshalCode += QString::fromLatin1(*first? "" : "else ") + QLatin1String("{") + COMMENT;
     } else {
-        demarshalCode += QString::fromLatin1(*first? "" : "else ") + QLatin1String("if (name == QLatin1String(\"") + tagName + QLatin1String("\")) {") + COMMENT;
+        demarshalCode += QString::fromLatin1(*first? "" : "else ") + QLatin1String("if (_name == QLatin1String(\"") + tagName + QLatin1String("\")) {") + COMMENT;
     }
     *first = false;
     return demarshalCode;
@@ -494,7 +495,7 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
         demarshalCode += "for (int argNr = 0; argNr < args.count(); ++argNr) {";
         demarshalCode.indent();
         demarshalCode += "const KDSoapValue& val = args.at(argNr);";
-        demarshalCode += "const QString name = val.name();";
+        demarshalCode += "const QString _name = val.name();";
     } else {
         // The Q_UNUSED is not necessarily true in case of attributes, but who cares.
         demarshalCode += QLatin1String("Q_UNUSED(mainValue);") + COMMENT;
@@ -603,7 +604,7 @@ void Converter::createComplexTypeSerializer( KODE::Class& newClass, const XSD::C
         demarshalCode += "for (int attrNr = 0; attrNr < attribs.count(); ++attrNr) {";
         demarshalCode.indent();
         demarshalCode += "const KDSoapValue& val = attribs.at(attrNr);";
-        demarshalCode += "const QString name = val.name();";
+        demarshalCode += "const QString _name = val.name();";
 
         bool first = true;
         Q_FOREACH( const XSD::Attribute& attribute, attributes ) {

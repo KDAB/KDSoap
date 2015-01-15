@@ -124,8 +124,8 @@ bool Converter::convertClientService()
             // Ctor and dtor
             {
                 KODE::Function ctor( newClass.name() );
-                ctor.addArgument(KODE::Function::Argument(QLatin1String("QObject* parent"), QLatin1String("0")));
-                ctor.addInitializer(QLatin1String("QObject(parent)"));
+                ctor.addArgument(KODE::Function::Argument(QLatin1String("QObject* _parent"), QLatin1String("0")));
+                ctor.addInitializer(QLatin1String("QObject(_parent)"));
                 KODE::Function dtor( QLatin1Char('~') + newClass.name() );
                 KODE::Code ctorCode, dtorCode;
 
@@ -307,8 +307,8 @@ bool Converter::convertClientService()
 
                 KODE::Function ctor( jobClass.name() );
                 ctor.addArgument( KODE::Function::Argument( QString::fromLatin1("%1* service").arg( fullyQualified(newClass) ) ) );
-                ctor.addArgument( KODE::Function::Argument( QLatin1String("QObject* parent"), QLatin1String("0") ) );
-                ctor.addInitializer( QLatin1String("KDSoapJob(parent)") );
+                ctor.addArgument( KODE::Function::Argument( QLatin1String("QObject* _parent"), QLatin1String("0") ) );
+                ctor.addInitializer( QLatin1String("KDSoapJob(_parent)") );
                 ctor.addInitializer( QLatin1String("mService(service)") );
 
                 const Message message = mWSDL.findMessage( operation.input().message() );
@@ -372,13 +372,13 @@ bool Converter::convertClientService()
                 slot.addArgument( QLatin1String("KDSoapPendingCallWatcher* watcher") );
                 KODE::Code slotCode;
                 slotCode += QLatin1String("watcher->deleteLater();");
-                slotCode += QLatin1String("const KDSoapMessage reply = watcher->returnMessage();");
-                slotCode += QLatin1String("if (!reply.isFault()) {") + COMMENT;
+                slotCode += QLatin1String("const KDSoapMessage _reply = watcher->returnMessage();");
+                slotCode += QLatin1String("if (!_reply.isFault()) {") + COMMENT;
                 slotCode.indent();
                 Q_FOREACH( const Part& part, selectedParts( binding, outputMsg, operation, false /*input*/ ) ) {
                     const QString varName = mNameMapper.escape( QLatin1String("result") + upperlize( part.name() ) );
                     const KODE::MemberVariable member( varName, QString() );
-                    slotCode.addBlock( deserializeRetVal(part, QLatin1String("reply"), mTypeMap.localType( part.type(), part.element() ), member.name() ) );
+                    slotCode.addBlock( deserializeRetVal(part, QLatin1String("_reply"), mTypeMap.localType( part.type(), part.element() ), member.name() ) );
 
                     addJobResultMember(jobClass, part, varName, inputGetters);
                 }
@@ -397,7 +397,7 @@ bool Converter::convertClientService()
 
                 slotCode.unindent();
                 slotCode += QLatin1String("}");
-                slotCode += QLatin1String("emitFinished(reply, watcher->returnHeaders());");
+                slotCode += QLatin1String("emitFinished(_reply, watcher->returnHeaders());");
                 slot.setBody( slotCode );
                 jobClass.addFunction( slot );
 

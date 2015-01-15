@@ -36,7 +36,6 @@
           <xsd:element name="publicDocumentNumber" type="xsd:string"/>
           <xsd:element name="publicDocumentIssuer" type="xsd:string"/>
           <xsd:element name="documentExpiresOn" type="xsd:dateTime"/>
-          <xsd:element name="visaType" type="xsd:string"/>
           <xsd:element name="visaNumber" type="xsd:string"/>
           <xsd:element name="visaIssuedPlace" type="xsd:string"/>
           <xsd:element name="visaValidFrom" type="xsd:dateTime"/>
@@ -244,8 +243,8 @@
           </xsd:sequence>
         </xsd:complexType>
       </xsd:element>
-      <xsd:element name="visaTypeListRequest"/>
-      <xsd:element name="visaTypeListResponse">
+      <xsd:element name="serviceRequest"/>
+      <xsd:element name="serviceResponse">
         <xsd:complexType>
           <xsd:sequence>
             <xsd:element maxOccurs="unbounded" minOccurs="0" name="listaVrsta" nillable="false" type="xsd:string"/>
@@ -266,8 +265,8 @@
   <wsdl:message name="buildingListRequest">
     <wsdl:part element="tns:buildingListRequest" name="parameters"/>
   </wsdl:message>
-  <wsdl:message name="visaTypeListResponse">
-    <wsdl:part element="tns:visaTypeListResponse" name="parameters"/>
+  <wsdl:message name="serviceResponse">
+    <wsdl:part element="tns:serviceResponse" name="parameters"/>
   </wsdl:message>
   <wsdl:message name="entranceListResponse">
     <wsdl:part element="tns:entranceListResponse" name="parameters"/>
@@ -287,8 +286,8 @@
   <wsdl:message name="countrytListResponse">
     <wsdl:part element="tns:countrytListResponse" name="parameters"/>
   </wsdl:message>
-  <wsdl:message name="visaTypeListRequest">
-    <wsdl:part element="tns:visaTypeListRequest" name="parameters"/>
+  <wsdl:message name="serviceRequest">
+    <wsdl:part element="tns:serviceRequest" name="parameters"/>
   </wsdl:message>
   <wsdl:message name="documentListResponse">
     <wsdl:part element="tns:documentListResponse" name="parameters"/>
@@ -371,9 +370,9 @@
       <wsdl:input message="tns:entranceListRequest"/>
       <wsdl:output message="tns:entranceListResponse"/>
     </wsdl:operation>
-    <wsdl:operation name="visaTypeList">
-      <wsdl:input message="tns:visaTypeListRequest"/>
-      <wsdl:output message="tns:visaTypeListResponse"/>
+    <wsdl:operation name="service">
+      <wsdl:input message="tns:serviceRequest"/>
+      <wsdl:output message="tns:serviceResponse"/>
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="guestSOAP" type="tns:guest">
@@ -477,8 +476,8 @@
         <soap:body use="literal"/>
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="visaTypeList">
-      <soap:operation soapAction="http://com.kdab/guest/visaTypeList"/>
+    <wsdl:operation name="service">
+      <soap:operation soapAction="http://com.kdab/guest/service"/>
       <wsdl:input>
         <soap:body use="literal"/>
       </wsdl:input>

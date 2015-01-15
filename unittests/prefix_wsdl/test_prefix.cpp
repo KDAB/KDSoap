@@ -90,9 +90,9 @@ public:
         Q_UNUSED( parameters );
         return TNS__EntranceListResponse();
     }
-    virtual TNS__VisaTypeListResponse visaTypeList( const TNS__VisaTypeListRequest& parameters ) {
+    virtual TNS__ServiceResponse service( const TNS__ServiceRequest& parameters ) {
         Q_UNUSED( parameters );
-        return TNS__VisaTypeListResponse();
+        return TNS__ServiceResponse();
     }
 };
 

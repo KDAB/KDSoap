@@ -1,4 +1,7 @@
 KDWSDL_OPTIONS = -server
+
+g++-*: QMAKE_CXXFLAGS += -Wshadow
+
 include( $${TOP_SOURCE_DIR}/unittests/unittests.pri )
 QT += network xml
 SOURCES = test_prefix.cpp

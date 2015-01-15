@@ -43,7 +43,7 @@ void Converter::convertServerService()
             KODE::Function processRequestMethod(QString::fromLatin1("processRequest"), QString::fromLatin1("void"));
             processRequestMethod.addArgument("const KDSoapMessage &_request");
             processRequestMethod.addArgument("KDSoapMessage &_response");
-            processRequestMethod.addArgument("const QByteArray& soapAction");
+            processRequestMethod.addArgument("const QByteArray& _soapAction");
 
             KODE::Code body;
             const QString responseNs = mWSDL.definitions().targetNamespace();
@@ -71,7 +71,7 @@ void Converter::convertServerService()
                 body += "else {";
                 body.indent();
             }
-            body += "KDSoapServerObjectInterface::processRequest(_request, _response, soapAction);"  + COMMENT;
+            body += "KDSoapServerObjectInterface::processRequest(_request, _response, _soapAction);"  + COMMENT;
             if (!first) {
                 body.unindent();
                 body += "}";
@@ -107,7 +107,7 @@ void Converter::generateServerMethod(KODE::Code& code, const Binding& binding, c
         const SoapBinding soapBinding( binding.soapBinding() );
         const SoapBinding::Operation op = soapBinding.operations().value( operation.name() );
         if (!op.action().isEmpty()) {
-            condition += " || soapAction == \"" + op.action() + "\"";
+            condition += " || _soapAction == \"" + op.action() + "\"";
         }
     }
     code += QString(first ? "" : "else ") + "if (" + condition + ") {";
