@@ -560,6 +560,7 @@ Element Parser::parseElement( ParserContext *context,
   if (newElement.type().isEmpty() && newElement.reference().isEmpty()) {
     ComplexType ct;
     Q_ASSERT(!newElement.name().isEmpty());
+    ct.setNameSpace( newElement.nameSpace() );
     ct.setName( newElement.name() );
     ct.setAnonymous( true );
     d->mComplexTypes.append( ct );

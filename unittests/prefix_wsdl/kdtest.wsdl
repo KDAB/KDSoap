@@ -1,0 +1,495 @@
+<?xml version="1.0"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://com.kdab/guest/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="guest" targetNamespace="http://com.kdab/guest/">
+  <wsdl:types>
+    <xsd:schema xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://com.kdab/guest/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://com.kdab/guest/">
+      <xsd:element name="addPersonRequest">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element maxOccurs="1" minOccurs="1" name="guest" nillable="false" type="tns:guest"/>
+            <xsd:element name="updater" type="xsd:int"/>
+            <xsd:element name="signed_request" type="xsd:string"/>
+            <xsd:element name="data" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="addPersonResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="result" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:complexType name="guest">
+        <xsd:sequence>
+          <xsd:element name="id" type="xsd:int"/>
+          <xsd:element name="guestType" type="tns:guestType"/>
+          <xsd:element name="uniqueID" type="xsd:string"/>
+          <xsd:element name="lastname" type="xsd:string"/>
+          <xsd:element name="firstname" type="xsd:string"/>
+          <xsd:element name="gender" type="xsd:string"/>
+          <xsd:element name="birthDate" type="xsd:dateTime"/>
+          <xsd:element name="birthCountry" type="tns:country"/>
+          <xsd:element name="birthCity" type="xsd:string"/>
+          <xsd:element name="citizenship" type="tns:country"/>
+          <xsd:element name="countryOnDocument" type="tns:country"/>
+          <xsd:element name="publicDocumentType" type="tns:publicDocument"/>
+          <xsd:element name="publicDocumentNumber" type="xsd:string"/>
+          <xsd:element name="publicDocumentIssuer" type="xsd:string"/>
+          <xsd:element name="documentExpiresOn" type="xsd:dateTime"/>
+          <xsd:element name="visaType" type="xsd:string"/>
+          <xsd:element name="visaNumber" type="xsd:string"/>
+          <xsd:element name="visaIssuedPlace" type="xsd:string"/>
+          <xsd:element name="visaValidFrom" type="xsd:dateTime"/>
+          <xsd:element name="visaValidTo" type="xsd:dateTime"/>
+          <xsd:element name="dateIn" type="xsd:dateTime"/>
+          <xsd:element name="dateOut" type="tns:entrance"/>
+          <xsd:element name="cityOfStay" type="tns:city"/>
+          <xsd:element name="placeOfStay" type="tns:place"/>
+          <xsd:element name="addressNumber" type="xsd:string"/>
+          <xsd:element name="ownerLastName" type="xsd:string"/>
+          <xsd:element name="ownerFullName" type="xsd:string"/>
+          <xsd:element name="ownerID" type="xsd:string"/>
+          <xsd:element name="dateCheckIn" type="xsd:dateTime"/>
+          <xsd:element name="dateCheckOut" type="xsd:dateTime"/>
+          <xsd:element name="homeCountry" type="tns:country"/>
+          <xsd:element name="homeCity" type="xsd:string"/>
+          <xsd:element name="addres" type="xsd:string"/>
+          <xsd:element name="stayer" type="tns:placeOfStay"/>
+          <xsd:element name="updater" type="tns:user"/>
+          <xsd:element name="deleted" type="xsd:boolean"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="authenticateRequest">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="serijskiBrojSertifikata" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="authenticateResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element maxOccurs="1" minOccurs="0" name="user" nillable="false" type="tns:user"/>
+            <xsd:element maxOccurs="unbounded" minOccurs="0" name="placeOfStayList" nillable="false" type="tns:placeOfStay"/>
+            <xsd:element name="result" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:complexType name="user">
+        <xsd:sequence>
+          <xsd:element name="id" type="xsd:int"/>
+          <xsd:element name="fullName" type="xsd:string"/>
+          <xsd:element name="roleID" type="xsd:int"/>
+          <xsd:element name="roleName" type="xsd:string"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="placeOfStay">
+        <xsd:sequence>
+          <xsd:element name="id" type="xsd:int"/>
+          <xsd:element name="name" type="xsd:string"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="searchPersonRequest">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="searchRequest" type="tns:searchPersonParams"/>
+            <xsd:element name="signed_request" type="xsd:string"/>
+            <xsd:element name="data" type="xsd:string"/>
+            <xsd:element name="user_id" type="xsd:int"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="searchPersonResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element maxOccurs="unbounded" minOccurs="0" name="listPerson" nillable="false" type="tns:guest"/>
+            <xsd:element name="result" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:complexType name="searchPersonParams">
+        <xsd:sequence>
+          <xsd:element name="firstname" type="xsd:string"/>
+          <xsd:element name="lastname" type="xsd:string"/>
+          <xsd:element name="docType" type="xsd:int"/>
+          <xsd:element name="docNum" type="xsd:string"/>
+          <xsd:element name="countryOnDocument" type="xsd:string"/>
+          <xsd:element name="from" type="xsd:dateTime"/>
+          <xsd:element name="to" type="xsd:dateTime"/>
+          <xsd:element name="placeOfStay" type="xsd:int"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="editPersonRequest">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="guest" type="tns:guest"/>
+            <xsd:element name="updater" type="xsd:int"/>
+            <xsd:element name="signed_request" type="xsd:string"/>
+            <xsd:element name="data" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="editPersonResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="result" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="cityListRequest"/>
+      <xsd:element name="cityListResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element maxOccurs="unbounded" minOccurs="0" name="opstine" nillable="false" type="tns:city"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="placeListRequest">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="city" type="tns:city"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="placeListResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element maxOccurs="unbounded" minOccurs="0" name="mjesta" nillable="false" type="tns:place"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:complexType name="city">
+        <xsd:sequence>
+          <xsd:element name="code" type="xsd:string"/>
+          <xsd:element name="name" type="xsd:string"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="place">
+        <xsd:sequence>
+          <xsd:element name="code" type="xsd:string"/>
+          <xsd:element name="name" type="xsd:string"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="documentListRequest"/>
+      <xsd:element name="documentListResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element maxOccurs="unbounded" minOccurs="0" name="javneIsprave" nillable="false" type="tns:publicDocument"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:complexType name="publicDocument">
+        <xsd:sequence>
+          <xsd:element name="id" type="xsd:int"/>
+          <xsd:element name="name" type="xsd:string"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="guestTypeListRequest"/>
+      <xsd:element name="guestTypeListResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element maxOccurs="unbounded" minOccurs="0" name="guestTypeList" nillable="false" type="tns:guestType"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:complexType name="guestType">
+        <xsd:sequence>
+          <xsd:element name="id" type="xsd:int"/>
+          <xsd:element name="name" type="xsd:string"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="countrytListRequest"/>
+      <xsd:element name="countrytListResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element maxOccurs="unbounded" minOccurs="0" name="drzaveList" nillable="false" type="tns:country"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:complexType name="country">
+        <xsd:sequence>
+          <xsd:element name="code" type="xsd:string"/>
+          <xsd:element name="name" type="xsd:string"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="buildingListRequest">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="cityId" type="xsd:string"/>
+            <xsd:element name="user_id" type="xsd:int"/>
+            <xsd:element name="signed_request" type="xsd:string"/>
+            <xsd:element name="data" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="buildingListResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="result" type="xsd:string"/>
+            <xsd:element maxOccurs="unbounded" minOccurs="0" name="listaObjekata" nillable="false" type="tns:placeOfStay"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:complexType name="entrance">
+        <xsd:sequence>
+          <xsd:element name="id" type="xsd:int"/>
+          <xsd:element name="name" type="xsd:string"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="entranceListRequest"/>
+      <xsd:element name="entranceListResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element maxOccurs="unbounded" minOccurs="0" name="listaGP" nillable="false" type="tns:entrance"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="visaTypeListRequest"/>
+      <xsd:element name="visaTypeListResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element maxOccurs="unbounded" minOccurs="0" name="listaVrsta" nillable="false" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="addPersonResponse">
+    <wsdl:part element="tns:addPersonResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="placeListResponse">
+    <wsdl:part element="tns:placeListResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="guestTypeListRequest">
+    <wsdl:part element="tns:guestTypeListRequest" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="buildingListRequest">
+    <wsdl:part element="tns:buildingListRequest" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="visaTypeListResponse">
+    <wsdl:part element="tns:visaTypeListResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="entranceListResponse">
+    <wsdl:part element="tns:entranceListResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="entranceListRequest">
+    <wsdl:part element="tns:entranceListRequest" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="placeListRequest">
+    <wsdl:part element="tns:placeListRequest" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="guestTypeListResponse">
+    <wsdl:part element="tns:guestTypeListResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="editPersonResponse">
+    <wsdl:part element="tns:editPersonResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="countrytListResponse">
+    <wsdl:part element="tns:countrytListResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="visaTypeListRequest">
+    <wsdl:part element="tns:visaTypeListRequest" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="documentListResponse">
+    <wsdl:part element="tns:documentListResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="editPersonRequest">
+    <wsdl:part element="tns:editPersonRequest" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="cityListRequest">
+    <wsdl:part element="tns:cityListRequest" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="buildingListResponse">
+    <wsdl:part element="tns:buildingListResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="countrytListRequest">
+    <wsdl:part element="tns:countrytListRequest" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="addPersonRequest">
+    <wsdl:part element="tns:addPersonRequest" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="searchPersonRequest">
+    <wsdl:part element="tns:searchPersonRequest" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="searchPersonResponse">
+    <wsdl:part element="tns:searchPersonResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="authenticateRequest">
+    <wsdl:part element="tns:authenticateRequest" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="authenticateResponse">
+    <wsdl:part element="tns:authenticateResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="cityListResponse">
+    <wsdl:part element="tns:cityListResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="documentListRequest">
+    <wsdl:part element="tns:documentListRequest" name="parameters"/>
+  </wsdl:message>
+  <wsdl:portType name="guest">
+    <wsdl:operation name="addPerson">
+      <wsdl:input message="tns:addPersonRequest"/>
+      <wsdl:output message="tns:addPersonResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="authenticate">
+      <wsdl:input message="tns:authenticateRequest"/>
+      <wsdl:output message="tns:authenticateResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="searchPerson">
+      <wsdl:input message="tns:searchPersonRequest"/>
+      <wsdl:output message="tns:searchPersonResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="editPerson">
+      <wsdl:input message="tns:editPersonRequest"/>
+      <wsdl:output message="tns:editPersonResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="cityList">
+      <wsdl:input message="tns:cityListRequest"/>
+      <wsdl:output message="tns:cityListResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="placeList">
+      <wsdl:input message="tns:placeListRequest"/>
+      <wsdl:output message="tns:placeListResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="documentList">
+      <wsdl:input message="tns:documentListRequest"/>
+      <wsdl:output message="tns:documentListResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="guestTypeList">
+      <wsdl:input message="tns:guestTypeListRequest"/>
+      <wsdl:output message="tns:guestTypeListResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="countrytList">
+      <wsdl:input message="tns:countrytListRequest"/>
+      <wsdl:output message="tns:countrytListResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="buildingList">
+      <wsdl:input message="tns:buildingListRequest"/>
+      <wsdl:output message="tns:buildingListResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="entranceList">
+      <wsdl:input message="tns:entranceListRequest"/>
+      <wsdl:output message="tns:entranceListResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="visaTypeList">
+      <wsdl:input message="tns:visaTypeListRequest"/>
+      <wsdl:output message="tns:visaTypeListResponse"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="guestSOAP" type="tns:guest">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="addPerson">
+      <soap:operation soapAction="http://com.kdab/guest/addPerson"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="authenticate">
+      <soap:operation soapAction="http://com.kdab/guest/authenticate"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="searchPerson">
+      <soap:operation soapAction="http://com.kdab/guest/searchPerson"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="editPerson">
+      <soap:operation soapAction="http://com.kdab/guest/editPerson"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="cityList">
+      <soap:operation soapAction="http://com.kdab/guest/cityList"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="placeList">
+      <soap:operation soapAction="http://com.kdab/guest/placeList"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="documentList">
+      <soap:operation soapAction="http://com.kdab/guest/documentList"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="guestTypeList">
+      <soap:operation soapAction="http://com.kdab/guest/guestTypeList"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="countrytList">
+      <soap:operation soapAction="http://com.kdab/guest/countrytList"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="buildingList">
+      <soap:operation soapAction="http://com.kdab/guest/buildingList"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="entranceList">
+      <soap:operation soapAction="http://com.kdab/guest/entranceList"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="visaTypeList">
+      <soap:operation soapAction="http://com.kdab/guest/visaTypeList"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="guest">
+    <wsdl:port binding="tns:guestSOAP" name="guestSOAP">
+      <soap:address location="https://kdab.testsoap.com/publicws/guest/guestImpl"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

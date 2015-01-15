@@ -31,6 +31,7 @@ SUBDIRS = \
   unqualified_formdefault \
   onvif.org \
   encapsecurity \
+  prefix_wsdl \
 
 # These need internet access
 SUBDIRS += webcalls webcalls_wsdl

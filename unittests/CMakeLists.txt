@@ -61,6 +61,7 @@ add_subdirectory(import_definition)
 add_subdirectory(unqualified_formdefault)
 add_subdirectory(onvif.org)
 add_subdirectory(encapsecurity)
+add_subdirectory(prefix_wsdl)
 
 # These need internet access
 add_subdirectory(webcalls)
