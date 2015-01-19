@@ -105,6 +105,14 @@ static bool splitHeadersAndData(const QByteArray& request, QByteArray& header, Q
     return true;
 }
 
+static QByteArray stripQuotes(const QByteArray& bar)
+{
+    if (bar.startsWith('\"') && bar.endsWith('\"'))
+        return bar.mid(1, bar.length() - 2);
+
+    return bar;
+}
+
 static QByteArray httpResponseHeaders(bool fault, const QByteArray& contentType, int responseDataSize)
 {
     QByteArray httpResponse;
@@ -242,8 +250,7 @@ void KDSoapServerSocket::slotReadyRead()
         // SOAP 1.1
         soapAction = httpHeaders.value("soapaction");
         // The SOAP standard allows quotation marks around the SoapAction, so we have to get rid of these.
-        if (soapAction.startsWith('\"'))
-            soapAction = soapAction.mid(1, soapAction.length() - 2);
+        soapAction = stripQuotes(soapAction);
 
     } else if (contentType.startsWith("application/soap+xml")) { //krazy:exclude=strings
         // SOAP 1.2
