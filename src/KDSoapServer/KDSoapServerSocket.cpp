@@ -257,8 +257,8 @@ void KDSoapServerSocket::slotReadyRead()
         // Example: application/soap+xml;charset=utf-8;action=ActionHex
         const QList<QByteArray> parts = contentType.split(';');
         Q_FOREACH(const QByteArray& part, parts) {
-            if (part.startsWith("action=")) { //krazy:exclude=strings
-                soapAction = part.mid(strlen("action="));
+            if (part.trimmed().startsWith("action=")) { //krazy:exclude=strings
+                soapAction = stripQuotes( part.mid( part.indexOf('=') + 1 ) );
             }
         }
     }
