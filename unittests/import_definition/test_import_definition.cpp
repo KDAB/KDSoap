@@ -41,7 +41,6 @@ class ImportDefinitionTest : public QObject
 private Q_SLOTS:
     void initTestCase()
     {
-        KDSoapUnitTestHelpers::initHashSeed();
     }
 
     void testRequest()

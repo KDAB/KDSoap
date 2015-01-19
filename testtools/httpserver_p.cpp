@@ -64,7 +64,7 @@ extern Q_CORE_EXPORT QBasicAtomicInt qt_qhash_seed; // from qhash.cpp
 QT_END_NAMESPACE
 #endif
 
-void KDSoapUnitTestHelpers::initHashSeed()
+static void initHashSeed()
 {
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
     // If the seed not initialized yet (-1), set it to 0;
@@ -74,6 +74,10 @@ void KDSoapUnitTestHelpers::initHashSeed()
     Q_ASSERT( qt_qhash_seed.loadAcquire() == 0 );
 #endif
 }
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+Q_CONSTRUCTOR_FUNCTION(initHashSeed)
+#endif
 
 // A tool for comparing XML documents and outputting something useful if they differ
 bool KDSoapUnitTestHelpers::xmlBufferCompare(const QByteArray& source, const QByteArray& dest)
