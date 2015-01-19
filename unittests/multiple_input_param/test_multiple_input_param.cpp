@@ -1,5 +1,5 @@
 /****************************************************************************
-** Copyright (C) 2010-2015 Klaralvdalens Datakonsult AB, a KDAB Group company, info@kdab.com.
+** Copyright (C) 2010-2014 Klaralvdalens Datakonsult AB, a KDAB Group company, info@kdab.com.
 ** All rights reserved.
 **
 ** This file is part of the KD Soap library.
@@ -24,17 +24,14 @@
 #include "KDSoapClientInterface.h"
 #include "KDSoapMessage.h"
 #include "KDSoapValue.h"
-#include "KDSoapPendingCallWatcher.h"
-#include "KDSoapAuthentication.h"
-#include "wsdl_import_definition.h"
+#include "wsdl_helloworldextended.h"
 #include "httpserver_p.h"
-#include <QtTest/QtTest>
-#include <QEventLoop>
+#include <QtTest>
 #include <QDebug>
 
 using namespace KDSoapUnitTestHelpers;
 
-class ImportDefinitionTest : public QObject
+class MultipleInputParamTest : public QObject
 {
     Q_OBJECT
 
@@ -45,31 +42,16 @@ private Q_SLOTS:
 
     void testRequest()
     {
-        HttpServerThread server(queryResponse(), HttpServerThread::Public);
-        ExampleService service(this);
-        service.setEndPoint(server.endPoint());
+      HttpServerThread server(queryResponse(), HttpServerThread::Public);
+      Hello_Service service(this);
+      service.setEndPoint(server.endPoint());
 
-        // prepare instances
-        CFWT__Authenticate req;
-        req.setName("MyUser");
-        req.setPhrase("Adsadsda asdasd asda");
-        CFWT__MyAuthenticate auth;
-        auth.setRequest(req);
-        service.myAuthenticate(auth);
+      TNS__SayHello params;
+      params.setMsgElement("Hello !");
+      params.setSecondpartElement(42);
 
-        // Check what we sent
-        QByteArray expectedRequestXml =
-            QByteArray(xmlEnvBegin11()) + ">"
-                "<soap:Body>"
-                  "<n1:MyAuthenticate xmlns:n1=\"http://something.mydomain.com/types\">"
-                     "<request>"
-                       "<name>MyUser</name>"
-                       "<phrase>Adsadsda asdasd asda</phrase>"
-                     "</request>"
-                  "</n1:MyAuthenticate>"
-                "</soap:Body>" + xmlEnvEnd()
-            + '\n'; // added by QXmlStreamWriter::writeEndDocument
-        QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
+      service.sayHello(params);
+      QCOMPARE(QString(server.receivedData()), QString(expectedRequestXML()));
     }
 
 private:
@@ -79,8 +61,20 @@ private:
               "</queryResponse>"
               "</soap:Body>" + xmlEnvEnd();
     }
+
+    QByteArray expectedRequestXML() {
+        return QByteArray(xmlEnvBegin11()) + "><soap:Body>"
+                "<n1:SayHello xmlns:n1=\"http://www.ecerami.com/wsdl/HelloService.wsdl\" xsi:type=\"n1:SayHello\">"
+                    "<msgElement xsi:type=\"xsd:string\">Hello !</msgElement>"
+                    "<secondpartElement xsi:type=\"xsd:int\">42</secondpartElement>"
+                "</n1:SayHello>"
+                "</soap:Body>" + xmlEnvEnd()
+            + '\n'; // added by QXmlStreamWriter::writeEndDocument
+    }
 };
 
-QTEST_MAIN(ImportDefinitionTest)
+QTEST_MAIN(MultipleInputParamTest)
 
-#include "test_import_definition.moc"
+#include "test_multiple_input_param.moc"
+
+

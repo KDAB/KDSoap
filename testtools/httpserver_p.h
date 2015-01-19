@@ -46,7 +46,6 @@ namespace KDSoapUnitTestHelpers
     bool xmlBufferCompare(const QByteArray& source, const QByteArray& dest);
     void httpGet(const QUrl& url);
     bool setSslConfiguration();
-    void initHashSeed();
     const char* xmlEnvBegin11();
     const char* xmlEnvBegin12();
     const char* xmlEnvEnd();

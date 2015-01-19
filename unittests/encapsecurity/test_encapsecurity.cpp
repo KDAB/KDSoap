@@ -1,5 +1,5 @@
 /****************************************************************************
-** Copyright (C) 2010-2015 Klaralvdalens Datakonsult AB, a KDAB Group company, info@kdab.com.
+** Copyright (C) 2010-2014 Klaralvdalens Datakonsult AB, a KDAB Group company, info@kdab.com.
 ** All rights reserved.
 **
 ** This file is part of the KD Soap library.
@@ -26,7 +26,7 @@
 #include "KDSoapValue.h"
 #include "KDSoapPendingCallWatcher.h"
 #include "KDSoapAuthentication.h"
-#include "wsdl_literal.h"
+#include "wsdl_authstateless.h"
 #include "httpserver_p.h"
 #include <QtTest/QtTest>
 #include <QEventLoop>
@@ -34,7 +34,7 @@
 
 using namespace KDSoapUnitTestHelpers;
 
-class LiteralTest : public QObject
+class EncapSecurityTest : public QObject
 {
     Q_OBJECT
 
@@ -43,15 +43,19 @@ private Q_SLOTS:
     {
     }
 
-    void testRequest()
+    void minimalTest()
     {
-     // server down, just a compile check
-      __BooleanResponseType resp;
+        EncapAuthenticationStatelessPortImplService service;
+        __AuthnRequestType request;
+        __ContextResponseType response;
+
+        Q_UNUSED(service);
+        Q_UNUSED(request);
+        Q_UNUSED(response);
     }
+
 };
 
-QTEST_MAIN(LiteralTest)
+QTEST_MAIN(EncapSecurityTest)
 
-#include "test_literal.moc"
-
-
+#include "test_encapsecurity.moc"
