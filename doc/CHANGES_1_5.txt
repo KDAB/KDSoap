@@ -13,6 +13,9 @@ Server-side:
 
 * Add missing fwd decls for the args used in server methods.
 
+* Fix parsing of Content-Type header to support spaces after ';' and double-quotes around the value
+  (SOAP-112)
+
 WSDL parser / code generator changes, applying to both client and server side:
 ================================================================
 * Source incompatible change: methods that return an
