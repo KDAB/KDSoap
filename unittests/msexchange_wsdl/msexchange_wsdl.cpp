@@ -413,7 +413,7 @@ private Q_SLOTS:
         job->start();
         loop.exec();
 
-        // comparing with "<h:ServerVersionInfo MajorVersion=\"15\" MinorVersion=\"0\" MajorBuildNumber=\"995\" MinorBuildNumber=\"28\" Version=\"V2_15\" [...]
+        // comapring with "<h:ServerVersionInfo MajorVersion=\"15\" MinorVersion=\"0\" MajorBuildNumber=\"995\" MinorBuildNumber=\"28\" Version=\"V2_15\" [...]
         QCOMPARE(job->serverVersion().majorVersion(), 15);
         QCOMPARE(job->serverVersion().majorBuildNumber(), 995);
         QCOMPARE(job->serverVersion().minorVersion(), 0);
