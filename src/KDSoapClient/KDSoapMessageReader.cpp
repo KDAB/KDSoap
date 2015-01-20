@@ -26,6 +26,7 @@
 #include "KDSoapNamespacePrefixes_p.h"
 #include "KDDateTime.h"
 
+#include <QDebug>
 #include <QXmlStreamReader>
 
 // Wrapper for compatibility with Qt < 4.6.
@@ -151,6 +152,48 @@ KDSoapMessageReader::KDSoapMessageReader()
 {
 }
 
+static bool isInvalidCharRef(const QByteArray& charRef)
+{
+    bool ok = true;
+    int symbol = charRef.indexOf('x');
+    int end = charRef.indexOf(';');
+
+    if (symbol == -1 || end == -1)
+        return false;
+
+    uint val = charRef.mid(symbol + 1, end - symbol - 1).toInt(&ok, 16);
+
+    if (!ok)
+        return false;
+
+    if (val != 0x9 && val != 0xa && val != 0xd && (val <= 0x20))
+        return true;
+
+    return false;
+}
+
+static QByteArray handleNotWellFormedError(const QByteArray& data, qint64 offset)
+{
+    qint64 i = offset-1; // offset is the char following the failing one
+    QByteArray dataCleanedUp;
+    QByteArray originalSequence;
+
+    while (i >= 0 && data.at(i) != '&') {
+        if (data.at(i) == '<')  // InvalidXML but not invalid characters related
+            return dataCleanedUp;
+
+        originalSequence.prepend(data.at(i));
+        i-- ;
+    }
+
+    if (isInvalidCharRef(originalSequence)) {
+        qWarning() << "found an invalid character sequence to remove:" << QLatin1String(originalSequence.prepend('&').constData());
+        dataCleanedUp = data;
+        dataCleanedUp = dataCleanedUp.replace(originalSequence, "?");
+    }
+    return dataCleanedUp;
+}
+
 KDSoapMessageReader::XmlError KDSoapMessageReader::xmlToMessage(const QByteArray& data, KDSoapMessage* pMsg, QString* pMessageNamespace, KDSoapHeaders* pRequestHeaders) const
 {
     Q_ASSERT(pMsg);
@@ -190,6 +233,13 @@ KDSoapMessageReader::XmlError KDSoapMessageReader::xmlToMessage(const QByteArray
         }
     }
     if (reader.hasError()) {
+        if (reader.error() == QXmlStreamReader::NotWellFormedError) {
+            qWarning() << "Handling a Not well Formed Error";
+            QByteArray dataCleanedUp = handleNotWellFormedError(data, reader.characterOffset());
+            if (!dataCleanedUp.isEmpty()) {
+                return xmlToMessage(dataCleanedUp, pMsg, pMessageNamespace, pRequestHeaders);
+            }
+        }
         pMsg->setFault(true);
         pMsg->addArgument(QString::fromLatin1("faultcode"), QString::number(reader.error()));
         pMsg->addArgument(QString::fromLatin1("faultstring"),
