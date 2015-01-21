@@ -84,6 +84,17 @@ private Q_SLOTS:
                      "Fault code 3: XML error: [1:291] Opening and ending tag mismatch."));
     }
 
+    void testInvalidUndefinedEntityXML()
+    {
+        HttpServerThread server(QByteArray(xmlEnvBegin11()) + "><soap:Body>&doesnotexist;</soap:Body>" + xmlEnvEnd() + '\n', HttpServerThread::Public);
+        KDSoapClientInterface client(server.endPoint(), QString::fromLatin1("urn:msg"));
+        KDSoapMessage message;
+        KDSoapMessage ret = client.call(QLatin1String("Method1"), message);
+        QVERIFY(ret.isFault());
+        QCOMPARE(ret.faultAsString(), QString::fromLatin1(
+                     "Fault code 3: XML error: [1:291] Entity 'doesnotexist' not declared."));
+    }
+
     // Test for basic auth, with async call
     void testAsyncCallWithAuth()
     {
