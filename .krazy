@@ -9,11 +9,11 @@ EXTRA defines,null
 #no need to check 3rdparty stuff
 SKIP /kdwsdl2cpp/
 #nor autogen buildsystem
-SKIP /autogen.py|/genignore.py
+SKIP /autogen/|/autogen.py|/genignore.py
 #nor examples
 SKIP /examples/
 #if you have a build subdir, skip it
 SKIP /build-
 
 #skip the borrowed code in the cmake subdir
-SKIP /cmake/WriteBasicConfigVersionFile.cmake|/cmake/CMakePackageConfigHelpers.cmake|/cmake/InstallLocation.cmake|/cmake/InstallLocation.cmake
+SKIP /cmake/WriteBasicConfigVersionFile.cmake|/cmake/CMakePackageConfigHelpers.cmake|/cmake/InstallLocation.cmake|/cmake/InstallLocation.cmake|/cmake/Qt5Portability.cmake
