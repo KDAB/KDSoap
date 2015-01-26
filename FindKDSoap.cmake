@@ -6,8 +6,9 @@
 # KDSoap_INCLUDE_DIR	- Path to the KDSoap include directory.
 # KDSoap_CODEGENERATOR	- Path to the KDSoap code generator.
 #
-# This file was generated automatically.
-# Please edit generate-configure.sh rather than this file.
+# Copyright (C) 2011-2015 Klaralvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+
+# Redistribution and use is allowed according to the terms of the BSD license
 
 include(FindPackageHandleStandardArgs)
 
