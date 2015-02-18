@@ -29,9 +29,9 @@ QString namespaceString(const QString& ns)
 
 
 Converter::Converter()
+  : mQObject(KODE::Class(QLatin1String("QObject"))),
+    mKDSoapServerObjectInterface(KODE::Class(QLatin1String("KDSoapServerObjectInterface")))
 {
-  mQObject = KODE::Class( QLatin1String("QObject") );
-  mKDSoapServerObjectInterface = KODE::Class( QLatin1String("KDSoapServerObjectInterface") );
 }
 
 void Converter::setWSDL( const WSDL &wsdl )

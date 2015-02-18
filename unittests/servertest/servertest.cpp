@@ -175,7 +175,7 @@ class CountryServerThread : public QThread
     Q_OBJECT
 public:
     CountryServerThread(KDSoapThreadPool* pool = 0)
-        : m_threadPool(pool)
+        : m_threadPool(pool), m_pServer(0)
     {}
     ~CountryServerThread() {
         // helgrind says don't call quit() here, it races with exec()

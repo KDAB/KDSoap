@@ -60,8 +60,8 @@ public:
 #ifndef QT_NO_OPENSSL
     QList<QSslError> m_ignoreErrorsList;
     QSslConfiguration m_sslConfiguration;
-#endif
     KDSoapSslHandler* m_sslHandler;
+#endif
 
     QNetworkAccessManager* accessManager();
     QNetworkRequest prepareRequest(const QString &method, const QString& action);

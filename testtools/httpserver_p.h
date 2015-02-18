@@ -184,7 +184,7 @@ template <class ServerObjectType>
 class TestServerThread
 {
 public:
-    TestServerThread() : m_thread(0) {}
+    TestServerThread() : m_thread(0), m_pServer(0) {}
     ~TestServerThread() {
         if (m_thread) {
             m_thread->quit();
