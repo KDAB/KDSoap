@@ -69,7 +69,7 @@ QIODevice *KDSoapServerObjectInterface::processFileRequest(const QString &path, 
 {
     Q_UNUSED(path);
     Q_UNUSED(contentType);
-    return NULL;
+    return 0;
 }
 
 void KDSoapServerObjectInterface::processRequestWithPath(const KDSoapMessage &request, KDSoapMessage &response, const QByteArray &soapAction, const QString &path)
