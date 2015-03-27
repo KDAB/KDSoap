@@ -18,6 +18,10 @@ BuildRequires:  libqt4-devel cmake
 BuildRequires:  gcc-c++ qt-devel cmake desktop-file-utils
 %endif
 
+%if %{defined rhel}
+BuildRequires:  gcc-c++ qt-devel cmake desktop-file-utils
+%endif
+
 %description
 KDSoap can be used to create client applications for web services
 and also provides the means to create web services without the need
@@ -40,7 +44,7 @@ develop programs which need to access web services using the SOAP protocol.
 %setup -q
 
 %build
-%if %{defined fedora}
+%if %{defined fedora} || %{defined rhel}
 %cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
 %else
 %if "%{_lib}"=="lib64"
