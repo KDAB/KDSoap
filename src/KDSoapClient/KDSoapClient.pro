@@ -55,11 +55,11 @@ SOURCES = KDSoapMessage.cpp \
 DEFINES += KDSOAP_BUILD_KDSOAP_LIB
 
 # installation targets:
-target.path = $$INSTALL_PREFIX/lib
+target.path = $$INSTALL_PREFIX/lib$$LIB_SUFFIX
 INSTALLS += target
 
 # Mac frameworks
-macx:lib_bundle: { 
+macx:lib_bundle: {
     FRAMEWORK_HEADERS.version = Versions
     FRAMEWORK_HEADERS.files = $$INSTALLHEADERS
     FRAMEWORK_HEADERS.path = Headers
