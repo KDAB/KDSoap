@@ -13,12 +13,12 @@ EXTRA defines,null
 SKIP /build-
 #no need to check 3rdparty stuff
 SKIP /kdwsdl2cpp/
-#nor examples
-SKIP /examples/
-#nor testools
-SKIP /testtools/
 #skip autogen buildsystem
 SKIP /autogen/|/autogen.py|/genignore.py
+#nor examples
+SKIP /examples/
+#nor testtools
+SKIP /testtools/
 #skip generated headers
 SKIP /include/
 
