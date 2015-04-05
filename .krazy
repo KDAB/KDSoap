@@ -1,19 +1,26 @@
 CHECKSETS qt4,c++,foss
 
+#exclude intrusive checks to investigate later
+EXCLUDE constref,dpointer,inline,null,doublequote_chars
+
 #KDAB-specific checks
 EXTRA kdabcopyright
 
 #additional checks
 EXTRA defines,null
 
+#if you have a build subdir, skip it
+SKIP /build-
 #no need to check 3rdparty stuff
 SKIP /kdwsdl2cpp/
-#nor autogen buildsystem
-SKIP /autogen.py|/genignore.py
 #nor examples
 SKIP /examples/
-#if you have a build subdir, skip it
-SKIP /build
+#nor testools
+SKIP /testtools/
+#skip autogen buildsystem
+SKIP /autogen/|/autogen.py|/genignore.py
+#skip generated headers
+SKIP /include/
 
 #skip the borrowed code in the cmake subdir
-SKIP /cmake/WriteBasicConfigVersionFile.cmake|/cmake/CMakePackageConfigHelpers.cmake|/cmake/InstallLocation.cmake|/cmake/InstallLocation.cmake
+SKIP /cmake/WriteBasicConfigVersionFile.cmake|/cmake/CMakePackageConfigHelpers.cmake|/cmake/InstallLocation.cmake|/cmake/InstallLocation.cmake|/cmake/Qt5Portability.cmake
