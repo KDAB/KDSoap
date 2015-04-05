@@ -45,7 +45,7 @@ DEPENDPATH += . $${TOP_SOURCE_DIR}/src
 LIBS        += -L$$DESTDIR -l$$KDSOAPLIB
 
 # installation targets:
-target.path = $$INSTALL_PREFIX/lib
+target.path = $$INSTALL_PREFIX/lib$$LIB_SUFFIX
 INSTALLS += target
 
 # Mac frameworks
@@ -55,5 +55,3 @@ macx:lib_bundle: {
     FRAMEWORK_HEADERS.path = Headers
     QMAKE_BUNDLE_DATA += FRAMEWORK_HEADERS
 }
-
-
