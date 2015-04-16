@@ -24,4 +24,3 @@ For more information, please refer to the KD Soap Programmer's Manual.
 With best regards,
 
 the KDAB KD Soap team.
-
