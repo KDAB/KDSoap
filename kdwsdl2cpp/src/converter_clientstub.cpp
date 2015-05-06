@@ -372,9 +372,23 @@ bool Converter::convertClientService()
                 slot.addArgument( QLatin1String("KDSoapPendingCallWatcher* watcher") );
                 KODE::Code slotCode;
                 slotCode += QLatin1String("watcher->deleteLater();");
-                slotCode += QLatin1String("const KDSoapMessage _reply = watcher->returnMessage();");
+                slotCode += QLatin1String("KDSoapMessage _reply = watcher->returnMessage();");
                 slotCode += QLatin1String("if (!_reply.isFault()) {") + COMMENT;
                 slotCode.indent();
+
+                if ( soapStyle(binding) == SoapBinding::RPCStyle /*adds a wrapper*/ ) {
+                    // Protect the call to .first() below
+                    slotCode += "if (_reply.childValues().isEmpty()) {";
+                    slotCode.indent();
+                    slotCode += "_reply.setFault(true);" + COMMENT;
+                    slotCode += "_reply.addArgument(QString::fromLatin1(\"faultcode\"), QString::fromLatin1(\"Server.EmptyResponse\"));";
+                    slotCode += QLatin1String("return;");
+                    slotCode.unindent();
+                    slotCode += "}";
+
+                    slotCode += QLatin1String("_reply = _reply.childValues().first();") + COMMENT;
+                }
+
                 Q_FOREACH( const Part& part, selectedParts( binding, outputMsg, operation, false /*input*/ ) ) {
                     const QString varName = mNameMapper.escape( QLatin1String("result") + upperlize( part.name() ) );
                     const KODE::MemberVariable member( varName, QString() );

@@ -95,6 +95,29 @@ private Q_SLOTS:
         QCOMPARE(result.error().description(), QString::fromLatin1("No Error"));
     }
 
+    void testParseComplexReplyWsdlJob()
+    {
+        HttpServerThread server(complexTypeResponse(), HttpServerThread::Public);
+        Sugarsoap sugar(this);
+        sugar.setEndPoint(server.endPoint());
+        TNS__User_auth user_auth;
+        user_auth.setUser_name(QString::fromLatin1("user"));
+        user_auth.setPassword(QString::fromLatin1("pass"));
+        qRegisterMetaType<TNS__Set_entry_result>("TNS__Set_entry_result");
+        LoginJob *job = new LoginJob(&sugar);
+        job->setUser_auth(user_auth);
+        job->setApplication_name(QString::fromLatin1("application"));
+        QEventLoop loop;
+        connect(job, SIGNAL(finished(KDSoapJob*)), &loop, SLOT(quit()));
+        job->start();
+        loop.exec();
+        const TNS__Set_entry_result result = job->return_();
+        QCOMPARE(result.id(), QString::fromLatin1("12345"));
+        QCOMPARE(result.error().number(), QString::fromLatin1("0"));
+        QCOMPARE(result.error().name(), QString::fromLatin1("No Error"));
+        QCOMPARE(result.error().description(), QString::fromLatin1("No Error"));
+    }
+
     void testParseReplyWithArray()
     {
         HttpServerThread server(arrayResponse(), HttpServerThread::Public);

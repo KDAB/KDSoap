@@ -34,3 +34,8 @@ WSDL parser / code generator changes, applying to both client and server side:
 
 * Improve generated code so that it compiles without warnings when enabling -Wshadow
 
+* Fix KDSoapJob return message deserializing in RPC mode.
+  The generated code in the slot wasn't unwrapping the wrapper element.
+  As a result the return object was all default-constructed, for lack
+  of finding the right elements in the reply.
+
