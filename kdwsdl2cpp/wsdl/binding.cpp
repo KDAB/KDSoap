@@ -82,9 +82,9 @@ void Binding::loadXML( ParserContext *context, const QDomElement &element )
             mSoapBinding.parseBinding( context, child );
         } else if ( tagName.nameSpace() == httpStandardNamespace ) {
             mType = HTTPBinding;
-            // Not Implemented: HTTPBinding
+            qWarning() << "Not implemented: HTTPBinding";
         } else {
-            // Not Implemented: MIMEBinding
+            qWarning() << "Not implemented: MIMEBinding";
         }
     }
 
