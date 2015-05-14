@@ -377,7 +377,7 @@ bool Converter::convertClientService()
                 slotCode.indent();
 
                 if ( soapStyle(binding) == SoapBinding::RPCStyle /*adds a wrapper*/ ) {
-                    // Protect the call to .first() below
+                    // Protect the call to .at(0) below
                     slotCode += "if (_reply.childValues().isEmpty()) {";
                     slotCode.indent();
                     slotCode += "_reply.setFault(true);" + COMMENT;
@@ -386,7 +386,7 @@ bool Converter::convertClientService()
                     slotCode.unindent();
                     slotCode += "}";
 
-                    slotCode += QLatin1String("_reply = _reply.childValues().first();") + COMMENT;
+                    slotCode += QLatin1String("_reply = _reply.childValues().at(0);") + COMMENT;
                 }
 
                 Q_FOREACH( const Part& part, selectedParts( binding, outputMsg, operation, false /*input*/ ) ) {
@@ -606,7 +606,7 @@ bool Converter::convertClientCall( const Operation &operation, const Binding &bi
               code.addBlock(deserializeRetVal(retPart, QLatin1String("d_ptr->m_lastReply"), retType, QLatin1String("ret")));
               code += QLatin1String("return ret;") + COMMENT;
           } else { // RPC style (adds a wrapper), or simple value
-              // Protect the call to .first() below
+              // Protect the call to .at(0) below
               code += "if (d_ptr->m_lastReply.childValues().isEmpty()) {";
               code.indent();
               code += "d_ptr->m_lastReply.setFault(true);";
@@ -616,7 +616,7 @@ bool Converter::convertClientCall( const Operation &operation, const Binding &bi
               code += "}";
 
               code += retType + QLatin1String(" ret;"); // local var
-              code += QLatin1String("const KDSoapValue val = d_ptr->m_lastReply.childValues().first();") + COMMENT;
+              code += QLatin1String("const KDSoapValue val = d_ptr->m_lastReply.childValues().at(0);") + COMMENT;
               code += demarshalVar( retPart.type(), retPart.element(), QLatin1String("ret"), retType, "val", false, false );
               code += "return ret;";
           }
