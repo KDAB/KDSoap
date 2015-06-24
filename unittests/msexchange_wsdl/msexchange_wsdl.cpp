@@ -483,6 +483,7 @@ private Q_SLOTS:
         QTest::newRow("invalid 13") << serverResponseXML.arg("&#x13;") << request << QString("subject ?");
         QTest::newRow("valid A") << serverResponseXML.arg("&#x41;") << request << QString("subject A");
         QTest::newRow("valid B") << serverResponseXML.arg("&#x42;") << request << QString("subject B");
+        QTest::newRow("valid_single_quote") << serverResponseXML.arg("&#039;") << request << QString("subject '");
     }
 
     void testCharactersSequenceValidOrInvalid() // SOAP-113: invalid XML character within <subject>
@@ -514,6 +515,7 @@ private Q_SLOTS:
         QCOMPARE( syncFolderChangeCreate.size(), 1);
 
         T__MessageType message = syncFolderChangeCreate.first().message();
+        //qDebug() << message.subject();
         QCOMPARE( message.itemId().id(), QString("AAMkAGNiY2YxMjY3LTUxYjgtNGI1Yy1hOTM2LTU4MTM5OTZiNjdjYgBGAAAAAABW2gY0kRG1SqggDTNZN6i8BwBIq5JjIBY/RqWQllrF0GSkAAAAB35xAADdYfTPFV6CTIqqxeIriLL3ALilZ3SGAAA=") );
         QCOMPARE( message.subject(), expectedResult); // We are supposed to have replace invalid characters
     }
