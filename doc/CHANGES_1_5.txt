@@ -39,3 +39,5 @@ WSDL parser / code generator changes, applying to both client and server side:
   As a result the return object was all default-constructed, for lack
   of finding the right elements in the reply.
 
+* Add missing builtin type xsd:QName.
+

@@ -30,6 +30,7 @@ SUBDIRS = \
   import_definition \
   unqualified_formdefault \
   onvif.org \
+  onvif_ptz \
   encapsecurity \
   prefix_wsdl \
 

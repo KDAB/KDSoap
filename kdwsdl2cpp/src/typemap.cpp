@@ -59,9 +59,10 @@ TypeMap::TypeMap()
   : mNSManager( 0 )
 {
   // see http://www.w3.org/TR/xmlschema-2
+  // or http://www.datypic.com/sc/xsd/s-datatypes.xsd.html
   addBuiltinType("any", "KDSoapValue");
-  addBuiltinType("anyType", "KDSoapValue");
   addBuiltinType("anySimpleType", "QVariant");
+  addBuiltinType("anyType", "KDSoapValue");
   addBuiltinType("anyURI", "QString");
   addBuiltinType("base64Binary", "QByteArray");
   addBuiltinType("boolean", "bool");
@@ -70,34 +71,34 @@ TypeMap::TypeMap()
   addBuiltinType("dateTime", "KDDateTime");
   addBuiltinType("decimal", "float");
   addBuiltinType("double", "double");
-  // TODO: add duration class
-  addBuiltinType("duration", "QString");
+  addBuiltinType("duration", "QString"); // TODO: add duration class
   addBuiltinType("float", "float");
   addBuiltinType("gYear", "QString");
   addBuiltinType("hexBinary", "QByteArray");
+  addBuiltinType("ID", "QString");
+  addBuiltinType("IDREF", "QString");
   addBuiltinType("integer", "qint64");
   addBuiltinType("int", "int"); // 32 bits
-  addBuiltinType("nonPositiveInteger", "qint64");
   addBuiltinType("language", "QString");
   addBuiltinType("long", "qint64"); // 64 bits
+  addBuiltinType("Name", "QString");
+  addBuiltinType("NCName", "QString");
+  addBuiltinType("negativeInteger", "qint64"); // unbounded (-inf to -1)
+  addBuiltinType("NMTOKEN", "QString"); // http://www.w3.org/TR/2004/REC-xmlschema-2-20041028/datatypes.html#NMTOKEN
+  addBuiltinType("NOTATION", "QString");
+  addBuiltinType("nonNegativeInteger", "quint64"); // unbounded (0 to inf)
+  addBuiltinType("nonPositiveInteger", "qint64"); // unbounded (-inf to 0)
+  addBuiltinType("normalizedString", "QString");
+  addBuiltinType("positiveInteger", "quint64"); // unbounded (1 to inf)
+  addBuiltinType("QName", "QString");
   addBuiltinType("short", "int"); // 16 bits. But QVariant doesn't support short.
   addBuiltinType("string", "QString");
   addBuiltinType("time", "QTime");
-  addBuiltinType("unsignedByte", "unsigned char");
-  addBuiltinType("unsignedShort", "unsigned int"); // 16 bits, 0-65535. But QVariant doesn't support short.
-  addBuiltinType("unsignedLong", "quint64"); // 64 bits
-  addBuiltinType("positiveInteger", "quint64"); // unbounded (1 to inf)
-  addBuiltinType("nonPositiveInteger", "qint64"); // unbounded (-inf to 0)
-  addBuiltinType("negativeInteger", "qint64"); // unbounded (-inf to -1)
-  addBuiltinType("nonNegativeInteger", "quint64"); // unbounded (0 to inf)
-  addBuiltinType("unsignedInt", "unsigned int"); // 32 bits
-  addBuiltinType("NMTOKEN", "QString"); // http://www.w3.org/TR/2004/REC-xmlschema-2-20041028/datatypes.html#NMTOKEN
   addBuiltinType("token", "QString");
-  addBuiltinType("NCName", "QString");
-  addBuiltinType("Name", "QString");
-  addBuiltinType("normalizedString", "QString");
-  addBuiltinType("ID", "QString");
-  addBuiltinType("IDREF", "QString");
+  addBuiltinType("unsignedByte", "unsigned char");
+  addBuiltinType("unsignedInt", "unsigned int"); // 32 bits
+  addBuiltinType("unsignedLong", "quint64"); // 64 bits
+  addBuiltinType("unsignedShort", "unsigned int"); // 16 bits, 0-65535. But QVariant doesn't support short.
 }
 
 TypeMap::~TypeMap()
