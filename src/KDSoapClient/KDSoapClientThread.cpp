@@ -41,6 +41,10 @@ KDSoapClientThread::KDSoapClientThread(QObject *parent) :
 // Called by the main thread
 void KDSoapClientThread::enqueue(KDSoapThreadTaskData* taskData)
 {
+    // On hindsight, it would have been simpler to use signal/slots
+    // to communicate with secondary thread (turning this class
+    // into a simple QObject with a QThread internally)
+
     QMutexLocker locker(&m_mutex);
     m_queue.append(taskData);
     m_queueNotEmpty.wakeOne();
@@ -49,6 +53,9 @@ void KDSoapClientThread::enqueue(KDSoapThreadTaskData* taskData)
 void KDSoapClientThread::run()
 {
     QNetworkAccessManager accessManager;
+    // Use own QEventLoop so its slot quit() is executed in this thread
+    // (using QThread::exec/quit would try to call QThread::quit() in main thread,
+    //  which is blocked on semaphore)
     QEventLoop eventLoop;
 
     while ( true ) {
