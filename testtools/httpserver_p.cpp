@@ -62,20 +62,16 @@ QT_BEGIN_NAMESPACE
 // Avoid QHash randomization so that the order of the XML attributes is stable
 extern Q_CORE_EXPORT QBasicAtomicInt qt_qhash_seed; // from qhash.cpp
 QT_END_NAMESPACE
-#endif
 
 static void initHashSeed()
 {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
     // If the seed not initialized yet (-1), set it to 0;
     // if it was 0 already, do nothing;
     // otherwise abort, so we don't get unexplained test failures later.
     qt_qhash_seed.testAndSetRelaxed(-1, 0);
     Q_ASSERT( qt_qhash_seed.loadAcquire() == 0 );
-#endif
 }
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 Q_CONSTRUCTOR_FUNCTION(initHashSeed)
 #endif
 
