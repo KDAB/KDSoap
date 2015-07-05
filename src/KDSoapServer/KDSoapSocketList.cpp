@@ -25,8 +25,6 @@
 #include "KDSoapServer.h"
 #include <QDebug>
 
-const bool doDebug = true;
-
 KDSoapSocketList::KDSoapSocketList(KDSoapServer* server)
     : m_server(server), m_serverObject(server->createServerObject()), m_totalConnectionCount(0)
 {
