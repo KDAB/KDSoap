@@ -11,6 +11,7 @@
 #  Build the test harness.
 #  Default=false
 #
+cmake_minimum_required(VERSION 2.8.7)
 
 if("${CMAKE_INSTALL_PREFIX}" STREQUAL "")
   set(USE_DEFAULT_INSTALL_LOCATION True)
@@ -26,7 +27,6 @@ option(
   OFF
 )
 
-cmake_minimum_required(VERSION 2.8.7)
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/ ${CMAKE_MODULE_PATH}")
 
 option(${PROJECT_NAME}_STATIC "Build statically" OFF)
