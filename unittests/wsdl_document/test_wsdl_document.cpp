@@ -241,8 +241,9 @@ private Q_SLOTS:
 
         QVERIFY2(job->faultAsString().contains(QLatin1String("SSL handshake failed")), qPrintable(service.lastError()));
         QCOMPARE(sslErrorsSpy.count(), 1);
-#ifdef Q_OS_UNIX // Windows seems to get "Unknown error". Bah...
         const QList<QSslError> errors = sslErrorsSpy.at(0).at(1).value<QList<QSslError> >();
+        QVERIFY(errors.count() > 0);
+#ifdef Q_OS_LINUX // Windows seems to get "Unknown error". Bah... And OSX has UnableToVerifyFirstCertificate at position 1.
         QCOMPARE((int)errors.at(0).error(), (int)QSslError::UnableToGetLocalIssuerCertificate);
         QCOMPARE((int)errors.at(1).error(), (int)QSslError::CertificateUntrusted);
         QCOMPARE((int)errors.at(2).error(), (int)QSslError::UnableToVerifyFirstCertificate);
