@@ -46,7 +46,8 @@ KDSoapServerSocket::KDSoapServerSocket(KDSoapSocketList* owner, QObject* serverO
       m_owner(owner),
       m_serverObject(serverObject),
       m_delayedResponse(false),
-      m_socketEnabled(true)
+      m_socketEnabled(true),
+      m_receivedData(false)
 {
     connect(this, SIGNAL(readyRead()),
             this, SLOT(slotReadyRead()));
@@ -141,7 +142,15 @@ void KDSoapServerSocket::slotReadyRead()
     if (!m_socketEnabled)
         return;
 
+    // QNAM in Qt 5.x tends to connect additional sockets in advance and not use them
+    // So only count the sockets which actually sent us data (for the servertest unittest).
+    if (!m_receivedData) {
+        m_receivedData = true;
+        m_owner->increaseConnectionCount();
+    }
+
     //qDebug() << this << QThread::currentThread() << "slotReadyRead!";
+
     QByteArray buf(2048, ' ');
     qint64 nread = -1;
     while (nread != 0) {

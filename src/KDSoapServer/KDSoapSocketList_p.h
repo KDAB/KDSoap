@@ -45,6 +45,7 @@ public:
     void disconnectAll();
 
     int totalConnectionCount() const;
+    void increaseConnectionCount();
     void resetTotalConnectionCount();
 
     KDSoapServer* server() const { return m_server; }

@@ -55,8 +55,6 @@ KDSoapServerSocket* KDSoapSocketList::handleIncomingConnection(int socketDescrip
     QObject::connect(socket, SIGNAL(disconnected()),
                      socket, SLOT(deleteLater()));
     m_sockets.insert(socket);
-    m_totalConnectionCount.ref();
-    //qDebug() << m_totalConnectionCount << "sockets connected in" << this;
     connect(socket, SIGNAL(socketDeleted(KDSoapServerSocket*)), this, SLOT(socketDeleted(KDSoapServerSocket*)));
     return socket;
 }
@@ -85,6 +83,12 @@ int KDSoapSocketList::totalConnectionCount() const
 #else
     return m_totalConnectionCount;
 #endif
+}
+
+void KDSoapSocketList::increaseConnectionCount()
+{
+    m_totalConnectionCount.ref();
+    //qDebug() << m_totalConnectionCount << "sockets connected in" << QThread::currentThread();
 }
 
 void KDSoapSocketList::resetTotalConnectionCount()

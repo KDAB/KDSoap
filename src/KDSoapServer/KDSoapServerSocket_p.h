@@ -77,6 +77,7 @@ private:
     bool m_delayedResponse;
     bool m_doDebug;
     bool m_socketEnabled;
+    bool m_receivedData;
     QByteArray m_requestBuffer;
 
     // Data for the current call (stored here for delayed replies)
