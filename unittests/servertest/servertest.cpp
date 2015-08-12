@@ -536,7 +536,7 @@ private Q_SLOTS:
         slotStats();
 
         int tries = 0;
-        while (server->totalConnectionCount() < expectedConnectedSockets && ++tries < 10) {
+        while (server->totalConnectionCount() < expectedConnectedSockets && ++tries < 30) {
             QTest::qWait(500); // makes totalConnectionCount() more reliable.
         }
         if (tries > 0 ) {
