@@ -449,7 +449,9 @@ private Q_SLOTS:
         QCOMPARE(s_serverObjects.count(), 0);
     }
 
-#ifndef Q_OS_MAC //  "Fault code 99: Unknown error", sometimes
+// OSX: "Fault code 99: Unknown error", sometimes
+// Windows with Qt 4.8: nothing happens after "82 sockets seen. 100 connected right now. Messages received 100"
+#if !defined(Q_OS_MAC) && (!defined(Q_OS_WIN) || QT_VERSION >= 0x050000)
     void testMultipleThreadsMultipleClients_data()
     {
         QTest::addColumn<int>("maxThreads");
@@ -457,11 +459,7 @@ private Q_SLOTS:
         QTest::addColumn<int>("numRequests"); // number of requests per client interface (maximum 6)
 
         QTest::newRow("100 requests") << 5 << 20 << 5;
-
-#if !defined(Q_OS_WIN) || QT_VERSION >= 0x050000
-        // this is too much on Windows with Qt-4.8
         QTest::newRow("300 requests") << 5 << 50 << 6;
-#endif
 
 #if 0 // disable for now, it breaks without glib, and it regularly breaks buildbot (354 messages received...)
 #ifndef Q_OS_WIN // builbot gets "Fault code 99: Unknown error" after 358 connected sockets
