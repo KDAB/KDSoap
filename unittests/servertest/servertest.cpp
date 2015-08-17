@@ -450,8 +450,8 @@ private Q_SLOTS:
     }
 
 // OSX: "Fault code 99: Unknown error", sometimes
-// Windows with Qt 4.8: nothing happens after "82 sockets seen. 100 connected right now. Messages received 100"
-#if !defined(Q_OS_MAC) && (!defined(Q_OS_WIN) || QT_VERSION >= 0x050000)
+// Windows/Linux with Qt 4.8: nothing happens after "82 sockets seen. 100 connected right now. Messages received 100"
+#if !defined(Q_OS_MAC) && (QT_VERSION >= 0x050000)
     void testMultipleThreadsMultipleClients_data()
     {
         QTest::addColumn<int>("maxThreads");
