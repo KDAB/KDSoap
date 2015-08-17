@@ -143,42 +143,6 @@ if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
   install(EXPORT KDSoapTargets NAMESPACE KDSoap::
     DESTINATION "${INSTALL_LIBRARY_DIR}/cmake/KDSoap"
   )
-
-  # install forwarding class headers for client api
-  #set(APINAME "KDSoapClient")
-  #set(API_HEADER_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include/${APINAME}")
-  #install(FILES
-  #  ${API_HEADER_DIR}/KDDateTime
-  #  ${API_HEADER_DIR}/KDSoap
-  #  ${API_HEADER_DIR}/KDSoapAuthentication
-  #  ${API_HEADER_DIR}/KDSoapClient
-  #  ${API_HEADER_DIR}/KDSoapClientInterface
-  #  ${API_HEADER_DIR}/KDSoapFaultException
-  #  ${API_HEADER_DIR}/KDSoapGlobal
-  #  ${API_HEADER_DIR}/KDSoapHeaders
-  #  ${API_HEADER_DIR}/KDSoapJob
-  #  ${API_HEADER_DIR}/KDSoapMessage
-  #  ${API_HEADER_DIR}/KDSoapNamespaceManager
-  #  ${API_HEADER_DIR}/KDSoapPendingCall
-  #  ${API_HEADER_DIR}/KDSoapPendingCallWatcher
-  #  ${API_HEADER_DIR}/KDSoapSslHandler
-  #  ${API_HEADER_DIR}/KDSoapValue
-  #  ${API_HEADER_DIR}/KDSoapValueList
-  #  DESTINATION ${INSTALL_INCLUDE_DIR}/${APINAME}
-  #)
-
-  # install forwarding class headers for server api
-  #set(APINAME "KDSoapServer")
-  #set(API_HEADER_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include/${APINAME}")
-  #install(FILES
-  #  ${API_HEADER_DIR}/KDSoapDelayedResponseHandle
-  #  ${API_HEADER_DIR}/KDSoapServer
-  #  ${API_HEADER_DIR}/KDSoapServerAuthInterface
-  #  ${API_HEADER_DIR}/KDSoapServerGlobal
-  #  ${API_HEADER_DIR}/KDSoapServerObjectInterface
-  #  ${API_HEADER_DIR}/KDSoapThreadPool
-  #  DESTINATION ${INSTALL_INCLUDE_DIR}/${APINAME}
-  #)
 endif()
 
 add_subdirectory(src)
