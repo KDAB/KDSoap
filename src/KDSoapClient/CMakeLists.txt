@@ -33,7 +33,45 @@ target_link_libraries(kdsoap ${QT_LIBRARIES})
 set_target_properties(kdsoap PROPERTIES VERSION ${${PROJECT_NAME}_VERSION})
 
 if(KDSoap_IS_ROOT_PROJECT)
+  include(ECMGenerateHeaders)
+  ecm_generate_headers(client_HEADERS
+    ORIGINAL
+      CAMELCASE
+    HEADER_NAMES
+      KDSoapMessage
+      KDSoapGlobal
+      KDSoap
+      KDDateTime
+      KDSoapJob
+      KDSoapClientInterface
+      KDSoapNamespaceManager
+      KDSoapSslHandler
+      KDSoapValue
+      KDSoapPendingCallWatcher
+      KDSoapFaultException
+      KDSoapPendingCall
+      KDSoapAuthentication
+    REQUIRED_HEADERS
+      required_HEADERS
+  )
+
+  #handle forwarding headers for the case where more than 1 class lives in a .h
+  #configure_file is the simple way to file copy in cmake
+  configure_file(${CMAKE_CURRENT_BINARY_DIR}/KDSoapMessage ${CMAKE_CURRENT_BINARY_DIR}/KDSoapHeaders COPYONLY)
+  list(APPEND client_HEADERS ${CMAKE_CURRENT_BINARY_DIR}/KDSoapHeaders)
+  configure_file(${CMAKE_CURRENT_BINARY_DIR}/KDSoapValue ${CMAKE_CURRENT_BINARY_DIR}/KDSoapValueList COPYONLY)
+  list(APPEND client_HEADERS ${CMAKE_CURRENT_BINARY_DIR}/KDSoapValueList)
+
+  #combine required headers into 1 big convenience header
+  set(COMBINED_H ${CMAKE_CURRENT_BINARY_DIR}/KDSoapClient)
+  foreach(_header ${required_HEADERS})
+    get_filename_component(_base ${_header} NAME)
+    file(APPEND ${COMBINED_H} "#include \"${_base}\"\n")
+  endforeach()
+
   install(FILES
+    ${client_HEADERS}
+    ${CMAKE_CURRENT_BINARY_DIR}/KDSoapClient
     KDSoapMessage.h
     KDSoapClientInterface.h
     KDSoapPendingCall.h
@@ -54,5 +92,6 @@ if(KDSoap_IS_ROOT_PROJECT)
     RUNTIME DESTINATION ${INSTALL_RUNTIME_DIR}
     LIBRARY DESTINATION ${INSTALL_LIBRARY_DIR}
     ARCHIVE DESTINATION ${INSTALL_ARCHIVE_DIR}
-  )
+    )
+
 endif()

@@ -30,7 +30,31 @@ target_link_libraries(kdsoap-server kdsoap ${QT_LIBRARIES})
 set_target_properties(kdsoap-server PROPERTIES VERSION ${${PROJECT_NAME}_VERSION})
 
 if(KDSoap_IS_ROOT_PROJECT)
+  include(ECMGenerateHeaders)
+  ecm_generate_headers(server_HEADERS
+    ORIGINAL
+      CAMELCASE
+    HEADER_NAMES
+      KDSoapDelayedResponseHandle
+      KDSoapServerGlobal
+      KDSoapThreadPool
+      KDSoapServerObjectInterface
+      KDSoapServerAuthInterface
+    REQUIRED_HEADERS
+      required_HEADERS
+  )
+
+  #combine required headers into 1 big convenience header
+  set(COMBINED_H ${CMAKE_CURRENT_BINARY_DIR}/KDSoapServer)
+  foreach(_header ${required_HEADERS})
+    get_filename_component(_base ${_header} NAME)
+    file(APPEND ${COMBINED_H} "#include \"${_base}\"\n")
+  endforeach()
+  file(APPEND ${COMBINED_H} "#include \"KDSoapServer.h\"\n")
+
   install(FILES
+    ${server_HEADERS}
+    ${CMAKE_CURRENT_BINARY_DIR}/KDSoapServer
     KDSoapServer.h
     KDSoapServerAuthInterface.h
     KDSoapDelayedResponseHandle.h
