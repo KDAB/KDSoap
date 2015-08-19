@@ -23,4 +23,4 @@ SKIP /testtools/
 SKIP /include/
 
 #skip the borrowed code in the cmake subdir
-SKIP /cmake/WriteBasicConfigVersionFile.cmake|/cmake/CMakePackageConfigHelpers.cmake|/cmake/InstallLocation.cmake|/cmake/InstallLocation.cmake|/cmake/Qt5Portability.cmake
+SKIP /cmake/WriteBasicConfigVersionFile.cmake|/cmake/CMakePackageConfigHelpers.cmake|/cmake/InstallLocation.cmake|/cmake/InstallLocation.cmake|/cmake/Qt5Portability.cmake|/cmake/ECMGenerateHeaders.cmake
