@@ -51,15 +51,12 @@ if(KDSoap_IS_ROOT_PROJECT)
       KDSoapFaultException
       KDSoapPendingCall
       KDSoapAuthentication
-    REQUIRED_HEADERS
-      required_HEADERS
     COMMON_HEADER
       KDSoapClient
   )
 
   install(FILES
     ${client_HEADERS}
-    ${CMAKE_CURRENT_BINARY_DIR}/KDSoapClient
     KDSoapMessage.h
     KDSoapClientInterface.h
     KDSoapPendingCall.h
