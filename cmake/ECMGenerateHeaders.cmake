@@ -12,12 +12,16 @@
 #       [OUTPUT_DIR <output_dir>]
 #       [PREFIX <prefix>]
 #       [REQUIRED_HEADERS <variable>]
+#       [COMMON_HEADER <HeaderName>]
 #       [RELATIVE <relative_path>])
 #
 # For each CamelCase header name passed to HEADER_NAMES, a file of that name
 # will be generated that will include a version with ``.h`` appended.
 # For example, the generated header ``ClassA`` will include ``classa.h`` (or
 # ``ClassA.h``, see ORIGINAL).
+# If a CamelCaseName consists of multiple comma-separated files, e.g.
+# ``ClassA,ClassB,ClassC``, then multiple camelcase header files will be
+# generated which are redirects to the first header file.
 # The file locations of these generated headers will be stored in
 # <camelcase_forwarding_headers_var>.
 #
@@ -42,6 +46,9 @@
 # header to a project only requires specifying the CamelCase variant in the
 # CMakeLists.txt file; the original variant will then be added to this
 # variable.
+#
+# COMMON_HEADER generates an additional convenience header which includes all
+# other header files.
 #
 # The RELATIVE argument indicates where the original headers can be found
 # relative to CMAKE_CURRENT_SOURCE_DIR.  It does not affect the generated
@@ -69,6 +76,7 @@
 #           MLBar
 #           # etc
 #       REQUIRED_HEADERS MyLib_HEADERS
+#       COMMON_HEADER MLGeneral
 #   )
 #   install(FILES ${MyLib_FORWARDING_HEADERS} ${MyLib_HEADERS}
 #           DESTINATION ${CMAKE_INSTALL_PREFIX}/include
@@ -82,7 +90,9 @@
 #       MyLib_FORWARDING_HEADERS
 #       HEADERS
 #           Foo
-#           Bar
+#           # several classes are contained in bar.h, so generate
+#           # additional files
+#           Bar,BarList
 #           # etc
 #       PREFIX MyLib
 #       REQUIRED_HEADERS MyLib_HEADERS
@@ -99,6 +109,7 @@
 #=============================================================================
 # Copyright 2013 Aleix Pol Gonzalez <aleixpol@blue-systems.com>
 # Copyright 2014 Alex Merry <alex.merry@kdemail.net>
+# Copyright 2015 Patrick Spendrin <patrick.spendrin@kdab.com>
 #
 # Distributed under the OSI-approved BSD License (the "License");
 # see accompanying file COPYING-CMAKE-SCRIPTS for details.
@@ -114,7 +125,7 @@ include(CMakeParseArguments)
 
 function(ECM_GENERATE_HEADERS camelcase_forwarding_headers_var)
     set(options)
-    set(oneValueArgs ORIGINAL OUTPUT_DIR PREFIX REQUIRED_HEADERS RELATIVE)
+    set(oneValueArgs ORIGINAL OUTPUT_DIR PREFIX REQUIRED_HEADERS COMMON_HEADER RELATIVE)
     set(multiValueArgs HEADER_NAMES)
     cmake_parse_arguments(EGH "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
@@ -154,32 +165,56 @@ function(ECM_GENERATE_HEADERS camelcase_forwarding_headers_var)
         endif()
     endif()
 
-    foreach(_CLASSNAME ${EGH_HEADER_NAMES})
+    foreach(_classnameentry ${EGH_HEADER_NAMES})
+        string(REPLACE "," ";" _classnames ${_classnameentry})
+        list(GET _classnames 0 _baseclass)
+
         if (EGH_ORIGINAL STREQUAL "CAMELCASE")
-            set(originalclassname "${_CLASSNAME}")
+            set(originalbasename "${_baseclass}")
         else()
-            string(TOLOWER "${_CLASSNAME}" originalclassname)
+            string(TOLOWER "${_baseclass}" originalbasename)
         endif()
-        set(FANCY_HEADER_FILE "${EGH_OUTPUT_DIR}/${EGH_PREFIX}${_CLASSNAME}")
-        set(_actualheader "${CMAKE_CURRENT_SOURCE_DIR}/${EGH_RELATIVE}${originalclassname}.h")
+
+        set(_actualheader "${CMAKE_CURRENT_SOURCE_DIR}/${EGH_RELATIVE}${originalbasename}.h")
         if (NOT EXISTS ${_actualheader})
             message(FATAL_ERROR "Could not find \"${_actualheader}\"")
         endif()
-        if (NOT EXISTS ${FANCY_HEADER_FILE})
-            file(WRITE ${FANCY_HEADER_FILE} "#include \"${originalprefix}${originalclassname}.h\"\n")
-        endif()
-        list(APPEND ${camelcase_forwarding_headers_var} "${FANCY_HEADER_FILE}")
+
+        foreach(_CLASSNAME ${_classnames})
+            set(FANCY_HEADER_FILE "${EGH_OUTPUT_DIR}/${EGH_PREFIX}${_CLASSNAME}")
+            if (NOT EXISTS ${FANCY_HEADER_FILE})
+                file(WRITE ${FANCY_HEADER_FILE} "#include \"${originalprefix}${originalbasename}.h\"\n")
+            endif()
+            list(APPEND ${camelcase_forwarding_headers_var} "${FANCY_HEADER_FILE}")
+            if (EGH_PREFIX)
+                # Local forwarding header, for namespaced headers, e.g. kparts/part.h
+                if(EGH_ORIGINAL STREQUAL "CAMELCASE")
+                    set(originalclassname "${_CLASSNAME}")
+                else()
+                    string(TOLOWER "${_CLASSNAME}" originalclassname)
+                endif()
+                set(REGULAR_HEADER_NAME ${EGH_OUTPUT_DIR}/${originalprefix}${originalclassname}.h)
+                if (NOT EXISTS ${REGULAR_HEADER_NAME})
+                    file(WRITE ${REGULAR_HEADER_NAME} "#include \"${_actualheader}\"\n")
+                endif()
+            endif()
+        endforeach()
+
         if (EGH_REQUIRED_HEADERS)
             list(APPEND ${EGH_REQUIRED_HEADERS} "${_actualheader}")
         endif()
-        if (EGH_PREFIX)
-            # Local forwarding header, for namespaced headers, e.g. kparts/part.h
-            set(REGULAR_HEADER_NAME ${EGH_OUTPUT_DIR}/${originalprefix}${originalclassname}.h)
-            if (NOT EXISTS ${REGULAR_HEADER_NAME})
-                file(WRITE ${REGULAR_HEADER_NAME} "#include \"${_actualheader}\"\n")
-            endif()
-        endif()
     endforeach()
+
+    if(EGH_COMMON_HEADER)
+        #combine required headers into 1 big convenience header
+        set(COMMON_HEADER ${EGH_OUTPUT_DIR}/${EGH_PREFIX}${EGH_COMMON_HEADER})
+        file(WRITE ${COMMON_HEADER} "// convenience header\n")
+        foreach(_header ${${EGH_REQUIRED_HEADERS}})
+            get_filename_component(_base ${_header} NAME)
+            file(APPEND ${COMMON_HEADER} "#include \"${_base}\"\n")
+        endforeach()
+        list(APPEND ${camelcase_forwarding_headers_var} "${COMMON_HEADER}")
+    endif()
 
     set(${camelcase_forwarding_headers_var} ${${camelcase_forwarding_headers_var}} PARENT_SCOPE)
     if (NOT EGH_REQUIRED_HEADERS STREQUAL "")
