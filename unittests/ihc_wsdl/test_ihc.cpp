@@ -57,6 +57,8 @@ public:
         Q_ASSERT(enumValue.enumValueID() == 42);
 
         // Alternatively: dynamic introspection
+
+        // cppcheck-suppress redundantCopyLocalConst
         const KDSoapValueList children = value.childValues();
         const int enumValueID = children.child("enumValueID").value().toInt();
         return (parameter4.typeString() == "enum" && enumValueID == 42 && enumValue.enumValueID() == 42);

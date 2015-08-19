@@ -284,6 +284,7 @@ void KDSoapValue::writeElementContents(KDSoapNamespacePrefixes& namespacePrefixe
             writer.writeAttribute(KDSoapNamespaceManager::xmlSchemaInstance2001(), QLatin1String("type"), type);
         }
 
+        // cppcheck-suppress redundantCopyLocalConst
         const KDSoapValueList list = this->childValues();
         const bool isArray = !list.arrayType().isEmpty();
         if (isArray) {

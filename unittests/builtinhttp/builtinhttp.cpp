@@ -345,6 +345,7 @@ private Q_SLOTS:
         QCOMPARE(id.value().toString(), QString::fromLatin1("12345"));
         const KDSoapValue error = lst.at(1);
         QCOMPARE(error.name(), QString::fromLatin1("error"));
+        // cppcheck-suppress redundantCopyLocalConst
         const KDSoapValueList errorList = error.childValues();
         QCOMPARE(errorList.count(), 3);
         const KDSoapValue number = errorList.at(0);

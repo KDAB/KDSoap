@@ -44,6 +44,7 @@ Style::~Style()
   delete d;
 }
 
+// cppcheck-suppress operatorEqVarError
 Style& Style::operator=( const Style &other )
 {
   if ( this == &other )
