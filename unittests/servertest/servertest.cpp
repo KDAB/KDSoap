@@ -997,8 +997,12 @@ private Q_SLOTS:
             const QByteArray thisChunk = message.mid(pos, chunkSize);
             const QByteArray messagePart = QByteArray::number(thisChunk.size(), 16) + "\r\n"
                     + thisChunk + "\r\n";
-            socket.write(messagePart);
-            QVERIFY(socket.waitForBytesWritten());
+            // fragment that packet, for more testing
+            const int fragmentSize = chunkSize / 5;
+            for (int i = 0; i < messagePart.size(); i += fragmentSize) {
+                socket.write(messagePart.mid(i, fragmentSize));
+                QVERIFY(socket.waitForBytesWritten());
+            }
         }
         // final chunk and trailers
         if (withTrailers)

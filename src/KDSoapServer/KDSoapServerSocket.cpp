@@ -193,7 +193,6 @@ void KDSoapServerSocket::slotReadyRead()
         while (m_chunkStart >= 0) {
             const int nextEOL = m_requestBuffer.indexOf("\r\n", m_chunkStart);
             if (nextEOL == -1) {
-                qDebug() << "no \\r\\n after" << m_chunkStart;
                 return;
             }
             const QByteArray chunkSizeStr = m_requestBuffer.mid(m_chunkStart, nextEOL - m_chunkStart);
