@@ -886,7 +886,8 @@ private Q_SLOTS:
         QFile::remove(fileName);
     }
 
-    void testPostByHand()
+    // Using QNetworkAccessManager directly to send the request
+    void testPostWithQNAM()
     {
         CountryServerThread serverThread;
         CountryServer* server = serverThread.startThread();
@@ -902,8 +903,39 @@ private Q_SLOTS:
         connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
         loop.exec();
         const QByteArray response = reply->readAll();
-        const QByteArray expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><soap:Body><n1:getEmployeeCountry xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\"><employeeCountry>France</employeeCountry>getEmployeeCountryResponse</n1:getEmployeeCountry></soap:Body></soap:Envelope>\n";
-        QVERIFY(xmlBufferCompare(response, expected));
+        QVERIFY(xmlBufferCompare(response, expectedCountryResponse()));
+    }
+
+    // Even more low-level, using a QTcpSocket to send the request
+    void testPostWithSocket()
+    {
+        CountryServerThread serverThread;
+        CountryServer* server = serverThread.startThread();
+
+        QTcpSocket socket;
+        socket.connectToHost(server->serverAddress(), server->serverPort());
+        QVERIFY(socket.waitForConnected());
+        const QByteArray request =
+                "POST / HTTP/1.1\r\n"
+                "SoapAction: http://www.kdab.com/xml/MyWsdl/getEmployeeCountry\r\n"
+                "Content-Type: text/xml;charset=utf-8\r\n"
+                "Content-Length: 440\r\n"
+                "Connection: Keep-Alive\r\n"
+                "Accept-Encoding: gzip\r\n"
+                "Accept-Language: en-US,*\r\n"
+                "User-Agent: Mozilla/5.0\r\n"
+                "Host: 127.0.0.1:46570\r\n\r\n" +
+                rawCountryMessage();
+         socket.write(request);
+         QVERIFY(socket.waitForBytesWritten());
+         QVERIFY(socket.waitForReadyRead());
+         const QByteArray response = socket.readAll();
+         const QByteArray responseFirstLine = response.left(response.indexOf("\r\n"));
+         QCOMPARE(QString::fromUtf8(responseFirstLine.constData()), QString("HTTP/1.1 200 OK"));
+         const int xmlStart = response.indexOf("\r\n\r\n") + 4;
+         QVERIFY(xmlStart > 5);
+         const QByteArray xmlResponse = response.mid(xmlStart);
+         QVERIFY(xmlBufferCompare(xmlResponse, expectedCountryResponse()));
     }
 
     void testContentTypeParsing() // SOAP 112
@@ -922,8 +954,7 @@ private Q_SLOTS:
         connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
         loop.exec();
         const QByteArray response = reply->readAll();
-        const QByteArray expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><soap:Body><n1:getEmployeeCountry xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\"><employeeCountry>France</employeeCountry>getEmployeeCountryResponse</n1:getEmployeeCountry></soap:Body></soap:Envelope>\n";
-        QVERIFY(xmlBufferCompare(response, expected));
+        QVERIFY(xmlBufferCompare(response, expectedCountryResponse()));
     }
 
     void testGetShouldFail()
@@ -1091,6 +1122,9 @@ private:
     }
     static QByteArray rawCountryMessage() {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><soap:Body><n1:getEmployeeCountry xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\"><employeeName>David ???? Faure</employeeName></n1:getEmployeeCountry></soap:Body></soap:Envelope>";
+    }
+    static QByteArray expectedCountryResponse() {
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><soap:Body><n1:getEmployeeCountry xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\"><employeeCountry>France</employeeCountry>getEmployeeCountryResponse</n1:getEmployeeCountry></soap:Body></soap:Envelope>\n";
     }
 
     static KDSoapMessage getStuffMessage() {
