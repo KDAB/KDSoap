@@ -913,7 +913,8 @@ private Q_SLOTS:
         CountryServer* server = serverThread.startThread();
 
         QTcpSocket socket;
-        socket.connectToHost(server->serverAddress(), server->serverPort());
+        QUrl url(server->endPoint());
+        socket.connectToHost(url.host(), server->serverPort());
         QVERIFY(socket.waitForConnected());
         const QByteArray employeeName = "This is a long string in order to test chunking in the next test";
         const QByteArray message = rawCountryMessage(employeeName);
