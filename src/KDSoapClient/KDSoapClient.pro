@@ -24,7 +24,8 @@ INSTALLHEADERS = KDSoapMessage.h \
     KDSoapSslHandler.h \
     KDDateTime.h \
     KDSoapFaultException.h \
-    KDSoapMessageAddressingProperties.cpp
+    KDSoapMessageAddressingProperties.cpp \
+    KDSoapEndpointReference.cpp
 PRIVATEHEADERS = KDSoapPendingCall_p.h \
     KDSoapPendingCallWatcher_p.h \
     KDSoapClientInterface_p.h \
@@ -53,7 +54,8 @@ SOURCES = KDSoapMessage.cpp \
     KDSoapSslHandler.cpp \
     KDSoapReplySslHandler.cpp \
     KDSoapFaultException.cpp \
-    KDSoapMessageAddressingProperties.cpp
+    KDSoapMessageAddressingProperties.cpp \
+    KDSoapEndpointReference.cpp
 DEFINES += KDSOAP_BUILD_KDSOAP_LIB
 
 # installation targets:
