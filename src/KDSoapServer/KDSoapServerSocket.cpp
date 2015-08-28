@@ -162,31 +162,36 @@ void KDSoapServerSocket::slotReadyRead()
         m_requestBuffer += buf.left(nread);
     }
 
-    //qDebug() << "KDSoapServerSocket: request:" << m_requestBuffer;
-
-    QByteArray receivedHttpHeaders, receivedData;
-    const bool splitOK = splitHeadersAndData(m_requestBuffer, receivedHttpHeaders, receivedData);
-
-    if (!splitOK) {
-        //qDebug() << "Incomplete SOAP request, wait for more data";
-        //incomplete request, wait for more data
-        return;
+    if (m_httpHeaders.isEmpty()) {
+        // New request: see if we can parse headers
+        QByteArray receivedHttpHeaders, receivedData;
+        const bool splitOK = splitHeadersAndData(m_requestBuffer, receivedHttpHeaders, receivedData);
+        if (!splitOK) {
+            //qDebug() << "Incomplete SOAP request, wait for more data";
+            //incomplete request, wait for more data
+            return;
+        }
+        m_httpHeaders = parseHeaders(receivedHttpHeaders);
+        // Leave only the actual data in the buffer
+        m_requestBuffer = receivedData;
     }
-
-    QMap<QByteArray, QByteArray> httpHeaders;
-    httpHeaders = parseHeaders(receivedHttpHeaders);
 
     if (m_doDebug) {
-        qDebug() << "headers received:" << receivedHttpHeaders;
-        qDebug() << httpHeaders;
-        qDebug() << "data received:" << receivedData;
+        qDebug() << "headers:" << m_httpHeaders;
+        qDebug() << "data received:" << m_requestBuffer;
     }
 
-    const QByteArray contentLength = httpHeaders.value("content-length");
-    if (receivedData.size() < contentLength.toInt())
+    const QByteArray contentLength = m_httpHeaders.value("content-length");
+    if (m_requestBuffer.size() < contentLength.toInt())
         return; // incomplete request, wait for more data
-    m_requestBuffer.clear();
 
+    handleRequest(m_httpHeaders, m_requestBuffer);
+    m_requestBuffer.clear();
+    m_httpHeaders.clear();
+}
+
+void KDSoapServerSocket::handleRequest(const QMap<QByteArray, QByteArray>& httpHeaders, const QByteArray &receivedData)
+{
     const QByteArray requestType = httpHeaders.value("_requestType");
     if (requestType != "GET" && requestType != "POST") {
         qWarning() << "Unknown HTTP request:" << requestType;
@@ -420,7 +425,6 @@ void KDSoapServerSocket::handleError(KDSoapMessage &replyMsg, const char *errorC
 void KDSoapServerSocket::makeCall(KDSoapServerObjectInterface* serverObjectInterface, const KDSoapMessage &requestMsg, KDSoapMessage& replyMsg, const KDSoapHeaders& requestHeaders, const QByteArray& soapAction, const QString& path)
 {
     Q_ASSERT(serverObjectInterface);
-    //const QString method = requestMsg.name();
 
     if (requestMsg.isFault()) {
         // Can this happen? Getting a fault as a request !? Doesn't make sense...

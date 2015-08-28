@@ -8,6 +8,8 @@ Client-side:
 
 Server-side:
 ============
+* Optimize parsing of large incoming requests so that headers are parsed only once.
+
 * Rename request and response to _request and _response in order to avoid clashes
   with variable names coming from the WSDL.
 

@@ -220,6 +220,16 @@ private:
     CountryServer* m_pServer;
 };
 
+// to avoid a bit of duplication
+class ClientSocket : public QTcpSocket
+{
+public:
+    ClientSocket(CountryServer *server) {
+        QUrl url(server->endPoint());
+        connectToHost(url.host(), server->serverPort());
+    }
+};
+
 class ServerTest : public QObject
 {
     Q_OBJECT
@@ -906,15 +916,26 @@ private Q_SLOTS:
         QVERIFY(xmlBufferCompare(response, expectedCountryResponse()));
     }
 
+    void testPostWithSocket_data()
+    {
+        QTest::addColumn<int>("chunkSize");
+
+        QTest::newRow("no_chunks") << 1000;
+        QTest::newRow("100") << 100;
+        QTest::newRow("50") << 50;
+        QTest::newRow("20") << 20;
+        QTest::newRow("10") << 10;
+    }
+
     // Even more low-level, using a QTcpSocket to send the request
+    // We can use this to send the request in multiple chunks and check the server handles it
     void testPostWithSocket()
     {
+        QFETCH(int, chunkSize);
         CountryServerThread serverThread;
         CountryServer* server = serverThread.startThread();
 
-        QTcpSocket socket;
-        QUrl url(server->endPoint());
-        socket.connectToHost(url.host(), server->serverPort());
+        ClientSocket socket(server);
         QVERIFY(socket.waitForConnected());
         const QByteArray employeeName = "This is a long string in order to test chunking in the next test";
         const QByteArray message = rawCountryMessage(employeeName);
@@ -923,18 +944,14 @@ private Q_SLOTS:
                 "SoapAction: http://www.kdab.com/xml/MyWsdl/getEmployeeCountry\r\n"
                 "Content-Type: text/xml;charset=utf-8\r\n"
                 "Content-Length: " + QByteArray::number(message.size()) + "\r\n"
-                "Host: 127.0.0.1:12345\r\n" + // ignored
-                + "\r\n" + message;
-         socket.write(request);
-         QVERIFY(socket.waitForBytesWritten());
-         QVERIFY(socket.waitForReadyRead());
-         const QByteArray response = socket.readAll();
-         const QByteArray responseFirstLine = response.left(response.indexOf("\r\n"));
-         QCOMPARE(QString::fromUtf8(responseFirstLine.constData()), QString("HTTP/1.1 200 OK"));
-         const int xmlStart = response.indexOf("\r\n\r\n") + 4;
-         QVERIFY(xmlStart > 5);
-         const QByteArray xmlResponse = response.mid(xmlStart);
-         QVERIFY(xmlBufferCompare(xmlResponse, expectedCountryResponse(employeeName)));
+                "Host: 127.0.0.1:12345\r\n" // ignored
+                "\r\n" + message;
+        for (int pos = 0; pos < request.size(); pos += chunkSize) {
+            const QByteArray part = request.mid(pos, chunkSize);
+            socket.write(part);
+            QVERIFY(socket.waitForBytesWritten());
+        }
+         verifySocketResponse(socket, employeeName);
     }
 
     void testContentTypeParsing() // SOAP 112
@@ -1127,6 +1144,18 @@ private:
     }
     static QString expectedCountry() {
         return QString::fromUtf8("David Ä Faure France");
+    }
+
+    void verifySocketResponse(ClientSocket &socket, const QByteArray employeeName)
+    {
+        QVERIFY(socket.waitForReadyRead());
+        const QByteArray response = socket.readAll();
+        const QByteArray responseFirstLine = response.left(response.indexOf("\r\n"));
+        QCOMPARE(QString::fromUtf8(responseFirstLine.constData()), QString("HTTP/1.1 200 OK"));
+        const int xmlStart = response.indexOf("\r\n\r\n") + 4;
+        QVERIFY(xmlStart > 5);
+        const QByteArray xmlResponse = response.mid(xmlStart);
+        QVERIFY(xmlBufferCompare(xmlResponse, expectedCountryResponse(employeeName)));
     }
 
     static KDSoapMessage getStuffMessage() {

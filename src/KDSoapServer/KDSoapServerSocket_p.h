@@ -63,6 +63,7 @@ private Q_SLOTS:
     void slotReadyRead();
 
 private:
+    void handleRequest(const QMap<QByteArray, QByteArray> &headers, const QByteArray &receivedData);
     bool handleWsdlDownload();
     bool handleFileDownload(KDSoapServerObjectInterface* serverObjectInterface, const QString& path);
     void makeCall(KDSoapServerObjectInterface* serverObjectInterface,
@@ -78,6 +79,8 @@ private:
     bool m_doDebug;
     bool m_socketEnabled;
     bool m_receivedData;
+
+    QMap<QByteArray, QByteArray> m_httpHeaders;
     QByteArray m_requestBuffer;
 
     // Data for the current call (stored here for delayed replies)
