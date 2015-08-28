@@ -47,7 +47,8 @@ KDSoapServerSocket::KDSoapServerSocket(KDSoapSocketList* owner, QObject* serverO
       m_serverObject(serverObject),
       m_delayedResponse(false),
       m_socketEnabled(true),
-      m_receivedData(false)
+      m_receivedData(false),
+      m_chunkStart(0)
 {
     connect(this, SIGNAL(readyRead()),
             this, SLOT(slotReadyRead()));
@@ -181,11 +182,48 @@ void KDSoapServerSocket::slotReadyRead()
         qDebug() << "data received:" << m_requestBuffer;
     }
 
-    const QByteArray contentLength = m_httpHeaders.value("content-length");
-    if (m_requestBuffer.size() < contentLength.toInt())
-        return; // incomplete request, wait for more data
+    if (m_httpHeaders.value("transfer-encoding") != "chunked") {
+        const QByteArray contentLength = m_httpHeaders.value("content-length");
+        if (m_requestBuffer.size() < contentLength.toInt())
+            return; // incomplete request, wait for more data
 
-    handleRequest(m_httpHeaders, m_requestBuffer);
+        handleRequest(m_httpHeaders, m_requestBuffer);
+    } else {
+        //qDebug() << "requestBuffer has " << m_requestBuffer.size() << "bytes, starting at" << m_chunkStart;
+        while (m_chunkStart >= 0) {
+            const int nextEOL = m_requestBuffer.indexOf("\r\n", m_chunkStart);
+            if (nextEOL == -1) {
+                qDebug() << "no \\r\\n after" << m_chunkStart;
+                return;
+            }
+            const QByteArray chunkSizeStr = m_requestBuffer.mid(m_chunkStart, nextEOL - m_chunkStart);
+            //qDebug() << m_chunkStart << nextEOL << "chunkSizeStr=" << chunkSizeStr;
+            bool ok;
+            int chunkSize = chunkSizeStr.toInt(&ok, 16);
+            if (!ok) {
+                const QByteArray badRequest = "HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\n\r\n";
+                write(badRequest);
+                return;
+            }
+            if (chunkSize == 0) { // done!
+                m_requestBuffer = m_requestBuffer.mid(nextEOL);
+                m_chunkStart = -1;
+                break;
+            }
+            if (nextEOL + 2 + chunkSize + 2 >= m_requestBuffer.size()) {
+                return; // not enough data, chunk is incomplete
+            }
+            m_decodedRequestBuffer += m_requestBuffer.mid(nextEOL + 2, chunkSize);
+            m_chunkStart = nextEOL + 2 + chunkSize + 2;
+        }
+        // We have the full data, now ensure we read trailers
+        if (!m_requestBuffer.contains("\r\n\r\n")) {
+            return;
+        }
+        handleRequest(m_httpHeaders, m_decodedRequestBuffer);
+        m_decodedRequestBuffer.clear();
+        m_chunkStart = 0;
+    }
     m_requestBuffer.clear();
     m_httpHeaders.clear();
 }

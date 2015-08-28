@@ -8,6 +8,9 @@ Client-side:
 
 Server-side:
 ============
+* Add support for requests using chunked transfer encoding in KDSoap Server.
+  The full message is assembled before being passed on for processing.
+
 * Optimize parsing of large incoming requests so that headers are parsed only once.
 
 * Rename request and response to _request and _response in order to avoid clashes

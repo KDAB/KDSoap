@@ -80,8 +80,11 @@ private:
     bool m_socketEnabled;
     bool m_receivedData;
 
+    // Current request being assembled
+    int m_chunkStart;
     QMap<QByteArray, QByteArray> m_httpHeaders;
     QByteArray m_requestBuffer;
+    QByteArray m_decodedRequestBuffer; // used for chunked transfer encoding only
 
     // Data for the current call (stored here for delayed replies)
     QString m_messageNamespace;

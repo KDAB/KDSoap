@@ -954,6 +954,61 @@ private Q_SLOTS:
          verifySocketResponse(socket, employeeName);
     }
 
+    void testChunkedTransferEncoding_data()
+    {
+        QTest::addColumn<int>("chunkSize");
+        QTest::addColumn<bool>("withTrailers");
+
+        QTest::newRow("no_chunks_t") << 1000 << true;
+        QTest::newRow("no_chunks_f") << 1000 << false;
+        QTest::newRow("100_t") << 100 << true;
+        QTest::newRow("100_f") << 100 << false;
+        QTest::newRow("50_t") << 50 << true;
+        QTest::newRow("50_f") << 50 << false;
+        QTest::newRow("20_t") << 20 << true;
+        QTest::newRow("20_f") << 20 << false;
+        QTest::newRow("10_t") << 10 << true;
+        QTest::newRow("10_f") << 10 << false;
+        QTest::newRow("5_f") << 5 << false;
+    }
+
+    void testChunkedTransferEncoding() // SOAP-123
+    {
+        QFETCH(int, chunkSize);
+        QFETCH(bool, withTrailers);
+
+        CountryServerThread serverThread;
+        CountryServer* server = serverThread.startThread();
+
+        ClientSocket socket(server);
+        QVERIFY(socket.waitForConnected());
+        const QByteArray employeeName = "This is a long string in order to test chunking in the next test";
+        const QByteArray message = rawCountryMessage(employeeName);
+        const QByteArray headers =
+                "POST / HTTP/1.1\r\n"
+                "SoapAction: http://www.kdab.com/xml/MyWsdl/getEmployeeCountry\r\n"
+                "Content-Type: text/xml;charset=utf-8\r\n"
+                "Transfer-Encoding: chunked\r\n"
+                "Host: 127.0.0.1:12345\r\n" // ignored
+                "\r\n";
+        socket.write(headers);
+        QVERIFY(socket.waitForBytesWritten());
+        for (int pos = 0; pos < message.size(); pos += chunkSize) {
+            const QByteArray thisChunk = message.mid(pos, chunkSize);
+            const QByteArray messagePart = QByteArray::number(thisChunk.size(), 16) + "\r\n"
+                    + thisChunk + "\r\n";
+            socket.write(messagePart);
+            QVERIFY(socket.waitForBytesWritten());
+        }
+        // final chunk and trailers
+        if (withTrailers)
+            socket.write("0\r\nIgnore: me\r\n\r\n");
+        else
+            socket.write("0\r\n\r\n");
+        QVERIFY(socket.waitForBytesWritten());
+        verifySocketResponse(socket, employeeName);
+    }
+
     void testContentTypeParsing() // SOAP 112
     {
         CountryServerThread serverThread;
