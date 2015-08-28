@@ -920,11 +920,7 @@ private Q_SLOTS:
                 "SoapAction: http://www.kdab.com/xml/MyWsdl/getEmployeeCountry\r\n"
                 "Content-Type: text/xml;charset=utf-8\r\n"
                 "Content-Length: 440\r\n"
-                "Connection: Keep-Alive\r\n"
-                "Accept-Encoding: gzip\r\n"
-                "Accept-Language: en-US,*\r\n"
-                "User-Agent: Mozilla/5.0\r\n"
-                "Host: 127.0.0.1:46570\r\n\r\n" +
+                "Host: 127.0.0.1:12345\r\n\r\n" + // ignored
                 rawCountryMessage();
          socket.write(request);
          QVERIFY(socket.waitForBytesWritten());
