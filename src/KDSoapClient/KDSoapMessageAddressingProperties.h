@@ -27,7 +27,9 @@
 #include "KDSoapGlobal.h"
 #include <QPair>
 
+#include "KDSoapEndpointReference.h"
 #include "KDSoapValue.h"
+
 QT_BEGIN_NAMESPACE
 class QString;
 QT_END_NAMESPACE
@@ -106,37 +108,70 @@ public:
     void setAction(const QString& action);
 
     /**
-     * Returns the sender address, default value is Anonymous
-     * \see KDSoapAddressingPredefinedAddress enum
+     * Returns the message sender endpoint
+     * \see KDSoapEndpointReference
      */
-    QString sourceEndpoint() const;
+    KDSoapEndpointReference sourceEndpoint() const;
 
     /**
-     * Set the origin address of the message
-     * In case you do not want to provide it, you might use KDSoapAddressingPredefinedAddress::Anonymous
-     */
-    void setSourceEndpoint(const QString & sourceEndpoint);
-
-    /**
-     * Returns the sender address
+     * Convenient method, returns directly the source endpoint address
      * \see KDSoapAddressingPredefinedAddress enum
      */
-    QString replyEndpoint() const;
+    QString sourceEndpointAddress() const;
+
+    /**
+     * Sets the message sender endpoint
+     * \see KDSoapEndpointReference
+     */
+    void setSourceEndpoint(const KDSoapEndpointReference &sourceEndpoint);
+
+    /**
+     * Convenient method, sets the message sender address
+     */
+    void setSourceEndpointAddress(const QString &sourceEndpoint);
+
+    /**
+     * Returns the reply endpoint
+     * \see KDSoapAddressingPredefinedAddress enum
+     */
+    KDSoapEndpointReference replyEndpoint() const;
+
+    /**
+     * Convenient method, returns the sender endpoint address
+     */
+    QString replyEndpointAddress() const;
 
     /**
      * Sets the reply endpoint the server should reply to
+     * \see KDSoapEndpointReference
      */
-    void setReplyEndpoint(const QString & replyEndpoint);
+    void setReplyEndpoint(const KDSoapEndpointReference &replyEndpoint);
 
     /**
-     * Returns the fault address, which is the address the server should send the potential fault error
+     * Convenient method to set directly the reply endpoint address the server should reply to
      */
-    QString faultEndpoint() const;
+    void setReplyEndpointAddress(const QString &replyEndpoint);
 
     /**
-     * Set the fault endpoint address of the message
+     * Returns the fault endpoint, which contains the address the server should send the potential fault error
      */
-    void setFaultEndpoint(const QString & faultEndpoint);
+    KDSoapEndpointReference faultEndpoint() const;
+
+    /**
+     * Convenient method that returns the fault endpoint address, which is the address the server should send the potential fault error
+     */
+    QString faultEndpointAddress() const;
+
+    /**
+     * Set the fault endpoint of the message
+     * \see KDSoapEndpointReference
+     */
+    void setFaultEndpoint(const KDSoapEndpointReference &faultEndpoint);
+
+    /**
+     * Convenient method to set directly the fault endpoint address of the message
+     */
+    void setFaultEndpointAddress(const QString &faultEndpoint);
 
     /**
      * Returns the message id

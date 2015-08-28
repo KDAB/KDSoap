@@ -61,8 +61,8 @@ private Q_SLOTS:
         // with some message addressing properties
         map.setAction("sayHello");
         map.setDestination("http://www.ecerami.com/wsdl/HelloService");
-        map.setSourceEndpoint("http://www.ecerami.com/wsdl/source");
-        map.setFaultEndpoint("http://www.ecerami.com/wsdl/fault");
+        map.setSourceEndpointAddress("http://www.ecerami.com/wsdl/source");
+        map.setFaultEndpoint(KDSoapEndpointReference("http://www.ecerami.com/wsdl/fault"));
         map.setMessageID("uuid:e197db59-0982-4c9c-9702-4234d204f7f4");
         map.setReplyEndpoint(KDSoapMessageAddressingProperties::predefinedAddressToString(KDSoapMessageAddressingProperties::Anonymous));
 

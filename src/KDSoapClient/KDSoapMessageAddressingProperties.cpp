@@ -38,9 +38,9 @@ public:
 
     QString destination;    // Provides the address of the intended receiver of this message
     QString action;         // Identifies the semantics implied by this message
-    QString sourceEndpoint; // Message origin, could be included to facilitate longer running message exchanges.
-    QString replyEndpoint;  // Intended receiver for replies to this message, could be included to facilitate longer running message exchanges.
-    QString faultEndpoint;  // Intended receiver for faults related to this message, could be included to facilitate longer running message exchanges.
+    KDSoapEndpointReference sourceEndpoint; // Message origin, could be included to facilitate longer running message exchanges.
+    KDSoapEndpointReference replyEndpoint;  // Intended receiver for replies to this message, could be included to facilitate longer running message exchanges.
+    KDSoapEndpointReference faultEndpoint;  // Intended receiver for faults related to this message, could be included to facilitate longer running message exchanges.
     QString messageID;      // Unique identifier for this message, may be included to facilitate longer running message exchanges.
     Relationship relationship;   // Indicates relationship to a prior message, could be included to facilitate longer running message exchanges.
     KDSoapValue referenceParameters; // Equivalent of the reference parameters object from the endpoint reference within WSDL file
@@ -82,34 +82,64 @@ void KDSoapMessageAddressingProperties::setAction(const QString &action)
     d->action = action;
 }
 
-QString KDSoapMessageAddressingProperties::sourceEndpoint() const
+KDSoapEndpointReference KDSoapMessageAddressingProperties::sourceEndpoint() const
 {
     return d->sourceEndpoint;
 }
 
-void KDSoapMessageAddressingProperties::setSourceEndpoint(const QString &sourceEndpoint)
+QString KDSoapMessageAddressingProperties::sourceEndpointAddress() const
+{
+    return d->sourceEndpoint.address();
+}
+
+void KDSoapMessageAddressingProperties::setSourceEndpoint(const KDSoapEndpointReference &sourceEndpoint)
 {
     d->sourceEndpoint = sourceEndpoint;
 }
 
-QString KDSoapMessageAddressingProperties::replyEndpoint() const
+void KDSoapMessageAddressingProperties::setSourceEndpointAddress(const QString &sourceEndpoint)
+{
+    d->sourceEndpoint.setAddress(sourceEndpoint);
+}
+
+KDSoapEndpointReference KDSoapMessageAddressingProperties::replyEndpoint() const
 {
     return d->replyEndpoint;
 }
 
-void KDSoapMessageAddressingProperties::setReplyEndpoint(const QString &replyEndpoint)
+QString KDSoapMessageAddressingProperties::replyEndpointAddress() const
+{
+    return d->replyEndpoint.address();
+}
+
+void KDSoapMessageAddressingProperties::setReplyEndpoint(const KDSoapEndpointReference &replyEndpoint)
 {
     d->replyEndpoint = replyEndpoint;
 }
 
-QString KDSoapMessageAddressingProperties::faultEndpoint() const
+void KDSoapMessageAddressingProperties::setReplyEndpointAddress(const QString &replyEndpoint)
+{
+    d->replyEndpoint.setAddress(replyEndpoint);
+}
+
+KDSoapEndpointReference KDSoapMessageAddressingProperties::faultEndpoint() const
 {
     return d->faultEndpoint;
 }
 
-void KDSoapMessageAddressingProperties::setFaultEndpoint(const QString &faultEndpoint)
+QString KDSoapMessageAddressingProperties::faultEndpointAddress() const
+{
+    return d->faultEndpoint.address();
+}
+
+void KDSoapMessageAddressingProperties::setFaultEndpoint(const KDSoapEndpointReference &faultEndpoint)
 {
     d->faultEndpoint = faultEndpoint;
+}
+
+void KDSoapMessageAddressingProperties::setFaultEndpointAddress(const QString &faultEndpoint)
+{
+    d->faultEndpoint.setAddress(faultEndpoint);
 }
 
 QString KDSoapMessageAddressingProperties::messageID() const
@@ -190,18 +220,18 @@ void KDSoapMessageAddressingProperties::writeMessageAddressingProperties(KDSoapN
     writer.writeEndElement();
 
     writer.writeStartElement(addressingNS, QLatin1String("From"));
-    writeAddressField(writer, d->sourceEndpoint);
+    writeAddressField(writer, d->sourceEndpoint.address());
     writer.writeEndElement();
 
     if (!d->replyEndpoint.isEmpty()) {
         writer.writeStartElement(addressingNS, QLatin1String("ReplyTo"));
-        writeAddressField(writer, d->replyEndpoint);
+        writeAddressField(writer, d->replyEndpoint.address());
         writer.writeEndElement();
     }
 
     if (!d->faultEndpoint.isEmpty()) {
         writer.writeStartElement(addressingNS, QLatin1String("FaultTo"));
-        writeAddressField(writer, d->faultEndpoint);
+        writeAddressField(writer, d->faultEndpoint.address());
         writer.writeEndElement();
     }
 
@@ -232,7 +262,7 @@ void KDSoapMessageAddressingProperties::writeMessageAddressingProperties(KDSoapN
 
 QDebug operator <<(QDebug dbg, const KDSoapMessageAddressingProperties &msg)
 {
-    dbg << msg.action() << msg.destination() << msg.sourceEndpoint() << msg.replyEndpoint() << msg.faultEndpoint() << msg.messageID();
+    dbg << msg.action() << msg.destination() << msg.sourceEndpoint().address() << msg.replyEndpoint().address() << msg.faultEndpoint().address() << msg.messageID();
 
     return dbg;
 }

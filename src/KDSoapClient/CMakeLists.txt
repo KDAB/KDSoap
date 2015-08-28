@@ -27,6 +27,7 @@ set(SOURCES
   KDSoapReplySslHandler.cpp
   KDSoapFaultException.cpp
   KDSoapMessageAddressingProperties.cpp
+  KDSoapEndpointReference.cpp
 )
 
 add_library(kdsoap ${KDSoap_LIBRARY_MODE} ${SOURCES})
@@ -51,6 +52,7 @@ if(KDSoap_IS_ROOT_PROJECT)
       KDSoapPendingCallWatcher
       KDSoapFaultException
       KDSoapMessageAddressingProperties
+      KDSoapEndpointReference
       KDSoapPendingCall
       KDSoapAuthentication
     COMMON_HEADER
@@ -73,6 +75,7 @@ if(KDSoap_IS_ROOT_PROJECT)
     KDSoapSslHandler.h
     KDSoapFaultException.h
     KDSoapMessageAddressingProperties.h
+    KDSoapEndpointReference.h
     DESTINATION ${INSTALL_INCLUDE_DIR}/KDSoapClient
   )
 
