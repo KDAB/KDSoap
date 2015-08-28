@@ -111,7 +111,7 @@ public: // SOAP-accessible methods
         //qDebug() << "getEmployeeCountry(" << employeeName << ") called";
         if (employeeName == QLatin1String("Slow"))
             PublicThread::msleep(100);
-        return QString::fromLatin1("France");
+        return employeeName + QString::fromLatin1(" France");
     }
 
     double getStuff(int foo, float bar, const QDateTime& dateTime) {
@@ -254,7 +254,7 @@ private Q_SLOTS:
             KDSoapClientInterface* client = new KDSoapClientInterface(server->endPoint(), countryMessageNamespace());
             const KDSoapMessage response = client->call(QLatin1String("getEmployeeCountry"), countryMessage());
             QVERIFY(!response.isFault());
-            QCOMPARE(response.childValues().first().value().toString(), QString::fromLatin1("France"));
+            QCOMPARE(response.childValues().first().value().toString(), expectedCountry());
 
             QCOMPARE(s_serverObjects.count(), 1);
             QVERIFY(s_serverObjects.value(&serverThread)); // request handled by server thread itself (no thread pool)
@@ -280,7 +280,7 @@ private Q_SLOTS:
             qDebug() << response.faultAsString();
             QVERIFY(!response.isFault());
         }
-        QCOMPARE(response.childValues().first().value().toString(), QString::fromLatin1("France"));
+        QCOMPARE(response.childValues().first().value().toString(), expectedCountry());
     }
 
     void testRefusedAuth()
@@ -382,7 +382,7 @@ private Q_SLOTS:
 
             KDSoapClientInterface* client = new KDSoapClientInterface(server->endPoint(), countryMessageNamespace());
             const KDSoapMessage response = client->call(QLatin1String("getEmployeeCountry"), countryMessage());
-            QCOMPARE(response.childValues().first().value().toString(), QString::fromLatin1("France"));
+            QCOMPARE(response.childValues().first().value().toString(), expectedCountry());
             QCOMPARE(s_serverObjects.count(), 1);
             QThread* thread = s_serverObjects.begin().key();
             QVERIFY(thread != qApp->thread());
@@ -434,7 +434,7 @@ private Q_SLOTS:
 
                 QCOMPARE(m_returnMessages.count(), m_expectedMessages);
                 Q_FOREACH(const KDSoapMessage& response, m_returnMessages) {
-                    QCOMPARE(response.childValues().first().value().toString(), QString::fromLatin1("France"));
+                    QCOMPARE(response.childValues().first().value().toString(), expectedCountry());
                 }
                 QCOMPARE(s_serverObjects.count(), expectedServerObjects);
                 QMapIterator<QThread*, CountryServerObject*> it(s_serverObjects);
@@ -563,7 +563,7 @@ private Q_SLOTS:
 
         QCOMPARE(m_returnMessages.count(), m_expectedMessages);
         Q_FOREACH(const KDSoapMessage& response, m_returnMessages) {
-            QCOMPARE(response.childValues().first().value().toString(), QString::fromLatin1("France"));
+            QCOMPARE(response.childValues().first().value().toString(), expectedCountry());
         }
         //QCOMPARE(s_serverObjects.count(), expectedServerObjects);
         qDeleteAll(clients);
@@ -915,13 +915,15 @@ private Q_SLOTS:
         QTcpSocket socket;
         socket.connectToHost(server->serverAddress(), server->serverPort());
         QVERIFY(socket.waitForConnected());
+        const QByteArray employeeName = "This is a long string in order to test chunking in the next test";
+        const QByteArray message = rawCountryMessage(employeeName);
         const QByteArray request =
                 "POST / HTTP/1.1\r\n"
                 "SoapAction: http://www.kdab.com/xml/MyWsdl/getEmployeeCountry\r\n"
                 "Content-Type: text/xml;charset=utf-8\r\n"
-                "Content-Length: 440\r\n"
-                "Host: 127.0.0.1:12345\r\n\r\n" + // ignored
-                rawCountryMessage();
+                "Content-Length: " + QByteArray::number(message.size()) + "\r\n"
+                "Host: 127.0.0.1:12345\r\n" + // ignored
+                + "\r\n" + message;
          socket.write(request);
          QVERIFY(socket.waitForBytesWritten());
          QVERIFY(socket.waitForReadyRead());
@@ -931,7 +933,7 @@ private Q_SLOTS:
          const int xmlStart = response.indexOf("\r\n\r\n") + 4;
          QVERIFY(xmlStart > 5);
          const QByteArray xmlResponse = response.mid(xmlStart);
-         QVERIFY(xmlBufferCompare(xmlResponse, expectedCountryResponse()));
+         QVERIFY(xmlBufferCompare(xmlResponse, expectedCountryResponse(employeeName)));
     }
 
     void testContentTypeParsing() // SOAP 112
@@ -1082,7 +1084,7 @@ private:
         KDSoapClientInterface client(endPoint, countryMessageNamespace());
         const KDSoapMessage response = client.call(QLatin1String("getEmployeeCountry"), countryMessage());
         QVERIFY(!response.isFault());
-        QCOMPARE(response.childValues().first().value().toString(), QString::fromLatin1("France"));
+        QCOMPARE(response.childValues().first().value().toString(), expectedCountry());
     }
 
     void makeFaultyCall(const QString& endPoint)
@@ -1116,11 +1118,14 @@ private:
         message.addArgument(QLatin1String("employeeName"), QString::fromUtf8(slow ? "Slow" : "David Ä Faure"));
         return message;
     }
-    static QByteArray rawCountryMessage() {
-        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><soap:Body><n1:getEmployeeCountry xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\"><employeeName>David ???? Faure</employeeName></n1:getEmployeeCountry></soap:Body></soap:Envelope>";
+    static QByteArray rawCountryMessage(const QByteArray& employeeName = "David Ä Faure") {
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><soap:Body><n1:getEmployeeCountry xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\"><employeeName>" + employeeName + "</employeeName></n1:getEmployeeCountry></soap:Body></soap:Envelope>";
     }
-    static QByteArray expectedCountryResponse() {
-        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><soap:Body><n1:getEmployeeCountry xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\"><employeeCountry>France</employeeCountry>getEmployeeCountryResponse</n1:getEmployeeCountry></soap:Body></soap:Envelope>\n";
+    static QByteArray expectedCountryResponse(const QByteArray& employeeName = "David Ä Faure") {
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><soap:Body><n1:getEmployeeCountry xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\"><employeeCountry>" + employeeName + " France</employeeCountry>getEmployeeCountryResponse</n1:getEmployeeCountry></soap:Body></soap:Envelope>\n";
+    }
+    static QString expectedCountry() {
+        return QString::fromUtf8("David Ä Faure France");
     }
 
     static KDSoapMessage getStuffMessage() {
