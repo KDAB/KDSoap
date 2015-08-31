@@ -67,7 +67,8 @@ KDSoapClientInterfacePrivate::KDSoapClientInterfacePrivate()
       m_authentication(),
       m_version(KDSoapClientInterface::SOAP1_1),
       m_style(KDSoapClientInterface::RPCStyle),
-      m_ignoreSslErrors(false)
+      m_ignoreSslErrors(false),
+      m_wsAddressing(false)
 {
 #ifndef QT_NO_OPENSSL
     m_sslHandler = 0;
@@ -109,9 +110,15 @@ QNetworkRequest KDSoapClientInterfacePrivate::prepareRequest(const QString &meth
 
     QString soapHeader;
     if (m_version == KDSoapClientInterface::SOAP1_1) {
+        if (m_wsAddressing) {
+            qDebug() << "Soap 1.1 with ws Addressing specification !";
+        }
         soapHeader += QString::fromLatin1("text/xml;charset=utf-8");
         request.setRawHeader("SoapAction", '\"' + soapAction.toUtf8() + '\"');
     } else if (m_version == KDSoapClientInterface::SOAP1_2) {
+        if (m_wsAddressing) {
+            qDebug() << "Soap 1.2 with ws Addressing specification !";
+        }
         soapHeader += QString::fromLatin1("application/soap+xml;charset=utf-8;action=") + soapAction;
     }
 
@@ -216,6 +223,11 @@ void KDSoapClientInterface::setHeader(const QString& name, const KDSoapMessage &
 void KDSoapClientInterface::ignoreSslErrors()
 {
     d->m_ignoreSslErrors = true;
+}
+
+void KDSoapClientInterface::enableWSAddressingSupport()
+{
+    d->m_wsAddressing = true;
 }
 
 #ifndef QT_NO_OPENSSL

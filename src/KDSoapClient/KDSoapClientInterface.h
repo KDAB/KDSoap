@@ -288,6 +288,13 @@ public:
      */
     void ignoreSslErrors();
 
+    /**
+     * Ask KDSoapClientInterface to handle WS-Addressing specification.
+     * This has an impact on SOAP Header content construction
+     * See reference: http://www.w3.org/Submission/ws-addressing/
+     */
+    void enableWSAddressingSupport();
+
 #ifndef QT_NO_OPENSSL
     /**
      * \brief ignoreSslErrors
