@@ -847,8 +847,13 @@ void SoapBinding::parsePort( ParserContext *context, const QDomElement &parent )
             if ( namespaceManager.localName(child) == QLatin1String("address") ) {
                 mAddress.loadXML( context, child );
             }
+        } else if ( NSManager::wsAddressingNamespace().contains( namespaceManager.nameSpace(child) ) ) {
+            if ( namespaceManager.localName(child) == QLatin1String("EndpointReference") ) {
+//                mEndpointReference = EndpointReference( namespaceManager.nameSpace( child ) );
+//                mEndpointReference.loadXML(context, child);
+                // TODO : create object to store infos from wsdl
+            }
         }
-
         child = child.nextSiblingElement();
     }
 }

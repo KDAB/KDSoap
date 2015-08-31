@@ -20,6 +20,7 @@
 */
 
 #include <common/messagehandler.h>
+#include <common/nsmanager.h>
 #include <common/parsercontext.h>
 
 #include "binding.h"
@@ -83,6 +84,22 @@ void Port::loadXML( ParserContext *context, Binding::List *bindings, const QDomE
       //else // ignore unimplemented bindings
       //  context->messageHandler()->error( "No binding set" );
     }
+  }
+
+  QDomElement child = element.firstChildElement();
+  while ( !child.isNull() ) {
+    NSManager namespaceManager( context, child );
+    const QName tagName( child.tagName() );
+    if ( tagName.localName() == QLatin1String("EndpointReference") ) {
+      // Find a way to store endpoint info
+      qDebug() << "EndPointReferencePoint found !";
+    } else if ( tagName.localName() == QLatin1String("address") ) {
+        // handled before by biding parsing
+    } else {
+        context->messageHandler()->warning( QString::fromLatin1("Service: unknown tag %1" ).arg( child.tagName() ) );
+    }
+
+    child = child.nextSiblingElement();
   }
 }
 

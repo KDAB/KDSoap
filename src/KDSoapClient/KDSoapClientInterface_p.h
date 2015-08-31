@@ -56,6 +56,7 @@ public:
     KDSoapClientInterface::SoapVersion m_version;
     KDSoapClientInterface::Style m_style;
     bool m_ignoreSslErrors;
+    bool m_wsAddressing;
     KDSoapHeaders m_lastResponseHeaders;
 #ifndef QT_NO_OPENSSL
     QList<QSslError> m_ignoreErrorsList;

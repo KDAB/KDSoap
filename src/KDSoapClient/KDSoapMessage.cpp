@@ -32,11 +32,13 @@ class KDSoapMessageData : public QSharedData
 {
 public:
     KDSoapMessageData()
-        : use(KDSoapMessage::LiteralUse), isFault(false)
+        : use(KDSoapMessage::LiteralUse), isFault(false), hasMessageAddressingProperties(false)
     {}
 
     KDSoapMessage::Use use;
     bool isFault;
+    bool hasMessageAddressingProperties;
+    KDSoapMessageAddressingProperties messageAddressingProperties;
 };
 
 KDSoapMessage::KDSoapMessage()
@@ -131,6 +133,27 @@ QString KDSoapMessage::faultAsString() const
 void KDSoapMessage::setFault(bool fault)
 {
     d->isFault = fault;
+}
+
+const KDSoapMessageAddressingProperties KDSoapMessage::messageAddressingProperties() const
+{
+    return d->messageAddressingProperties;
+}
+
+void KDSoapMessage::setMessageAddressingProperties(const KDSoapMessageAddressingProperties &map)
+{
+    d->messageAddressingProperties = map;
+    d->hasMessageAddressingProperties = true;
+}
+
+bool KDSoapMessage::hasMessageAddressingProperties() const
+{
+    return d->hasMessageAddressingProperties;
+}
+
+void KDSoapMessage::setMessageAddressingPropertiesEnabled(bool enable)
+{
+    d->hasMessageAddressingProperties = enable;
 }
 
 KDSoapMessage::Use KDSoapMessage::use() const

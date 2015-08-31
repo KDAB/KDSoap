@@ -20,30 +20,45 @@
 ** clear to you.
 **
 **********************************************************************/
-#ifndef KDSOAPNAMESPACEMANAGER_H
-#define KDSOAPNAMESPACEMANAGER_H
+
+#ifndef KDSOAPENDPOINTREFERENCE_H
+#define KDSOAPENDPOINTREFERENCE_H
 
 #include "KDSoapGlobal.h"
-#include <QtCore/QString>
+#include <QString>
 
-/**
- * Repository of namespaces
- */
-class KDSOAP_EXPORT KDSoapNamespaceManager //krazy:exclude=dpointer
+// Class following WS-Addressing specification
+/*
+ * \see: http://www.w3.org/TR/ws-addr-core/#eprinfoset
+*/
+
+class KDSOAP_EXPORT KDSoapEndpointReference
 {
-public:
-    static QString xmlSchema1999();
-    static QString xmlSchema2001();
-    static QString xmlSchemaInstance1999();
-    static QString xmlSchemaInstance2001();
-    static QString soapEnvelope();
-    static QString soapEnvelope200305();
-    static QString soapEncoding();
-    static QString soapEncoding200305();
-    static QString soapMessageAddressing();
+  public:
 
-private: // TODO instantiate to handle custom namespaces per clientinterface
-    KDSoapNamespaceManager();
+    KDSoapEndpointReference();
+    ~KDSoapEndpointReference();
+
+    //void loadXML( ParserContext *context, const QDomElement &element );
+
+    QString address() const;
+    void setAddress(const QString &address);
+
+  private:
+    QString m_address; // mandatory //see  predefined addresses : anonymous an none"
+
+    //    <wsa:EndpointReference>
+//        <wsa:Address>xs:anyURI</wsa:Address>
+//        <wsa:ReferenceParameters>xs:any*</wsa:ReferenceParameters> ?
+//        <wsa:Metadata>xs:any*</wsa:Metadata>?
+//    </wsa:EndpointReference>
+// reference properties : *
+// reference parameters : *
+// metadata : *
+// qname of the port type : 0..1
+// policy : 0*
+
 };
 
-#endif // KDSOAPNAMESPACEMANAGER_H
+#endif // KDSOAPENDPOINTREFERENCE_H
+
