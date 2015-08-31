@@ -40,6 +40,7 @@ public:
     static QString soapEnvelope200305();
     static QString soapEncoding();
     static QString soapEncoding200305();
+    static QString soapMessageAddressing();
 
 private: // TODO instantiate to handle custom namespaces per clientinterface
     KDSoapNamespaceManager();
