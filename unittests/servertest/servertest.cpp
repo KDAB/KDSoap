@@ -143,6 +143,7 @@ public:
         } else {
             writeHTTP("HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\n\r\n");
         }
+        m_assembledXML.clear();
     }
 
 public: // SOAP-accessible methods
@@ -200,7 +201,7 @@ class CountryServer : public KDSoapServer
 {
     Q_OBJECT
 public:
-    CountryServer() : KDSoapServer(), m_requireAuth(false) {}
+    CountryServer() : KDSoapServer(), m_requireAuth(false), m_useRawXML(false) {}
 
     virtual QObject* createServerObject() { return new CountryServerObject(m_requireAuth, m_useRawXML); }
 
