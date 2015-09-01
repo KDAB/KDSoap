@@ -31,6 +31,7 @@
 #include "KDSoapThreadPool.h"
 #include "KDSoapServerAuthInterface.h"
 #include "KDSoapServerObjectInterface.h"
+#include "KDSoapServerRawXMLInterface.h"
 #include "httpserver_p.h" // KDSoapUnitTestHelpers
 #include <QtTest/QtTest>
 #include <QDebug>
@@ -60,13 +61,25 @@ public:
     using QThread::msleep;
 };
 
-class CountryServerObject : public QObject, public KDSoapServerObjectInterface, public KDSoapServerAuthInterface
+static const char s_longEmployeeName[] = "This is a long string in order to test chunking in this test";
+static QByteArray rawCountryMessage(const QByteArray& employeeName = "David Ä Faure") {
+    return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><soap:Body><n1:getEmployeeCountry xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\"><employeeName>" + employeeName + "</employeeName></n1:getEmployeeCountry></soap:Body></soap:Envelope>";
+}
+static QByteArray expectedCountryResponse(const QByteArray& employeeName = "David Ä Faure") {
+    return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><soap:Body><n1:getEmployeeCountry xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\"><employeeCountry>" + employeeName + " France</employeeCountry>getEmployeeCountryResponse</n1:getEmployeeCountry></soap:Body></soap:Envelope>\n";
+}
+
+class CountryServerObject : public QObject, public KDSoapServerObjectInterface, public KDSoapServerAuthInterface, public KDSoapServerRawXMLInterface
 {
     Q_OBJECT
     Q_INTERFACES(KDSoapServerObjectInterface)
     Q_INTERFACES(KDSoapServerAuthInterface)
+    Q_INTERFACES(KDSoapServerRawXMLInterface)
 public:
-    CountryServerObject(bool auth) : QObject(), KDSoapServerObjectInterface(), m_requireAuth(auth) {
+    CountryServerObject(bool auth, bool rawXML)
+        : QObject(), KDSoapServerObjectInterface(),
+          m_requireAuth(auth), m_useRawXML(rawXML)
+    {
         //qDebug() << "Server object created in thread" << QThread::currentThread();
         QMutexLocker locker(&s_serverObjectsMutex);
         s_serverObjects.insert(QThread::currentThread(), this);
@@ -95,6 +108,41 @@ public:
         if ((path == QLatin1String("/") || path == QLatin1String("/path/to/file_download.txt")) && auth.user() == QLatin1String("kdab"))
             return auth.password() == QLatin1String("pass42");
         return false;
+    }
+
+    // KDSoapServerRawXMLInterface interface
+    bool newRequest(const QByteArray &requestType, const QMap<QByteArray, QByteArray> &httpHeaders)
+    {
+        if (m_useRawXML && requestType == "POST") {
+            if (!httpHeaders.contains("content-type")
+                    || !httpHeaders.contains("soapaction")) {
+                m_rawXMLValid = false;
+                qWarning() << "Didn't get all expected headers:" << httpHeaders;
+            } else {
+                m_rawXMLValid = true;
+            }
+            return true;
+        }
+        return false;
+    }
+    void processXML(const QByteArray &xmlChunk)
+    {
+        if (!m_useRawXML) { // should never happen
+            Q_ASSERT(m_useRawXML);
+            m_rawXMLValid = false;
+        }
+        m_assembledXML += xmlChunk;
+    }
+    void endRequest() {
+        if (m_assembledXML != rawCountryMessage(s_longEmployeeName)) {
+            qWarning() << "Expected" << rawCountryMessage(s_longEmployeeName) << "\nGot" << m_assembledXML;
+            m_rawXMLValid = false;
+        }
+        if (m_rawXMLValid) {
+            writeXML(expectedCountryResponse(s_longEmployeeName));
+        } else {
+            writeHTTP("HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\n\r\n");
+        }
     }
 
 public: // SOAP-accessible methods
@@ -142,6 +190,10 @@ public: // SOAP-accessible methods
     }
 private:
     bool m_requireAuth;
+    bool m_useRawXML;
+    bool m_rawXMLValid;
+    QByteArray m_assembledXML;
+
 };
 
 class CountryServer : public KDSoapServer
@@ -150,9 +202,10 @@ class CountryServer : public KDSoapServer
 public:
     CountryServer() : KDSoapServer(), m_requireAuth(false) {}
 
-    virtual QObject* createServerObject() { return new CountryServerObject(m_requireAuth); }
+    virtual QObject* createServerObject() { return new CountryServerObject(m_requireAuth, m_useRawXML); }
 
     void setRequireAuth(bool b) { m_requireAuth = b; }
+    void setUseRawXML(bool b) { m_useRawXML = b; }
 
 Q_SIGNALS:
     void releaseSemaphore();
@@ -164,6 +217,7 @@ public Q_SLOTS:
 
 private:
     bool m_requireAuth;
+    bool m_useRawXML;
 };
 
 // We need to do the listening and socket handling in a separate thread,
@@ -919,12 +973,15 @@ private Q_SLOTS:
     void testPostWithSocket_data()
     {
         QTest::addColumn<int>("chunkSize");
+        QTest::addColumn<bool>("useRawXML");
 
-        QTest::newRow("no_chunks") << 1000;
-        QTest::newRow("100") << 100;
-        QTest::newRow("50") << 50;
-        QTest::newRow("20") << 20;
-        QTest::newRow("10") << 10;
+        QTest::newRow("no_chunks") << 1000 << false;
+        QTest::newRow("100") << 100 << false;
+        QTest::newRow("50") << 50 << false;
+        QTest::newRow("20") << 20 << false;
+        QTest::newRow("10") << 10 << false;
+
+        QTest::newRow("rawXML") << 50 << true;
     }
 
     // Even more low-level, using a QTcpSocket to send the request
@@ -932,13 +989,14 @@ private Q_SLOTS:
     void testPostWithSocket()
     {
         QFETCH(int, chunkSize);
+        QFETCH(bool, useRawXML);
         CountryServerThread serverThread;
         CountryServer* server = serverThread.startThread();
+        server->setUseRawXML(useRawXML);
 
         ClientSocket socket(server);
         QVERIFY(socket.waitForConnected());
-        const QByteArray employeeName = "This is a long string in order to test chunking in the next test";
-        const QByteArray message = rawCountryMessage(employeeName);
+        const QByteArray message = rawCountryMessage(s_longEmployeeName);
         const QByteArray request =
                 "POST / HTTP/1.1\r\n"
                 "SoapAction: http://www.kdab.com/xml/MyWsdl/getEmployeeCountry\r\n"
@@ -951,7 +1009,7 @@ private Q_SLOTS:
             socket.write(part);
             QVERIFY(socket.waitForBytesWritten());
         }
-         verifySocketResponse(socket, employeeName);
+         verifySocketResponse(socket, s_longEmployeeName);
     }
 
     void testChunkedTransferEncoding_data()
@@ -977,40 +1035,43 @@ private Q_SLOTS:
         QFETCH(int, chunkSize);
         QFETCH(bool, withTrailers);
 
-        CountryServerThread serverThread;
-        CountryServer* server = serverThread.startThread();
+        for (int i = 0; i < 2; ++i) {
+            CountryServerThread serverThread;
+            CountryServer* server = serverThread.startThread();
 
-        ClientSocket socket(server);
-        QVERIFY(socket.waitForConnected());
-        const QByteArray employeeName = "This is a long string in order to test chunking in the next test";
-        const QByteArray message = rawCountryMessage(employeeName);
-        const QByteArray headers =
-                "POST / HTTP/1.1\r\n"
-                "SoapAction: http://www.kdab.com/xml/MyWsdl/getEmployeeCountry\r\n"
-                "Content-Type: text/xml;charset=utf-8\r\n"
-                "Transfer-Encoding: chunked\r\n"
-                "Host: 127.0.0.1:12345\r\n" // ignored
-                "\r\n";
-        socket.write(headers);
-        QVERIFY(socket.waitForBytesWritten());
-        for (int pos = 0; pos < message.size(); pos += chunkSize) {
-            const QByteArray thisChunk = message.mid(pos, chunkSize);
-            const QByteArray messagePart = QByteArray::number(thisChunk.size(), 16) + "\r\n"
-                    + thisChunk + "\r\n";
-            // fragment that packet, for more testing
-            const int fragmentSize = chunkSize / 5;
-            for (int i = 0; i < messagePart.size(); i += fragmentSize) {
-                socket.write(messagePart.mid(i, fragmentSize));
-                QVERIFY(socket.waitForBytesWritten());
+            if (i == 1)
+                server->setUseRawXML(true);
+            ClientSocket socket(server);
+            QVERIFY(socket.waitForConnected());
+            const QByteArray message = rawCountryMessage(s_longEmployeeName);
+            const QByteArray headers =
+                    "POST / HTTP/1.1\r\n"
+                    "SoapAction: http://www.kdab.com/xml/MyWsdl/getEmployeeCountry\r\n"
+                    "Content-Type: text/xml;charset=utf-8\r\n"
+                    "Transfer-Encoding: chunked\r\n"
+                    "Host: 127.0.0.1:12345\r\n" // ignored
+                    "\r\n";
+            socket.write(headers);
+            QVERIFY(socket.waitForBytesWritten());
+            for (int pos = 0; pos < message.size(); pos += chunkSize) {
+                const QByteArray thisChunk = message.mid(pos, chunkSize);
+                const QByteArray messagePart = QByteArray::number(thisChunk.size(), 16) + "\r\n"
+                        + thisChunk + "\r\n";
+                // fragment that packet, for more testing
+                const int fragmentSize = chunkSize / 5;
+                for (int i = 0; i < messagePart.size(); i += fragmentSize) {
+                    socket.write(messagePart.mid(i, fragmentSize));
+                    QVERIFY(socket.waitForBytesWritten());
+                }
             }
+            // final chunk and trailers
+            if (withTrailers)
+                socket.write("0\r\nIgnore: me\r\n\r\n");
+            else
+                socket.write("0\r\n\r\n");
+            QVERIFY(socket.waitForBytesWritten());
+            verifySocketResponse(socket, s_longEmployeeName);
         }
-        // final chunk and trailers
-        if (withTrailers)
-            socket.write("0\r\nIgnore: me\r\n\r\n");
-        else
-            socket.write("0\r\n\r\n");
-        QVERIFY(socket.waitForBytesWritten());
-        verifySocketResponse(socket, employeeName);
     }
 
     void testContentTypeParsing() // SOAP 112
@@ -1194,12 +1255,6 @@ private:
         KDSoapMessage message;
         message.addArgument(QLatin1String("employeeName"), QString::fromUtf8(slow ? "Slow" : "David Ä Faure"));
         return message;
-    }
-    static QByteArray rawCountryMessage(const QByteArray& employeeName = "David Ä Faure") {
-        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><soap:Body><n1:getEmployeeCountry xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\"><employeeName>" + employeeName + "</employeeName></n1:getEmployeeCountry></soap:Body></soap:Envelope>";
-    }
-    static QByteArray expectedCountryResponse(const QByteArray& employeeName = "David Ä Faure") {
-        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><soap:Body><n1:getEmployeeCountry xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\"><employeeCountry>" + employeeName + " France</employeeCountry>getEmployeeCountryResponse</n1:getEmployeeCountry></soap:Body></soap:Envelope>\n";
     }
     static QString expectedCountry() {
         return QString::fromUtf8("David Ä Faure France");

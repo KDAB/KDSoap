@@ -221,6 +221,24 @@ public:
      */
     void sendDelayedResponse(const KDSoapDelayedResponseHandle& responseHandle, const KDSoapMessage& response);
 
+    /**
+     * Low-level method, not needed for normal operations.
+     * Call this method to write an HTTP reply back, e.g. in case of an error.
+     * Example: writeHTTP("HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\n\r\n");
+     * \since 1.5
+     */
+    void writeHTTP(const QByteArray &httpReply);
+
+    /**
+     * Low-level method, not needed for normal operations.
+     * Call this method to write an XML reply back. KDSoapServer will take care
+     * of the necessary HTTP headers.
+     * @param reply the SOAP reply in XML
+     * @param isFault true if the reply is a fault (which means sending back the HTTP error code 500, as per the specification)
+     * \since 1.5
+     */
+    void writeXML(const QByteArray &reply, bool isFault = false);
+
 private:
     friend class KDSoapServerSocket;
     void setServerSocket(KDSoapServerSocket* serverSocket); // only valid during processRequest()

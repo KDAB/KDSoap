@@ -55,7 +55,6 @@ public:
     void setResponseDelayed();
     void sendDelayedReply(KDSoapServerObjectInterface* serverObjectInterface, const KDSoapMessage& replyMsg);
     void sendReply(KDSoapServerObjectInterface* serverObjectInterface, const KDSoapMessage& replyMsg);
-
 Q_SIGNALS:
     void socketDeleted(KDSoapServerSocket *);
 
@@ -72,6 +71,8 @@ private:
                   const QByteArray& soapAction, const QString &path);
     void handleError(KDSoapMessage& replyMsg, const char* errorCode, const QString& error);
     void setSocketEnabled(bool enabled);
+    void writeXML(const QByteArray &xmlResponse, bool isFault);
+    friend class KDSoapServerObjectInterface;
 
     KDSoapSocketList* m_owner;
     QObject* m_serverObject;
@@ -81,6 +82,8 @@ private:
     bool m_receivedData;
 
     // Current request being assembled
+    bool m_useRawXML;
+    int m_bytesReceived;
     int m_chunkStart;
     QMap<QByteArray, QByteArray> m_httpHeaders;
     QByteArray m_requestBuffer;

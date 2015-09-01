@@ -13,6 +13,10 @@ Server-side:
 
 * Optimize parsing of large incoming requests so that headers are parsed only once.
 
+* Provide a new way of treating incoming requests: the server object can receive
+  raw XML incrementally and parse it itself, e.g. to avoid building up the full
+  request in memory, in case of very large requests. See KDSoapServerRawXMLInterface.
+
 * Rename request and response to _request and _response in order to avoid clashes
   with variable names coming from the WSDL.
 

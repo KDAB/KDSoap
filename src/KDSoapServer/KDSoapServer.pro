@@ -16,6 +16,7 @@ include($${TOP_SOURCE_DIR}/variables.pri)
 # TODO: install these from include/ as well
 INSTALLHEADERS = KDSoapServer.h \
                  KDSoapServerAuthInterface.h \
+                 KDSoapServerRawXMLInterface.h \
                  KDSoapServerObjectInterface.h \
                  KDSoapServerGlobal.h \
                  KDSoapServerAuthInterface.h \
@@ -34,6 +35,7 @@ SOURCES = KDSoapServer.cpp \
     KDSoapServerThread.cpp \
     KDSoapSocketList.cpp \
     KDSoapServerAuthInterface.cpp \
+    KDSoapServerRawXMLInterface.cpp \
     KDSoapServerObjectInterface.cpp \
     KDSoapDelayedResponseHandle.cpp
 

@@ -34,6 +34,9 @@ class KDSoapServerSocket;
  * In addition to deriving from KDSoapServerObjectInterface, you can derive from
  * KDSoapServerAuthInterface in order to handle HTTP authentication.
  *
+ * Use Q_INTERFACES(KDSoapServerAuthInterface) in your derived class (under Q_OBJECT)
+ * so that Qt can discover the additional inheritance.
+ *
  * \since 1.3
  */
 class KDSOAPSERVER_EXPORT KDSoapServerAuthInterface

@@ -24,6 +24,7 @@
 #include "KDSoapSocketList_p.h"
 #include "KDSoapServerObjectInterface.h"
 #include "KDSoapServerAuthInterface.h"
+#include "KDSoapServerRawXMLInterface.h"
 #include "KDSoapServer.h"
 #include <KDSoapClient/KDSoapMessage.h>
 #include <KDSoapClient/KDSoapNamespaceManager.h>
@@ -48,6 +49,8 @@ KDSoapServerSocket::KDSoapServerSocket(KDSoapSocketList* owner, QObject* serverO
       m_delayedResponse(false),
       m_socketEnabled(true),
       m_receivedData(false),
+      m_useRawXML(false),
+      m_bytesReceived(0),
       m_chunkStart(0)
 {
     connect(this, SIGNAL(readyRead()),
@@ -161,7 +164,10 @@ void KDSoapServerSocket::slotReadyRead()
             return;
         }
         m_requestBuffer += buf.left(nread);
+        m_bytesReceived += nread;
     }
+
+    KDSoapServerRawXMLInterface *rawXmlInterface = qobject_cast<KDSoapServerRawXMLInterface *>(m_serverObject);
 
     if (m_httpHeaders.isEmpty()) {
         // New request: see if we can parse headers
@@ -175,6 +181,13 @@ void KDSoapServerSocket::slotReadyRead()
         m_httpHeaders = parseHeaders(receivedHttpHeaders);
         // Leave only the actual data in the buffer
         m_requestBuffer = receivedData;
+        m_bytesReceived = receivedData.size();
+        m_useRawXML = false;
+        if (rawXmlInterface) {
+            KDSoapServerObjectInterface* serverObjectInterface = qobject_cast<KDSoapServerObjectInterface *>(m_serverObject);
+            serverObjectInterface->setServerSocket(this);
+            m_useRawXML = rawXmlInterface->newRequest(m_httpHeaders.value("_requestType"), m_httpHeaders);
+        }
     }
 
     if (m_doDebug) {
@@ -183,11 +196,20 @@ void KDSoapServerSocket::slotReadyRead()
     }
 
     if (m_httpHeaders.value("transfer-encoding") != "chunked") {
+        if (m_useRawXML) {
+            rawXmlInterface->processXML(m_requestBuffer);
+            m_requestBuffer.clear();
+        }
+
         const QByteArray contentLength = m_httpHeaders.value("content-length");
-        if (m_requestBuffer.size() < contentLength.toInt())
+        if (m_bytesReceived < contentLength.toInt())
             return; // incomplete request, wait for more data
 
-        handleRequest(m_httpHeaders, m_requestBuffer);
+        if (m_useRawXML) {
+            rawXmlInterface->endRequest();
+        } else {
+            handleRequest(m_httpHeaders, m_requestBuffer);
+        }
     } else {
         //qDebug() << "requestBuffer has " << m_requestBuffer.size() << "bytes, starting at" << m_chunkStart;
         while (m_chunkStart >= 0) {
@@ -212,19 +234,29 @@ void KDSoapServerSocket::slotReadyRead()
             if (nextEOL + 2 + chunkSize + 2 >= m_requestBuffer.size()) {
                 return; // not enough data, chunk is incomplete
             }
-            m_decodedRequestBuffer += m_requestBuffer.mid(nextEOL + 2, chunkSize);
+            const QByteArray chunk = m_requestBuffer.mid(nextEOL + 2, chunkSize);
+            if (m_useRawXML) {
+                rawXmlInterface->processXML(chunk);
+            } else {
+                m_decodedRequestBuffer += chunk;
+            }
             m_chunkStart = nextEOL + 2 + chunkSize + 2;
         }
         // We have the full data, now ensure we read trailers
         if (!m_requestBuffer.contains("\r\n\r\n")) {
             return;
         }
-        handleRequest(m_httpHeaders, m_decodedRequestBuffer);
+        if (m_useRawXML) {
+            rawXmlInterface->endRequest();
+        } else {
+            handleRequest(m_httpHeaders, m_decodedRequestBuffer);
+        }
         m_decodedRequestBuffer.clear();
         m_chunkStart = 0;
     }
     m_requestBuffer.clear();
     m_httpHeaders.clear();
+    m_receivedData = 0;
 }
 
 void KDSoapServerSocket::handleRequest(const QMap<QByteArray, QByteArray>& httpHeaders, const QByteArray &receivedData)
@@ -387,6 +419,20 @@ bool KDSoapServerSocket::handleFileDownload(KDSoapServerObjectInterface *serverO
     return true;
 }
 
+void KDSoapServerSocket::writeXML(const QByteArray& xmlResponse, bool isFault)
+{
+    const QByteArray httpHeaders = httpResponseHeaders(isFault, "text/xml", xmlResponse.size()); // TODO return application/soap+xml;charset=utf-8 instead for SOAP 1.2
+    if (m_doDebug) {
+        qDebug() << "KDSoapServerSocket: writing" << httpHeaders << xmlResponse;
+    }
+    qint64 written = write(httpHeaders);
+    Q_ASSERT(written == httpHeaders.size()); // Please report a bug if you hit this.
+    written = write(xmlResponse);
+    Q_ASSERT(written == xmlResponse.size()); // Please report a bug if you hit this.
+    Q_UNUSED(written);
+    // flush() ?
+}
+
 void KDSoapServerSocket::sendReply(KDSoapServerObjectInterface* serverObjectInterface, const KDSoapMessage& replyMsg)
 {
     const bool isFault = replyMsg.isFault();
@@ -411,16 +457,7 @@ void KDSoapServerSocket::sendReply(KDSoapServerObjectInterface* serverObjectInte
         xmlResponse = msgWriter.messageToXml(replyMsg, responseName, responseHeaders, QMap<QString, KDSoapMessage>());
     }
 
-    const QByteArray response = httpResponseHeaders(isFault, "text/xml", xmlResponse.size()); // TODO return application/soap+xml;charset=utf-8 instead for SOAP 1.2
-    if (m_doDebug) {
-        qDebug() << "KDSoapServerSocket: writing" << response << xmlResponse;
-    }
-    qint64 written = write(response);
-    Q_ASSERT(written == response.size()); // Please report a bug if you hit this.
-    written = write(xmlResponse);
-    Q_ASSERT(written == xmlResponse.size()); // Please report a bug if you hit this.
-    Q_UNUSED(written);
-    // flush() ?
+    writeXML(xmlResponse, isFault);
 
     // All done, check if we should log this
     KDSoapServer* server = m_owner->server();
