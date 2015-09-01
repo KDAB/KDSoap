@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="HelloService"
+   targetNamespace="http://www.ecerami.com/wsdl/HelloService.wsdl"
+   xmlns="http://schemas.xmlsoap.org/wsdl/"
+   xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+   xmlns:tns="http://www.ecerami.com/wsdl/HelloService.wsdl"
+   xmlns:wsa="http://www.w3.org/2005/08/addressing"
+   xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+   <message name="SayHelloRequest">
+      <part name="msg" type="xsd:string"/>
+   </message>
+   <message name="SayHelloResponse">
+      <part name="reply" type="xsd:string"/>
+   </message>
+
+   <portType name="Hello_PortType">
+      <operation name="sayHello">
+         <input message="tns:SayHelloRequest" wsaw:Action="http://localhost:8081/hello"/>
+         <output message="tns:SayHelloResponse" wsaw:Action="http://localhost:8081/hello"/>
+      </operation>
+   </portType>
+
+   <binding name="Hello_Binding" type="tns:Hello_PortType">
+      <wsaw:UsingAddressing wsdl:required="true" /> <!--NEED TO BE TAKEN INTO ACCOUNT -->
+      <soap:binding style="document"
+         transport="http://schemas.xmlsoap.org/soap/http"/>
+      <operation name="sayHello" style="document">
+         <soap:operation soapAction="sayHello"/>
+         <input wsaw:Action="http://localhost:8081/hello">
+            <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:examples:helloservice" use="encoded"/>
+         </input>
+         <output>
+            <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:examples:helloservice" use="encoded"/>
+         </output>
+      </operation>
+</binding>
+
+   <service name="Hello_Service">
+      <documentation>WSDL File for HelloService</documentation>
+      <port binding="tns:Hello_Binding" name="Hello_Port">
+         <soap:address location="http://localhost:8081/hello" />
+
+         <wsa:EndpointReference
+             xmlns:example="http://example.com/namespace"
+             xmlns:wsdli="http://www.w3.org/2006/01/wsdl-instance"
+             wsdli:wsdlLocation="http://example.com/location">
+
+             <wsa:Address>http://localhost:8081/hello</wsa:Address>
+             <wsa:Metadata>
+                <wsam:InterfaceName>example:Inventory</wsam:InterfaceName>
+             </wsa:Metadata>
+             <wsa:ReferenceParameters>
+               <example:AccountCode>123456789</example:AccountCode>
+               <example:DiscountId>ABCDEFG</example:DiscountId>
+             </wsa:ReferenceParameters>
+         </wsa:EndpointReference>
+
+      </port>
+   </service>
+</definitions>
