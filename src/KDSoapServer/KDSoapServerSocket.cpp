@@ -243,9 +243,7 @@ void KDSoapServerSocket::handleRequest(const QMap<QByteArray, QByteArray>& httpH
 
     KDSoapServerAuthInterface* serverAuthInterface = qobject_cast<KDSoapServerAuthInterface *>(m_serverObject);
     if (serverAuthInterface) {
-        QByteArray authValue = httpHeaders.value("Authorization");
-        if (authValue.isEmpty())
-            authValue = httpHeaders.value("authorization"); // as sent by Qt-4.5
+        const QByteArray authValue = httpHeaders.value("authorization");
         if (!serverAuthInterface->handleHttpAuth(authValue, path)) {
             // send auth request (Qt supports basic, ntlm and digest)
             const QByteArray unauthorized = "HTTP/1.1 401 Authorization Required\r\nWWW-Authenticate: Basic realm=\"example\"\r\nContent-Length: 0\r\n\r\n";
