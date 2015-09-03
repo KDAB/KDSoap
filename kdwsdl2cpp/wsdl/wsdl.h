@@ -28,7 +28,6 @@
 
 namespace KWSDL {
 
-// cppcheck-suppress class_X_Y
 class KWSDL_EXPORT WSDL
 {
   public:
