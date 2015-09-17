@@ -1105,7 +1105,17 @@ void Parser::importSchema( ParserContext *context, const QString &location )
 
     const QName tagName( node.tagName() );
     if ( tagName.localName() == QLatin1String("schema") ) {
-      parseSchemaTag( context, node );
+        const QUrl oldBaseUrl = context->documentBaseUrl();
+        QString path = schemaLocation.path();
+        path.truncate( path.lastIndexOf('/') );
+        QUrl newBaseUrl = schemaLocation;
+        newBaseUrl.setPath(path);
+        qDebug() << "New document base URL" << newBaseUrl;
+        context->setDocumentBaseUrl( newBaseUrl.toString() );
+
+        parseSchemaTag( context, node );
+
+        context->setDocumentBaseUrl( oldBaseUrl.toString() );
     } else {
       qDebug( "No schema tag found in schema file %s", schemaLocation.toEncoded().constData());
     }
