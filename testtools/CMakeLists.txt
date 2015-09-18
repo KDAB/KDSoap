@@ -10,7 +10,7 @@ set(testtools_srcs httpserver_p.cpp)
 qt4_add_resources(testtools_srcs testtools.qrc)
 
 add_library(testtools STATIC ${testtools_srcs})
-target_link_libraries(testtools ${QT_QTXML_LIBRARY})
+target_link_libraries(testtools ${QT_LIBRARIES})
 if(Qt5_POSITION_INDEPENDENT_CODE)
   set_target_properties(testtools PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
 endif()
