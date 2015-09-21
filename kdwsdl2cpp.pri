@@ -6,9 +6,9 @@ isEmpty(KD_MOD_WSDL):KD_MOD_WSDL = wsdl_
 isEmpty(KD_MOD_SWSDL):KD_MOD_SWSDL = swsdl_
 
 win32* {
-    isEmpty(KDSOAPDIR): KDWSDL2CPP = $$KDSOAP_PATH/bin/kdwsdl2cpp.exe
-    !isEmpty(KDSOAPDIR): KDWSDL2CPP = $$KDSOAPDIR/bin/kdwsdl2cpp.exe
-    !isEmpty(TOP_BUILD_DIR): KDWSDL2CPP = $${TOP_BUILD_DIR}/bin/kdwsdl2cpp.exe
+    isEmpty(KDSOAPDIR): KDWSDL2CPP = $$shell_path($$KDSOAP_PATH/bin/kdwsdl2cpp.exe)
+    !isEmpty(KDSOAPDIR): KDWSDL2CPP = $$shell_path($$KDSOAPDIR/bin/kdwsdl2cpp.exe)
+    !isEmpty(TOP_BUILD_DIR): KDWSDL2CPP = $$shell_path($${TOP_BUILD_DIR}/bin/kdwsdl2cpp.exe)
 } else {
     isEmpty(KDSOAPDIR): KDWSDL2CPP = $$KDSOAP_PATH/bin/kdwsdl2cpp
     !isEmpty(KDSOAPDIR): KDWSDL2CPP = $$KDSOAPDIR/bin/kdwsdl2cpp
