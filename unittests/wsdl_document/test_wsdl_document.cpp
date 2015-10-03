@@ -245,8 +245,12 @@ private Q_SLOTS:
         QVERIFY(errors.count() > 0);
 #ifdef Q_OS_LINUX // Windows seems to get "Unknown error". Bah... And OSX has UnableToVerifyFirstCertificate at position 1.
         QCOMPARE((int)errors.at(0).error(), (int)QSslError::UnableToGetLocalIssuerCertificate);
-        QCOMPARE((int)errors.at(1).error(), (int)QSslError::CertificateUntrusted);
-        QCOMPARE((int)errors.at(2).error(), (int)QSslError::UnableToVerifyFirstCertificate);
+        if (errors.count() > 2) {
+            QCOMPARE((int)errors.at(1).error(), (int)QSslError::CertificateUntrusted);
+            QCOMPARE((int)errors.at(2).error(), (int)QSslError::UnableToVerifyFirstCertificate);
+        } else {
+            QCOMPARE((int)errors.at(1).error(), (int)QSslError::UnableToVerifyFirstCertificate);
+        }
 #endif
 #endif
     }
