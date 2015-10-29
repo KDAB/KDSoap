@@ -63,6 +63,7 @@ add_subdirectory(onvif.org)
 add_subdirectory(onvif_ptz)
 add_subdirectory(encapsecurity)
 add_subdirectory(prefix_wsdl)
+add_subdirectory(vidyo)
 
 # These need internet access
 add_subdirectory(webcalls)

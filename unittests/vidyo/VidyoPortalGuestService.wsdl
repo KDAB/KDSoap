@@ -1,0 +1,1007 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="VidyoPortalGuestService" targetNamespace="http://portal.vidyo.com/guest" xmlns="http://portal.vidyo.com/guest" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:types>
+    <xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://portal.vidyo.com/guest" xmlns="http://portal.vidyo.com/guest">
+
+			<xs:annotation>
+				<xs:documentation xml:lang="en"/>
+			</xs:annotation>
+
+			<xs:element name="OK">
+				<xs:annotation>
+					<xs:documentation>
+						string representation of successful operation - 'ok'
+					</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="OK"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			
+			<xs:element name="ClientType">
+                <xs:annotation>
+                    <xs:documentation>
+                        Type is 'W' for Windows platform.
+                        Type is 'M' for MacOS platform.
+                        Type is 'V' for VidyoRoom HD200 (Windows platform).
+                        Type is 'R' for VidyoRoom HD100/HD50 (Windows platform).
+                        Type is 'L' for Linux platform.
+                        Type is 'S' for SL5 platform.
+                        Type is 'U' for Ubuntu platform.
+                        Type is 'T' for SL5 64bit platform.
+                        Type is 'X' for Ubuntu 64bit platform.
+                        Type is 'P' for VidyoPanorama VP600.
+                        Type is 'N' for VidyoPanorama 600 running Windows 64-bit.
+                        Type is 'O' for VidyoPanorama 600 running Linux.
+                        Type is 'Q' for VidyoRoom running Windows 32-bit.
+                        Type is 'Y' for VidyoRoom running Windows 64-bit.
+                        Type is 'Z' for VidyoRoom running Linux.
+                        Type is 'B' for VidyoRoom SE Windows.
+                        Type is 'C' for VidyoRoom SE Linux.
+                        Type is 'D' for VidyoRoom SE OS X.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="W"/>
+                        <xs:enumeration value="M"/>
+                        <xs:enumeration value="V"/>
+                        <xs:enumeration value="R"/>
+                        <xs:enumeration value="L"/>
+                        <xs:enumeration value="S"/>
+                        <xs:enumeration value="U"/>
+                        <xs:enumeration value="T"/>
+                        <xs:enumeration value="X"/>
+                        <xs:enumeration value="P"/>
+                        <xs:enumeration value="N"/>
+                        <xs:enumeration value="O"/>
+                        <xs:enumeration value="Q"/>
+                        <xs:enumeration value="Y"/>
+                        <xs:enumeration value="Z"/>
+                        <xs:enumeration value="B"/>
+                        <xs:enumeration value="C"/>
+                        <xs:enumeration value="D"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            
+            <xs:simpleType name="PortalFeatureName">
+                <xs:annotation>
+                    <xs:documentation>
+                        List of Portal features.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="xs:string">
+                </xs:restriction>
+            </xs:simpleType>
+
+            <xs:element name="PortalFeature">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="feature" type="PortalFeatureName"/>
+                        <xs:element name="enable" type="xs:boolean"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="ErrorMessage" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>String presentation of fault</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+
+            <xs:element name="GeneralFault">
+				<xs:annotation>
+					<xs:documentation>
+						This means that the exceptions happens in system.
+					</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+                        <xs:element ref="ErrorMessage"/>
+                    </xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+            <xs:element name="EndpointNotBoundFault">
+                <xs:annotation>
+                    <xs:documentation>
+                        Endpoint not bound to the guest requesting the operation.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="ErrorMessage"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+			<xs:element name="InvalidArgumentFault">
+				<xs:annotation>
+					<xs:documentation>
+						This means that the arguments which are passed into services are wrong.
+					</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+                        <xs:element ref="ErrorMessage"/>
+                    </xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="WrongPinFault">
+				<xs:annotation>
+					<xs:documentation>
+						This means that the PIN provided to joinConference is wrong.
+					</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+                        <xs:element ref="ErrorMessage"/>
+                    </xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="ConferenceLockedFault">
+				<xs:annotation>
+					<xs:documentation>
+						This means that the conference provided by EntityID is unable to be join, due to the fact that it is locked.
+					</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+                        <xs:element ref="ErrorMessage"/>
+                    </xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="ResourceNotAvailableFault">
+				<xs:annotation>
+					<xs:documentation>
+						Resources are not available for the requested operation.
+					</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+                        <xs:element ref="ErrorMessage"/>
+                    </xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="AccessRestrictedFault">
+				<xs:annotation>
+					<xs:documentation>
+						Access Restriction to Login through Mobile device
+					</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+                        <xs:element ref="ErrorMessage"/>
+                    </xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+            <xs:element name="AllLinesInUseFault">
+                <xs:annotation>
+                    <xs:documentation>
+                        Resources are not available - All Lines in use.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="ErrorMessage"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="RoomIsFullFault">
+                <xs:annotation>
+                    <xs:documentation>
+                        Resources are not available - Room is full.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="ErrorMessage"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            
+            <xs:element name="EmailAddressNotFoundFault">
+				<xs:annotation>
+					<xs:documentation>
+						Returned when email address is not found.
+					</xs:documentation>
+				</xs:annotation>            
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="ErrorMessage"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            
+            <xs:element name="NotificationEmailNotConfiguredFault">
+				<xs:annotation>
+					<xs:documentation>
+						Returned when the Notification &quot;Email(From)&quot; or &quot;Email(To)&quot; field is not configured on the VidyoPortal.
+					</xs:documentation>
+				</xs:annotation>            
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="ErrorMessage"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="LogInAsGuestRequest">
+				<xs:annotation>
+					<xs:documentation>
+						Login request to the VidyoPortal. Guest identified in guestName parameter.
+						Http Authentication header is not needed for this request
+					</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="roomKey" type="xs:string"/>
+						<xs:element name="guestName" type="xs:string"/>
+                        <xs:element minOccurs="0" name="clientType" type="xs:string"/>
+						<xs:any minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="LogInAsGuestResponse">
+				<xs:annotation>
+					<xs:documentation>
+						Return to client all details for EMCP connection and two flag for room.
+					</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="guestID" type="xs:int"/>
+						<xs:element name="isLocked" type="xs:boolean"/>
+						<xs:element name="hasPin" type="xs:boolean"/>
+						<xs:element minOccurs="0" name="vmaddress" nillable="true" type="xs:string"/>
+						<xs:element minOccurs="0" name="proxyaddress" nillable="true" type="xs:string"/>
+						<xs:element minOccurs="0" name="loctag" nillable="true" type="xs:string"/>
+						<xs:element name="un" type="xs:string"/>
+						<xs:element name="pak" type="xs:string"/>
+						<xs:element name="portal" type="xs:string"/>
+						<xs:element name="portalVersion" type="xs:string"/>
+						<xs:any minOccurs="0"/>
+						<xs:element minOccurs="0" name="pak2" type="xs:string"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+            <xs:simpleType name="EndpointFeatureName">
+                <xs:annotation>
+                    <xs:documentation>
+                        Name of endpoint feature.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="xs:string">
+                </xs:restriction>
+            </xs:simpleType>
+
+            <xs:element name="EndpointFeature">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="feature" type="EndpointFeatureName"/>
+                        <xs:element name="enable" type="xs:boolean"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="LinkEndpointToGuestRequest">
+				<xs:annotation>
+					<xs:documentation>
+						LinkEndpointToGuest request to the VidyoPortal.
+						Http Authentication header is not needed for this request
+					</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="guestID" type="xs:int"/>
+						<xs:element name="EID" type="xs:string"/>
+						<xs:element minOccurs="0" name="vrIP" type="xs:string"/>
+						<xs:element minOccurs="0" name="clientType" type="xs:string"/>
+                        <xs:element minOccurs="0" name="applicationName" type="xs:string"/>
+                        <xs:element minOccurs="0" name="applicationVersion" type="xs:string"/>
+                        <xs:element minOccurs="0" name="applicationOs" type="xs:string"/>
+                        <xs:element minOccurs="0" name="deviceModel" type="xs:string"/>
+                        <xs:element minOccurs="0" name="pak2" type="xs:boolean"/>                        
+						<xs:any minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="LinkEndpointToGuestResponse">
+				<xs:annotation>
+					<xs:documentation>
+						If the users authentication is successfull, the Member entity is returned.
+					</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="OK"/>
+						<xs:any minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+            <xs:element name="SetEndpointDetailsRequest">
+                <xs:annotation>
+                    <xs:documentation>
+                        Request to send a list of endpoint's supported features with flag - enable/disable.
+                        Endpoint Feature Names are:
+                        LectureMode
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="guestID" type="xs:int"/>
+                        <xs:element name="EID" type="xs:string"/>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" ref="EndpointFeature"/>
+                        <xs:element minOccurs="0" name="applicationName" type="xs:string"/>
+                        <xs:element minOccurs="0" name="applicationVersion" type="xs:string"/>
+                        <xs:element minOccurs="0" name="applicationOs" type="xs:string"/>
+                        <xs:element minOccurs="0" name="deviceModel" type="xs:string"/>
+                        <xs:any minOccurs="0"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="SetEndpointDetailsResponse">
+                <xs:annotation>
+                    <xs:documentation>
+                        Result for setting endpoint features.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="OK"/>
+                        <xs:any minOccurs="0"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+			<xs:element name="GuestJoinConferenceRequest">
+				<xs:annotation>
+					<xs:documentation>
+						Request by a guest to join a meeting room identified by hash string.
+					</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="guestID" type="xs:int"/>
+						<xs:element minOccurs="0" name="pin" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="referenceNumber" nillable="true" type="xs:string"/>
+						<xs:any minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="GuestJoinConferenceResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="OK"/>
+						<xs:any minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name="GetPortalVersionRequest">
+				<xs:annotation>
+					<xs:documentation>
+						Portal Version Request
+                    </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="GetPortalVersionResponse">
+				<xs:annotation>
+					<xs:documentation>
+						Portal Version Response
+                    </xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="portalVersion" type="xs:string"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			
+			<!-- ClientVersion -->
+            <xs:element name="ClientVersionRequest">
+                <xs:annotation>
+                    <xs:documentation>
+                        Request for current active tag and URL available on portal.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="ClientType"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="ClientVersionResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="CurrentTag" type="xs:string"/>
+                        <xs:element name="InstallerURI" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            
+            <xs:element name="GetPortalFeaturesRequest">
+                <xs:annotation>
+                    <xs:documentation>
+                        Request to retrieve a list of Portal's features with flag - enable/disable.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="GetPortalFeaturesResponse">
+                <xs:annotation>
+                    <xs:documentation>
+                        Portal Feature Names are:
+                            ScheduledRoom
+                            Guest
+                            IPCoutbound
+                            IPCinbound
+                            ModeratorURL
+                            TlsTunneling
+                            LoginBanner
+                            WelcomeBanner
+                            EndpointPrivateChat
+                            EndpointPublicChat
+                            CDR2_1
+                            EndpointDetails
+                            16TILES
+                            HTMLChangePswd
+                            RouterParticipantInformation
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" ref="PortalFeature"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="RaiseHandRequest">
+                <xs:annotation>
+                    <xs:documentation>
+                        Request to raise hand by endpoint.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="guestID" nillable="false" type="xs:int"/>
+                        <xs:element name="username" nillable="false" type="xs:string"/>
+                        <xs:any minOccurs="0"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="RaiseHandResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="OK"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="UnraiseHandRequest">
+                <xs:annotation>
+                    <xs:documentation>
+                        Request to unraise hand by endpoint.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="guestID" nillable="false" type="xs:int"/>
+                        <xs:element name="username" nillable="false" type="xs:string"/>
+                        <xs:any minOccurs="0"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="UnraiseHandResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="OK"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            
+            <xs:element name="RecoverPasswordRequest">
+                <xs:annotation>
+                    <xs:documentation>
+                        By calling this API with the email address, the portal will send an email to the user(s) with instructions to recover its password.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="emailAddress" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="RecoverPasswordResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="OK"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            
+            <xs:element name="WhatIsMyIPAddressRequest">
+				<xs:annotation>
+					<xs:documentation>
+						This API provides the IP address of the endpoint as seen by VidyoPortal.
+					</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="WhatIsMyIPAddressResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="endpointExternalIPAddress" type="xs:string"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+		</xs:schema>
+  </wsdl:types>
+  <wsdl:message name="AllLinesInUseFault">
+    <wsdl:part name="fault" element="AllLinesInUseFault">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="raiseHandOutput">
+    <wsdl:part name="parameter" element="RaiseHandResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="ClientVersionOutput">
+    <wsdl:part name="parameter" element="ClientVersionResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="whatIsMyIPAddressOutput">
+    <wsdl:part name="parameter" element="WhatIsMyIPAddressResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="recoverPasswordOutput">
+    <wsdl:part name="parameter" element="RecoverPasswordResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="GeneralFault">
+    <wsdl:part name="fault" element="GeneralFault">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="whatIsMyIPAddressInput">
+    <wsdl:part name="parameter" element="WhatIsMyIPAddressRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="RoomIsFullFault">
+    <wsdl:part name="fault" element="RoomIsFullFault">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="guestJoinConferenceOutput">
+    <wsdl:part name="parameter" element="GuestJoinConferenceResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="InvalidArgumentFault">
+    <wsdl:part name="fault" element="InvalidArgumentFault">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="setEndpointDetailsOutput">
+    <wsdl:part name="parameter" element="SetEndpointDetailsResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="guestJoinConferenceInput">
+    <wsdl:part name="parameter" element="GuestJoinConferenceRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WrongPinFault">
+    <wsdl:part name="fault" element="WrongPinFault">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="logInAsGuestInput">
+    <wsdl:part name="parameter" element="LogInAsGuestRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="portalVersionOutput">
+    <wsdl:part name="parameter" element="GetPortalVersionResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="portalVersionInput">
+    <wsdl:part name="parameter" element="GetPortalVersionRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="EmailAddressNotFoundFault">
+    <wsdl:part name="fault" element="EmailAddressNotFoundFault">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="linkEndpointToGuestInput">
+    <wsdl:part name="parameter" element="LinkEndpointToGuestRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="ConferenceLockedFault">
+    <wsdl:part name="fault" element="ConferenceLockedFault">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="ClientVersionInput">
+    <wsdl:part name="parameter" element="ClientVersionRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="logInAsGuestOutput">
+    <wsdl:part name="parameter" element="LogInAsGuestResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="unraiseHandInput">
+    <wsdl:part name="parameter" element="UnraiseHandRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="linkEndpointToGuestOutput">
+    <wsdl:part name="parameter" element="LinkEndpointToGuestResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getPortalFeaturesInput">
+    <wsdl:part name="parameter" element="GetPortalFeaturesRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="raiseHandInput">
+    <wsdl:part name="parameter" element="RaiseHandRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="AccessRestrictedFault">
+    <wsdl:part name="fault" element="AccessRestrictedFault">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="NotificationEmailNotConfiguredFault">
+    <wsdl:part name="fault" element="NotificationEmailNotConfiguredFault">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="recoverPasswordInput">
+    <wsdl:part name="parameter" element="RecoverPasswordRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="unraiseHandOutput">
+    <wsdl:part name="parameter" element="UnraiseHandResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="setEndpointDetailsInput">
+    <wsdl:part name="parameter" element="SetEndpointDetailsRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="ResourceNotAvailableFault">
+    <wsdl:part name="fault" element="ResourceNotAvailableFault">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getPortalFeaturesOutput">
+    <wsdl:part name="parameter" element="GetPortalFeaturesResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="EndpointNotBoundFault">
+    <wsdl:part name="fault" element="EndpointNotBoundFault">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="VidyoPortalGuestServicePortType">
+    <wsdl:operation name="logInAsGuest">
+      <wsdl:input message="logInAsGuestInput">
+    </wsdl:input>
+      <wsdl:output message="logInAsGuestOutput">
+    </wsdl:output>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="ResourceNotAvailableFault" message="ResourceNotAvailableFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+      <wsdl:fault name="RoomIsFullFault" message="RoomIsFullFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="linkEndpointToGuest">
+      <wsdl:input message="linkEndpointToGuestInput">
+    </wsdl:input>
+      <wsdl:output message="linkEndpointToGuestOutput">
+    </wsdl:output>
+      <wsdl:fault name="AccessRestrictedFault" message="AccessRestrictedFault">
+    </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="setEndpointDetails">
+      <wsdl:input message="setEndpointDetailsInput">
+    </wsdl:input>
+      <wsdl:output message="setEndpointDetailsOutput">
+    </wsdl:output>
+      <wsdl:fault name="EndpointNotBoundFault" message="EndpointNotBoundFault">
+    </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="guestJoinConference">
+      <wsdl:input message="guestJoinConferenceInput">
+    </wsdl:input>
+      <wsdl:output message="guestJoinConferenceOutput">
+    </wsdl:output>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="ResourceNotAvailableFault" message="ResourceNotAvailableFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+      <wsdl:fault name="RoomIsFullFault" message="RoomIsFullFault">
+    </wsdl:fault>
+      <wsdl:fault name="ConferenceLockedFault" message="ConferenceLockedFault">
+    </wsdl:fault>
+      <wsdl:fault name="WrongPinFault" message="WrongPinFault">
+    </wsdl:fault>
+      <wsdl:fault name="AllLinesInUseFault" message="AllLinesInUseFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getPortalVersion">
+      <wsdl:input message="portalVersionInput">
+    </wsdl:input>
+      <wsdl:output message="portalVersionOutput">
+    </wsdl:output>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getClientVersion">
+<wsdl:documentation>Get the current active client version</wsdl:documentation>
+      <wsdl:input message="ClientVersionInput">
+    </wsdl:input>
+      <wsdl:output message="ClientVersionOutput">
+    </wsdl:output>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getPortalFeatures">
+      <wsdl:input message="getPortalFeaturesInput">
+    </wsdl:input>
+      <wsdl:output message="getPortalFeaturesOutput">
+    </wsdl:output>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="raiseHand">
+      <wsdl:input message="raiseHandInput">
+    </wsdl:input>
+      <wsdl:output message="raiseHandOutput">
+    </wsdl:output>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="unraiseHand">
+      <wsdl:input message="unraiseHandInput">
+    </wsdl:input>
+      <wsdl:output message="unraiseHandOutput">
+    </wsdl:output>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="recoverPassword">
+      <wsdl:input message="recoverPasswordInput">
+    </wsdl:input>
+      <wsdl:output message="recoverPasswordOutput">
+    </wsdl:output>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+      <wsdl:fault name="EmailAddressNotFoundFault" message="EmailAddressNotFoundFault">
+    </wsdl:fault>
+      <wsdl:fault name="NotificationEmailNotConfiguredFault" message="NotificationEmailNotConfiguredFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="whatIsMyIPAddress">
+      <wsdl:input message="whatIsMyIPAddressInput">
+    </wsdl:input>
+      <wsdl:output message="whatIsMyIPAddressOutput">
+    </wsdl:output>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="VidyoPortalGuestServiceBinding" type="VidyoPortalGuestServicePortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="logInAsGuest">
+      <soap:operation soapAction="logInAsGuest"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="ResourceNotAvailableFault">
+        <soap:fault name="ResourceNotAvailableFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="RoomIsFullFault">
+        <soap:fault name="RoomIsFullFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="linkEndpointToGuest">
+      <soap:operation soapAction="linkEndpointToGuest"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="AccessRestrictedFault">
+        <soap:fault name="AccessRestrictedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="setEndpointDetails">
+      <soap:operation soapAction="setEndpointDetails"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="EndpointNotBoundFault">
+        <soap:fault name="EndpointNotBoundFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="guestJoinConference">
+      <soap:operation soapAction="guestJoinConference"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="ResourceNotAvailableFault">
+        <soap:fault name="ResourceNotAvailableFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="RoomIsFullFault">
+        <soap:fault name="RoomIsFullFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="ConferenceLockedFault">
+        <soap:fault name="ConferenceLockedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="WrongPinFault">
+        <soap:fault name="WrongPinFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="AllLinesInUseFault">
+        <soap:fault name="AllLinesInUseFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getPortalVersion">
+      <soap:operation soapAction="getPortalVersion"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getClientVersion">
+      <soap:operation soapAction="getClientVersion"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getPortalFeatures">
+      <soap:operation soapAction="getPortalFeatures"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="raiseHand">
+      <soap:operation soapAction="raiseHand"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="unraiseHand">
+      <soap:operation soapAction="unraiseHand"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="recoverPassword">
+      <soap:operation soapAction="recoverPassword"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="EmailAddressNotFoundFault">
+        <soap:fault name="EmailAddressNotFoundFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="NotificationEmailNotConfiguredFault">
+        <soap:fault name="NotificationEmailNotConfiguredFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="whatIsMyIPAddress">
+      <soap:operation soapAction="whatIsMyIPAddress"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="VidyoPortalGuestService">
+    <wsdl:port name="VidyoPortalGuestServicePort" binding="VidyoPortalGuestServiceBinding">
+      <soap:address location="http://medisprout-staging.mivid.net/services/VidyoPortalGuestService/"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

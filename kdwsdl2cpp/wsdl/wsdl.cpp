@@ -115,15 +115,15 @@ Message WSDL::findMessage( const QName &messageName ) const
 XSD::Element WSDL::findElement( const QName &elementName ) const
 {
     //qDebug() << "findElement" << elementName.nameSpace() << elementName.localName();
-  const XSD::Types types = mDefinitions.type().types();
-  const XSD::Element::List elements = types.elements();
-  for ( int i = 0; i < elements.count(); ++i ) {
-      //qDebug() << "    " << i << elements[ i ].nameSpace() << elements[i].name();
-    if ( elements[ i ].nameSpace() == elementName.nameSpace() && elements[ i ].name() == elementName.localName() )
-      return elements[ i ];
-  }
+    const XSD::Types types = mDefinitions.type().types();
+    const XSD::Element::List elements = types.elements();
+    for ( int i = 0; i < elements.count(); ++i ) {
+        //qDebug() << "    " << i << elements[ i ].nameSpace() << elements[i].name();
+        if ( elements[ i ].nameSpace() == elementName.nameSpace() && elements[ i ].name() == elementName.localName() )
+            return elements[ i ];
+    }
 
-  return XSD::Element();
+    return XSD::Element();
 }
 
 XSD::ComplexType WSDL::findComplexType( const QName &typeName ) const

@@ -33,6 +33,7 @@ SUBDIRS = \
   onvif_ptz \
   encapsecurity \
   prefix_wsdl \
+  vidyo \
 
 # These need internet access
 SUBDIRS += webcalls webcalls_wsdl

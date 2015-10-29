@@ -77,8 +77,7 @@ void Part::loadXML( ParserContext *context, const QDomElement &element )
     mType.setNameSpace( context->namespaceManager()->uri( mType.prefix() ) );
 
   mElement = element.attribute( QLatin1String("element") );
-  if ( !mElement.prefix().isEmpty() )
-    mElement.setNameSpace( context->namespaceManager()->uri( mElement.prefix() ) );
+  mElement.setNameSpace( context->namespaceManager()->uri( mElement.prefix() ) );
 }
 
 void Part::saveXML( ParserContext *context, QDomDocument &document, QDomElement &parent ) const
