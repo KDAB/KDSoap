@@ -21,6 +21,7 @@ set(SOURCES
   KDSoapServerThread.cpp
   KDSoapServerAuthInterface.cpp
   KDSoapServerRawXMLInterface.cpp
+  KDSoapServerCustomVerbRequestInterface.cpp
   KDSoapSocketList.cpp
   KDSoapThreadPool.cpp
 )
@@ -42,6 +43,7 @@ if(KDSoap_IS_ROOT_PROJECT)
       KDSoapServerObjectInterface
       KDSoapServerAuthInterface
       KDSoapServerRawXMLInterface
+      KDSoapServerCustomVerbRequestInterface
     COMMON_HEADER
       KDSoapServer
   )
@@ -54,6 +56,7 @@ if(KDSoap_IS_ROOT_PROJECT)
     KDSoapServer.h
     KDSoapServerAuthInterface.h
     KDSoapServerRawXMLInterface.h
+    KDSoapServerCustomVerbRequestInterface.h
     KDSoapDelayedResponseHandle.h
     KDSoapServerObjectInterface.h
     KDSoapServerGlobal.h

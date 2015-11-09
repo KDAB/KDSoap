@@ -25,6 +25,7 @@
 #include "KDSoapServerObjectInterface.h"
 #include "KDSoapServerAuthInterface.h"
 #include "KDSoapServerRawXMLInterface.h"
+#include "KDSoapServerCustomVerbRequestInterface.h"
 #include "KDSoapServer.h"
 #include <KDSoapClient/KDSoapMessage.h>
 #include <KDSoapClient/KDSoapNamespaceManager.h>
@@ -262,15 +263,6 @@ void KDSoapServerSocket::slotReadyRead()
 void KDSoapServerSocket::handleRequest(const QMap<QByteArray, QByteArray>& httpHeaders, const QByteArray &receivedData)
 {
     const QByteArray requestType = httpHeaders.value("_requestType");
-    if (requestType != "GET" && requestType != "POST") {
-        qWarning() << "Unknown HTTP request:" << requestType;
-        //handleError(replyMsg, "Client.Data", QString::fromLatin1("Invalid request type '%1', should be GET or POST").arg(QString::fromLatin1(requestType.constData())));
-        //sendReply(0, replyMsg);
-        const QByteArray methodNotAllowed = "HTTP/1.1 405 Method Not Allowed\r\nAllow: GET POST\r\nContent-Length: 0\r\n\r\n";
-        write(methodNotAllowed);
-        return;
-    }
-
     const QString path = QString::fromLatin1(httpHeaders.value("_path").constData());
 
     KDSoapServerAuthInterface* serverAuthInterface = qobject_cast<KDSoapServerAuthInterface *>(m_serverObject);
@@ -280,6 +272,22 @@ void KDSoapServerSocket::handleRequest(const QMap<QByteArray, QByteArray>& httpH
             // send auth request (Qt supports basic, ntlm and digest)
             const QByteArray unauthorized = "HTTP/1.1 401 Authorization Required\r\nWWW-Authenticate: Basic realm=\"example\"\r\nContent-Length: 0\r\n\r\n";
             write(unauthorized);
+            return;
+        }
+    }
+
+    if (requestType != "GET" && requestType != "POST") {
+        KDSoapServerCustomVerbRequestInterface* serverCustomRequest = qobject_cast<KDSoapServerCustomVerbRequestInterface *>(m_serverObject);
+        QByteArray customVerbRequestAnswer;
+        if (serverCustomRequest && serverCustomRequest->processCustomVerbRequest(requestType, receivedData, httpHeaders, customVerbRequestAnswer)) {
+            write(customVerbRequestAnswer);
+            return;
+        } else {
+            qWarning() << "Unknown HTTP request:" << requestType;
+            //handleError(replyMsg, "Client.Data", QString::fromLatin1("Invalid request type '%1', should be GET or POST").arg(QString::fromLatin1(requestType.constData())));
+            //sendReply(0, replyMsg);
+            const QByteArray methodNotAllowed = "HTTP/1.1 405 Method Not Allowed\r\nAllow: GET POST\r\nContent-Length: 0\r\n\r\n";
+            write(methodNotAllowed);
             return;
         }
     }

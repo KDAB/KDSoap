@@ -32,6 +32,7 @@
 #include "KDSoapServerAuthInterface.h"
 #include "KDSoapServerObjectInterface.h"
 #include "KDSoapServerRawXMLInterface.h"
+#include "KDSoapServerCustomVerbRequestInterface.h"
 #include "httpserver_p.h" // KDSoapUnitTestHelpers
 #include <QtTest/QtTest>
 #include <QDebug>
@@ -69,12 +70,13 @@ static QByteArray expectedCountryResponse(const QByteArray& employeeName = "Davi
     return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><soap:Body><n1:getEmployeeCountry xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\"><employeeCountry>" + employeeName + " France</employeeCountry>getEmployeeCountryResponse</n1:getEmployeeCountry></soap:Body></soap:Envelope>\n";
 }
 
-class CountryServerObject : public QObject, public KDSoapServerObjectInterface, public KDSoapServerAuthInterface, public KDSoapServerRawXMLInterface
+class CountryServerObject : public QObject, public KDSoapServerObjectInterface, public KDSoapServerAuthInterface, public KDSoapServerRawXMLInterface, public KDSoapServerCustomVerbRequestInterface
 {
     Q_OBJECT
     Q_INTERFACES(KDSoapServerObjectInterface)
     Q_INTERFACES(KDSoapServerAuthInterface)
     Q_INTERFACES(KDSoapServerRawXMLInterface)
+    Q_INTERFACES(KDSoapServerCustomVerbRequestInterface)
 public:
     CountryServerObject(bool auth, bool rawXML)
         : QObject(), KDSoapServerObjectInterface(),
@@ -144,6 +146,20 @@ public:
             writeHTTP("HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\n\r\n");
         }
         m_assembledXML.clear();
+    }
+    virtual bool processCustomVerbRequest(const QByteArray &requestType, const QByteArray &requestData, const QMap<QByteArray,
+                                          QByteArray> &httpHeaders, QByteArray &customAnswer)
+    {
+        if (requestType == "PULL") {
+            customAnswer  = "HTTP/1.1 200 OK\r\n";
+            customAnswer += "Content-Length: 11\r\n";
+            customAnswer += "\r\n";
+            customAnswer += "Hello world";
+
+            return true;
+        }
+
+        return false;
     }
 
 public: // SOAP-accessible methods
@@ -949,6 +965,54 @@ private Q_SLOTS:
             QCOMPARE((int)reply->error(), (int)QNetworkReply::AuthenticationRequiredError);
         }
         QFile::remove(fileName);
+    }
+
+    void testCustomVerbRequestAuth_data()
+    {
+        QTest::addColumn<bool>("requireAuth"); // server
+        QTest::addColumn<bool>("provideCorrectAuth"); // client
+        QTest::addColumn<QByteArray>("customHttpVerb");
+        QTest::addColumn<int>("expectedError");
+        QTest::addColumn<QByteArray>("expectedReply");
+
+        QTest::newRow("noauth_known_verb") << false << false << QByteArray("PULL") << (int)QNetworkReply::NoError << QByteArray("Hello world");
+        QTest::newRow("failing_auth_known_verb") << true << false << QByteArray("PULL") << (int)QNetworkReply::AuthenticationRequiredError << QByteArray();
+        QTest::newRow("correct_auth_known_verb") << true << true << QByteArray("PULL") << (int)QNetworkReply::NoError << QByteArray("Hello world");
+        QTest::newRow("noauth_unknown_verb") << false << false << QByteArray("UNKNOWN") << (int)QNetworkReply::ContentOperationNotPermittedError << QByteArray();
+        QTest::newRow("failing_auth_unknown_verb") << true << false << QByteArray("UNKNOWN") << (int)QNetworkReply::AuthenticationRequiredError << QByteArray();
+        QTest::newRow("correct_auth_unknown_verb") << true << true << QByteArray("UNKNOWN") << (int)QNetworkReply::ContentOperationNotPermittedError << QByteArray();
+    }
+
+    void testCustomVerbRequestAuth()
+    {
+        QFETCH(bool, requireAuth);
+        QFETCH(bool, provideCorrectAuth);
+        QFETCH(QByteArray, customHttpVerb);
+        QFETCH(int, expectedError);
+        QFETCH(QByteArray, expectedReply);
+
+        CountryServerThread serverThread;
+        CountryServer* server = serverThread.startThread();
+
+        server->setRequireAuth(requireAuth);
+
+        QString url = server->endPoint();
+        url.chop(1) /*trailing slash*/;
+
+        m_auth.setUser(QLatin1String("kdab"));
+        m_auth.setPassword(QLatin1String(provideCorrectAuth ? "pass42" : "invalid"));
+        QNetworkAccessManager manager;
+        connect(&manager, SIGNAL(authenticationRequired(QNetworkReply*,QAuthenticator*)),
+                this, SLOT(slotAuthRequired(QNetworkReply*,QAuthenticator*)));
+        QNetworkRequest request(url);
+        QNetworkReply* reply;
+        reply = manager.sendCustomRequest(request, customHttpVerb);
+        QEventLoop loop;
+        connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+        loop.exec();
+
+        QCOMPARE((int)reply->error(), expectedError);
+        QCOMPARE(reply->readAll(), expectedReply);
     }
 
     // Using QNetworkAccessManager directly to send the request
