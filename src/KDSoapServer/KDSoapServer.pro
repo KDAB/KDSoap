@@ -19,9 +19,8 @@ INSTALLHEADERS = KDSoapServer.h \
                  KDSoapServerRawXMLInterface.h \
                  KDSoapServerObjectInterface.h \
                  KDSoapServerGlobal.h \
-                 KDSoapServerAuthInterface.h \
-                 KDSoapServerObjectInterface.h \
-                 KDSoapDelayedResponseHandle.h
+                 KDSoapDelayedResponseHandle.h \
+                 KDSoapServerCustomVerbRequestInterface.h
 
 HEADERS = $$INSTALLHEADERS \
     KDSoapThreadPool.h \
@@ -37,7 +36,8 @@ SOURCES = KDSoapServer.cpp \
     KDSoapServerAuthInterface.cpp \
     KDSoapServerRawXMLInterface.cpp \
     KDSoapServerObjectInterface.cpp \
-    KDSoapDelayedResponseHandle.cpp
+    KDSoapDelayedResponseHandle.cpp \
+    KDSoapServerCustomVerbRequestInterface.cpp
 
 DEFINES += KDSOAP_BUILD_KDSOAPSERVER_LIB
 

@@ -25,6 +25,7 @@
 
 #include "KDSoapServerGlobal.h"
 #include <QtCore/QObject>
+#include <QtCore/QMap>
 class KDSoapAuthentication;
 class KDSoapServerSocket;
 

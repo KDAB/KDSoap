@@ -147,9 +147,13 @@ public:
         }
         m_assembledXML.clear();
     }
-    virtual bool processCustomVerbRequest(const QByteArray &requestType, const QByteArray &requestData, const QMap<QByteArray,
-                                          QByteArray> &httpHeaders, QByteArray &customAnswer)
+
+    // KDSoapServerCustomVerbRequestInterface
+    virtual bool processCustomVerbRequest(const QByteArray &requestType, const QByteArray &requestData,
+                                          const QMap<QByteArray, QByteArray> &httpHeaders, QByteArray &customAnswer)
     {
+        Q_UNUSED(requestData);
+        Q_UNUSED(httpHeaders);
         if (requestType == "PULL") {
             customAnswer  = "HTTP/1.1 200 OK\r\n";
             customAnswer += "Content-Length: 11\r\n";
