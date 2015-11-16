@@ -125,7 +125,8 @@ SoapBinding::Operation::~Operation()
 
 void SoapBinding::Operation::loadXML( ParserContext *context, const QDomElement &element )
 {
-  mSoapAction = element.attribute( QLatin1String("soapAction") );
+  // read soapAction, discarding leading/trailing space (https://github.com/KDAB/KDSoap/issues/71)
+  mSoapAction = element.attribute( QLatin1String("soapAction") ).trimmed();
 
   //qDebug() << "style=" << element.attribute("style");
 
