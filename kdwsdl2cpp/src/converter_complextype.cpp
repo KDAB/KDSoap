@@ -144,7 +144,9 @@ void Converter::convertComplexType( const XSD::ComplexType *type )
                     arrayTypeName = pointerStorageType( arrayTypeName );
                 //qDebug() << "array of" << attribute.arrayType() << "->" << arrayTypeName;
                 typeName = listTypeFor(arrayTypeName, newClass);
-                newClass.addInclude(QString(), arrayTypeName); // add forward declaration
+                if (!mTypeMap.isBasicType(type->arrayType())) {
+                    newClass.addInclude(QString(), arrayTypeName); // add forward declaration
+                }
                 newClass.addHeaderIncludes( QStringList() << QLatin1String("QtCore/QList") );
                 inputTypeName = QLatin1String("const ") + typeName + QLatin1Char('&');
                 isList = true;

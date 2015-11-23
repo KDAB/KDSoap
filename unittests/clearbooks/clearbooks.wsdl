@@ -1,0 +1,1109 @@
+<?xml version="1.0"?>
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:tns="https://secure.clearbooks.co.uk/api/soap/"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:soap-enc="http://schemas.xmlsoap.org/soap/encoding/"
+	targetNamespace="https://secure.clearbooks.co.uk/api/soap/">
+<portType name="InvoicesPort">
+	<operation name="listCompanies">
+		<input message="tns:listCompaniesRequest" />
+		<output message="tns:listCompaniesResponse" />
+	</operation>
+	<operation name="createEntity">
+		<input message="tns:createEntityRequest" />
+		<output message="tns:createEntityResponse" />
+	</operation>
+	<operation name="updateEntity">
+		<input message="tns:updateEntityRequest" />
+		<output message="tns:updateEntityResponse" />
+	</operation>
+	<operation name="listEntities">
+		<input message="tns:listEntitiesRequest" />
+		<output message="tns:listEntitiesResponse" />
+	</operation>
+	<operation name="listInvoices">
+		<input message="tns:listInvoicesRequest" />
+		<output message="tns:listInvoicesResponse" />
+	</operation>
+	<operation name="deleteEntity">
+		<input message="tns:deleteEntityRequest" />
+		<output message="tns:deleteEntityResponse" />
+	</operation>
+	<operation name="createInvoice">
+		<input message="tns:createInvoiceRequest" />
+		<output message="tns:createInvoiceResponse" />
+	</operation>
+	<operation name="createInvoices">
+		<input message="tns:createInvoicesRequest" />
+		<output message="tns:createInvoicesResponse" />
+	</operation>
+	<operation name="createPayment">
+		<input message="tns:createPaymentRequest" />
+		<output message="tns:createPaymentResponse" />
+	</operation>
+	<operation name="createPayments">
+		<input message="tns:createPaymentsRequest" />
+		<output message="tns:createPaymentsResponse" />
+	</operation>
+     <operation name="voidPayment">
+          <input message="tns:voidPaymentRequest" />
+          <output message="tns:voidPaymentResponse" />
+     </operation>
+     <operation name="allocatePayment">
+          <input message="tns:allocatePaymentRequest" />
+          <output message="tns:allocatePaymentResponse" />
+     </operation>
+     <operation name="createJournal">
+          <input message="tns:createJournalRequest" />
+          <output message="tns:createJournalResponse" />
+     </operation>
+     <operation name="deleteJournal">
+          <input message="tns:deleteJournalRequest" />
+          <output message="tns:deleteJournalResponse" />
+     </operation>
+	<operation name="createProject">
+		<input message="tns:createProjectRequest" />
+		<output message="tns:createProjectResponse" />
+	</operation>
+     <operation name="updateProject">
+          <input message="tns:updateProjectRequest" />
+          <output message="tns:updateProjectResponse" />
+     </operation>
+     <operation name="listProjects">
+          <input message="tns:listProjectsRequest" />
+          <output message="tns:listProjectsResponse" />
+     </operation>
+	<operation name="voidInvoice">
+		<input message="tns:voidInvoiceRequest" />
+		<output message="tns:voidInvoiceResponse" />
+	</operation>
+	<operation name="writeOff">
+		<input message="tns:writeOffRequest" />
+		<output message="tns:writeOffResponse" />
+	</operation>
+	<operation name="listAccountCodes">
+		<input message="tns:listAccountCodesRequest" />
+		<output message="tns:listAccountCodesResponse" />
+	</operation>
+	<operation name="listAccountCodeHeadings">
+		<input message="tns:listAccountCodeHeadingsRequest" />
+		<output message="tns:listAccountCodeHeadingsResponse" />
+	</operation>
+	<operation name="createAccountCode">
+		<input message="tns:createAccountCodeRequest" />
+		<output message="tns:createAccountCodeResponse" />
+	</operation>
+    <operation name="createBankAccount">
+        <input message="tns:createBankAccountRequest" />
+        <output message="tns:createBankAccountResponse" />
+    </operation>
+ 	<operation name="updateAccountCode">
+		<input message="tns:updateAccountCodeRequest" />
+		<output message="tns:updateAccountCodeResponse" />
+	</operation>
+	<operation name="getInvoiceIdFromInvoiceNumber">
+		<input message="tns:getInvoiceIdFromInvoiceNumberRequest" />
+		<output message="tns:getInvoiceIdFromInvoiceNumberResponse" />
+	</operation>
+	<operation name="getEntityIdFromExternalId">
+		<input message="tns:getEntityIdFromExternalIdRequest" />
+		<output message="tns:getEntityIdFromExternalIdResponse" />
+	</operation>
+    <operation name="getEntityOutstandingBalance">
+        <input message="tns:getEntityOutstandingBalanceRequest" />
+        <output message="tns:getEntityOutstandingBalanceResponse" />
+    </operation>
+	<operation name="getPaymentIdFromExternalId">
+		<input message="tns:getPaymentIdFromExternalIdRequest" />
+		<output message="tns:getPaymentIdFromExternalIdResponse" />
+	</operation>
+	<operation name="listThemes">
+		<input message="tns:listThemesRequest" />
+		<output message="tns:listThemesResponse" />
+	</operation>
+	<operation name="listBankAccounts">
+		<input message="tns:listBankAccountsRequest" />
+		<output message="tns:listBankAccountsResponse" />
+	</operation>
+	<operation name="listOutstandingBalances">
+		<input message="tns:listOutstandingBalancesRequest" />
+		<output message="tns:listOutstandingBalancesResponse" />
+	</operation>
+    <operation name="listCurrencies">
+        <input message="tns:listCurrenciesRequest" />
+        <output message="tns:listCurrenciesResponse" />
+    </operation>
+</portType>
+<binding name="InvoicesBinding" type="tns:InvoicesPort">
+	<soap:binding style="rpc"
+		transport="http://schemas.xmlsoap.org/soap/http" />
+	<operation name="createEntity">
+		<soap:operation
+			soapAction="https://secure.clearbooks.co.uk/api/soap/#createEntity" />
+		<input>
+			<soap:header use="literal"
+				message="tns:header" part="authenticationHeader" />
+			<soap:body use="literal" />
+		</input>
+		<output>
+			<soap:body use="literal" />
+		</output>
+	</operation>
+	<operation name="updateEntity">
+		<soap:operation
+			soapAction="https://secure.clearbooks.co.uk/api/soap/#updateEntity" />
+		<input>
+			<soap:header use="literal"
+				message="tns:header" part="authenticationHeader" />
+			<soap:body use="literal" />
+		</input>
+		<output>
+			<soap:body use="literal" />
+		</output>
+	</operation>
+	<operation name="listCompanies">
+		<soap:operation
+			soapAction="https://secure.clearbooks.co.uk/api/soap/#listCompanies" />
+		<input>
+			<soap:header use="literal"
+				message="tns:header" part="authenticationHeader" />
+			<soap:body use="literal" />
+		</input>
+		<output>
+			<soap:body use="literal" />
+		</output>
+	</operation>
+	<operation name="listEntities">
+		<soap:operation
+			soapAction="https://secure.clearbooks.co.uk/api/soap/#listEntities" />
+		<input>
+			<soap:header use="literal"
+				message="tns:header" part="authenticationHeader" />
+			<soap:body use="literal" />
+		</input>
+		<output>
+			<soap:body use="literal" />
+		</output>
+	</operation>
+	<operation name="listInvoices">
+		<soap:operation
+			soapAction="https://secure.clearbooks.co.uk/api/soap/#listInvoices" />
+		<input>
+			<soap:header use="literal"
+				message="tns:header" part="authenticationHeader" />
+			<soap:body use="literal" />
+		</input>
+		<output>
+			<soap:body use="literal" />
+		</output>
+	</operation>
+	<operation name="deleteEntity">
+		<soap:operation
+			soapAction="https://secure.clearbooks.co.uk/api/soap/#deleteEntity" />
+		<input>
+			<soap:header use="literal"
+				message="tns:header" part="authenticationHeader" />
+			<soap:body use="literal" />
+		</input>
+		<output>
+			<soap:body use="literal" />
+		</output>
+	</operation>
+	<operation name="createInvoice">
+		<soap:operation
+			soapAction="https://secure.clearbooks.co.uk/api/soap/#createInvoice" />
+		<input>
+			<soap:header use="literal"
+				message="tns:header" part="authenticationHeader" />
+			<soap:body use="literal" />
+		</input>
+		<output>
+			<soap:body use="literal" />
+		</output>
+	</operation>
+	<operation name="createInvoices">
+		<soap:operation
+			soapAction="https://secure.clearbooks.co.uk/api/soap/#createInvoices" />
+		<input>
+			<soap:header use="literal"
+				message="tns:header" part="authenticationHeader" />
+			<soap:body use="literal" />
+		</input>
+		<output>
+			<soap:body use="literal" />
+		</output>
+	</operation>
+	<operation name="createPayment">
+		<soap:operation
+			soapAction="https://secure.clearbooks.co.uk/api/soap/#createPayment" />
+		<input>
+			<soap:header use="literal"
+				message="tns:header" part="authenticationHeader" />
+			<soap:body use="literal" />
+		</input>
+		<output>
+			<soap:body use="literal" />
+		</output>
+	</operation>
+	<operation name="createPayments">
+		<soap:operation
+			soapAction="https://secure.clearbooks.co.uk/api/soap/#createPayments" />
+		<input>
+			<soap:header use="literal"
+				message="tns:header" part="authenticationHeader" />
+			<soap:body use="literal" />
+		</input>
+		<output>
+			<soap:body use="literal" />
+		</output>
+	</operation>
+     <operation name="voidPayment">
+          <soap:operation
+               soapAction="https://secure.clearbooks.co.uk/api/soap/#voidPayment" />
+          <input>
+               <soap:header use="literal"
+                    message="tns:header" part="authenticationHeader" />
+               <soap:body use="literal" />
+          </input>
+          <output>
+               <soap:body use="literal" />
+          </output>
+     </operation>
+     <operation name="allocatePayment">
+          <soap:operation
+               soapAction="https://secure.clearbooks.co.uk/api/soap/#allocatePayment" />
+          <input>
+               <soap:header use="literal"
+                    message="tns:header" part="authenticationHeader" />
+               <soap:body use="literal" />
+          </input>
+          <output>
+               <soap:body use="literal" />
+          </output>
+     </operation>
+     <operation name="createJournal">
+          <soap:operation
+               soapAction="https://secure.clearbooks.co.uk/api/soap/#createJournal" />
+          <input>
+               <soap:header use="literal"
+                    message="tns:header" part="authenticationHeader" />
+               <soap:body use="literal" />
+          </input>
+          <output>
+               <soap:body use="literal" />
+          </output>
+     </operation>
+     <operation name="deleteJournal">
+          <soap:operation
+               soapAction="https://secure.clearbooks.co.uk/api/soap/#deleteJournal" />
+          <input>
+               <soap:header use="literal"
+                    message="tns:header" part="authenticationHeader" />
+               <soap:body use="literal" />
+          </input>
+          <output>
+               <soap:body use="literal" />
+          </output>
+     </operation>
+	<operation name="createProject">
+		<soap:operation
+			soapAction="https://secure.clearbooks.co.uk/api/soap/#createProject" />
+		<input>
+			<soap:header use="literal"
+				message="tns:header" part="authenticationHeader" />
+			<soap:body use="literal" />
+		</input>
+		<output>
+			<soap:body use="literal" />
+		</output>
+	</operation>
+     <operation name="updateProject">
+          <soap:operation
+               soapAction="https://secure.clearbooks.co.uk/api/soap/#updateProject" />
+          <input>
+               <soap:header use="literal"
+                    message="tns:header" part="authenticationHeader" />
+               <soap:body use="literal" />
+          </input>
+          <output>
+               <soap:body use="literal" />
+          </output>
+     </operation>
+     <operation name="listProjects">
+          <soap:operation
+               soapAction="https://secure.clearbooks.co.uk/api/soap/#listProjects" />
+          <input>
+               <soap:header use="literal"
+                    message="tns:header" part="authenticationHeader" />
+               <soap:body use="literal" />
+          </input>
+          <output>
+               <soap:body use="literal" />
+          </output>
+     </operation>
+	<operation name="voidInvoice">
+		<soap:operation
+			soapAction="https://secure.clearbooks.co.uk/api/soap/#voidInvoice" />
+		<input>
+			<soap:header use="literal"
+				message="tns:header" part="authenticationHeader" />
+			<soap:body use="literal" />
+		</input>
+		<output>
+			<soap:body use="literal" />
+		</output>
+	</operation>
+	<operation name="writeOff">
+		<soap:operation
+			soapAction="https://secure.clearbooks.co.uk/api/soap/#writeOff" />
+		<input>
+			<soap:header use="literal"
+				message="tns:header" part="authenticationHeader" />
+			<soap:body use="literal" />
+		</input>
+		<output>
+			<soap:body use="literal" />
+		</output>
+	</operation>
+	<operation name="createAccountCode">
+		<soap:operation
+			soapAction="https://secure.clearbooks.co.uk/api/soap/#createAccountCode" />
+		<input>
+			<soap:header use="literal"
+				message="tns:header" part="authenticationHeader" />
+			<soap:body use="literal" />
+		</input>
+		<output>
+			<soap:body use="literal" />
+		</output>
+	</operation>
+    <operation name="createBankAccount">
+        <soap:operation
+            soapAction="https://secure.clearbooks.co.uk/api/soap/#createBankAccount" />
+        <input>
+            <soap:header use="literal"
+                 message="tns:header" part="authenticationHeader" />
+            <soap:body use="literal" />
+        </input>
+        <output>
+            <soap:body use="literal" />
+        </output>
+    </operation>
+	<operation name="updateAccountCode">
+		<soap:operation
+			soapAction="https://secure.clearbooks.co.uk/api/soap/#updateAccountCode" />
+		<input>
+			<soap:header use="literal"
+				message="tns:header" part="authenticationHeader" />
+			<soap:body use="literal" />
+		</input>
+		<output>
+			<soap:body use="literal" />
+		</output>
+	</operation>
+	<operation name="listAccountCodes">
+		<soap:operation
+			soapAction="https://secure.clearbooks.co.uk/api/soap/#listAccountCodes" />
+		<input>
+			<soap:header use="literal"
+				message="tns:header" part="authenticationHeader" />
+			<soap:body use="literal" />
+		</input>
+		<output>
+			<soap:body use="literal" />
+		</output>
+	</operation>
+	<operation name="listAccountCodeHeadings">
+		<soap:operation
+			soapAction="https://secure.clearbooks.co.uk/api/soap/#listAccountCodeHeadings" />
+		<input>
+			<soap:header use="literal"
+				message="tns:header" part="authenticationHeader" />
+			<soap:body use="literal" />
+		</input>
+		<output>
+			<soap:body use="literal" />
+		</output>
+	</operation>
+	<operation name="getInvoiceIdFromInvoiceNumber">
+		<soap:operation
+			soapAction="https://secure.clearbooks.co.uk/api/soap/#getInvoiceIdFromInvoiceNumber" />
+		<input>
+			<soap:header use="literal"
+				message="tns:header" part="authenticationHeader" />
+			<soap:body use="literal" />
+		</input>
+		<output>
+			<soap:body use="literal" />
+		</output>
+	</operation>
+	<operation name="getEntityIdFromExternalId">
+		<soap:operation
+			soapAction="https://secure.clearbooks.co.uk/api/soap/#getEntityIdFromExternalId" />
+		<input>
+			<soap:header use="literal"
+				message="tns:header" part="authenticationHeader" />
+			<soap:body use="literal" />
+		</input>
+		<output>
+			<soap:body use="literal" />
+		</output>
+	</operation>
+    <operation name="getEntityOutstandingBalance">
+        <soap:operation soapAction="https://secure.clearbooks.co.uk/api/soap/#getEntityOutstandingBalance" />
+        <input>
+            <soap:header use="literal" message="tns:header" part="authenticationHeader" />
+            <soap:body use="literal" />
+        </input>
+        <output>
+            <soap:body use="literal" />
+        </output>
+    </operation>
+	<operation name="getPaymentIdFromExternalId">
+		<soap:operation
+			soapAction="https://secure.clearbooks.co.uk/api/soap/#getPaymentIdFromExternalId" />
+		<input>
+			<soap:header use="literal"
+				message="tns:header" part="authenticationHeader" />
+			<soap:body use="literal" />
+		</input>
+		<output>
+			<soap:body use="literal" />
+		</output>
+	</operation>
+	<operation name="listThemes">
+		<soap:operation
+			soapAction="https://secure.clearbooks.co.uk/api/soap/#listThemes" />
+		<input>
+			<soap:header use="literal"
+				message="tns:header" part="authenticationHeader" />
+			<soap:body use="literal" />
+		</input>
+		<output>
+			<soap:body use="literal" />
+		</output>
+	</operation>
+	<operation name="listBankAccounts">
+		<soap:operation
+			soapAction="https://secure.clearbooks.co.uk/api/soap/#listBankAccounts" />
+		<input>
+			<soap:header use="literal"
+				message="tns:header" part="authenticationHeader" />
+			<soap:body use="literal" />
+		</input>
+		<output>
+			<soap:body use="literal" />
+		</output>
+	</operation>
+	<operation name="listOutstandingBalances">
+		<soap:operation
+			soapAction="https://secure.clearbooks.co.uk/api/soap/#listOutstandingBalances" />
+		<input>
+			<soap:header use="literal"
+				message="tns:header" part="authenticationHeader" />
+			<soap:body use="literal" />
+		</input>
+		<output>
+			<soap:body use="literal" />
+		</output>
+	</operation>
+    <operation name="listCurrencies">
+        <soap:operation soapAction="https://secure.clearbooks.co.uk/api/soap/#listCurrencies" />
+        <input>
+            <soap:header use="literal" message="tns:header" part="authenticationHeader" />
+            <soap:body use="literal" />
+        </input>
+        <output>
+            <soap:body use="literal" />
+        </output>
+    </operation>
+</binding>
+<service name="InvoicesService">
+	<port name="InvoicesPort" binding="tns:InvoicesBinding">
+		<soap:address
+			location="https://secure.clearbooks.co.uk/api/soap/" />
+	</port>
+</service>
+<types>
+	<xsd:schema
+		xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+		targetNamespace="https://secure.clearbooks.co.uk/api/soap/">
+		<xsd:complexType name="Item">
+			<xsd:all>
+				<xsd:element name="description" type="xsd:string" />
+			</xsd:all>
+			<xsd:attribute name="unitPrice" type="xsd:float" use="required" />
+			<xsd:attribute name="vat" type="xsd:float" use="optional" />
+			<xsd:attribute name="quantity" type="xsd:int" default="1" use="optional" />
+			<xsd:attribute name="type" type="xsd:int" use="required" />
+			<xsd:attribute name="vatRate" type="xsd:string" use="optional" />
+            <xsd:attribute name="project" type="xsd:int" use="optional" />
+		</xsd:complexType>
+		        <xsd:complexType name="ArrayOfItem" base="soap-enc:Array">
+            <xsd:complexContent>
+                <xsd:restriction base="soap-enc:Array">
+                    <xsd:attribute wsdl:arrayType="tns:Item[]" ref="soap-enc:arrayType"
+                            minOccurs="0" maxOccurs="unbounded"/>
+                </xsd:restriction>
+            </xsd:complexContent>
+        </xsd:complexType>
+    		<xsd:complexType name="Invoice">
+			<xsd:all>
+				<xsd:element name="items" type="tns:ArrayOfItem"/>
+				<xsd:element name="description" type="xsd:string" />
+			</xsd:all>
+			<xsd:attribute name="entityId" type="xsd:int" use="required" />
+			<xsd:attribute name="invoice_id" type="xsd:int" default="0" use="optional" />
+			<xsd:attribute name="invoice_prefix" type="xsd:string" default="" use="optional" />
+			<xsd:attribute name="invoiceNumber" type="xsd:int" default="0" use="optional" />
+			<xsd:attribute name="reference" type="xsd:string" default="" use="optional" />
+			<xsd:attribute name="dateCreated" type="xsd:date" use="required" />
+			<xsd:attribute name="dateDue" type="xsd:date" use="optional" />
+            <xsd:attribute name="dateAccrual" type="xsd:date" use="optional" />
+			<xsd:attribute name="creditTerms" type="xsd:int" default="0" use="optional" />
+			<xsd:attribute name="bankPaymentId" type="xsd:int" default="0" use="optional" />
+			<xsd:attribute name="project" type="xsd:int" use="required" />
+			<xsd:attribute name="external_id" type="xsd:string" default="" use="optional" />
+			<xsd:attribute name="status" type="xsd:string" default="" use="optional" />
+			<xsd:attribute name="statementPage" type="xsd:string" default="" use="optional" />
+            <xsd:attribute name="themeId" type="xsd:int" default="0" use="optional" />
+			<xsd:attribute name="type" type="xsd:string" use="required" />
+            <xsd:attribute name="vatTreatment" type="xsd:string" default="" use="optional" />
+            <xsd:attribute name="multicurrency" type="xsd:int" use="optional" />
+            <xsd:attribute name="fxrate" type="xsd:float" default="0" use="optional" />
+            <xsd:attribute name="gross" type="xsd:float" default="0" use="optional" />
+            <xsd:attribute name="net" type="xsd:float" default="0" use="optional" />
+            <xsd:attribute name="vat" type="xsd:float" default="0" use="optional" />
+            <xsd:attribute name="paid" type="xsd:float" default="0" use="optional" />
+            <xsd:attribute name="balance" type="xsd:float" default="0" use="optional" />
+            <xsd:attribute name="surchargeFor" type="xsd:int" default="0" use="optional" />
+		</xsd:complexType>
+		        <xsd:complexType name="ArrayOfInvoice" base="soap-enc:Array">
+            <xsd:complexContent>
+                <xsd:restriction base="soap-enc:Array">
+                    <xsd:attribute wsdl:arrayType="tns:Invoice[]" ref="soap-enc:arrayType"
+                            minOccurs="0" maxOccurs="unbounded"/>
+                </xsd:restriction>
+            </xsd:complexContent>
+        </xsd:complexType>
+    		<xsd:complexType name="InvoiceRef">
+			<xsd:attribute name="type" type="xsd:string" use="required" />
+			<xsd:attribute name="id" type="xsd:int" use="required" />
+		</xsd:complexType>
+		<xsd:complexType name="InvoiceQuery">
+			<xsd:all>
+		   		 <xsd:element name="id" type="tns:ArrayOfInteger" minOccurs="0" />
+				 <xsd:element name="entityId" type="tns:ArrayOfInteger" minOccurs="0" />
+		   	</xsd:all>
+			<xsd:attribute name="ledger" type="xsd:string" use="required" />
+			<xsd:attribute name="status" type="xsd:string" default="" use="optional" />
+			<xsd:attribute name="offset" type="xsd:integer" default="0" use="optional" />
+			<xsd:attribute name="modifiedSince" type="xsd:dateTime" use="optional" />
+		</xsd:complexType>
+		        <xsd:complexType name="ArrayOfInteger" base="soap-enc:Array">
+            <xsd:complexContent>
+                <xsd:restriction base="soap-enc:Array">
+                    <xsd:attribute wsdl:arrayType="xsd:integer[]" ref="soap-enc:arrayType"
+                            minOccurs="0" maxOccurs="unbounded"/>
+                </xsd:restriction>
+            </xsd:complexContent>
+        </xsd:complexType>
+    		<xsd:complexType name="Authentication">
+			<xsd:attribute name="apiKey" type="xsd:string" />
+		</xsd:complexType>
+		<xsd:complexType name="InvoiceReturn">
+			<xsd:attribute name="due" type="xsd:float" />
+			<xsd:attribute name="invoice_id" type="xsd:int" />
+			<xsd:attribute name="invoice_prefix" type="xsd:string" />
+			<xsd:attribute name="invoice_number" type="xsd:string" />
+		</xsd:complexType>
+		        <xsd:complexType name="ArrayOfInvoiceReturn" base="soap-enc:Array">
+            <xsd:complexContent>
+                <xsd:restriction base="soap-enc:Array">
+                    <xsd:attribute wsdl:arrayType="tns:InvoiceReturn[]" ref="soap-enc:arrayType"
+                            minOccurs="0" maxOccurs="unbounded"/>
+                </xsd:restriction>
+            </xsd:complexContent>
+        </xsd:complexType>
+    		<xsd:complexType name="Payment">
+			<xsd:all>
+				<xsd:element name="description" type="xsd:string" minOccurs="1" maxOccurs="1" />
+				<xsd:element name="invoices" type="tns:ArrayOfPaymentInvoice" minOccurs="1" maxOccurs="1" />
+			</xsd:all>
+			<xsd:attribute name="type" type="xsd:string" use="required" />
+			<xsd:attribute name="project" type="xsd:int" use="required" />
+			<xsd:attribute name="accountingDate" type="xsd:date" use="required" />
+			<xsd:attribute name="amount" type="xsd:float" use="required" />
+
+			<xsd:attribute name="entityId" type="xsd:int" use="required" />
+			<xsd:attribute name="paymentMethod" type="xsd:int" use="required" />
+
+			<xsd:attribute name="bankAccount" type="xsd:int" use="required" />
+            <xsd:attribute name="fxRate" type="xsd:float" use="optional" />
+			<xsd:attribute name="bsAccount" type="xsd:int" default="0" use="optional" />
+		</xsd:complexType>
+          <xsd:complexType name="RemovePayment">
+               <xsd:attribute name="id" type="xsd:int" use="required" />
+               <xsd:attribute name="type" type="xsd:string" use="required" />
+          </xsd:complexType>
+          <xsd:complexType name="AllocateQuery">
+               <xsd:all>
+                    <xsd:element name="invoices" type="tns:ArrayOfPaymentInvoice" minOccurs="1" maxOccurs="1" />
+               </xsd:all>
+               <xsd:attribute name="type" type="xsd:string" use="required" />
+               <xsd:attribute name="paymentId" type="xsd:int" use="required" />
+               <xsd:attribute name="entityId" type="xsd:int" use="required" />
+          </xsd:complexType>
+		<xsd:complexType name="PaymentReturn">
+			<xsd:attribute name="payment_id" type="xsd:int" />
+		</xsd:complexType>
+		        <xsd:complexType name="ArrayOfPaymentReturn" base="soap-enc:Array">
+            <xsd:complexContent>
+                <xsd:restriction base="soap-enc:Array">
+                    <xsd:attribute wsdl:arrayType="tns:PaymentReturn[]" ref="soap-enc:arrayType"
+                            minOccurs="0" maxOccurs="unbounded"/>
+                </xsd:restriction>
+            </xsd:complexContent>
+        </xsd:complexType>
+    		<xsd:complexType name="PaymentInvoice">
+			<xsd:attribute name="id" type="xsd:int" use="required" />
+			<xsd:attribute name="amount" type="xsd:float" default="0.00" use="optional" />
+		</xsd:complexType>
+		        <xsd:complexType name="ArrayOfPaymentInvoice" base="soap-enc:Array">
+            <xsd:complexContent>
+                <xsd:restriction base="soap-enc:Array">
+                    <xsd:attribute wsdl:arrayType="tns:PaymentInvoice[]" ref="soap-enc:arrayType"
+                            minOccurs="0" maxOccurs="unbounded"/>
+                </xsd:restriction>
+            </xsd:complexContent>
+        </xsd:complexType>
+    		        <xsd:complexType name="ArrayOfPayments" base="soap-enc:Array">
+            <xsd:complexContent>
+                <xsd:restriction base="soap-enc:Array">
+                    <xsd:attribute wsdl:arrayType="tns:Payment[]" ref="soap-enc:arrayType"
+                            minOccurs="0" maxOccurs="unbounded"/>
+                </xsd:restriction>
+            </xsd:complexContent>
+        </xsd:complexType>
+    		<xsd:complexType name="EntityExtra">
+			<xsd:attribute name="default_account_code" type="xsd:int" use="required" />
+			<xsd:attribute name="default_vat_rate" type="xsd:float" use="required" />
+			<xsd:attribute name="default_credit_terms" type="xsd:int" use="required" />
+		</xsd:complexType>
+		<xsd:complexType name="Entity">
+			<xsd:all>
+				<xsd:element name="supplier" type="tns:EntityExtra" minOccurs="0" />
+				<xsd:element name="customer" type="tns:EntityExtra" minOccurs="0" />
+				<xsd:element name="bankAccount" type="tns:BankAccount" minOccurs="0" maxOccurs="1" />
+			</xsd:all>
+			<xsd:attribute name="id" type="xsd:int" default="0" use="optional" />
+			<xsd:attribute name="company_name" type="xsd:string" use="required" />
+			<xsd:attribute name="contact_name" type="xsd:string" use="required" />
+			<xsd:attribute name="address1" type="xsd:string" use="required" />
+			<xsd:attribute name="town" type="xsd:string" use="required" />
+			<xsd:attribute name="county" type="xsd:string" use="required" />
+            <xsd:attribute name="country" type="xsd:string" default="" use="optional" />
+			<xsd:attribute name="postcode" type="xsd:string" use="required" />
+			<xsd:attribute name="email" type="xsd:string" use="required" />
+			<xsd:attribute name="phone1" type="xsd:string" use="required" />
+
+			<xsd:attribute name="building" type="xsd:string" default="" use="optional" />
+			<xsd:attribute name="address2" type="xsd:string" default="" use="optional" />
+			<xsd:attribute name="phone2" type="xsd:string" default="" use="optional" />
+			<xsd:attribute name="fax" type="xsd:string" default="" use="optional" />
+			<xsd:attribute name="website" type="xsd:string" default="" use="optional" />
+			<xsd:attribute name="date_modified" type="xsd:date" use="optional" />
+			<xsd:attribute name="external_id" type="xsd:string" default="" use="optional" />
+            <xsd:attribute name="vat_number" type="xsd:string" default="" use="optional" />
+            <xsd:attribute name="company_number" type="xsd:string" default="" use="optional" />
+
+			<xsd:attribute name="statement_url" type="xsd:string" default="" use="optional" />
+		</xsd:complexType>
+		        <xsd:complexType name="ArrayOfEntities" base="soap-enc:Array">
+            <xsd:complexContent>
+                <xsd:restriction base="soap-enc:Array">
+                    <xsd:attribute wsdl:arrayType="tns:Entity[]" ref="soap-enc:arrayType"
+                            minOccurs="0" maxOccurs="unbounded"/>
+                </xsd:restriction>
+            </xsd:complexContent>
+        </xsd:complexType>
+    		<xsd:complexType name="EntityQuery">
+			<xsd:all>
+		   		 <xsd:element name="id" type="tns:ArrayOfInteger" minOccurs="0" />
+		   	</xsd:all>
+			<xsd:attribute name="companyName" type="xsd:string" default="" use="optional" />
+			<xsd:attribute name="type" type="xsd:string" default="" use="optional" />
+			<xsd:attribute name="offset" type="xsd:integer" default="0" use="optional" />
+			<xsd:attribute name="modifiedSince" type="xsd:dateTime" use="optional" />
+		</xsd:complexType>
+		<xsd:complexType name="BankAccount">
+			<xsd:attribute name="bankName" type="xsd:string" />
+			<xsd:attribute name="name" type="xsd:string" />
+			<xsd:attribute name="sortcode" type="xsd:string" />
+			<xsd:attribute name="accountNumber" type="xsd:string" />
+		</xsd:complexType>
+		<xsd:complexType name="Theme">
+			<xsd:attribute name="id" type="xsd:int" />
+			<xsd:attribute name="name" type="xsd:string" />
+		</xsd:complexType>
+		<xsd:complexType name="BankAccountListItem">
+			<xsd:attribute name="bank_name" type="xsd:string" />
+			<xsd:attribute name="gl_account_code" type="xsd:string" />
+		</xsd:complexType>
+		<xsd:element name="authenticate" type="tns:Authentication" />
+		<xsd:complexType name="AccountCodeHeading">
+			<xsd:attribute name="id" type="xsd:int" />
+			<xsd:attribute name="heading_name" type="xsd:string" />
+			<xsd:attribute name="account_group" type="xsd:integer" />
+			<xsd:attribute name="show_sales" type="xsd:integer" />
+			<xsd:attribute name="show_purchases" type="xsd:integer" />
+		</xsd:complexType>
+		<xsd:complexType name="AccountCode">
+			<xsd:attribute name="id" type="xsd:int" />
+			<xsd:attribute name="account_name" type="xsd:string" />
+			<xsd:attribute name="group_name" type="xsd:string" />
+			<xsd:attribute name="default_vat_rate" type="xsd:string" />
+			<xsd:attribute name="show_sales" type="xsd:boolean" />
+			<xsd:attribute name="show_purchases" type="xsd:boolean" />
+		</xsd:complexType>
+        <xsd:complexType name="Bank_BankAccount">
+            <xsd:attribute name="name" type="xsd:string" />
+            <xsd:attribute name="accountNumber" type="xsd:string" />
+            <xsd:attribute name="sortCode" type="xsd:string" />
+        </xsd:complexType>
+		        <xsd:complexType name="ArrayOfAccountCodeHeadings" base="soap-enc:Array">
+            <xsd:complexContent>
+                <xsd:restriction base="soap-enc:Array">
+                    <xsd:attribute wsdl:arrayType="tns:AccountCodeHeading[]" ref="soap-enc:arrayType"
+                            minOccurs="0" maxOccurs="unbounded"/>
+                </xsd:restriction>
+            </xsd:complexContent>
+        </xsd:complexType>
+    		        <xsd:complexType name="ArrayOfAccountCodes" base="soap-enc:Array">
+            <xsd:complexContent>
+                <xsd:restriction base="soap-enc:Array">
+                    <xsd:attribute wsdl:arrayType="tns:AccountCode[]" ref="soap-enc:arrayType"
+                            minOccurs="0" maxOccurs="unbounded"/>
+                </xsd:restriction>
+            </xsd:complexContent>
+        </xsd:complexType>
+    		        <xsd:complexType name="ArrayOfBankAccounts" base="soap-enc:Array">
+            <xsd:complexContent>
+                <xsd:restriction base="soap-enc:Array">
+                    <xsd:attribute wsdl:arrayType="tns:BankAccountListItem[]" ref="soap-enc:arrayType"
+                            minOccurs="0" maxOccurs="unbounded"/>
+                </xsd:restriction>
+            </xsd:complexContent>
+        </xsd:complexType>
+                    <xsd:complexType name="ArrayOfThemes" base="soap-enc:Array">
+            <xsd:complexContent>
+                <xsd:restriction base="soap-enc:Array">
+                    <xsd:attribute wsdl:arrayType="tns:Theme[]" ref="soap-enc:arrayType"
+                            minOccurs="0" maxOccurs="unbounded"/>
+                </xsd:restriction>
+            </xsd:complexContent>
+        </xsd:complexType>
+    		<xsd:complexType name="ListBankAccountsReturn">
+			<xsd:sequence>
+				<xsd:element name="bankAccounts" type="tns:ArrayOfBankAccounts" />
+			</xsd:sequence>
+			<xsd:attribute name="total" type="xsd:float" />
+		</xsd:complexType>
+        <xsd:complexType name="EntityOutstandingBalanceReturn">
+            <xsd:sequence>
+                <xsd:element name="outstanding" type="xsd:float" />
+                <xsd:element name="overdue" type="xsd:float" />
+            </xsd:sequence>
+        </xsd:complexType>
+		<xsd:complexType name="ListThemesReturn">
+			<xsd:sequence>
+				<xsd:element name="themes" type="tns:ArrayOfThemes" />
+			</xsd:sequence>
+		</xsd:complexType>
+
+				<xsd:complexType name="listOutstandingBalancesReturn">
+			<xsd:attribute name="balance" type="xsd:float" />
+		</xsd:complexType>
+          <xsd:complexType name="Project">
+               <xsd:attribute name="projectName" type="xsd:string" use="required" />
+               <xsd:attribute name="status" type="xsd:string" use="required" />
+               <xsd:attribute name="description" type="xsd:string" default="" use="optional" />
+               <xsd:attribute name="id" type="xsd:int" default="0" use="optional" />
+          </xsd:complexType>
+          <xsd:complexType name="ProjectReturn">
+               <xsd:attribute name="project_id" type="xsd:int" />
+          </xsd:complexType>
+                  <xsd:complexType name="ArrayOfProject" base="soap-enc:Array">
+            <xsd:complexContent>
+                <xsd:restriction base="soap-enc:Array">
+                    <xsd:attribute wsdl:arrayType="tns:Project[]" ref="soap-enc:arrayType"
+                            minOccurs="0" maxOccurs="unbounded"/>
+                </xsd:restriction>
+            </xsd:complexContent>
+        </xsd:complexType>
+              <xsd:complexType name="JournalLedgerItem">
+               <xsd:attribute name="account" type="xsd:int"  use="required" />
+               <xsd:attribute name="amount" type="xsd:float" use="required" />
+          </xsd:complexType>
+                  <xsd:complexType name="ArrayOfJournalLedgerItem" base="soap-enc:Array">
+            <xsd:complexContent>
+                <xsd:restriction base="soap-enc:Array">
+                    <xsd:attribute wsdl:arrayType="tns:JournalLedgerItem[]" ref="soap-enc:arrayType"
+                            minOccurs="0" maxOccurs="unbounded"/>
+                </xsd:restriction>
+            </xsd:complexContent>
+        </xsd:complexType>
+              <xsd:complexType name="Journal">
+               <xsd:all>
+                    <xsd:element name="ledger" type="tns:ArrayOfJournalLedgerItem" />
+               </xsd:all>
+               <xsd:attribute name="description" type="xsd:string" use="required" />
+               <xsd:attribute name="accountingDate" type="xsd:string" use="required" />
+               <xsd:attribute name="project" type="xsd:int" default="0" use="optional" />
+               <xsd:attribute name="entity" type="xsd:int"  default="0" use="optional" />
+          </xsd:complexType>
+          <xsd:complexType name="JournalReturn">
+               <xsd:attribute name="journal_id" type="xsd:int" />
+          </xsd:complexType>
+          <xsd:complexType name="ResponseStatus">
+               <xsd:attribute name="success" type="xsd:boolean" use="required" />
+               <xsd:attribute name="msg" type="xsd:string" default="Test" use="optional" />
+          </xsd:complexType>
+		<xsd:complexType name="CreditQuery">
+			<xsd:attribute name="dateCreated" type="xsd:date" use="required" />
+			<xsd:attribute name="description" type="xsd:string" use="required" />
+			<xsd:attribute name="ledger" type="xsd:string" use="required" />
+			<xsd:attribute name="accountCode" type="xsd:string" use="required" />
+			<xsd:attribute name="id" type="xsd:int" use="required" />
+		</xsd:complexType>
+          <xsd:complexType name="CreditResponseStatus">
+               <xsd:attribute name="id" type="xsd:integer" default="0" use="optional" />
+               <xsd:attribute name="msg" type="xsd:string" default="Fail" use="optional" />
+          </xsd:complexType>
+         <xsd:complexType name="AccountCodeRequest">
+			<xsd:attribute name="heading_id" type="xsd:integer" use="required" />
+			<xsd:attribute name="name" type="xsd:string" use="required" />
+			<xsd:attribute name="default_vat_rate" default="choose" type="xsd:string" use="optional" />
+			<xsd:attribute name="show_sales" default="0" type="xsd:integer" use="optional" />
+			<xsd:attribute name="show_purchases" default="0" type="xsd:integer" use="optional" />
+			<xsd:attribute name="show_budget" default="0" type="xsd:integer" use="optional" />
+          </xsd:complexType>
+          <xsd:complexType name="AccountCodeResult">
+            <xsd:attribute name="id" type="xsd:integer" use="required" />
+          </xsd:complexType>
+        <xsd:complexType name="Currency">
+            <xsd:attribute name="id" type="xsd:int" />
+            <xsd:attribute name="name" type="xsd:string" />
+            <xsd:attribute name="code" type="xsd:string" />
+            <xsd:attribute name="symbol" type="xsd:string" />
+        </xsd:complexType>
+                <xsd:complexType name="ArrayOfCurrency" base="soap-enc:Array">
+            <xsd:complexContent>
+                <xsd:restriction base="soap-enc:Array">
+                    <xsd:attribute wsdl:arrayType="tns:Currency[]" ref="soap-enc:arrayType"
+                            minOccurs="0" maxOccurs="unbounded"/>
+                </xsd:restriction>
+            </xsd:complexContent>
+        </xsd:complexType>
+    	</xsd:schema>
+</types>
+<message name="header">
+	<part name="authenticationHeader" element="tns:authenticate" />
+</message>
+<message name="createPaymentRequest">
+	<part name="payment" type="tns:Payment" />
+</message>
+<message name="createPaymentResponse">
+	<part name="createPaymentReturn" type="tns:PaymentReturn" />
+</message>
+<message name="createPaymentsRequest">
+	<part name="payments" type="tns:ArrayOfPayments" />
+</message>
+<message name="createPaymentsResponse">
+	<part name="createPaymentsReturn" type="tns:ArrayOfPaymentReturn" />
+</message>
+<message name="voidPaymentRequest">
+     <part name="payment" type="tns:RemovePayment" />
+</message>
+<message name="voidPaymentResponse">
+     <part name="success" type="tns:ResponseStatus" />
+</message>
+<message name="allocatePaymentRequest">
+     <part name="query" type="tns:AllocateQuery" />
+</message>
+<message name="allocatePaymentResponse">
+     <part name="status" type="tns:ResponseStatus" />
+</message>
+<message name="createInvoiceRequest">
+	<part name="invoice" type="tns:Invoice" />
+</message>
+<message name="createInvoiceResponse">
+	<part name="createInvoiceReturn" type="tns:InvoiceReturn" />
+</message>
+<message name="createInvoicesRequest">
+	<part name="invoices" type="tns:ArrayOfInvoice" />
+</message>
+<message name="createInvoicesResponse">
+	<part name="createInvoicesReturn" type="tns:ArrayOfInvoiceReturn" />
+</message>
+<message name="listCompaniesRequest">
+	<part name="query" type="xsd:string" />
+</message>
+<message name="listCompaniesResponse">
+	<part name="companies" type="xsd:string" />
+</message>
+<message name="createEntityRequest">
+	<part name="entity" type="tns:Entity" />
+</message>
+<message name="createEntityResponse">
+	<part name="createEntityReturn" type="xsd:int" />
+</message>
+<message name="updateEntityRequest">
+	<part name="entityId" type="xsd:int" />
+	<part name="entity" type="tns:Entity" />
+</message>
+<message name="updateEntityResponse">
+	<part name="updateEntityReturn" type="xsd:int" />
+</message>
+<message name="listEntitiesRequest">
+	<part name="query" type="tns:EntityQuery" />
+</message>
+<message name="listEntitiesResponse">
+	<part name="entities" type="tns:ArrayOfEntities" />
+</message>
+<message name="listInvoicesRequest">
+	<part name="query" type="tns:InvoiceQuery" />
+</message>
+<message name="listInvoicesResponse">
+	<part name="createInvoicesReturn" type="tns:ArrayOfInvoice" />
+</message>
+<message name="deleteEntityRequest">
+	<part name="entityId" type="xsd:int" />
+</message>
+<message name="deleteEntityResponse">
+ <part name="deleteEntitySuccess" type="xsd:boolean" />
+</message>
+<message name="createJournalRequest">
+     <part name="project" type="tns:Journal" />
+</message>
+<message name="createJournalResponse">
+     <part name="createJournalReturn" type="tns:JournalReturn" />
+</message>
+<message name="deleteJournalRequest">
+     <part name="journalId" type="xsd:int" />
+</message>
+<message name="deleteJournalResponse">
+     <part name="journalSuccess" type="xsd:boolean" />
+</message>
+<message name="createProjectRequest">
+	<part name="project" type="tns:Project" />
+</message>
+<message name="createProjectResponse">
+	<part name="createProjectReturn" type="tns:ProjectReturn" />
+</message>
+<message name="updateProjectRequest">
+     <part name="projectId" type="xsd:int" />
+     <part name="project" type="tns:Project" />
+</message>
+<message name="updateProjectResponse">
+     <part name="updateProjectReturn" type="tns:ProjectReturn" />
+</message>
+<message name="listProjectsRequest">
+     <part name="offset" type="xsd:int" />
+</message>
+<message name="listProjectsResponse">
+     <part name="projects" type="tns:ArrayOfProject" />
+</message>
+<message name="voidInvoiceRequest">
+	<part name="invoice" type="tns:InvoiceRef" />
+</message>
+<message name="voidInvoiceResponse">
+     <part name="voidSuccess" type="tns:ResponseStatus" />
+</message>
+<message name="writeOffRequest">
+	<part name="query" type="tns:CreditQuery" />
+</message>
+<message name="writeOffResponse">
+	<part name="status" type="tns:CreditResponseStatus" />
+</message>
+<message name="createAccountCodeRequest">
+	<part name="code" type="tns:AccountCodeRequest" />
+</message>
+<message name="createAccountCodeResponse">
+	<part name="accountCode" type="tns:AccountCodeResult" />
+</message>
+<message name="createBankAccountRequest">
+    <part name="bankAccount" type="tns:Bank_BankAccount" />
+</message>
+<message name="createBankAccountResponse">
+    <part name="accountCode" type="xsd:int" />
+</message>
+<message name="updateAccountCodeRequest">
+  	<part name="codeId" type="xsd:integer" />
+	<part name="code" type="tns:AccountCodeRequest" />
+</message>
+<message name="updateAccountCodeResponse">
+	<part name="accountCode" type="tns:AccountCodeResult" />
+</message>
+<message name="listAccountCodesRequest">
+</message>
+<message name="listAccountCodesResponse">
+	<part name="accountCodes" type="tns:ArrayOfAccountCodes" />
+</message>
+<message name="listAccountCodeHeadingsRequest">
+</message>
+<message name="listAccountCodeHeadingsResponse">
+	<part name="accountCodeHeadings" type="tns:ArrayOfAccountCodeHeadings" />
+</message>
+<message name="getInvoiceIdFromInvoiceNumberRequest">
+	<part name="type" type="xsd:string" />
+	<part name="invoicePrefix" type="xsd:string" />
+	<part name="invoiceNumber" type="xsd:string" />
+</message>
+<message name="getInvoiceIdFromInvoiceNumberResponse">
+	<part name="invoiceId" type="xsd:int" />
+</message>
+<message name="getEntityIdFromExternalIdRequest">
+	<part name="externalId" type="xsd:string" />
+</message>
+<message name="getEntityIdFromExternalIdResponse">
+	<part name="entityId" type="xsd:int" />
+</message>
+<message name="getEntityOutstandingBalanceRequest">
+    <part name="entityId" type="xsd:int" />
+    <part name="type" type="xsd:string" />
+</message>
+<message name="getEntityOutstandingBalanceResponse">
+    <part name="entityOutstandingBalance" type="tns:EntityOutstandingBalanceReturn" />
+</message>
+<message name="getPaymentIdFromExternalIdRequest">
+	<part name="externalId" type="xsd:string" />
+</message>
+<message name="getPaymentIdFromExternalIdResponse">
+	<part name="paymentId" type="xsd:int" />
+</message>
+<message name="listThemesRequest">
+</message>
+<message name="listThemesResponse">
+	<part name="listThemesReturn" type="tns:ListThemesReturn" />
+</message>
+<message name="listBankAccountsRequest">
+</message>
+<message name="listBankAccountsResponse">
+	<part name="listBankAccountsReturn" type="tns:ListBankAccountsReturn" />
+</message>
+<message name="listOutstandingBalancesRequest">
+	<part name="type" type="xsd:string" />
+	<part name="limit" type="xsd:int" />
+</message>
+<message name="listOutstandingBalancesResponse">
+	<part name="listOutstandingBalancesReturn" type="tns:listOutstandingBalancesReturn" />
+</message>
+<message name="listCurrenciesRequest">
+</message>
+<message name="listCurrenciesResponse">
+    <part name="currencies" type="tns:ArrayOfCurrency" />
+</message>
+
+</definitions>

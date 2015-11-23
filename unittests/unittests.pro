@@ -25,6 +25,7 @@ SUBDIRS = \
   optionaltype_regular \
   optionaltype_pointer \
   enum_escape \
+  clearbooks \
   soap12 \
   literal_true_false \
   import_definition \

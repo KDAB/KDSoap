@@ -50,5 +50,7 @@ WSDL parser / code generator changes, applying to both client and server side:
 
 * Add missing builtin type xsd:QName.
 
+* Fix erroneous "class qint64;" declaration in generated code for wsdl:arrayType="xsd:integer[]"
+
 * Ignore leading/trailing space in definition of soapAction.
 
