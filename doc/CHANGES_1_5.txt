@@ -52,5 +52,7 @@ WSDL parser / code generator changes, applying to both client and server side:
 
 * Fix erroneous "class qint64;" declaration in generated code for wsdl:arrayType="xsd:integer[]"
 
+* Fix elements being incorrectly-marked-as-nil when copying generated classes (issue72).
+
 * Ignore leading/trailing space in definition of soapAction.
 
