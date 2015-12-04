@@ -64,7 +64,7 @@ if(Qt5Core_FOUND)
   endif()
 
 else()
-  find_package(Qt4 4.7 QUIET REQUIRED QtCore QtMain QtGui)
+  find_package(Qt4 4.7 QUIET REQUIRED QtCore QtMain)
 endif()
 
 set(CMAKE_INCLUDE_CURRENT_DIR TRUE)

@@ -1,10 +1,11 @@
 project(helloworld_client)
 
+include_directories(${QT_QTGUI_INCLUDE_DIR})
+
 set(helloworld_client_SRCS main.cpp)
 
 set(helloworld_client_HRDS helloworld_client.h )
-qt4_wrap_cpp( helloworld_client_MOCS ${helloworld_client_HRDS} ) 
-
+qt4_wrap_cpp( helloworld_client_MOCS ${helloworld_client_HRDS} )
 
 KDSOAP_GENERATE_WSDL(helloworld_client_SRCS helloworld.wsdl )
 

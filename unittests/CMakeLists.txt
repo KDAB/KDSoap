@@ -25,7 +25,7 @@ macro(add_unittest _source)
   add_executable(${_name} ${_source} ${_test})
 
   add_test(NAME kdsoap-${_name} COMMAND ${_name})
-  target_link_libraries(${_name} ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${QT_LIBRARIES} kdsoap testtools)
+  target_link_libraries(${_name} ${QT_QTCORE_LIBRARY} ${QT_LIBRARIES} kdsoap testtools)
   if(EXTRA_LIBS)
     target_link_libraries(${_name} ${EXTRA_LIBS} )
   endif(EXTRA_LIBS)
@@ -72,5 +72,3 @@ add_subdirectory(webcalls_wsdl)
 
 # TODO: If boost optional is installed
 #add_subdirectory(optionaltype_boost_optional)
-
-
