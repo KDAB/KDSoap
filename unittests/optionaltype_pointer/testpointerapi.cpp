@@ -1,5 +1,5 @@
 /****************************************************************************
-** Copyright (C) 2014-2015 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com.
+** Copyright (C) 2014-2016 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com.
 ** All rights reserved.
 **
 ** Author: Ville Voutilainen <ville.voutilainen gmail.com>

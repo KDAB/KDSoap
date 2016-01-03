@@ -1,5 +1,5 @@
 
- KD SOAP is Copyright (C) 2010-2015 Klaralvdalens Datakonsult AB.
+ KD SOAP is Copyright (C) 2010-2016 Klaralvdalens Datakonsult AB.
 
  You may use, distribute and copy KD SOAP under the terms of
  GNU Lesser General Public License version 2.1, which is displayed below.

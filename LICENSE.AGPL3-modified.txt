@@ -1,4 +1,4 @@
- The KD Soap Server Library is Copyright (C) 2010-2015 Klaralvdalens Datakonsult AB.
+ The KD Soap Server Library is Copyright (C) 2010-2016 Klaralvdalens Datakonsult AB.
 
  You may use, distribute and copy the KD Soap Server Library under the terms of
  the GNU Affero General Public License version 3, displayed below.
