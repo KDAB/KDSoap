@@ -65,3 +65,8 @@ QString KDSoapNamespaceManager::soapEncoding200305()
 {
     return QString::fromLatin1("http://www.w3.org/2003/05/soap-encoding");
 }
+
+QString KDSoapNamespaceManager::soapMessageAddressing()
+{
+    return QString::fromLatin1("http://www.w3.org/2005/08/addressing");
+}

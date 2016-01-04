@@ -35,6 +35,7 @@ SUBDIRS = \
   encapsecurity \
   prefix_wsdl \
   vidyo \
+  ws_addressing_support
 
 # These need internet access
 SUBDIRS += webcalls webcalls_wsdl

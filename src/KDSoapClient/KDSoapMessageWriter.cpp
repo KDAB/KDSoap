@@ -51,7 +51,7 @@ QByteArray KDSoapMessageWriter::messageToXml(const KDSoapMessage& message, const
     writer.writeStartDocument();
 
     KDSoapNamespacePrefixes namespacePrefixes;
-    namespacePrefixes.writeStandardNamespaces(writer, m_version);
+    namespacePrefixes.writeStandardNamespaces(writer, m_version, message.hasMessageAddressingProperties());
 
     QString soapEnvelope;
     QString soapEncoding;
@@ -73,7 +73,7 @@ QByteArray KDSoapMessageWriter::messageToXml(const KDSoapMessage& message, const
         messageNamespace = message.namespaceUri();
     }
 
-    if (!headers.isEmpty() || !persistentHeaders.isEmpty()) {
+    if (!headers.isEmpty() || !persistentHeaders.isEmpty() || message.hasMessageAddressingProperties()) {
         // This writeNamespace line adds the xmlns:n1 to <Envelope>, which looks ugly and unusual (and breaks all unittests)
         // However it's the best solution in case of headers, otherwise we get n1 in the header and n2 in the body,
         // and xsi:type attributes that refer to n1, which isn't defined in the body...
@@ -84,6 +84,9 @@ QByteArray KDSoapMessageWriter::messageToXml(const KDSoapMessage& message, const
         }
         Q_FOREACH(const KDSoapMessage& header, headers) {
             header.writeChildren(namespacePrefixes, writer, header.use(), messageNamespace, true);
+        }
+        if (message.hasMessageAddressingProperties()) {
+            message.messageAddressingProperties().writeMessageAddressingProperties(namespacePrefixes, writer, messageNamespace, true);
         }
         writer.writeEndElement(); // Header
     } else {
@@ -110,7 +113,6 @@ QByteArray KDSoapMessageWriter::messageToXml(const KDSoapMessage& message, const
         message.writeElementContents(namespacePrefixes, writer, message.use(), messageNamespace);
         writer.writeEndElement();
     }
-
     writer.writeEndElement(); // Body
     writer.writeEndElement(); // Envelope
     writer.writeEndDocument();

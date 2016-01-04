@@ -87,7 +87,7 @@ public:
      */
     explicit KDSoapClientInterface(const QString& endPoint, const QString& messageNamespace);
     /**
-     * Destroy the object interface and frees up any resource used.
+     * Destroys the object interface and frees up any resource used.
      * \warning Any running asynchronous calls will be canceled.
      */
     ~KDSoapClientInterface();

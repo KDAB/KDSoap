@@ -25,7 +25,10 @@
 
 #include <QtCore/QSharedDataPointer>
 #include <QtCore/QVariant>
+
 #include "KDSoapValue.h"
+#include "KDSoapMessageAddressingProperties.h"
+
 QT_BEGIN_NAMESPACE
 class QString;
 QT_END_NAMESPACE
@@ -148,6 +151,27 @@ public:
      */
     void setFault(bool fault);
 
+    /**
+     * Attach to a KDSoapMessage the message addressing properties that will be written
+     * in its header.
+     * Calling this will make hasMessageAddressingProperties() return true.
+     * \since 1.5
+     */
+    void setMessageAddressingProperties(const KDSoapMessageAddressingProperties &map);
+
+    /**
+     * Return whether a KDSoapMessageAddressingProperties has been set for this
+     * KDSoapMessage
+     * \since 1.5
+     */
+    bool hasMessageAddressingProperties() const;
+
+    /**
+     * Return the messageAddressingProperties related to the KDSoapMessage
+     * \see KDSoapMessageAddressingProperties
+     * \since 1.5
+     */
+    KDSoapMessageAddressingProperties messageAddressingProperties() const;
 private:
     bool isNull() const;
     friend class KDSoapPendingCall;
