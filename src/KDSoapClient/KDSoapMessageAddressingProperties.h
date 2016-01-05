@@ -1,5 +1,5 @@
 /****************************************************************************
-** Copyright (C) 2010-2015 Klaralvdalens Datakonsult AB, a KDAB Group company, info@kdab.com.
+** Copyright (C) 2010-2016 Klaralvdalens Datakonsult AB, a KDAB Group company, info@kdab.com.
 ** All rights reserved.
 **
 ** This file is part of the KD Soap library.
@@ -262,7 +262,7 @@ public:
     void setMetadata(const KDSoapValueList &metadataList);
 
     /**
-     * Add one metadata, if not null, to the list of metadata that will apear within soap header
+     * Add one metadata, if not null, to the list of metadata that will appear within soap header
      */
     void addMetadata(const KDSoapValue &metadata);
 
