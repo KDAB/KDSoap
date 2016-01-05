@@ -47,7 +47,14 @@ public:
     }
     virtual bool setResourceValue( const TNS__WSResourceValueEnvelope& parameter4 ) {
         Q_ASSERT(parameter4.typeString() == "enum");
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wtautological-undefined-compare"
+#endif
         Q_ASSERT(&parameter4.value() != 0);
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
 
         const KDSoapValue value = parameter4.value_as_kdsoap_value();
 
