@@ -185,7 +185,10 @@ void KDSoapServerObjectInterface::sendDelayedResponse(const KDSoapDelayedRespons
 
 void KDSoapServerObjectInterface::writeHTTP(const QByteArray &httpReply)
 {
-    const qint64 written = d->m_serverSocket->write(httpReply);
+#if !defined(NDEBUG)
+    const qint64 written =
+#endif
+    d->m_serverSocket->write(httpReply);
     Q_ASSERT(written == httpReply.size()); // Please report a bug if you hit this.
 }
 
@@ -203,4 +206,3 @@ QString KDSoapServerObjectInterface::responseNamespace() const
 {
     return d->m_responseNamespace;
 }
-

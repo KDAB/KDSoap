@@ -255,6 +255,9 @@ static void writeKDSoapValueListHierarchy(KDSoapNamespacePrefixes &namespacePref
 
 void KDSoapMessageAddressingProperties::writeMessageAddressingProperties(KDSoapNamespacePrefixes &namespacePrefixes, QXmlStreamWriter &writer, const QString &messageNamespace, bool forceQualified) const
 {
+    Q_UNUSED(messageNamespace);
+    Q_UNUSED(forceQualified);
+
     if (d->destination == predefinedAddressToString(None) || d->destination.isEmpty())
         return;
 
@@ -327,4 +330,3 @@ QDebug operator <<(QDebug dbg, const KDSoapMessageAddressingProperties &msg)
 
     return dbg;
 }
-
