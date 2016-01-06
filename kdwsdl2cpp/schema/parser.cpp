@@ -126,6 +126,8 @@ void Parser::init(ParserContext *context)
         schema.setType(QName(XMLSchemaURI, QLatin1String("anyType")));
         d->mElements.append(schema);
     }
+    d->mImportedSchemas.append(XMLSchemaURI);
+    d->mImportedSchemas.append(NSManager::xmlNamespace());
 
     // Define xml:lang, since we don't parse xml.xsd
     {
@@ -165,7 +167,7 @@ void Parser::init(ParserContext *context)
         arrayTypeAttr.setType(QName(XMLSchemaURI, QLatin1String("string")));
         d->mAttributes.append(arrayTypeAttr);
     }
-
+    d->mImportedSchemas.append(NSManager::soapEncNamespaces());
 }
 
 bool Parser::parseSchemaTag(ParserContext *context, const QDomElement &root)
@@ -233,6 +235,7 @@ bool Parser::parseSchemaTag(ParserContext *context, const QDomElement &root)
         return false;
     }
 
+    d->mImportedSchemas.append(d->mNameSpace);
     d->mNameSpace = oldNamespace;
 
     return true;
@@ -240,10 +243,24 @@ bool Parser::parseSchemaTag(ParserContext *context, const QDomElement &root)
 
 void Parser::parseImport(ParserContext *context, const QDomElement &element)
 {
+    // http://www.w3.org/TR/2004/REC-xmlschema-1-20041028/structures.html#layer2
+    // The actual value of its namespace [attribute] indicates that the containing schema document may contain qualified references to schema components in that namespace (via one or more prefixes declared with namespace declarations in the normal way).
+    QString expectedNamespace = element.attribute(QLatin1String("namespace"));
+
+
     QString location = element.attribute(QLatin1String("schemaLocation"));
 
     if (location.isEmpty()) {
-        return;    // Testcase: <s:import namespace="http://microsoft.com/wsdl/types/" /> in the WSDL at https://www.elogbook.org/logbookws/logbookifv3.asmx
+        // Testcase: <s:import namespace="http://microsoft.com/wsdl/types/" /> in the WSDL at https://www.elogbook.org/logbookws/logbookifv3.asmx
+
+        // When no schemaLocation [attribute] is present, the schema author is leaving the identification of that schema to the instance, application or user, via the mechanisms described below in Layer 3: Schema Document Access and Web-interoperability (§4.3).
+        // 4.3.2 is especially crazy in terms of "do whatever you can or want"
+        // Some implementations seem to just use the namespace as a schema location, let's try that
+        if (!expectedNamespace.isEmpty()) {
+            location = expectedNamespace;
+        } else {
+            return; // <import/> means nothing to us
+        }
     }
 
     // don't import a schema twice
