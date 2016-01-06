@@ -54,12 +54,22 @@ MessageHandler* ParserContext::messageHandler() const
   return mMessageHandler;
 }
 
-void ParserContext::setDocumentBaseUrl( const QString &url )
+void ParserContext::setDocumentBaseUrl( const QUrl &url )
 {
-  mDocumentBaseUrl = url;
+    mDocumentBaseUrl = url;
 }
 
-QString ParserContext::documentBaseUrl() const
+void ParserContext::setDocumentBaseUrlFromFileUrl( const QUrl &url )
+{
+    QString path = url.path();
+    path.truncate( path.lastIndexOf('/') );
+    QUrl newBaseUrl = url;
+    newBaseUrl.setPath(path);
+    qDebug() << "New document base URL" << newBaseUrl;
+    setDocumentBaseUrl( newBaseUrl );
+}
+
+QUrl ParserContext::documentBaseUrl() const
 {
   return mDocumentBaseUrl;
 }

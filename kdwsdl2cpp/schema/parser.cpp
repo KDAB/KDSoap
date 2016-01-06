@@ -1060,17 +1060,7 @@ void Parser::importSchema( ParserContext *context, const QString &location )
 
     const QName tagName( node.tagName() );
     if ( tagName.localName() == QLatin1String("schema") ) {
-        const QUrl oldBaseUrl = context->documentBaseUrl();
-        QString path = schemaLocation.path();
-        path.truncate( path.lastIndexOf('/') );
-        QUrl newBaseUrl = schemaLocation;
-        newBaseUrl.setPath(path);
-        qDebug() << "New document base URL" << newBaseUrl;
-        context->setDocumentBaseUrl( newBaseUrl.toString() );
-
-        parseSchemaTag( context, node );
-
-        context->setDocumentBaseUrl( oldBaseUrl.toString() );
+        importOrIncludeSchema( context, node, schemaLocation );
     } else {
       qDebug( "No schema tag found in schema file %s", schemaLocation.toEncoded().constData());
     }
@@ -1122,7 +1112,7 @@ void Parser::includeSchema( ParserContext *context, const QString &location )
           return;
         }
       }
-      parseSchemaTag( context, node );
+      importOrIncludeSchema( context, node, schemaLocation );
     } else {
       qDebug("No schema tag found in schema file %s", schemaLocation.toEncoded().constData());
     }
@@ -1131,6 +1121,18 @@ void Parser::includeSchema( ParserContext *context, const QString &location )
 
     provider.cleanUp();
   }
+}
+
+bool Parser::importOrIncludeSchema(ParserContext *context, const QDomElement &element, const QUrl &schemaLocation)
+{
+    const QUrl oldBaseUrl = context->documentBaseUrl();
+    context->setDocumentBaseUrlFromFileUrl( schemaLocation );
+
+    const bool ret = parseSchemaTag(context, element);
+
+    context->setDocumentBaseUrl( oldBaseUrl );
+
+    return ret;
 }
 
 QString Parser::schemaUri()

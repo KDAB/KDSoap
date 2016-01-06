@@ -111,6 +111,8 @@ class SCHEMA_EXPORT Parser
      */
     void includeSchema( ParserContext *context, const QString &location );
 
+    bool importOrIncludeSchema(ParserContext *context, const QDomElement &element, const QUrl &schemaLocation);
+
     Element findElement( const QName &name ) const;
     Group findGroup( const QName &name ) const;
     Attribute findAttribute( const QName &name ) const;

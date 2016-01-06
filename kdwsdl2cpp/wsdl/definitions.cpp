@@ -261,7 +261,14 @@ void Definitions::importDefinition( ParserContext *context, const QString &locat
     if ( tagName.localName() == QLatin1String("definitions") ) {
       // recursivity
       context->namespaceManager()->enterChild(rootNode);
+
+      const QUrl oldBaseUrl = context->documentBaseUrl();
+      context->setDocumentBaseUrlFromFileUrl( locationUrl );
+
       loadXML(context, rootNode);
+
+      context->setDocumentBaseUrl( oldBaseUrl );
+
     } else {
       qDebug( "No definition tag found in imported wsdl file %s", locationUrl.toEncoded().constData());
     }

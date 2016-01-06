@@ -22,7 +22,7 @@
 #ifndef PARSERCONTEXT_H
 #define PARSERCONTEXT_H
 
-#include <QString>
+#include <QUrl>
 #include <kode_export.h>
 
 class NSManager;
@@ -68,17 +68,23 @@ class KXMLCOMMON_EXPORT ParserContext
     /**
       Sets the base URL where the document is located.
      */
-    void setDocumentBaseUrl( const QString &url );
+    void setDocumentBaseUrl( const QUrl &url );
+
+    /**
+      Sets the base URL based on an actual document URL
+      (i.e. set it to the parent directory)
+     */
+    void setDocumentBaseUrlFromFileUrl( const QUrl &url );
 
     /**
       Returns the document base url.
      */
-    QString documentBaseUrl() const;
+    QUrl documentBaseUrl() const;
 
   private:
     NSManager *mNamespaceManager;
     MessageHandler *mMessageHandler;
-    QString mDocumentBaseUrl;
+    QUrl mDocumentBaseUrl;
 };
 
 #endif

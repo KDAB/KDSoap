@@ -95,7 +95,7 @@ void Compiler::parse( const QDomElement &element )
   ParserContext context;
   context.setNamespaceManager( &namespaceManager );
   context.setMessageHandler( &messageHandler );
-  context.setDocumentBaseUrl( Settings::self()->wsdlBaseUrl() );
+  context.setDocumentBaseUrl( QUrl( Settings::self()->wsdlBaseUrl() ) );
 
   Definitions definitions;
   definitions.setWantedService( Settings::self()->wantedService() );
