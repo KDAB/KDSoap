@@ -654,6 +654,13 @@ Attribute Parser::parseAttribute(ParserContext *context,
         childElement = childElement.nextSiblingElement();
     }
 
+    if (newAttribute.type().isEmpty() && !element.hasAttribute(QLatin1String("ref"))) {
+        // http://www.w3.org/TR/2004/REC-xmlschema-1-20041028/structures.html#element-attribute
+        // says "otherwise the simple ur-type definition", which is anySimpleType
+        newAttribute.setType(QName(XMLSchemaURI, QLatin1String("anySimpleType")));
+        qDebug() << "found attribute" << newAttribute.name() << "without type and without ref, set to default" << newAttribute.type();
+    }
+
     return newAttribute;
 }
 
@@ -959,12 +966,9 @@ AttributeGroup Parser::parseAttributeGroup(ParserContext *context, const QDomEle
     AttributeGroup group;
 
     if (element.hasAttribute(QLatin1String("ref"))) {
-        QName reference;
-        reference = element.attribute(QLatin1String("ref"));
-        reference.setNameSpace(
-            context->namespaceManager()->uri(reference.prefix()));
+        QName reference(element.attribute(QLatin1String("ref")));
+        reference.setNameSpace(context->namespaceManager()->uri(reference.prefix()));
         group.setReference(reference);
-
         return group;
     }
 
@@ -996,15 +1000,13 @@ Group Parser::parseGroup(ParserContext *context, const QDomElement &element, con
 
     if (element.hasAttribute(QLatin1String("ref"))) {
         QName reference(element.attribute(QLatin1String("ref")));
-        reference.setNameSpace(
-            context->namespaceManager()->uri(reference.prefix()));
+        reference.setNameSpace(context->namespaceManager()->uri(reference.prefix()));
         group.setReference(reference);
-
         return group;
     }
 
     for (QDomElement e = element.firstChildElement(); !e.isNull(); e = e.nextSiblingElement()) {
-        QName childName = QName(e.tagName());
+        QName childName(e.tagName());
         const QString localName = childName.localName();
         // can contain all, choice or sequence
         if (localName == QLatin1String("sequence") || localName == QLatin1String("choice")) {
@@ -1277,10 +1279,11 @@ bool Parser::resolveForwardDeclarations()
         Attribute::List attributes = complexType.attributes();
 
         for (int j = 0; j < attributes.count(); ++j) {
-            if (!attributes[ j ].isResolved()) {
-                Attribute refAttribute = findAttribute(attributes[ j ].reference());
+            const Attribute &attribute = attributes.at(j);
+            if (!attribute.isResolved()) {
+                Attribute refAttribute = findAttribute(attribute.reference());
                 if (refAttribute.qualifiedName().isEmpty()) {
-                    qWarning("ERROR in %s: resolving attribute ref to '%s': not found!", qPrintable(d->mComplexTypes[i].qualifiedName().qname()), qPrintable(attributes[j].reference().qname()));
+                    qWarning("ERROR in %s: resolving attribute ref to '%s': not found!", qPrintable(d->mComplexTypes[i].qualifiedName().qname()), qPrintable(attribute.reference().qname()));
                     d->mAttributes.dump();
                     return false;
                 } else {

@@ -192,6 +192,7 @@ int Element::occurrence() const
 
 void Element::setReference(const QName &reference)
 {
+    Q_ASSERT(!reference.isEmpty());
     d->mReference = reference;
 }
 
@@ -202,7 +203,7 @@ QName Element::reference() const
 
 bool Element::isResolved() const
 {
-    return !d->mType.isEmpty();
+    return !d->mType.isEmpty() || d->mReference.isEmpty();
 }
 
 void Element::setCompositor(const Compositor &c)

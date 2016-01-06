@@ -79,7 +79,7 @@ Element::List Group::elements() const
 
 bool Group::isResolved() const
 {
-    return !d->mElements.isEmpty();
+    return !d->mElements.isEmpty() || d->mReference.isEmpty();
 }
 
 }

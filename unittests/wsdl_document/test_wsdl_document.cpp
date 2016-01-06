@@ -828,6 +828,7 @@ public:
     KDAB__EmployeeType getEmployeeType(const KDAB__EmployeeNameParams &employeeNameParams)
     {
         KDAB__EmployeeType type;
+        type.setWeakType(QVariant(42)); // anySimpleType was mapped to QVariant
         if (QString(employeeNameParams.employeeName().value()) == QLatin1String("David")) {
             type.setTeam(QList<KDAB__TeamName>() << KDAB__TeamName(QString::fromLatin1("Minitel")));
         }

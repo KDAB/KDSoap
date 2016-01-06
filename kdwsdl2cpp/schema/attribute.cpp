@@ -76,6 +76,7 @@ Attribute &Attribute::operator=(const Attribute &other)
 
 void Attribute::setType(const QName &type)
 {
+    Q_ASSERT(!type.isEmpty());
     d->mType = type;
 }
 
@@ -137,6 +138,7 @@ Attribute::AttributeUse Attribute::attributeUse() const
 
 void Attribute::setReference(const QName &reference)
 {
+    Q_ASSERT(!reference.isEmpty());
     d->mReference = reference;
 }
 
@@ -147,7 +149,7 @@ QName Attribute::reference() const
 
 bool Attribute::isResolved() const
 {
-    return !d->mType.isEmpty();
+    return !d->mType.isEmpty() || d->mReference.isEmpty();
 }
 
 void Attribute::List::dump()
