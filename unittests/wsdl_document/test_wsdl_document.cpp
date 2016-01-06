@@ -713,6 +713,7 @@ private:
                "<n1:employeeName>"
                "David Ä Faure"
                "</n1:employeeName>"
+               "<n1:repeatedChildren><n1:low>0</n1:low><n1:width>0</n1:width><n1:center>0</n1:center></n1:repeatedChildren>"
                "</n1:EmployeeNameParams>"
                "</soap:Body>" + xmlEnvEnd()
                + '\n'; // added by QXmlStreamWriter::writeEndDocument
