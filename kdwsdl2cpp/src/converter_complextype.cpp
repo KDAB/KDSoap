@@ -118,6 +118,8 @@ void Converter::convertComplexType(const XSD::ComplexType *type)
         newClass.setDocs(type->documentation().simplified());
     }
 
+    QVector<QString> seenElements;
+
     // elements in the complex type
     const XSD::Element::List elements = type->elements();
     Q_FOREACH (const XSD::Element &elemIt, elements) {
@@ -127,6 +129,19 @@ void Converter::convertComplexType(const XSD::ComplexType *type)
             Q_ASSERT(false);
             continue;
         }
+
+        // When having <choice>
+        //                <sequence>A,B(opt)</sequence>
+        //                B
+        //                <sequence>C,B(opt)</sequence>
+        //             </choice>
+        // we don't want to emit setB() three times, that's not valid C++
+        // (testcase in wsdl_document.wsdl TestRepeatedChildren)
+        if (seenElements.contains(elemIt.name())) {
+            continue;
+        }
+        seenElements.append(elemIt.name());
+
         QString typeName = mTypeMap.localType(elemIt.type());
         Q_ASSERT(!typeName.isEmpty());
 

@@ -60,6 +60,8 @@ WSDL parser / code generator changes, applying to both client and server side:
 
 * Generate correct C++ code in case of special characters like '-' in operation names.
 
+* Avoid generating duplicate methods when the complexType uses choice with the same elements in various choices
+
 * Relative paths to schemas being imported or included are now resolved based on the location of the parent file
   rather than the location of the toplevel WSDL file.
 

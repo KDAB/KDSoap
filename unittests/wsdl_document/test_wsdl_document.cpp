@@ -454,6 +454,19 @@ private Q_SLOTS:
         QCOMPARE((int)employeeType.type().type(), (int)KDAB__EmployeeTypeEnum::Developer);
     }
 
+    // Test repeated children
+    void testRepeatedChildren()
+    {
+        // Just testing the generated code
+        KDAB__EmployeeNameParams params;
+        KDAB__TestRepeatedChildren children;
+        children.setCenter(42);
+        children.setLow(4);
+        children.setHigh(5);
+        children.setWidth(6);
+        params.setRepeatedChildren(children);
+    }
+
     void testSoapVersion()
     {
         // Prepare response
