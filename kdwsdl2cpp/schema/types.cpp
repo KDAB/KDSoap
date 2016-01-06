@@ -1,4 +1,4 @@
-/* 
+/*
     This file is part of KDE Schema Parser
 
     Copyright (c) 2005 Tobias Koenig <tokoe@kde.org>
@@ -23,7 +23,8 @@
 
 #include <QDebug>
 
-namespace XSD {
+namespace XSD
+{
 
 class Types::Private
 {
@@ -39,35 +40,37 @@ public:
 };
 
 Types::Types()
-  : d(new Private)
+    : d(new Private)
 {
 }
 
-Types::Types( const Types &other )
-  : d(new Private)
+Types::Types(const Types &other)
+    : d(new Private)
 {
-  *d = *other.d;
+    *d = *other.d;
 }
 
 Types::~Types()
 {
-  delete d;
+    delete d;
 }
 
-Types &Types::operator=( const Types &other )
+Types &Types::operator=(const Types &other)
 {
-  if ( this == &other )
+    if (this == &other) {
+        return *this;
+    }
+
+    *d = *other.d;
+
     return *this;
-
-  *d = *other.d;
-
-  return *this;
 }
 
 Types &Types::operator +=(const Types &other)
 {
-    if ( this == &other )
-      return *this;
+    if (this == &other) {
+        return *this;
+    }
 
     d->mSimpleTypes += other.d->mSimpleTypes;
     d->mComplexTypes += other.d->mComplexTypes;
@@ -79,50 +82,50 @@ Types &Types::operator +=(const Types &other)
     return *this;
 }
 
-void Types::setSimpleTypes( const SimpleType::List &simpleTypes )
+void Types::setSimpleTypes(const SimpleType::List &simpleTypes)
 {
-  d->mSimpleTypes = simpleTypes;
+    d->mSimpleTypes = simpleTypes;
 }
 
 SimpleType::List Types::simpleTypes() const
 {
-  return d->mSimpleTypes;
+    return d->mSimpleTypes;
 }
 
-void Types::setComplexTypes( const ComplexType::List &complexTypes )
+void Types::setComplexTypes(const ComplexType::List &complexTypes)
 {
-  d->mComplexTypes = complexTypes;
+    d->mComplexTypes = complexTypes;
 }
 
 ComplexType::List Types::complexTypes() const
 {
-  return d->mComplexTypes;
+    return d->mComplexTypes;
 }
 
-void Types::setElements( const Element::List &elements )
+void Types::setElements(const Element::List &elements)
 {
-  d->mElements = elements;
+    d->mElements = elements;
 }
 
 Element::List Types::elements() const
 {
-  return d->mElements;
+    return d->mElements;
 }
 
-void Types::setAttributes( const Attribute::List &attributes )
+void Types::setAttributes(const Attribute::List &attributes)
 {
-  d->mAttributes = attributes;
+    d->mAttributes = attributes;
 }
 
 Attribute::List Types::attributes() const
 {
-  return d->mAttributes;
+    return d->mAttributes;
 }
 
 #if 0
-void Types::setAttributeGroups( const AttributeGroup::List &attributeGroups )
+void Types::setAttributeGroups(const AttributeGroup::List &attributeGroups)
 {
-  d->mAttributeGroups = attributeGroups;
+    d->mAttributeGroups = attributeGroups;
 }
 
 AttributeGroup::List Types::attributeGroups() const
@@ -140,30 +143,32 @@ Group::List Types::groups() const
     return d->mGroups;
 }
 
-ComplexType Types::complexType( const Element &element ) const
+ComplexType Types::complexType(const Element &element) const
 {
-  return complexType( element.type() );
+    return complexType(element.type());
 }
 #endif
 
-ComplexType Types::complexType( const QName &typeName ) const
+ComplexType Types::complexType(const QName &typeName) const
 {
-    return d->mComplexTypes.complexType( typeName );
+    return d->mComplexTypes.complexType(typeName);
 }
 
-ComplexType Types::polymorphicBaseClass( const ComplexType &derivedType ) const
+ComplexType Types::polymorphicBaseClass(const ComplexType &derivedType) const
 {
-    if (derivedType.isPolymorphicBaseClass())
+    if (derivedType.isPolymorphicBaseClass()) {
         return derivedType;
-    ComplexType base = complexType( derivedType.baseTypeName() );
-    if ( !base.isNull() )
-        return polymorphicBaseClass( base ); // recurse
+    }
+    ComplexType base = complexType(derivedType.baseTypeName());
+    if (!base.isNull()) {
+        return polymorphicBaseClass(base);    // recurse
+    }
     return ComplexType();
 }
 
-SimpleType Types::simpleType( const QName &typeName ) const
+SimpleType Types::simpleType(const QName &typeName) const
 {
-    return d->mSimpleTypes.simpleType( typeName );
+    return d->mSimpleTypes.simpleType(typeName);
 }
 
 } // namespace XSD

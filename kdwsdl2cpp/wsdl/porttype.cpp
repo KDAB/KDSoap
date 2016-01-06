@@ -31,8 +31,8 @@ PortType::PortType()
 {
 }
 
-PortType::PortType( const QString &nameSpace )
-  : Element( nameSpace )
+PortType::PortType(const QString &nameSpace)
+    : Element(nameSpace)
 {
 }
 
@@ -40,62 +40,65 @@ PortType::~PortType()
 {
 }
 
-void PortType::setName( const QString &name )
+void PortType::setName(const QString &name)
 {
-  mName = name;
+    mName = name;
 }
 
 QString PortType::name() const
 {
-  return mName;
+    return mName;
 }
 
-void PortType::setOperations( const Operation::List &operations )
+void PortType::setOperations(const Operation::List &operations)
 {
-  mOperations = operations;
+    mOperations = operations;
 }
 
 Operation::List PortType::operations() const
 {
-  return mOperations;
+    return mOperations;
 }
 
-void PortType::loadXML( ParserContext *context, const QDomElement &element )
+void PortType::loadXML(ParserContext *context, const QDomElement &element)
 {
-  mName = element.attribute( QLatin1String("name" ));
-  if ( mName.isEmpty() )
-    context->messageHandler()->warning( QLatin1String("PortType: 'name' required") );
-
-  QDomElement child = element.firstChildElement();
-  while ( !child.isNull() ) {
-    NSManager namespaceManager( context, child );
-    const QName tagName( child.tagName() );
-    if ( tagName.localName() == QLatin1String("operation") ) {
-      Operation operation( nameSpace() );
-      operation.loadXML( context, child );
-      mOperations.append( operation );
-    } else if ( tagName.localName() == QLatin1String("documentation")) {
-      setDocumentation( child.text().trimmed() );
-    } else {
-      context->messageHandler()->warning( QString::fromLatin1( "PortType: unknown tag %1" ).arg( child.tagName() ) );
+    mName = element.attribute(QLatin1String("name"));
+    if (mName.isEmpty()) {
+        context->messageHandler()->warning(QLatin1String("PortType: 'name' required"));
     }
 
-    child = child.nextSiblingElement();
-  }
+    QDomElement child = element.firstChildElement();
+    while (!child.isNull()) {
+        NSManager namespaceManager(context, child);
+        const QName tagName(child.tagName());
+        if (tagName.localName() == QLatin1String("operation")) {
+            Operation operation(nameSpace());
+            operation.loadXML(context, child);
+            mOperations.append(operation);
+        } else if (tagName.localName() == QLatin1String("documentation")) {
+            setDocumentation(child.text().trimmed());
+        } else {
+            context->messageHandler()->warning(QString::fromLatin1("PortType: unknown tag %1").arg(child.tagName()));
+        }
+
+        child = child.nextSiblingElement();
+    }
 }
 
-void PortType::saveXML( ParserContext *context, QDomDocument &document, QDomElement &parent ) const
+void PortType::saveXML(ParserContext *context, QDomDocument &document, QDomElement &parent) const
 {
-  QDomElement element = document.createElement( QLatin1String("portType" ));
-  parent.appendChild( element );
+    QDomElement element = document.createElement(QLatin1String("portType"));
+    parent.appendChild(element);
 
-  if ( !mName.isEmpty() )
-    element.setAttribute( QLatin1String("name"), mName );
-  else
-    context->messageHandler()->warning( QLatin1String("PortType: 'name' required") );
+    if (!mName.isEmpty()) {
+        element.setAttribute(QLatin1String("name"), mName);
+    } else {
+        context->messageHandler()->warning(QLatin1String("PortType: 'name' required"));
+    }
 
-  Operation::List::ConstIterator it( mOperations.begin() );
-  const Operation::List::ConstIterator endIt( mOperations.end() );
-  for ( ; it != endIt; ++it )
-    (*it).saveXML( context, document, element );
+    Operation::List::ConstIterator it(mOperations.begin());
+    const Operation::List::ConstIterator endIt(mOperations.end());
+    for (; it != endIt; ++it) {
+        (*it).saveXML(context, document, element);
+    }
 }

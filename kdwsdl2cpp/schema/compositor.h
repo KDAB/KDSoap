@@ -26,42 +26,43 @@
 #include <common/qname.h>
 #include <kode_export.h>
 
-namespace XSD {
+namespace XSD
+{
 
 class SCHEMA_EXPORT Compositor
 {
-  public:
+public:
     typedef QList<Compositor> List;
 
     enum Type {
-      Invalid,
-      Choice,
-      Sequence,
-      All
+        Invalid,
+        Choice,
+        Sequence,
+        All
     };
 
     Compositor();
-    Compositor( Type type );
-    Compositor( const Compositor &other );
+    Compositor(Type type);
+    Compositor(const Compositor &other);
     ~Compositor();
 
-    Compositor &operator=( const Compositor &other );
+    Compositor &operator=(const Compositor &other);
 
     bool isValid() const;
 
-    void setMinOccurs( int minOccurs );
+    void setMinOccurs(int minOccurs);
     int minOccurs() const;
-    void setMaxOccurs( int maxOccurs );
+    void setMaxOccurs(int maxOccurs);
     int maxOccurs() const;
 
-    void setType( Type type );
+    void setType(Type type);
     Type type() const;
 
-    void addChild( const QName &childName );
-    void setChildren( const QName::List &children );
+    void addChild(const QName &childName);
+    void setChildren(const QName::List &children);
     QName::List children() const;
 
-  private:
+private:
     class Private;
     Private *d;
 };

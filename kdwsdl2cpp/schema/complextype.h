@@ -34,27 +34,28 @@
 #include <common/qname.h>
 #include <kode_export.h>
 
-namespace XSD {
+namespace XSD
+{
 class ComplexTypeList;
 
 class SCHEMA_EXPORT ComplexType : public XSDType
 {
-  public:
+public:
     typedef ComplexTypeList List;
 
     typedef enum {
-      Restriction,
-      Extension
+        Restriction,
+        Extension
     } Derivation;
 
     ComplexType();
-    ComplexType( const QString &nameSpace );
-    ComplexType( const ComplexType &other );
+    ComplexType(const QString &nameSpace);
+    ComplexType(const ComplexType &other);
     ~ComplexType();
 
-    ComplexType &operator=( const ComplexType &other );
+    ComplexType &operator=(const ComplexType &other);
 
-    void setDocumentation( const QString &documentation );
+    void setDocumentation(const QString &documentation);
     QString documentation() const;
 
     bool isSimple() const;
@@ -62,46 +63,46 @@ class SCHEMA_EXPORT ComplexType : public XSDType
     // True if this is the base class for other (derived) complex types
     bool isPolymorphicBaseClass() const;
 
-    void setAnonymous( bool anonymous );
+    void setAnonymous(bool anonymous);
     bool isAnonymous() const;
 
-    void setConflicting( bool c );
+    void setConflicting(bool c);
     bool isConflicting() const;
 
-    void setBaseDerivation( Derivation derivation );
+    void setBaseDerivation(Derivation derivation);
     Derivation baseDerivation() const;
 
-    void setBaseTypeName( const QName &baseTypeName );
+    void setBaseTypeName(const QName &baseTypeName);
     QName baseTypeName() const;
 
-    void addDerivedType( const QName& derivedTypeName );
+    void addDerivedType(const QName &derivedTypeName);
     QList<QName> derivedTypes() const;
 
-    void setElements( const Element::List &elements );
+    void setElements(const Element::List &elements);
     Element::List elements() const;
 
-    void setGroups( const Group::List &groups );
-    void addGroup( const Group& group );
+    void setGroups(const Group::List &groups);
+    void addGroup(const Group &group);
     Group::List groups() const;
 
-    void setAttributes( const Attribute::List &attributes );
+    void setAttributes(const Attribute::List &attributes);
     Attribute::List attributes() const;
-    Attribute attribute( const QName& attrName ) const;
+    Attribute attribute(const QName &attrName) const;
 
-    void addAttributeGroups( const AttributeGroup& attributeGroups );
-    void setAttributeGroups( const AttributeGroup::List &attributeGroups );
+    void addAttributeGroups(const AttributeGroup &attributeGroups);
+    void setAttributeGroups(const AttributeGroup::List &attributeGroups);
     AttributeGroup::List attributeGroups() const;
 
-    void setArrayType( const QName &arrayType );
+    void setArrayType(const QName &arrayType);
     QName arrayType() const;
     bool isArray() const;
 
-    void addAttribute( const Attribute &attribute );
-    void addElement( const Element &element );
+    void addAttribute(const Attribute &attribute);
+    void addElement(const Element &element);
 
     bool isEmpty() const;
 
-  private:
+private:
     class Private;
     Private *d;
 };
@@ -109,14 +110,14 @@ class SCHEMA_EXPORT ComplexType : public XSDType
 class SCHEMA_EXPORT ComplexTypeList : public QList<ComplexType>
 {
 public:
-    ComplexTypeList( const QList<ComplexType> &arg ) : QList<ComplexType>(arg) {}
+    ComplexTypeList(const QList<ComplexType> &arg) : QList<ComplexType>(arg) {}
     ComplexTypeList() : QList<ComplexType>() {}
 
     // Readonly lookup, returns null type if not found
-    ComplexType complexType( const QName& qualifiedName ) const;
+    ComplexType complexType(const QName &qualifiedName) const;
 
     // Mutable lookup (for making changes), returns end() if not found
-    iterator findComplexType( const QName& qualifiedName );
+    iterator findComplexType(const QName &qualifiedName);
 };
 
 } // namespace XSD

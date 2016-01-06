@@ -1,4 +1,3 @@
-// kate: space-indent on; indent-width 2; encoding utf-8; replace-tabs on;
 /*
     This file is part of KDE Schema Parser
 
@@ -35,24 +34,25 @@
 
 class ParserContext;
 
-namespace XSD {
+namespace XSD
+{
 
 class SCHEMA_EXPORT Parser
 {
-  public:
+public:
     enum { UNBOUNDED = 100000 };
 
-    Parser( ParserContext *context, const QString &nameSpace = QString() );
-    Parser( const Parser &other );
+    Parser(ParserContext *context, const QString &nameSpace = QString());
+    Parser(const Parser &other);
     ~Parser();
 
-    Parser &operator=( const Parser &other );
+    Parser &operator=(const Parser &other);
 
     Types types() const;
 
     Annotation::List annotations() const;
 
-    bool parseSchemaTag( ParserContext *context, const QDomElement &element );
+    bool parseSchemaTag(ParserContext *context, const QDomElement &element);
 
     QString targetNamespace() const;
 
@@ -63,8 +63,8 @@ class SCHEMA_EXPORT Parser
 
     static bool debugParsing();
 
-  private:
-    void parseImport( ParserContext *context, const QDomElement& );
+private:
+    void parseImport(ParserContext *context, const QDomElement &);
     /**
      * @brief Parse include element.
      * The <include> element must include a external schema within the same target namespace
@@ -72,51 +72,50 @@ class SCHEMA_EXPORT Parser
      * @param context Current parser context.
      * @param element DOM element to parse.
      */
-    void parseInclude( ParserContext *context, const QDomElement& element);
-    void addGlobalElement( const Element & );
-    void addGlobalAttribute( const Attribute & );
-    AttributeGroup parseAttributeGroup( ParserContext *context, const QDomElement&, const QString &nameSpace );
-    Group parseGroup(ParserContext *context, const QDomElement& , const QString &nameSpace);
+    void parseInclude(ParserContext *context, const QDomElement &element);
+    void addGlobalElement(const Element &);
+    void addGlobalAttribute(const Attribute &);
+    AttributeGroup parseAttributeGroup(ParserContext *context, const QDomElement &, const QString &nameSpace);
+    Group parseGroup(ParserContext *context, const QDomElement &, const QString &nameSpace);
 
-    Annotation::List parseAnnotation( ParserContext *context, const QDomElement& );
-    ComplexType parseComplexType( ParserContext *context, const QDomElement& );
+    Annotation::List parseAnnotation(ParserContext *context, const QDomElement &);
+    ComplexType parseComplexType(ParserContext *context, const QDomElement &);
 
-    void all( ParserContext *context, const QDomElement&, ComplexType& );
+    void all(ParserContext *context, const QDomElement &, ComplexType &);
     void parseCompositor(ParserContext *context, const QDomElement &element,
-                                   const QString &nameSpace , Element::List *elements, Group::List *groups);
+                         const QString &nameSpace, Element::List *elements, Group::List *groups);
 
-    void setOccurrenceAttributes( Element &newElement,
-      const QDomElement &element );
+    void setOccurrenceAttributes(Element &newElement,
+                                 const QDomElement &element);
 
-    Element parseElement( ParserContext *context, const QDomElement &,
-      const QString &nameSpace, const QDomElement &occurrenceElement );
-    void setSubstitutionElementName(const QName &typeName, const QName &elemName );
+    Element parseElement(ParserContext *context, const QDomElement &,
+                         const QString &nameSpace, const QDomElement &occurrenceElement);
+    void setSubstitutionElementName(const QName &typeName, const QName &elemName);
 
-    Attribute parseAttribute( ParserContext *context, const QDomElement&,
-      const QString &nameSpace);
-    Element parseAny(ParserContext *context, const QDomElement& , const QString &nameSpace);
-    void addAnyAttribute( ParserContext *context, const QDomElement&, ComplexType& );
+    Attribute parseAttribute(ParserContext *context, const QDomElement &,
+                             const QString &nameSpace);
+    Element parseAny(ParserContext *context, const QDomElement &, const QString &nameSpace);
+    void addAnyAttribute(ParserContext *context, const QDomElement &, ComplexType &);
 
-    SimpleType parseSimpleType( ParserContext *context, const QDomElement& );
-    void parseRestriction( ParserContext *context, const QDomElement&, SimpleType& );
-    void parseComplexContent( ParserContext *context, const QDomElement&, ComplexType& );
-    void parseSimpleContent( ParserContext *context, const QDomElement&, ComplexType& );
+    SimpleType parseSimpleType(ParserContext *context, const QDomElement &);
+    void parseRestriction(ParserContext *context, const QDomElement &, SimpleType &);
+    void parseComplexContent(ParserContext *context, const QDomElement &, ComplexType &);
+    void parseSimpleContent(ParserContext *context, const QDomElement &, ComplexType &);
 
-
-    void importSchema( ParserContext *context, const QString &location );
+    void importSchema(ParserContext *context, const QString &location);
     /**
      * @brief Read and include the given schema into the current schema.
      * @param context Current parser context.
      * @param location Schema location.
      */
-    void includeSchema( ParserContext *context, const QString &location );
+    void includeSchema(ParserContext *context, const QString &location);
 
     bool importOrIncludeSchema(ParserContext *context, const QDomElement &element, const QUrl &schemaLocation);
 
-    Element findElement( const QName &name ) const;
-    Group findGroup( const QName &name ) const;
-    Attribute findAttribute( const QName &name ) const;
-    AttributeGroup findAttributeGroup( const QName &name ) const;
+    Element findElement(const QName &name) const;
+    Group findGroup(const QName &name) const;
+    Attribute findAttribute(const QName &name) const;
+    AttributeGroup findAttributeGroup(const QName &name) const;
     void init(ParserContext *context);
     void clear();
     bool resolveForwardDeclarations();
@@ -128,5 +127,4 @@ class SCHEMA_EXPORT Parser
 }
 
 #endif
-
 

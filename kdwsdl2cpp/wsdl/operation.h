@@ -33,7 +33,8 @@
 
 class ParserContext;
 
-namespace KWSDL {
+namespace KWSDL
+{
 
 /**
  * <operation> as defined inside <portType>.
@@ -41,40 +42,39 @@ namespace KWSDL {
  */
 class KWSDL_EXPORT Operation : public Element
 {
-  public:
+public:
     typedef QList<Operation> List;
 
-    enum OperationType
-    {
-      OneWayOperation,
-      RequestResponseOperation,
-      SolicitResponseOperation,
-      NotificationOperation
+    enum OperationType {
+        OneWayOperation,
+        RequestResponseOperation,
+        SolicitResponseOperation,
+        NotificationOperation
     };
 
     Operation();
-    Operation( const QString &nameSpace );
+    Operation(const QString &nameSpace);
     ~Operation();
 
-    void setOperationType( OperationType type );
+    void setOperationType(OperationType type);
     OperationType operationType() const;
 
-    void setName( const QString &name );
+    void setName(const QString &name);
     QString name() const;
 
-    void setInput( const Param &input );
+    void setInput(const Param &input);
     Param input() const;
 
-    void setOutput( const Param &output );
+    void setOutput(const Param &output);
     Param output() const;
 
-    void setFaults( const Fault::List &faults );
+    void setFaults(const Fault::List &faults);
     Fault::List faults() const;
 
-    void loadXML( ParserContext *context, const QDomElement &element );
-    void saveXML( ParserContext *context, QDomDocument &document, QDomElement &parent ) const;
+    void loadXML(ParserContext *context, const QDomElement &element);
+    void saveXML(ParserContext *context, QDomDocument &document, QDomElement &parent) const;
 
-  private:
+private:
     OperationType mType;
 
     Param mInput;

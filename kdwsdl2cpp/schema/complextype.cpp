@@ -23,15 +23,16 @@
 #include "complextype.h"
 #include <QDebug>
 
-namespace XSD {
+namespace XSD
+{
 
 class ComplexType::Private
 {
 public:
     Private()
-       : mAnonymous(false),
-         mConflicting(false),
-         mBaseDerivation(Restriction)
+        : mAnonymous(false),
+          mConflicting(false),
+          mBaseDerivation(Restriction)
     {}
 
     QString mDocumentation;
@@ -50,50 +51,51 @@ public:
     QList<QName> mDerivedTypes;
 };
 
-ComplexType::ComplexType( const QString &nameSpace )
-  : XSDType( nameSpace ), d(new Private)
+ComplexType::ComplexType(const QString &nameSpace)
+    : XSDType(nameSpace), d(new Private)
 {
 }
 
 ComplexType::ComplexType()
-  : XSDType(), d(new Private)
+    : XSDType(), d(new Private)
 {
 }
 
-ComplexType::ComplexType( const ComplexType &other )
-  : XSDType( other ), d(new Private)
+ComplexType::ComplexType(const ComplexType &other)
+    : XSDType(other), d(new Private)
 {
-  *d = *other.d;
+    *d = *other.d;
 }
 
 ComplexType::~ComplexType()
 {
-  delete d;
+    delete d;
 }
 
-ComplexType &ComplexType::operator=( const ComplexType &other )
+ComplexType &ComplexType::operator=(const ComplexType &other)
 {
-  if ( this == &other )
+    if (this == &other) {
+        return *this;
+    }
+
+    *d = *other.d;
+
     return *this;
-
-  *d = *other.d;
-
-  return *this;
 }
 
-void ComplexType::setDocumentation( const QString &documentation )
+void ComplexType::setDocumentation(const QString &documentation)
 {
-  d->mDocumentation = documentation;
+    d->mDocumentation = documentation;
 }
 
 QString ComplexType::documentation() const
 {
-  return d->mDocumentation;
+    return d->mDocumentation;
 }
 
-void ComplexType::setBaseTypeName( const QName &baseTypeName )
+void ComplexType::setBaseTypeName(const QName &baseTypeName)
 {
-  d->mBaseTypeName = baseTypeName;
+    d->mBaseTypeName = baseTypeName;
 }
 
 QName ComplexType::baseTypeName() const
@@ -111,14 +113,14 @@ QList<QName> ComplexType::derivedTypes() const
     return d->mDerivedTypes;
 }
 
-void ComplexType::setBaseDerivation( Derivation derivation )
+void ComplexType::setBaseDerivation(Derivation derivation)
 {
-  d->mBaseDerivation = derivation;
+    d->mBaseDerivation = derivation;
 }
 
 ComplexType::Derivation ComplexType::baseDerivation() const
 {
-  return d->mBaseDerivation;
+    return d->mBaseDerivation;
 }
 
 bool ComplexType::isSimple() const
@@ -131,14 +133,14 @@ bool ComplexType::isPolymorphicBaseClass() const
     return !isArray() && !d->mDerivedTypes.isEmpty() && d->mBaseTypeName.isEmpty();
 }
 
-void ComplexType::setArrayType( const QName &arrayType )
+void ComplexType::setArrayType(const QName &arrayType)
 {
-  d->mArrayType = arrayType;
+    d->mArrayType = arrayType;
 }
 
 QName ComplexType::arrayType() const
 {
-  return d->mArrayType;
+    return d->mArrayType;
 }
 
 bool ComplexType::isArray() const
@@ -146,93 +148,94 @@ bool ComplexType::isArray() const
     return !arrayType().isEmpty();
 }
 
-void ComplexType::setAnonymous( bool anonymous )
+void ComplexType::setAnonymous(bool anonymous)
 {
-  d->mAnonymous = anonymous;
+    d->mAnonymous = anonymous;
 }
 
 bool ComplexType::isAnonymous() const
 {
-  return d->mAnonymous;
+    return d->mAnonymous;
 }
 
-void ComplexType::setConflicting( bool conflicting )
+void ComplexType::setConflicting(bool conflicting)
 {
-  d->mConflicting = conflicting;
+    d->mConflicting = conflicting;
 }
 
 bool ComplexType::isConflicting() const
 {
-  return d->mConflicting;
+    return d->mConflicting;
 }
 
-void ComplexType::setElements( const Element::List &elements )
+void ComplexType::setElements(const Element::List &elements)
 {
-  d->mElements = elements;
+    d->mElements = elements;
 }
 
 Element::List ComplexType::elements() const
 {
-  return d->mElements;
+    return d->mElements;
 }
 
-void ComplexType::setGroups( const Group::List &groups )
+void ComplexType::setGroups(const Group::List &groups)
 {
-  d->mGroups = groups;
+    d->mGroups = groups;
 }
 
 void ComplexType::addGroup(const Group &group)
 {
-  d->mGroups.append( group );
+    d->mGroups.append(group);
 }
 
 Group::List ComplexType::groups() const
 {
-  return d->mGroups;
+    return d->mGroups;
 }
 
-void ComplexType::setAttributes( const Attribute::List &attributes )
+void ComplexType::setAttributes(const Attribute::List &attributes)
 {
-  d->mAttributes = attributes;
+    d->mAttributes = attributes;
 }
 
 Attribute::List ComplexType::attributes() const
 {
-  return d->mAttributes;
+    return d->mAttributes;
 }
 
 void ComplexType::addAttributeGroups(const AttributeGroup &attributeGroups)
 {
-  d->mAttributeGroups.append(attributeGroups);
+    d->mAttributeGroups.append(attributeGroups);
 }
 
-void ComplexType::setAttributeGroups( const AttributeGroup::List &attributeGroups )
+void ComplexType::setAttributeGroups(const AttributeGroup::List &attributeGroups)
 {
-  d->mAttributeGroups = attributeGroups;
+    d->mAttributeGroups = attributeGroups;
 }
 
 AttributeGroup::List ComplexType::attributeGroups() const
 {
-  return d->mAttributeGroups;
+    return d->mAttributeGroups;
 }
 
-void ComplexType::addAttribute( const Attribute &attribute )
+void ComplexType::addAttribute(const Attribute &attribute)
 {
-  d->mAttributes.append( attribute );
+    d->mAttributes.append(attribute);
 }
 
 Attribute ComplexType::attribute(const QName &attrName) const
 {
-    Q_FOREACH(const Attribute& attr, d->mAttributes) {
-        if (attr.qualifiedName() == attrName)
+    Q_FOREACH (const Attribute &attr, d->mAttributes) {
+        if (attr.qualifiedName() == attrName) {
             return attr;
+        }
     }
     return Attribute();
 }
 
-void ComplexType::addElement( const Element &element )
+void ComplexType::addElement(const Element &element)
 {
-    d->mElements.append( element );
+    d->mElements.append(element);
 }
 
 bool ComplexType::isEmpty() const
@@ -240,23 +243,25 @@ bool ComplexType::isEmpty() const
     return d->mAttributeGroups.isEmpty() && d->mGroups.isEmpty() && d->mAttributes.isEmpty() && d->mElements.isEmpty() && d->mBaseTypeName.isEmpty() && d->mArrayType.isEmpty();
 }
 
-ComplexType ComplexTypeList::complexType( const QName &qualifiedName ) const
+ComplexType ComplexTypeList::complexType(const QName &qualifiedName) const
 {
     //qDebug() << "looking for" << typeName << "ns=" << typeName.nameSpace();
-    foreach( const ComplexType& type, *this ) {
+    foreach (const ComplexType &type, *this) {
         //qDebug() << type.nameSpace() << "qualifiedName=" << type.qualifiedName();
-        if ( qualifiedName == type.qualifiedName() )
+        if (qualifiedName == type.qualifiedName()) {
             return type;
+        }
     }
     //qDebug() << "Complex type" << qualifiedName << "not found";
     return ComplexType();
 }
 
-ComplexTypeList::iterator ComplexTypeList::findComplexType( const QName &qualifiedName )
+ComplexTypeList::iterator ComplexTypeList::findComplexType(const QName &qualifiedName)
 {
-    for ( iterator it = begin(); it != end() ; ++it )
-        if ( (*it).qualifiedName() == qualifiedName )
+    for (iterator it = begin(); it != end(); ++it)
+        if ((*it).qualifiedName() == qualifiedName) {
             return it;
+        }
     return end();
 }
 

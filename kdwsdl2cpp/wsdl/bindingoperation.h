@@ -32,26 +32,27 @@
 
 class ParserContext;
 
-namespace KWSDL {
+namespace KWSDL
+{
 
 class AbstractBinding;
 
 class KWSDL_EXPORT BindingOperation : public Element
 {
-  public:
+public:
     typedef QList<BindingOperation> List;
 
     BindingOperation();
-    BindingOperation( const QString &nameSpace );
+    BindingOperation(const QString &nameSpace);
     ~BindingOperation();
 
-    void setName( const QString &name );
+    void setName(const QString &name);
     QString name() const;
 
-    void loadXML( AbstractBinding *binding, ParserContext *context,  const QDomElement &element );
-    void saveXML( const AbstractBinding *binding, ParserContext *context, QDomDocument &document, QDomElement &parent ) const;
+    void loadXML(AbstractBinding *binding, ParserContext *context,  const QDomElement &element);
+    void saveXML(const AbstractBinding *binding, ParserContext *context, QDomDocument &document, QDomElement &parent) const;
 
-  private:
+private:
     QString mName;
 };
 

@@ -32,27 +32,28 @@
 
 class ParserContext;
 
-namespace KWSDL {
+namespace KWSDL
+{
 
 class KWSDL_EXPORT PortType : public Element
 {
-  public:
+public:
     typedef QList<PortType> List;
 
     PortType();
-    PortType( const QString &nameSpace );
+    PortType(const QString &nameSpace);
     ~PortType();
 
-    void setName( const QString &name );
+    void setName(const QString &name);
     QString name() const;
 
-    void setOperations( const Operation::List &operations );
+    void setOperations(const Operation::List &operations);
     Operation::List operations() const;
 
-    void loadXML( ParserContext *context, const QDomElement &element );
-    void saveXML( ParserContext *context, QDomDocument &document, QDomElement &parent ) const;
+    void loadXML(ParserContext *context, const QDomElement &element);
+    void saveXML(ParserContext *context, QDomDocument &document, QDomElement &parent) const;
 
-  private:
+private:
     QString mName;
     Operation::List mOperations;
 };

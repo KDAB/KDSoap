@@ -32,27 +32,28 @@
 
 class ParserContext;
 
-namespace KWSDL {
+namespace KWSDL
+{
 
 class KWSDL_EXPORT Param : public Element
 {
-  public:
+public:
     typedef QList<Param> List;
 
     Param();
-    Param( const QString &nameSpace );
+    Param(const QString &nameSpace);
     ~Param();
 
-    void setName( const QString &name );
+    void setName(const QString &name);
     QString name() const;
 
-    void setMessage( const QName &message );
+    void setMessage(const QName &message);
     QName message() const;
 
-    void loadXML( ParserContext *context, const QDomElement &element );
-    void saveXML( ParserContext *context, const QString &name, QDomDocument &document, QDomElement &parent ) const;
+    void loadXML(ParserContext *context, const QDomElement &element);
+    void saveXML(ParserContext *context, const QString &name, QDomDocument &document, QDomElement &parent) const;
 
-  private:
+private:
     QString mName;
     QName mMessage;
 };

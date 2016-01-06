@@ -8,28 +8,29 @@
 
 #include <kode_export.h>
 
-namespace XSD {
+namespace XSD
+{
 
 class SCHEMA_EXPORT Group : public XmlElement
 {
-  public:
+public:
     typedef QList<Group> List;
 
     Group();
-    Group( const Group &other );
+    Group(const Group &other);
     ~Group();
 
-    Group &operator=( const Group &other );
+    Group &operator=(const Group &other);
 
-    void setReference( const QName &reference );
+    void setReference(const QName &reference);
     QName reference() const;
 
-    void setElements( const Element::List &elements );
+    void setElements(const Element::List &elements);
     Element::List elements() const;
 
     bool isResolved() const;
 
-  private:
+private:
     class Private;
     Private *d;
 };

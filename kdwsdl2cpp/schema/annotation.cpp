@@ -23,86 +23,87 @@
 
 #include <common/qname.h>
 
-namespace XSD {
+namespace XSD
+{
 
 class Annotation::Private
 {
 public:
-   QDomElement mDomElement;
+    QDomElement mDomElement;
 };
 
 Annotation::Annotation()
-  : d(new Private)
+    : d(new Private)
 {
 }
 
-Annotation::Annotation( const QDomElement &element )
-  : d(new Private)
+Annotation::Annotation(const QDomElement &element)
+    : d(new Private)
 {
-  d->mDomElement = element;
+    d->mDomElement = element;
 }
 
-Annotation::Annotation( const Annotation &other )
-  : d(new Private)
+Annotation::Annotation(const Annotation &other)
+    : d(new Private)
 {
-  *d = *other.d;
+    *d = *other.d;
 }
 
 Annotation::~Annotation()
 {
-  delete d;
+    delete d;
 }
 
-Annotation &Annotation::operator=( const Annotation &other )
+Annotation &Annotation::operator=(const Annotation &other)
 {
-  if( this == &other )
+    if (this == &other) {
+        return *this;
+    }
+
+    *d = *other.d;
+
     return *this;
-
-  *d = *other.d;
-
-  return *this;
 }
-void Annotation::setDomElement( const QDomElement &element )
+void Annotation::setDomElement(const QDomElement &element)
 {
-  d->mDomElement = element;
+    d->mDomElement = element;
 }
 
 QDomElement Annotation::domElement() const
 {
-  return d->mDomElement;
+    return d->mDomElement;
 }
 
 bool Annotation::isDocumentation() const
 {
-  return QName( d->mDomElement.tagName() ).localName() == QLatin1String("documentation");
+    return QName(d->mDomElement.tagName()).localName() == QLatin1String("documentation");
 }
 
 bool Annotation::isAppinfo() const
 {
-  return QName( d->mDomElement.tagName() ).localName() == QLatin1String("appinfo");
+    return QName(d->mDomElement.tagName()).localName() == QLatin1String("appinfo");
 }
 
 QString Annotation::documentation() const
 {
-  QString result;
+    QString result;
 
-  if ( isDocumentation() ) {
-    result = d->mDomElement.text().trimmed();
-  }
+    if (isDocumentation()) {
+        result = d->mDomElement.text().trimmed();
+    }
 
-  return result;
+    return result;
 }
-
 
 QString Annotation::List::documentation() const
 {
-  QString result;
+    QString result;
 
-  foreach( Annotation a, *this ) {
-    result.append( a.documentation() );
-  }
+    foreach (Annotation a, *this) {
+        result.append(a.documentation());
+    }
 
-  return result;
+    return result;
 }
 
 }

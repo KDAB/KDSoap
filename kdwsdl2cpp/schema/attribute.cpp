@@ -1,4 +1,4 @@
-/* 
+/*
     This file is part of KDE Schema Parser
 
     Copyright (c) 2005 Tobias Koenig <tokoe@kde.org>
@@ -22,13 +22,14 @@
 
 #include "attribute.h"
 
-namespace XSD {
+namespace XSD
+{
 
 class Attribute::Private
 {
 public:
     Private()
-     : mQualified(false), mUse(Optional)
+        : mQualified(false), mUse(Optional)
     {}
 
     QName mType;
@@ -41,106 +42,107 @@ public:
 };
 
 Attribute::Attribute()
-  : XmlElement(), d(new Private)
+    : XmlElement(), d(new Private)
 {
 }
 
-Attribute::Attribute( const QString &nameSpace )
-  : XmlElement( nameSpace ), d(new Private)
+Attribute::Attribute(const QString &nameSpace)
+    : XmlElement(nameSpace), d(new Private)
 {
 }
 
-Attribute::Attribute( const Attribute &other )
- : XmlElement( other ), d(new Private)
+Attribute::Attribute(const Attribute &other)
+    : XmlElement(other), d(new Private)
 {
-  *d = *other.d;
+    *d = *other.d;
 }
 
 Attribute::~Attribute()
 {
-  delete d;
+    delete d;
 }
 
-Attribute &Attribute::operator=( const Attribute &other )
+Attribute &Attribute::operator=(const Attribute &other)
 {
-  if( this == &other )
+    if (this == &other) {
+        return *this;
+    }
+
+    *d = *other.d;
+    XmlElement::operator=(other);
+
     return *this;
-
-  *d = *other.d;
-  XmlElement::operator=( other );
-
-  return *this;
 }
 
-void Attribute::setType( const QName &type )
+void Attribute::setType(const QName &type)
 {
-  d->mType = type;
+    d->mType = type;
 }
 
 QName Attribute::type() const
 {
-  return d->mType;
+    return d->mType;
 }
 
-void Attribute::setDocumentation( const QString &documentation )
+void Attribute::setDocumentation(const QString &documentation)
 {
-  d->mDocumentation = documentation;
+    d->mDocumentation = documentation;
 }
 
 QString Attribute::documentation() const
 {
-  return d->mDocumentation;
+    return d->mDocumentation;
 }
 
-void Attribute::setDefaultValue( const QString &defaultValue )
+void Attribute::setDefaultValue(const QString &defaultValue)
 {
-  d->mDefaultValue = defaultValue;
+    d->mDefaultValue = defaultValue;
 }
 
 QString Attribute::defaultValue() const
 {
-  return d->mDefaultValue;
+    return d->mDefaultValue;
 }
 
-void Attribute::setFixedValue( const QString &fixedValue )
+void Attribute::setFixedValue(const QString &fixedValue)
 {
-  d->mFixedValue = fixedValue;
+    d->mFixedValue = fixedValue;
 }
 
 QString Attribute::fixedValue() const
 {
-  return d->mFixedValue;
+    return d->mFixedValue;
 }
 
-void Attribute::setIsQualified( bool isQualified )
+void Attribute::setIsQualified(bool isQualified)
 {
-  d->mQualified = isQualified;
+    d->mQualified = isQualified;
 }
 
 bool Attribute::isQualified() const
 {
-  return d->mQualified;
+    return d->mQualified;
 }
 
 // http://www.w3.org/TR/xmlschema-0/#ref36
-void Attribute::setAttributeUse( AttributeUse use )
+void Attribute::setAttributeUse(AttributeUse use)
 {
-  d->mUse = use;
+    d->mUse = use;
 }
 
 Attribute::AttributeUse Attribute::attributeUse() const
 {
-  return d->mUse;
+    return d->mUse;
 }
 
-void Attribute::setReference( const QName &reference )
+void Attribute::setReference(const QName &reference)
 {
-  d->mReference = reference;
+    d->mReference = reference;
 }
 
 QName Attribute::reference() const
 {
-  return d->mReference;
+    return d->mReference;
 }
 
 bool Attribute::isResolved() const
@@ -150,8 +152,9 @@ bool Attribute::isResolved() const
 
 void Attribute::List::dump()
 {
-    Q_FOREACH (const Attribute& attr, *this)
+    Q_FOREACH (const Attribute &attr, *this) {
         qDebug() << attr.nameSpace() << attr.name();
+    }
 }
 
 } // namespace XSD

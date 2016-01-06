@@ -31,22 +31,23 @@
 
 class ParserContext;
 
-namespace KWSDL {
+namespace KWSDL
+{
 
 class KWSDL_EXPORT Type : public Element
 {
-  public:
+public:
     Type();
-    Type( const QString &nameSpace );
+    Type(const QString &nameSpace);
     ~Type();
 
-    void setTypes( const XSD::Types &types );
+    void setTypes(const XSD::Types &types);
     XSD::Types types() const;
 
-    bool loadXML( ParserContext *context, const QDomElement &element );
-    void saveXML( ParserContext *context, QDomDocument &document, QDomElement &parent ) const;
+    bool loadXML(ParserContext *context, const QDomElement &element);
+    void saveXML(ParserContext *context, QDomDocument &document, QDomElement &parent) const;
 
-  private:
+private:
     XSD::Types mTypes;
 };
 

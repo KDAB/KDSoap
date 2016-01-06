@@ -20,7 +20,8 @@
 
 #include "group.h"
 
-namespace XSD {
+namespace XSD
+{
 
 class Group::Private
 {
@@ -30,60 +31,61 @@ public:
 };
 
 Group::Group()
-  : XmlElement(), d(new Private)
+    : XmlElement(), d(new Private)
 {
 }
 
-Group::Group( const Group &other )
-  : XmlElement( other ), d(new Private)
+Group::Group(const Group &other)
+    : XmlElement(other), d(new Private)
 {
-  *d = *other.d;
+    *d = *other.d;
 }
 
 Group::~Group()
 {
-  delete d;
+    delete d;
 }
 
-Group &Group::operator=( const Group &other )
+Group &Group::operator=(const Group &other)
 {
-  if ( this == &other )
+    if (this == &other) {
+        return *this;
+    }
+
+    *d = *other.d;
+
     return *this;
-
-  *d = *other.d;
-
-  return *this;
 }
 
-void Group::setReference( const QName &reference )
+void Group::setReference(const QName &reference)
 {
-  d->mReference = reference;
+    d->mReference = reference;
 }
 
 QName Group::reference() const
 {
-  return d->mReference;
+    return d->mReference;
 }
 
-void Group::setElements( const Element::List &elements )
+void Group::setElements(const Element::List &elements)
 {
-  d->mElements = elements;
+    d->mElements = elements;
 }
 
 Element::List Group::elements() const
 {
-  return d->mElements;
+    return d->mElements;
 }
 
 bool Group::isResolved() const
 {
-  return !d->mElements.isEmpty();
+    return !d->mElements.isEmpty();
 }
 
 }
 
 QDebug operator<<(QDebug dbg, const XSD::Group &group)
 {
-  dbg << group.qualifiedName();
-  return dbg;
+    dbg << group.qualifiedName();
+    return dbg;
 }

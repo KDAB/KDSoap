@@ -7,12 +7,12 @@
     it under the terms of the GNU Lesser General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
     (at your option) any later version.
-    
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU Lesser General Public License for more details.
-    
+
     You should have received a copy of the GNU Lesser General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -26,26 +26,27 @@
 
 #include <kode_export.h>
 
-namespace XSD {
+namespace XSD
+{
 
 class SCHEMA_EXPORT AttributeGroup : public XmlElement
 {
-  public:
+public:
     typedef QList<AttributeGroup> List;
 
     AttributeGroup();
-    AttributeGroup( const AttributeGroup &other );
+    AttributeGroup(const AttributeGroup &other);
     ~AttributeGroup();
 
-    AttributeGroup &operator=( const AttributeGroup &other );
+    AttributeGroup &operator=(const AttributeGroup &other);
 
-    void setReference( const QName &reference );
+    void setReference(const QName &reference);
     QName reference() const;
 
-    void setAttributes( const Attribute::List &attributes );
+    void setAttributes(const Attribute::List &attributes);
     Attribute::List attributes() const;
 
-  private:
+private:
     class Private;
     Private *d;
 };

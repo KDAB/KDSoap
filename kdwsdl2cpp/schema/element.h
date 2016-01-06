@@ -1,4 +1,4 @@
-/* 
+/*
     This file is part of KDE Schema Parser
 
     Copyright (c) 2005 Tobias Koenig <tokoe@kde.org>
@@ -30,58 +30,59 @@
 #include "compositor.h"
 #include <kode_export.h>
 
-namespace XSD {
+namespace XSD
+{
 
 class ElementList;
 
 class SCHEMA_EXPORT Element : public XmlElement
 {
-  public:
+public:
     typedef ElementList List;
 
     Element();
-    Element( const QString &nameSpace );
-    Element( const Element &other );
+    Element(const QString &nameSpace);
+    Element(const Element &other);
     ~Element();
 
-    Element &operator=( const Element &other );
+    Element &operator=(const Element &other);
 
-    void setType( const QName &type );
+    void setType(const QName &type);
     QName type() const;
 
-    void setDocumentation( const QString &documentation );
+    void setDocumentation(const QString &documentation);
     QString documentation() const;
 
-    void setGroupId( int group );
+    void setGroupId(int group);
     int groupId() const;
 
-    void setMinOccurs( int minOccurs );
+    void setMinOccurs(int minOccurs);
     int minOccurs() const;
 
-    void setMaxOccurs( int maxOccurs );
+    void setMaxOccurs(int maxOccurs);
     int maxOccurs() const;
 
-    void setDefaultValue( const QString &defaultValue );
+    void setDefaultValue(const QString &defaultValue);
     QString defaultValue() const;
 
-    void setFixedValue( const QString &fixedValue );
+    void setFixedValue(const QString &fixedValue);
     QString fixedValue() const;
 
-    void setIsQualified( bool isQualified );
+    void setIsQualified(bool isQualified);
     bool isQualified() const;
 
-    void setNillable( bool nillable );
+    void setNillable(bool nillable);
     bool nillable() const;
 
-    void setOccurrence( int occurrence );
+    void setOccurrence(int occurrence);
     int occurrence() const;
 
-    void setReference( const QName &reference );
+    void setReference(const QName &reference);
     QName reference() const;
 
     bool isResolved() const;
 
-    void setCompositor( const Compositor & );
+    void setCompositor(const Compositor &);
     Compositor compositor() const;
 
     /**
@@ -92,13 +93,13 @@ class SCHEMA_EXPORT Element : public XmlElement
      *  <xs:element name="FieldURI" type="t:PathToUnindexedFieldType" substitutionGroup="t:Path"/>
      * will note in the element "Path" that substitutions exist.
      */
-    void setHasSubstitutions( bool hasSub );
+    void setHasSubstitutions(bool hasSub);
     /**
      * @return true if this element is the base element of a substitution group.
      */
     bool hasSubstitutions() const;
 
-  private:
+private:
     class Private;
     Private *d;
 };
@@ -107,10 +108,10 @@ class SCHEMA_EXPORT ElementList : public QList<Element>
 {
 public:
     // Readonly lookup, returns null element if not found
-    Element element( const QName& qualifiedName ) const;
+    Element element(const QName &qualifiedName) const;
 
     // Mutable lookup (for making changes), returns end() if not found
-    iterator findElement( const QName &qualifiedName );
+    iterator findElement(const QName &qualifiedName);
 
     // For debugging
     void dump();

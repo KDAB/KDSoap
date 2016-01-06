@@ -1,4 +1,4 @@
-/* 
+/*
     This file is part of KDE Schema Parser
 
     Copyright (c) 2005 Tobias Koenig <tokoe@kde.org>
@@ -27,28 +27,29 @@
 #include "simpletype.h"
 #include <kode_export.h>
 
-namespace XSD {
+namespace XSD
+{
 
 class SCHEMA_EXPORT Types
 {
-  public:
+public:
     Types();
-    Types( const Types &other );
+    Types(const Types &other);
     ~Types();
 
-    Types &operator=( const Types &other );
-    Types &operator+=( const Types &other );
+    Types &operator=(const Types &other);
+    Types &operator+=(const Types &other);
 
-    void setSimpleTypes( const SimpleType::List &simpleTypes );
+    void setSimpleTypes(const SimpleType::List &simpleTypes);
     SimpleType::List simpleTypes() const;
 
-    void setComplexTypes( const ComplexType::List &complexTypes );
+    void setComplexTypes(const ComplexType::List &complexTypes);
     ComplexType::List complexTypes() const;
 
-    void setElements( const Element::List &elements );
+    void setElements(const Element::List &elements);
     Element::List elements() const;
 
-    void setAttributes( const Attribute::List &attributes );
+    void setAttributes(const Attribute::List &attributes);
     Attribute::List attributes() const;
 
     // unused void setAttributeGroups( const AttributeGroup::List &attributeGroups );
@@ -58,15 +59,15 @@ class SCHEMA_EXPORT Types
     // unused Group::List groups() const;
 
     //ComplexType complexType( const Element & ) const;
-    ComplexType complexType( const QName & ) const;
+    ComplexType complexType(const QName &) const;
 
     // Call this with derived complex type, to find the root of the hierarchy,
     // i.e. the type for which isPolymorphicBaseClass() returns true
-    ComplexType polymorphicBaseClass( const ComplexType &derivedType ) const;
+    ComplexType polymorphicBaseClass(const ComplexType &derivedType) const;
 
-    SimpleType simpleType( const QName & ) const;
+    SimpleType simpleType(const QName &) const;
 
-  private:
+private:
     class Private;
     Private *d;
 };

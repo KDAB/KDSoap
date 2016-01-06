@@ -23,19 +23,20 @@
 #include "element.h"
 #include <QDebug>
 
-namespace XSD {
+namespace XSD
+{
 
 class Element::Private
 {
 public:
     Private()
-      : mGroupId( 0 ),
-        mMinOccurs( 1 ),
-        mMaxOccurs( 1 ),
-        mQualified( false ),
-        mNillable( false ),
-        mHasSubstitutions( false ),
-        mOccurrence( 0 )
+        : mGroupId(0),
+          mMinOccurs(1),
+          mMaxOccurs(1),
+          mQualified(false),
+          mNillable(false),
+          mHasSubstitutions(false),
+          mOccurrence(0)
     {}
 
     QName mType;
@@ -54,113 +55,114 @@ public:
 };
 
 Element::Element()
-  : XmlElement(), d(new Private)
+    : XmlElement(), d(new Private)
 {
 }
 
-Element::Element( const QString &nameSpace )
-  : XmlElement( nameSpace ), d(new Private)
+Element::Element(const QString &nameSpace)
+    : XmlElement(nameSpace), d(new Private)
 {
 }
 
-Element::Element( const Element &other )
-  : XmlElement( other ), d(new Private)
+Element::Element(const Element &other)
+    : XmlElement(other), d(new Private)
 {
-  *d = *other.d;
+    *d = *other.d;
 }
 
 Element::~Element()
 {
-  delete d;
+    delete d;
 }
 
-Element &Element::operator=( const Element &other )
+Element &Element::operator=(const Element &other)
 {
-  if ( this == &other )
+    if (this == &other) {
+        return *this;
+    }
+
+    *d = *other.d;
+    XmlElement::operator=(other);
+
     return *this;
-
-  *d = *other.d;
-  XmlElement::operator=( other );
-
-  return *this;
 }
 
-void Element::setType( const QName &type )
+void Element::setType(const QName &type)
 {
-  Q_ASSERT(!type.isEmpty());
-  d->mType = type;
+    Q_ASSERT(!type.isEmpty());
+    d->mType = type;
 }
 
 QName Element::type() const
 {
-  return d->mType;
+    return d->mType;
 }
 
-void Element::setDocumentation( const QString &documentation )
+void Element::setDocumentation(const QString &documentation)
 {
-  d->mDocumentation = documentation;
+    d->mDocumentation = documentation;
 }
 
 QString Element::documentation() const
 {
-  return d->mDocumentation;
+    return d->mDocumentation;
 }
 
 // unused
-void Element::setGroupId( int group )
+void Element::setGroupId(int group)
 {
-  d->mGroupId = group;
+    d->mGroupId = group;
 }
 
 // unused
 int Element::groupId() const
 {
-  return d->mGroupId;
+    return d->mGroupId;
 }
 
-void Element::setMinOccurs( int minOccurs )
+void Element::setMinOccurs(int minOccurs)
 {
-  d->mMinOccurs = minOccurs;
+    d->mMinOccurs = minOccurs;
 }
 
 int Element::minOccurs() const
 {
-  return d->mMinOccurs;
+    return d->mMinOccurs;
 }
 
-void Element::setMaxOccurs( int maxOccurs )
+void Element::setMaxOccurs(int maxOccurs)
 {
-  d->mMaxOccurs = maxOccurs;
+    d->mMaxOccurs = maxOccurs;
 }
 
 int Element::maxOccurs() const
 {
-  return d->mMaxOccurs;
+    return d->mMaxOccurs;
 }
 
-void Element::setDefaultValue( const QString &defaultValue )
+void Element::setDefaultValue(const QString &defaultValue)
 {
-  d->mDefaultValue = defaultValue;
+    d->mDefaultValue = defaultValue;
 }
 
 QString Element::defaultValue() const
 {
-  return d->mDefaultValue;
+    return d->mDefaultValue;
 }
 
-void Element::setFixedValue( const QString &fixedValue )
+void Element::setFixedValue(const QString &fixedValue)
 {
-  d->mFixedValue = fixedValue;
+    d->mFixedValue = fixedValue;
 }
 
 QString Element::fixedValue() const
 {
-  return d->mFixedValue;
+    return d->mFixedValue;
 }
 
-void Element::setIsQualified( bool isQualified )
+void Element::setIsQualified(bool isQualified)
 {
-  d->mQualified = isQualified;
+    d->mQualified = isQualified;
 }
 
 bool Element::isQualified() const
@@ -178,42 +180,42 @@ bool Element::nillable() const
     return d->mNillable;
 }
 
-void Element::setOccurrence( int occurrence )
+void Element::setOccurrence(int occurrence)
 {
-  d->mOccurrence = occurrence;
+    d->mOccurrence = occurrence;
 }
 
 int Element::occurrence() const
 {
-  return d->mOccurrence;
+    return d->mOccurrence;
 }
 
-void Element::setReference( const QName &reference )
+void Element::setReference(const QName &reference)
 {
-  d->mReference = reference;
+    d->mReference = reference;
 }
 
 QName Element::reference() const
 {
-  return d->mReference;
+    return d->mReference;
 }
 
 bool Element::isResolved() const
 {
-  return !d->mType.isEmpty();
+    return !d->mType.isEmpty();
 }
 
-void Element::setCompositor( const Compositor &c )
+void Element::setCompositor(const Compositor &c)
 {
-  d->mCompositor = c;
+    d->mCompositor = c;
 }
 
 Compositor Element::compositor() const
 {
-  return d->mCompositor;
+    return d->mCompositor;
 }
 
-void Element::setHasSubstitutions( bool hasSub )
+void Element::setHasSubstitutions(bool hasSub)
 {
     d->mHasSubstitutions = hasSub;
 }
@@ -223,28 +225,30 @@ bool Element::hasSubstitutions() const
     return d->mHasSubstitutions;
 }
 
-Element ElementList::element( const QName &qualifiedName ) const
+Element ElementList::element(const QName &qualifiedName) const
 {
     const_iterator it = constBegin();
-    for ( ; it != constEnd(); ++it )
-      if ((*it).qualifiedName() == qualifiedName)
-        return *it;
+    for (; it != constEnd(); ++it)
+        if ((*it).qualifiedName() == qualifiedName) {
+            return *it;
+        }
     //qDebug() << "Simple type" << qualifiedName << "not found";
     return Element();
 }
 
-ElementList::iterator ElementList::findElement( const QName &qualifiedName )
+ElementList::iterator ElementList::findElement(const QName &qualifiedName)
 {
-    for ( iterator it = begin(); it != end() ; ++it )
-        if ( (*it).qualifiedName() == qualifiedName )
+    for (iterator it = begin(); it != end(); ++it)
+        if ((*it).qualifiedName() == qualifiedName) {
             return it;
+        }
     return end();
 
 }
 
 void ElementList::dump()
 {
-    Q_FOREACH(const Element& element, *this) {
+    Q_FOREACH (const Element &element, *this) {
         qDebug() << element.nameSpace() << element.name();
     }
 }
@@ -253,6 +257,6 @@ void ElementList::dump()
 
 QDebug operator<<(QDebug dbg, const XSD::Element &element)
 {
-  dbg << element.name();
-  return dbg;
+    dbg << element.name();
+    return dbg;
 }

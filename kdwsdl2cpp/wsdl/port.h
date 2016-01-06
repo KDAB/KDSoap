@@ -33,27 +33,28 @@
 
 class ParserContext;
 
-namespace KWSDL {
+namespace KWSDL
+{
 
 class KWSDL_EXPORT Port : public Element
 {
-  public:
+public:
     typedef QList<Port> List;
 
     Port();
-    Port( const QString &nameSpace );
+    Port(const QString &nameSpace);
     ~Port();
 
-    void setName( const QString &name );
+    void setName(const QString &name);
     QString name() const;
 
-    void setBindingName( const QName &bindingName );
+    void setBindingName(const QName &bindingName);
     QName bindingName() const;
 
-    void loadXML( ParserContext *context, Binding::List *bindings, const QDomElement &element );
-    void saveXML( ParserContext *context, const Binding::List *bindings, QDomDocument &document, QDomElement &parent ) const;
+    void loadXML(ParserContext *context, Binding::List *bindings, const QDomElement &element);
+    void saveXML(ParserContext *context, const Binding::List *bindings, QDomDocument &document, QDomElement &parent) const;
 
-  private:
+private:
     QString mName;
     QName mBindingName;
 };

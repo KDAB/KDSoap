@@ -26,30 +26,31 @@
 #include <wsdl/definitions.h>
 #include <kode_export.h>
 
-namespace KWSDL {
+namespace KWSDL
+{
 
 class KWSDL_EXPORT WSDL
 {
-  public:
+public:
     WSDL();
     ~WSDL();
 
-    void setDefinitions( const Definitions &definitions );
+    void setDefinitions(const Definitions &definitions);
     Definitions definitions() const;
 
-    void setNamespaceManager( const NSManager &namespaceManager );
-    const NSManager& namespaceManager() const;
+    void setNamespaceManager(const NSManager &namespaceManager);
+    const NSManager &namespaceManager() const;
 
-    QSet<QName> uniqueBindings( const Service& service ) const;
+    QSet<QName> uniqueBindings(const Service &service) const;
 
-    Binding findBinding( const QName &bindingName ) const;
-    BindingOperation findBindingOperation( const Binding &binding, const QString &operationName );
-    PortType findPortType( const QName &portTypeName ) const;
-    Message findMessage( const QName &messageName ) const;
-    XSD::Element findElement( const QName &elementName ) const;
-    XSD::ComplexType findComplexType( const QName &typeName ) const;
+    Binding findBinding(const QName &bindingName) const;
+    BindingOperation findBindingOperation(const Binding &binding, const QString &operationName);
+    PortType findPortType(const QName &portTypeName) const;
+    Message findMessage(const QName &messageName) const;
+    XSD::Element findElement(const QName &elementName) const;
+    XSD::ComplexType findComplexType(const QName &typeName) const;
 
-  private:
+private:
     Definitions mDefinitions;
     NSManager mNamespaceManager;
 };

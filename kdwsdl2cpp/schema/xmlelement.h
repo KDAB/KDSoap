@@ -29,33 +29,34 @@
 
 #include <QString>
 
-namespace XSD {
+namespace XSD
+{
 
 class SCHEMA_EXPORT XmlElement
 {
-  public:
+public:
     XmlElement();
-    XmlElement( const QString &nameSpace );
-    XmlElement( const XmlElement &other );
+    XmlElement(const QString &nameSpace);
+    XmlElement(const XmlElement &other);
     ~XmlElement();
 
-    XmlElement &operator=( const XmlElement &other );
+    XmlElement &operator=(const XmlElement &other);
 
     bool isNull() const;
 
-    void setName( const QString &name );
+    void setName(const QString &name);
     QString name() const;
 
-    void setNameSpace( const QString &nameSpace );
+    void setNameSpace(const QString &nameSpace);
     QString nameSpace() const;
 
     QName qualifiedName() const;
 
-    void addAnnotation( const Annotation & );
-    void setAnnotations( const Annotation::List & );
+    void addAnnotation(const Annotation &);
+    void setAnnotations(const Annotation::List &);
     Annotation::List annotations() const;
 
-  private:
+private:
     class Private;
     Private *d;
 };

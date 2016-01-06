@@ -1,4 +1,4 @@
-/* 
+/*
     This file is part of KDE Schema Parser
 
     Copyright (c) 2005 Tobias Koenig <tokoe@kde.org>
@@ -29,70 +29,68 @@
 #include "xsdtype.h"
 #include <kode_export.h>
 
-namespace XSD {
+namespace XSD
+{
 
 class SimpleTypeList;
 
 class SCHEMA_EXPORT SimpleType : public XSDType
 {
-  public:
+public:
     typedef SimpleTypeList List;
 
-    enum FacetType
-    {
-      NONE = 0,
-      LENGTH = 1,
-      MINLEN = 2,
-      MAXLEN = 4,
-      ENUM = 8,
-      WSP = 16,
-      MAXINC = 32,
-      MININC = 64,
-      MAXEX = 128,
-      MINEX = 256,
-      TOT = 512,
-      FRAC = 1024,
-      PATTERN = 2048
+    enum FacetType {
+        NONE = 0,
+        LENGTH = 1,
+        MINLEN = 2,
+        MAXLEN = 4,
+        ENUM = 8,
+        WSP = 16,
+        MAXINC = 32,
+        MININC = 64,
+        MAXEX = 128,
+        MINEX = 256,
+        TOT = 512,
+        FRAC = 1024,
+        PATTERN = 2048
     };
 
-    enum WhiteSpaceType
-    {
-      PRESERVE,
-      REPLACE,
-      COLLAPSE
+    enum WhiteSpaceType {
+        PRESERVE,
+        REPLACE,
+        COLLAPSE
     };
 
-    enum SubType
-    {
-      TypeRestriction,
-      TypeList,
-      TypeUnion
+    enum SubType {
+        TypeRestriction,
+        TypeList,
+        TypeUnion
     };
 
     SimpleType();
-    SimpleType( const QString &nameSpace );
-    SimpleType( const SimpleType &other );
+    SimpleType(const QString &nameSpace);
+    SimpleType(const SimpleType &other);
     ~SimpleType();
 
-    SimpleType &operator=( const SimpleType &other );
+    SimpleType &operator=(const SimpleType &other);
 
-    void setDocumentation( const QString &documentation );
+    void setDocumentation(const QString &documentation);
     QString documentation() const;
 
-    void setBaseTypeName( const QName &baseTypeName );
+    void setBaseTypeName(const QName &baseTypeName);
     QName baseTypeName() const;
 
-    void setSubType( SubType subType );
+    void setSubType(SubType subType);
     SubType subType() const;
 
-    void setListTypeName( const QName &name );
+    void setListTypeName(const QName &name);
     QName listTypeName() const;
 
-    void setAnonymous( bool anonymous );
+    void setAnonymous(bool anonymous);
     bool isAnonymous() const;
 
-    FacetType parseFacetId( const QString &facet ) const;
-    void setFacetValue( FacetType ft, const QString &value );
+    FacetType parseFacetId(const QString &facet) const;
+    void setFacetValue(FacetType ft, const QString &value);
 
     int facetType() const;
 
@@ -115,7 +113,7 @@ class SCHEMA_EXPORT SimpleType : public XSDType
      */
     bool isRestriction() const;
 
-  private:
+private:
     class Private;
     Private *d;
 };
@@ -124,10 +122,10 @@ class SCHEMA_EXPORT SimpleTypeList : public QList<SimpleType>
 {
 public:
     // Readonly lookup, returns null type if not found
-    SimpleType simpleType(const QName& qualifiedName) const;
+    SimpleType simpleType(const QName &qualifiedName) const;
 
     // Mutable lookup (for making changes), returns end() if not found
-    iterator findSimpleType( const QName &qualifiedName );
+    iterator findSimpleType(const QName &qualifiedName);
 };
 
 }

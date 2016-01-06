@@ -37,20 +37,21 @@
 
 class ParserContext;
 
-namespace KWSDL {
+namespace KWSDL
+{
 
 class KWSDL_EXPORT Definitions
 {
-  public:
+public:
     Definitions();
     ~Definitions();
 
-    void setWantedService( const QString& name );
+    void setWantedService(const QString &name);
 
-    void setName( const QString &name );
+    void setName(const QString &name);
     QString name() const;
 
-    void setTargetNamespace( const QString &targetNamespace );
+    void setTargetNamespace(const QString &targetNamespace);
     QString targetNamespace() const;
 
     //void setBindings( const Binding::List &bindings );
@@ -59,25 +60,25 @@ class KWSDL_EXPORT Definitions
     //void setImports( const Import::List &imports );
     //Import::List imports() const;
 
-    void setMessages( const Message::List &messages );
+    void setMessages(const Message::List &messages);
     Message::List messages() const;
 
-    void setPortTypes( const PortType::List &portTypes );
+    void setPortTypes(const PortType::List &portTypes);
     PortType::List portTypes() const;
 
     //void setService( const Service &service );
     Service::List services() const;
 
-    void setType( const Type &type );
+    void setType(const Type &type);
     Type type() const;
 
-    bool loadXML( ParserContext *context, const QDomElement &element );
+    bool loadXML(ParserContext *context, const QDomElement &element);
     //void saveXML( ParserContext *context, QDomDocument &document ) const;
 
-    void fixUpDefinitions( /*ParserContext *context, const QDomElement &element*/ );
+    void fixUpDefinitions(/*ParserContext *context, const QDomElement &element*/);
 
-  private:
-    void importDefinition( ParserContext *context, const QString &location );
+private:
+    void importDefinition(ParserContext *context, const QString &location);
 
     Binding::List mBindings;
     //Import::List mImports;

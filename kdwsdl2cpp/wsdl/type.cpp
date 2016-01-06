@@ -35,8 +35,8 @@ Type::Type()
 {
 }
 
-Type::Type( const QString &nameSpace )
-  : Element( nameSpace )
+Type::Type(const QString &nameSpace)
+    : Element(nameSpace)
 {
 }
 
@@ -44,39 +44,40 @@ Type::~Type()
 {
 }
 
-void Type::setTypes( const XSD::Types &types )
+void Type::setTypes(const XSD::Types &types)
 {
-  mTypes = types;
+    mTypes = types;
 }
 
 XSD::Types Type::types() const
 {
-  return mTypes;
+    return mTypes;
 }
 
-bool Type::loadXML( ParserContext *context, const QDomElement &element )
+bool Type::loadXML(ParserContext *context, const QDomElement &element)
 {
-  XSD::Parser parser( context, nameSpace() );
-  QDomElement child = element.firstChildElement();
-  while ( !child.isNull() ) {
-    NSManager namespaceManager( context, child );
-    if ( namespaceManager.nameSpace( child ) == XSD::Parser::schemaUri() &&
-         namespaceManager.localName( child ) == QLatin1String("schema")) {
-      //qDebug() << "Loading schema" << nameSpace();
-      if (!parser.parseSchemaTag( context, child ))
-          return false;
+    XSD::Parser parser(context, nameSpace());
+    QDomElement child = element.firstChildElement();
+    while (!child.isNull()) {
+        NSManager namespaceManager(context, child);
+        if (namespaceManager.nameSpace(child) == XSD::Parser::schemaUri() &&
+                namespaceManager.localName(child) == QLatin1String("schema")) {
+            //qDebug() << "Loading schema" << nameSpace();
+            if (!parser.parseSchemaTag(context, child)) {
+                return false;
+            }
 
-      mTypes += parser.types();
+            mTypes += parser.types();
+        }
+
+        child = child.nextSiblingElement();
     }
-
-    child = child.nextSiblingElement();
-  }
-  return true;
+    return true;
 }
 
-void Type::saveXML( ParserContext *context, QDomDocument &document, QDomElement &parent ) const
+void Type::saveXML(ParserContext *context, QDomDocument &document, QDomElement &parent) const
 {
-  Q_UNUSED( context );
-  Q_UNUSED( document );
-  Q_UNUSED( parent );
+    Q_UNUSED(context);
+    Q_UNUSED(document);
+    Q_UNUSED(parent);
 }

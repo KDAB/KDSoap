@@ -1,4 +1,4 @@
-/* 
+/*
     This file is part of KDE Schema Parser
 
     Copyright (c) 2005 Tobias Koenig <tokoe@kde.org>
@@ -30,11 +30,12 @@
 #include "xmlelement.h"
 #include <kode_export.h>
 
-namespace XSD {
+namespace XSD
+{
 
 class SCHEMA_EXPORT Attribute : public XmlElement
 {
-  public:
+public:
     class SCHEMA_EXPORT List : public QList<Attribute>
     {
     public:
@@ -42,38 +43,38 @@ class SCHEMA_EXPORT Attribute : public XmlElement
     };
 
     Attribute();
-    Attribute( const QString &nameSpace );
-    Attribute( const Attribute &other );
+    Attribute(const QString &nameSpace);
+    Attribute(const Attribute &other);
     ~Attribute();
 
-    Attribute &operator=( const Attribute &other );
+    Attribute &operator=(const Attribute &other);
 
-    void setType( const QName &type );
+    void setType(const QName &type);
     QName type() const;
 
-    void setDocumentation( const QString &documentation );
+    void setDocumentation(const QString &documentation);
     QString documentation() const;
 
-    void setDefaultValue( const QString &defaultValue );
+    void setDefaultValue(const QString &defaultValue);
     QString defaultValue() const;
 
-    void setFixedValue( const QString &fixedValue );
+    void setFixedValue(const QString &fixedValue);
     QString fixedValue() const;
 
-    void setIsQualified( bool isQualified );
+    void setIsQualified(bool isQualified);
     bool isQualified() const;
 
     enum AttributeUse { Optional, Required, Prohibited };
 
-    void setAttributeUse( AttributeUse use );
+    void setAttributeUse(AttributeUse use);
     AttributeUse attributeUse() const;
 
-    void setReference( const QName &reference );
+    void setReference(const QName &reference);
     QName reference() const;
 
     bool isResolved() const;
 
-  private:
+private:
     class Private;
     Private *d;
 };
