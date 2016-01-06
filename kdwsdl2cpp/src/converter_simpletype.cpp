@@ -150,7 +150,7 @@ void Converter::convertSimpleType(const XSD::SimpleType *type, const XSD::Simple
             setter.addArgument(inputType + " value");
             KODE::Code setterBody;
             if (type->facetType() != XSD::SimpleType::NONE) {
-                setterBody += createRangeCheckCode(type, baseTypeName, "(value)", newClass);
+                setterBody += createRangeCheckCode(type, baseTypeName, "value", newClass);
                 setterBody.newLine();
                 setterBody += "if (!rangeOk)";
                 setterBody.indent();
@@ -494,8 +494,10 @@ static KODE::Code createRangeCheckCode(const XSD::SimpleType *type, const QStrin
         code += "rangeOk = rangeOk && (" + variableName + ".length() <= " + QString::number(type->facetMaximumLength()) + ");";
     }
     if (type->facetType() & XSD::SimpleType::PATTERN) {
-        code += "QRegExp exp( QString::fromLatin1(\"" + escapeRegExp(type->facetPattern()) + "\") );";
-        code += "rangeOk = rangeOk && exp.exactMatch( " + variableName + " );";
+        if (baseTypeName == "QString") {
+            code += "QRegExp exp( QString::fromLatin1(\"" + escapeRegExp(type->facetPattern()) + "\") );";
+            code += "rangeOk = rangeOk && exp.exactMatch( " + variableName + " );";
+        }
 
         parentClass.addInclude("QtCore/QRegExp");
     }
