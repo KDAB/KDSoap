@@ -39,7 +39,7 @@ KDSoapClientThread::KDSoapClientThread(QObject *parent) :
 }
 
 // Called by the main thread
-void KDSoapClientThread::enqueue(KDSoapThreadTaskData* taskData)
+void KDSoapClientThread::enqueue(KDSoapThreadTaskData *taskData)
 {
     // On hindsight, it would have been simpler to use signal/slots
     // to communicate with secondary thread (turning this class
@@ -58,15 +58,15 @@ void KDSoapClientThread::run()
     //  which is blocked on semaphore)
     QEventLoop eventLoop;
 
-    while ( true ) {
-        QMutexLocker locker( &m_mutex );
+    while (true) {
+        QMutexLocker locker(&m_mutex);
         while (!m_stopThread && m_queue.isEmpty()) {
-            m_queueNotEmpty.wait( &m_mutex );
+            m_queueNotEmpty.wait(&m_mutex);
         }
         if (m_stopThread) {
             break;
         }
-        KDSoapThreadTaskData* taskData = m_queue.dequeue();
+        KDSoapThreadTaskData *taskData = m_queue.dequeue();
         locker.unlock();
 
         KDSoapThreadTask task(taskData); // must be created here, so that it's in the right thread
@@ -80,7 +80,7 @@ void KDSoapClientThread::run()
     }
 }
 
-void KDSoapThreadTask::process(QNetworkAccessManager& accessManager)
+void KDSoapThreadTask::process(QNetworkAccessManager &accessManager)
 {
     // Can't use m_iface->asyncCall, it would use the accessmanager from the main thread
     //KDSoapPendingCall pendingCall = m_iface->asyncCall(m_method, m_message, m_action);
@@ -91,17 +91,17 @@ void KDSoapThreadTask::process(QNetworkAccessManager& accessManager)
     }
 
 #if QT_VERSION >= 0x040700
-    QNetworkCookieJar* jar = m_data->m_iface->d->accessManager()->cookieJar();
+    QNetworkCookieJar *jar = m_data->m_iface->d->accessManager()->cookieJar();
     // Qt-4.6: this aborts in setParent(this) because the jar is from another thread
     // Qt-4.7: it's from a different thread, so this won't change the parent object
     accessManager.setCookieJar(jar);
 #endif
 
-    accessManager.setProxy( m_data->m_iface->d->accessManager()->proxy() );
+    accessManager.setProxy(m_data->m_iface->d->accessManager()->proxy());
 
-    QBuffer* buffer = m_data->m_iface->d->prepareRequestBuffer(m_data->m_method, m_data->m_message, m_data->m_headers);
+    QBuffer *buffer = m_data->m_iface->d->prepareRequestBuffer(m_data->m_method, m_data->m_message, m_data->m_headers);
     QNetworkRequest request = m_data->m_iface->d->prepareRequest(m_data->m_method, m_data->m_action);
-    QNetworkReply* reply = accessManager.post(request, buffer);
+    QNetworkReply *reply = accessManager.post(request, buffer);
     m_data->m_iface->d->setupReply(reply);
     KDSoapPendingCall pendingCall(reply, buffer);
 
@@ -110,7 +110,7 @@ void KDSoapThreadTask::process(QNetworkAccessManager& accessManager)
             this, SLOT(slotFinished(KDSoapPendingCallWatcher*)));
 }
 
-void KDSoapThreadTask::slotFinished(KDSoapPendingCallWatcher* watcher)
+void KDSoapThreadTask::slotFinished(KDSoapPendingCallWatcher *watcher)
 {
     m_data->m_response = watcher->returnMessage();
     m_data->m_responseHeaders = watcher->returnHeaders();
@@ -129,7 +129,7 @@ void KDSoapClientThread::stop()
     m_queueNotEmpty.wakeAll();
 }
 
-void KDSoapThreadTask::slotAuthenticationRequired(QNetworkReply* reply, QAuthenticator* authenticator)
+void KDSoapThreadTask::slotAuthenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator)
 {
     m_data->m_authentication.handleAuthenticationRequired(reply, authenticator);
 }

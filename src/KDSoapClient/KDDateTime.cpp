@@ -24,7 +24,8 @@
 #include <QSharedData>
 #include <QDebug>
 
-class KDDateTimeData : public QSharedData {
+class KDDateTimeData : public QSharedData
+{
 public:
     QString mTimeZone;
 };
@@ -47,7 +48,7 @@ KDDateTime &KDDateTime::operator=(const KDDateTime &rhs)
 {
     if (this != &rhs) {
         QDateTime::operator=(rhs);
-        d.operator=(rhs.d);
+        d.operator = (rhs.d);
     }
     return *this;
 }
@@ -67,16 +68,16 @@ void KDDateTime::setTimeZone(const QString &timeZone)
 
     // Just in case someone cares: set the time spec in QDateTime accordingly.
     // We can't do this the other way round, there's no public API for the offset-from-utc case.
-    if (timeZone == QLatin1String("Z"))
+    if (timeZone == QLatin1String("Z")) {
         setTimeSpec(Qt::UTC);
-    else if (timeZone.isEmpty())
+    } else if (timeZone.isEmpty()) {
         setTimeSpec(Qt::LocalTime);
-    else {
+    } else {
         setTimeSpec(Qt::OffsetFromUTC);
         const int pos = timeZone.indexOf(QLatin1Char(':'));
-        if ( pos > 0 ) {
+        if (pos > 0) {
             const int hours = timeZone.left(pos).toInt();
-            const int minutes = timeZone.mid(pos+1).toInt();
+            const int minutes = timeZone.mid(pos + 1).toInt();
             const int offset = hours * 3600 + minutes * 60;
             setUtcOffset(offset);
         }

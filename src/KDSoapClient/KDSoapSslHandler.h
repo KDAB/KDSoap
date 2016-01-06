@@ -102,7 +102,7 @@ private:
     explicit KDSoapSslHandler(QObject *parent = 0);
     virtual ~KDSoapSslHandler();
 
-    QNetworkReply* m_reply;
+    QNetworkReply *m_reply;
 };
 
 #if QT_VERSION < 0x050000

@@ -25,7 +25,7 @@
 #include "KDSoapServer.h"
 #include <QDebug>
 
-KDSoapSocketList::KDSoapSocketList(KDSoapServer* server)
+KDSoapSocketList::KDSoapSocketList(KDSoapServer *server)
     : m_server(server), m_serverObject(server->createServerObject()), m_totalConnectionCount(0)
 {
     Q_ASSERT(m_server);
@@ -37,17 +37,18 @@ KDSoapSocketList::~KDSoapSocketList()
     delete m_serverObject;
 }
 
-KDSoapServerSocket* KDSoapSocketList::handleIncomingConnection(int socketDescriptor)
+KDSoapServerSocket *KDSoapSocketList::handleIncomingConnection(int socketDescriptor)
 {
-    KDSoapServerSocket* socket = new KDSoapServerSocket(this, m_serverObject);
+    KDSoapServerSocket *socket = new KDSoapServerSocket(this, m_serverObject);
     socket->setSocketDescriptor(socketDescriptor);
 
 #ifndef QT_NO_OPENSSL
     if (m_server->features() & KDSoapServer::Ssl) {
         // We could call a virtual "m_server->setSslConfiguration(socket)" here,
         // if more control is needed (e.g. due to SNI)
-        if (!m_server->sslConfiguration().isNull())
+        if (!m_server->sslConfiguration().isNull()) {
             socket->setSslConfiguration(m_server->sslConfiguration());
+        }
         socket->startServerEncryption();
     }
 #endif
@@ -72,8 +73,9 @@ int KDSoapSocketList::socketCount() const
 
 void KDSoapSocketList::disconnectAll()
 {
-    Q_FOREACH(KDSoapServerSocket* socket, m_sockets)
-        socket->close(); // will disconnect
+    Q_FOREACH (KDSoapServerSocket *socket, m_sockets) {
+        socket->close();    // will disconnect
+    }
 }
 
 int KDSoapSocketList::totalConnectionCount() const

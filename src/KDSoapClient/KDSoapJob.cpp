@@ -24,12 +24,12 @@
 #include "KDSoapJob.h"
 #include "KDSoapMessage.h"
 
-class KDSoapJob::Private {
+class KDSoapJob::Private
+{
 public:
     KDSoapMessage reply;
     KDSoapHeaders replyHeaders;
 };
-
 
 KDSoapJob::KDSoapJob(QObject *parent)
     : QObject(parent)
@@ -67,10 +67,11 @@ bool KDSoapJob::isFault() const
 
 QString KDSoapJob::faultAsString() const
 {
-    if (d->reply.isFault())
+    if (d->reply.isFault()) {
         return d->reply.faultAsString();
-    else
+    } else {
         return QString();
+    }
 }
 
 #include "moc_KDSoapJob.cpp"

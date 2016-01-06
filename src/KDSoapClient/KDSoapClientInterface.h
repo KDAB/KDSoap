@@ -28,7 +28,6 @@
 #include "KDSoapMessage.h"
 #include "KDSoapPendingCall.h"
 
-
 class KDSoapAuthentication;
 class KDSoapSslHandler;
 class KDSoapClientInterfacePrivate;
@@ -69,10 +68,10 @@ public:
      * \see setSoapVersion()
      */
     enum SoapVersion {
-      /** Use format version 1.1 of the SOAP specification */
-      SOAP1_1 = 1,
-      /** Use format version 1.2 of the SOAP specification */
-      SOAP1_2 = 2
+        /** Use format version 1.1 of the SOAP specification */
+        SOAP1_1 = 1,
+        /** Use format version 1.2 of the SOAP specification */
+        SOAP1_2 = 2
     };
 
     /**
@@ -85,7 +84,7 @@ public:
      *                 or even to be http, this is really just a namespace, which is part of the
      *                 specification of the SOAP service.
      */
-    explicit KDSoapClientInterface(const QString& endPoint, const QString& messageNamespace);
+    explicit KDSoapClientInterface(const QString &endPoint, const QString &messageNamespace);
     /**
      * Destroys the object interface and frees up any resource used.
      * \warning Any running asynchronous calls will be canceled.
@@ -134,9 +133,9 @@ public:
      *  }
      * \endcode
      */
-    KDSoapPendingCall asyncCall(const QString& method, const KDSoapMessage &message,
-                                const QString& soapAction = QString(),
-                                const KDSoapHeaders& headers = KDSoapHeaders());
+    KDSoapPendingCall asyncCall(const QString &method, const KDSoapMessage &message,
+                                const QString &soapAction = QString(),
+                                const KDSoapHeaders &headers = KDSoapHeaders());
 
     /**
      * Calls the method \p method on this interface and passes the parameters specified in \p message
@@ -150,9 +149,9 @@ public:
      * graphical applications, since it will block the event loop for the duration of the call.
      * Use this only in threads, or in non-GUI programs.
      */
-    KDSoapMessage call(const QString& method, const KDSoapMessage &message,
-                       const QString& soapAction = QString(),
-                       const KDSoapHeaders& headers = KDSoapHeaders());
+    KDSoapMessage call(const QString &method, const KDSoapMessage &message,
+                       const QString &soapAction = QString(),
+                       const KDSoapHeaders &headers = KDSoapHeaders());
 
     /**
      * Calls the method \p method on this interface and passes the parameters specified in \p message
@@ -165,22 +164,22 @@ public:
      * This is an asynchronous call, where the caller does not want to wait for a response.
      * The method returns immediately, the call is performed later. No error handling is possible.
      */
-    void callNoReply(const QString& method, const KDSoapMessage &message,
-                     const QString& soapAction = QString(),
-                     const KDSoapHeaders& headers = KDSoapHeaders());
+    void callNoReply(const QString &method, const KDSoapMessage &message,
+                     const QString &soapAction = QString(),
+                     const KDSoapHeaders &headers = KDSoapHeaders());
 
     /**
      * Provide the necessary authentication for this service.
      * \param authentication the authentication data
      */
-    void setAuthentication(const KDSoapAuthentication& authentication);
+    void setAuthentication(const KDSoapAuthentication &authentication);
 
     /**
      * Sets a persistent header, which will be sent with any subsequent SOAP call.
      * \param name internal name, used to replace any existing header previously set with this name
      * \param header the actual message to be sent
      */
-    void setHeader(const QString& name, const KDSoapMessage& header);
+    void setHeader(const QString &name, const KDSoapMessage &header);
 
     /**
      * Sets the SOAP version to be used for any subsequent SOAP call.
@@ -206,7 +205,7 @@ public:
      *                 if needed, and path. Example: http://server/path/soap.php
      * \since 1.2
      */
-    void setEndPoint(const QString& endPoint);
+    void setEndPoint(const QString &endPoint);
 
     /**
      * Returns the cookie jar to use for the HTTP requests.
@@ -214,7 +213,7 @@ public:
      * one will be returned, which belongs to the client interface (no need to delete it).
      * \since 1.2
      */
-    QNetworkCookieJar* cookieJar() const;
+    QNetworkCookieJar *cookieJar() const;
 
     /**
      * Sets the cookie jar to use for the HTTP requests.
@@ -222,7 +221,7 @@ public:
      * to share the same cookie jar between multiple client interfaces.
      * \since 1.2
      */
-    void setCookieJar(QNetworkCookieJar* jar);
+    void setCookieJar(QNetworkCookieJar *jar);
 
     /**
       * Returns the network proxy used for the HTTP requests.
@@ -236,14 +235,14 @@ public:
       * \since 1.2
       * \sa QNetworkAccessManager::setProxy()
       */
-    void setProxy( const QNetworkProxy & proxy );
+    void setProxy(const QNetworkProxy &proxy);
 
     /**
       * Sets additional HTTP headers in the requests
       * \since 1.4
       * \sa QNetworkAccessManager::setRawHeader()
       */
-    void setRawHTTPHeaders( const QMap<QByteArray, QByteArray>& headers );
+    void setRawHTTPHeaders(const QMap<QByteArray, QByteArray> &headers);
 
     /**
      * WSDL style. See the "style" attribute for soap:binding, in the WSDL file.
@@ -311,7 +310,7 @@ public:
      *
      * \since 1.3
      */
-    KDSoapSslHandler* sslHandler() const;
+    KDSoapSslHandler *sslHandler() const;
 
 #ifndef QT_NO_OPENSSL
     /**
@@ -330,7 +329,7 @@ public:
 private:
     friend class KDSoapThreadTask;
 
-    KDSoapClientInterfacePrivate * const d;
+    KDSoapClientInterfacePrivate *const d;
 };
 
 #endif // KDSOAPCLIENTINTERFACE_H

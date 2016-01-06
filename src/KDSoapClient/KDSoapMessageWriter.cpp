@@ -43,8 +43,8 @@ void KDSoapMessageWriter::setMessageNamespace(const QString &ns)
     m_messageNamespace = ns;
 }
 
-QByteArray KDSoapMessageWriter::messageToXml(const KDSoapMessage& message, const QString& method,
-                                             const KDSoapHeaders& headers, const QMap<QString, KDSoapMessage>& persistentHeaders) const
+QByteArray KDSoapMessageWriter::messageToXml(const KDSoapMessage &message, const QString &method,
+        const KDSoapHeaders &headers, const QMap<QString, KDSoapMessage> &persistentHeaders) const
 {
     QByteArray data;
     QXmlStreamWriter writer(&data);
@@ -79,10 +79,10 @@ QByteArray KDSoapMessageWriter::messageToXml(const KDSoapMessage& message, const
         // and xsi:type attributes that refer to n1, which isn't defined in the body...
         namespacePrefixes.writeNamespace(writer, messageNamespace, QLatin1String("n1") /*make configurable?*/);
         writer.writeStartElement(soapEnvelope, QLatin1String("Header"));
-        Q_FOREACH(const KDSoapMessage& header, persistentHeaders) {
+        Q_FOREACH (const KDSoapMessage &header, persistentHeaders) {
             header.writeChildren(namespacePrefixes, writer, header.use(), messageNamespace, true);
         }
-        Q_FOREACH(const KDSoapMessage& header, headers) {
+        Q_FOREACH (const KDSoapMessage &header, headers) {
             header.writeChildren(namespacePrefixes, writer, header.use(), messageNamespace, true);
         }
         if (message.hasMessageAddressingProperties()) {

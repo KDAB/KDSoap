@@ -24,9 +24,9 @@
 #include "KDSoapClientInterface_p.h"
 #include "KDSoapNamespaceManager.h"
 
-void KDSoapNamespacePrefixes::writeStandardNamespaces(QXmlStreamWriter& writer,
-                                                      KDSoapClientInterface::SoapVersion version,
-                                                      bool messageAddressingEnabled)
+void KDSoapNamespacePrefixes::writeStandardNamespaces(QXmlStreamWriter &writer,
+        KDSoapClientInterface::SoapVersion version,
+        bool messageAddressingEnabled)
 {
     if (version == KDSoapClientInterface::SOAP1_1) {
         writeNamespace(writer, KDSoapNamespaceManager::soapEnvelope(), QLatin1String("soap"));

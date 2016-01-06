@@ -79,7 +79,7 @@ public:
      * \param typeNameSpace namespace of the type of this value; this is only useful if using KDSoapMessage::EncodedUse
      * \param typeName localname of the type of this value; this is only useful if using KDSoapMessage::EncodedUse
      */
-    KDSoapValue(const QString& name, const QVariant& valueVariant, const QString& typeNameSpace = QString(), const QString& typeName = QString());
+    KDSoapValue(const QString &name, const QVariant &valueVariant, const QString &typeNameSpace = QString(), const QString &typeName = QString());
     /**
      * Constructs a "complex" value with child values
      *
@@ -88,20 +88,21 @@ public:
      * \param typeNameSpace namespace of the type of this value; this is only useful if using KDSoapMessage::EncodedUse
      * \param typeName localname of the type of this value; this is only useful if using KDSoapMessage::EncodedUse
      */
-    KDSoapValue(const QString& name, const KDSoapValueList& childValues, const QString& typeNameSpace = QString(), const QString& typeName = QString());
+    KDSoapValue(const QString &name, const KDSoapValueList &childValues, const QString &typeNameSpace = QString(), const QString &typeName = QString());
 
     /**
      * Copy constructor
      */
-    KDSoapValue(const KDSoapValue& other);
+    KDSoapValue(const KDSoapValue &other);
 
     /**
      * Assignment operator
      */
-    KDSoapValue& operator=(const KDSoapValue& other) {
-        if ( this != &other ) {
-            KDSoapValue copy( other );
-            swap( copy );
+    KDSoapValue &operator=(const KDSoapValue &other)
+    {
+        if (this != &other) {
+            KDSoapValue copy(other);
+            swap(copy);
         }
         return *this;
     }
@@ -109,11 +110,12 @@ public:
     /**
      * Swaps the contents of \a other with the contents of \c this. Never throws.
      */
-    void swap( KDSoapValue& other ) {
+    void swap(KDSoapValue &other)
+    {
 #if QT_VERSION < 0x040600
-        qSwap( reinterpret_cast<Private*&>(d), reinterpret_cast<Private*&>(other.d) );
+        qSwap(reinterpret_cast<Private *&>(d), reinterpret_cast<Private *&>(other.d));
 #else
-        d.swap( other.d );
+        d.swap(other.d);
 #endif
     }
 
@@ -149,7 +151,7 @@ public:
     /**
      * Sets the namespace of this argument, if it differs from the "message namespace".
      */
-    void setNamespaceUri(const QString& ns);
+    void setNamespaceUri(const QString &ns);
 
     /**
      * Returns the value of the argument.
@@ -159,7 +161,7 @@ public:
     /**
      * Sets the \p value of the argument.
      */
-    void setValue(const QVariant& value);
+    void setValue(const QVariant &value);
 
     /**
      * Whether the element should be qualified in the XML. See setQualified()
@@ -186,17 +188,17 @@ public:
      * Returns the list of child values (elements and attributes).
      * The list is a reference, and can therefore be modified.
      */
-    KDSoapValueList& childValues() const;
+    KDSoapValueList &childValues() const;
 
     /**
      * Compares two KDSoapValues.
      */
-    bool operator==(const KDSoapValue& other) const;
+    bool operator==(const KDSoapValue &other) const;
 
     /**
      * Compares two KDSoapValues.
      */
-    bool operator!=(const KDSoapValue& other) const;
+    bool operator!=(const KDSoapValue &other) const;
 
     /**
      * Sets the type information for this KDSoapValue, so that it can be sent
@@ -212,7 +214,7 @@ public:
      * \param nameSpace namespace of the type of this value
      * \param type localname of the type of this value
      */
-    void setType(const QString& nameSpace, const QString& type);
+    void setType(const QString &nameSpace, const QString &type);
     /**
      * Returns the namespace of the type.
      * Example: "http://www.w3.org/2001/XMLSchema-instance".
@@ -228,39 +230,43 @@ public:
      * Defines the way the message should be serialized.
      * See the "use" attribute for soap:body, in the WSDL file.
      */
-    enum Use
-    {
-      LiteralUse, ///< data is serialized according to a given schema, no \c xsi:type attributes are written out
-      EncodedUse  ///< each message part references an abstract type using the \c xsi:type attribute
+    enum Use {
+        LiteralUse, ///< data is serialized according to a given schema, no \c xsi:type attributes are written out
+        EncodedUse  ///< each message part references an abstract type using the \c xsi:type attribute
     };
 
-    QByteArray toXml(Use use = LiteralUse, const QString& messageNamespace = QString()) const;
+    QByteArray toXml(Use use = LiteralUse, const QString &messageNamespace = QString()) const;
 
 private:
     // To catch mistakes
     KDSoapValue(QString, QString, QString);
 
     friend class KDSoapMessageWriter;
-    void writeElement(KDSoapNamespacePrefixes& namespacePrefixes, QXmlStreamWriter& writer, KDSoapValue::Use use, const QString& messageNamespace, bool forceQualified) const;
-    void writeElementContents(KDSoapNamespacePrefixes& namespacePrefixes, QXmlStreamWriter& writer, KDSoapValue::Use use, const QString& messageNamespace) const;
-    void writeChildren(KDSoapNamespacePrefixes& namespacePrefixes, QXmlStreamWriter& writer, KDSoapValue::Use use, const QString& messageNamespace, bool forceQualified) const;
+    void writeElement(KDSoapNamespacePrefixes &namespacePrefixes, QXmlStreamWriter &writer, KDSoapValue::Use use, const QString &messageNamespace, bool forceQualified) const;
+    void writeElementContents(KDSoapNamespacePrefixes &namespacePrefixes, QXmlStreamWriter &writer, KDSoapValue::Use use, const QString &messageNamespace) const;
+    void writeChildren(KDSoapNamespacePrefixes &namespacePrefixes, QXmlStreamWriter &writer, KDSoapValue::Use use, const QString &messageNamespace, bool forceQualified) const;
 
     class Private;
     QSharedDataPointer<Private> d;
 };
 
-Q_DECLARE_TYPEINFO( KDSoapValue, Q_MOVABLE_TYPE );
+Q_DECLARE_TYPEINFO(KDSoapValue, Q_MOVABLE_TYPE);
 
 KDSOAP_EXPORT QDebug operator <<(QDebug dbg, const KDSoapValue &value);
 
-KDSOAP_EXPORT uint qHash( const KDSoapValue& value );
-inline void qSwap( KDSoapValue & lhs, KDSoapValue & rhs ) { lhs.swap( rhs ); }
+KDSOAP_EXPORT uint qHash(const KDSoapValue &value);
+inline void qSwap(KDSoapValue &lhs, KDSoapValue &rhs)
+{
+    lhs.swap(rhs);
+}
 
 #ifndef QT_NO_STL
-namespace std {
-    template <> inline void swap<KDSoapValue>( KDSoapValue & lhs, KDSoapValue & rhs ) {
-        lhs.swap( rhs );
-    }
+namespace std
+{
+template <> inline void swap<KDSoapValue>(KDSoapValue &lhs, KDSoapValue &rhs)
+{
+    lhs.swap(rhs);
+}
 }
 #endif
 
@@ -288,7 +294,7 @@ public:
      * append(KDSoapValue(argumentName, argumentValue [, typeNameSpace, typeName] ));
      * \endcode
      */
-    void addArgument(const QString& argumentName, const QVariant& argumentValue, const QString& typeNameSpace = QString(), const QString& typeName = QString());
+    void addArgument(const QString &argumentName, const QVariant &argumentValue, const QString &typeNameSpace = QString(), const QString &typeName = QString());
 
     /**
      * Convenience method for extracting a child argument by \p name.
@@ -297,7 +303,7 @@ public:
      *
      * If no such argument can be found, returns a null KDSoapValue.
      */
-    KDSoapValue child(const QString& name) const;
+    KDSoapValue child(const QString &name) const;
 
     /**
      * Sets the type of the elements in this array.
@@ -307,7 +313,7 @@ public:
      * \param nameSpace namespace of the type of this value
      * \param type localname of the type of this value
      */
-    void setArrayType(const QString& nameSpace, const QString& type);
+    void setArrayType(const QString &nameSpace, const QString &type);
     /**
      * Return the namespace of the type of elements in the array.
      */
@@ -324,11 +330,17 @@ public:
      *
      * The returned list can be modified, e.g. to append new attributes.
      */
-    QList<KDSoapValue>& attributes() { return m_attributes; }
+    QList<KDSoapValue> &attributes()
+    {
+        return m_attributes;
+    }
     /**
      * Read-only getter for the attributes.
      */
-    const QList<KDSoapValue>& attributes() const { return m_attributes; }
+    const QList<KDSoapValue> &attributes() const
+    {
+        return m_attributes;
+    }
 
 private:
     QPair<QString, QString> m_arrayType;

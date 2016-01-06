@@ -47,7 +47,6 @@ void KDSoapSslHandler::ignoreSslErrors(const QList<QSslError> &errors)
     m_reply->ignoreSslErrors(errors);
 }
 
-
 void KDSoapSslHandler::handleSslErrors(QNetworkReply *reply, const QList<QSslError> &errors)
 {
     m_reply = reply;

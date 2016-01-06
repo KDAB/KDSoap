@@ -37,7 +37,7 @@ KDSoapAuthentication::KDSoapAuthentication()
 {
 }
 
-KDSoapAuthentication::KDSoapAuthentication(const KDSoapAuthentication& other)
+KDSoapAuthentication::KDSoapAuthentication(const KDSoapAuthentication &other)
     : d(new Private)
 {
     *d = *other.d;
@@ -79,7 +79,7 @@ bool KDSoapAuthentication::hasAuth() const
     return !d->user.isEmpty() || !d->password.isEmpty();
 }
 
-void KDSoapAuthentication::handleAuthenticationRequired(QNetworkReply* reply, QAuthenticator* authenticator)
+void KDSoapAuthentication::handleAuthenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator)
 {
     //qDebug() << "handleAuthenticationRequired" << reply << reply->url() << "realm=" << authenticator->realm();
     // Only proceed if

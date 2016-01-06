@@ -39,7 +39,7 @@
 #include <QFileInfo>
 #include <QVarLengthArray>
 
-KDSoapServerSocket::KDSoapServerSocket(KDSoapSocketList* owner, QObject* serverObject)
+KDSoapServerSocket::KDSoapServerSocket(KDSoapSocketList *owner, QObject *serverObject)
 #ifndef QT_NO_OPENSSL
     : QSslSocket(),
 #else
@@ -67,7 +67,7 @@ KDSoapServerSocket::~KDSoapServerSocket()
 }
 
 typedef QMap<QByteArray, QByteArray> HeadersMap;
-static HeadersMap parseHeaders(const QByteArray& headerData)
+static HeadersMap parseHeaders(const QByteArray &headerData)
 {
     HeadersMap headersMap;
     QBuffer sourceBuffer;
@@ -89,10 +89,11 @@ static HeadersMap parseHeaders(const QByteArray& headerData)
     while (!sourceBuffer.atEnd()) {
         const QByteArray line = sourceBuffer.readLine();
         const int pos = line.indexOf(':');
-        if (pos == -1)
+        if (pos == -1) {
             qDebug() << "Malformed HTTP header:" << line;
+        }
         const QByteArray header = line.left(pos).toLower(); // RFC2616 section 4.2 "Field names are case-insensitive"
-        const QByteArray value = line.mid(pos+1).trimmed(); // remove space before and \r\n after
+        const QByteArray value = line.mid(pos + 1).trimmed(); // remove space before and \r\n after
         //qDebug() << "HEADER" << header << "VALUE" << value;
         headersMap.insert(header, value);
     }
@@ -101,25 +102,27 @@ static HeadersMap parseHeaders(const QByteArray& headerData)
 
 // We could parse headers as we go along looking for \r\n, and stop at empty header line, to avoid all this memory copying
 // But in practice XML parsing (and writing) is far far slower anyway.
-static bool splitHeadersAndData(const QByteArray& request, QByteArray& header, QByteArray& data)
+static bool splitHeadersAndData(const QByteArray &request, QByteArray &header, QByteArray &data)
 {
     const int sep = request.indexOf("\r\n\r\n");
-    if (sep <= 0)
+    if (sep <= 0) {
         return false;
+    }
     header = request.left(sep);
     data = request.mid(sep + 4);
     return true;
 }
 
-static QByteArray stripQuotes(const QByteArray& bar)
+static QByteArray stripQuotes(const QByteArray &bar)
 {
-    if (bar.startsWith('\"') && bar.endsWith('\"'))
+    if (bar.startsWith('\"') && bar.endsWith('\"')) {
         return bar.mid(1, bar.length() - 2);
+    }
 
     return bar;
 }
 
-static QByteArray httpResponseHeaders(bool fault, const QByteArray& contentType, int responseDataSize)
+static QByteArray httpResponseHeaders(bool fault, const QByteArray &contentType, int responseDataSize)
 {
     QByteArray httpResponse;
     httpResponse.reserve(50);
@@ -144,8 +147,9 @@ static QByteArray httpResponseHeaders(bool fault, const QByteArray& contentType,
 
 void KDSoapServerSocket::slotReadyRead()
 {
-    if (!m_socketEnabled)
+    if (!m_socketEnabled) {
         return;
+    }
 
     // QNAM in Qt 5.x tends to connect additional sockets in advance and not use them
     // So only count the sockets which actually sent us data (for the servertest unittest).
@@ -185,7 +189,7 @@ void KDSoapServerSocket::slotReadyRead()
         m_bytesReceived = receivedData.size();
         m_useRawXML = false;
         if (rawXmlInterface) {
-            KDSoapServerObjectInterface* serverObjectInterface = qobject_cast<KDSoapServerObjectInterface *>(m_serverObject);
+            KDSoapServerObjectInterface *serverObjectInterface = qobject_cast<KDSoapServerObjectInterface *>(m_serverObject);
             serverObjectInterface->setServerSocket(this);
             m_useRawXML = rawXmlInterface->newRequest(m_httpHeaders.value("_requestType"), m_httpHeaders);
         }
@@ -203,8 +207,9 @@ void KDSoapServerSocket::slotReadyRead()
         }
 
         const QByteArray contentLength = m_httpHeaders.value("content-length");
-        if (m_bytesReceived < contentLength.toInt())
-            return; // incomplete request, wait for more data
+        if (m_bytesReceived < contentLength.toInt()) {
+            return;    // incomplete request, wait for more data
+        }
 
         if (m_useRawXML) {
             rawXmlInterface->endRequest();
@@ -260,12 +265,12 @@ void KDSoapServerSocket::slotReadyRead()
     m_receivedData = 0;
 }
 
-void KDSoapServerSocket::handleRequest(const QMap<QByteArray, QByteArray>& httpHeaders, const QByteArray &receivedData)
+void KDSoapServerSocket::handleRequest(const QMap<QByteArray, QByteArray> &httpHeaders, const QByteArray &receivedData)
 {
     const QByteArray requestType = httpHeaders.value("_requestType");
     const QString path = QString::fromLatin1(httpHeaders.value("_path").constData());
 
-    KDSoapServerAuthInterface* serverAuthInterface = qobject_cast<KDSoapServerAuthInterface *>(m_serverObject);
+    KDSoapServerAuthInterface *serverAuthInterface = qobject_cast<KDSoapServerAuthInterface *>(m_serverObject);
     if (serverAuthInterface) {
         const QByteArray authValue = httpHeaders.value("authorization");
         if (!serverAuthInterface->handleHttpAuth(authValue, path)) {
@@ -277,7 +282,7 @@ void KDSoapServerSocket::handleRequest(const QMap<QByteArray, QByteArray>& httpH
     }
 
     if (requestType != "GET" && requestType != "POST") {
-        KDSoapServerCustomVerbRequestInterface* serverCustomRequest = qobject_cast<KDSoapServerCustomVerbRequestInterface *>(m_serverObject);
+        KDSoapServerCustomVerbRequestInterface *serverCustomRequest = qobject_cast<KDSoapServerCustomVerbRequestInterface *>(m_serverObject);
         QByteArray customVerbRequestAnswer;
         if (serverCustomRequest && serverCustomRequest->processCustomVerbRequest(requestType, receivedData, httpHeaders, customVerbRequestAnswer)) {
             write(customVerbRequestAnswer);
@@ -292,11 +297,11 @@ void KDSoapServerSocket::handleRequest(const QMap<QByteArray, QByteArray>& httpH
         }
     }
 
-    KDSoapServer* server = m_owner->server();
+    KDSoapServer *server = m_owner->server();
     KDSoapMessage replyMsg;
     replyMsg.setUse(server->use());
 
-    KDSoapServerObjectInterface* serverObjectInterface = qobject_cast<KDSoapServerObjectInterface *>(m_serverObject);
+    KDSoapServerObjectInterface *serverObjectInterface = qobject_cast<KDSoapServerObjectInterface *>(m_serverObject);
     if (!serverObjectInterface) {
         const QString error = QString::fromLatin1("Server object %1 does not implement KDSoapServerObjectInterface!").arg(QString::fromLatin1(m_serverObject->metaObject()->className()));
         handleError(replyMsg, "Server.ImplementationError", error);
@@ -345,9 +350,9 @@ void KDSoapServerSocket::handleRequest(const QMap<QByteArray, QByteArray>& httpH
         // SOAP 1.2
         // Example: application/soap+xml;charset=utf-8;action=ActionHex
         const QList<QByteArray> parts = contentType.split(';');
-        Q_FOREACH(const QByteArray& part, parts) {
+        Q_FOREACH (const QByteArray &part, parts) {
             if (part.trimmed().startsWith("action=")) { //krazy:exclude=strings
-                soapAction = stripQuotes( part.mid( part.indexOf('=') + 1 ) );
+                soapAction = stripQuotes(part.mid(part.indexOf('=') + 1));
             }
         }
     }
@@ -368,7 +373,7 @@ void KDSoapServerSocket::handleRequest(const QMap<QByteArray, QByteArray>& httpH
 
 bool KDSoapServerSocket::handleWsdlDownload()
 {
-    KDSoapServer* server = m_owner->server();
+    KDSoapServer *server = m_owner->server();
     const QString wsdlFile = server->wsdlFile();
     QFile wf(wsdlFile);
     if (wf.open(QIODevice::ReadOnly)) {
@@ -385,7 +390,7 @@ bool KDSoapServerSocket::handleWsdlDownload()
 bool KDSoapServerSocket::handleFileDownload(KDSoapServerObjectInterface *serverObjectInterface, const QString &path)
 {
     QByteArray contentType;
-    QIODevice* device = serverObjectInterface->processFileRequest(path, contentType);
+    QIODevice *device = serverObjectInterface->processFileRequest(path, contentType);
     if (!device) {
         const QByteArray notFound = "HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\n\r\n";
         write(notFound);
@@ -409,10 +414,11 @@ bool KDSoapServerSocket::handleFileDownload(KDSoapServerObjectInterface *serverO
     qint64 totalRead = 0;
     while (!device->atEnd()) {
         const qint64 in = device->read(block, sizeof(block));
-        if (in <= 0)
+        if (in <= 0) {
             break;
+        }
         totalRead += in;
-        if(in != write(block, in)) {
+        if (in != write(block, in)) {
             //error = true;
             break;
         }
@@ -427,7 +433,7 @@ bool KDSoapServerSocket::handleFileDownload(KDSoapServerObjectInterface *serverO
     return true;
 }
 
-void KDSoapServerSocket::writeXML(const QByteArray& xmlResponse, bool isFault)
+void KDSoapServerSocket::writeXML(const QByteArray &xmlResponse, bool isFault)
 {
     const QByteArray httpHeaders = httpResponseHeaders(isFault, "text/xml", xmlResponse.size()); // TODO return application/soap+xml;charset=utf-8 instead for SOAP 1.2
     if (m_doDebug) {
@@ -441,7 +447,7 @@ void KDSoapServerSocket::writeXML(const QByteArray& xmlResponse, bool isFault)
     // flush() ?
 }
 
-void KDSoapServerSocket::sendReply(KDSoapServerObjectInterface* serverObjectInterface, const KDSoapMessage& replyMsg)
+void KDSoapServerSocket::sendReply(KDSoapServerObjectInterface *serverObjectInterface, const KDSoapMessage &replyMsg)
 {
     const bool isFault = replyMsg.isFault();
 
@@ -451,8 +457,9 @@ void KDSoapServerSocket::sendReply(KDSoapServerObjectInterface* serverObjectInte
         // Note that the kdsoap client parsing code doesn't care for the name (except if it's fault), even in
         // Document mode. Other implementations do, though.
         QString responseName = isFault ? QString::fromLatin1("Fault") : replyMsg.name();
-        if (responseName.isEmpty())
+        if (responseName.isEmpty()) {
             responseName = m_method;
+        }
         QString responseNamespace = m_messageNamespace;
         KDSoapHeaders responseHeaders;
         if (serverObjectInterface) {
@@ -468,16 +475,17 @@ void KDSoapServerSocket::sendReply(KDSoapServerObjectInterface* serverObjectInte
     writeXML(xmlResponse, isFault);
 
     // All done, check if we should log this
-    KDSoapServer* server = m_owner->server();
+    KDSoapServer *server = m_owner->server();
     const KDSoapServer::LogLevel logLevel = server->logLevel(); // we do this here in order to support dynamic settings changes (at the price of a mutex)
     if (logLevel != KDSoapServer::LogNothing) {
         if (logLevel == KDSoapServer::LogEveryCall ||
                 (logLevel == KDSoapServer::LogFaults && isFault)) {
 
-            if (isFault)
+            if (isFault) {
                 server->log("FAULT " + m_method.toLatin1() + " -- " + replyMsg.faultAsString().toUtf8() + '\n');
-            else
+            } else {
                 server->log("CALL " + m_method.toLatin1() + '\n');
+            }
         }
     }
 }
@@ -502,7 +510,7 @@ void KDSoapServerSocket::handleError(KDSoapMessage &replyMsg, const char *errorC
     replyMsg.addArgument(QString::fromLatin1("faultstring"), error);
 }
 
-void KDSoapServerSocket::makeCall(KDSoapServerObjectInterface* serverObjectInterface, const KDSoapMessage &requestMsg, KDSoapMessage& replyMsg, const KDSoapHeaders& requestHeaders, const QByteArray& soapAction, const QString& path)
+void KDSoapServerSocket::makeCall(KDSoapServerObjectInterface *serverObjectInterface, const KDSoapMessage &requestMsg, KDSoapMessage &replyMsg, const KDSoapHeaders &requestHeaders, const QByteArray &soapAction, const QString &path)
 {
     Q_ASSERT(serverObjectInterface);
 
@@ -517,7 +525,7 @@ void KDSoapServerSocket::makeCall(KDSoapServerObjectInterface* serverObjectInter
         // Call method on m_serverObject
         serverObjectInterface->setRequestHeaders(requestHeaders, soapAction);
 
-        KDSoapServer* server = m_owner->server();
+        KDSoapServer *server = m_owner->server();
         if (path != server->path()) {
             serverObjectInterface->processRequestWithPath(requestMsg, replyMsg, soapAction, path);
         } else {
@@ -535,8 +543,9 @@ void KDSoapServerSocket::makeCall(KDSoapServerObjectInterface* serverObjectInter
 // but untestable with QNAM on the client side, since it doesn't do that.
 void KDSoapServerSocket::setSocketEnabled(bool enabled)
 {
-    if (m_socketEnabled == enabled)
+    if (m_socketEnabled == enabled) {
         return;
+    }
 
     m_socketEnabled = enabled;
     if (enabled) {

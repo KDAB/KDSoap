@@ -36,7 +36,7 @@ KDSoapServerAuthInterface::~KDSoapServerAuthInterface()
 }
 
 enum Method { None, Basic, Plain, Login, Ntlm, CramMd5, DigestMd5 };
-static void parseAuthLine(const QString& str, Method* method, QString* headerVal)
+static void parseAuthLine(const QString &str, Method *method, QString *headerVal)
 {
     *method = None;
     // The code below (from QAuthenticatorPrivate::parseHttpResponse)
@@ -56,7 +56,7 @@ static void parseAuthLine(const QString& str, Method* method, QString* headerVal
     }
 }
 
-bool KDSoapServerAuthInterface::handleHttpAuth(const QByteArray &authValue, const QString& path)
+bool KDSoapServerAuthInterface::handleHttpAuth(const QByteArray &authValue, const QString &path)
 {
     bool authOk = false;
     KDSoapAuthentication authSettings;
@@ -74,12 +74,12 @@ bool KDSoapServerAuthInterface::handleHttpAuth(const QByteArray &authValue, cons
             // Let the implementation decide whether it accepts "no auth".
             authOk = validateAuthentication(authSettings, path);
             break;
-        case Basic:
-        {
+        case Basic: {
             const QByteArray userPass = QByteArray::fromBase64(headerVal.toLatin1());
             const int separatorPos = userPass.indexOf(':');
-            if (separatorPos == -1)
+            if (separatorPos == -1) {
                 break;
+            }
             authSettings.setUser(QString::fromUtf8(userPass.left(separatorPos).constData()));
             authSettings.setPassword(QString::fromUtf8(userPass.mid(separatorPos + 1).constData()));
             authOk = validateAuthentication(authSettings, path);
@@ -93,7 +93,7 @@ bool KDSoapServerAuthInterface::handleHttpAuth(const QByteArray &authValue, cons
     return authOk;
 }
 
-bool KDSoapServerAuthInterface::validateAuthentication(const KDSoapAuthentication& auth, const QString& path)
+bool KDSoapServerAuthInterface::validateAuthentication(const KDSoapAuthentication &auth, const QString &path)
 {
     Q_UNUSED(auth);
     Q_UNUSED(path);

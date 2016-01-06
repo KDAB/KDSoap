@@ -42,14 +42,23 @@ QT_END_NAMESPACE
 class KDSoapThreadTaskData
 {
 public:
-    KDSoapThreadTaskData(KDSoapClientInterface* iface, const QString& method, const KDSoapMessage &message, const QString& action, const KDSoapHeaders& headers)
+    KDSoapThreadTaskData(KDSoapClientInterface *iface, const QString &method, const KDSoapMessage &message, const QString &action, const KDSoapHeaders &headers)
         : m_iface(iface), m_method(method), m_message(message), m_action(action), m_headers(headers) {}
 
-    void waitForCompletion() { m_semaphore.acquire(); }
-    KDSoapMessage response() const { return m_response; }
-    KDSoapHeaders responseHeaders() const { return m_responseHeaders; }
+    void waitForCompletion()
+    {
+        m_semaphore.acquire();
+    }
+    KDSoapMessage response() const
+    {
+        return m_response;
+    }
+    KDSoapHeaders responseHeaders() const
+    {
+        return m_responseHeaders;
+    }
 
-    KDSoapClientInterface* m_iface; // used by KDSoapThreadTask::process()
+    KDSoapClientInterface *m_iface; // used by KDSoapThreadTask::process()
     KDSoapAuthentication m_authentication;
     QString m_method;
     KDSoapMessage m_message;
@@ -64,20 +73,20 @@ class KDSoapThreadTask : public QObject
 {
     Q_OBJECT
 public:
-    explicit KDSoapThreadTask(KDSoapThreadTaskData* data)
+    explicit KDSoapThreadTask(KDSoapThreadTaskData *data)
         : m_data(data) {}
 
-    void process(QNetworkAccessManager& accessManager);
+    void process(QNetworkAccessManager &accessManager);
 
 signals:
     void taskDone();
 
 private Q_SLOTS:
-    void slotFinished(KDSoapPendingCallWatcher* watcher);
-    void slotAuthenticationRequired(QNetworkReply* reply, QAuthenticator* authenticator);
+    void slotFinished(KDSoapPendingCallWatcher *watcher);
+    void slotAuthenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator);
 
 private:
-    KDSoapThreadTaskData* m_data;
+    KDSoapThreadTaskData *m_data;
 };
 
 class KDSoapClientThread : public QThread
@@ -86,7 +95,7 @@ class KDSoapClientThread : public QThread
 public:
     explicit KDSoapClientThread(QObject *parent = 0);
 
-    void enqueue(KDSoapThreadTaskData* taskData);
+    void enqueue(KDSoapThreadTaskData *taskData);
 
     void stop();
 
@@ -95,7 +104,7 @@ protected:
 
 private:
     QMutex m_mutex;
-    QQueue<KDSoapThreadTaskData*> m_queue;
+    QQueue<KDSoapThreadTaskData *> m_queue;
     QWaitCondition m_queueNotEmpty;
     bool m_stopThread;
 };

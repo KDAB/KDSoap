@@ -43,7 +43,7 @@ public:
     /**
      * Constructs a thread pool with the given \p parent.
      */
-    explicit KDSoapThreadPool(QObject* parent = 0);
+    explicit KDSoapThreadPool(QObject *parent = 0);
 
     /**
      * Destructs the thread pool, after ensuring that all threads finish properly.
@@ -66,14 +66,14 @@ public:
     /**
      * Returns the number of connected sockets for a given server
      */
-    int numConnectedSockets(const KDSoapServer* server) const;
+    int numConnectedSockets(const KDSoapServer *server) const;
 
     /**
      * Returns the number of sockets that have connected to the given server,
      * in this threadpool, since the last call to resetTotalConnectionCount().
      * \since 1.2
      */
-    int totalConnectionCount(const KDSoapServer* server) const;
+    int totalConnectionCount(const KDSoapServer *server) const;
 
     /**
      * Resets totalConnectionCount to 0.
@@ -84,13 +84,13 @@ public:
     /**
      * Disconnect all connected sockets for a given server
      */
-    void disconnectSockets(KDSoapServer* server);
+    void disconnectSockets(KDSoapServer *server);
 
 private:
     friend class KDSoapServer;
-    void handleIncomingConnection(int socketDescriptor, KDSoapServer* server);
+    void handleIncomingConnection(int socketDescriptor, KDSoapServer *server);
     class Private;
-    Private* const d;
+    Private *const d;
 };
 
 #endif // KDSOAPTHREADPOOL_H

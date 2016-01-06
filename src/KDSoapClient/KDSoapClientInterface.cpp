@@ -36,7 +36,7 @@
 #include <QBuffer>
 #include <QNetworkProxy>
 
-KDSoapClientInterface::KDSoapClientInterface(const QString& endPoint, const QString& messageNamespace)
+KDSoapClientInterface::KDSoapClientInterface(const QString &endPoint, const QString &messageNamespace)
     : d(new KDSoapClientInterfacePrivate)
 {
     d->m_endPoint = endPoint;
@@ -58,9 +58,8 @@ void KDSoapClientInterface::setSoapVersion(KDSoapClientInterface::SoapVersion ve
 
 KDSoapClientInterface::SoapVersion KDSoapClientInterface::soapVersion()
 {
-  return d->m_version;
+    return d->m_version;
 }
-
 
 KDSoapClientInterfacePrivate::KDSoapClientInterfacePrivate()
     : m_accessManager(0),
@@ -91,7 +90,7 @@ QNetworkAccessManager *KDSoapClientInterfacePrivate::accessManager()
     return m_accessManager;
 }
 
-QNetworkRequest KDSoapClientInterfacePrivate::prepareRequest(const QString &method, const QString& action)
+QNetworkRequest KDSoapClientInterfacePrivate::prepareRequest(const QString &method, const QString &action)
 {
     QNetworkRequest request(QUrl(this->m_endPoint));
 
@@ -101,8 +100,9 @@ QNetworkRequest KDSoapClientInterfacePrivate::prepareRequest(const QString &meth
     if (soapAction.isEmpty()) {
         // Does the namespace always end with a '/'? - nope, it doesn't.
         soapAction = this->m_messageNamespace;
-        if (!soapAction.endsWith(QLatin1Char('/')))
+        if (!soapAction.endsWith(QLatin1Char('/'))) {
             soapAction += QLatin1Char('/');
+        }
         soapAction += method;
     }
     //qDebug() << "soapAction=" << soapAction;
@@ -123,54 +123,55 @@ QNetworkRequest KDSoapClientInterfacePrivate::prepareRequest(const QString &meth
     //
     // happens with retrieval calls in against SugarCRM 5.5.1 running on Apache 2.2.15
     // when the response seems to reach a certain size threshold
-    request.setRawHeader( "Accept-Encoding", "compress" );
+    request.setRawHeader("Accept-Encoding", "compress");
 
     for (QMap<QByteArray, QByteArray>::const_iterator it = m_httpHeaders.constBegin(); it != m_httpHeaders.constEnd(); ++it) {
         request.setRawHeader(it.key(), it.value());
     }
 
-
 #ifndef QT_NO_OPENSSL
-    if (!m_sslConfiguration.isNull())
+    if (!m_sslConfiguration.isNull()) {
         request.setSslConfiguration(m_sslConfiguration);
+    }
 #endif
 
     return request;
 }
 
-QBuffer* KDSoapClientInterfacePrivate::prepareRequestBuffer(const QString& method, const KDSoapMessage& message, const KDSoapHeaders& headers)
+QBuffer *KDSoapClientInterfacePrivate::prepareRequestBuffer(const QString &method, const KDSoapMessage &message, const KDSoapHeaders &headers)
 {
     KDSoapMessageWriter msgWriter;
     msgWriter.setMessageNamespace(m_messageNamespace);
     msgWriter.setVersion(m_version);
     const QByteArray data = msgWriter.messageToXml(message, (m_style == KDSoapClientInterface::RPCStyle) ? method : QString(), headers, m_persistentHeaders);
-    QBuffer* buffer = new QBuffer;
+    QBuffer *buffer = new QBuffer;
     buffer->setData(data);
     buffer->open(QIODevice::ReadOnly);
     return buffer;
 }
 
-KDSoapPendingCall KDSoapClientInterface::asyncCall(const QString &method, const KDSoapMessage &message, const QString& soapAction, const KDSoapHeaders& headers)
+KDSoapPendingCall KDSoapClientInterface::asyncCall(const QString &method, const KDSoapMessage &message, const QString &soapAction, const KDSoapHeaders &headers)
 {
-    QBuffer* buffer = d->prepareRequestBuffer(method, message, headers);
+    QBuffer *buffer = d->prepareRequestBuffer(method, message, headers);
     QNetworkRequest request = d->prepareRequest(method, soapAction);
     //qDebug() << "post()";
-    QNetworkReply* reply = d->accessManager()->post(request, buffer);
+    QNetworkReply *reply = d->accessManager()->post(request, buffer);
     d->setupReply(reply);
     return KDSoapPendingCall(reply, buffer);
 }
 
-KDSoapMessage KDSoapClientInterface::call(const QString& method, const KDSoapMessage &message, const QString& soapAction, const KDSoapHeaders& headers)
+KDSoapMessage KDSoapClientInterface::call(const QString &method, const KDSoapMessage &message, const QString &soapAction, const KDSoapHeaders &headers)
 {
     d->accessManager()->cookieJar(); // create it in the right thread, the secondary thread will use it
     // Problem is: I don't want a nested event loop here. Too dangerous for GUI programs.
     // I wanted a socket->waitFor... but we don't have access to the actual socket in QNetworkAccess.
     // So the only option that remains is a thread and acquiring a semaphore...
-    KDSoapThreadTaskData* task = new KDSoapThreadTaskData(this, method, message, soapAction, headers);
+    KDSoapThreadTaskData *task = new KDSoapThreadTaskData(this, method, message, soapAction, headers);
     task->m_authentication = d->m_authentication;
     d->m_thread.enqueue(task);
-    if (!d->m_thread.isRunning())
+    if (!d->m_thread.isRunning()) {
         d->m_thread.start();
+    }
     task->waitForCompletion();
     KDSoapMessage ret = task->response();
     d->m_lastResponseHeaders = task->responseHeaders();
@@ -178,16 +179,16 @@ KDSoapMessage KDSoapClientInterface::call(const QString& method, const KDSoapMes
     return ret;
 }
 
-void KDSoapClientInterface::callNoReply(const QString &method, const KDSoapMessage &message, const QString &soapAction, const KDSoapHeaders& headers)
+void KDSoapClientInterface::callNoReply(const QString &method, const KDSoapMessage &message, const QString &soapAction, const KDSoapHeaders &headers)
 {
-    QBuffer* buffer = d->prepareRequestBuffer(method, message, headers);
+    QBuffer *buffer = d->prepareRequestBuffer(method, message, headers);
     QNetworkRequest request = d->prepareRequest(method, soapAction);
-    QNetworkReply* reply = d->accessManager()->post(request, buffer);
+    QNetworkReply *reply = d->accessManager()->post(request, buffer);
     d->setupReply(reply);
     QObject::connect(reply, SIGNAL(finished()), reply, SLOT(deleteLater()));
 }
 
-void KDSoapClientInterfacePrivate::_kd_slotAuthenticationRequired(QNetworkReply* reply, QAuthenticator* authenticator)
+void KDSoapClientInterfacePrivate::_kd_slotAuthenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator)
 {
     m_authentication.handleAuthenticationRequired(reply, authenticator);
 }
@@ -207,7 +208,7 @@ void KDSoapClientInterface::setEndPoint(const QString &endPoint)
     d->m_endPoint = endPoint;
 }
 
-void KDSoapClientInterface::setHeader(const QString& name, const KDSoapMessage &header)
+void KDSoapClientInterface::setHeader(const QString &name, const KDSoapMessage &header)
 {
     d->m_persistentHeaders[name] = header;
     d->m_persistentHeaders[name].setQualified(true);
@@ -257,19 +258,19 @@ KDSoapClientInterface::Style KDSoapClientInterface::style() const
     return d->m_style;
 }
 
-QNetworkCookieJar * KDSoapClientInterface::cookieJar() const
+QNetworkCookieJar *KDSoapClientInterface::cookieJar() const
 {
     return d->accessManager()->cookieJar();
 }
 
 void KDSoapClientInterface::setCookieJar(QNetworkCookieJar *jar)
 {
-    QObject* oldParent = jar->parent();
+    QObject *oldParent = jar->parent();
     d->accessManager()->setCookieJar(jar);
     jar->setParent(oldParent); // see comment in QNAM::setCookieJar...
 }
 
-void KDSoapClientInterface::setRawHTTPHeaders( const QMap<QByteArray, QByteArray>& headers )
+void KDSoapClientInterface::setRawHTTPHeaders(const QMap<QByteArray, QByteArray> &headers)
 {
     d->m_httpHeaders = headers;
 }
@@ -295,10 +296,11 @@ void KDSoapClientInterface::setSslConfiguration(const QSslConfiguration &config)
     d->m_sslConfiguration = config;
 }
 
-KDSoapSslHandler* KDSoapClientInterface::sslHandler() const
+KDSoapSslHandler *KDSoapClientInterface::sslHandler() const
 {
-    if (!d->m_sslHandler)
+    if (!d->m_sslHandler) {
         d->m_sslHandler = new KDSoapSslHandler;
+    }
     return d->m_sslHandler;
 }
 #endif

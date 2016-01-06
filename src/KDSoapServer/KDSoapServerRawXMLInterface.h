@@ -93,7 +93,7 @@ public:
     }
 
 private:
-    KDSoapServerRawXMLPrivate* const d;
+    KDSoapServerRawXMLPrivate *const d;
 };
 
 QT_BEGIN_NAMESPACE

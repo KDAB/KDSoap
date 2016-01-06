@@ -62,7 +62,8 @@ class KDSoapHeaders;
  *
  * \since 1.2
  */
-class KDSOAP_EXPORT KDSoapJob : public QObject {
+class KDSOAP_EXPORT KDSoapJob : public QObject
+{
     Q_OBJECT
 public:
     /**
@@ -70,7 +71,7 @@ public:
      *
      * \param parent optional parent object
      */
-    explicit KDSoapJob(QObject * parent=0);
+    explicit KDSoapJob(QObject *parent = 0);
 
     /**
      * Destructor.
@@ -112,7 +113,7 @@ Q_SIGNALS:
      *
      * \param job The job instance that emitted the signal
      */
-    void finished(KDSoapJob * job);
+    void finished(KDSoapJob *job);
 
 protected:
     /**
@@ -125,11 +126,11 @@ protected:
      * \internal
      * Sets reply, emits finished() signal and manages deletion of job
      */
-    void emitFinished(const KDSoapMessage & reply, const KDSoapHeaders & replyHeaders);
+    void emitFinished(const KDSoapMessage &reply, const KDSoapHeaders &replyHeaders);
 
 private:
     class Private;
-    Private * const d;
+    Private *const d;
 };
 
 #endif // KDSOAPJOB_H

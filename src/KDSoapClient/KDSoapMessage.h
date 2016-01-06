@@ -53,7 +53,7 @@ public:
     /**
      * Constructs a copy of the object given by \p other.
      */
-    KDSoapMessage(const KDSoapMessage& other);
+    KDSoapMessage(const KDSoapMessage &other);
     /**
      * Copies the contents of the object given by \p other.
      */
@@ -67,12 +67,12 @@ public:
     /**
      * Compares two KDSoapMessages
      */
-     bool operator==(const KDSoapMessage &other) const;
+    bool operator==(const KDSoapMessage &other) const;
 
-     /**
-      * Compares two KDSoapMessages
-      */
-     bool operator!=(const KDSoapMessage &other) const;
+    /**
+     * Compares two KDSoapMessages
+     */
+    bool operator!=(const KDSoapMessage &other) const;
 
     /**
      * Define the way the message should be serialized.
@@ -100,7 +100,7 @@ public:
      *
      * If the message isQualified(), the value will be set to qualified as well, for convenience.
      */
-    void addArgument(const QString& argumentName, const QVariant& argumentValue, const QString& typeNameSpace = QString(), const QString& typeName = QString());
+    void addArgument(const QString &argumentName, const QVariant &argumentValue, const QString &typeNameSpace = QString(), const QString &typeName = QString());
 
     /**
      * Adds a complex-type argument to the message.
@@ -117,19 +117,19 @@ public:
      *
      * If the message isQualified(), the value will be set to qualified as well, for convenience.
      */
-    void addArgument(const QString& argumentName, const KDSoapValueList& argumentValueList, const QString& typeNameSpace = QString(), const QString& typeName = QString());
+    void addArgument(const QString &argumentName, const KDSoapValueList &argumentValueList, const QString &typeNameSpace = QString(), const QString &typeName = QString());
 
     /**
      * Returns the arguments for the message.
      * The list can be modified, in order to modify the message.
      */
-    KDSoapValueList& arguments();
+    KDSoapValueList &arguments();
 
     /**
      * Returns the arguments for the message.
      * The list is readonly; useful for inspecting a response.
      */
-    const KDSoapValueList& arguments() const;
+    const KDSoapValueList &arguments() const;
 
     /**
      * \return \c true if this message is a "fault" message, or if an error
@@ -190,12 +190,12 @@ public:
     /**
      * Convenience method: return the header with a given XML element name (assumes unicity)
      */
-    KDSoapMessage header(const QString& name) const;
+    KDSoapMessage header(const QString &name) const;
 
     /**
      * Convenience method: return the header with a given XML element name and namespace (assumes unicity)
      */
-    KDSoapMessage header(const QString& name, const QString& namespaceUri) const;
+    KDSoapMessage header(const QString &name, const QString &namespaceUri) const;
 };
 
 /**

@@ -36,10 +36,10 @@ class KDSoapSocketList : public QObject
 {
     Q_OBJECT
 public:
-    explicit KDSoapSocketList(KDSoapServer* server);
+    explicit KDSoapSocketList(KDSoapServer *server);
     ~KDSoapSocketList();
 
-    KDSoapServerSocket* handleIncomingConnection(int socketDescriptor);
+    KDSoapServerSocket *handleIncomingConnection(int socketDescriptor);
 
     int socketCount() const;
     void disconnectAll();
@@ -48,14 +48,17 @@ public:
     void increaseConnectionCount();
     void resetTotalConnectionCount();
 
-    KDSoapServer* server() const { return m_server; }
+    KDSoapServer *server() const
+    {
+        return m_server;
+    }
 
 public Q_SLOTS:
-    void socketDeleted(KDSoapServerSocket* socket);
+    void socketDeleted(KDSoapServerSocket *socket);
 
 private:
-    KDSoapServer* m_server;
-    QObject* m_serverObject;
+    KDSoapServer *m_server;
+    QObject *m_serverObject;
     QSet<KDSoapServerSocket *> m_sockets;
     QAtomicInt m_totalConnectionCount;
 };

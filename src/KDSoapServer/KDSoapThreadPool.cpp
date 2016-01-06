@@ -32,14 +32,14 @@ public:
     {
     }
 
-    KDSoapServerThread* chooseNextThread();
+    KDSoapServerThread *chooseNextThread();
 
     int m_maxThreadCount;
     typedef QList<KDSoapServerThread *> ThreadCollection;
     ThreadCollection m_threads;
 };
 
-KDSoapThreadPool::KDSoapThreadPool(QObject* parent)
+KDSoapThreadPool::KDSoapThreadPool(QObject *parent)
     : QObject(parent),
       d(new Private)
 {
@@ -48,10 +48,10 @@ KDSoapThreadPool::KDSoapThreadPool(QObject* parent)
 KDSoapThreadPool::~KDSoapThreadPool()
 {
     // ask all threads to finish, then delete them all
-    Q_FOREACH(KDSoapServerThread* thread, d->m_threads) {
+    Q_FOREACH (KDSoapServerThread *thread, d->m_threads) {
         thread->quitThread();
     }
-    Q_FOREACH(KDSoapServerThread* thread, d->m_threads) {
+    Q_FOREACH (KDSoapServerThread *thread, d->m_threads) {
         thread->wait();
         delete thread;
     }
@@ -69,15 +69,15 @@ int KDSoapThreadPool::maxThreadCount() const
     return d->m_maxThreadCount;
 }
 
-KDSoapServerThread * KDSoapThreadPool::Private::chooseNextThread()
+KDSoapServerThread *KDSoapThreadPool::Private::chooseNextThread()
 {
-    KDSoapServerThread* chosenThread = 0;
+    KDSoapServerThread *chosenThread = 0;
     // Try to pick an existing thread
     int minSocketCount = 0;
-    KDSoapServerThread* bestThread = 0;
+    KDSoapServerThread *bestThread = 0;
     ThreadCollection::const_iterator it = m_threads.constBegin();
     for (; it != m_threads.constEnd(); ++it) {
-        KDSoapServerThread* thr = *it;
+        KDSoapServerThread *thr = *it;
         // We look at the amount of sockets connected to each thread, and pick the less busy one.
         // Note that this isn't fully accurate, due to Keep-Alive: it's possible for long-term
         // idling clients to be all on one thread, and active clients on another one, and this
@@ -111,10 +111,10 @@ KDSoapServerThread * KDSoapThreadPool::Private::chooseNextThread()
     return chosenThread;
 }
 
-void KDSoapThreadPool::handleIncomingConnection(int socketDescriptor, KDSoapServer* server)
+void KDSoapThreadPool::handleIncomingConnection(int socketDescriptor, KDSoapServer *server)
 {
     // First, pick or create a thread.
-    KDSoapServerThread* chosenThread = d->chooseNextThread();
+    KDSoapServerThread *chosenThread = d->chooseNextThread();
 
     // Then create the socket, and register it in the corresponding socket-pool, and move it to the thread.
     chosenThread->handleIncomingConnection(socketDescriptor, server);
@@ -123,7 +123,7 @@ void KDSoapThreadPool::handleIncomingConnection(int socketDescriptor, KDSoapServ
 int KDSoapThreadPool::numConnectedSockets(const KDSoapServer *server) const
 {
     int sc = 0;
-    Q_FOREACH(KDSoapServerThread* thread, d->m_threads) {
+    Q_FOREACH (KDSoapServerThread *thread, d->m_threads) {
         sc += thread->socketCountForServer(server);
     }
     return sc;
@@ -132,25 +132,25 @@ int KDSoapThreadPool::numConnectedSockets(const KDSoapServer *server) const
 void KDSoapThreadPool::disconnectSockets(KDSoapServer *server)
 {
     QSemaphore readyThreads;
-    Q_FOREACH(KDSoapServerThread* thread, d->m_threads) {
+    Q_FOREACH (KDSoapServerThread *thread, d->m_threads) {
         thread->disconnectSocketsForServer(server, readyThreads);
     }
     // Wait for all threads to have disconnected their sockets
     readyThreads.acquire(d->m_threads.count());
 }
 
-int KDSoapThreadPool::totalConnectionCount(const KDSoapServer* server) const
+int KDSoapThreadPool::totalConnectionCount(const KDSoapServer *server) const
 {
     int sc = 0;
-    Q_FOREACH(KDSoapServerThread* thread, d->m_threads) {
+    Q_FOREACH (KDSoapServerThread *thread, d->m_threads) {
         sc += thread->totalConnectionCountForServer(server);
     }
     return sc;
 }
 
-void KDSoapThreadPool::resetTotalConnectionCount(const KDSoapServer* server)
+void KDSoapThreadPool::resetTotalConnectionCount(const KDSoapServer *server)
 {
-    Q_FOREACH(KDSoapServerThread* thread, d->m_threads) {
+    Q_FOREACH (KDSoapServerThread *thread, d->m_threads) {
         thread->resetTotalConnectionCountForServer(server);
     }
 }

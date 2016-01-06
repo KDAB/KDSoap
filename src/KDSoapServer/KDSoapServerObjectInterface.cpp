@@ -56,7 +56,7 @@ KDSoapServerObjectInterface::~KDSoapServerObjectInterface()
     delete d;
 }
 
-void KDSoapServerObjectInterface::processRequest(const KDSoapMessage &request, KDSoapMessage& response, const QByteArray& soapAction)
+void KDSoapServerObjectInterface::processRequest(const KDSoapMessage &request, KDSoapMessage &response, const QByteArray &soapAction)
 {
     const QString method = request.name();
     qDebug() << "Slot not found:" << method << "[soapAction =" << soapAction << "]" /* << "in" << metaObject()->className()*/;
@@ -111,17 +111,17 @@ void KDSoapServerObjectInterface::setFault(const QString &faultCode, const QStri
     d->m_detailValue = detail;
 }
 
-void KDSoapServerObjectInterface::storeFaultAttributes(KDSoapMessage& message) const
+void KDSoapServerObjectInterface::storeFaultAttributes(KDSoapMessage &message) const
 {
     // SOAP 1.1  <faultcode>, <faultstring>, <faultfactor>, <detail>
     message.addArgument(QString::fromLatin1("faultcode"), d->m_faultCode);
     message.addArgument(QString::fromLatin1("faultstring"), d->m_faultString);
     message.addArgument(QString::fromLatin1("faultactor"), d->m_faultActor);
-    if (d->m_detailValue.isNil() || d->m_detailValue.isNull())
+    if (d->m_detailValue.isNil() || d->m_detailValue.isNull()) {
         message.addArgument(QString::fromLatin1("detail"), d->m_detail);
-    else {
+    } else {
         KDSoapValueList detailAsList;
-        detailAsList.append( d->m_detailValue );
+        detailAsList.append(d->m_detailValue);
         message.addArgument(QString::fromLatin1("detail"), detailAsList);
     }
     // TODO  : Answer SOAP 1.2  <Code> , <Reason> , <Node> , <Role> , <Detail>
@@ -142,7 +142,7 @@ KDSoapHeaders KDSoapServerObjectInterface::requestHeaders() const
     return d->m_requestHeaders;
 }
 
-void KDSoapServerObjectInterface::setRequestHeaders(const KDSoapHeaders &headers, const QByteArray& soapAction)
+void KDSoapServerObjectInterface::setRequestHeaders(const KDSoapHeaders &headers, const QByteArray &soapAction)
 {
     d->m_requestHeaders = headers;
     d->m_soapAction = soapAction;
@@ -176,11 +176,12 @@ void KDSoapServerObjectInterface::setServerSocket(KDSoapServerSocket *serverSock
     d->m_serverSocket = serverSocket;
 }
 
-void KDSoapServerObjectInterface::sendDelayedResponse(const KDSoapDelayedResponseHandle& responseHandle, const KDSoapMessage &response)
+void KDSoapServerObjectInterface::sendDelayedResponse(const KDSoapDelayedResponseHandle &responseHandle, const KDSoapMessage &response)
 {
-    KDSoapServerSocket* socket = responseHandle.serverSocket();
-    if (socket)
+    KDSoapServerSocket *socket = responseHandle.serverSocket();
+    if (socket) {
         socket->sendDelayedReply(this, response);
+    }
 }
 
 void KDSoapServerObjectInterface::writeHTTP(const QByteArray &httpReply)
@@ -194,7 +195,7 @@ void KDSoapServerObjectInterface::writeXML(const QByteArray &reply, bool isFault
     d->m_serverSocket->writeXML(reply, isFault);
 }
 
-void KDSoapServerObjectInterface::setResponseNamespace(const QString& ns)
+void KDSoapServerObjectInterface::setResponseNamespace(const QString &ns)
 {
     d->m_responseNamespace = ns;
 }

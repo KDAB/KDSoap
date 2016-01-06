@@ -39,7 +39,7 @@ class KDSoapEndpointReferenceData;
  */
 class KDSOAP_EXPORT KDSoapEndpointReference
 {
-  public:
+public:
 
     /**
      * Construct a KDSoapEndpointReference object with the given \p address

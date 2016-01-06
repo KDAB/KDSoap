@@ -32,8 +32,8 @@ class KDSoapValue::Private : public QSharedData
 {
 public:
     Private(): m_qualified(false), m_nillable(false) {}
-    Private(const QString& n, const QVariant& v, const QString& typeNameSpace, const QString& typeName)
-      : m_name(n), m_value(v), m_typeNamespace(typeNameSpace), m_typeName(typeName), m_qualified(false), m_nillable(false) {}
+    Private(const QString &n, const QVariant &v, const QString &typeNameSpace, const QString &typeName)
+        : m_name(n), m_value(v), m_typeNamespace(typeNameSpace), m_typeName(typeName), m_qualified(false), m_nillable(false) {}
 
     QString m_name;
     QString m_nameNamespace;
@@ -45,20 +45,22 @@ public:
     bool m_nillable;
 };
 
-uint qHash( const KDSoapValue& value ) { return qHash( value.name() ); }
-
+uint qHash(const KDSoapValue &value)
+{
+    return qHash(value.name());
+}
 
 KDSoapValue::KDSoapValue()
     : d(new Private)
 {
 }
 
-KDSoapValue::KDSoapValue(const QString& n, const QVariant& v, const QString& typeNameSpace, const QString& typeName)
+KDSoapValue::KDSoapValue(const QString &n, const QVariant &v, const QString &typeNameSpace, const QString &typeName)
     : d(new Private(n, v, typeNameSpace, typeName))
 {
 }
 
-KDSoapValue::KDSoapValue(const QString& n, const KDSoapValueList& children, const QString& typeNameSpace, const QString& typeName)
+KDSoapValue::KDSoapValue(const QString &n, const KDSoapValueList &children, const QString &typeNameSpace, const QString &typeName)
     : d(new Private(n, QVariant(), typeNameSpace, typeName))
 {
     d->m_childValues = children;
@@ -68,7 +70,7 @@ KDSoapValue::~KDSoapValue()
 {
 }
 
-KDSoapValue::KDSoapValue(const KDSoapValue& other)
+KDSoapValue::KDSoapValue(const KDSoapValue &other)
     : d(other.d)
 {
 }
@@ -113,12 +115,11 @@ void KDSoapValue::setQualified(bool qualified)
     d->m_qualified = qualified;
 }
 
-KDSoapValueList & KDSoapValue::childValues() const
+KDSoapValueList &KDSoapValue::childValues() const
 {
     // I want to fool the QSharedDataPointer mechanism here...
     return const_cast<KDSoapValueList &>(d->m_childValues);
 }
-
 
 bool KDSoapValue::operator ==(const KDSoapValue &other) const
 {
@@ -130,20 +131,17 @@ bool KDSoapValue::operator !=(const KDSoapValue &other) const
     return d != other.d;
 }
 
-
-static QString variantToTextValue(const QVariant& value, const QString& typeNs, const QString& type)
+static QString variantToTextValue(const QVariant &value, const QString &typeNs, const QString &type)
 {
-    switch (value.userType())
-    {
+    switch (value.userType()) {
     case QVariant::Char:
-        // fall-through
+    // fall-through
     case QVariant::String:
         return value.toString();
     case QVariant::Url:
         // xmlpatterns/data/qatomicvalue.cpp says to do this:
         return value.toUrl().toString();
-    case QVariant::ByteArray:
-    {
+    case QVariant::ByteArray: {
         const QByteArray data = value.toByteArray();
         if (typeNs == KDSoapNamespaceManager::xmlSchema1999() || typeNs == KDSoapNamespaceManager::xmlSchema2001()) {
             if (type == QLatin1String("hexBinary")) {
@@ -156,9 +154,9 @@ static QString variantToTextValue(const QVariant& value, const QString& typeNs, 
         return QString::fromLatin1(b64.constData(), b64.size());
     }
     case QVariant::Int:
-        // fall-through
+    // fall-through
     case QVariant::LongLong:
-        // fall-through
+    // fall-through
     case QVariant::UInt:
         return QString::number(value.toLongLong());
     case QVariant::ULongLong:
@@ -167,8 +165,7 @@ static QString variantToTextValue(const QVariant& value, const QString& typeNs, 
     case QMetaType::Float:
     case QVariant::Double:
         return value.toString();
-    case QVariant::Time:
-    {
+    case QVariant::Time: {
         const QTime time = value.toTime();
         if (time.msec()) {
             // include milli-seconds
@@ -189,8 +186,9 @@ static QString variantToTextValue(const QVariant& value, const QString& typeNs, 
             return value.value<KDDateTime>().toDateString();
         }
 
-        if (value.userType() == qMetaTypeId<float>())
+        if (value.userType() == qMetaTypeId<float>()) {
             return QString::number(value.value<float>());
+        }
 
         qDebug() << QString::fromLatin1("QVariants of type %1 are not supported in "
                                         "KDSoap, see the documentation").arg(QLatin1String(value.typeName()));
@@ -199,22 +197,21 @@ static QString variantToTextValue(const QVariant& value, const QString& typeNs, 
 }
 
 // See also xmlTypeToVariant in serverlib
-static QString variantToXMLType(const QVariant& value)
+static QString variantToXMLType(const QVariant &value)
 {
-    switch (value.userType())
-    {
+    switch (value.userType()) {
     case QVariant::Char:
-        // fall-through
+    // fall-through
     case QVariant::String:
-        // fall-through
+    // fall-through
     case QVariant::Url:
         return QLatin1String("xsd:string");
     case QVariant::ByteArray:
         return QLatin1String("xsd:base64Binary");
     case QVariant::Int:
-        // fall-through
+    // fall-through
     case QVariant::LongLong:
-        // fall-through
+    // fall-through
     case QVariant::UInt:
         return QLatin1String("xsd:int");
     case QVariant::ULongLong:
@@ -232,11 +229,12 @@ static QString variantToXMLType(const QVariant& value)
     case QVariant::DateTime:
         return QLatin1String("xsd:dateTime");
     default:
-        if (value.userType() == qMetaTypeId<float>())
+        if (value.userType() == qMetaTypeId<float>()) {
             return QLatin1String("xsd:float");
-        if (value.canConvert<KDDateTime>())
+        }
+        if (value.canConvert<KDDateTime>()) {
             return QLatin1String("xsd:dateTime");
-
+        }
 
         qDebug() << value;
 
@@ -246,11 +244,12 @@ static QString variantToXMLType(const QVariant& value)
     }
 }
 
-void KDSoapValue::writeElement(KDSoapNamespacePrefixes& namespacePrefixes, QXmlStreamWriter& writer, KDSoapValue::Use use, const QString& messageNamespace, bool forceQualified) const
+void KDSoapValue::writeElement(KDSoapNamespacePrefixes &namespacePrefixes, QXmlStreamWriter &writer, KDSoapValue::Use use, const QString &messageNamespace, bool forceQualified) const
 {
     Q_ASSERT(!name().isEmpty());
-    if ( !d->m_nameNamespace.isEmpty() && d->m_nameNamespace != messageNamespace )
+    if (!d->m_nameNamespace.isEmpty() && d->m_nameNamespace != messageNamespace) {
         forceQualified = true;
+    }
 
     if (d->m_qualified || forceQualified) {
         const QString ns = d->m_nameNamespace.isEmpty() ? messageNamespace : d->m_nameNamespace;
@@ -266,20 +265,23 @@ void KDSoapValue::writeElement(KDSoapNamespacePrefixes& namespacePrefixes, QXmlS
     writer.writeEndElement();
 }
 
-void KDSoapValue::writeElementContents(KDSoapNamespacePrefixes& namespacePrefixes, QXmlStreamWriter& writer, KDSoapValue::Use use, const QString& messageNamespace) const
+void KDSoapValue::writeElementContents(KDSoapNamespacePrefixes &namespacePrefixes, QXmlStreamWriter &writer, KDSoapValue::Use use, const QString &messageNamespace) const
 {
     const QVariant value = this->value();
 
-    if (isNil() && d->m_nillable)
+    if (isNil() && d->m_nillable) {
         writer.writeAttribute(KDSoapNamespaceManager::xmlSchemaInstance2001(), QLatin1String("nil"), QLatin1String("true"));
+    }
 
     if (use == EncodedUse) {
         // use=encoded means writing out xsi:type attributes. http://www.eherenow.com/soapfight.htm taught me that.
         QString type;
-        if (!this->type().isEmpty())
+        if (!this->type().isEmpty()) {
             type = namespacePrefixes.resolve(this->typeNs(), this->type());
-        if (type.isEmpty() && !value.isNull())
-            type = variantToXMLType(value); // fallback
+        }
+        if (type.isEmpty() && !value.isNull()) {
+            type = variantToXMLType(value);    // fallback
+        }
         if (!type.isEmpty()) {
             writer.writeAttribute(KDSoapNamespaceManager::xmlSchemaInstance2001(), QLatin1String("type"), type);
         }
@@ -293,14 +295,15 @@ void KDSoapValue::writeElementContents(KDSoapNamespacePrefixes& namespacePrefixe
     }
     writeChildren(namespacePrefixes, writer, use, messageNamespace, false);
 
-    if (!value.isNull())
+    if (!value.isNull()) {
         writer.writeCharacters(variantToTextValue(value, this->typeNs(), this->type()));
+    }
 }
 
-void KDSoapValue::writeChildren(KDSoapNamespacePrefixes& namespacePrefixes, QXmlStreamWriter& writer, KDSoapValue::Use use, const QString& messageNamespace, bool forceQualified) const
+void KDSoapValue::writeChildren(KDSoapNamespacePrefixes &namespacePrefixes, QXmlStreamWriter &writer, KDSoapValue::Use use, const QString &messageNamespace, bool forceQualified) const
 {
-    const KDSoapValueList& args = childValues();
-    Q_FOREACH(const KDSoapValue& attr, args.attributes()) {
+    const KDSoapValueList &args = childValues();
+    Q_FOREACH (const KDSoapValue &attr, args.attributes()) {
         //Q_ASSERT(!attr.value().isNull());
 
         const QString attributeNamespace = attr.namespaceUri();
@@ -312,7 +315,7 @@ void KDSoapValue::writeChildren(KDSoapNamespacePrefixes& namespacePrefixes, QXml
     }
     KDSoapValueListIterator it(args);
     while (it.hasNext()) {
-        const KDSoapValue& element = it.next();
+        const KDSoapValue &element = it.next();
         element.writeElement(namespacePrefixes, writer, use, messageNamespace, forceQualified);
     }
 }
@@ -326,7 +329,7 @@ QDebug operator <<(QDebug dbg, const KDSoapValue &value)
         dbg << "<children>";
         KDSoapValueListIterator it(value.childValues());
         while (it.hasNext()) {
-            const KDSoapValue& child = it.next();
+            const KDSoapValue &child = it.next();
             dbg << child;
         }
         dbg << "</children>";
@@ -335,7 +338,7 @@ QDebug operator <<(QDebug dbg, const KDSoapValue &value)
         dbg << "<attributes>";
         QListIterator<KDSoapValue> it(value.childValues().attributes());
         while (it.hasNext()) {
-            const KDSoapValue& child = it.next();
+            const KDSoapValue &child = it.next();
             dbg << child;
         }
         dbg << "</attributes>";
@@ -343,7 +346,7 @@ QDebug operator <<(QDebug dbg, const KDSoapValue &value)
     return dbg;
 }
 
-void KDSoapValue::setType(const QString& nameSpace, const QString &type)
+void KDSoapValue::setType(const QString &nameSpace, const QString &type)
 {
     d->m_typeNamespace = nameSpace;
     d->m_typeName = type;
@@ -363,15 +366,16 @@ KDSoapValue KDSoapValueList::child(const QString &name) const
 {
     const_iterator it = begin();
     const const_iterator e = end();
-    for ( ; it != e; ++it) {
-        const KDSoapValue& val = *it;
-        if (val.name() == name)
+    for (; it != e; ++it) {
+        const KDSoapValue &val = *it;
+        if (val.name() == name) {
             return val;
+        }
     }
     return KDSoapValue();
 }
 
-void KDSoapValueList::setArrayType(const QString& nameSpace, const QString &type)
+void KDSoapValueList::setArrayType(const QString &nameSpace, const QString &type)
 {
     m_arrayType = qMakePair(nameSpace, type);
 }
@@ -386,7 +390,7 @@ QString KDSoapValueList::arrayType() const
     return m_arrayType.second;
 }
 
-void KDSoapValueList::addArgument(const QString& argumentName, const QVariant& argumentValue, const QString& typeNameSpace, const QString& typeName)
+void KDSoapValueList::addArgument(const QString &argumentName, const QVariant &argumentValue, const QString &typeNameSpace, const QString &typeName)
 {
     append(KDSoapValue(argumentName, argumentValue, typeNameSpace, typeName));
 }
@@ -401,7 +405,7 @@ void KDSoapValue::setNamespaceUri(const QString &ns)
     d->m_nameNamespace = ns;
 }
 
-QByteArray KDSoapValue::toXml(KDSoapValue::Use use, const QString& messageNamespace) const
+QByteArray KDSoapValue::toXml(KDSoapValue::Use use, const QString &messageNamespace) const
 {
     QByteArray data;
     QXmlStreamWriter writer(&data);

@@ -37,19 +37,19 @@ class KDSoapValue;
 class KDSoapPendingCall::Private : public QSharedData
 {
 public:
-    Private(QNetworkReply* r, QBuffer* b)
+    Private(QNetworkReply *r, QBuffer *b)
         : reply(r), buffer(b), parsed(false)
     {
     }
     ~Private();
 
     void parseReply();
-    KDSoapValue parseReplyElement(QXmlStreamReader& reader);
+    KDSoapValue parseReplyElement(QXmlStreamReader &reader);
 
     // Can be deleted under us if the KDSoapClientInterface (and its QNetworkAccessManager)
     // are deleted before the KDSoapPendingCall.
     QPointer<QNetworkReply> reply;
-    QBuffer* buffer;
+    QBuffer *buffer;
     KDSoapMessage replyMessage;
     KDSoapHeaders replyHeaders;
     bool parsed;

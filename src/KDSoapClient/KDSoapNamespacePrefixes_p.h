@@ -31,16 +31,18 @@
 class KDSoapNamespacePrefixes : public QMap<QString /*ns*/, QString /*prefix*/>
 {
 public:
-    void writeStandardNamespaces(QXmlStreamWriter& writer,
+    void writeStandardNamespaces(QXmlStreamWriter &writer,
                                  KDSoapClientInterface::SoapVersion version = KDSoapClientInterface::SOAP1_1,
                                  bool messageAddressingEnabled = false);
 
-    void writeNamespace(QXmlStreamWriter& writer, const QString& ns, const QString& prefix) {
+    void writeNamespace(QXmlStreamWriter &writer, const QString &ns, const QString &prefix)
+    {
         //qDebug() << "writeNamespace" << ns << prefix;
         insert(ns, prefix);
         writer.writeNamespace(ns, prefix);
     }
-    QString resolve(const QString& ns, const QString& localName) const {
+    QString resolve(const QString &ns, const QString &localName) const
+    {
         const QString prefix = value(ns);
         if (prefix.isEmpty()) {
             qWarning("ERROR: Namespace not found: %s (for localName %s)", qPrintable(ns), qPrintable(localName));

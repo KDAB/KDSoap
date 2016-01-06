@@ -49,8 +49,8 @@ public:
 
 private:
     friend class KDSoapServerObjectInterface;
-    explicit KDSoapDelayedResponseHandle(KDSoapServerSocket* socket);
-    KDSoapServerSocket* serverSocket() const;
+    explicit KDSoapDelayedResponseHandle(KDSoapServerSocket *socket);
+    KDSoapServerSocket *serverSocket() const;
     QSharedDataPointer<KDSoapDelayedResponseHandleData> data;
 };
 

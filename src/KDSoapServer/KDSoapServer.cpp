@@ -51,8 +51,8 @@ public:
         delete m_mainThreadSocketList;
     }
 
-    KDSoapThreadPool* m_threadPool;
-    KDSoapSocketList* m_mainThreadSocketList;
+    KDSoapThreadPool *m_threadPool;
+    KDSoapSocketList *m_mainThreadSocketList;
     KDSoapMessage::Use m_use;
     KDSoapServer::Features m_features;
 
@@ -75,7 +75,7 @@ public:
 #endif
 };
 
-KDSoapServer::KDSoapServer(QObject* parent)
+KDSoapServer::KDSoapServer(QObject *parent)
     : QTcpServer(parent),
       d(new KDSoapServer::Private)
 {
@@ -104,8 +104,9 @@ void KDSoapServer::incomingConnection(int socketDescriptor)
         d->m_threadPool->handleIncomingConnection(socketDescriptor, this);
     } else {
         //qDebug() << "incomingConnection: using main-thread socketlist";
-        if (!d->m_mainThreadSocketList)
+        if (!d->m_mainThreadSocketList) {
             d->m_mainThreadSocketList = new KDSoapSocketList(this /*server*/);
+        }
         d->m_mainThreadSocketList->handleIncomingConnection(socketDescriptor);
     }
 }
@@ -146,21 +147,23 @@ void KDSoapServer::setThreadPool(KDSoapThreadPool *threadPool)
     d->m_threadPool = threadPool;
 }
 
-KDSoapThreadPool * KDSoapServer::threadPool() const
+KDSoapThreadPool *KDSoapServer::threadPool() const
 {
     return d->m_threadPool;
 }
 
-QString KDSoapServer::endPoint() const {
+QString KDSoapServer::endPoint() const
+{
     const QHostAddress address = serverAddress();
-    if (address == QHostAddress::Null)
+    if (address == QHostAddress::Null) {
         return QString();
+    }
     const QString addressStr = address == QHostAddress::Any ? QString::fromLatin1("127.0.0.1") : address.toString();
     return QString::fromLatin1("%1://%2:%3%4")
-            .arg(QString::fromLatin1((d->m_features & Ssl)?"https":"http"))
-            .arg(addressStr)
-            .arg(serverPort())
-            .arg(d->m_path);
+           .arg(QString::fromLatin1((d->m_features & Ssl) ? "https" : "http"))
+           .arg(addressStr)
+           .arg(serverPort())
+           .arg(d->m_path);
 }
 
 void KDSoapServer::setUse(KDSoapMessage::Use use)
@@ -199,8 +202,9 @@ QString KDSoapServer::logFileName() const
 
 void KDSoapServer::log(const QByteArray &text)
 {
-    if (d->m_logLevel == KDSoapServer::LogNothing)
+    if (d->m_logLevel == KDSoapServer::LogNothing) {
         return;
+    }
 
     QMutexLocker lock(&d->m_logMutex);
     if (!d->m_logFile.isOpen() && !d->m_logFileName.isEmpty()) {
@@ -216,14 +220,16 @@ void KDSoapServer::log(const QByteArray &text)
 
 void KDSoapServer::flushLogFile()
 {
-    if (d->m_logFile.isOpen())
+    if (d->m_logFile.isOpen()) {
         d->m_logFile.flush();
+    }
 }
 
 void KDSoapServer::closeLogFile()
 {
-    if (d->m_logFile.isOpen())
+    if (d->m_logFile.isOpen()) {
         d->m_logFile.close();
+    }
 }
 
 bool KDSoapServer::setExpectedSocketCount(int sockets)
@@ -243,8 +249,9 @@ bool KDSoapServer::setExpectedSocketCount(int sockets)
     if (sockets > -1) {
         qDebug() << "Current limit" << lim.rlim_cur << lim.rlim_max;
         sockets += 20; // we need some file descriptors too
-        if (rlim_t(sockets) <= lim.rlim_cur)
-            return true; // nothing to do
+        if (rlim_t(sockets) <= lim.rlim_cur) {
+            return true;    // nothing to do
+        }
 
         if (rlim_t(sockets) > lim.rlim_max) {
             // Seems we need to run as root then
@@ -301,7 +308,7 @@ void KDSoapServer::resume()
     }
 }
 
-void KDSoapServer::setWsdlFile(const QString &file, const QString& pathInUrl)
+void KDSoapServer::setWsdlFile(const QString &file, const QString &pathInUrl)
 {
     QMutexLocker lock(&d->m_serverDataMutex);
     d->m_wsdlFile = file;

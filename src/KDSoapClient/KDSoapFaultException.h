@@ -42,13 +42,13 @@ public:
      * Reconstructs the KDSoapFaultException object from a KDSoapValue.
      * \param mainValue KDSoapValue represents the fault tag element
      */
-    void deserialize( const KDSoapValue& mainValue );
+    void deserialize(const KDSoapValue &mainValue);
 
     /**
      * Returns the KDSoapValue representing the <detail> tag from the parameter.
      * \param faultValue Represent the <fault> tag in the SOAP protocol
      */
-    static const KDSoapValue& faultDetails(const KDSoapValue& faultValue);
+    static const KDSoapValue &faultDetails(const KDSoapValue &faultValue);
 
     /**
      * Returns the fault code.
@@ -104,7 +104,7 @@ public:
     /**
      * Copy constructor
      */
-    KDSoapFaultException(const KDSoapFaultException& cpy);
+    KDSoapFaultException(const KDSoapFaultException &cpy);
 
     /**
      * Constructs a KDSoapFaultException according to the SOAP 1.1 attriutes.
@@ -118,7 +118,7 @@ public:
     /**
      * Assignment operator
      */
-    KDSoapFaultException& operator=(const KDSoapFaultException &other);
+    KDSoapFaultException &operator=(const KDSoapFaultException &other);
 
     /**
      * Destructor

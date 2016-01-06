@@ -46,7 +46,7 @@ public:
 
     // Warning: this accessManager is only used by asyncCall and callNoReply.
     // For blocking calls, the thread has its own accessManager.
-    QNetworkAccessManager* m_accessManager;
+    QNetworkAccessManager *m_accessManager;
     QString m_endPoint;
     QString m_messageNamespace;
     KDSoapClientThread m_thread;
@@ -60,19 +60,19 @@ public:
 #ifndef QT_NO_OPENSSL
     QList<QSslError> m_ignoreErrorsList;
     QSslConfiguration m_sslConfiguration;
-    KDSoapSslHandler* m_sslHandler;
+    KDSoapSslHandler *m_sslHandler;
 #endif
 
-    QNetworkAccessManager* accessManager();
-    QNetworkRequest prepareRequest(const QString &method, const QString& action);
-    QBuffer* prepareRequestBuffer(const QString& method, const KDSoapMessage& message, const KDSoapHeaders& headers);
-    void writeElementContents(KDSoapNamespacePrefixes& namespacePrefixes, QXmlStreamWriter& writer, const KDSoapValue& element, KDSoapMessage::Use use);
-    void writeChildren(KDSoapNamespacePrefixes& namespacePrefixes, QXmlStreamWriter& writer, const KDSoapValueList& args, KDSoapMessage::Use use);
-    void writeAttributes(QXmlStreamWriter& writer, const QList<KDSoapValue>& attributes);
-    void setupReply(QNetworkReply* reply);
+    QNetworkAccessManager *accessManager();
+    QNetworkRequest prepareRequest(const QString &method, const QString &action);
+    QBuffer *prepareRequestBuffer(const QString &method, const KDSoapMessage &message, const KDSoapHeaders &headers);
+    void writeElementContents(KDSoapNamespacePrefixes &namespacePrefixes, QXmlStreamWriter &writer, const KDSoapValue &element, KDSoapMessage::Use use);
+    void writeChildren(KDSoapNamespacePrefixes &namespacePrefixes, QXmlStreamWriter &writer, const KDSoapValueList &args, KDSoapMessage::Use use);
+    void writeAttributes(QXmlStreamWriter &writer, const QList<KDSoapValue> &attributes);
+    void setupReply(QNetworkReply *reply);
 
 private Q_SLOTS:
-    void _kd_slotAuthenticationRequired(QNetworkReply* reply, QAuthenticator* authenticator);
+    void _kd_slotAuthenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator);
 };
 
 #endif // KDSOAPCLIENTINTERFACE_P_H

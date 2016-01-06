@@ -67,7 +67,7 @@ public:
 private:
     friend class KDSoapServerSocket;
     class Private;
-    Private* const d;
+    Private *const d;
 };
 
 QT_BEGIN_NAMESPACE

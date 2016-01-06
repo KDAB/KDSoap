@@ -45,11 +45,11 @@ public:
     KDSoapMessageWriter();
 
     void setVersion(KDSoapClientInterface::SoapVersion version);
-    void setMessageNamespace(const QString& ns);
+    void setMessageNamespace(const QString &ns);
 
-    QByteArray messageToXml(const KDSoapMessage& message, const QString& method /*empty in document style*/,
-                            const KDSoapHeaders& headers,
-                            const QMap<QString, KDSoapMessage>& persistentHeaders) const;
+    QByteArray messageToXml(const KDSoapMessage &message, const QString &method /*empty in document style*/,
+                            const KDSoapHeaders &headers,
+                            const QMap<QString, KDSoapMessage> &persistentHeaders) const;
 
 private:
     QString m_messageNamespace;

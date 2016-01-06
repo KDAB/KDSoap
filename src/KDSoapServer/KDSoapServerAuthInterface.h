@@ -55,13 +55,13 @@ public:
     /**
      * Return true if the authentication details are valid.
      */
-    virtual bool validateAuthentication(const KDSoapAuthentication& auth, const QString &path);
+    virtual bool validateAuthentication(const KDSoapAuthentication &auth, const QString &path);
 
 private:
     friend class KDSoapServerSocket;
     bool handleHttpAuth(const QByteArray &authValue, const QString &path);
     class Private;
-    Private* const d;
+    Private *const d;
 };
 
 QT_BEGIN_NAMESPACE

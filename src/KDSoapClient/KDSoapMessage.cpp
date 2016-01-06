@@ -46,7 +46,7 @@ KDSoapMessage::KDSoapMessage()
 {
 }
 
-KDSoapMessage::KDSoapMessage(const KDSoapMessage& other)
+KDSoapMessage::KDSoapMessage(const KDSoapMessage &other)
     : KDSoapValue(other), d(other.d)
 {
 }
@@ -67,32 +67,34 @@ KDSoapMessage &KDSoapMessage::operator =(const KDSoapValue &other)
 bool KDSoapMessage::operator==(const KDSoapMessage &other) const
 {
     return KDSoapValue::operator ==(other)
-        && d->use == other.d->use
-        && d->isFault == other.d->isFault;
+           && d->use == other.d->use
+           && d->isFault == other.d->isFault;
 }
 
 bool KDSoapMessage::operator !=(const KDSoapMessage &other) const
 {
-    return ! ( *this == other );
+    return !(*this == other);
 }
 
 KDSoapMessage::~KDSoapMessage()
 {
 }
 
-void KDSoapMessage::addArgument(const QString &argumentName, const QVariant& argumentValue, const QString& typeNameSpace, const QString& typeName)
+void KDSoapMessage::addArgument(const QString &argumentName, const QVariant &argumentValue, const QString &typeNameSpace, const QString &typeName)
 {
     KDSoapValue soapValue(argumentName, argumentValue, typeNameSpace, typeName);
-    if (isQualified())
+    if (isQualified()) {
         soapValue.setQualified(true);
+    }
     childValues().append(soapValue);
 }
 
-void KDSoapMessage::addArgument(const QString& argumentName, const KDSoapValueList& argumentValueList, const QString& typeNameSpace, const QString& typeName)
+void KDSoapMessage::addArgument(const QString &argumentName, const KDSoapValueList &argumentValueList, const QString &typeNameSpace, const QString &typeName)
 {
     KDSoapValue soapValue(argumentName, argumentValueList, typeNameSpace, typeName);
-    if (isQualified())
+    if (isQualified()) {
         soapValue.setQualified(true);
+    }
     childValues().append(soapValue);
 }
 
@@ -100,12 +102,12 @@ void KDSoapMessage::addArgument(const QString& argumentName, const KDSoapValueLi
 // because it's the documented public API, needed even in the most simple case,
 // while childValues is the "somewhat internal" KDSoapValue stuff.
 
-KDSoapValueList& KDSoapMessage::arguments()
+KDSoapValueList &KDSoapMessage::arguments()
 {
     return childValues();
 }
 
-const KDSoapValueList& KDSoapMessage::arguments() const
+const KDSoapValueList &KDSoapMessage::arguments() const
 {
     return childValues();
 }
@@ -125,9 +127,9 @@ QString KDSoapMessage::faultAsString() const
     // This better be on a single line, since it's used by server-side logging too
     const QString actor = childValues().child(QLatin1String("faultactor")).value().toString();
     return QObject::tr("Fault code %1: %2%3")
-            .arg(childValues().child(QLatin1String("faultcode")).value().toString())
-            .arg(childValues().child(QLatin1String("faultstring")).value().toString())
-            .arg(actor.isEmpty() ? QString() : QString::fromLatin1(" (%1)").arg(actor));
+           .arg(childValues().child(QLatin1String("faultcode")).value().toString())
+           .arg(childValues().child(QLatin1String("faultstring")).value().toString())
+           .arg(actor.isEmpty() ? QString() : QString::fromLatin1(" (%1)").arg(actor));
 }
 
 void KDSoapMessage::setFault(bool fault)
@@ -165,9 +167,10 @@ KDSoapMessage KDSoapHeaders::header(const QString &name) const
 {
     const_iterator it = begin();
     const const_iterator e = end();
-    for ( ; it != e ; ++it) {
-        if ((*it).name() == name)
+    for (; it != e; ++it) {
+        if ((*it).name() == name) {
             return *it;
+        }
     }
     return KDSoapMessage();
 }
@@ -176,10 +179,11 @@ KDSoapMessage KDSoapHeaders::header(const QString &name, const QString &namespac
 {
     const_iterator it = begin();
     const const_iterator e = end();
-    for ( ; it != e ; ++it) {
+    for (; it != e; ++it) {
         //qDebug() << "header(" << name << "," << namespaceUri << "): Looking at" << (*it).name() << "," << (*it).namespaceUri();
-        if ((*it).name() == name && (namespaceUri.isEmpty() || (*it).namespaceUri() == namespaceUri))
+        if ((*it).name() == name && (namespaceUri.isEmpty() || (*it).namespaceUri() == namespaceUri)) {
             return *it;
+        }
     }
     return KDSoapMessage();
 }

@@ -38,21 +38,21 @@ public:
     ~KDSoapServerThreadImpl();
 
 public Q_SLOTS:
-    void handleIncomingConnection(int socketDescriptor, KDSoapServer* server);
-    void disconnectSocketsForServer(KDSoapServer* server, QSemaphore* semaphore);
+    void handleIncomingConnection(int socketDescriptor, KDSoapServer *server);
+    void disconnectSocketsForServer(KDSoapServer *server, QSemaphore *semaphore);
     void quit();
 
 public:
     int socketCount();
-    int socketCountForServer(const KDSoapServer* server);
-    int totalConnectionCountForServer(const KDSoapServer* server);
-    void resetTotalConnectionCountForServer(const KDSoapServer* server);
+    int socketCountForServer(const KDSoapServer *server);
+    int totalConnectionCountForServer(const KDSoapServer *server);
+    void resetTotalConnectionCountForServer(const KDSoapServer *server);
 
     void addIncomingConnection();
 private:
     QMutex m_socketListMutex;
-    KDSoapSocketList* socketListForServer(KDSoapServer* server);
-    typedef QHash<KDSoapServer*, KDSoapSocketList*> SocketLists;
+    KDSoapSocketList *socketListForServer(KDSoapServer *server);
+    typedef QHash<KDSoapServer *, KDSoapSocketList *> SocketLists;
     SocketLists m_socketLists;
 
     QAtomicInt m_incomingConnectionCount;
@@ -69,12 +69,12 @@ public:
     void quitThread();
 
     int socketCount() const;
-    int socketCountForServer(const KDSoapServer* server) const;
-    int totalConnectionCountForServer(const KDSoapServer* server) const;
-    void resetTotalConnectionCountForServer(const KDSoapServer* server);
+    int socketCountForServer(const KDSoapServer *server) const;
+    int totalConnectionCountForServer(const KDSoapServer *server) const;
+    void resetTotalConnectionCountForServer(const KDSoapServer *server);
 
-    void disconnectSocketsForServer(KDSoapServer* server, QSemaphore& semaphore);
-    void handleIncomingConnection(int socketDescriptor, KDSoapServer* server);
+    void disconnectSocketsForServer(KDSoapServer *server, QSemaphore &semaphore);
+    void handleIncomingConnection(int socketDescriptor, KDSoapServer *server);
 
 protected:
     virtual void run();
@@ -82,7 +82,7 @@ protected:
 private:
     void start(); // use startThread instead
     void quit(); // use quitThread instead
-    KDSoapServerThreadImpl* d;
+    KDSoapServerThreadImpl *d;
     QSemaphore m_semaphore;
 };
 

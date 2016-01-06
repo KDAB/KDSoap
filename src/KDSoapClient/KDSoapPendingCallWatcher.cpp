@@ -28,7 +28,7 @@
 
 KDSoapPendingCallWatcher::KDSoapPendingCallWatcher(const KDSoapPendingCall &call, QObject *parent)
     : QObject(parent), KDSoapPendingCall(call),
-    d(new Private(this))
+      d(new Private(this))
 {
     connect(call.d->reply.data(), SIGNAL(finished()), this, SLOT(_kd_slotReplyFinished()));
 }

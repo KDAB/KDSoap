@@ -47,7 +47,7 @@ public:
     /**
      * Constructs a copy of \p other.
      */
-    KDSoapAuthentication(const KDSoapAuthentication& other);
+    KDSoapAuthentication(const KDSoapAuthentication &other);
     /**
      * Destructs the object
      */
@@ -56,7 +56,7 @@ public:
     /**
      * Sets the \p user used for authentication
      */
-    void setUser(const QString& user);
+    void setUser(const QString &user);
     /**
      * \return the user used for authentication
      */
@@ -65,7 +65,7 @@ public:
     /**
      * Sets the \p password used for authentication
      */
-    void setPassword(const QString& password);
+    void setPassword(const QString &password);
     /**
      * \return the password used for authentication
      */
@@ -80,16 +80,16 @@ public:
     /**
      * Assigns the contents of \p other to this authenticator.
      */
-    KDSoapAuthentication& operator=(const KDSoapAuthentication& other);
+    KDSoapAuthentication &operator=(const KDSoapAuthentication &other);
 
     /**
      * \internal
      */
-    void handleAuthenticationRequired(QNetworkReply* reply, QAuthenticator* authenticator);
+    void handleAuthenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator);
 
 private:
     class Private;
-    Private * const d;
+    Private *const d;
 };
 
 #endif // KDSOAPAUTHENTICATION_H

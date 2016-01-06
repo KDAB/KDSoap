@@ -42,19 +42,19 @@ class KDSoapHeaders;
 
 class KDSoapServerSocket
 #ifndef QT_NO_OPENSSL
-        : public QSslSocket
+    : public QSslSocket
 #else
-        : public QTcpSocket
+    : public QTcpSocket
 #endif
 {
     Q_OBJECT
 public:
-    KDSoapServerSocket(KDSoapSocketList* owner, QObject* serverObject);
+    KDSoapServerSocket(KDSoapSocketList *owner, QObject *serverObject);
     ~KDSoapServerSocket();
 
     void setResponseDelayed();
-    void sendDelayedReply(KDSoapServerObjectInterface* serverObjectInterface, const KDSoapMessage& replyMsg);
-    void sendReply(KDSoapServerObjectInterface* serverObjectInterface, const KDSoapMessage& replyMsg);
+    void sendDelayedReply(KDSoapServerObjectInterface *serverObjectInterface, const KDSoapMessage &replyMsg);
+    void sendReply(KDSoapServerObjectInterface *serverObjectInterface, const KDSoapMessage &replyMsg);
 Q_SIGNALS:
     void socketDeleted(KDSoapServerSocket *);
 
@@ -64,18 +64,18 @@ private Q_SLOTS:
 private:
     void handleRequest(const QMap<QByteArray, QByteArray> &headers, const QByteArray &receivedData);
     bool handleWsdlDownload();
-    bool handleFileDownload(KDSoapServerObjectInterface* serverObjectInterface, const QString& path);
-    void makeCall(KDSoapServerObjectInterface* serverObjectInterface,
-                  const KDSoapMessage& requestMsg, KDSoapMessage& replyMsg,
-                  const KDSoapHeaders& requestHeaders,
-                  const QByteArray& soapAction, const QString &path);
-    void handleError(KDSoapMessage& replyMsg, const char* errorCode, const QString& error);
+    bool handleFileDownload(KDSoapServerObjectInterface *serverObjectInterface, const QString &path);
+    void makeCall(KDSoapServerObjectInterface *serverObjectInterface,
+                  const KDSoapMessage &requestMsg, KDSoapMessage &replyMsg,
+                  const KDSoapHeaders &requestHeaders,
+                  const QByteArray &soapAction, const QString &path);
+    void handleError(KDSoapMessage &replyMsg, const char *errorCode, const QString &error);
     void setSocketEnabled(bool enabled);
     void writeXML(const QByteArray &xmlResponse, bool isFault);
     friend class KDSoapServerObjectInterface;
 
-    KDSoapSocketList* m_owner;
-    QObject* m_serverObject;
+    KDSoapSocketList *m_owner;
+    QObject *m_serverObject;
     bool m_delayedResponse;
     bool m_doDebug;
     bool m_socketEnabled;

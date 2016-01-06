@@ -48,7 +48,7 @@ public:
      *
      * By default it will not use threads to handle requests, see setThreadPool for that.
      */
-    explicit KDSoapServer(QObject* parent = 0);
+    explicit KDSoapServer(QObject *parent = 0);
 
     /**
      * Destructor.
@@ -60,7 +60,7 @@ public:
         Public = 0,       ///< HTTP with no ssl and no authentication needed (default)
         Ssl = 1,          ///< HTTPS
         AuthRequired = 2  ///< Requires authentication
-        // bitfield, next item is 4
+                       // bitfield, next item is 4
     };
     Q_DECLARE_FLAGS(Features, Feature)
 
@@ -82,12 +82,12 @@ public:
      * An existing thread pool will be removed, but not deleted.
      * KDSoapServer does not take ownership of the thread pool.
      */
-    void setThreadPool(KDSoapThreadPool* threadPool);
+    void setThreadPool(KDSoapThreadPool *threadPool);
 
     /**
      * Returns the thread pool for this server, or 0 if no thread pool was set.
      */
-    KDSoapThreadPool* threadPool() const;
+    KDSoapThreadPool *threadPool() const;
 
     /**
      * Sets the path that the server expects in client requests.
@@ -95,13 +95,12 @@ public:
      *
      * The path is returned in endPoint(), and is checked when handling incoming requests.
      */
-    void setPath(const QString& path);
+    void setPath(const QString &path);
 
     /**
      * Returns the path set by setPath()
      */
     QString path() const;
-
 
     /**
      * Returns the HTTP URL which can be used to access this server.
@@ -120,7 +119,7 @@ public:
      * When using a thread pool, this method will be called from different threads.
      * The server takes ownership of the created object.
      */
-    virtual QObject* createServerObject() = 0;
+    virtual QObject *createServerObject() = 0;
 
     /**
      * Define the way the message should be serialized: with or without type information.
@@ -158,7 +157,7 @@ public:
      * The server always appends to this file, you should delete it
      * or rename it first if you don't want an ever-growing log file.
      */
-    void setLogFileName(const QString& fileName);
+    void setLogFileName(const QString &fileName);
 
     /**
      * Returns the name of the log file given to setLogFileName().
@@ -230,7 +229,7 @@ public:
      * \param pathInUrl that clients can use in order to download the file:
      *                  for instance "/files/myservice.wsdl" for "http://myserver.example.com/files/myservice.wsdl" as final URL.
      */
-    void setWsdlFile(const QString& file, const QString& pathInUrl);
+    void setWsdlFile(const QString &file, const QString &pathInUrl);
 
     /**
      * \returns the path to the wsdl file on disk, as given to setWsdlFile
@@ -283,9 +282,9 @@ protected:
 
 private:
     friend class KDSoapServerSocket;
-    void log(const QByteArray& text);
+    void log(const QByteArray &text);
     class Private;
-    Private* const d;
+    Private *const d;
 };
 
 #endif

@@ -36,7 +36,6 @@ QT_END_NAMESPACE
 class KDSoapNamespacePrefixes;
 class KDSoapMessageAddressingPropertiesData;
 
-
 /**
  * Relationship between two soap messages.
  * This class is composed of two QStrings: one represents the type of the relation, the other represents the message ID of the message it refers to.
@@ -44,10 +43,10 @@ class KDSoapMessageAddressingPropertiesData;
  * \see http://www.w3.org/TR/ws-addr-core/#msgaddrpropsinfoset
  * \since 1.5
  */
-namespace KDSoapMessageRelationship {
-
-struct Relationship
+namespace KDSoapMessageRelationship
 {
+
+struct Relationship {
     /**
      * Relationship default ctor
      */
@@ -60,7 +59,7 @@ struct Relationship
      * predefined address will be used http://www.w3.org/2005/08/addressing/reply
      */
     Relationship(const QString &URI, const QString &type = QString())
-        : uri(URI), relationshipType(type){}
+        : uri(URI), relationshipType(type) {}
 
     QString uri;
     QString relationshipType;
@@ -135,7 +134,7 @@ public:
     /**
      * Sets the targeted action of the soap message
      */
-    void setAction(const QString& action);
+    void setAction(const QString &action);
 
     /**
      * Returns the message sender endpoint
@@ -275,12 +274,11 @@ private:
     /**
      * Private method called to write the properties to the soap header, using QXmlStreamWriter
      */
-    void writeMessageAddressingProperties(KDSoapNamespacePrefixes& namespacePrefixes, QXmlStreamWriter& writer, const QString& messageNamespace, bool forceQualified) const;
+    void writeMessageAddressingProperties(KDSoapNamespacePrefixes &namespacePrefixes, QXmlStreamWriter &writer, const QString &messageNamespace, bool forceQualified) const;
 
 private:
     QSharedDataPointer<KDSoapMessageAddressingPropertiesData> d;
 };
-
 
 /**
  * Support for debugging KDSoapMessageAddressingProperties object via qDebug() << msg;

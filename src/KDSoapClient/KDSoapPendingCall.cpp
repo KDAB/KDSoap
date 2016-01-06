@@ -33,8 +33,7 @@ KDSoapPendingCall::Private::~Private()
     delete buffer;
 }
 
-
-KDSoapPendingCall::KDSoapPendingCall(QNetworkReply* reply, QBuffer* buffer)
+KDSoapPendingCall::KDSoapPendingCall(QNetworkReply *reply, QBuffer *buffer)
     : d(new Private(reply, buffer))
 {
 }
@@ -78,18 +77,20 @@ KDSoapHeaders KDSoapPendingCall::returnHeaders() const
 QVariant KDSoapPendingCall::returnValue() const
 {
     d->parseReply();
-    if (!d->replyMessage.childValues().isEmpty())
+    if (!d->replyMessage.childValues().isEmpty()) {
         return d->replyMessage.childValues().first().value();
+    }
     return QVariant();
 }
 
 void KDSoapPendingCall::Private::parseReply()
 {
-    if (parsed)
+    if (parsed) {
         return;
+    }
     parsed = true;
     const bool doDebug = qgetenv("KDSOAP_DEBUG").toInt();
-    QNetworkReply* reply = this->reply.data();
+    QNetworkReply *reply = this->reply.data();
 #if QT_VERSION >= 0x040600
     if (!reply->isFinished()) {
         qWarning("KDSoap: Parsing reply before it finished!");
@@ -109,8 +110,9 @@ void KDSoapPendingCall::Private::parseReply()
         // HTTP 500 is used to return faults, so parse the fault, below
     }
     const QByteArray data = reply->readAll();
-    if (doDebug)
+    if (doDebug) {
         qDebug() << data;
+    }
 
     if (!data.isEmpty()) {
         KDSoapMessageReader reader;

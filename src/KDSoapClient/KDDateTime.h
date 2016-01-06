@@ -58,12 +58,12 @@ public:
      * Sets the timeZone.
      * Can be empty, "Z", or an offset like "+05:00" or "-03:00".
      */
-    void setTimeZone(const QString& timeZone);
+    void setTimeZone(const QString &timeZone);
 
     /**
      * Creates a KDDateTime from a SOAP-compliant string representation.
      */
-    static KDDateTime fromDateString(const QString& s);
+    static KDDateTime fromDateString(const QString &s);
 
     /**
      * Returns a SOAP-compliant string representation of the date/time object.

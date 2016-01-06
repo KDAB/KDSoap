@@ -44,13 +44,13 @@ KDSoapFaultException::KDSoapFaultException():
 }
 
 KDSoapFaultException::KDSoapFaultException(const KDSoapFaultException &cpy)
-    :d(cpy.d)
+    : d(cpy.d)
 {
 
 }
 
 KDSoapFaultException::KDSoapFaultException(const QString &faultCode, const QString &faultString, const QString &faultActor):
-     d(new Private())
+    d(new Private())
 {
     d->m_faultCode = faultCode;
     d->m_faultString = faultString;
@@ -59,8 +59,9 @@ KDSoapFaultException::KDSoapFaultException(const QString &faultCode, const QStri
 
 KDSoapFaultException &KDSoapFaultException::operator=(const KDSoapFaultException &other)
 {
-    if (this == &other)
+    if (this == &other) {
         return *this;
+    }
 
     d = other.d;
     return *this;
@@ -70,20 +71,18 @@ KDSoapFaultException::~KDSoapFaultException()
 {
 }
 
-void KDSoapFaultException::deserialize( const KDSoapValue& mainValue )
+void KDSoapFaultException::deserialize(const KDSoapValue &mainValue)
 {
     Q_ASSERT(mainValue.name() == QLatin1String("Fault"));
-    const KDSoapValueList& args = mainValue.childValues();
+    const KDSoapValueList &args = mainValue.childValues();
     for (int argNr = 0; argNr < args.count(); ++argNr) {
-        const KDSoapValue& val = args.at(argNr);
+        const KDSoapValue &val = args.at(argNr);
         const QString name = val.name();
         if (name == QLatin1String("faultcode")) {
             d->m_faultCode = val.value().value<QString>();
-        }
-        else if (name == QLatin1String("faultstring")) {
+        } else if (name == QLatin1String("faultstring")) {
             d->m_faultString = val.value().value<QString>();
-        }
-        else if (name == QLatin1String("faultactor")) {
+        } else if (name == QLatin1String("faultactor")) {
             d->m_faultActor = val.value().value<QString>();
         }
     }
@@ -99,9 +98,9 @@ const KDSoapValue &KDSoapFaultException::faultDetails(const KDSoapValue &faultVa
     static KDSoapValue emptyValue;
 
     // Find and return the <detail> element under faultElement
-    const KDSoapValueList& args = faultValue.childValues();
+    const KDSoapValueList &args = faultValue.childValues();
     for (int argNr = 0; argNr < args.count(); ++argNr) {
-        const KDSoapValue& val = args.at(argNr);
+        const KDSoapValue &val = args.at(argNr);
         const QString name = val.name();
         if (name == QLatin1String("detail")) {
             return val;
