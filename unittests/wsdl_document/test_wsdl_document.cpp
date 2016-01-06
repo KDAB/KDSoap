@@ -802,7 +802,7 @@ public:
     {
         m_lastMethodCalled = QLatin1String("listEmployees");
     }
-    void heartbeat()
+    void heart_beat()
     {
         m_lastMethodCalled = QLatin1String("heartbeat");
     }
@@ -996,7 +996,7 @@ void WsdlDocumentTest::testServerEmptyArgs()
 
     MyWsdlDocument service;
     service.setEndPoint(server->endPoint());
-    service.heartbeat(); // ensure the method is generated
+    service.heart_beat(); // ensure the method is generated
     service.listEmployees();
     QVERIFY(server->lastServerObject());
     QCOMPARE(server->lastServerObject()->m_lastMethodCalled, QString::fromLatin1("listEmployees"));

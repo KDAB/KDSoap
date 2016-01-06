@@ -151,7 +151,7 @@ void Converter::generateServerMethod(KODE::Code &code, const Binding &binding, c
                  "an issue on github with your wsdl file", qPrintable(operation.name()));
         virtualMethod.setReturnType("void /*UNSUPPORTED*/");
     } else if (outParts.isEmpty()) {
-        code += operationName + '(' + inputVars.join(", ") + ");";
+        code += lowerlize(operationName) + '(' + inputVars.join(", ") + ");";
         virtualMethod.setReturnType("void");
     } else {
         QString retType;

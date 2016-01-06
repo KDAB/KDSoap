@@ -58,6 +58,8 @@ WSDL parser / code generator changes, applying to both client and server side:
 
 * Handle attributes without a type (default to anySimpleType).
 
+* Generate correct C++ code in case of special characters like '-' in operation names.
+
 * Relative paths to schemas being imported or included are now resolved based on the location of the parent file
   rather than the location of the toplevel WSDL file.
 

@@ -1,18 +1,22 @@
 #include "settings.h"
 #include "elementargumentserializer.h"
 #include "converter.h"
+#include <libkode/style.h>
 #include <QDebug>
 
 using namespace KWSDL;
 
 QString upperlize(const QString &str)
 {
-    return str[ 0 ].toUpper() + str.mid(1);
+    // Upper the first letter, but also convert forbidden chars like '-' to '_'
+    // So basically the same as:
+    return KODE::Style::className(str);
 }
 
 QString lowerlize(const QString &str)
 {
-    return str[ 0 ].toLower() + str.mid(1);
+    const QString s = KODE::Style::className(str); // handle special chars
+    return s.at(0).toLower() + s.mid(1);
 }
 
 QString namespaceString(const QString &ns)

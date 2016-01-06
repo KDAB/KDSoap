@@ -262,7 +262,7 @@
       <input message='kdab:sendTelegramRequest' />
       <output message='kdab:sendTelegramResponse' />
     </operation>
-    <operation name='heartbeat'> <!-- One way operation -->
+    <operation name='heart-beat'> <!-- One way operation -->
       <input message='kdab:heartbeatRequest' />
     </operation>
   </portType>
