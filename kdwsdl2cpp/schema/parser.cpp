@@ -167,51 +167,6 @@ void Parser::init(ParserContext *context)
 
 }
 
-// currently unused
-bool Parser::parseFile( ParserContext *context, const QString &fileName )
-{
-    QFile file(fileName);
-    if (!file.open(QIODevice::ReadOnly)) {
-        qWarning("Error opening file %s", qPrintable(fileName));
-        return false;
-    } else {
-        QXmlInputSource source( &file );
-        return parse( context, &source );
-    }
-}
-
-// currently unused
-bool Parser::parseString( ParserContext *context, const QString &data )
-{
-  QXmlInputSource source;
-  source.setData( data );
-  return parse( context, &source );
-}
-
-// currently unused
-bool Parser::parse( ParserContext *context, QXmlInputSource *source )
-{
-  QXmlSimpleReader reader;
-  reader.setFeature( QLatin1String("http://xml.org/sax/features/namespace-prefixes"), true );
-
-  QString errorMsg;
-  int errorLine, errorCol;
-  QDomDocument doc;
-  if ( !doc.setContent( source, &reader, &errorMsg, &errorLine, &errorCol ) ) {
-    qDebug( "%s at (%d,%d)", qPrintable( errorMsg ), errorLine, errorCol );
-    return false;
-  }
-
-  QDomElement element = doc.documentElement();
-  const QName name( element.tagName() );
-  if ( name.localName() != QLatin1String("schema") ) {
-    qDebug( "document element is '%s'", qPrintable( element.tagName() ) );
-    return false;
-  }
-
-  return parseSchemaTag( context, element );
-}
-
 bool Parser::parseSchemaTag( ParserContext *context, const QDomElement &root )
 {
   QName name(root.tagName());

@@ -52,12 +52,6 @@ class SCHEMA_EXPORT Parser
 
     Annotation::List annotations() const;
 
-    /**
-      Parse schema from file.
-    */
-    bool parseFile( ParserContext *context, const QString &fileName );
-    bool parseString( ParserContext *context, const QString &data );
-
     bool parseSchemaTag( ParserContext *context, const QDomElement &element );
 
     QString targetNamespace() const;
@@ -68,9 +62,6 @@ class SCHEMA_EXPORT Parser
     static QString schemaUri();
 
     static bool debugParsing();
-
-  protected:
-    bool parse( ParserContext *context, QXmlInputSource *source );
 
   private:
     void parseImport( ParserContext *context, const QDomElement& );
@@ -116,7 +107,7 @@ class SCHEMA_EXPORT Parser
     /**
      * @brief Read and include the given schema into the current schema.
      * @param context Current parser context.
-     * @param localtion Schema location.
+     * @param location Schema location.
      */
     void includeSchema( ParserContext *context, const QString &location );
 
