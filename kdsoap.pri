@@ -41,7 +41,13 @@
     CONFIG += have_kdsoap
     DEFINES += HAVE_KDSOAP
 
-    include($$KDSOAPDIR/kdwsdl2cpp.pri)
+    exists($$KDSOAPDIR/kdwsdl2cpp.pri) {
+       include($$KDSOAPDIR/kdwsdl2cpp.pri)
+    } else:exists($$KDSOAPDIR/share/doc/KDSoap/kdwsdl2cpp.pri) {
+       include($$KDSOAPDIR/share/doc/KDSoap/kdwsdl2cpp.pri)
+    } else {
+        message("WARNING: kdwsdl2cpp.pri not found in KDSOAPDIR=$$KDSOAPDIR")
+    }
 
   } else:equals( builddir, $$top_builddir ) {
     message( "WARNING: kdsoap not found. Please set KDSOAPDIR either as an environment variable or on the qmake command line if you want kdsoap support")
