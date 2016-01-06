@@ -8,14 +8,14 @@ using namespace KWSDL;
 
 void Converter::convertServerService()
 {
-    Q_FOREACH( const Service& service, mWSDL.definitions().services() ) {
+    Q_FOREACH (const Service &service, mWSDL.definitions().services()) {
         Q_ASSERT(!service.name().isEmpty());
 
-        QSet<QName> uniqueBindings = mWSDL.uniqueBindings( service );
+        QSet<QName> uniqueBindings = mWSDL.uniqueBindings(service);
 
-        Q_FOREACH( const QName& bindingName, uniqueBindings ) {
+        Q_FOREACH (const QName &bindingName, uniqueBindings) {
             //qDebug() << "binding" << bindingName;
-            const Binding binding = mWSDL.findBinding( bindingName );
+            const Binding binding = mWSDL.findBinding(bindingName);
 
             QString className = KODE::Style::className(service.name());
             QString nameSpace;
@@ -29,9 +29,10 @@ void Converter::convertServerService()
             KODE::Class serverClass(className, nameSpace);
             serverClass.addBaseClass(mQObject);
             serverClass.addBaseClass(mKDSoapServerObjectInterface);
-            if (!Settings::self()->exportDeclaration().isEmpty())
+            if (!Settings::self()->exportDeclaration().isEmpty()) {
                 serverClass.setExportDeclaration(Settings::self()->exportDeclaration());
-            serverClass.setNameSpace( Settings::self()->nameSpace() );
+            }
+            serverClass.setNameSpace(Settings::self()->nameSpace());
 
             // Files included in the header
             serverClass.addHeaderInclude("QtCore/QObject");
@@ -50,13 +51,13 @@ void Converter::convertServerService()
             body.addLine("setResponseNamespace(QLatin1String(\"" + responseNs + "\"));" + COMMENT);
             body.addLine("const QByteArray method = _request.name().toLatin1();");
 
-            PortType portType = mWSDL.findPortType( binding.portTypeName() );
+            PortType portType = mWSDL.findPortType(binding.portTypeName());
             //qDebug() << portType.name();
             bool first = true;
             const Operation::List operations = portType.operations();
-            Q_FOREACH( const Operation& operation, operations ) {
+            Q_FOREACH (const Operation &operation, operations) {
                 const Operation::OperationType opType = operation.operationType();
-                switch(opType) {
+                switch (opType) {
                 case Operation::OneWayOperation:
                 case Operation::RequestResponseOperation: // the standard case
                 case Operation::SolicitResponseOperation:
@@ -85,27 +86,27 @@ void Converter::convertServerService()
     }
 }
 
-void Converter::generateServerMethod(KODE::Code& code, const Binding& binding, const Operation& operation, KODE::Class &newClass, bool first)
+void Converter::generateServerMethod(KODE::Code &code, const Binding &binding, const Operation &operation, KODE::Class &newClass, bool first)
 {
     const QString requestVarName = "_request";
     const QString responseVarName = "_response";
 
-    const Message message = mWSDL.findMessage( operation.input().message() );
+    const Message message = mWSDL.findMessage(operation.input().message());
     Message outputMessage;
     if (operation.operationType() != Operation::OneWayOperation) {
-        outputMessage = mWSDL.findMessage( operation.output().message() );
+        outputMessage = mWSDL.findMessage(operation.output().message());
     }
 
     const QString operationName = operation.name();
-    const QString methodName = mNameMapper.escape( lowerlize( operationName ) );
+    const QString methodName = mNameMapper.escape(lowerlize(operationName));
 
     KODE::Function virtualMethod(methodName);
     virtualMethod.setVirtualMode(KODE::Function::PureVirtual);
 
     QString condition = "method == \"" + operationName + "\"";
-    if ( binding.type() == Binding::SOAPBinding ) {
-        const SoapBinding soapBinding( binding.soapBinding() );
-        const SoapBinding::Operation op = soapBinding.operations().value( operation.name() );
+    if (binding.type() == Binding::SOAPBinding) {
+        const SoapBinding soapBinding(binding.soapBinding());
+        const SoapBinding::Operation op = soapBinding.operations().value(operation.name());
         if (!op.action().isEmpty()) {
             condition += " || _soapAction == \"" + op.action() + "\"";
         }
@@ -117,11 +118,11 @@ void Converter::generateServerMethod(KODE::Code& code, const Binding& binding, c
     const Part::List parts = message.parts();
     for (int partNum = 0; partNum < parts.count(); ++partNum) {
         const Part part = parts.at(partNum);
-        const QString lowerName = lowerlize( part.name() );
-        const QString argType = mTypeMap.localType( part.type(), part.element() );
+        const QString lowerName = lowerlize(part.name());
+        const QString argType = mTypeMap.localType(part.type(), part.element());
         //qDebug() << "localInputType" << part.type().qname() << part.element().qname() << "->" << argType;
-        if ( argType != "void" ) {
-            const QString varName = mNameMapper.escape( lowerName );
+        if (argType != "void") {
+            const QString varName = mNameMapper.escape(lowerName);
 
             code += argType + ' ' + varName + ";" + COMMENT;
 
@@ -130,24 +131,24 @@ void Converter::generateServerMethod(KODE::Code& code, const Binding& binding, c
                 // RPC comes with a wrapper element, dig into it here
                 soapValueVarName = "val";
                 if (partNum > 0) {
-                    soapValueVarName += QString::number(partNum+1);
+                    soapValueVarName += QString::number(partNum + 1);
                 }
                 code += QString::fromLatin1("const KDSoapValue %1 = %2.childValues().at(%3);").arg(soapValueVarName, requestVarName).arg(partNum) + COMMENT;
             }
 
             // what if there's more than one?
-            code.addBlock( demarshalVar( part.type(), part.element(), varName, argType, soapValueVarName, false, false ) );
+            code.addBlock(demarshalVar(part.type(), part.element(), varName, argType, soapValueVarName, false, false));
 
             inputVars += varName;
-            newClass.addIncludes( mTypeMap.headerIncludes( part.type() ), mTypeMap.forwardDeclarationsForElement( part.element() ) );
-            virtualMethod.addArgument( mTypeMap.localInputType( part.type(), part.element() ) + ' ' + varName );
+            newClass.addIncludes(mTypeMap.headerIncludes(part.type()), mTypeMap.forwardDeclarationsForElement(part.element()));
+            virtualMethod.addArgument(mTypeMap.localInputType(part.type(), part.element()) + ' ' + varName);
         }
     }
 
     const Part::List outParts = outputMessage.parts();
     if (outParts.count() > 1) {
         qWarning("ERROR: multiple output parameters are not supported (operation %s) - please file"
-                "an issue on github with your wsdl file", qPrintable(operation.name()));
+                 "an issue on github with your wsdl file", qPrintable(operation.name()));
         virtualMethod.setReturnType("void /*UNSUPPORTED*/");
     } else if (outParts.isEmpty()) {
         code += operationName + '(' + inputVars.join(", ") + ");";
@@ -158,9 +159,9 @@ void Converter::generateServerMethod(KODE::Code& code, const Binding& binding, c
         //bool isBuiltin = false;
         //bool isComplex = false;
         Part retPart;
-        Q_FOREACH( const Part& outPart, outParts /* only one */ ) {
-            retType = mTypeMap.localType( outPart.type(), outPart.element() );
-            retInputType = mTypeMap.localInputType( outPart.type(), outPart.element() );
+        Q_FOREACH (const Part &outPart, outParts /* only one */) {
+            retType = mTypeMap.localType(outPart.type(), outPart.element());
+            retInputType = mTypeMap.localInputType(outPart.type(), outPart.element());
             //isBuiltin = mTypeMap.isBuiltinType( outPart.type(), outPart.element() );
             //isComplex = mTypeMap.isComplexType( outPart.type(), outPart.element() );
             retPart = outPart;
@@ -176,10 +177,10 @@ void Converter::generateServerMethod(KODE::Code& code, const Binding& binding, c
 
         // TODO factorize with same code in next method
         if (soapStyle(binding) == SoapBinding::DocumentStyle) {
-            code.addBlock( serializePart( retPart, "ret", responseVarName, false ) );
+            code.addBlock(serializePart(retPart, "ret", responseVarName, false));
         } else {
             code += QString("KDSoapValue wrapper(\"%1\", QVariant(), \"%2\");").arg(outputMessage.name()).arg(outputMessage.nameSpace());
-            code.addBlock( serializePart( retPart, "ret", "wrapper.childValues()", true ) );
+            code.addBlock(serializePart(retPart, "ret", "wrapper.childValues()", true));
             code += responseVarName + " = wrapper;";
         }
 
@@ -188,7 +189,7 @@ void Converter::generateServerMethod(KODE::Code& code, const Binding& binding, c
         Q_ASSERT(!retType.isEmpty());
         virtualMethod.setReturnType(retType);
 
-        newClass.addIncludes( mTypeMap.headerIncludes( retPart.type() ), mTypeMap.forwardDeclarationsForElement( retPart.element() ) );
+        newClass.addIncludes(mTypeMap.headerIncludes(retPart.type()), mTypeMap.forwardDeclarationsForElement(retPart.element()));
 
         generateDelayedReponseMethod(methodName, retInputType, retPart, newClass, binding, outputMessage);
     }
@@ -198,8 +199,8 @@ void Converter::generateServerMethod(KODE::Code& code, const Binding& binding, c
     newClass.addFunction(virtualMethod);
 }
 
-void Converter::generateDelayedReponseMethod(const QString& methodName, const QString& retInputType, const Part &retPart, KODE::Class &newClass,
-                                             const Binding& binding, const Message &outputMessage)
+void Converter::generateDelayedReponseMethod(const QString &methodName, const QString &retInputType, const Part &retPart, KODE::Class &newClass,
+        const Binding &binding, const Message &outputMessage)
 {
     const QString delayedMethodName = methodName + "Response";
     KODE::Function delayedMethod(delayedMethodName);
@@ -211,10 +212,10 @@ void Converter::generateDelayedReponseMethod(const QString& methodName, const QS
     code.addLine("KDSoapMessage _response;");
 
     if (soapStyle(binding) == SoapBinding::DocumentStyle) {
-        code.addBlock( serializePart( retPart, "ret", "_response", false ) );
+        code.addBlock(serializePart(retPart, "ret", "_response", false));
     } else {
         code += QString("KDSoapValue wrapper(\"%1\", QVariant(), \"%2\");").arg(outputMessage.name()).arg(outputMessage.nameSpace());
-        code.addBlock( serializePart( retPart, "ret", "wrapper.childValues()", true ) );
+        code.addBlock(serializePart(retPart, "ret", "wrapper.childValues()", true));
         code += "_response = wrapper;";
     }
 

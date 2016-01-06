@@ -22,17 +22,18 @@
 
 #include <QStringList>
 
-namespace KWSDL {
+namespace KWSDL
+{
 
 class NameMapper
 {
-  public:
+public:
     NameMapper();
 
-    QString escape( const QString &name ) const;
-    QString unescape( const QString &name ) const;
+    QString escape(const QString &name) const;
+    QString unescape(const QString &name) const;
 
-  private:
+private:
     QStringList mKeyWords;
 };
 

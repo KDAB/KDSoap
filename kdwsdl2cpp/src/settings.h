@@ -26,16 +26,16 @@
 
 class Settings
 {
-  public:
+public:
     typedef QMap<QString, QString> NSMapping;
 
     enum OptionalElementType { ENone, ERawPointer, EBoostOptional };
 
     ~Settings();
 
-    static Settings* self();
+    static Settings *self();
 
-    void setGenerateImplementation(bool b, const QString& headerFile);
+    void setGenerateImplementation(bool b, const QString &headerFile);
     bool generateImplementation() const;
     QString headerFile() const;
 
@@ -47,27 +47,27 @@ class Settings
     QString wsdlBaseUrl() const;
     QString wsdlFileName() const;
 
-    void setOutputFileName( const QString &outputFileName );
+    void setOutputFileName(const QString &outputFileName);
     QString outputFileName() const;
 
-    void setOutputDirectory( const QString &outputDirectory );
+    void setOutputDirectory(const QString &outputDirectory);
     QString outputDirectory() const;
 
-    void setOptionalElementType( OptionalElementType optionalElementType );
+    void setOptionalElementType(OptionalElementType optionalElementType);
     OptionalElementType optionalElementType() const;
 
     // UNUSED
-    void setNamespaceMapping( const NSMapping &namespaceMapping );
+    void setNamespaceMapping(const NSMapping &namespaceMapping);
     NSMapping namespaceMapping() const;
 
-    void setWantedService( const QString& service );
+    void setWantedService(const QString &service);
     QString wantedService() const;
 
     QString exportDeclaration() const;
-    void setExportDeclaration( const QString& exportDeclaration );
+    void setExportDeclaration(const QString &exportDeclaration);
 
     QString nameSpace() const;
-    void setNameSpace( const QString& ns );
+    void setNameSpace(const QString &ns);
 
 private:
     friend class SettingsSingleton;

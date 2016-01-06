@@ -36,92 +36,92 @@
 using namespace KWSDL;
 
 Compiler::Compiler()
-  : QObject( 0 )
+    : QObject(0)
 {
 }
 
 void Compiler::run()
 {
-  download();
+    download();
 }
 
 void Compiler::download()
 {
-  FileProvider provider;
+    FileProvider provider;
 
-  QString fileName;
-  if ( provider.get( Settings::self()->wsdlUrl(), fileName ) ) {
-    QFile file( fileName );
-    if ( !file.open( QIODevice::ReadOnly ) ) {
-      qDebug("Unable to download file %s", Settings::self()->wsdlUrl().toEncoded().constData());
-      provider.cleanUp();
-      QCoreApplication::exit( 1 );
-      return;
+    QString fileName;
+    if (provider.get(Settings::self()->wsdlUrl(), fileName)) {
+        QFile file(fileName);
+        if (!file.open(QIODevice::ReadOnly)) {
+            qDebug("Unable to download file %s", Settings::self()->wsdlUrl().toEncoded().constData());
+            provider.cleanUp();
+            QCoreApplication::exit(1);
+            return;
+        }
+
+        //qDebug() << "parsing" << fileName;
+        QXmlInputSource source(&file);
+        QXmlSimpleReader reader;
+        reader.setFeature(QLatin1String("http://xml.org/sax/features/namespace-prefixes"), true);
+
+        QString errorMsg;
+        int errorLine, errorCol;
+        QDomDocument doc;
+        if (!doc.setContent(&source, &reader, &errorMsg, &errorLine, &errorCol)) {
+            qDebug("%s at (%d,%d)", qPrintable(errorMsg), errorLine, errorCol);
+            QCoreApplication::exit(2);
+            return;
+        }
+
+        parse(doc.documentElement());
+
+        provider.cleanUp();
+    } else {
+        qDebug("Unable to download file %s", Settings::self()->wsdlUrl().toEncoded().constData());
+        provider.cleanUp();
+        QCoreApplication::exit(1);
+        return;
     }
-
-    //qDebug() << "parsing" << fileName;
-    QXmlInputSource source( &file );
-    QXmlSimpleReader reader;
-    reader.setFeature( QLatin1String("http://xml.org/sax/features/namespace-prefixes"), true );
-
-    QString errorMsg;
-    int errorLine, errorCol;
-    QDomDocument doc;
-    if ( !doc.setContent( &source, &reader, &errorMsg, &errorLine, &errorCol ) ) {
-      qDebug( "%s at (%d,%d)", qPrintable( errorMsg ), errorLine, errorCol );
-      QCoreApplication::exit( 2 );
-      return;
-    }
-
-    parse( doc.documentElement() );
-
-    provider.cleanUp();
-  } else {
-    qDebug("Unable to download file %s", Settings::self()->wsdlUrl().toEncoded().constData());
-    provider.cleanUp();
-    QCoreApplication::exit( 1 );
-    return;
-  }
 }
 
-void Compiler::parse( const QDomElement &element )
+void Compiler::parse(const QDomElement &element)
 {
-  NSManager namespaceManager;
+    NSManager namespaceManager;
 
-  // we don't parse xml.xsd, so hardcode the xml prefix (for xml:lang)
-  namespaceManager.setPrefix( QLatin1String("xml"), NSManager::xmlNamespace() );
+    // we don't parse xml.xsd, so hardcode the xml prefix (for xml:lang)
+    namespaceManager.setPrefix(QLatin1String("xml"), NSManager::xmlNamespace());
 
-  MessageHandler messageHandler;
-  ParserContext context;
-  context.setNamespaceManager( &namespaceManager );
-  context.setMessageHandler( &messageHandler );
-  context.setDocumentBaseUrl( QUrl( Settings::self()->wsdlBaseUrl() ) );
+    MessageHandler messageHandler;
+    ParserContext context;
+    context.setNamespaceManager(&namespaceManager);
+    context.setMessageHandler(&messageHandler);
+    context.setDocumentBaseUrl(QUrl(Settings::self()->wsdlBaseUrl()));
 
-  Definitions definitions;
-  definitions.setWantedService( Settings::self()->wantedService() );
-  if ( definitions.loadXML( &context, element ) ) {
+    Definitions definitions;
+    definitions.setWantedService(Settings::self()->wantedService());
+    if (definitions.loadXML(&context, element)) {
 
-      definitions.fixUpDefinitions( /*&context, element*/ );
+        definitions.fixUpDefinitions(/*&context, element*/);
 
-      KODE::Code::setDefaultIndentation( 4 );
+        KODE::Code::setDefaultIndentation(4);
 
-      WSDL wsdl;
-      wsdl.setDefinitions( definitions );
-      wsdl.setNamespaceManager( namespaceManager );
+        WSDL wsdl;
+        wsdl.setDefinitions(definitions);
+        wsdl.setNamespaceManager(namespaceManager);
 
-      KWSDL::Converter converter;
-      converter.setWSDL( wsdl );
+        KWSDL::Converter converter;
+        converter.setWSDL(wsdl);
 
-      if ( !converter.convert() ) {
-          QCoreApplication::exit( 4 );
-      } else {
-          KWSDL::Creator creator;
-          creator.create( converter.classes() );
-          QCoreApplication::exit( 0 );
-      }
-  } else {
-      QCoreApplication::exit( 3 );
-  }
+        if (!converter.convert()) {
+            QCoreApplication::exit(4);
+        } else {
+            KWSDL::Creator creator;
+            creator.create(converter.classes());
+            QCoreApplication::exit(0);
+        }
+    } else {
+        QCoreApplication::exit(3);
+    }
 }
 
 #include "moc_compiler.cpp"

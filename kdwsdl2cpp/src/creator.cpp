@@ -33,40 +33,41 @@ Creator::Creator()
 {
 }
 
-void Creator::create( const KODE::Class::List &classes )
+void Creator::create(const KODE::Class::List &classes)
 {
-  KODE::Printer printer;
-  printer.setOutputDirectory( Settings::self()->outputDirectory() );
+    KODE::Printer printer;
+    printer.setOutputDirectory(Settings::self()->outputDirectory());
 
-  // Set generated header details.
-  printer.setCreationWarning( true );
-  printer.setGenerator( QLatin1String( "KDAB's kdwsdl2cpp" ) );
-  printer.setSourceFile( Settings::self()->wsdlFileName() );
+    // Set generated header details.
+    printer.setCreationWarning(true);
+    printer.setGenerator(QLatin1String("KDAB's kdwsdl2cpp"));
+    printer.setSourceFile(Settings::self()->wsdlFileName());
 
-  // Qt-like coding style
-  printer.setLabelsDefineIndent( false );
-  printer.setIndentLabels( false );
+    // Qt-like coding style
+    printer.setLabelsDefineIndent(false);
+    printer.setIndentLabels(false);
 
-  //qDebug() << "Create server=" << Settings::self()->generateServerCode() << "impl=" << Settings::self()->generateImplementation();
+    //qDebug() << "Create server=" << Settings::self()->generateServerCode() << "impl=" << Settings::self()->generateImplementation();
 
-  KODE::File file;
+    KODE::File file;
 
-  if (Settings::self()->generateImplementation()) {
-      file.setImplementationFilename( Settings::self()->outputFileName() );
-      file.setHeaderFilename(Settings::self()->headerFile());
-  } else {
-      file.setHeaderFilename( Settings::self()->outputFileName() );
-  }
+    if (Settings::self()->generateImplementation()) {
+        file.setImplementationFilename(Settings::self()->outputFileName());
+        file.setHeaderFilename(Settings::self()->headerFile());
+    } else {
+        file.setHeaderFilename(Settings::self()->outputFileName());
+    }
 
-  file.setLicense(KODE::License::GeneratedNoRestriction);
+    file.setLicense(KODE::License::GeneratedNoRestriction);
 
-  KODE::Class::List::ConstIterator it;
-  for ( it = classes.constBegin(); it != classes.constEnd(); ++it ) {
-      file.insertClass( *it );
-  }
+    KODE::Class::List::ConstIterator it;
+    for (it = classes.constBegin(); it != classes.constEnd(); ++it) {
+        file.insertClass(*it);
+    }
 
-  if (Settings::self()->generateImplementation())
-      printer.printImplementation( file );
-  else
-      printer.printHeader( file );
+    if (Settings::self()->generateImplementation()) {
+        printer.printImplementation(file);
+    } else {
+        printer.printHeader(file);
+    }
 }

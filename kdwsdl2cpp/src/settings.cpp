@@ -38,18 +38,18 @@ Q_GLOBAL_STATIC(SettingsSingleton, s_settings)
 
 Settings::Settings()
 {
-  mOutputDirectory = QDir::current().path();
-  mOutputFileName = QString::fromLatin1("kwsdl_generated");
-  mImpl = false;
-  mServer = false;
-  mOptionalElementType = Settings::ENone;
+    mOutputDirectory = QDir::current().path();
+    mOutputFileName = QString::fromLatin1("kwsdl_generated");
+    mImpl = false;
+    mServer = false;
+    mOptionalElementType = Settings::ENone;
 }
 
 Settings::~Settings()
 {
 }
 
-Settings* Settings::self()
+Settings *Settings::self()
 {
     return &s_settings()->mSettings;
 }
@@ -81,18 +81,18 @@ QUrl Settings::wsdlUrl() const
 QString Settings::wsdlBaseUrl() const
 {
     const QString strUrl = mWsdlUrl.toString();
-    return strUrl.left( strUrl.lastIndexOf( QLatin1Char('/') ) );
+    return strUrl.left(strUrl.lastIndexOf(QLatin1Char('/')));
 }
 
 QString Settings::wsdlFileName() const
 {
     const QString strUrl = mWsdlUrl.toString();
-    return strUrl.mid( strUrl.lastIndexOf( QLatin1Char('/') ) + 1 );
+    return strUrl.mid(strUrl.lastIndexOf(QLatin1Char('/')) + 1);
 }
 
-void Settings::setOutputFileName( const QString &outputFileName )
+void Settings::setOutputFileName(const QString &outputFileName)
 {
-  mOutputFileName = outputFileName;
+    mOutputFileName = outputFileName;
 }
 
 QString Settings::outputFileName() const
@@ -105,20 +105,21 @@ QString Settings::outputFileName() const
     return mOutputFileName;
 }
 
-void Settings::setOutputDirectory( const QString &outputDirectory )
+void Settings::setOutputDirectory(const QString &outputDirectory)
 {
-  mOutputDirectory = outputDirectory;
+    mOutputDirectory = outputDirectory;
 
-  if ( !mOutputDirectory.endsWith( QLatin1Char('/') ) )
-    mOutputDirectory.append( QLatin1Char('/') );
+    if (!mOutputDirectory.endsWith(QLatin1Char('/'))) {
+        mOutputDirectory.append(QLatin1Char('/'));
+    }
 }
 
 QString Settings::outputDirectory() const
 {
-  return mOutputDirectory;
+    return mOutputDirectory;
 }
 
-void Settings::setOptionalElementType( Settings::OptionalElementType optionalElementType )
+void Settings::setOptionalElementType(Settings::OptionalElementType optionalElementType)
 {
     mOptionalElementType = optionalElementType;
 }
@@ -128,17 +129,17 @@ Settings::OptionalElementType Settings::optionalElementType() const
     return mOptionalElementType;
 }
 
-void Settings::setNamespaceMapping( const NSMapping &namespaceMapping )
+void Settings::setNamespaceMapping(const NSMapping &namespaceMapping)
 {
-  mNamespaceMapping = namespaceMapping;
+    mNamespaceMapping = namespaceMapping;
 }
 
 Settings::NSMapping Settings::namespaceMapping() const
 {
-  return mNamespaceMapping;
+    return mNamespaceMapping;
 }
 
-void Settings::setGenerateImplementation(bool b, const QString& headerFile)
+void Settings::setGenerateImplementation(bool b, const QString &headerFile)
 {
     mImpl = b;
     mHeaderFile = headerFile;
@@ -179,7 +180,7 @@ QString Settings::exportDeclaration() const
     return mExportDeclaration;
 }
 
-void Settings::setExportDeclaration( const QString& exportDeclaration )
+void Settings::setExportDeclaration(const QString &exportDeclaration)
 {
     mExportDeclaration = exportDeclaration;
 }
@@ -189,7 +190,7 @@ QString Settings::nameSpace() const
     return mNameSpace;
 }
 
-void Settings::setNameSpace( const QString& ns )
+void Settings::setNameSpace(const QString &ns)
 {
     mNameSpace = ns;
 }

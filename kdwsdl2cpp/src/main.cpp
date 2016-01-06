@@ -27,8 +27,8 @@
 #include <QCoreApplication>
 #include <QDebug>
 
-static const char* WSDL2CPP_DESCRIPTION = "KDAB's WSDL to C++ compiler";
-static const char* WSDL2CPP_VERSION_STR = "2.0";
+static const char *WSDL2CPP_DESCRIPTION = "KDAB's WSDL to C++ compiler";
+static const char *WSDL2CPP_VERSION_STR = "2.0";
 
 static void showHelp(const char *appName)
 {
@@ -48,9 +48,9 @@ static void showHelp(const char *appName)
             "\n", appName);
 }
 
-int main( int argc, char **argv )
+int main(int argc, char **argv)
 {
-    QCoreApplication app( argc, argv );
+    QCoreApplication app(argc, argv);
 
     const char *fileName = 0;
     QFileInfo outputFile;
@@ -95,30 +95,30 @@ int main( int argc, char **argv )
                 return 1;
             }
             serviceName = QFile::decodeName(argv[arg]);
-        } else if ( opt == QLatin1String("-exportMacro") ) {
+        } else if (opt == QLatin1String("-exportMacro")) {
             ++arg;
             if (!argv[arg]) {
                 showHelp(argv[0]);
                 return 1;
             }
             exportMacro = argv[arg];
-        } else if ( opt == QLatin1String("-namespace") ) {
+        } else if (opt == QLatin1String("-namespace")) {
             ++arg;
             if (!argv[arg]) {
                 showHelp(argv[0]);
                 return 1;
             }
             nameSpace = argv[arg];
-        } else if ( opt == QLatin1String("-optional-element-type") ) {
+        } else if (opt == QLatin1String("-optional-element-type")) {
             ++arg;
             if (!argv[arg]) {
                 showHelp(argv[0]);
                 return 1;
             }
             QLatin1String optType(argv[arg]);
-            if ( optType == QLatin1String("raw-pointer") ) {
+            if (optType == QLatin1String("raw-pointer")) {
                 optionalElementType = Settings::ERawPointer;
-            } else if ( optType == QLatin1String("boost-optional") ) {
+            } else if (optType == QLatin1String("boost-optional")) {
                 optionalElementType = Settings::EBoostOptional;
             }
         } else if (!fileName) {
@@ -148,7 +148,7 @@ int main( int argc, char **argv )
     KWSDL::Compiler compiler;
 
     // so that we have an event loop, for downloads
-    QTimer::singleShot( 0, &compiler, SLOT( run() ) );
+    QTimer::singleShot(0, &compiler, SLOT(run()));
 
     return app.exec();
 }

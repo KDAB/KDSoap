@@ -35,63 +35,64 @@
 #define COMMENT QLatin1String("// ") + Converter::shortenFilename(QLatin1String(__FILE__)) + QLatin1String(":") + QString::number(__LINE__)
 #endif
 
-namespace KWSDL {
+namespace KWSDL
+{
 
 class Converter
 {
-  public:
+public:
     Converter();
 
-    void setWSDL( const WSDL &wsdl );
+    void setWSDL(const WSDL &wsdl);
 
     bool convert();
 
     KODE::Class::List classes() const;
 
-    static QString shortenFilename( const QString &path );
+    static QString shortenFilename(const QString &path);
 
-  private:
+private:
 
     void cleanupUnusedTypes();
     void convertTypes();
 
-    void convertComplexType( const XSD::ComplexType* );
-    void createComplexTypeSerializer( KODE::Class&, const XSD::ComplexType* );
+    void convertComplexType(const XSD::ComplexType *);
+    void createComplexTypeSerializer(KODE::Class &, const XSD::ComplexType *);
 
-    void convertSimpleType( const XSD::SimpleType*, const XSD::SimpleType::List& simpleTypeList );
-    void createSimpleTypeSerializer( KODE::Class&, const XSD::SimpleType*, const XSD::SimpleType::List& simpleTypeList );
+    void convertSimpleType(const XSD::SimpleType *, const XSD::SimpleType::List &simpleTypeList);
+    void createSimpleTypeSerializer(KODE::Class &, const XSD::SimpleType *, const XSD::SimpleType::List &simpleTypeList);
 
     // Client Stub
     bool convertClientService();
-    bool convertClientCall( const Operation&, const Binding&, KODE::Class& );
-    void convertClientInputMessage( const Operation&, const Binding&, KODE::Class& );
-    void convertClientOutputMessage( const Operation&, const Binding&, KODE::Class& );
-    void clientAddOneArgument( KODE::Function& callFunc, const Part& part, KODE::Class &newClass );
-    void clientAddArguments( KODE::Function& callFunc, const Message& message, KODE::Class &newClass, const Operation &operation, const Binding &binding );
-    bool clientAddAction( KODE::Code& code, const Binding &binding, const QString& operationName );
-    void clientGenerateMessage( KODE::Code& code, const Binding& binding, const Message& message, const Operation& operation, bool varsAreMembers=false );
-    void addMessageArgument( KODE::Code& code, const SoapBinding::Style& bindingStyle, const Part& part, const QString& localVariableName, const QByteArray& messageName, bool varIsMember=false );
-    void createHeader( const SoapBinding::Header& header, KODE::Class& newClass );
-    void addJobResultMember(KODE::Class& jobClass, const Part& part, const QString& varName, const QStringList &inputGetters);
-    KODE::Code serializePart(const Part& part, const QString& localVariableName, const QString &varName, bool append);
-    KODE::Code demarshalVarHelper( const QName& type, const QName& elementType, const QString& variableName, const QString& qtTypeName, const QString& soapValueVarName, bool optional ) const;
-    KODE::Code demarshalVar(const QName& type, const QName& elementType, const QString& variableName, const QString& typeName, const QString& soapValueVarName, bool optional, bool usePointer) const;
-    KODE::Code demarshalArrayVar(const QName& type, const QString& variableName, const QString& qtTypeName ) const;
-    void addVariableInitializer( KODE::MemberVariable& variable ) const;
-    QString generateMemberVariable(const QString &rawName, const QString &typeName, const QString &inputTypeName, KODE::Class& newClass, XSD::Attribute::AttributeUse, bool usePointer, bool polymorphic);
-    QString listTypeFor(const QString& itemTypeName, KODE::Class& newClass);
-    KODE::Code deserializeRetVal(const KWSDL::Part& part, const QString& replyMsgName, const QString& qtRetType, const QString& varName) const;
-    QName elementNameForPart(const Part& part, bool* qualified, bool *nillable) const;
-    bool isQualifiedPart(const Part& part) const;
+    bool convertClientCall(const Operation &, const Binding &, KODE::Class &);
+    void convertClientInputMessage(const Operation &, const Binding &, KODE::Class &);
+    void convertClientOutputMessage(const Operation &, const Binding &, KODE::Class &);
+    void clientAddOneArgument(KODE::Function &callFunc, const Part &part, KODE::Class &newClass);
+    void clientAddArguments(KODE::Function &callFunc, const Message &message, KODE::Class &newClass, const Operation &operation, const Binding &binding);
+    bool clientAddAction(KODE::Code &code, const Binding &binding, const QString &operationName);
+    void clientGenerateMessage(KODE::Code &code, const Binding &binding, const Message &message, const Operation &operation, bool varsAreMembers = false);
+    void addMessageArgument(KODE::Code &code, const SoapBinding::Style &bindingStyle, const Part &part, const QString &localVariableName, const QByteArray &messageName, bool varIsMember = false);
+    void createHeader(const SoapBinding::Header &header, KODE::Class &newClass);
+    void addJobResultMember(KODE::Class &jobClass, const Part &part, const QString &varName, const QStringList &inputGetters);
+    KODE::Code serializePart(const Part &part, const QString &localVariableName, const QString &varName, bool append);
+    KODE::Code demarshalVarHelper(const QName &type, const QName &elementType, const QString &variableName, const QString &qtTypeName, const QString &soapValueVarName, bool optional) const;
+    KODE::Code demarshalVar(const QName &type, const QName &elementType, const QString &variableName, const QString &typeName, const QString &soapValueVarName, bool optional, bool usePointer) const;
+    KODE::Code demarshalArrayVar(const QName &type, const QString &variableName, const QString &qtTypeName) const;
+    void addVariableInitializer(KODE::MemberVariable &variable) const;
+    QString generateMemberVariable(const QString &rawName, const QString &typeName, const QString &inputTypeName, KODE::Class &newClass, XSD::Attribute::AttributeUse, bool usePointer, bool polymorphic);
+    QString listTypeFor(const QString &itemTypeName, KODE::Class &newClass);
+    KODE::Code deserializeRetVal(const KWSDL::Part &part, const QString &replyMsgName, const QString &qtRetType, const QString &varName) const;
+    QName elementNameForPart(const Part &part, bool *qualified, bool *nillable) const;
+    bool isQualifiedPart(const Part &part) const;
 
     // Server Stub
     void convertServerService();
-    void generateServerMethod(KODE::Code& code, const Binding& binding, const Operation& operation,
+    void generateServerMethod(KODE::Code &code, const Binding &binding, const Operation &operation,
                               KODE::Class &newClass, bool first);
-    void generateDelayedReponseMethod(const QString& methodName, const QString& retInputType,
-                                      const Part &retPart, KODE::Class &newClass, const Binding& binding, const Message &outputMessage);
+    void generateDelayedReponseMethod(const QString &methodName, const QString &retInputType,
+                                      const Part &retPart, KODE::Class &newClass, const Binding &binding, const Message &outputMessage);
 
-    SoapBinding::Style soapStyle( const Binding& binding ) const;
+    SoapBinding::Style soapStyle(const Binding &binding) const;
 
     WSDL mWSDL;
 
@@ -107,10 +108,10 @@ class Converter
 
 }
 
-QString upperlize( const QString& );
-QString lowerlize( const QString& );
-QString namespaceString(const QString& ns);
+QString upperlize(const QString &);
+QString lowerlize(const QString &);
+QString namespaceString(const QString &ns);
 
-static QName XmlAnyType( QLatin1String("http://www.w3.org/2001/XMLSchema"), QLatin1String("any") );
+static QName XmlAnyType(QLatin1String("http://www.w3.org/2001/XMLSchema"), QLatin1String("any"));
 
 #endif
