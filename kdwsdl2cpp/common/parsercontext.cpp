@@ -65,7 +65,7 @@ void ParserContext::setDocumentBaseUrlFromFileUrl( const QUrl &url )
     path.truncate( path.lastIndexOf('/') );
     QUrl newBaseUrl = url;
     newBaseUrl.setPath(path);
-    qDebug() << "New document base URL" << newBaseUrl;
+    //qDebug() << "New document base URL" << newBaseUrl;
     setDocumentBaseUrl( newBaseUrl );
 }
 
