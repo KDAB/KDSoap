@@ -299,17 +299,17 @@ private Q_SLOTS:
             "</soap:Header>";
         const QByteArray expectedRequestBody =
             QByteArray("<soap:Body>"
-            "<n1:test>"
-            "<testString xsi:type=\"xsd:string\">Hello Klarälvdalens</testString>"
-            "<val xsi:type=\"n1:MyVal\" attr=\"attrValue\">5</val>"
-            "<order xsi:type=\"n1:MyOrder\" attr=\"attrValue\"><orderperson xsi:type=\"n1:Person\">someone</orderperson></order>"
-            "<rect><x xsi:type=\"xsd:int\">0</x><y xsi:type=\"xsd:int\">0</y><width xsi:type=\"xsd:int\">100</width><height xsi:type=\"xsd:int\">200</height></rect>"
-            "<testArray xsi:type=\"soap-enc:Array\" soap-enc:arrayType=\"xsd:string[2]\">"
-             "<item xsi:type=\"xsd:string\">kdab</item>"
-             "<item xsi:type=\"xsd:string\">rocks</item>"
-            "</testArray>"
-            "</n1:test>"
-            "</soap:Body>") + xmlEnvEnd()
+                       "<n1:test>"
+                       "<testString xsi:type=\"xsd:string\">Hello Klarälvdalens</testString>"
+                       "<val xsi:type=\"n1:MyVal\" attr=\"attrValue\">5</val>"
+                       "<order xsi:type=\"n1:MyOrder\" attr=\"attrValue\"><orderperson xsi:type=\"n1:Person\">someone</orderperson></order>"
+                       "<rect><x xsi:type=\"xsd:int\">0</x><y xsi:type=\"xsd:int\">0</y><width xsi:type=\"xsd:int\">100</width><height xsi:type=\"xsd:int\">200</height></rect>"
+                       "<testArray xsi:type=\"soap-enc:Array\" soap-enc:arrayType=\"xsd:string[2]\">"
+                       "<item xsi:type=\"xsd:string\">kdab</item>"
+                       "<item xsi:type=\"xsd:string\">rocks</item>"
+                       "</testArray>"
+                       "</n1:test>"
+                       "</soap:Body>") + xmlEnvEnd()
             + '\n'; // added by QXmlStreamWriter::writeEndDocument
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml + expectedRequestBody));
 
@@ -376,7 +376,7 @@ private Q_SLOTS:
 
         KDSoapMessage message;
         message = KDSoapValue(QLatin1String("getEmployeeCountry"), QVariant());
-        KDSoapValueList& args = message.childValues();
+        KDSoapValueList &args = message.childValues();
         args.append(KDSoapValue(QLatin1String("employeeName"), QString::fromUtf8("David Ä Faure")));
 
         {
@@ -388,30 +388,33 @@ private Q_SLOTS:
         }
     }
 
-
 private:
-    static QByteArray countryResponse() {
+    static QByteArray countryResponse()
+    {
         return QByteArray(xmlEnvBegin11()) + "><soap:Body>"
-                "<kdab:getEmployeeCountryResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl/\"><kdab:employeeCountry>France</kdab:employeeCountry></kdab:getEmployeeCountryResponse>"
-                " </soap:Body>" + xmlEnvEnd();
+               "<kdab:getEmployeeCountryResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl/\"><kdab:employeeCountry>France</kdab:employeeCountry></kdab:getEmployeeCountryResponse>"
+               " </soap:Body>" + xmlEnvEnd();
     }
-    static QByteArray expectedCountryRequest() {
+    static QByteArray expectedCountryRequest()
+    {
         return QByteArray(xmlEnvBegin11()) +
-                "><soap:Body>"
-                "<n1:getEmployeeCountry xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
-                "<employeeName>David Ä Faure</employeeName>"
-                "</n1:getEmployeeCountry>"
-                "</soap:Body>" + xmlEnvEnd();
+               "><soap:Body>"
+               "<n1:getEmployeeCountry xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
+               "<employeeName>David Ä Faure</employeeName>"
+               "</n1:getEmployeeCountry>"
+               "</soap:Body>" + xmlEnvEnd();
     }
-    static QString countryMessageNamespace() {
+    static QString countryMessageNamespace()
+    {
         return QString::fromLatin1("http://www.kdab.com/xml/MyWsdl/");
     }
-    static KDSoapMessage countryMessage() {
+    static KDSoapMessage countryMessage()
+    {
         KDSoapMessage message;
         message.addArgument(QLatin1String("employeeName"), QString::fromUtf8("David Ä Faure"));
         return message;
     }
-    void waitForCallFinished(KDSoapPendingCall& pendingCall)
+    void waitForCallFinished(KDSoapPendingCall &pendingCall)
     {
         KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);
         QEventLoop loop;
@@ -421,25 +424,27 @@ private:
 
     }
 
-    static QByteArray emptyResponse() {
+    static QByteArray emptyResponse()
+    {
         return QByteArray(xmlEnvBegin11()) + "><soap:Body/>";
     }
 
-    static QByteArray complexTypeResponse() {
+    static QByteArray complexTypeResponse()
+    {
         return QByteArray(xmlEnvBegin11()) + "><soap:Body xmlns:tns=\"http://www.sugarcrm.com/sugarcrm\">"
-                "<ns1:loginResponse xmlns:ns1=\"http://www.sugarcrm.com/sugarcrm\">"
-                "  <return xsi:type=\"tns:set_entry_result\">"
-                "    <id xsi:type=\"xsd:string\">12345</id>"
-                "    <error xsi:type=\"tns:error_value\">"
-                "       <number xsi:type=\"xsd:string\">0</number>"
-                "       <name xsi:type=\"xsd:string\">No Error</name>"
-                "       <description xsi:type=\"xsd:string\">No Error</description>"
-                "    </error>"
-                "    <testArray ns1:attr=\"aValue\" xsi:type=\"soap-enc:Array\" soap-enc:arrayType=\"xsi:string\">"
-                "    </testArray>"
-                "  </return>"
-                "</ns1:loginResponse>"
-                "</soap:Body>" + xmlEnvEnd();
+               "<ns1:loginResponse xmlns:ns1=\"http://www.sugarcrm.com/sugarcrm\">"
+               "  <return xsi:type=\"tns:set_entry_result\">"
+               "    <id xsi:type=\"xsd:string\">12345</id>"
+               "    <error xsi:type=\"tns:error_value\">"
+               "       <number xsi:type=\"xsd:string\">0</number>"
+               "       <name xsi:type=\"xsd:string\">No Error</name>"
+               "       <description xsi:type=\"xsd:string\">No Error</description>"
+               "    </error>"
+               "    <testArray ns1:attr=\"aValue\" xsi:type=\"soap-enc:Array\" soap-enc:arrayType=\"xsi:string\">"
+               "    </testArray>"
+               "  </return>"
+               "</ns1:loginResponse>"
+               "</soap:Body>" + xmlEnvEnd();
     }
 };
 

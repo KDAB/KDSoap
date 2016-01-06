@@ -39,7 +39,8 @@ class TransformMediaBindingServerObject : public TransformMediaBindingServerBase
 {
     Q_OBJECT
 public:
-    virtual TFMS__TransformResponseType transform( const TFMS__TransformRequestType& in ) {
+    virtual TFMS__TransformResponseType transform(const TFMS__TransformRequestType &in)
+    {
         TFMS__TransformJobType copyJob = in.transformJob();
         Q_ASSERT(copyJob.operationName() == "operation");
         BMS__QueueType queueType;
@@ -56,49 +57,58 @@ class TransformMediaBindingServer : public KDSoapServer
 {
     Q_OBJECT
 public:
-    TransformMediaBindingServer() : KDSoapServer(), m_lastServerObject(0) {
+    TransformMediaBindingServer() : KDSoapServer(), m_lastServerObject(0)
+    {
         setPath(QLatin1String("/xml"));
     }
-    virtual QObject* createServerObject() { m_lastServerObject = new TransformMediaBindingServerObject; return m_lastServerObject; }
+    virtual QObject *createServerObject()
+    {
+        m_lastServerObject = new TransformMediaBindingServerObject;
+        return m_lastServerObject;
+    }
 
-    TransformMediaBindingServerObject* lastServerObject() { return m_lastServerObject; }
+    TransformMediaBindingServerObject *lastServerObject()
+    {
+        return m_lastServerObject;
+    }
 
 private:
-    TransformMediaBindingServerObject* m_lastServerObject; // only for unittest purposes
+    TransformMediaBindingServerObject *m_lastServerObject; // only for unittest purposes
 };
 
 // Server side to perform job status request
 class TransformMediaStatusBindingServerObject : public TransformMediaStatusBindingServerBase /* generated from wsdl */
 {
-      Q_OBJECT
+    Q_OBJECT
 public:
-    virtual BMS__ManageJobResponseType manageJob( const BMS__ManageJobRequestType& in ) {
-      // check what was sent
-      Q_UNUSED(in);
-      if(in.jobID().value().toInt() != 1) {
-        // use faults when implemented !
-        return BMS__ManageJobResponseType();
-      }
-      Q_ASSERT(in.jobCommand().type() == BMS__JobCommandType::Restart);
-      // prepare response containing a job status
-      BMS__ManageJobResponseType response;
-      BMS__JobType myJob;
-      myJob.setStatus(BMS__JobStatusType::Running);
-      response.setJob(myJob);
-      Q_ASSERT(response.job().status().type() == BMS__JobStatusType::Running);
-      return response;
-    }
-    virtual BMS__ManageQueueResponseType manageQueue( const BMS__ManageQueueRequestType& in )
+    virtual BMS__ManageJobResponseType manageJob(const BMS__ManageJobRequestType &in)
     {
-      Q_UNUSED (in);
-      BMS__ManageQueueResponseType qrt;
-      return qrt;
+        // check what was sent
+        Q_UNUSED(in);
+        if (in.jobID().value().toInt() != 1) {
+            // use faults when implemented !
+            return BMS__ManageJobResponseType();
+        }
+        Q_ASSERT(in.jobCommand().type() == BMS__JobCommandType::Restart);
+        // prepare response containing a job status
+        BMS__ManageJobResponseType response;
+        BMS__JobType myJob;
+        myJob.setStatus(BMS__JobStatusType::Running);
+        response.setJob(myJob);
+        Q_ASSERT(response.job().status().type() == BMS__JobStatusType::Running);
+        return response;
     }
-    virtual BMS__QueryJobResponseType queryJob( const BMS__QueryJobRequestType& in )
+    virtual BMS__ManageQueueResponseType manageQueue(const BMS__ManageQueueRequestType &in)
     {
-      Q_UNUSED (in);
-      BMS__QueryJobResponseType jrt;
-      return jrt;
+        Q_UNUSED(in);
+        BMS__ManageQueueResponseType qrt;
+        return qrt;
+    }
+    virtual BMS__QueryJobResponseType queryJob(const BMS__QueryJobRequestType &in)
+    {
+        Q_UNUSED(in);
+        BMS__QueryJobResponseType jrt;
+        return jrt;
     }
 };
 
@@ -106,15 +116,23 @@ class TransformMediaStatusBindingServer : public KDSoapServer
 {
     Q_OBJECT
 public:
-    TransformMediaStatusBindingServer() : KDSoapServer(), m_lastServerObject(0) {
+    TransformMediaStatusBindingServer() : KDSoapServer(), m_lastServerObject(0)
+    {
         setPath(QLatin1String("/xml"));
     }
-    virtual QObject* createServerObject() { m_lastServerObject = new TransformMediaStatusBindingServerObject; return m_lastServerObject; }
+    virtual QObject *createServerObject()
+    {
+        m_lastServerObject = new TransformMediaStatusBindingServerObject;
+        return m_lastServerObject;
+    }
 
-    TransformMediaStatusBindingServerObject* lastServerObject() { return m_lastServerObject; }
+    TransformMediaStatusBindingServerObject *lastServerObject()
+    {
+        return m_lastServerObject;
+    }
 
 private:
-    TransformMediaStatusBindingServerObject* m_lastServerObject; // only for unittest purposes
+    TransformMediaStatusBindingServerObject *m_lastServerObject; // only for unittest purposes
 };
 
 class Tech3356Test : public QObject
@@ -126,30 +144,30 @@ private:
     static QByteArray expectedQueryJobRequest()
     {
         return QByteArray(xmlEnvBegin11()) + ">"
-        "<soap:Body>"
-           "<n1:queryJobRequest xmlns:n1=\"http://base.fims.tv\">" // MISSING: xsi:type=\"n1:QueryJobRequestByIDType\">"
-             "<n1:jobInfoSelection>all</n1:jobInfoSelection>"
-             "<n1:jobID>1</n1:jobID>"
-           "</n1:queryJobRequest>"
-        "</soap:Body>" + xmlEnvEnd()
-        + '\n'; // added by QXmlStreamWriter::writeEndDocument;
+               "<soap:Body>"
+               "<n1:queryJobRequest xmlns:n1=\"http://base.fims.tv\">" // MISSING: xsi:type=\"n1:QueryJobRequestByIDType\">"
+               "<n1:jobInfoSelection>all</n1:jobInfoSelection>"
+               "<n1:jobID>1</n1:jobID>"
+               "</n1:queryJobRequest>"
+               "</soap:Body>" + xmlEnvEnd()
+               + '\n'; // added by QXmlStreamWriter::writeEndDocument;
     }
 
     static QByteArray queryJobResponse()
     {
         return "<?xml version='1.0' encoding='UTF-8'?>"
-        "<SOAP-ENV:Envelope "
-           "xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" "
-           "xmlns:xsi=\"http://www.w3.org/1999/XMLSchema-instance\" "
-           "xmlns:xsd=\"http://www.w3.org/1999/XMLSchema\">"
-           "<SOAP-ENV:Body>"
-              "<ns1:sayHelloResponse "
-                 "xmlns:ns1=\"urn:examples:helloservice\" "
-                 "SOAP-ENV:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\">"
-        "<return xsi:type=\"xsd:string\">Hello, World!</return>"
-              "</ns1:sayHelloResponse>"
-           "</SOAP-ENV:Body>"
-        "</SOAP-ENV:Envelope>";
+               "<SOAP-ENV:Envelope "
+               "xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" "
+               "xmlns:xsi=\"http://www.w3.org/1999/XMLSchema-instance\" "
+               "xmlns:xsd=\"http://www.w3.org/1999/XMLSchema\">"
+               "<SOAP-ENV:Body>"
+               "<ns1:sayHelloResponse "
+               "xmlns:ns1=\"urn:examples:helloservice\" "
+               "SOAP-ENV:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\">"
+               "<return xsi:type=\"xsd:string\">Hello, World!</return>"
+               "</ns1:sayHelloResponse>"
+               "</SOAP-ENV:Body>"
+               "</SOAP-ENV:Envelope>";
     }
 
 private Q_SLOTS:
@@ -184,7 +202,7 @@ private Q_SLOTS:
 
         // check that <element name="processed" type="bms:ProcessedInfoType" minOccurs="0">
         // leads to a method that returns a pointer, rather than a const ref (which would be a null ref then, when not set...)
-        const BMS__ProcessedInfoType* proc = jobType1.processed();
+        const BMS__ProcessedInfoType *proc = jobType1.processed();
         QCOMPARE(proc, static_cast<BMS__ProcessedInfoType *>(0));
 
         // check that we can pass a derived class where a base class is expected
@@ -200,7 +218,7 @@ private Q_SLOTS:
     void testTransformJob() // SOAP-80
     {
         TestServerThread<TransformMediaBindingServer> serverThread;
-        TransformMediaBindingServer* server = serverThread.startThread();
+        TransformMediaBindingServer *server = serverThread.startThread();
 
         TransformMediaService::TransformMediaBinding service;
         service.setEndPoint(server->endPoint());
@@ -216,24 +234,24 @@ private Q_SLOTS:
 
     void testJobStatusRequest() // SOAP-80
     {
-      TestServerThread<TransformMediaStatusBindingServer> serverThread;
-      TransformMediaStatusBindingServer* server = serverThread.startThread();
+        TestServerThread<TransformMediaStatusBindingServer> serverThread;
+        TransformMediaStatusBindingServer *server = serverThread.startThread();
 
-      TransformMediaService::TransformMediaStatusBinding service;
-      service.setEndPoint(server->endPoint());
+        TransformMediaService::TransformMediaStatusBinding service;
+        service.setEndPoint(server->endPoint());
 
-      BMS__ManageJobRequestType requestType;
-      // mandatory ID
-      BMS__UID uid; uid.setValue(1);
-      requestType.setJobID(uid);
-      BMS__ExtensionAttributes ext;
-      // mandatory JobCommand
-      BMS__JobCommandType jt;
-      jt.setType(BMS__JobCommandType::Restart);
-      requestType.setJobCommand(jt);
+        BMS__ManageJobRequestType requestType;
+        // mandatory ID
+        BMS__UID uid; uid.setValue(1);
+        requestType.setJobID(uid);
+        BMS__ExtensionAttributes ext;
+        // mandatory JobCommand
+        BMS__JobCommandType jt;
+        jt.setType(BMS__JobCommandType::Restart);
+        requestType.setJobCommand(jt);
 
-      BMS__ManageJobResponseType myResp = service.manageJob( requestType );
-      QCOMPARE(myResp.job().status().type(), BMS__JobStatusType::Running);
+        BMS__ManageJobResponseType myResp = service.manageJob(requestType);
+        QCOMPARE(myResp.job().status().type(), BMS__JobStatusType::Running);
     }
 };
 

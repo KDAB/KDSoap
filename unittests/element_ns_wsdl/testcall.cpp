@@ -31,11 +31,12 @@ TestCall::TestCall()
 {
 }
 
-static QByteArray updateObjsResponse() {
+static QByteArray updateObjsResponse()
+{
     return QByteArray(xmlEnvBegin11()) + "><soap:Body>"
-            "<updateObjResponseElement xmlns=\"http://test.example.com/types/\">"
-            "</updateObjResponseElement>"
-            "</soap:Body>" + xmlEnvEnd();
+           "<updateObjResponseElement xmlns=\"http://test.example.com/types/\">"
+           "</updateObjResponseElement>"
+           "</soap:Body>" + xmlEnvEnd();
 }
 
 void TestCall::test()
@@ -57,16 +58,16 @@ void TestCall::test()
     this->test_client.updateObjs(obj_el);
 
     const QByteArray expectedData = QByteArray(xmlEnvBegin11()) + "><soap:Body>"
-    "<n1:updateObjElement xmlns:n1=\"http://test.example.com/types/\">"
-     "<n1:arrayOfObj>"
-       "<n1:Id>1</n1:Id>"
-       "<n1:Field1>test1</n1:Field1>"
-     "</n1:arrayOfObj>"
-     "<n1:credential>"
-       "<n1:Id>id</n1:Id>"
-       "<n1:PassWord>password</n1:PassWord>"
-     "</n1:credential>"
-    "</n1:updateObjElement></soap:Body></soap:Envelope>";
+                                    "<n1:updateObjElement xmlns:n1=\"http://test.example.com/types/\">"
+                                    "<n1:arrayOfObj>"
+                                    "<n1:Id>1</n1:Id>"
+                                    "<n1:Field1>test1</n1:Field1>"
+                                    "</n1:arrayOfObj>"
+                                    "<n1:credential>"
+                                    "<n1:Id>id</n1:Id>"
+                                    "<n1:PassWord>password</n1:PassWord>"
+                                    "</n1:credential>"
+                                    "</n1:updateObjElement></soap:Body></soap:Envelope>";
 
     QVERIFY(xmlBufferCompare(server.receivedData(), expectedData));
 }

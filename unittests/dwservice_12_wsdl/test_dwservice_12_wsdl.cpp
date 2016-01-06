@@ -56,9 +56,9 @@ private Q_SLOTS:
             QByteArray(xmlEnvBegin12()) +
             "><soap:Body>"
             "<n1:Login xmlns:n1=\"http://tempuri.org/\">"
-                "<n1:userName>Foo</n1:userName>"
-                // minoccurs=0, so we don't need this: "<n1:password xsi:nil=\"true\"></n1:password>"
-                "<n1:organization>KDAB</n1:organization>"
+            "<n1:userName>Foo</n1:userName>"
+            // minoccurs=0, so we don't need this: "<n1:password xsi:nil=\"true\"></n1:password>"
+            "<n1:organization>KDAB</n1:organization>"
             "</n1:Login>"
             "</soap:Body>" + xmlEnvEnd()
             + '\n'; // added by QXmlStreamWriter::writeEndDocument
@@ -97,10 +97,10 @@ private:
     static QByteArray loginResponse()
     {
         return QByteArray(xmlEnvBegin12()) + " xmlns:dw=\"http://schemas.novell.com/2005/01/GroupWise/groupwise.wsdl\"><soap:Body>"
-              "<dw:LoginResponse>"
-                "<dw:LoginResult><dw:SessionID>65a65c1f-2613-47d0-89ec-1c7b1fe34777</dw:SessionID></dw:LoginResult>"
+               "<dw:LoginResponse>"
+               "<dw:LoginResult><dw:SessionID>65a65c1f-2613-47d0-89ec-1c7b1fe34777</dw:SessionID></dw:LoginResult>"
                "</dw:LoginResponse>"
-              "</soap:Body>" + xmlEnvEnd();
+               "</soap:Body>" + xmlEnvEnd();
     }
 
 };

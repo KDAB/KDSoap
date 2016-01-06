@@ -38,14 +38,20 @@ class IHCServerObject : public ResourceInteractionServiceServiceServerBase
 {
 public:
 
-    virtual TNS__WSResourceValueEnvelope getRuntimeValue( int ) {
-        return TNS__WSResourceValueEnvelope(); }
-    virtual TNS__ArrayOfWSResourceValueEnvelope getRuntimeValues( const XSD__ArrayOfint& ) {
-        return TNS__ArrayOfWSResourceValueEnvelope(); }
-    virtual TNS__ArrayOfWSResourceValueEnvelope getInitialValues( const XSD__ArrayOfint& ) {
+    virtual TNS__WSResourceValueEnvelope getRuntimeValue(int)
+    {
+        return TNS__WSResourceValueEnvelope();
+    }
+    virtual TNS__ArrayOfWSResourceValueEnvelope getRuntimeValues(const XSD__ArrayOfint &)
+    {
         return TNS__ArrayOfWSResourceValueEnvelope();
     }
-    virtual bool setResourceValue( const TNS__WSResourceValueEnvelope& parameter4 ) {
+    virtual TNS__ArrayOfWSResourceValueEnvelope getInitialValues(const XSD__ArrayOfint &)
+    {
+        return TNS__ArrayOfWSResourceValueEnvelope();
+    }
+    virtual bool setResourceValue(const TNS__WSResourceValueEnvelope &parameter4)
+    {
         Q_ASSERT(parameter4.typeString() == "enum");
 #ifdef __clang__
 #pragma clang diagnostic push
@@ -80,49 +86,64 @@ public:
         return (parameter4.typeString() == "enum" && inputValue->enumValueID() == 42);
         */
     }
-    virtual bool setResourceValues( const TNS__ArrayOfWSResourceValueEnvelope& ) {
+    virtual bool setResourceValues(const TNS__ArrayOfWSResourceValueEnvelope &)
+    {
         return false;
     }
-    virtual TNS__ArrayOfWSResourceValueEnvelope enableRuntimeValueNotifications( const XSD__ArrayOfint& ) {
+    virtual TNS__ArrayOfWSResourceValueEnvelope enableRuntimeValueNotifications(const XSD__ArrayOfint &)
+    {
         return TNS__ArrayOfWSResourceValueEnvelope();
     }
-    virtual bool disableRuntimeValueNotifactions( const XSD__ArrayOfint& ) {
+    virtual bool disableRuntimeValueNotifactions(const XSD__ArrayOfint &)
+    {
         return false;
     }
-    virtual TNS__ArrayOfWSResourceValueEnvelope enableInitialValueNotifications( const XSD__ArrayOfint& ) {
+    virtual TNS__ArrayOfWSResourceValueEnvelope enableInitialValueNotifications(const XSD__ArrayOfint &)
+    {
         return TNS__ArrayOfWSResourceValueEnvelope();
     }
-    virtual bool disableInitialValueNotifactions( const XSD__ArrayOfint& ) {
+    virtual bool disableInitialValueNotifactions(const XSD__ArrayOfint &)
+    {
         return false;
     }
-    virtual TNS__ArrayOfWSResourceValueEnvelope waitForResourceValueChanges( int ) {
+    virtual TNS__ArrayOfWSResourceValueEnvelope waitForResourceValueChanges(int)
+    {
         return TNS__ArrayOfWSResourceValueEnvelope();
     }
-    virtual TNS__ArrayOfWSSceneResourceIdAndLocationURLs getSceneGroupResourceIdAndPositions( int ) {
+    virtual TNS__ArrayOfWSSceneResourceIdAndLocationURLs getSceneGroupResourceIdAndPositions(int)
+    {
         return TNS__ArrayOfWSSceneResourceIdAndLocationURLs();
     }
-    virtual TNS__WSSceneResourceIdAndLocationURLs getScenePositionsForSceneValueResource( int ) {
+    virtual TNS__WSSceneResourceIdAndLocationURLs getScenePositionsForSceneValueResource(int)
+    {
         return TNS__WSSceneResourceIdAndLocationURLs();
     }
-    virtual WPNS1__ArrayOfWSEnumDefinition getEnumeratorDefinitions() {
+    virtual WPNS1__ArrayOfWSEnumDefinition getEnumeratorDefinitions()
+    {
         return WPNS1__ArrayOfWSEnumDefinition();
     }
-    virtual QString getResourceType( int ) {
+    virtual QString getResourceType(int)
+    {
         return QString();
     }
-    virtual TNS__ArrayOfWSDatalineResource getExtraDatalineInputs() {
+    virtual TNS__ArrayOfWSDatalineResource getExtraDatalineInputs()
+    {
         return TNS__ArrayOfWSDatalineResource();
     }
-    virtual TNS__ArrayOfWSDatalineResource getExtraDatalineOutputs() {
+    virtual TNS__ArrayOfWSDatalineResource getExtraDatalineOutputs()
+    {
         return TNS__ArrayOfWSDatalineResource();
     }
-    virtual TNS__ArrayOfWSDatalineResource getAllDatalineInputs() {
+    virtual TNS__ArrayOfWSDatalineResource getAllDatalineInputs()
+    {
         return TNS__ArrayOfWSDatalineResource();
     }
-    virtual TNS__ArrayOfWSDatalineResource getAllDatalineOutputs() {
+    virtual TNS__ArrayOfWSDatalineResource getAllDatalineOutputs()
+    {
         return TNS__ArrayOfWSDatalineResource();
     }
-    virtual TNS__WSResourceValueEnvelope getInitialValue( int ) {
+    virtual TNS__WSResourceValueEnvelope getInitialValue(int)
+    {
         return TNS__WSResourceValueEnvelope();
     }
 };
@@ -131,12 +152,20 @@ class IHCServer : public KDSoapServer
 {
     Q_OBJECT
 public:
-    IHCServer() : KDSoapServer(), m_lastServerObject(0) {
+    IHCServer() : KDSoapServer(), m_lastServerObject(0)
+    {
     }
-    virtual QObject* createServerObject() { m_lastServerObject = new IHCServerObject; return m_lastServerObject; }
-    IHCServerObject* lastServerObject() { return m_lastServerObject; }
+    virtual QObject *createServerObject()
+    {
+        m_lastServerObject = new IHCServerObject;
+        return m_lastServerObject;
+    }
+    IHCServerObject *lastServerObject()
+    {
+        return m_lastServerObject;
+    }
 private:
-    IHCServerObject* m_lastServerObject;
+    IHCServerObject *m_lastServerObject;
 };
 
 class IHCResourceInteractionTest : public QObject
@@ -173,7 +202,7 @@ private Q_SLOTS:
     void testInheritanceServerSide()
     {
         TestServerThread<IHCServer> serverThread;
-        IHCServer* server = serverThread.startThread();
+        IHCServer *server = serverThread.startThread();
 
         ResourceInteractionServiceService service;
         service.setEndPoint(server->endPoint());
@@ -224,26 +253,26 @@ private:
     static QByteArray expectedSetResourceValueRequest()
     {
         return QByteArray(xmlEnvBegin11()) + ">"
-                "<soap:Body>"
-                "<n1:setResourceValue1 xmlns:n1=\"utcs\">"
-                  "<n1:resourceID>54</n1:resourceID>"
-                  "<n1:isValueRuntime>false</n1:isValueRuntime>"
-                  "<n1:typeString>enum</n1:typeString>"
-                  "<n1:value>"
-                    "<n2:definitionTypeID xmlns:n2=\"utcs.values\">2</n2:definitionTypeID>"
-                    "<n3:enumValueID xmlns:n3=\"utcs.values\">42</n3:enumValueID>"
-                    "<n4:enumName xmlns:n4=\"utcs.values\">enum1</n4:enumName>"
-                  "</n1:value>"
-                "</n1:setResourceValue1>"
-                "</soap:Body>" + xmlEnvEnd()
-                + '\n'; // added by QXmlStreamWriter::writeEndDocument
+               "<soap:Body>"
+               "<n1:setResourceValue1 xmlns:n1=\"utcs\">"
+               "<n1:resourceID>54</n1:resourceID>"
+               "<n1:isValueRuntime>false</n1:isValueRuntime>"
+               "<n1:typeString>enum</n1:typeString>"
+               "<n1:value>"
+               "<n2:definitionTypeID xmlns:n2=\"utcs.values\">2</n2:definitionTypeID>"
+               "<n3:enumValueID xmlns:n3=\"utcs.values\">42</n3:enumValueID>"
+               "<n4:enumName xmlns:n4=\"utcs.values\">enum1</n4:enumName>"
+               "</n1:value>"
+               "</n1:setResourceValue1>"
+               "</soap:Body>" + xmlEnvEnd()
+               + '\n'; // added by QXmlStreamWriter::writeEndDocument
     }
 
     static QByteArray fakeResponse()
     {
         return QByteArray(xmlEnvBegin11()) + ">"
-                "<soap:Body>"
-                " </soap:Body>" + xmlEnvEnd();
+               "<soap:Body>"
+               " </soap:Body>" + xmlEnvEnd();
     }
 };
 

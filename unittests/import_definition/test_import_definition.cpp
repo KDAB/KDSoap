@@ -60,24 +60,25 @@ private Q_SLOTS:
         // Check what we sent
         QByteArray expectedRequestXml =
             QByteArray(xmlEnvBegin11()) + ">"
-                "<soap:Body>"
-                  "<n1:MyAuthenticate xmlns:n1=\"http://something.mydomain.com/types\">"
-                     "<request>"
-                       "<name>MyUser</name>"
-                       "<phrase>Adsadsda asdasd asda</phrase>"
-                     "</request>"
-                  "</n1:MyAuthenticate>"
-                "</soap:Body>" + xmlEnvEnd()
+            "<soap:Body>"
+            "<n1:MyAuthenticate xmlns:n1=\"http://something.mydomain.com/types\">"
+            "<request>"
+            "<name>MyUser</name>"
+            "<phrase>Adsadsda asdasd asda</phrase>"
+            "</request>"
+            "</n1:MyAuthenticate>"
+            "</soap:Body>" + xmlEnvEnd()
             + '\n'; // added by QXmlStreamWriter::writeEndDocument
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
     }
 
 private:
-    static QByteArray queryResponse() {
+    static QByteArray queryResponse()
+    {
         return QByteArray(xmlEnvBegin11()) + " xmlns:sf=\"urn:sobject.partner.soap.sforce.com\"><soap:Body>"
-              "<queryResponse>" // TODO
-              "</queryResponse>"
-              "</soap:Body>" + xmlEnvEnd();
+               "<queryResponse>" // TODO
+               "</queryResponse>"
+               "</soap:Body>" + xmlEnvEnd();
     }
 };
 

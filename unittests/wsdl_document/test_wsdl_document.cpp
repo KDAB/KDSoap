@@ -45,12 +45,12 @@ Q_DECLARE_METATYPE(KDSoapSslHandler *)
 
 using namespace KDSoapUnitTestHelpers;
 
-static const char* xmlBegin = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-static const char* xmlNamespaces = "xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\""
-    " xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\""
-    " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\""
-    " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"";
-static const char* myWsdlNamespace = "http://www.kdab.com/xml/MyWsdl/";
+static const char *xmlBegin = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+static const char *xmlNamespaces = "xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\""
+                                   " xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\""
+                                   " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\""
+                                   " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"";
+static const char *myWsdlNamespace = "http://www.kdab.com/xml/MyWsdl/";
 
 class WsdlDocumentTest : public QObject
 {
@@ -91,35 +91,36 @@ private:
     static QByteArray requestXmlTemplate()
     {
         return QByteArray(xmlEnvBegin11()) +
-                " xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">%1"
-                "<soap:Body>"
-                "<n1:addEmployee>"
-                "<n1:employeeType n1:type=\"Developer\">"
-                "<n1:otherRoles>TeamLeader</n1:otherRoles>"
-                "<n1:team>Minitel</n1:team>"
-                "</n1:employeeType>"
-                "<n1:employeeName>David Faure</n1:employeeName>"
-                "<n1:employeeCountry>France</n1:employeeCountry>"
-                "<n1:employeeAchievements>"
-                "<n1:item>"
-                "<n1:type>50726f6a656374</n1:type>" // Project
-                "<n1:label>Management</n1:label>"
-                "<n1:time>2011-06-27</n1:time>"
-                "</n1:item>"
-                "<n1:item>"
-                "<n1:type>446576656c6f706d656e74</n1:type>" // Development
-                "<n1:label>C++</n1:label>"
-                "<n1:time>today</n1:time>"
-                "</n1:item>"
-                "</n1:employeeAchievements>"
-                "<n1:employeeId>"
-                "<n1:id>5</n1:id>"
-                "</n1:employeeId>"
-                "</n1:addEmployee>"
-                "</soap:Body>" + xmlEnvEnd()
-                + '\n'; // added by QXmlStreamWriter::writeEndDocument
+               " xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">%1"
+               "<soap:Body>"
+               "<n1:addEmployee>"
+               "<n1:employeeType n1:type=\"Developer\">"
+               "<n1:otherRoles>TeamLeader</n1:otherRoles>"
+               "<n1:team>Minitel</n1:team>"
+               "</n1:employeeType>"
+               "<n1:employeeName>David Faure</n1:employeeName>"
+               "<n1:employeeCountry>France</n1:employeeCountry>"
+               "<n1:employeeAchievements>"
+               "<n1:item>"
+               "<n1:type>50726f6a656374</n1:type>" // Project
+               "<n1:label>Management</n1:label>"
+               "<n1:time>2011-06-27</n1:time>"
+               "</n1:item>"
+               "<n1:item>"
+               "<n1:type>446576656c6f706d656e74</n1:type>" // Development
+               "<n1:label>C++</n1:label>"
+               "<n1:time>today</n1:time>"
+               "</n1:item>"
+               "</n1:employeeAchievements>"
+               "<n1:employeeId>"
+               "<n1:id>5</n1:id>"
+               "</n1:employeeId>"
+               "</n1:addEmployee>"
+               "</soap:Body>" + xmlEnvEnd()
+               + '\n'; // added by QXmlStreamWriter::writeEndDocument
     }
-    static QByteArray expectedHeader() {
+    static QByteArray expectedHeader()
+    {
         return QByteArray("<soap:Header>"
                           "<n1:LoginElement>"
                           "<n1:user>foo</n1:user>"
@@ -130,14 +131,15 @@ private:
                           "</n1:SessionElement>"
                           "</soap:Header>");
     }
-    static QByteArray addEmployeeResponse() {
+    static QByteArray addEmployeeResponse()
+    {
         return QByteArray(xmlEnvBegin11()) + ">"
-        "<soap:Header xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl/\">"
-        "<kdab:SessionElement sessionId=\"returned_id\"/>"
-        "</soap:Header>"
-        "<soap:Body>"
-        "<kdab:addEmployeeResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl/\">466F6F</kdab:addEmployeeResponse>" // "Foo"
-        " </soap:Body>" + xmlEnvEnd();
+               "<soap:Header xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl/\">"
+               "<kdab:SessionElement sessionId=\"returned_id\"/>"
+               "</soap:Header>"
+               "<soap:Body>"
+               "<kdab:addEmployeeResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl/\">466F6F</kdab:addEmployeeResponse>" // "Foo"
+               " </soap:Body>" + xmlEnvEnd();
     }
 
 private Q_SLOTS:
@@ -177,8 +179,9 @@ private Q_SLOTS:
         KDAB__AddEmployee addEmployeeParams = addEmployeeParameters();
 
         QByteArray ret = service.addEmployee(addEmployeeParams);
-        if (!service.lastError().isEmpty())
+        if (!service.lastError().isEmpty()) {
             qDebug() << service.lastError();
+        }
         QVERIFY(service.lastError().isEmpty());
         QCOMPARE(ret, QByteArray("Foo"));
         // Check what we sent
@@ -223,8 +226,9 @@ private Q_SLOTS:
 #ifdef QT_NO_OPENSSL
         return;
 #else
-        if (!QSslSocket::supportsSsl())
-            return; // see above
+        if (!QSslSocket::supportsSsl()) {
+            return;    // see above
+        }
         // Use SSL on the server, without adding the CA certificate (done by setSslConfiguration())
         HttpServerThread server(addEmployeeResponse(), HttpServerThread::Ssl);
         MyWsdlDocument service;
@@ -260,8 +264,9 @@ private Q_SLOTS:
 #ifdef QT_NO_OPENSSL
         return;
 #else
-        if (!QSslSocket::supportsSsl())
-            return; // see above
+        if (!QSslSocket::supportsSsl()) {
+            return;    // see above
+        }
         m_errors.clear();
         // Use SSL on the server, without adding the CA certificate (done by setSslConfiguration())
         HttpServerThread server(addEmployeeResponse(), HttpServerThread::Ssl);
@@ -288,8 +293,9 @@ private Q_SLOTS:
 #ifdef QT_NO_OPENSSL
         return;
 #else
-        if (!QSslSocket::supportsSsl())
-            return; // see above
+        if (!QSslSocket::supportsSsl()) {
+            return;    // see above
+        }
         m_errors.clear();
         // Use SSL on the server, without adding the CA certificate (done by setSslConfiguration())
         HttpServerThread server(addEmployeeResponse(), HttpServerThread::Ssl);
@@ -298,8 +304,8 @@ private Q_SLOTS:
         QList<QSslCertificate> certs = QSslCertificate::fromPath(QString::fromLatin1(":/certs/test-127.0.0.1-cert.pem"));
         QCOMPARE(certs.count(), 1);
         service.clientInterface()->ignoreSslErrors(QList<QSslError>() << QSslError(QSslError::UnableToGetLocalIssuerCertificate, certs.at(0))
-                                                   << QSslError(QSslError::CertificateUntrusted, certs.at(0))
-                                                   << QSslError(QSslError::UnableToVerifyFirstCertificate, certs.at(0)));
+                << QSslError(QSslError::CertificateUntrusted, certs.at(0))
+                << QSslError(QSslError::UnableToVerifyFirstCertificate, certs.at(0)));
         AddEmployeeJob *job = new AddEmployeeJob(&service);
         job->setParameters(addEmployeeParameters());
         connect(job, SIGNAL(finished(KDSoapJob*)), this, SLOT(slotAddEmployeeJobFinished(KDSoapJob*)));
@@ -320,8 +326,9 @@ private Q_SLOTS:
 #ifdef QT_NO_OPENSSL
         return;
 #else
-        if (!QSslSocket::supportsSsl())
-            return; // see above
+        if (!QSslSocket::supportsSsl()) {
+            return;    // see above
+        }
         m_errors.clear();
         // Use SSL on the server, without adding the CA certificate (done by setSslConfiguration())
         HttpServerThread server(addEmployeeResponse(), HttpServerThread::Ssl);
@@ -376,8 +383,9 @@ private Q_SLOTS:
         service.setSessionHeader(session);
 
         QByteArray ret = service.addEmployee(addEmployeeParameters());
-        if (!service.lastError().isEmpty())
+        if (!service.lastError().isEmpty()) {
             qDebug() << service.lastError();
+        }
 
         QVERIFY(service.lastError().isEmpty());
         QCOMPARE(ret, QByteArray("Foo"));
@@ -399,8 +407,9 @@ private Q_SLOTS:
         KDAB__EmployeeNameParams params;
         params.setEmployeeName(KDAB__EmployeeName(QString::fromUtf8("David Ä Faure")));
         const KDAB__EmployeeCountryResponse employeeCountryResponse = service.getEmployeeCountry(params);
-        if (!service.lastError().isEmpty())
+        if (!service.lastError().isEmpty()) {
             qDebug() << service.lastError();
+        }
         QVERIFY(service.lastError().isEmpty());
         QCOMPARE(employeeCountryResponse.employeeCountry().value(), QString::fromLatin1("France"));
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedCountryRequest()));
@@ -424,8 +433,8 @@ private Q_SLOTS:
         // Prepare response
         QByteArray responseData = QByteArray(xmlEnvBegin11()) + "><soap:Body>"
                                   "<kdab:getEmployeeTypeResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl/\" kdab:type=\"Developer\">"
-                                    "<kdab:team>Minitel</kdab:team>"
-                                    "<kdab:otherRoles>TeamLeader</kdab:otherRoles>"
+                                  "<kdab:team>Minitel</kdab:team>"
+                                  "<kdab:otherRoles>TeamLeader</kdab:otherRoles>"
                                   "</kdab:getEmployeeTypeResponse>"
                                   "</soap:Body>" + xmlEnvEnd();
         HttpServerThread server(responseData, HttpServerThread::Public);
@@ -435,8 +444,9 @@ private Q_SLOTS:
         KDAB__EmployeeNameParams params;
         params.setEmployeeName(KDAB__EmployeeName(QLatin1String("Joe")));
         const KDAB__EmployeeType employeeType = service.getEmployeeType(params);
-        if (!service.lastError().isEmpty())
+        if (!service.lastError().isEmpty()) {
             qDebug() << service.lastError();
+        }
         QVERIFY(service.lastError().isEmpty());
         QCOMPARE(employeeType.team().first().value().value(), QLatin1String("Minitel"));
         QCOMPARE(employeeType.otherRoles().count(), 1);
@@ -449,8 +459,8 @@ private Q_SLOTS:
         // Prepare response
         QByteArray responseData = QByteArray(xmlEnvBegin11()) + "><soap:Body>"
                                   "<kdab:getEmployeeTypeResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl/\" kdab:type=\"Developer\">"
-                                    "<kdab:team>Minitel</kdab:team>"
-                                    "<kdab:otherRoles>TeamLeader</kdab:otherRoles>"
+                                  "<kdab:team>Minitel</kdab:team>"
+                                  "<kdab:otherRoles>TeamLeader</kdab:otherRoles>"
                                   "</kdab:getEmployeeTypeResponse>"
                                   "</soap:Body>" + xmlEnvEnd();
         HttpServerThread server(responseData, HttpServerThread::Public);
@@ -520,8 +530,8 @@ private Q_SLOTS:
                                   "<kdab:return xsd:type=\"xsd:string\">Forty-two</kdab:return>"
                                   "<kdab:return xsd:type=\"kdab:TeamName\">Minitel</kdab:return>"
                                   "<kdab:return xsd:type=\"kdab:EmployeeAchievement\">"
-                                    "<kdab:type>Project</kdab:type>"
-                                    "<kdab:label>Management</kdab:label>"
+                                  "<kdab:type>Project</kdab:type>"
+                                  "<kdab:label>Management</kdab:label>"
                                   "</kdab:return>"
                                   "</kdab:AnyTypeResponse>"
                                   "</soap:Body>" + xmlEnvEnd();
@@ -563,15 +573,15 @@ private Q_SLOTS:
         QCOMPARE(schema.name(), QString::fromLatin1("schema"));
         QCOMPARE(schema.namespaceUri(), KDSoapNamespaceManager::xmlSchema2001());
         const QByteArray expectedResponseSchemaXml =
-                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-                "<xsd:schema"
-                " xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\""
-                " xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\""
-                " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\""
-                " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
-                ">"
-                "<xsd:test>response</xsd:test>"
-                "</xsd:schema>";
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+            "<xsd:schema"
+            " xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\""
+            " xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\""
+            " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\""
+            " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+            ">"
+            "<xsd:test>response</xsd:test>"
+            "</xsd:schema>";
         QVERIFY(xmlBufferCompare(schema.toXml(), expectedResponseSchemaXml));
     }
 
@@ -580,8 +590,8 @@ private Q_SLOTS:
     {
         // Prepare response
         QByteArray responseData = QByteArray(xmlEnvBegin11()) + "><soap:Body>"
-                "<kdab:Telegram xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl/\">466f6f</kdab:Telegram>"
-                "</soap:Body>" + xmlEnvEnd();
+                                  "<kdab:Telegram xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl/\">466f6f</kdab:Telegram>"
+                                  "</soap:Body>" + xmlEnvEnd();
         HttpServerThread server(responseData, HttpServerThread::Public);
         MyWsdlDocument service;
         service.setEndPoint(server.endPoint());
@@ -595,7 +605,7 @@ private Q_SLOTS:
             "<soap:Body>"
             "<n1:Telegram xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">48656c6c6f</n1:Telegram>"
             "</soap:Body>" + xmlEnvEnd();
-            QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
+        QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
     }
 
     // Client+server tests
@@ -615,13 +625,13 @@ private Q_SLOTS:
     void testServerDifferentPathFault();
 
 public slots:
-    void slotFinished(KDSoapPendingCallWatcher* watcher)
+    void slotFinished(KDSoapPendingCallWatcher *watcher)
     {
         m_returnMessage = watcher->returnMessage();
         m_eventLoop.quit();
     }
 
-    void slotDelayedAddEmployeeDone(const QByteArray& data)
+    void slotDelayedAddEmployeeDone(const QByteArray &data)
     {
         //qDebug() << Q_FUNC_INFO << data;
         m_delayedData << data;
@@ -629,18 +639,18 @@ public slots:
             m_eventLoop.quit();
         }
     }
-    void slotAddEmployeeJobFinished(KDSoapJob*)
+    void slotAddEmployeeJobFinished(KDSoapJob *)
     {
         // TODO: we should emit a signal with the proper job type?
         //AddEmployeeJob* addJob = static_cast<AddEmployeeJob *>(job);
         m_eventLoop.quit();
     }
-    void slotListEmployeesJobFinished(KDSoapJob*)
+    void slotListEmployeesJobFinished(KDSoapJob *)
     {
         m_eventLoop.quit();
     }
 
-    void slotSslHandlerErrors(KDSoapSslHandler* handler, const QList<QSslError>& errors)
+    void slotSslHandlerErrors(KDSoapSslHandler *handler, const QList<QSslError> &errors)
     {
 #ifdef QT_NO_OPENSSL
         Q_UNUSED(handler);
@@ -652,9 +662,9 @@ public slots:
         QList<QSslCertificate> certs = QSslCertificate::fromPath(QString::fromLatin1(":/certs/test-127.0.0.1-cert.pem"));
         QCOMPARE(certs.count(), 1);
         handler->ignoreSslErrors(QList<QSslError>()
-            << QSslError(QSslError::UnableToGetLocalIssuerCertificate, certs.at(0))
-            << QSslError(QSslError::CertificateUntrusted, certs.at(0))
-            << QSslError(QSslError::UnableToVerifyFirstCertificate, certs.at(0)));
+                                 << QSslError(QSslError::UnableToGetLocalIssuerCertificate, certs.at(0))
+                                 << QSslError(QSslError::CertificateUntrusted, certs.at(0))
+                                 << QSslError(QSslError::UnableToVerifyFirstCertificate, certs.at(0)));
 #else
         handler->ignoreSslErrors();
 #endif
@@ -672,24 +682,27 @@ private:
     int m_expectedDelayedCalls;
     QList<QByteArray> m_delayedData;
 
-    static QByteArray emptyResponse() {
+    static QByteArray emptyResponse()
+    {
         return QByteArray(xmlEnvBegin11()) + "><soap:Body/>" + xmlEnvEnd();
     }
-    static QByteArray countryResponse() {
+    static QByteArray countryResponse()
+    {
         return QByteArray(xmlEnvBegin11()) + "><soap:Body>"
-                "<kdab:getEmployeeCountryResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl/\"><kdab:employeeCountry>France</kdab:employeeCountry></kdab:getEmployeeCountryResponse>"
-                " </soap:Body>" + xmlEnvEnd();
+               "<kdab:getEmployeeCountryResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl/\"><kdab:employeeCountry>France</kdab:employeeCountry></kdab:getEmployeeCountryResponse>"
+               " </soap:Body>" + xmlEnvEnd();
     }
-    static QByteArray expectedCountryRequest() {
+    static QByteArray expectedCountryRequest()
+    {
         return QByteArray(xmlEnvBegin11()) +
-                "><soap:Body>"
-                "<n1:EmployeeNameParams xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
-                "<n1:employeeName>"
-                "David Ä Faure"
-                "</n1:employeeName>"
-                "</n1:EmployeeNameParams>"
-                "</soap:Body>" + xmlEnvEnd()
-                + '\n'; // added by QXmlStreamWriter::writeEndDocument
+               "><soap:Body>"
+               "<n1:EmployeeNameParams xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
+               "<n1:employeeName>"
+               "David Ä Faure"
+               "</n1:employeeName>"
+               "</n1:EmployeeNameParams>"
+               "</soap:Body>" + xmlEnvEnd()
+               + '\n'; // added by QXmlStreamWriter::writeEndDocument
     }
 };
 
@@ -700,16 +713,20 @@ class MyJob : public QObject
 {
     Q_OBJECT
 public:
-    MyJob(const KDSoapDelayedResponseHandle& handle)
+    MyJob(const KDSoapDelayedResponseHandle &handle)
         : m_handle(handle)
     {
         QTimer::singleShot(200, this, SLOT(slotDone()));
     }
-    KDSoapDelayedResponseHandle responseHandle() const { return m_handle; }
+    KDSoapDelayedResponseHandle responseHandle() const
+    {
+        return m_handle;
+    }
 Q_SIGNALS:
-    void done(MyJob*);
+    void done(MyJob *);
 private Q_SLOTS:
-    void slotDone() {
+    void slotDone()
+    {
         emit done(this);
     }
 private:
@@ -720,31 +737,35 @@ class NameServiceServerObject : public NamesServiceServiceServerBase /* generate
 {
     Q_OBJECT
 public:
-    virtual TNS__GetCountriesResponse getCountries( const TNS__GetCountries& ) {
+    virtual TNS__GetCountriesResponse getCountries(const TNS__GetCountries &)
+    {
         TNS__GetCountriesResponse response;
         response.setCountry(QStringList() << QLatin1String("Great Britain") << QLatin1String("Ireland"));
         return response;
     }
-      TNS__GetNamesInCountryResponse getNamesInCountry( const TNS__GetNamesInCountry& parameters ) {
-          TNS__GetNamesInCountryResponse response;
-          if (parameters.country() == QLatin1String("Ireland")) {
-              response.setName(QStringList() << QLatin1String("Name1") << QLatin1String("Name2"));
-          }
-          return response;
-      }
+    TNS__GetNamesInCountryResponse getNamesInCountry(const TNS__GetNamesInCountry &parameters)
+    {
+        TNS__GetNamesInCountryResponse response;
+        if (parameters.country() == QLatin1String("Ireland")) {
+            response.setName(QStringList() << QLatin1String("Name1") << QLatin1String("Name2"));
+        }
+        return response;
+    }
 
-      void getNameInfoResponse( const KDSoapDelayedResponseHandle& responseHandle, const TNS__GetNameInfoResponse& ret );
-      virtual TNS__GetNameInfoResponse getNameInfo( const TNS__GetNameInfo& parameters ) {
-          setFault(QLatin1String("Server.Implementation"), QLatin1String("Not implemented"), QLatin1String(metaObject()->className()), parameters.name());
-          return TNS__GetNameInfoResponse();
-      }
+    void getNameInfoResponse(const KDSoapDelayedResponseHandle &responseHandle, const TNS__GetNameInfoResponse &ret);
+    virtual TNS__GetNameInfoResponse getNameInfo(const TNS__GetNameInfo &parameters)
+    {
+        setFault(QLatin1String("Server.Implementation"), QLatin1String("Not implemented"), QLatin1String(metaObject()->className()), parameters.name());
+        return TNS__GetNameInfoResponse();
+    }
 };
 
 class DocServerObject : public MyWsdlDocumentServerBase /* generated from mywsdl_document.wsdl */
 {
     Q_OBJECT
 public:
-    QByteArray addEmployee( const KDAB__AddEmployee& parameters ) {
+    QByteArray addEmployee(const KDAB__AddEmployee &parameters)
+    {
         //qDebug() << "addEmployee called";
         const QString name = KDAB__LimitedString(parameters.employeeName()).value();
         if (name.isEmpty()) {
@@ -765,31 +786,36 @@ public:
         return "added " + name.toLatin1();
     }
 
-    QByteArray delayedAddEmployee( const KDAB__AddEmployee& parameters ) {
+    QByteArray delayedAddEmployee(const KDAB__AddEmployee &parameters)
+    {
         //qDebug() << "delayedAddEmployee called";
         Q_UNUSED(parameters);
         m_lastMethodCalled = QLatin1String("delayedAddEmployee");
 
         KDSoapDelayedResponseHandle handle = prepareDelayedResponse();
-        MyJob* job = new MyJob(handle);
+        MyJob *job = new MyJob(handle);
         connect(job, SIGNAL(done(MyJob*)), this, SLOT(slotDelayedResponse(MyJob*)));
         return "THIS VALUE IS IGNORED";
     }
 
-    void listEmployees() {
+    void listEmployees()
+    {
         m_lastMethodCalled = QLatin1String("listEmployees");
     }
-    void heartbeat() {
+    void heartbeat()
+    {
         m_lastMethodCalled = QLatin1String("heartbeat");
     }
 
-    KDAB__AnyTypeResponse testAnyType( const KDAB__AnyType& parameters ) {
+    KDAB__AnyTypeResponse testAnyType(const KDAB__AnyType &parameters)
+    {
         KDAB__AnyTypeResponse response;
         response.setReturn(QList<KDSoapValue>() << parameters.input());
         return response;
     }
 
-    KDAB__EmployeeCountryResponse getEmployeeCountry( const KDAB__EmployeeNameParams& employeeNameParams ) {
+    KDAB__EmployeeCountryResponse getEmployeeCountry(const KDAB__EmployeeNameParams &employeeNameParams)
+    {
         KDAB__EmployeeCountryResponse resp;
         if (QString(employeeNameParams.employeeName().value()) == QLatin1String("David")) {
             resp.setEmployeeCountry(QString::fromLatin1("France"));
@@ -799,7 +825,8 @@ public:
         return resp;
     }
 
-    KDAB__EmployeeType getEmployeeType( const KDAB__EmployeeNameParams& employeeNameParams ) {
+    KDAB__EmployeeType getEmployeeType(const KDAB__EmployeeNameParams &employeeNameParams)
+    {
         KDAB__EmployeeType type;
         if (QString(employeeNameParams.employeeName().value()) == QLatin1String("David")) {
             type.setTeam(QList<KDAB__TeamName>() << KDAB__TeamName(QString::fromLatin1("Minitel")));
@@ -807,11 +834,13 @@ public:
         return type;
     }
 
-    KDAB__TelegramType sendRawTelegram( const KDAB__TelegramType& telegram ) {
+    KDAB__TelegramType sendRawTelegram(const KDAB__TelegramType &telegram)
+    {
         return QByteArray("Got ") + telegram;
     }
 
-    KDAB__TelegramResponse sendTelegram( const KDAB__TelegramRequest& parameters ) {
+    KDAB__TelegramResponse sendTelegram(const KDAB__TelegramRequest &parameters)
+    {
         KDAB__TelegramResponse resp;
         resp.setTelegramHex(QByteArray("Received ") + parameters.telegramHex());
         resp.setTelegramBase64(QByteArray("Received ") + parameters.telegramBase64());
@@ -819,14 +848,16 @@ public:
     }
 
     // Normally you don't reimplement this. This is just to store req and resp for the unittest.
-    void processRequest( const KDSoapMessage &request, KDSoapMessage &response, const QByteArray& soapAction ) {
+    void processRequest(const KDSoapMessage &request, KDSoapMessage &response, const QByteArray &soapAction)
+    {
         m_request = request;
         MyWsdlDocumentServerBase::processRequest(request, response, soapAction);
         m_response = response;
         //qDebug() << "processRequest: done. " << this << "Response name=" << response.name();
     }
 
-    void processRequestWithPath(const KDSoapMessage &request, KDSoapMessage &response, const QByteArray &soapAction, const QString &path) {
+    void processRequestWithPath(const KDSoapMessage &request, KDSoapMessage &response, const QByteArray &soapAction, const QString &path)
+    {
         Q_UNUSED(request);
         Q_UNUSED(response);
         if (path == QLatin1String("/xml/NamesService?foo")) {
@@ -844,7 +875,7 @@ public:
     QString m_lastMethodCalled;
 
 private Q_SLOTS:
-    void slotDelayedResponse(MyJob* job)
+    void slotDelayedResponse(MyJob *job)
     {
         delayedAddEmployeeResponse(job->responseHandle(), QByteArray("delayed reply works"));
         job->deleteLater();
@@ -859,31 +890,39 @@ class DocServer : public KDSoapServer
 {
     Q_OBJECT
 public:
-    DocServer() : KDSoapServer(), m_lastServerObject(0) {
+    DocServer() : KDSoapServer(), m_lastServerObject(0)
+    {
         setPath(QLatin1String("/xml"));
     }
-    virtual QObject* createServerObject() { m_lastServerObject = new DocServerObject; return m_lastServerObject; }
+    virtual QObject *createServerObject()
+    {
+        m_lastServerObject = new DocServerObject;
+        return m_lastServerObject;
+    }
 
-    DocServerObject* lastServerObject() { return m_lastServerObject; }
+    DocServerObject *lastServerObject()
+    {
+        return m_lastServerObject;
+    }
 
 private:
-    DocServerObject* m_lastServerObject; // only for unittest purposes
+    DocServerObject *m_lastServerObject; // only for unittest purposes
 };
 
 void WsdlDocumentTest::testServerAddEmployee()
 {
     TestServerThread<DocServer> serverThread;
-    DocServer* server = serverThread.startThread();
+    DocServer *server = serverThread.startThread();
 
     MyWsdlDocument service;
     service.setEndPoint(server->endPoint());
     QByteArray ret = service.addEmployee(addEmployeeParameters());
     QVERIFY(server->lastServerObject());
     const QByteArray expectedResponseXml =
-                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-                "<n1:addEmployeeMyResponse xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
-                "6164646564204461766964204661757265"
-                "</n1:addEmployeeMyResponse>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+        "<n1:addEmployeeMyResponse xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
+        "6164646564204461766964204661757265"
+        "</n1:addEmployeeMyResponse>\n";
     //qDebug() << server->lastServerObject() << "response name" << server->lastServerObject()->m_response.name();
     // Note: that's the response as sent by the generated code.
     // But then the server socket code will call messageToXml, possibly with a method name,
@@ -899,11 +938,11 @@ void WsdlDocumentTest::testServerAddEmployee()
 void WsdlDocumentTest::testServerAddEmployeeJob()
 {
     TestServerThread<DocServer> serverThread;
-    DocServer* server = serverThread.startThread();
+    DocServer *server = serverThread.startThread();
 
     MyWsdlDocument service;
     service.setEndPoint(server->endPoint());
-    AddEmployeeJob* job = new AddEmployeeJob(&service);
+    AddEmployeeJob *job = new AddEmployeeJob(&service);
     job->setParameters(addEmployeeParameters());
     job->start();
     connect(job, SIGNAL(finished(KDSoapJob*)), this, SLOT(slotAddEmployeeJobFinished(KDSoapJob*)));
@@ -916,16 +955,17 @@ void WsdlDocumentTest::testServerAddEmployeeJob()
     QCOMPARE(outputSession.sessionId(), QLatin1String("returned_id"));
 }
 
-static QByteArray rawCountryMessage() {
+static QByteArray rawCountryMessage()
+{
     return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><soap:Body><n1:getEmployeeCountry xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
-    "<employeeName>David</employeeName>"
-    "</n1:getEmployeeCountry></soap:Body></soap:Envelope>";
+           "<employeeName>David</employeeName>"
+           "</n1:getEmployeeCountry></soap:Body></soap:Envelope>";
 }
 
 void WsdlDocumentTest::testServerPostByHand()
 {
     TestServerThread<DocServer> serverThread;
-    DocServer* server = serverThread.startThread();
+    DocServer *server = serverThread.startThread();
 
     QUrl url(server->endPoint());
     QNetworkRequest request(url);
@@ -933,17 +973,17 @@ void WsdlDocumentTest::testServerPostByHand()
     QString soapHeader = QString::fromLatin1("text/xml;charset=utf-8");
     request.setHeader(QNetworkRequest::ContentTypeHeader, soapHeader.toUtf8());
     QNetworkAccessManager accessManager;
-    QNetworkReply* reply = accessManager.post(request, rawCountryMessage());
+    QNetworkReply *reply = accessManager.post(request, rawCountryMessage());
     QEventLoop loop;
     connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
     loop.exec();
     const QByteArray response = reply->readAll();
     const QByteArray expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
-    "<soap:Body>"
-    "<n1:EmployeeCountryResponse xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
-      "<n1:employeeCountry>France</n1:employeeCountry>"
-    "</n1:EmployeeCountryResponse>"
-    "</soap:Body></soap:Envelope>\n";
+                                "<soap:Body>"
+                                "<n1:EmployeeCountryResponse xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
+                                "<n1:employeeCountry>France</n1:employeeCountry>"
+                                "</n1:EmployeeCountryResponse>"
+                                "</soap:Body></soap:Envelope>\n";
     QVERIFY(xmlBufferCompare(response, expected));
     QCOMPARE(response.constData(), expected.constData());
 }
@@ -951,7 +991,7 @@ void WsdlDocumentTest::testServerPostByHand()
 void WsdlDocumentTest::testServerEmptyArgs()
 {
     TestServerThread<DocServer> serverThread;
-    DocServer* server = serverThread.startThread();
+    DocServer *server = serverThread.startThread();
 
     MyWsdlDocument service;
     service.setEndPoint(server->endPoint());
@@ -965,7 +1005,7 @@ void WsdlDocumentTest::testServerEmptyArgs()
 void WsdlDocumentTest::testServerFault() // test the error signals emitted on error, in async calls
 {
     TestServerThread<DocServer> serverThread;
-    DocServer* server = serverThread.startThread();
+    DocServer *server = serverThread.startThread();
 
     MyWsdlDocument service;
     service.setEndPoint(server->endPoint());
@@ -986,7 +1026,7 @@ void WsdlDocumentTest::testServerFault() // test the error signals emitted on er
 void WsdlDocumentTest::testSendTelegram()
 {
     TestServerThread<DocServer> serverThread;
-    DocServer* server = serverThread.startThread();
+    DocServer *server = serverThread.startThread();
 
     MyWsdlDocument service;
     service.setEndPoint(server->endPoint());
@@ -1002,18 +1042,18 @@ void WsdlDocumentTest::testSendTelegram()
     // Check the request as received by the server.
     const QByteArray expectedRequestXml =
         QByteArray(xmlBegin) + "<TelegramRequest " + xmlNamespaces + ">"
-           "<TelegramHex>48656c6c6f</TelegramHex>"
-           "<TelegramBase64>SGVsbG8=</TelegramBase64>"
-          "</TelegramRequest>";
+        "<TelegramHex>48656c6c6f</TelegramHex>"
+        "<TelegramBase64>SGVsbG8=</TelegramBase64>"
+        "</TelegramRequest>";
     const QString msgNS = QString::fromLatin1("http://www.kdab.com/xml/MyWsdl/");
     // Note that "qualified" is false in m_request, since it was created dynamically by the server -> no namespaces
     QVERIFY(xmlBufferCompare(server->lastServerObject()->m_request.toXml(KDSoapValue::LiteralUse, msgNS), expectedRequestXml));
 
     const QByteArray expectedResponseXml =
         QByteArray(xmlBegin) + "<n1:TelegramResponse " + xmlNamespaces + " xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
-            "<n1:TelegramHex>52656365697665642048656c6c6f</n1:TelegramHex>"
-            "<n1:TelegramBase64>UmVjZWl2ZWQgSGVsbG8=</n1:TelegramBase64>"
-          "</n1:TelegramResponse>";
+        "<n1:TelegramHex>52656365697665642048656c6c6f</n1:TelegramHex>"
+        "<n1:TelegramBase64>UmVjZWl2ZWQgSGVsbG8=</n1:TelegramBase64>"
+        "</n1:TelegramResponse>";
     // m_response, however, has qualified = true (set by the generated code).
     QVERIFY(xmlBufferCompare(server->lastServerObject()->m_response.toXml(KDSoapValue::LiteralUse, msgNS), expectedResponseXml));
 }
@@ -1021,7 +1061,7 @@ void WsdlDocumentTest::testSendTelegram()
 void WsdlDocumentTest::testSendHugeTelegram()
 {
     TestServerThread<DocServer> serverThread;
-    DocServer* server = serverThread.startThread();
+    DocServer *server = serverThread.startThread();
 
     MyWsdlDocument service;
     service.setEndPoint(server->endPoint());
@@ -1029,10 +1069,11 @@ void WsdlDocumentTest::testSendHugeTelegram()
     QByteArray hugePayload;
     hugePayload.resize(50000);
     char ch = 'A';
-    for (int i = 0 ; i < hugePayload.size() ; ++i) {
+    for (int i = 0; i < hugePayload.size(); ++i) {
         hugePayload[i] = ++ch;
-        if (ch == 'z' + 1)
+        if (ch == 'z' + 1) {
             ch = 'A';
+        }
     }
 
     KDAB__TelegramRequest req;
@@ -1047,7 +1088,7 @@ void WsdlDocumentTest::testSendHugeTelegram()
 void WsdlDocumentTest::testServerDelayedCall()
 {
     TestServerThread<DocServer> serverThread;
-    DocServer* server = serverThread.startThread();
+    DocServer *server = serverThread.startThread();
     MyWsdlDocument service;
     service.setEndPoint(server->endPoint());
 
@@ -1059,7 +1100,7 @@ void WsdlDocumentTest::testServerDelayedCall()
 void WsdlDocumentTest::testSyncCallAfterServerDelayedCall()
 {
     TestServerThread<DocServer> serverThread;
-    DocServer* server = serverThread.startThread();
+    DocServer *server = serverThread.startThread();
     MyWsdlDocument service;
     service.setEndPoint(server->endPoint());
 
@@ -1075,7 +1116,7 @@ void WsdlDocumentTest::testSyncCallAfterServerDelayedCall()
 void WsdlDocumentTest::testServerTwoDelayedCalls()
 {
     TestServerThread<DocServer> serverThread;
-    DocServer* server = serverThread.startThread();
+    DocServer *server = serverThread.startThread();
     MyWsdlDocument service;
     service.setEndPoint(server->endPoint());
 
@@ -1104,12 +1145,12 @@ void WsdlDocumentTest::testServerTwoDelayedCalls()
 void WsdlDocumentTest::testDisconnectDuringDelayedCall()
 {
     TestServerThread<DocServer> serverThread;
-    DocServer* server = serverThread.startThread();
+    DocServer *server = serverThread.startThread();
     {
         MyWsdlDocument service;
         service.setEndPoint(server->endPoint());
 
-        DelayedAddEmployeeJob* job = new DelayedAddEmployeeJob(&service);
+        DelayedAddEmployeeJob *job = new DelayedAddEmployeeJob(&service);
         job->setParameters(addEmployeeParameters());
         job->start();
         // Wait until the server method is called
@@ -1119,7 +1160,7 @@ void WsdlDocumentTest::testDisconnectDuringDelayedCall()
 #else
         do {
             QTest::qWait(100);
-        } while ( !server->lastServerObject() || server->lastServerObject()->m_lastMethodCalled != QLatin1String("delayedAddEmployee") );
+        } while (!server->lastServerObject() || server->lastServerObject()->m_lastMethodCalled != QLatin1String("delayedAddEmployee"));
 #endif
 
         /* connect(job, SIGNAL(finished(KDSoapJob*)), this, SLOT(slotAddEmployeeJobFinished(KDSoapJob*)));
@@ -1137,7 +1178,7 @@ void WsdlDocumentTest::testDisconnectDuringDelayedCall()
 #else
     do {
         QTest::qWait(100);
-    } while ( server->lastServerObject()->m_lastMethodCalled != QLatin1String("slotDelayedResponse") );
+    } while (server->lastServerObject()->m_lastMethodCalled != QLatin1String("slotDelayedResponse"));
 #endif
 }
 
@@ -1145,7 +1186,7 @@ void WsdlDocumentTest::testDisconnectDuringDelayedCall()
 void WsdlDocumentTest::testServerDifferentPath()
 {
     TestServerThread<DocServer> serverThread;
-    DocServer* server = serverThread.startThread();
+    DocServer *server = serverThread.startThread();
 
     NamesServiceService serv;
     QString endPoint = server->endPoint(); // ends with "/xml"
@@ -1161,7 +1202,7 @@ void WsdlDocumentTest::testServerDifferentPath()
 void WsdlDocumentTest::testServerDifferentPathFault()
 {
     TestServerThread<DocServer> serverThread;
-    DocServer* server = serverThread.startThread();
+    DocServer *server = serverThread.startThread();
 
     NamesServiceService serv;
     QString endPoint = server->endPoint(); // ends with "/xml"

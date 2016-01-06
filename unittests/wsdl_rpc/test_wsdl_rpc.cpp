@@ -92,20 +92,21 @@ private Q_SLOTS:
                                           QString::fromLatin1("France"),
                                           achievements,
                                           jeansSize);
-        if (!service.lastError().isEmpty())
+        if (!service.lastError().isEmpty()) {
             qDebug() << service.lastError();
+        }
         QVERIFY(service.lastError().isEmpty());
         QCOMPARE(ret, QString::fromLatin1("Foo"));
         const QByteArray expectedHeader =
-                "<soap:Header>"
-                "<n1:LoginHeader xsi:type=\"n1:LoginElement\">"
-                "<user xsi:type=\"xsd:string\">foo</user>"
-                "<pass xsi:type=\"xsd:string\">bar</pass>"
-                "</n1:LoginHeader>"
-                "<n1:SessionHeader xsi:type=\"n1:SessionElement\">"
-                "<sessionId xsi:type=\"xsd:string\">id</sessionId>"
-                "</n1:SessionHeader>"
-                "</soap:Header>";
+            "<soap:Header>"
+            "<n1:LoginHeader xsi:type=\"n1:LoginElement\">"
+            "<user xsi:type=\"xsd:string\">foo</user>"
+            "<pass xsi:type=\"xsd:string\">bar</pass>"
+            "</n1:LoginHeader>"
+            "<n1:SessionHeader xsi:type=\"n1:SessionElement\">"
+            "<sessionId xsi:type=\"xsd:string\">id</sessionId>"
+            "</n1:SessionHeader>"
+            "</soap:Header>";
         // Check what we sent
         QByteArray requestXmlTemplate =
             QByteArray(xmlEnvBegin11()) +
@@ -162,10 +163,10 @@ private Q_SLOTS:
         QByteArray responseData = QByteArray(xmlEnvBegin11()) + "><soap:Body>"
                                   "<n1:getEmployeeResponse xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
                                   "<n1:employee>"
-                                   + serializedEmployee() +
+                                  + serializedEmployee() +
                                   "</n1:employee>"
                                   "</n1:getEmployeeResponse>"
-        " </soap:Body>" + xmlEnvEnd();
+                                  " </soap:Body>" + xmlEnvEnd();
         HttpServerThread server(responseData, HttpServerThread::Public);
         MyWsdl service;
         service.setEndPoint(server.endPoint());
@@ -190,8 +191,9 @@ private Q_SLOTS:
         service.setEndPoint(server.endPoint());
 
         KDAB__LimitedString employeeCountry = service.getEmployeeCountry(KDAB__EmployeeName(QString::fromUtf8("David Ä Faure")));
-        if (!service.lastError().isEmpty())
+        if (!service.lastError().isEmpty()) {
             qDebug() << service.lastError();
+        }
         QVERIFY(service.lastError().isEmpty());
         QCOMPARE(employeeCountry.value(), QString::fromLatin1("France"));
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedCountryRequest()));
@@ -204,10 +206,10 @@ private Q_SLOTS:
         // Prepare response
         QByteArray responseData = QByteArray(xmlEnvBegin11()) + "><soap:Body>"
                                   "<kdab:getEmployeeTypeResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl/\">"
-                                    "<kdab:employeeType kdab:type=\"Developer\">"
-                                      "<kdab:otherRoles>TeamLeader</kdab:otherRoles>"
-                                      "<kdab:team>Minitel</kdab:team>"
-                                    "</kdab:employeeType>"
+                                  "<kdab:employeeType kdab:type=\"Developer\">"
+                                  "<kdab:otherRoles>TeamLeader</kdab:otherRoles>"
+                                  "<kdab:team>Minitel</kdab:team>"
+                                  "</kdab:employeeType>"
                                   "</kdab:getEmployeeTypeResponse>"
                                   "</soap:Body>" + xmlEnvEnd();
         HttpServerThread server(responseData, HttpServerThread::Public);
@@ -215,8 +217,9 @@ private Q_SLOTS:
         service.setEndPoint(server.endPoint());
 
         KDAB__EmployeeType employeeType = service.getEmployeeType(KDAB__EmployeeName(QLatin1String("Joe")));
-        if (!service.lastError().isEmpty())
+        if (!service.lastError().isEmpty()) {
             qDebug() << service.lastError();
+        }
         QVERIFY(service.lastError().isEmpty());
         QCOMPARE(employeeType.team().first().value().value(), QLatin1String("Minitel"));
         QCOMPARE(employeeType.otherRoles().count(), 1);
@@ -229,7 +232,7 @@ private Q_SLOTS:
         // Prepare response
         QByteArray responseData = QByteArray(xmlEnvBegin11()) + "><soap:Body>"
                                   "<kdab:sendTelegramResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl/\">"
-                                    "<kdab:telegram>466f6f</kdab:telegram>"
+                                  "<kdab:telegram>466f6f</kdab:telegram>"
                                   "</kdab:sendTelegramResponse>"
                                   "</soap:Body>" + xmlEnvEnd();
         HttpServerThread server(responseData, HttpServerThread::Public);
@@ -244,57 +247,61 @@ private Q_SLOTS:
             QByteArray(xmlEnvBegin11()) + ">"
             "<soap:Body>"
             "<n1:sendTelegram xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
-               "<telegram>48656c6c6f</telegram>"
+            "<telegram>48656c6c6f</telegram>"
             "</n1:sendTelegram>"
             "</soap:Body>" + xmlEnvEnd();
-            QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
+        QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
     }
 
 private:
-    static QByteArray serializedEmployeeType() {
+    static QByteArray serializedEmployeeType()
+    {
         return QByteArray(
-                "<employeeType xsi:type=\"n1:EmployeeType\" type=\"Developer\">"
-                "<otherRoles xsi:type=\"n1:EmployeeTypeEnum\">TeamLeader</otherRoles>"
-                "<otherRolesAsList xsi:type=\"n1:EmployeeTypeEnumList\">TeamLeader Developer</otherRolesAsList>"
-                "<lottoNumbers xsi:type=\"n1:LottoNumbers\">7 21 30 42</lottoNumbers>"
-                "<team xsi:type=\"n1:TeamName\">Minitel</team>"
-                "<anonList xsi:type=\"n1:AnonListType\">Detailed DetailedMerged</anonList>"
-                "</employeeType>");
+                   "<employeeType xsi:type=\"n1:EmployeeType\" type=\"Developer\">"
+                   "<otherRoles xsi:type=\"n1:EmployeeTypeEnum\">TeamLeader</otherRoles>"
+                   "<otherRolesAsList xsi:type=\"n1:EmployeeTypeEnumList\">TeamLeader Developer</otherRolesAsList>"
+                   "<lottoNumbers xsi:type=\"n1:LottoNumbers\">7 21 30 42</lottoNumbers>"
+                   "<team xsi:type=\"n1:TeamName\">Minitel</team>"
+                   "<anonList xsi:type=\"n1:AnonListType\">Detailed DetailedMerged</anonList>"
+                   "</employeeType>");
     }
-    static QByteArray serializedEmployee() {
+    static QByteArray serializedEmployee()
+    {
         return serializedEmployeeType() +
-                "<employeeName xsi:type=\"n1:EmployeeName\">David Faure</employeeName>"
-                "<employeeCountry xsi:type=\"n1:LimitedString\">France</employeeCountry>"
-                "<employeeAchievements xsi:type=\"n1:EmployeeAchievements\" soap-enc:arrayType=\"n1:EmployeeAchievement[2]\">"
-                "<item xsi:type=\"n1:EmployeeAchievement\">"
-                "<type xsi:type=\"xsd:string\">Project</type>"
-                "<label xsi:type=\"xsd:string\">Management</label>"
-                "</item>"
-                "<item xsi:type=\"n1:EmployeeAchievement\">"
-                "<type xsi:type=\"xsd:string\">Development</type>"
-                "<label xsi:type=\"xsd:string\">C++</label>"
-                "</item>"
-                "</employeeAchievements>"
-                "<employeeJeansSize xsi:type=\"n1:JeansSize\">24</employeeJeansSize>";
+               "<employeeName xsi:type=\"n1:EmployeeName\">David Faure</employeeName>"
+               "<employeeCountry xsi:type=\"n1:LimitedString\">France</employeeCountry>"
+               "<employeeAchievements xsi:type=\"n1:EmployeeAchievements\" soap-enc:arrayType=\"n1:EmployeeAchievement[2]\">"
+               "<item xsi:type=\"n1:EmployeeAchievement\">"
+               "<type xsi:type=\"xsd:string\">Project</type>"
+               "<label xsi:type=\"xsd:string\">Management</label>"
+               "</item>"
+               "<item xsi:type=\"n1:EmployeeAchievement\">"
+               "<type xsi:type=\"xsd:string\">Development</type>"
+               "<label xsi:type=\"xsd:string\">C++</label>"
+               "</item>"
+               "</employeeAchievements>"
+               "<employeeJeansSize xsi:type=\"n1:JeansSize\">24</employeeJeansSize>";
     }
 
-    static QByteArray countryResponse() {
+    static QByteArray countryResponse()
+    {
         return QByteArray(xmlEnvBegin11()) + "><soap:Body>"
-                "<kdab:getEmployeeCountryResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl/\">"
-                "<kdab:employeeCountry>France</kdab:employeeCountry>"
-                "</kdab:getEmployeeCountryResponse>"
-                " </soap:Body>" + xmlEnvEnd();
+               "<kdab:getEmployeeCountryResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl/\">"
+               "<kdab:employeeCountry>France</kdab:employeeCountry>"
+               "</kdab:getEmployeeCountryResponse>"
+               " </soap:Body>" + xmlEnvEnd();
     }
-    static QByteArray expectedCountryRequest() {
+    static QByteArray expectedCountryRequest()
+    {
         return QByteArray(xmlEnvBegin11()) +
-                "><soap:Body>"
-                "<n1:getEmployeeCountry xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
-                "<employeeName>"
-                "David Ä Faure"
-                "</employeeName>"
-                "</n1:getEmployeeCountry>"
-                "</soap:Body>" + xmlEnvEnd()
-                + '\n'; // added by QXmlStreamWriter::writeEndDocument
+               "><soap:Body>"
+               "<n1:getEmployeeCountry xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
+               "<employeeName>"
+               "David Ä Faure"
+               "</employeeName>"
+               "</n1:getEmployeeCountry>"
+               "</soap:Body>" + xmlEnvEnd()
+               + '\n'; // added by QXmlStreamWriter::writeEndDocument
     }
 };
 

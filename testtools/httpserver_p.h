@@ -43,12 +43,12 @@ class BlockingHttpServer;
 
 namespace KDSoapUnitTestHelpers
 {
-    bool xmlBufferCompare(const QByteArray& source, const QByteArray& dest);
-    void httpGet(const QUrl& url);
-    bool setSslConfiguration();
-    const char* xmlEnvBegin11();
-    const char* xmlEnvBegin12();
-    const char* xmlEnvEnd();
+bool xmlBufferCompare(const QByteArray &source, const QByteArray &dest);
+void httpGet(const QUrl &url);
+bool setSslConfiguration();
+const char *xmlEnvBegin11();
+const char *xmlEnvBegin12();
+const char *xmlEnvEnd();
 }
 
 class HttpServerThread : public QThread
@@ -60,11 +60,11 @@ public:
         Ssl = 1,       // HTTPS
         BasicAuth = 2,  // Requires authentication
         Error404 = 4   // Return "404 not found"
-        // bitfield, next item is 8
+                   // bitfield, next item is 8
     };
     Q_DECLARE_FLAGS(Features, Feature)
 
-    HttpServerThread(const QByteArray& dataToSend, Features features)
+    HttpServerThread(const QByteArray &dataToSend, Features features)
         : m_dataToSend(dataToSend), m_features(features)
     {
         start();
@@ -78,35 +78,42 @@ public:
     }
 
     void disableSsl();
-    inline int serverPort() const {
+    inline int serverPort() const
+    {
         QMutexLocker lock(&m_mutex);
         return m_port;
     }
-    QString endPoint() const {
+    QString endPoint() const
+    {
         return QString::fromLatin1("%1://127.0.0.1:%2/path")
-                           .arg(QString::fromLatin1((m_features & Ssl)?"https":"http"))
-                           .arg(serverPort());
+               .arg(QString::fromLatin1((m_features & Ssl) ? "https" : "http"))
+               .arg(serverPort());
     }
 
-    inline void finish() {
+    inline void finish()
+    {
         KDSoapUnitTestHelpers::httpGet(endPoint() + QLatin1String("/terminateThread"));
     }
 
-    QByteArray receivedData() const {
+    QByteArray receivedData() const
+    {
         QMutexLocker lock(&m_mutex);
         return m_receivedData;
     }
-    QByteArray receivedHeaders() const {
+    QByteArray receivedHeaders() const
+    {
         QMutexLocker lock(&m_mutex);
         return m_receivedHeaders;
     }
-    void resetReceivedBuffers() {
+    void resetReceivedBuffers()
+    {
         QMutexLocker lock(&m_mutex);
         m_receivedData.clear();
         m_receivedHeaders.clear();
     }
 
-    QByteArray header(const QByteArray& value) const {
+    QByteArray header(const QByteArray &value) const
+    {
         QMutexLocker lock(&m_mutex);
         return m_headers.value(value);
     }
@@ -117,7 +124,7 @@ protected:
 private:
 
     enum Method { None, Basic, Plain, Login, Ntlm, CramMd5, DigestMd5 };
-    static void parseAuthLine(const QString& str, Method* method, QString* headerVal)
+    static void parseAuthLine(const QString &str, Method *method, QString *headerVal)
     {
         *method = None;
         // The code below (from QAuthenticatorPrivate::parseHttpResponse)
@@ -137,14 +144,15 @@ private:
         }
     }
 
-    QByteArray makeHttpResponse(const QByteArray& responseData)
+    QByteArray makeHttpResponse(const QByteArray &responseData)
     {
         QByteArray httpResponse;
         // ### missing here: error code 500 if response is a fault
-        if (m_features & Error404)
+        if (m_features & Error404) {
             httpResponse += "HTTP/1.1 404 Not Found\r\n";
-        else
+        } else {
             httpResponse += "HTTP/1.1 200 OK\r\n";
+        }
         httpResponse += "Content-Type: text/xml\r\nContent-Length: ";
         httpResponse += QByteArray::number(responseData.size());
         httpResponse += "\r\n";
@@ -170,7 +178,7 @@ private:
     int m_port;
 
     Features m_features;
-    BlockingHttpServer* m_server;
+    BlockingHttpServer *m_server;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(HttpServerThread::Features)
@@ -185,14 +193,16 @@ class TestServerThread
 {
 public:
     TestServerThread() : m_thread(0), m_pServer(0) {}
-    ~TestServerThread() {
+    ~TestServerThread()
+    {
         if (m_thread) {
             m_thread->quit();
             m_thread->wait();
             delete m_thread;
         }
     }
-    ServerObjectType* startThread() {
+    ServerObjectType *startThread()
+    {
         m_pServer = new ServerObjectType;
         if (!m_pServer->listen()) {
             delete m_pServer;
@@ -209,8 +219,8 @@ public:
     }
 
 private:
-    QThread* m_thread; // we could also use m_pServer->thread()
-    ServerObjectType* m_pServer;
+    QThread *m_thread; // we could also use m_pServer->thread()
+    ServerObjectType *m_pServer;
 };
 
 #endif /* HTTPSERVER_P_H */

@@ -129,8 +129,9 @@ private slots:
         TNS__OrteStartWith args;
         args.setPrefix(QLatin1String("Berl"));
         TNS__OrteStartWithResponse resp = lookup.orteStartWith(args);
-        if (!lookup.lastError().isEmpty())
+        if (!lookup.lastError().isEmpty()) {
             qWarning("%s", qPrintable(lookup.lastError()));
+        }
         QCOMPARE(resp.orteStartWithResult(), QString::fromLatin1("Berlin;Berlstedt"));
     }
 
@@ -138,11 +139,12 @@ private slots:
     // http://www.holidaywebservice.com/Holidays/HolidayService.asmx?op=GetHolidaysForYear
 
 protected slots:
-    void slotGetValentinesDayDone(const TNS__GetValentinesDayResponse& response)
+    void slotGetValentinesDayDone(const TNS__GetValentinesDayResponse &response)
     {
         m_resultsReceived << response.getValentinesDayResult().toString(Qt::ISODate);
-        if (m_resultsReceived.count() == 3)
+        if (m_resultsReceived.count() == 3) {
             m_eventLoop.quit();
+        }
     }
 
 private:

@@ -42,39 +42,40 @@ private Q_SLOTS:
 
     void testRequest()
     {
-      HttpServerThread server(queryResponse(), HttpServerThread::Public);
-      Hello_Service service(this);
-      service.setEndPoint(server.endPoint());
+        HttpServerThread server(queryResponse(), HttpServerThread::Public);
+        Hello_Service service(this);
+        service.setEndPoint(server.endPoint());
 
-      TNS__SayHello params;
-      params.setMsgElement("Hello !");
-      params.setSecondpartElement(42);
+        TNS__SayHello params;
+        params.setMsgElement("Hello !");
+        params.setSecondpartElement(42);
 
-      service.sayHello(params);
-      QCOMPARE(QString(server.receivedData()), QString(expectedRequestXML()));
+        service.sayHello(params);
+        QCOMPARE(QString(server.receivedData()), QString(expectedRequestXML()));
     }
 
 private:
-    static QByteArray queryResponse() {
+    static QByteArray queryResponse()
+    {
         return QByteArray(xmlEnvBegin11()) + " xmlns:sf=\"urn:sobject.partner.soap.sforce.com\"><soap:Body>"
-              "<queryResponse>" // TODO
-              "</queryResponse>"
-              "</soap:Body>" + xmlEnvEnd();
+               "<queryResponse>" // TODO
+               "</queryResponse>"
+               "</soap:Body>" + xmlEnvEnd();
     }
 
-    QByteArray expectedRequestXML() {
+    QByteArray expectedRequestXML()
+    {
         return QByteArray(xmlEnvBegin11()) + "><soap:Body>"
-                "<n1:SayHello xmlns:n1=\"http://www.ecerami.com/wsdl/HelloService.wsdl\" xsi:type=\"n1:SayHello\">"
-                    "<msgElement xsi:type=\"xsd:string\">Hello !</msgElement>"
-                    "<secondpartElement xsi:type=\"xsd:int\">42</secondpartElement>"
-                "</n1:SayHello>"
-                "</soap:Body>" + xmlEnvEnd()
-            + '\n'; // added by QXmlStreamWriter::writeEndDocument
+               "<n1:SayHello xmlns:n1=\"http://www.ecerami.com/wsdl/HelloService.wsdl\" xsi:type=\"n1:SayHello\">"
+               "<msgElement xsi:type=\"xsd:string\">Hello !</msgElement>"
+               "<secondpartElement xsi:type=\"xsd:int\">42</secondpartElement>"
+               "</n1:SayHello>"
+               "</soap:Body>" + xmlEnvEnd()
+               + '\n'; // added by QXmlStreamWriter::writeEndDocument
     }
 };
 
 QTEST_MAIN(MultipleInputParamTest)
 
 #include "test_multiple_input_param.moc"
-
 

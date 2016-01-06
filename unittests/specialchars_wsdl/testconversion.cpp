@@ -42,11 +42,10 @@ TestConversion::TestConversion()
 
 }
 
-
 void TestConversion::test()
 {
-  KDAB__Employee_Name name;
-  Q_UNUSED(name);
+    KDAB__Employee_Name name;
+    Q_UNUSED(name);
 }
 
 QTEST_MAIN(TestConversion)

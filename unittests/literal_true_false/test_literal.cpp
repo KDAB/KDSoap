@@ -45,13 +45,12 @@ private Q_SLOTS:
 
     void testRequest()
     {
-     // server down, just a compile check
-      __BooleanResponseType resp;
+        // server down, just a compile check
+        __BooleanResponseType resp;
     }
 };
 
 QTEST_MAIN(LiteralTest)
 
 #include "test_literal.moc"
-
 

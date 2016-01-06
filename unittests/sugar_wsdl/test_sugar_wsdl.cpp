@@ -62,12 +62,12 @@ private Q_SLOTS:
             QByteArray(xmlEnvBegin11()) +
             "><soap:Body>"
             "<n1:login xmlns:n1=\"http://www.sugarcrm.com/sugarcrm\">"
-              "<user_auth xsi:type=\"n1:user_auth\">"
-                "<user_name xsi:type=\"xsd:string\">user å</user_name>"
-                "<password xsi:type=\"xsd:string\">pass</password>"
-                "<version xsi:type=\"xsd:string\"/>" // not set by user, but mandatory (no minOccurs==0)
-              "</user_auth>"
-              "<application_name xsi:type=\"xsd:string\">application</application_name>"
+            "<user_auth xsi:type=\"n1:user_auth\">"
+            "<user_name xsi:type=\"xsd:string\">user å</user_name>"
+            "<password xsi:type=\"xsd:string\">pass</password>"
+            "<version xsi:type=\"xsd:string\"/>" // not set by user, but mandatory (no minOccurs==0)
+            "</user_auth>"
+            "<application_name xsi:type=\"xsd:string\">application</application_name>"
             "</n1:login>"
             "</soap:Body>" + xmlEnvEnd()
             + '\n'; // added by QXmlStreamWriter::writeEndDocument
@@ -134,41 +134,42 @@ private Q_SLOTS:
         QCOMPARE(itemsJoined, QString::fromLatin1("Home,Dashboard,Calendar,Activities"));
     }
 
-    static QByteArray arrayResponse() {
+    static QByteArray arrayResponse()
+    {
         return QByteArray(xmlEnvBegin11()) + " xmlns:tns=\"http://www.sugarcrm.com/sugarcrm\"><soap:Body>"
-                "<ns1:get_available_modulesResponse xmlns:ns1=\"http://www.sugarcrm.com/sugarcrm\">"
-                "<return xsi:type=\"tns:module_list\">"
-                "<modules xsi:type=\"soap-enc:Array\" soap-enc:arrayType=\"xsd:string[4]\">"
-                "<item xsi:type=\"xsd:string\">Home</item>"
-                "<item xsi:type=\"xsd:string\">Dashboard</item>"
-                "<item xsi:type=\"xsd:string\">Calendar</item>"
-                "<item xsi:type=\"xsd:string\">Activities</item>"
-                "</modules>"
-                "<error xsi:type=\"tns:error_value\">"
-                "<number xsi:type=\"xsd:string\">0</number>"
-                "<name xsi:type=\"xsd:string\">No Error</name>"
-                "<description xsi:type=\"xsd:string\">No Error</description>"
-                "</error>"
-                "</return>"
-                "</ns1:get_available_modulesResponse>"
-                "</soap:Body>" + xmlEnvEnd();
+               "<ns1:get_available_modulesResponse xmlns:ns1=\"http://www.sugarcrm.com/sugarcrm\">"
+               "<return xsi:type=\"tns:module_list\">"
+               "<modules xsi:type=\"soap-enc:Array\" soap-enc:arrayType=\"xsd:string[4]\">"
+               "<item xsi:type=\"xsd:string\">Home</item>"
+               "<item xsi:type=\"xsd:string\">Dashboard</item>"
+               "<item xsi:type=\"xsd:string\">Calendar</item>"
+               "<item xsi:type=\"xsd:string\">Activities</item>"
+               "</modules>"
+               "<error xsi:type=\"tns:error_value\">"
+               "<number xsi:type=\"xsd:string\">0</number>"
+               "<name xsi:type=\"xsd:string\">No Error</name>"
+               "<description xsi:type=\"xsd:string\">No Error</description>"
+               "</error>"
+               "</return>"
+               "</ns1:get_available_modulesResponse>"
+               "</soap:Body>" + xmlEnvEnd();
     }
 
-
 private:
-    static QByteArray complexTypeResponse() {
+    static QByteArray complexTypeResponse()
+    {
         return QByteArray(xmlEnvBegin11()) + "><soap:Body xmlns:tns=\"http://www.sugarcrm.com/sugarcrm\">"
-                "<ns1:loginResponse xmlns:ns1=\"http://www.sugarcrm.com/sugarcrm\">"
-                "  <return xsi:type=\"tns:set_entry_result\">"
-                "    <id xsi:type=\"xsd:string\">12345</id>"
-                "    <error xsi:type=\"tns:error_value\">"
-                "       <number xsi:type=\"xsd:string\">0</number>"
-                "       <name xsi:type=\"xsd:string\">No Error</name>"
-                "       <description xsi:type=\"xsd:string\">No Error</description>"
-                "    </error>"
-                "  </return>"
-                "</ns1:loginResponse>"
-                "</soap:Body>" + xmlEnvEnd();
+               "<ns1:loginResponse xmlns:ns1=\"http://www.sugarcrm.com/sugarcrm\">"
+               "  <return xsi:type=\"tns:set_entry_result\">"
+               "    <id xsi:type=\"xsd:string\">12345</id>"
+               "    <error xsi:type=\"tns:error_value\">"
+               "       <number xsi:type=\"xsd:string\">0</number>"
+               "       <name xsi:type=\"xsd:string\">No Error</name>"
+               "       <description xsi:type=\"xsd:string\">No Error</description>"
+               "    </error>"
+               "  </return>"
+               "</ns1:loginResponse>"
+               "</soap:Body>" + xmlEnvEnd();
     }
 };
 

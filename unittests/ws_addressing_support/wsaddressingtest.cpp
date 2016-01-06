@@ -80,11 +80,11 @@ private Q_SLOTS:
 
         // some reference parameters...
 
-            // one with a value
+        // one with a value
         KDSoapValue refParam("myReferenceParameter", "ReferencParameterContent");
         map.addReferenceParameter(refParam);
 
-            // an other one, with children
+        // an other one, with children
         KDSoapValue childOne("myReferenceParameterChildOne", "ChildOneContent");
         KDSoapValue childTwo("myReferenceParameterChildTwo", "ChildTwoContent");
         KDSoapValueList childrenList;
@@ -119,46 +119,48 @@ private Q_SLOTS:
     }
 
 private:
-        static QByteArray expectedSoapMessage() {
-            return QByteArray(xmlEnvBegin11()) + " xmlns:wsa=\"http://www.w3.org/2005/08/addressing\""
-                                               + " xmlns:n1=\"http://www.ecerami.com/wsdl/HelloService.wsdl\">"
-                    "<soap:Header>"
-                        "<wsa:To>http://www.ecerami.com/wsdl/HelloService</wsa:To>"
-                         "<wsa:From>"
-                            "<wsa:Address>http://www.ecerami.com/wsdl/source</wsa:Address>"
-                        "</wsa:From>"
-                        "<wsa:ReplyTo>"
-                            "<wsa:Address>http://www.w3.org/2005/08/addressing/anonymous</wsa:Address>"
-                        "</wsa:ReplyTo>"
-                        "<wsa:FaultTo>"
-                            "<wsa:Address>http://www.ecerami.com/wsdl/fault</wsa:Address>"
-                        "</wsa:FaultTo>"
-                        "<wsa:Action>sayHello</wsa:Action>"
-                        "<wsa:MessageID>uuid:e197db59-0982-4c9c-9702-4234d204f7f4</wsa:MessageID>"
-                        "<wsa:RelatesTo>uuid:http://www.ecerami.com/wsdl/someUniqueString</wsa:RelatesTo>"
-                        "<wsa:RelatesTo RelationshipType=\"CustomTypeReply\">uuid:http://www.ecerami.com/wsdl/someUniqueStringBis</wsa:RelatesTo>"
-                        "<wsa:ReferenceParameters>"
-                            "<wsa:myReferenceParameter>ReferencParameterContent</wsa:myReferenceParameter>"
-                            "<wsa:myReferenceParameterWithChildren>"
-                                "<wsa:myReferenceParameterChildOne>ChildOneContent</wsa:myReferenceParameterChildOne>"
-                                "<wsa:myReferenceParameterChildTwo>ChildTwoContent</wsa:myReferenceParameterChildTwo>"
-                            "</wsa:myReferenceParameterWithChildren>"
-                    "</wsa:ReferenceParameters>"
-                    "<wsa:Metadata>"
-                        "<wsa:myMetadata>MetadataContent</wsa:myMetadata>"
-                        "<wsa:myMetadataBis>"
-                            "<wsa:myMetadataBisChild>MetadataBisChildContent</wsa:myMetadataBisChild>"
-                        "</wsa:myMetadataBis>"
-                    "</wsa:Metadata>"
-                    "</soap:Header>"
-                    "<soap:Body>"
-                      "<n1:sayHello><msg xsi:type=\"xsd:string\">HelloContentMessage</msg></n1:sayHello>"
-                    "</soap:Body>" + xmlEnvEnd();
-        }
+    static QByteArray expectedSoapMessage()
+    {
+        return QByteArray(xmlEnvBegin11()) + " xmlns:wsa=\"http://www.w3.org/2005/08/addressing\""
+               + " xmlns:n1=\"http://www.ecerami.com/wsdl/HelloService.wsdl\">"
+               "<soap:Header>"
+               "<wsa:To>http://www.ecerami.com/wsdl/HelloService</wsa:To>"
+               "<wsa:From>"
+               "<wsa:Address>http://www.ecerami.com/wsdl/source</wsa:Address>"
+               "</wsa:From>"
+               "<wsa:ReplyTo>"
+               "<wsa:Address>http://www.w3.org/2005/08/addressing/anonymous</wsa:Address>"
+               "</wsa:ReplyTo>"
+               "<wsa:FaultTo>"
+               "<wsa:Address>http://www.ecerami.com/wsdl/fault</wsa:Address>"
+               "</wsa:FaultTo>"
+               "<wsa:Action>sayHello</wsa:Action>"
+               "<wsa:MessageID>uuid:e197db59-0982-4c9c-9702-4234d204f7f4</wsa:MessageID>"
+               "<wsa:RelatesTo>uuid:http://www.ecerami.com/wsdl/someUniqueString</wsa:RelatesTo>"
+               "<wsa:RelatesTo RelationshipType=\"CustomTypeReply\">uuid:http://www.ecerami.com/wsdl/someUniqueStringBis</wsa:RelatesTo>"
+               "<wsa:ReferenceParameters>"
+               "<wsa:myReferenceParameter>ReferencParameterContent</wsa:myReferenceParameter>"
+               "<wsa:myReferenceParameterWithChildren>"
+               "<wsa:myReferenceParameterChildOne>ChildOneContent</wsa:myReferenceParameterChildOne>"
+               "<wsa:myReferenceParameterChildTwo>ChildTwoContent</wsa:myReferenceParameterChildTwo>"
+               "</wsa:myReferenceParameterWithChildren>"
+               "</wsa:ReferenceParameters>"
+               "<wsa:Metadata>"
+               "<wsa:myMetadata>MetadataContent</wsa:myMetadata>"
+               "<wsa:myMetadataBis>"
+               "<wsa:myMetadataBisChild>MetadataBisChildContent</wsa:myMetadataBisChild>"
+               "</wsa:myMetadataBis>"
+               "</wsa:Metadata>"
+               "</soap:Header>"
+               "<soap:Body>"
+               "<n1:sayHello><msg xsi:type=\"xsd:string\">HelloContentMessage</msg></n1:sayHello>"
+               "</soap:Body>" + xmlEnvEnd();
+    }
 
-        static QByteArray emptyResponse() {
-            return QByteArray(xmlEnvBegin11()) + "><soap:Body/>";
-        }
+    static QByteArray emptyResponse()
+    {
+        return QByteArray(xmlEnvBegin11()) + "><soap:Body/>";
+    }
 };
 
 QTEST_MAIN(WSAddressingTest)

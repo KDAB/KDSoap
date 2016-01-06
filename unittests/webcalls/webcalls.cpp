@@ -35,7 +35,7 @@ class WebCalls : public QObject
 public:
 
 public slots:
-    void slotFinished(KDSoapPendingCallWatcher* watcher)
+    void slotFinished(KDSoapPendingCallWatcher *watcher)
     {
         qDebug() << Q_FUNC_INFO;
         m_returnMessage = watcher->returnMessage();

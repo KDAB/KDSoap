@@ -92,12 +92,12 @@ private Q_SLOTS:
             QByteArray(xmlEnvBegin11()) +
             "><soap:Body>"
             "<n1:updateVersionStatusRequest xmlns:n1=\"http://schemas.novell.com/2005/01/GroupWise/methods\">"
-                "<n1:id>TheId</n1:id>"
-                "<n1:event>archive</n1:event>"
-                "<n1:part>"
-                  "<n2:size xmlns:n2=\"http://schemas.novell.com/2005/01/GroupWise/types\">6</n2:size>"
-                  "<n3:data xmlns:n3=\"http://schemas.novell.com/2005/01/GroupWise/types\">QUJDREVG</n3:data>"
-                "</n1:part>"
+            "<n1:id>TheId</n1:id>"
+            "<n1:event>archive</n1:event>"
+            "<n1:part>"
+            "<n2:size xmlns:n2=\"http://schemas.novell.com/2005/01/GroupWise/types\">6</n2:size>"
+            "<n3:data xmlns:n3=\"http://schemas.novell.com/2005/01/GroupWise/types\">QUJDREVG</n3:data>"
+            "</n1:part>"
             "</n1:updateVersionStatusRequest>"
             "</soap:Body>" + xmlEnvEnd()
             + '\n'; // added by QXmlStreamWriter::writeEndDocument
@@ -130,8 +130,8 @@ private Q_SLOTS:
             QByteArray(xmlEnvBegin11()) +
             "><soap:Body>"
             "<n1:setTimestampRequest xmlns:n1=\"http://schemas.novell.com/2005/01/GroupWise/methods\">"
-                "<n1:backup>2011-03-15T04:03:02.001+01:00</n1:backup>"
-                "<n1:retention>2011-01-15T04:03:02.001</n1:retention>"
+            "<n1:backup>2011-03-15T04:03:02.001+01:00</n1:backup>"
+            "<n1:retention>2011-01-15T04:03:02.001</n1:retention>"
             "</n1:setTimestampRequest>"
             "</soap:Body>" + xmlEnvEnd()
             + '\n'; // added by QXmlStreamWriter::writeEndDocument
@@ -154,8 +154,8 @@ private Q_SLOTS:
             QByteArray(xmlEnvBegin11()) +
             "><soap:Body>"
             "<n1:getTimestampRequest xmlns:n1=\"http://schemas.novell.com/2005/01/GroupWise/methods\">"
-                "<n1:backup>true</n1:backup>"
-                "<n1:retention>true</n1:retention>"
+            "<n1:backup>true</n1:backup>"
+            "<n1:retention>true</n1:retention>"
             "</n1:getTimestampRequest>"
             "</soap:Body>" + xmlEnvEnd()
             + '\n'; // added by QXmlStreamWriter::writeEndDocument
@@ -176,24 +176,26 @@ private Q_SLOTS:
 private:
 
     // Bogus response
-    static QByteArray updateVersionStatusResponse() {
+    static QByteArray updateVersionStatusResponse()
+    {
         return QByteArray(xmlEnvBegin11()) + " xmlns:gw=\"http://schemas.novell.com/2005/01/GroupWise/groupwise.wsdl\"><soap:Body>"
-              "<queryResponse>"
+               "<queryResponse>"
                "<result>"
-                "<done>true</done>"
-                "<size>3</size>"
+               "<done>true</done>"
+               "<size>3</size>"
                "</result>"
-              "</queryResponse>"
-              "</soap:Body>" + xmlEnvEnd();
+               "</queryResponse>"
+               "</soap:Body>" + xmlEnvEnd();
     }
 
-    static QByteArray getTimestampResponse() {
+    static QByteArray getTimestampResponse()
+    {
         return QByteArray(xmlEnvBegin11()) + " xmlns:gw=\"http://schemas.novell.com/2005/01/GroupWise/groupwise.wsdl\"><soap:Body>"
-              "<gw:getTimestampResponse>"
-                "<gw:backup>2011-03-15T04:03:02.001+01:00</gw:backup>"
-                "<gw:retention>2011-01-15T04:03:02.001Z</gw:retention>"
+               "<gw:getTimestampResponse>"
+               "<gw:backup>2011-03-15T04:03:02.001+01:00</gw:backup>"
+               "<gw:retention>2011-01-15T04:03:02.001Z</gw:retention>"
                "</gw:getTimestampResponse>"
-              "</soap:Body>" + xmlEnvEnd();
+               "</soap:Body>" + xmlEnvEnd();
     }
 
 };

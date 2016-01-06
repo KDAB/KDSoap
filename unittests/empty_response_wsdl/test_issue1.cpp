@@ -41,11 +41,12 @@ TestIssue1::TestIssue1()
 {
 }
 
-static QByteArray updateObjsResponse() {
+static QByteArray updateObjsResponse()
+{
     return QByteArray(xmlEnvBegin11()) + "><soap:Body>"
-            "<createDirectoryResponse xmlns=\"https://www.test.com/testapiv3/testapi.jws\">"
-            "</createDirectoryResponse>"
-            "</soap:Body>" + xmlEnvEnd();
+           "<createDirectoryResponse xmlns=\"https://www.test.com/testapiv3/testapi.jws\">"
+           "</createDirectoryResponse>"
+           "</soap:Body>" + xmlEnvEnd();
 }
 
 void TestIssue1::test()
@@ -57,12 +58,12 @@ void TestIssue1::test()
     service.createDirectory("t", 42, "user", "dir");
 
     const QByteArray expectedData = QByteArray(xmlEnvBegin11()) + "><soap:Body>"
-    "<n1:createDirectory xmlns:n1=\"https://www.test.com/testapiv3/testapi.jws\">"
-     "<token xsi:type=\"xsd:string\">t</token>"
-     "<hostID xsi:type=\"xsd:long\">42</hostID>"
-     "<username xsi:type=\"xsd:string\">user</username>"
-     "<directory xsi:type=\"xsd:string\">dir</directory>"
-    "</n1:createDirectory></soap:Body></soap:Envelope>";
+                                    "<n1:createDirectory xmlns:n1=\"https://www.test.com/testapiv3/testapi.jws\">"
+                                    "<token xsi:type=\"xsd:string\">t</token>"
+                                    "<hostID xsi:type=\"xsd:long\">42</hostID>"
+                                    "<username xsi:type=\"xsd:string\">user</username>"
+                                    "<directory xsi:type=\"xsd:string\">dir</directory>"
+                                    "</n1:createDirectory></soap:Body></soap:Envelope>";
 
     QVERIFY(xmlBufferCompare(server.receivedData(), expectedData));
 }

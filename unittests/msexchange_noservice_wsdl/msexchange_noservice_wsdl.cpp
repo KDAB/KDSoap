@@ -69,37 +69,38 @@ private Q_SLOTS:
         sid.setPrimarySmtpAddress(QString::fromLatin1("david.faure@kdab.com"));
         sid.setSID(QString::fromLatin1("sid"));
         impersonation.setConnectingSID(sid);
-        service.setImpersonationHeader( impersonation );
+        service.setImpersonationHeader(impersonation);
 
         service.resolveNames(req);
 
         // Check what we sent
         QByteArray expectedRequestXml =
             QByteArray(xmlEnvBegin11()) + " xmlns:n1=\"http://schemas.microsoft.com/exchange/services/2006/messages\">"
-                "<soap:Header>"
-                  "<n2:ExchangeImpersonation xmlns:n2=\"http://schemas.microsoft.com/exchange/services/2006/types\"><n2:ConnectingSID>"
-                    "<n2:PrincipalName>dfaure</n2:PrincipalName>"
-                    "<n2:SID>sid</n2:SID>"
-                    "<n2:PrimarySmtpAddress>david.faure@kdab.com</n2:PrimarySmtpAddress>"
-                  "</n2:ConnectingSID></n2:ExchangeImpersonation>"
-                  "<n2:RequestServerVersion xmlns:n2=\"http://schemas.microsoft.com/exchange/services/2006/types\" Version=\"Exchange2007_SP1\"/>"
-                "</soap:Header>"
-                "<soap:Body>"
-                  "<n1:ResolveNames ReturnFullContactData=\"true\">"
-                  "<n1:ParentFolderIds><n3:FolderId xmlns:n3=\"http://schemas.microsoft.com/exchange/services/2006/types\" Id=\"folderId\"/></n1:ParentFolderIds>"
-                  "<n1:UnresolvedEntry/>"
-                "</n1:ResolveNames>"
-                "</soap:Body>" + xmlEnvEnd()
+            "<soap:Header>"
+            "<n2:ExchangeImpersonation xmlns:n2=\"http://schemas.microsoft.com/exchange/services/2006/types\"><n2:ConnectingSID>"
+            "<n2:PrincipalName>dfaure</n2:PrincipalName>"
+            "<n2:SID>sid</n2:SID>"
+            "<n2:PrimarySmtpAddress>david.faure@kdab.com</n2:PrimarySmtpAddress>"
+            "</n2:ConnectingSID></n2:ExchangeImpersonation>"
+            "<n2:RequestServerVersion xmlns:n2=\"http://schemas.microsoft.com/exchange/services/2006/types\" Version=\"Exchange2007_SP1\"/>"
+            "</soap:Header>"
+            "<soap:Body>"
+            "<n1:ResolveNames ReturnFullContactData=\"true\">"
+            "<n1:ParentFolderIds><n3:FolderId xmlns:n3=\"http://schemas.microsoft.com/exchange/services/2006/types\" Id=\"folderId\"/></n1:ParentFolderIds>"
+            "<n1:UnresolvedEntry/>"
+            "</n1:ResolveNames>"
+            "</soap:Body>" + xmlEnvEnd()
             + '\n'; // added by QXmlStreamWriter::writeEndDocument
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
     }
 
 private:
-    static QByteArray queryResponse() {
+    static QByteArray queryResponse()
+    {
         return QByteArray(xmlEnvBegin11()) + " xmlns:sf=\"urn:sobject.partner.soap.sforce.com\"><soap:Body>"
-              "<queryResponse>" // TODO
-              "</queryResponse>"
-              "</soap:Body>" + xmlEnvEnd();
+               "<queryResponse>" // TODO
+               "</queryResponse>"
+               "</soap:Body>" + xmlEnvEnd();
     }
 };
 

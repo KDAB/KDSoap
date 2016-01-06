@@ -49,10 +49,10 @@ Q_DECLARE_METATYPE(QFile::Permissions)
 Q_DECLARE_METATYPE(QNetworkReply::NetworkError)
 #endif
 
-static const char* myWsdlNamespace = "http://www.kdab.com/xml/MyWsdl/";
+static const char *myWsdlNamespace = "http://www.kdab.com/xml/MyWsdl/";
 
 class CountryServerObject;
-typedef QMap<QThread*, CountryServerObject*> ServerObjectsMap;
+typedef QMap<QThread *, CountryServerObject *> ServerObjectsMap;
 ServerObjectsMap s_serverObjects;
 QMutex s_serverObjectsMutex;
 
@@ -63,10 +63,12 @@ public:
 };
 
 static const char s_longEmployeeName[] = "This is a long string in order to test chunking in this test";
-static QByteArray rawCountryMessage(const QByteArray& employeeName = "David Ä Faure") {
+static QByteArray rawCountryMessage(const QByteArray &employeeName = "David Ä Faure")
+{
     return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><soap:Body><n1:getEmployeeCountry xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\"><employeeName>" + employeeName + "</employeeName></n1:getEmployeeCountry></soap:Body></soap:Envelope>";
 }
-static QByteArray expectedCountryResponse(const QByteArray& employeeName = "David Ä Faure") {
+static QByteArray expectedCountryResponse(const QByteArray &employeeName = "David Ä Faure")
+{
     return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><soap:Body><n1:getEmployeeCountry xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\"><employeeCountry>" + employeeName + " France</employeeCountry>getEmployeeCountryResponse</n1:getEmployeeCountry></soap:Body></soap:Envelope>\n";
 }
 
@@ -86,29 +88,34 @@ public:
         QMutexLocker locker(&s_serverObjectsMutex);
         s_serverObjects.insert(QThread::currentThread(), this);
     }
-    ~CountryServerObject() {
+    ~CountryServerObject()
+    {
         QMutexLocker locker(&s_serverObjectsMutex);
         Q_ASSERT(s_serverObjects.value(QThread::currentThread()) == this);
         s_serverObjects.remove(QThread::currentThread());
     }
 
-    virtual void processRequest(const KDSoapMessage &request, KDSoapMessage &response, const QByteArray& soapAction);
+    virtual void processRequest(const KDSoapMessage &request, KDSoapMessage &response, const QByteArray &soapAction);
 
-    virtual QIODevice* processFileRequest(const QString &path, QByteArray &contentType) {
+    virtual QIODevice *processFileRequest(const QString &path, QByteArray &contentType)
+    {
         if (path == QLatin1String("/path/to/file_download.txt")) {
-            QFile* file = new QFile(QLatin1String("file_download.txt")); // local file, created by the unittest
+            QFile *file = new QFile(QLatin1String("file_download.txt")); // local file, created by the unittest
             contentType = "text/plain";
             return file; // will be deleted by KDSoap
         }
         return 0;
     }
 
-    virtual bool validateAuthentication(const KDSoapAuthentication& auth, const QString& path) {
-        if (!m_requireAuth)
+    virtual bool validateAuthentication(const KDSoapAuthentication &auth, const QString &path)
+    {
+        if (!m_requireAuth) {
             return true;
+        }
 
-        if ((path == QLatin1String("/") || path == QLatin1String("/path/to/file_download.txt")) && auth.user() == QLatin1String("kdab"))
+        if ((path == QLatin1String("/") || path == QLatin1String("/path/to/file_download.txt")) && auth.user() == QLatin1String("kdab")) {
             return auth.password() == QLatin1String("pass42");
+        }
         return false;
     }
 
@@ -135,7 +142,8 @@ public:
         }
         m_assembledXML += xmlChunk;
     }
-    void endRequest() {
+    void endRequest()
+    {
         if (m_assembledXML != rawCountryMessage(s_longEmployeeName)) {
             qWarning() << "Expected" << rawCountryMessage(s_longEmployeeName) << "\nGot" << m_assembledXML;
             m_rawXMLValid = false;
@@ -167,7 +175,8 @@ public:
     }
 
 public: // SOAP-accessible methods
-    QString getEmployeeCountry(const QString& employeeName) {
+    QString getEmployeeCountry(const QString &employeeName)
+    {
         // Should be called in same thread as constructor
         s_serverObjectsMutex.lock();
         Q_ASSERT(s_serverObjects.value(QThread::currentThread()) == this);
@@ -178,12 +187,14 @@ public: // SOAP-accessible methods
             return QString();
         }
         //qDebug() << "getEmployeeCountry(" << employeeName << ") called";
-        if (employeeName == QLatin1String("Slow"))
+        if (employeeName == QLatin1String("Slow")) {
             PublicThread::msleep(100);
+        }
         return employeeName + QString::fromLatin1(" France");
     }
 
-    double getStuff(int foo, float bar, const QDateTime& dateTime) {
+    double getStuff(int foo, float bar, const QDateTime &dateTime)
+    {
         //qDebug() << "getStuff called:" << foo << bar << dateTime.toTime_t();
         //qDebug() << "Request headers:" << requestHeaders();
         if (soapAction() != "MySoapAction") {
@@ -202,7 +213,8 @@ public: // SOAP-accessible methods
         }
         return double(foo) + bar + double(dateTime.toTime_t()) + double(dateTime.time().msec() / 1000.0);
     }
-    QByteArray hexBinaryTest(const QByteArray& input1, const QByteArray& input2) const {
+    QByteArray hexBinaryTest(const QByteArray &input1, const QByteArray &input2) const
+    {
         if (soapAction() != "ActionHex") {
             qDebug() << "ERROR: SoapAction was" << soapAction();
             return ""; // error
@@ -223,18 +235,38 @@ class CountryServer : public KDSoapServer
 public:
     CountryServer() : KDSoapServer(), m_requireAuth(false), m_useRawXML(false) {}
 
-    virtual QObject* createServerObject() { return new CountryServerObject(m_requireAuth, m_useRawXML); }
+    virtual QObject *createServerObject()
+    {
+        return new CountryServerObject(m_requireAuth, m_useRawXML);
+    }
 
-    void setRequireAuth(bool b) { m_requireAuth = b; }
-    void setUseRawXML(bool b) { m_useRawXML = b; }
+    void setRequireAuth(bool b)
+    {
+        m_requireAuth = b;
+    }
+    void setUseRawXML(bool b)
+    {
+        m_useRawXML = b;
+    }
 
 Q_SIGNALS:
     void releaseSemaphore();
 
 public Q_SLOTS:
-    void quit() { thread()->quit(); }
-    void suspend() { KDSoapServer::suspend(); emit releaseSemaphore(); }
-    void resume() { KDSoapServer::resume(); emit releaseSemaphore(); }
+    void quit()
+    {
+        thread()->quit();
+    }
+    void suspend()
+    {
+        KDSoapServer::suspend();
+        emit releaseSemaphore();
+    }
+    void resume()
+    {
+        KDSoapServer::resume();
+        emit releaseSemaphore();
+    }
 
 private:
     bool m_requireAuth;
@@ -249,57 +281,67 @@ class CountryServerThread : public QThread
 {
     Q_OBJECT
 public:
-    CountryServerThread(KDSoapThreadPool* pool = 0)
+    CountryServerThread(KDSoapThreadPool *pool = 0)
         : m_threadPool(pool), m_pServer(0)
     {}
-    ~CountryServerThread() {
+    ~CountryServerThread()
+    {
         // helgrind says don't call quit() here, it races with exec()
-        if (m_pServer)
+        if (m_pServer) {
             QMetaObject::invokeMethod(m_pServer, "quit");
+        }
         wait();
     }
-    CountryServer* startThread() {
+    CountryServer *startThread()
+    {
         start();
         m_semaphore.acquire(); // wait for init to be done
         return m_pServer;
     }
-    void suspend() {
+    void suspend()
+    {
         QMetaObject::invokeMethod(m_pServer, "suspend");
         m_semaphore.acquire();
     }
-    void resume() {
+    void resume()
+    {
         QMetaObject::invokeMethod(m_pServer, "resume");
         m_semaphore.acquire();
     }
 
 protected:
-    void run() {
+    void run()
+    {
         CountryServer server;
-        if (m_threadPool)
+        if (m_threadPool) {
             server.setThreadPool(m_threadPool);
-        if (server.listen())
+        }
+        if (server.listen()) {
             m_pServer = &server;
+        }
         connect(&server, SIGNAL(releaseSemaphore()), this, SLOT(slotReleaseSemaphore()), Qt::DirectConnection);
         m_semaphore.release();
         exec();
         m_pServer = 0;
     }
 private Q_SLOTS:
-    void slotReleaseSemaphore() {
+    void slotReleaseSemaphore()
+    {
         m_semaphore.release();
     }
 
 private:
-    KDSoapThreadPool* m_threadPool;
+    KDSoapThreadPool *m_threadPool;
     QSemaphore m_semaphore;
-    CountryServer* m_pServer;
+    CountryServer *m_pServer;
 };
 
 // to avoid a bit of duplication
 class ClientSocket : public QTcpSocket
 {
 public:
-    ClientSocket(CountryServer *server) {
+    ClientSocket(CountryServer *server)
+    {
         QUrl url(server->endPoint());
         connectToHost(url.host(), server->serverPort());
     }
@@ -319,11 +361,13 @@ private Q_SLOTS:
             QVERIFY(KDSoapUnitTestHelpers::setSslConfiguration());
             QSslConfiguration defaultConfig = QSslConfiguration::defaultConfiguration();
             QFile certFile(QString::fromLatin1(":/certs/test-127.0.0.1-cert.pem"));
-            if (certFile.open(QIODevice::ReadOnly))
+            if (certFile.open(QIODevice::ReadOnly)) {
                 defaultConfig.setLocalCertificate(QSslCertificate(certFile.readAll()));
+            }
             QFile keyFile(QString::fromLatin1(":/certs/test-127.0.0.1-key.pem"));
-            if (keyFile.open(QIODevice::ReadOnly))
+            if (keyFile.open(QIODevice::ReadOnly)) {
                 defaultConfig.setPrivateKey(QSslKey(keyFile.readAll(), QSsl::Rsa));
+            }
             QSslConfiguration::setDefaultConfiguration(defaultConfig);
         }
 #endif
@@ -333,10 +377,10 @@ private Q_SLOTS:
     {
         {
             CountryServerThread serverThread;
-            CountryServer* server = serverThread.startThread();
+            CountryServer *server = serverThread.startThread();
 
             //qDebug() << "server ready, proceeding" << server->endPoint();
-            KDSoapClientInterface* client = new KDSoapClientInterface(server->endPoint(), countryMessageNamespace());
+            KDSoapClientInterface *client = new KDSoapClientInterface(server->endPoint(), countryMessageNamespace());
             const KDSoapMessage response = client->call(QLatin1String("getEmployeeCountry"), countryMessage());
             QVERIFY(!response.isFault());
             QCOMPARE(response.childValues().first().value().toString(), expectedCountry());
@@ -353,7 +397,7 @@ private Q_SLOTS:
     void testAuth()
     {
         CountryServerThread serverThread;
-        CountryServer* server = serverThread.startThread();
+        CountryServer *server = serverThread.startThread();
         server->setRequireAuth(true);
         KDSoapClientInterface client(server->endPoint(), countryMessageNamespace());
         KDSoapAuthentication auth;
@@ -371,7 +415,7 @@ private Q_SLOTS:
     void testRefusedAuth()
     {
         CountryServerThread serverThread;
-        CountryServer* server = serverThread.startThread();
+        CountryServer *server = serverThread.startThread();
         server->setRequireAuth(true);
         KDSoapClientInterface client(server->endPoint(), countryMessageNamespace());
         KDSoapAuthentication auth;
@@ -385,14 +429,14 @@ private Q_SLOTS:
     void testParamTypes()
     {
         CountryServerThread serverThread;
-        CountryServer* server = serverThread.startThread();
+        CountryServer *server = serverThread.startThread();
         KDSoapClientInterface client(server->endPoint(), countryMessageNamespace());
         const KDSoapMessage response = client.call(QLatin1String("getStuff"), getStuffMessage(), QString::fromLatin1("MySoapAction"), getStuffRequestHeaders());
         if (response.isFault()) {
             qDebug() << response.faultAsString();
             QVERIFY(!response.isFault());
         }
-        QCOMPARE(response.value().toDouble(), double(4+3.2+123456.789));
+        QCOMPARE(response.value().toDouble(), double(4 + 3.2 + 123456.789));
         const KDSoapHeaders responseHeaders = client.lastResponseHeaders();
         //qDebug() << responseHeaders;
         QCOMPARE(responseHeaders.header(QLatin1String("header2"), QLatin1String("http://foo")).value().toString(), QString::fromLatin1("responseHeader"));
@@ -401,7 +445,7 @@ private Q_SLOTS:
     void testHeadersAsyncCall() // KDSOAP-45
     {
         CountryServerThread serverThread;
-        CountryServer* server = serverThread.startThread();
+        CountryServer *server = serverThread.startThread();
         KDSoapClientInterface client(server->endPoint(), countryMessageNamespace());
         m_returnMessages.clear();
         m_expectedMessages = 1;
@@ -411,7 +455,7 @@ private Q_SLOTS:
                 this, SLOT(slotFinished(KDSoapPendingCallWatcher*)));
         m_eventLoop.exec();
         QCOMPARE(m_returnMessages.count(), 1);
-        QCOMPARE(m_returnMessages.at(0).value().toDouble(), double(4+3.2+123456.789));
+        QCOMPARE(m_returnMessages.at(0).value().toDouble(), double(4 + 3.2 + 123456.789));
         QCOMPARE(m_returnHeaders.count(), 1);
         QCOMPARE(m_returnHeaders.at(0).header(QLatin1String("header2"), QLatin1String("http://foo")).value().toString(), QLatin1String("responseHeader"));
     }
@@ -419,7 +463,7 @@ private Q_SLOTS:
     void testHexBinary()
     {
         CountryServerThread serverThread;
-        CountryServer* server = serverThread.startThread();
+        CountryServer *server = serverThread.startThread();
 
         //qDebug() << "server ready, proceeding" << server->endPoint();
         KDSoapClientInterface client(server->endPoint(), countryMessageNamespace());
@@ -434,7 +478,7 @@ private Q_SLOTS:
     void testMethodNotFound()
     {
         CountryServerThread serverThread;
-        CountryServer* server = serverThread.startThread();
+        CountryServer *server = serverThread.startThread();
 
         KDSoapClientInterface client(server->endPoint(), countryMessageNamespace());
         KDSoapMessage message;
@@ -448,7 +492,7 @@ private Q_SLOTS:
     void testMissingParams()
     {
         CountryServerThread serverThread;
-        CountryServer* server = serverThread.startThread();
+        CountryServer *server = serverThread.startThread();
 
         KDSoapClientInterface client(server->endPoint(), countryMessageNamespace());
         KDSoapMessage message;
@@ -463,13 +507,13 @@ private Q_SLOTS:
         {
             KDSoapThreadPool threadPool;
             CountryServerThread serverThread(&threadPool);
-            CountryServer* server = serverThread.startThread();
+            CountryServer *server = serverThread.startThread();
 
-            KDSoapClientInterface* client = new KDSoapClientInterface(server->endPoint(), countryMessageNamespace());
+            KDSoapClientInterface *client = new KDSoapClientInterface(server->endPoint(), countryMessageNamespace());
             const KDSoapMessage response = client->call(QLatin1String("getEmployeeCountry"), countryMessage());
             QCOMPARE(response.childValues().first().value().toString(), expectedCountry());
             QCOMPARE(s_serverObjects.count(), 1);
-            QThread* thread = s_serverObjects.begin().key();
+            QThread *thread = s_serverObjects.begin().key();
             QVERIFY(thread != qApp->thread());
             QVERIFY(thread != &serverThread);
             QCOMPARE(server->totalConnectionCount(), 1);
@@ -505,10 +549,11 @@ private Q_SLOTS:
             KDSoapThreadPool threadPool;
             threadPool.setMaxThreadCount(maxThreads);
             CountryServerThread serverThread(&threadPool);
-            CountryServer* server = serverThread.startThread();
+            CountryServer *server = serverThread.startThread();
             for (int i = 0; i < numClients; ++i) {
-                if (i > 0)
-                    QTest::qWait(100); // handle disconnection from previous client
+                if (i > 0) {
+                    QTest::qWait(100);    // handle disconnection from previous client
+                }
                 //qDebug() << "Creating new client";
                 KDSoapClientInterface client(server->endPoint(), countryMessageNamespace());
                 m_returnMessages.clear();
@@ -518,13 +563,13 @@ private Q_SLOTS:
                 m_eventLoop.exec();
 
                 QCOMPARE(m_returnMessages.count(), m_expectedMessages);
-                Q_FOREACH(const KDSoapMessage& response, m_returnMessages) {
+                Q_FOREACH (const KDSoapMessage &response, m_returnMessages) {
                     QCOMPARE(response.childValues().first().value().toString(), expectedCountry());
                 }
                 QCOMPARE(s_serverObjects.count(), expectedServerObjects);
-                QMapIterator<QThread*, CountryServerObject*> it(s_serverObjects);
+                QMapIterator<QThread *, CountryServerObject *> it(s_serverObjects);
                 while (it.hasNext()) {
-                    QThread* thread = it.next().key();
+                    QThread *thread = it.next().key();
                     QVERIFY(thread != qApp->thread());
                     QVERIFY(thread != &serverThread);
                 }
@@ -586,22 +631,22 @@ private Q_SLOTS:
 #else
                 QSKIP("needs root", SkipSingle);
 #endif
+            } else {
+                QVERIFY(false);    // should not happen
             }
-            else
-                QVERIFY(false); // should not happen
         }
 
         // Test making many more concurrent connections, using multiple QNAMs to circumvent the 6 connections limit.
         KDSoapThreadPool threadPool;
         threadPool.setMaxThreadCount(maxThreads);
         CountryServerThread serverThread(&threadPool);
-        CountryServer* server = serverThread.startThread();
+        CountryServer *server = serverThread.startThread();
         QVector<KDSoapClientInterface *> clients;
         clients.resize(numClients);
         m_returnMessages.clear();
         m_expectedMessages = numRequests * numClients;
         for (int i = 0; i < numClients; ++i) {
-            KDSoapClientInterface* client = new KDSoapClientInterface(server->endPoint(), countryMessageNamespace());
+            KDSoapClientInterface *client = new KDSoapClientInterface(server->endPoint(), countryMessageNamespace());
             clients[i] = client;
 
             makeAsyncCalls(*client, numRequests);
@@ -628,12 +673,12 @@ private Q_SLOTS:
         while (server->totalConnectionCount() < expectedConnectedSockets && ++tries < 30) {
             QTest::qWait(500); // makes totalConnectionCount() more reliable.
         }
-        if (tries > 0 ) {
+        if (tries > 0) {
             qDebug() << "after qWait (" << tries << "times )";
             slotStats();
         }
         if (server->totalConnectionCount() < expectedConnectedSockets) {
-            Q_FOREACH(const KDSoapMessage& response, m_returnMessages) {
+            Q_FOREACH (const KDSoapMessage &response, m_returnMessages) {
                 if (response.isFault()) {
                     qDebug() << response.faultAsString();
                     break;
@@ -644,10 +689,10 @@ private Q_SLOTS:
         // so the total number of connection counts could be more than expected
         //QCOMPARE(server->totalConnectionCount(), expectedConnectedSockets);
         QVERIFY2(server->totalConnectionCount() >= expectedConnectedSockets,
-                qPrintable(QString::number(server->totalConnectionCount())));
+                 qPrintable(QString::number(server->totalConnectionCount())));
 
         QCOMPARE(m_returnMessages.count(), m_expectedMessages);
-        Q_FOREACH(const KDSoapMessage& response, m_returnMessages) {
+        Q_FOREACH (const KDSoapMessage &response, m_returnMessages) {
             QCOMPARE(response.childValues().first().value().toString(), expectedCountry());
         }
         //QCOMPARE(s_serverObjects.count(), expectedServerObjects);
@@ -660,7 +705,7 @@ private Q_SLOTS:
         KDSoapThreadPool threadPool;
         threadPool.setMaxThreadCount(6);
         CountryServerThread serverThread(&threadPool);
-        CountryServer* server = serverThread.startThread();
+        CountryServer *server = serverThread.startThread();
         const QString endPoint = server->endPoint();
         KDSoapClientInterface client(endPoint, countryMessageNamespace());
         m_returnMessages.clear();
@@ -727,13 +772,13 @@ private Q_SLOTS:
         KDSoapThreadPool threadPool;
         threadPool.setMaxThreadCount(maxThreads);
         CountryServerThread serverThread(&threadPool);
-        CountryServer* server = serverThread.startThread();
+        CountryServer *server = serverThread.startThread();
         QVector<KDSoapClientInterface *> clients;
         clients.resize(numClients);
         m_returnMessages.clear();
         m_expectedMessages = numRequests * numClients;
         for (int i = 0; i < numClients; ++i) {
-            KDSoapClientInterface* client = new KDSoapClientInterface(server->endPoint(), countryMessageNamespace());
+            KDSoapClientInterface *client = new KDSoapClientInterface(server->endPoint(), countryMessageNamespace());
             clients[i] = client;
             makeAsyncCalls(*client, numRequests);
         }
@@ -749,8 +794,9 @@ private Q_SLOTS:
             serverThread.resume();
         }
 
-        if (m_returnMessages.count() < m_expectedMessages)
+        if (m_returnMessages.count() < m_expectedMessages) {
             m_eventLoop.exec();
+        }
         // Don't look at m_returnMessages or totalConnectionCount here,
         // some of them got an error, trying to connect while server was suspended.
 
@@ -760,14 +806,14 @@ private Q_SLOTS:
     void testServerFault() // fault returned by server
     {
         CountryServerThread serverThread;
-        CountryServer* server = serverThread.startThread();
+        CountryServer *server = serverThread.startThread();
         makeFaultyCall(server->endPoint());
     }
 
     void testLogging()
     {
         CountryServerThread serverThread;
-        CountryServer* server = serverThread.startThread();
+        CountryServer *server = serverThread.startThread();
 
         const QString fileName = QString::fromLatin1("output.log");
         QFile::remove(fileName);
@@ -805,7 +851,7 @@ private Q_SLOTS:
         m_returnMessages.clear();
         clients.resize(numClients);
         for (int i = 0; i < numClients; ++i) {
-            KDSoapClientInterface* client = new KDSoapClientInterface(server->endPoint(), countryMessageNamespace());
+            KDSoapClientInterface *client = new KDSoapClientInterface(server->endPoint(), countryMessageNamespace());
             clients[i] = client;
             makeAsyncCalls(*client, 1, true);
         }
@@ -824,7 +870,7 @@ private Q_SLOTS:
     void testWsdlFile()
     {
         CountryServerThread serverThread;
-        CountryServer* server = serverThread.startThread();
+        CountryServer *server = serverThread.startThread();
 
         const QString fileName = QString::fromLatin1("foo.wsdl");
         QFile file(fileName);
@@ -839,7 +885,7 @@ private Q_SLOTS:
         url += pathInUrl;
         QNetworkAccessManager manager;
         QNetworkRequest request(url);
-        QNetworkReply* reply = manager.get(request);
+        QNetworkReply *reply = manager.get(request);
         QEventLoop loop;
         connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
         loop.exec();
@@ -874,7 +920,7 @@ private Q_SLOTS:
         download_timeout.setSingleShot(true);
         QSignalSpy timeout_spy(&download_timeout, SIGNAL(timeout()));
         CountryServerThread serverThread;
-        CountryServer* server = serverThread.startThread();
+        CountryServer *server = serverThread.startThread();
 
         server->setRequireAuth(false);
 
@@ -891,7 +937,7 @@ private Q_SLOTS:
 
         QNetworkAccessManager manager;
         QNetworkRequest request(url);
-        QNetworkReply* reply = manager.get(request);
+        QNetworkReply *reply = manager.get(request);
         QEventLoop loop;
         connect(&download_timeout, SIGNAL(timeout()), &loop, SLOT(quit()));
         connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
@@ -936,7 +982,7 @@ private Q_SLOTS:
         QFETCH(bool, expectedSuccess);
 
         CountryServerThread serverThread;
-        CountryServer* server = serverThread.startThread();
+        CountryServer *server = serverThread.startThread();
 
         server->setRequireAuth(requireAuth);
 
@@ -957,7 +1003,7 @@ private Q_SLOTS:
         connect(&manager, SIGNAL(authenticationRequired(QNetworkReply*,QAuthenticator*)),
                 this, SLOT(slotAuthRequired(QNetworkReply*,QAuthenticator*)));
         QNetworkRequest request(url);
-        QNetworkReply* reply = manager.get(request);
+        QNetworkReply *reply = manager.get(request);
         QEventLoop loop;
         connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
         loop.exec();
@@ -996,7 +1042,7 @@ private Q_SLOTS:
         QFETCH(QByteArray, expectedReply);
 
         CountryServerThread serverThread;
-        CountryServer* server = serverThread.startThread();
+        CountryServer *server = serverThread.startThread();
 
         server->setRequireAuth(requireAuth);
 
@@ -1009,7 +1055,7 @@ private Q_SLOTS:
         connect(&manager, SIGNAL(authenticationRequired(QNetworkReply*,QAuthenticator*)),
                 this, SLOT(slotAuthRequired(QNetworkReply*,QAuthenticator*)));
         QNetworkRequest request(url);
-        QNetworkReply* reply;
+        QNetworkReply *reply;
         reply = manager.sendCustomRequest(request, customHttpVerb);
         QEventLoop loop;
         connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
@@ -1023,7 +1069,7 @@ private Q_SLOTS:
     void testPostWithQNAM()
     {
         CountryServerThread serverThread;
-        CountryServer* server = serverThread.startThread();
+        CountryServer *server = serverThread.startThread();
 
         QUrl url(server->endPoint());
         QNetworkRequest request(url);
@@ -1031,7 +1077,7 @@ private Q_SLOTS:
         QString soapHeader = QString::fromLatin1("text/xml;charset=utf-8");
         request.setHeader(QNetworkRequest::ContentTypeHeader, soapHeader.toUtf8());
         QNetworkAccessManager accessManager;
-        QNetworkReply* reply = accessManager.post(request, rawCountryMessage());
+        QNetworkReply *reply = accessManager.post(request, rawCountryMessage());
         QEventLoop loop;
         connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
         loop.exec();
@@ -1060,25 +1106,25 @@ private Q_SLOTS:
         QFETCH(int, chunkSize);
         QFETCH(bool, useRawXML);
         CountryServerThread serverThread;
-        CountryServer* server = serverThread.startThread();
+        CountryServer *server = serverThread.startThread();
         server->setUseRawXML(useRawXML);
 
         ClientSocket socket(server);
         QVERIFY(socket.waitForConnected());
         const QByteArray message = rawCountryMessage(s_longEmployeeName);
         const QByteArray request =
-                "POST / HTTP/1.1\r\n"
-                "SoapAction: http://www.kdab.com/xml/MyWsdl/getEmployeeCountry\r\n"
-                "Content-Type: text/xml;charset=utf-8\r\n"
-                "Content-Length: " + QByteArray::number(message.size()) + "\r\n"
-                "Host: 127.0.0.1:12345\r\n" // ignored
-                "\r\n" + message;
+            "POST / HTTP/1.1\r\n"
+            "SoapAction: http://www.kdab.com/xml/MyWsdl/getEmployeeCountry\r\n"
+            "Content-Type: text/xml;charset=utf-8\r\n"
+            "Content-Length: " + QByteArray::number(message.size()) + "\r\n"
+            "Host: 127.0.0.1:12345\r\n" // ignored
+            "\r\n" + message;
         for (int pos = 0; pos < request.size(); pos += chunkSize) {
             const QByteArray part = request.mid(pos, chunkSize);
             socket.write(part);
             QVERIFY(socket.waitForBytesWritten());
         }
-         verifySocketResponse(socket, s_longEmployeeName);
+        verifySocketResponse(socket, s_longEmployeeName);
     }
 
     void testChunkedTransferEncoding_data()
@@ -1106,26 +1152,27 @@ private Q_SLOTS:
 
         for (int i = 0; i < 2; ++i) {
             CountryServerThread serverThread;
-            CountryServer* server = serverThread.startThread();
+            CountryServer *server = serverThread.startThread();
 
-            if (i == 1)
+            if (i == 1) {
                 server->setUseRawXML(true);
+            }
             ClientSocket socket(server);
             QVERIFY(socket.waitForConnected());
             const QByteArray message = rawCountryMessage(s_longEmployeeName);
             const QByteArray headers =
-                    "POST / HTTP/1.1\r\n"
-                    "SoapAction: http://www.kdab.com/xml/MyWsdl/getEmployeeCountry\r\n"
-                    "Content-Type: text/xml;charset=utf-8\r\n"
-                    "Transfer-Encoding: chunked\r\n"
-                    "Host: 127.0.0.1:12345\r\n" // ignored
-                    "\r\n";
+                "POST / HTTP/1.1\r\n"
+                "SoapAction: http://www.kdab.com/xml/MyWsdl/getEmployeeCountry\r\n"
+                "Content-Type: text/xml;charset=utf-8\r\n"
+                "Transfer-Encoding: chunked\r\n"
+                "Host: 127.0.0.1:12345\r\n" // ignored
+                "\r\n";
             socket.write(headers);
             QVERIFY(socket.waitForBytesWritten());
             for (int pos = 0; pos < message.size(); pos += chunkSize) {
                 const QByteArray thisChunk = message.mid(pos, chunkSize);
                 const QByteArray messagePart = QByteArray::number(thisChunk.size(), 16) + "\r\n"
-                        + thisChunk + "\r\n";
+                                               + thisChunk + "\r\n";
                 // fragment that packet, for more testing
                 const int fragmentSize = chunkSize / 5;
                 for (int i = 0; i < messagePart.size(); i += fragmentSize) {
@@ -1134,10 +1181,11 @@ private Q_SLOTS:
                 }
             }
             // final chunk and trailers
-            if (withTrailers)
+            if (withTrailers) {
                 socket.write("0\r\nIgnore: me\r\n\r\n");
-            else
+            } else {
                 socket.write("0\r\n\r\n");
+            }
             QVERIFY(socket.waitForBytesWritten());
             verifySocketResponse(socket, s_longEmployeeName);
         }
@@ -1146,7 +1194,7 @@ private Q_SLOTS:
     void testContentTypeParsing() // SOAP 112
     {
         CountryServerThread serverThread;
-        CountryServer* server = serverThread.startThread();
+        CountryServer *server = serverThread.startThread();
 
         QUrl url(server->endPoint());
         QNetworkRequest request(url);
@@ -1154,7 +1202,7 @@ private Q_SLOTS:
         request.setHeader(QNetworkRequest::ContentTypeHeader, soapHeader.toUtf8());
 
         QNetworkAccessManager accessManager;
-        QNetworkReply* reply = accessManager.post(request, rawCountryMessage());
+        QNetworkReply *reply = accessManager.post(request, rawCountryMessage());
         QEventLoop loop;
         connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
         loop.exec();
@@ -1165,7 +1213,7 @@ private Q_SLOTS:
     void testGetShouldFail()
     {
         CountryServerThread serverThread;
-        CountryServer* server = serverThread.startThread();
+        CountryServer *server = serverThread.startThread();
 
         QUrl url(server->endPoint());
         QNetworkRequest request(url);
@@ -1173,7 +1221,7 @@ private Q_SLOTS:
         QString soapHeader = QString::fromLatin1("text/xml;charset=utf-8");
         request.setHeader(QNetworkRequest::ContentTypeHeader, soapHeader.toUtf8());
         QNetworkAccessManager accessManager;
-        QNetworkReply* reply = accessManager.get(request);
+        QNetworkReply *reply = accessManager.get(request);
         QEventLoop loop;
         connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
         loop.exec();
@@ -1185,13 +1233,13 @@ private Q_SLOTS:
     void testHeadShouldFail()
     {
         CountryServerThread serverThread;
-        CountryServer* server = serverThread.startThread();
+        CountryServer *server = serverThread.startThread();
 
         QUrl url(server->endPoint());
         QNetworkRequest request(url);
         QNetworkAccessManager accessManager;
         QTest::ignoreMessage(QtWarningMsg, "Unknown HTTP request: \"HEAD\" ");
-        QNetworkReply* reply = accessManager.head(request);
+        QNetworkReply *reply = accessManager.head(request);
         QEventLoop loop;
         connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
         loop.exec();
@@ -1216,7 +1264,7 @@ private Q_SLOTS:
         QFETCH(bool, expectedSuccess);
 
         CountryServerThread serverThread;
-        CountryServer* server = serverThread.startThread();
+        CountryServer *server = serverThread.startThread();
         server->setPath(serverPath);
         QVERIFY(server->endPoint().endsWith(serverPath));
         const QString url = server->endPoint().remove(serverPath).append(requestPath);
@@ -1236,10 +1284,11 @@ private Q_SLOTS:
     void testSsl()
     {
 #ifndef QT_NO_OPENSSL
-        if (!QSslSocket::supportsSsl())
+        if (!QSslSocket::supportsSsl()) {
             return;
+        }
         CountryServerThread serverThread;
-        CountryServer* server = serverThread.startThread();
+        CountryServer *server = serverThread.startThread();
         server->setFeatures(KDSoapServer::Ssl);
         QVERIFY(server->endPoint().startsWith(QLatin1String("https")));
         makeSimpleCall(server->endPoint());
@@ -1247,12 +1296,13 @@ private Q_SLOTS:
     }
 
 public Q_SLOTS:
-    void slotFinished(KDSoapPendingCallWatcher* watcher)
+    void slotFinished(KDSoapPendingCallWatcher *watcher)
     {
         m_returnMessages.append(watcher->returnMessage());
         m_returnHeaders.append(watcher->returnHeaders());
-        if (m_returnMessages.count() == m_expectedMessages)
+        if (m_returnMessages.count() == m_expectedMessages) {
             m_eventLoop.quit();
+        }
     }
 
     void slotStats()
@@ -1266,7 +1316,7 @@ public Q_SLOTS:
         m_eventLoop.quit();
     }
 
-    void slotAuthRequired(QNetworkReply *reply, QAuthenticator * authenticator)
+    void slotAuthRequired(QNetworkReply *reply, QAuthenticator *authenticator)
     {
         // QNAM will just try and try again....
         if (!reply->property("authAdded").toBool()) {
@@ -1282,11 +1332,11 @@ private:
     QList<KDSoapMessage> m_returnMessages;
     QList<KDSoapHeaders> m_returnHeaders;
 
-    KDSoapServer* m_server;
+    KDSoapServer *m_server;
     QAuthenticator m_auth;
 
 private:
-    void makeSimpleCall(const QString& endPoint)
+    void makeSimpleCall(const QString &endPoint)
     {
         KDSoapClientInterface client(endPoint, countryMessageNamespace());
         const KDSoapMessage response = client.call(QLatin1String("getEmployeeCountry"), countryMessage());
@@ -1294,7 +1344,7 @@ private:
         QCOMPARE(response.childValues().first().value().toString(), expectedCountry());
     }
 
-    void makeFaultyCall(const QString& endPoint)
+    void makeFaultyCall(const QString &endPoint)
     {
         KDSoapClientInterface client(endPoint, countryMessageNamespace());
         KDSoapMessage message;
@@ -1304,9 +1354,9 @@ private:
         QCOMPARE(response.arguments().child(QLatin1String("faultcode")).value().toString(), QString::fromLatin1("Client.Data"));
     }
 
-    QList<KDSoapPendingCallWatcher*> makeAsyncCalls(KDSoapClientInterface& client, int numRequests, bool slow = false)
+    QList<KDSoapPendingCallWatcher *> makeAsyncCalls(KDSoapClientInterface &client, int numRequests, bool slow = false)
     {
-        QList<KDSoapPendingCallWatcher*> watchers;
+        QList<KDSoapPendingCallWatcher *> watchers;
         for (int i = 0; i < numRequests; ++i) {
             KDSoapPendingCall pendingCall = client.asyncCall(QLatin1String("getEmployeeCountry"), countryMessage(slow));
             KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);
@@ -1317,15 +1367,18 @@ private:
         return watchers;
     }
 
-    static QString countryMessageNamespace() {
+    static QString countryMessageNamespace()
+    {
         return QString::fromLatin1(myWsdlNamespace);
     }
-    static KDSoapMessage countryMessage(bool slow = false) {
+    static KDSoapMessage countryMessage(bool slow = false)
+    {
         KDSoapMessage message;
         message.addArgument(QLatin1String("employeeName"), QString::fromUtf8(slow ? "Slow" : "David Ä Faure"));
         return message;
     }
-    static QString expectedCountry() {
+    static QString expectedCountry()
+    {
         return QString::fromUtf8("David Ä Faure France");
     }
 
@@ -1341,7 +1394,8 @@ private:
         QVERIFY(xmlBufferCompare(xmlResponse, expectedCountryResponse(employeeName)));
     }
 
-    static KDSoapMessage getStuffMessage() {
+    static KDSoapMessage getStuffMessage()
+    {
         KDSoapMessage message;
         message.addArgument(QLatin1String("foo"), 4);
         message.addArgument(QLatin1String("bar"), float(3.2));
@@ -1350,7 +1404,8 @@ private:
         message.addArgument(QLatin1String("dateTime"), dt);
         return message;
     }
-    static KDSoapHeaders getStuffRequestHeaders() {
+    static KDSoapHeaders getStuffRequestHeaders()
+    {
         KDSoapMessage header1;
         header1.addArgument(QString::fromLatin1("header1"), QString::fromLatin1("headerValue"));
         KDSoapHeaders headers;
@@ -1358,7 +1413,7 @@ private:
         return headers;
     }
 
-    static QList<QByteArray> readLines(const QString& fileName)
+    static QList<QByteArray> readLines(const QString &fileName)
     {
         Q_ASSERT(!fileName.isEmpty());
         Q_ASSERT(QFile::exists(fileName));
@@ -1370,13 +1425,14 @@ private:
         QByteArray line;
         do {
             line = file.readLine();
-            if (!line.isEmpty())
+            if (!line.isEmpty()) {
                 lines.append(line);
-        } while(!line.isEmpty());
+            }
+        } while (!line.isEmpty());
         return lines;
     }
 
-    void compareLines(const QList<QByteArray>& expectedLines, const QString& fileName)
+    void compareLines(const QList<QByteArray> &expectedLines, const QString &fileName)
     {
         QList<QByteArray> lines = readLines(fileName);
         //qDebug() << lines;
@@ -1397,7 +1453,7 @@ private:
 QTEST_MAIN(ServerTest)
 
 // TODO: generate this method (needs a .wsdl file)
-void CountryServerObject::processRequest(const KDSoapMessage &request, KDSoapMessage &response, const QByteArray& soapAction)
+void CountryServerObject::processRequest(const KDSoapMessage &request, KDSoapMessage &response, const QByteArray &soapAction)
 {
     setResponseNamespace(QLatin1String(myWsdlNamespace));
     const QByteArray method = request.name().toLatin1();
@@ -1413,7 +1469,7 @@ void CountryServerObject::processRequest(const KDSoapMessage &request, KDSoapMes
             response.addArgument(QLatin1String("employeeCountry"), ret);
         }
     } else if (method == "getStuff") {
-        const KDSoapValueList& values = request.childValues();
+        const KDSoapValueList &values = request.childValues();
         const KDSoapValue valueFoo = values.child(QLatin1String("foo"));
         const KDSoapValue valueBar = values.child(QLatin1String("bar"));
         const KDSoapValue valueDateTime = values.child(QLatin1String("dateTime"));
@@ -1421,9 +1477,15 @@ void CountryServerObject::processRequest(const KDSoapMessage &request, KDSoapMes
             response.setFault(true);
             response.addArgument(QLatin1String("faultcode"), QLatin1String("Server.RequiredArgumentMissing"));
             QStringList argNames;
-            if (valueFoo.isNull()) argNames << QLatin1String("foo");
-            if (valueBar.isNull()) argNames << QLatin1String("bar");
-            if (valueDateTime.isNull()) argNames << QLatin1String("dateTime");
+            if (valueFoo.isNull()) {
+                argNames << QLatin1String("foo");
+            }
+            if (valueBar.isNull()) {
+                argNames << QLatin1String("bar");
+            }
+            if (valueDateTime.isNull()) {
+                argNames << QLatin1String("dateTime");
+            }
             response.addArgument(QLatin1String("faultstring"), argNames.join(QChar::fromLatin1(',')));
             return;
         }
@@ -1435,7 +1497,7 @@ void CountryServerObject::processRequest(const KDSoapMessage &request, KDSoapMes
             response.setValue(ret);
         }
     } else if (method == "hexBinaryTest") {
-        const KDSoapValueList& values = request.childValues();
+        const KDSoapValueList &values = request.childValues();
         const QByteArray input1 = QByteArray::fromBase64(values.child(QLatin1String("a")).value().toByteArray());
         //qDebug() << "input1=" << input1;
         const QByteArray input2 = QByteArray::fromHex(values.child(QLatin1String("b")).value().toByteArray());
@@ -1448,6 +1510,5 @@ void CountryServerObject::processRequest(const KDSoapMessage &request, KDSoapMes
         KDSoapServerObjectInterface::processRequest(request, response, soapAction);
     }
 }
-
 
 #include "servertest.moc"

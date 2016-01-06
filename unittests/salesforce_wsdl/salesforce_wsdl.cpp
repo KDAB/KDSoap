@@ -103,7 +103,7 @@ private Q_SLOTS:
             QByteArray(xmlEnvBegin11()) +
             "><soap:Body>"
             "<n1:query xmlns:n1=\"urn:partner.soap.sforce.com\">"
-             "<n1:queryString>Select Id, FirstName, LastName from Contact</n1:queryString>"
+            "<n1:queryString>Select Id, FirstName, LastName from Contact</n1:queryString>"
             "</n1:query>"
             "</soap:Body>" + xmlEnvEnd()
             + '\n'; // added by QXmlStreamWriter::writeEndDocument
@@ -111,31 +111,32 @@ private Q_SLOTS:
     }
 
 private:
-    static QByteArray queryResponse() {
+    static QByteArray queryResponse()
+    {
         return QByteArray(xmlEnvBegin11()) + " xmlns:sf=\"urn:sobject.partner.soap.sforce.com\"><soap:Body>"
-              "<queryResponse>"
+               "<queryResponse>"
                "<result xsi:type=\"QueryResult\">"
-                "<done>true</done>"
-                "<queryLocator xsi:nil=\"true\"/>"
-                "<records xsi:type=\"sf:sObject\">"
-                  "<sf:type>Contact</sf:type>"
-                  "<sf:Id>01</sf:Id><sf:Id>01</sf:Id>"
-                  "<sf:FirstName>Kalle</sf:FirstName><sf:LastName>Dalheimer</sf:LastName>"
-                "</records>"
-                "<records xsi:type=\"sf:sObject\">"
-                  "<sf:type>Contact</sf:type>"
-                  "<sf:Id>02</sf:Id><sf:Id>02</sf:Id>"
-                  "<sf:FirstName>David</sf:FirstName><sf:LastName>Faure</sf:LastName>"
-                "</records>"
-                "<records xsi:type=\"sf:sObject\">"
-                  "<sf:type>Contact</sf:type>"
-                  "<sf:Id>03</sf:Id><sf:Id>03</sf:Id>"
-                  "<sf:FirstName>Kevin</sf:FirstName><sf:LastName>Krammer</sf:LastName>"
-                "</records>"
-                "<size>3</size>"
+               "<done>true</done>"
+               "<queryLocator xsi:nil=\"true\"/>"
+               "<records xsi:type=\"sf:sObject\">"
+               "<sf:type>Contact</sf:type>"
+               "<sf:Id>01</sf:Id><sf:Id>01</sf:Id>"
+               "<sf:FirstName>Kalle</sf:FirstName><sf:LastName>Dalheimer</sf:LastName>"
+               "</records>"
+               "<records xsi:type=\"sf:sObject\">"
+               "<sf:type>Contact</sf:type>"
+               "<sf:Id>02</sf:Id><sf:Id>02</sf:Id>"
+               "<sf:FirstName>David</sf:FirstName><sf:LastName>Faure</sf:LastName>"
+               "</records>"
+               "<records xsi:type=\"sf:sObject\">"
+               "<sf:type>Contact</sf:type>"
+               "<sf:Id>03</sf:Id><sf:Id>03</sf:Id>"
+               "<sf:FirstName>Kevin</sf:FirstName><sf:LastName>Krammer</sf:LastName>"
+               "</records>"
+               "<size>3</size>"
                "</result>"
-              "</queryResponse>"
-              "</soap:Body>" + xmlEnvEnd();
+               "</queryResponse>"
+               "</soap:Body>" + xmlEnvEnd();
     }
 };
 

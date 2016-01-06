@@ -42,19 +42,19 @@ TestEnum::TestEnum()
 
 void TestEnum::test()
 {
-  // bunch of tests to prove numbers are well handled
-  TNS__AudienceRating ar;
-  ar.setType(TNS__AudienceRating::_12);
-  ar.setType(TNS__AudienceRating::_6);
-  ar.setType(TNS__AudienceRating::_18);
-  ar.setType(TNS__AudienceRating::_16);
-  ar.setType(TNS__AudienceRating::Http___f_q_d_n_ext_enum2);
-  ar.setType(TNS__AudienceRating::_6Bis);
+    // bunch of tests to prove numbers are well handled
+    TNS__AudienceRating ar;
+    ar.setType(TNS__AudienceRating::_12);
+    ar.setType(TNS__AudienceRating::_6);
+    ar.setType(TNS__AudienceRating::_18);
+    ar.setType(TNS__AudienceRating::_16);
+    ar.setType(TNS__AudienceRating::Http___f_q_d_n_ext_enum2);
+    ar.setType(TNS__AudienceRating::_6Bis);
 
-  QVariant var = ar.serialize();
-  ar.deserialize(var);
+    QVariant var = ar.serialize();
+    ar.deserialize(var);
 
-  QCOMPARE(ar.type(), TNS__AudienceRating::_6Bis);
+    QCOMPARE(ar.type(), TNS__AudienceRating::_6Bis);
 }
 
 QTEST_MAIN(TestEnum)

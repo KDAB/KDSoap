@@ -36,7 +36,7 @@ private slots:
     void test();
 
 private:
-     PREFIX test_client;
+    PREFIX test_client;
 };
 
 #endif // TESTCALL_H

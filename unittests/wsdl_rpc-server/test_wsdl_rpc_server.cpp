@@ -43,13 +43,20 @@ using namespace KDSoapUnitTestHelpers;
 class HelloServerObject : public Hello_ServiceServerBase
 {
 public:
-    virtual QString sayHello( const QString& firstName, const QString& lastName ) {
+    virtual QString sayHello(const QString &firstName, const QString &lastName)
+    {
         m_receivedFirstName = firstName;
         m_receivedLastName = lastName;
         return QString::fromLatin1("You said: ") + firstName + QLatin1Char(' ') + lastName + QLatin1String("!");
     }
-    QString receivedFirstName() const { return m_receivedFirstName; }
-    QString receivedLastName() const { return m_receivedLastName; }
+    QString receivedFirstName() const
+    {
+        return m_receivedFirstName;
+    }
+    QString receivedLastName() const
+    {
+        return m_receivedLastName;
+    }
 private:
     QString m_receivedFirstName;
     QString m_receivedLastName;
@@ -59,15 +66,22 @@ class HelloServer : public KDSoapServer
 {
     Q_OBJECT
 public:
-    HelloServer() : KDSoapServer(), m_lastServerObject(0) {
+    HelloServer() : KDSoapServer(), m_lastServerObject(0)
+    {
         setPath(QLatin1String("/hello"));
     }
-    virtual QObject* createServerObject() { m_lastServerObject = new HelloServerObject; return m_lastServerObject; }
-    HelloServerObject* lastServerObject() { return m_lastServerObject; }
+    virtual QObject *createServerObject()
+    {
+        m_lastServerObject = new HelloServerObject;
+        return m_lastServerObject;
+    }
+    HelloServerObject *lastServerObject()
+    {
+        return m_lastServerObject;
+    }
 private:
-    HelloServerObject* m_lastServerObject;
+    HelloServerObject *m_lastServerObject;
 };
-
 
 class RpcExampleServerObject : public RpcExampleServerBase
 {
@@ -75,7 +89,7 @@ public:
     RpcExampleServerObject()
         : m_heartbeatCalled(false)
     {}
-    virtual RPCEXAMPLE__ListKeysResult listKeys( const RPCEXAMPLE__ListKeysParams& params)
+    virtual RPCEXAMPLE__ListKeysResult listKeys(const RPCEXAMPLE__ListKeysParams &params)
     {
         Q_UNUSED(params)
         RPCEXAMPLE__ListKeysResult result;
@@ -83,25 +97,25 @@ public:
         return result;
     }
 
-    virtual bool pullFile(const RPCEXAMPLE__PullFileParams& params)
+    virtual bool pullFile(const RPCEXAMPLE__PullFileParams &params)
     {
         Q_UNUSED(params)
         return false;
     }
 
-    virtual bool putFile(const RPCEXAMPLE__PutFileParams& params)
+    virtual bool putFile(const RPCEXAMPLE__PutFileParams &params)
     {
         Q_UNUSED(params)
         return false;
     }
 
-    virtual QString getFile(const RPCEXAMPLE__GetFileParams& params)
+    virtual QString getFile(const RPCEXAMPLE__GetFileParams &params)
     {
         Q_UNUSED(params)
         return QString();
     }
 
-    virtual RPCEXAMPLE__ExecFileResult execFile( const RPCEXAMPLE__ExecFileParams& params)
+    virtual RPCEXAMPLE__ExecFileResult execFile(const RPCEXAMPLE__ExecFileParams &params)
     {
         Q_UNUSED(params)
         return RPCEXAMPLE__ExecFileResult();
@@ -112,46 +126,49 @@ public:
         return RPCEXAMPLE__ListFilesResult();
     }
 
-    virtual bool setKey(const RPCEXAMPLE__SetKeyParams& params)
+    virtual bool setKey(const RPCEXAMPLE__SetKeyParams &params)
     {
         Q_UNUSED(params)
         return false;
     }
 
-    virtual QString getKey(const RPCEXAMPLE__GetKeyParams& params)
+    virtual QString getKey(const RPCEXAMPLE__GetKeyParams &params)
     {
         Q_UNUSED(params)
         return QString();
     }
 
-    virtual bool clearKey(const RPCEXAMPLE__ClearKeyParams& params)
+    virtual bool clearKey(const RPCEXAMPLE__ClearKeyParams &params)
     {
         Q_UNUSED(params)
         return false;
     }
 
-    virtual QString execAction(const RPCEXAMPLE__ExecActionParams& params)
+    virtual QString execAction(const RPCEXAMPLE__ExecActionParams &params)
     {
         Q_UNUSED(params)
         return QString();
     }
 
-    virtual void heartbeat(const RPCEXAMPLE__HeartbeatParams& params)
+    virtual void heartbeat(const RPCEXAMPLE__HeartbeatParams &params)
     {
         Q_UNUSED(params);
         m_heartbeatCalled = true;
     }
 
-    virtual void legacyHeartbeat(const RPCEXAMPLE__LegacyHeartbeatParams& params)
+    virtual void legacyHeartbeat(const RPCEXAMPLE__LegacyHeartbeatParams &params)
     {
         Q_UNUSED(params)
     }
 
-    virtual void message(const RPCEXAMPLE__MessageParams& params)
+    virtual void message(const RPCEXAMPLE__MessageParams &params)
     {
         Q_UNUSED(params)
     }
-    bool heartbeatCalled() const { return m_heartbeatCalled; }
+    bool heartbeatCalled() const
+    {
+        return m_heartbeatCalled;
+    }
 private:
     bool m_heartbeatCalled;
 };
@@ -160,13 +177,21 @@ class RpcExampleServer : public KDSoapServer
 {
     Q_OBJECT
 public:
-    RpcExampleServer() : KDSoapServer(), m_lastServerObject(0) {
+    RpcExampleServer() : KDSoapServer(), m_lastServerObject(0)
+    {
         setPath(QLatin1String("/rpcexample"));
     }
-    virtual QObject* createServerObject() { m_lastServerObject = new RpcExampleServerObject; return m_lastServerObject; }
-    RpcExampleServerObject* lastServerObject() { return m_lastServerObject; }
+    virtual QObject *createServerObject()
+    {
+        m_lastServerObject = new RpcExampleServerObject;
+        return m_lastServerObject;
+    }
+    RpcExampleServerObject *lastServerObject()
+    {
+        return m_lastServerObject;
+    }
 private:
-    RpcExampleServerObject* m_lastServerObject;
+    RpcExampleServerObject *m_lastServerObject;
 };
 
 class RPCServerTest : public QObject
@@ -178,59 +203,59 @@ private:
     static QByteArray expectedHelloRequest() // http://oreilly.com/catalog/webservess/chapter/ch06.html
     {
         return QByteArray(xmlEnvBegin11()) + ">"
-        "<soap:Body>"
-        "<n1:sayHello xmlns:n1=\"http://www.ecerami.com/wsdl/HelloService.wsdl\">"
-        /*"<n1:sayHello xmlns:n1=\"urn:examples:helloservice\">" // TODO! Add support for * namespace="urn:examples:helloservice" */
-             "<firstName xsi:type=\"xsd:string\">Hello</firstName>"
-             "<lastName xsi:type=\"xsd:string\">World</lastName>"
-        "</n1:sayHello>"
-        "</soap:Body>" + xmlEnvEnd()
-            + '\n'; // added by QXmlStreamWriter::writeEndDocument
+               "<soap:Body>"
+               "<n1:sayHello xmlns:n1=\"http://www.ecerami.com/wsdl/HelloService.wsdl\">"
+               /*"<n1:sayHello xmlns:n1=\"urn:examples:helloservice\">" // TODO! Add support for * namespace="urn:examples:helloservice" */
+               "<firstName xsi:type=\"xsd:string\">Hello</firstName>"
+               "<lastName xsi:type=\"xsd:string\">World</lastName>"
+               "</n1:sayHello>"
+               "</soap:Body>" + xmlEnvEnd()
+               + '\n'; // added by QXmlStreamWriter::writeEndDocument
     }
     static QByteArray helloResponse()
     {
         return "<?xml version='1.0' encoding='UTF-8'?>"
-        "<SOAP-ENV:Envelope "
-           "xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" "
-           "xmlns:xsi=\"http://www.w3.org/1999/XMLSchema-instance\" "
-           "xmlns:xsd=\"http://www.w3.org/1999/XMLSchema\">"
-           "<SOAP-ENV:Body>"
-              "<ns1:sayHelloResponse "
-                 "xmlns:ns1=\"urn:examples:helloservice\" "
-                 "SOAP-ENV:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\">"
-        "<return xsi:type=\"xsd:string\">You said: Hello World!</return>"
-              "</ns1:sayHelloResponse>"
-           "</SOAP-ENV:Body>"
-        "</SOAP-ENV:Envelope>";
+               "<SOAP-ENV:Envelope "
+               "xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" "
+               "xmlns:xsi=\"http://www.w3.org/1999/XMLSchema-instance\" "
+               "xmlns:xsd=\"http://www.w3.org/1999/XMLSchema\">"
+               "<SOAP-ENV:Body>"
+               "<ns1:sayHelloResponse "
+               "xmlns:ns1=\"urn:examples:helloservice\" "
+               "SOAP-ENV:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\">"
+               "<return xsi:type=\"xsd:string\">You said: Hello World!</return>"
+               "</ns1:sayHelloResponse>"
+               "</SOAP-ENV:Body>"
+               "</SOAP-ENV:Envelope>";
     }
 
     static QByteArray expectedListKeysRequest()
     {
         return QByteArray(xmlEnvBegin12()) + ">"
-        "<soap:Body>"
-         "<n1:listKeys xmlns:n1=\"urn:RpcExample\">"
-          "<params xsi:type=\"n1:listKeysParams\">"
-           "<module xsi:type=\"xsd:string\">Firefox</module>"
-           "<base xsi:type=\"xsd:string\"></base>"
-          "</params>"
-         "</n1:listKeys>"
-        "</soap:Body>" + xmlEnvEnd()
-            + '\n'; // added by QXmlStreamWriter::writeEndDocument
+               "<soap:Body>"
+               "<n1:listKeys xmlns:n1=\"urn:RpcExample\">"
+               "<params xsi:type=\"n1:listKeysParams\">"
+               "<module xsi:type=\"xsd:string\">Firefox</module>"
+               "<base xsi:type=\"xsd:string\"></base>"
+               "</params>"
+               "</n1:listKeys>"
+               "</soap:Body>" + xmlEnvEnd()
+               + '\n'; // added by QXmlStreamWriter::writeEndDocument
     }
     static QByteArray listKeysResponse()
     {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-        "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://www.w3.org/2003/05/soap-envelope\" xmlns:SOAP-ENC=\"http://www.w3.org/2003/05/soap-encoding\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:RpcExample=\"urn:RpcExample\">"
-         "<SOAP-ENV:Body>"
-          "<RpcExample:listKeysResponse SOAP-ENV:encodingStyle=\"http://www.w3.org/2003/05/soap-encoding\">"
-           "<result>"
-            "<keys>test1</keys>"
-            "<keys>test2</keys>"
-            "<keys>test3</keys>"
-           "</result>"
-          "</RpcExample:listKeysResponse>"
-         "</SOAP-ENV:Body>"
-        "</SOAP-ENV:Envelope>";
+               "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://www.w3.org/2003/05/soap-envelope\" xmlns:SOAP-ENC=\"http://www.w3.org/2003/05/soap-encoding\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:RpcExample=\"urn:RpcExample\">"
+               "<SOAP-ENV:Body>"
+               "<RpcExample:listKeysResponse SOAP-ENV:encodingStyle=\"http://www.w3.org/2003/05/soap-encoding\">"
+               "<result>"
+               "<keys>test1</keys>"
+               "<keys>test2</keys>"
+               "<keys>test3</keys>"
+               "</result>"
+               "</RpcExample:listKeysResponse>"
+               "</SOAP-ENV:Body>"
+               "</SOAP-ENV:Envelope>";
     }
 
 private Q_SLOTS:
@@ -254,7 +279,7 @@ private Q_SLOTS:
     void serverTestHello() // same call, but test both client and server.
     {
         TestServerThread<HelloServer> serverThread;
-        HelloServer* server = serverThread.startThread();
+        HelloServer *server = serverThread.startThread();
 
         Hello_Service service;
         service.setEndPoint(server->endPoint());
@@ -270,7 +295,7 @@ private Q_SLOTS:
     void syncOneWay() // client/server call for a one-way call
     {
         TestServerThread<RpcExampleServer> serverThread;
-        RpcExampleServer* server = serverThread.startThread();
+        RpcExampleServer *server = serverThread.startThread();
 
         RpcExample service;
         service.setEndPoint(server->endPoint());
@@ -284,7 +309,7 @@ private Q_SLOTS:
     void asyncOneWayCheckNoResponse()
     {
         TestServerThread<RpcExampleServer> serverThread;
-        RpcExampleServer* server = serverThread.startThread();
+        RpcExampleServer *server = serverThread.startThread();
 
         RpcExample service;
         service.setEndPoint(server->endPoint());
@@ -315,7 +340,7 @@ private Q_SLOTS:
     void asyncOneWay() // client/server call for a one-way call, using async methods
     {
         TestServerThread<RpcExampleServer> serverThread;
-        RpcExampleServer* server = serverThread.startThread();
+        RpcExampleServer *server = serverThread.startThread();
 
         RpcExample service;
         service.setEndPoint(server->endPoint());
@@ -363,7 +388,7 @@ private Q_SLOTS:
     void serverTestListKeys()
     {
         TestServerThread<RpcExampleServer> serverThread;
-        RpcExampleServer* server = serverThread.startThread();
+        RpcExampleServer *server = serverThread.startThread();
 
         RpcExample service;
         service.setEndPoint(server->endPoint());
