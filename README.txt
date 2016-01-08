@@ -12,8 +12,8 @@ under the terms of:
     (except libkdsoap-server, see LICENSE.AGPL3-modified.txt)
 * the GPL (see LICENSE.GPL.txt for details)
     (except libkdsoap-server, see LICENSE.AGPL3-modified.txt)
-* the KDAB commercial license, provided that you buy a license, see
-http://www.kdab.com/kdab-products/prices/
+* the KDAB commercial license, provided that you buy a license.
+  please contact sales@kdab.com if you are interested in buying commercial licenses.
 
 KD Soap requires Qt 4.7.0 or newer.
 
