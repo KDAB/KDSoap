@@ -32,9 +32,9 @@ target_link_libraries(kdsoap-server kdsoap ${QT_LIBRARIES})
 set_target_properties(kdsoap-server PROPERTIES VERSION ${${PROJECT_NAME}_VERSION})
 
 # append d to debug libraries for windows builds
-if (WIN32)
-	set_target_properties (kdsoap-server PROPERTIES DEBUG_POSTFIX "d")
-endif ()
+if(WIN32)
+    set_target_properties (kdsoap-server PROPERTIES DEBUG_POSTFIX "d")
+endif()
 
 if(KDSoap_IS_ROOT_PROJECT)
   include(ECMGenerateHeaders)
