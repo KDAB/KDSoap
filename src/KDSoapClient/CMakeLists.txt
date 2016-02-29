@@ -34,6 +34,13 @@ add_library(kdsoap ${KDSoap_LIBRARY_MODE} ${SOURCES})
 target_link_libraries(kdsoap ${QT_LIBRARIES})
 set_target_properties(kdsoap PROPERTIES VERSION ${${PROJECT_NAME}_VERSION})
 
+# append d to debug libraries for windows builds
+if(WIN32)
+  string(CONCAT debug_postfix "d" ${${PROJECT_NAME}_VERSION_MAJOR})
+  set_target_properties(kdsoap PROPERTIES DEBUG_POSTFIX ${debug_postfix})
+  set_target_properties(kdsoap PROPERTIES RELWITHDEBINFO_POSTFIX ${debug_postfix})
+endif()
+
 if(KDSoap_IS_ROOT_PROJECT)
   include(ECMGenerateHeaders)
   ecm_generate_headers(client_HEADERS
