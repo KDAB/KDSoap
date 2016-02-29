@@ -1,27 +1,40 @@
+Introduction
+============
 KD Soap is a Qt-based client-side and server-side SOAP component.
 
 It can be used to create client applications for web services and also provides
 the means to create web services without the need for any further component such
 as a dedicated web server.
 
-For a full description of KDSoap, see http://www.kdab.com/kdab-products/kd-soap/
+For more information, see http://www.kdab.com/kdab-products/kd-soap
 
-KD Soap is (C) 2010-2016, Klaralvdalens Datakonsult. Licensed customers
-receive the full source code of the application according to the terms
-of the
-        KD Soap COMMERCIAL LICENSE AGREEMENT (non-US customers)
-or the
-        KD Soap COMMERCIAL LICENSE AGREEMENT - US (US customers)
+Contributing
+============
+KDAB will happily accept external contributions, but substantial
+contributions will require a signed Copyright Assignment Agreement.
+Contact support@kdab.com for more information.
+
+Licensing
+=========
+Copyright (C) 2010-2016 Klarälvdalens Datakonsult AB, a KDAB Group company, <info@kdab.com>
+
+Commercial licensing terms are available in the included file
+        LICENSE.txt (for non-US customers)
+or
+        LICENSE.US.txt (for US customers)
 , respectively.
 
 For terms of redistribution, refer to the license agreement.
 
-KD Soap requires Qt 4.7.0 or newer.
+About KDAB
+==========
+KD Soap is supported and maintained by Klarälvdalens Datakonsult AB (KDAB).
 
-See INSTALL.txt for installation instructions.
+KDAB, the Qt experts, provide consulting and mentoring for developing
+Qt applications from scratch and in porting from all popular and legacy
+frameworks to Qt. We continue to help develop parts of Qt and are one
+of the major contributors to the Qt Project. We can give advanced or
+standard trainings anywhere around the globe.
 
-For more information, please refer to the KD Soap Programmer's Manual.
 
-With best regards,
-
-the KDAB KD Soap team.
+KD SOAP and the KD SOAP image are trademarks of Klarälvdalens Datakonsult AB.
