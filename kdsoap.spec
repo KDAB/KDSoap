@@ -11,15 +11,15 @@ Vendor:         Klaralvdalens Datakonsult AB (KDAB)
 Packager:       Klaralvdalens Datakonsult AB (KDAB) <info@kdab.com>
 
 %if %{defined suse_version}
-BuildRequires:  libqt5-qtbase-devel
+BuildRequires:  libqt4-devel
 %endif
 
 %if %{defined fedora}
-BuildRequires:  qt5-qtbase-devel desktop-file-utils
+BuildRequires:  gcc-c++ qt-devel desktop-file-utils
 %endif
 
 %if %{defined rhel}
-BuildRequires:  qt5-qtbase-devel desktop-file-utils
+BuildRequires:  gcc-c++ qt-devel desktop-file-utils
 %endif
 
 %description
