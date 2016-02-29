@@ -1,5 +1,5 @@
 Name:           kdsoap
-Version:        1.3.98
+Version:        1.4.99
 Release:        1
 Summary:        A Qt-based client-side and server-side SOAP component
 Source:         %{name}-%{version}.tar.gz
@@ -11,15 +11,15 @@ Vendor:         Klaralvdalens Datakonsult AB (KDAB)
 Packager:       Klaralvdalens Datakonsult AB (KDAB) <info@kdab.com>
 
 %if %{defined suse_version}
-BuildRequires:  libqt4-devel cmake
+BuildRequires:  libqt5-qtbase-devel
 %endif
 
 %if %{defined fedora}
-BuildRequires:  gcc-c++ qt-devel cmake desktop-file-utils
+BuildRequires:  qt5-qtbase-devel desktop-file-utils
 %endif
 
 %if %{defined rhel}
-BuildRequires:  gcc-c++ qt-devel cmake desktop-file-utils
+BuildRequires:  qt5-qtbase-devel desktop-file-utils
 %endif
 
 %description
@@ -44,14 +44,11 @@ develop programs which need to access web services using the SOAP protocol.
 %setup -q
 
 %build
-%if %{defined fedora} || %{defined rhel}
-%cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
-%else
+touch .license.accepted
 %if "%{_lib}"=="lib64"
-cmake . -DLIB_SUFFIX=64 -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
+QMAKE_ARGS="LIB_SUFFIX=64" ./configure.sh -shared -release -prefix %{buildroot}/usr
 %else
-cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
-%endif
+./configure.sh -shared -release -prefix %{buildroot}/usr
 %endif
 %__make %{?_smp_mflags}
 
@@ -67,22 +64,25 @@ cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
 %files
 %defattr(-,root,root)
 %{_prefix}/share/doc/KDSoap
-%{_libdir}/libkdsoap.so.%{version}
-%{_libdir}/libkdsoap-server.so.%{version}
+%{_libdir}/libkdsoap.so.*
+%{_libdir}/libkdsoap-server.so.*
 
 %files devel
 %defattr(-,root,root)
 %{_bindir}/kdwsdl2cpp
 %{_prefix}/share/mkspecs
-%{_prefix}/share/mkspecs/features
-%{_prefix}/share/mkspecs/features/kdsoap.prf
 %{_includedir}/KDSoapClient
 %{_includedir}/KDSoapServer
 %{_libdir}/libkdsoap.so
 %{_libdir}/libkdsoap-server.so
-%{_libdir}/cmake/KDSoap
 
 %changelog
+* Mon Feb 29 2016 Allen Winter <allen.winter@kdab.com> 1.4.99
+  1.5.0 RC1
+* Thu Jun 25 2015 Allen Winter <allen.winter@kdab.com> 1.4.0
+  1.4.0 with the autogen buildsystem
+* Sun Aug 24 2014 Allen Winter <allen.winter@kdab.com> 1.4.0
+  1.4.0 Final
 * Tue Aug 12 2014 Allen Winter <allen.winter@kdab.com> 1.3.98
   1.4.0 RC1
 * Thu Aug 07 2014 Allen Winter <allen.winter@kdab.com> 1.3.1
