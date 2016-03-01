@@ -38,7 +38,6 @@ set_target_properties(kdsoap PROPERTIES VERSION ${${PROJECT_NAME}_VERSION})
 if(WIN32)
   string(CONCAT debug_postfix "d" ${${PROJECT_NAME}_VERSION_MAJOR})
   set_target_properties(kdsoap PROPERTIES DEBUG_POSTFIX ${debug_postfix})
-  set_target_properties(kdsoap PROPERTIES RELWITHDEBINFO_POSTFIX ${debug_postfix})
 endif()
 
 if(KDSoap_IS_ROOT_PROJECT)
