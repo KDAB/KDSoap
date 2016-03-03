@@ -1,6 +1,5 @@
 TEMPLATE = lib
-TARGET = kdsoap-server
-CONFIG(debug, debug|release):!unix:TARGET = $${TARGET}d
+TARGET = $${KDSOAPSERVERLIB}
 QT -= gui
 
 QT += network

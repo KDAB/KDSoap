@@ -32,6 +32,7 @@ staticlib {
     win32 {
       DLLDESTDIR = $${TOP_BUILD_DIR}/bin
       CONFIG += dll
+      CONFIG += skip_target_version_ext
     }
   }
 }

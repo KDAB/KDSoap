@@ -33,8 +33,14 @@ set_target_properties(kdsoap-server PROPERTIES VERSION ${${PROJECT_NAME}_VERSION
 
 # append d to debug libraries for windows builds
 if(WIN32)
-  string(CONCAT debug_postfix "d" ${${PROJECT_NAME}_VERSION_MAJOR})
-  set_target_properties(kdsoap-server PROPERTIES DEBUG_POSTFIX ${debug_postfix})
+  set(postfix ${${PROJECT_NAME}_VERSION_MAJOR})
+  string(TOUPPER ${CMAKE_BUILD_TYPE} UPPER_BUILD_TYPE)
+  if(${UPPER_BUILD_TYPE} MATCHES "^DEBUG")
+    string(CONCAT postfix ${postfix} "d")
+    set_target_properties(kdsoap-server PROPERTIES DEBUG_POSTFIX ${postfix})
+  else()
+    set_target_properties(kdsoap-server PROPERTIES ${UPPER_BUILD_TYPE}_POSTFIX ${postfix})
+  endif()
 endif()
 
 if(KDSoap_IS_ROOT_PROJECT)
