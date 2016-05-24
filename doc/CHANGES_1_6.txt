@@ -1,0 +1,16 @@
+General:
+========
+*
+
+Client-side:
+============
+* 
+
+Server-side:
+============
+*
+
+WSDL parser / code generator changes, applying to both client and server side:
+================================================================
+* RPC mode: escape part names which look like C++ keywords (e.g. "delete")
+

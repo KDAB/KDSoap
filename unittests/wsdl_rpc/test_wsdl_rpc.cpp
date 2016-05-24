@@ -91,7 +91,8 @@ private Q_SLOTS:
                                           QString::fromLatin1("David Faure"),
                                           QString::fromLatin1("France"),
                                           achievements,
-                                          jeansSize);
+                                          jeansSize,
+                                          0);
         if (!service.lastError().isEmpty()) {
             qDebug() << service.lastError();
         }
@@ -136,7 +137,7 @@ private Q_SLOTS:
             ret = service.addEmployee(employeeType,
                                       QString::fromUtf8("Hervé"),
                                       QString::fromUtf8("фгн7"), // random russian letters
-                                      achievements, jeansSize);
+                                      achievements, jeansSize, 0);
             QVERIFY(service.lastError().isEmpty());
             QCOMPARE(ret, QString::fromLatin1("Foo"));
             QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
@@ -150,7 +151,7 @@ private Q_SLOTS:
             ret = service.addEmployee(employeeType,
                                       QString::fromUtf8("Hervé"),
                                       QString::fromUtf8("фгн7"), // random russian letters
-                                      achievements, jeansSize);
+                                      achievements, jeansSize, 0);
             QByteArray expectedRequestXml = requestXmlTemplate;
             expectedRequestXml.replace("%1", "<soap:Header/>");
             QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
@@ -280,7 +281,8 @@ private:
                "<label xsi:type=\"xsd:string\">C++</label>"
                "</item>"
                "</employeeAchievements>"
-               "<employeeJeansSize xsi:type=\"n1:JeansSize\">24</employeeJeansSize>";
+               "<employeeJeansSize xsi:type=\"n1:JeansSize\">24</employeeJeansSize>"
+               "<delete xsi:type=\"xsd:int\">0</delete>";
     }
 
     static QByteArray countryResponse()
