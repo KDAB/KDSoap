@@ -142,6 +142,7 @@
     <part name='employeeCountry' type='kdab:LimitedString'/>
     <part name='employeeAchievements' type='kdab:EmployeeAchievements'/>
     <part name='employeeJeansSize' type='kdab:JeansSize'/>
+    <part name='delete' type='xsd:int'/>     <!-- a test for a reserved keyword -->
   </message>
   <message name='addEmployeeResponse'>
     <part name='bstrReturn' type='xsd:string'/>

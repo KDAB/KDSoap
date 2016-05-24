@@ -506,7 +506,7 @@ QName Converter::elementNameForPart(const Part &part, bool *qualified, bool *nil
 
 void Converter::addMessageArgument(KODE::Code &code, const SoapBinding::Style &bindingStyle, const Part &part, const QString &localVariableName, const QByteArray &messageName, bool varIsMember)
 {
-    const QString partname = varIsMember ? QLatin1Char('m') + upperlize(localVariableName) :  lowerlize(localVariableName);
+    const QString partname = varIsMember ? QLatin1Char('m') + upperlize(localVariableName) : mNameMapper.escape(lowerlize(localVariableName));
     // In document style, the "part" is directly added as arguments
     // See http://www.ibm.com/developerworks/webservices/library/ws-whichwsdl/
     if (bindingStyle == SoapBinding::DocumentStyle) {
