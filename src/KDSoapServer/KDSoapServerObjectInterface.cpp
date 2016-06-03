@@ -89,6 +89,7 @@ void KDSoapServerObjectInterface::doneProcessingRequestWithPath(const KDSoapServ
     d->m_faultString = otherInterface.d->m_faultString;
     d->m_faultActor = otherInterface.d->m_faultActor;
     d->m_detail = otherInterface.d->m_detail;
+    d->m_detailValue = otherInterface.d->m_detailValue;
     d->m_responseHeaders = otherInterface.d->m_responseHeaders;
     d->m_responseNamespace = otherInterface.d->m_responseNamespace;
 }
