@@ -64,4 +64,6 @@ standard trainings anywhere around the globe.
 
 Please visit http://www.kdab.com to meet the people who write code like this.
 
-KD SOAP and the KD SOAP image are trademarks of Klarälvdalens Datakonsult AB.
+KD SOAP and the KD SOAP logo are registered trademarks of Klaralvdalens Datakonsult AB
+in the European Union, the Unites States, and/or other countries.  Other product and
+company names and logos may be trademarks or registered trademarks of their respective companies.
