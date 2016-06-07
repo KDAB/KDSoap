@@ -77,7 +77,7 @@ QMAKE_ARGS="LIB_SUFFIX=64" ./configure.sh -shared -release -prefix %{buildroot}/
 %{_libdir}/libkdsoap-server.so
 
 %changelog
-* Mon Jun 06 2016 Allen Winter <allen.winter@kdab.com> 1.5.1
+* Mon Jun 07 2016 Allen Winter <allen.winter@kdab.com> 1.5.1
   1.5.1 bug fix
 * Thu Mar 03 2016 Allen Winter <allen.winter@kdab.com> 1.5.0
   1.5.0 Final
