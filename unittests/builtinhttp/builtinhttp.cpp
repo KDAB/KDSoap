@@ -69,8 +69,13 @@ private Q_SLOTS:
         KDSoapMessage message;
         KDSoapMessage ret = client.call(QLatin1String("Method1"), message);
         QVERIFY(ret.isFault());
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+        QCOMPARE(ret.faultAsString(), QString::fromLatin1(
+                     "Fault code 203: Error transferring %1 - server replied: Not Found").arg(server.endPoint()));
+#else
         QCOMPARE(ret.faultAsString(), QString::fromLatin1(
                      "Fault code 203: Error downloading %1 - server replied: Not Found").arg(server.endPoint()));
+#endif
     }
 
     void testInvalidXML()
