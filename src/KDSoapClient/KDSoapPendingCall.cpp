@@ -94,6 +94,7 @@ void KDSoapPendingCall::Private::parseReply()
 #if QT_VERSION >= 0x040600
     if (!reply->isFinished()) {
         qWarning("KDSoap: Parsing reply before it finished!");
+        parsed = false;
     }
 #endif
     if (reply->error()) {
