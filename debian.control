@@ -2,7 +2,7 @@ Source: kdsoap
 Section: Miscellaneous
 Priority: optional
 Maintainer: Allen Winter <allen.winter@kdab.com>
-Build-Depends: debhelper (>= 4.1.16), cdbs, libqt4-dev
+Build-Depends: debhelper (>= 4.1.16), cdbs, cmake, libqt4-dev
 Standards-Version: 3.9.4
 Homepage: http://github.com/KDAB/KDSoap
 
