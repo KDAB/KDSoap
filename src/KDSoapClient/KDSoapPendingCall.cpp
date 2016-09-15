@@ -88,14 +88,15 @@ void KDSoapPendingCall::Private::parseReply()
     if (parsed) {
         return;
     }
-    parsed = true;
     const bool doDebug = qgetenv("KDSOAP_DEBUG").toInt();
     QNetworkReply *reply = this->reply.data();
 #if QT_VERSION >= 0x040600
     if (!reply->isFinished()) {
         qWarning("KDSoap: Parsing reply before it finished!");
+        return;
     }
 #endif
+    parsed = true;
     if (reply->error()) {
         replyMessage.setFault(true);
         replyMessage.addArgument(QString::fromLatin1("faultcode"), QString::number(reply->error()));
