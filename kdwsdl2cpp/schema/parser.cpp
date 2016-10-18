@@ -520,8 +520,13 @@ Element Parser::parseElement(ParserContext *context,
             //qDebug() << "childName:" << childName.localName();
             if (childName.localName() == QLatin1String("complexType")) {
                 ComplexType ct = parseComplexType(context, childElement);
-
-                ct.setName(newElement.name());
+                QString name = newElement.name();
+                int i = 0;
+                while (!d->mComplexTypes.complexType(QName(ct.nameSpace(), name)).name().isEmpty())
+                    name = newElement.name() + QString::number(++i);
+                if (name != newElement.name() && debugParsing())
+                    qDebug() << " detected potential type collision in nested complexType, updated name" << newElement.name() << "to" << name;
+                ct.setName(name);
                 ct.setAnonymous(true);
                 d->mComplexTypes.append(ct);
 

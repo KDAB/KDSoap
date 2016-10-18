@@ -467,6 +467,23 @@ private Q_SLOTS:
         params.setRepeatedChildren(children);
     }
 
+    // Test repeated names in nested complex types
+    void testRepeatedNames()
+    {
+        // Just test the generated code, two different classes should have been
+        // created for two structurally different nested complex types of the
+        // same name:
+        KDAB__TelegramResponse resp;
+        class KDAB__RepeatedName repeatedName;
+        repeatedName.setStringparam1("test1");
+        resp.setRepeatedName(repeatedName);
+
+        KDAB__EmployeeNameParams params;
+        class KDAB__RepeatedName1 repeatedName1;
+        repeatedName1.setIntparam1(1);
+        params.setRepeatedName(repeatedName1);
+    }
+
     void testSoapVersion()
     {
         // Prepare response
@@ -714,6 +731,7 @@ private:
                "David Ä Faure"
                "</n1:employeeName>"
                "<n1:repeatedChildren><n1:low>0</n1:low><n1:width>0</n1:width><n1:center>0</n1:center></n1:repeatedChildren>"
+               "<n1:repeatedName><n1:intparam1>0</n1:intparam1></n1:repeatedName>"
                "</n1:EmployeeNameParams>"
                "</soap:Body>" + xmlEnvEnd()
                + '\n'; // added by QXmlStreamWriter::writeEndDocument
@@ -1068,6 +1086,7 @@ void WsdlDocumentTest::testSendTelegram()
         QByteArray(xmlBegin) + "<n1:TelegramResponse " + xmlNamespaces + " xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
         "<n1:TelegramHex>52656365697665642048656c6c6f</n1:TelegramHex>"
         "<n1:TelegramBase64>UmVjZWl2ZWQgSGVsbG8=</n1:TelegramBase64>"
+        "<n1:repeatedName><n1:stringparam1></n1:stringparam1></n1:repeatedName>"
         "</n1:TelegramResponse>";
     // m_response, however, has qualified = true (set by the generated code).
     QVERIFY(xmlBufferCompare(server->lastServerObject()->m_response.toXml(KDSoapValue::LiteralUse, msgNS), expectedResponseXml));
