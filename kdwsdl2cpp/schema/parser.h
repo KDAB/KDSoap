@@ -56,6 +56,8 @@ public:
 
     QString targetNamespace() const;
 
+    bool resolveForwardDeclarations();
+
     /**
       Returns the default schema URI.
      */
@@ -118,7 +120,6 @@ private:
     AttributeGroup findAttributeGroup(const QName &name) const;
     void init(ParserContext *context);
     void clear();
-    bool resolveForwardDeclarations();
 
     class Private;
     Private *d;

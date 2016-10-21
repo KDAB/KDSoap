@@ -231,10 +231,6 @@ bool Parser::parseSchemaTag(ParserContext *context, const QDomElement &root)
         element = element.nextSiblingElement();
     }
 
-    if (!resolveForwardDeclarations()) {
-        return false;
-    }
-
     d->mImportedSchemas.append(d->mNameSpace);
     d->mNameSpace = oldNamespace;
 

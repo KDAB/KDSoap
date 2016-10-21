@@ -66,12 +66,15 @@ bool Type::loadXML(ParserContext *context, const QDomElement &element)
             if (!parser.parseSchemaTag(context, child)) {
                 return false;
             }
-
-            mTypes += parser.types();
         }
 
         child = child.nextSiblingElement();
     }
+    if (!parser.resolveForwardDeclarations()) {
+        return false;
+    }
+    mTypes += parser.types();
+
     return true;
 }
 

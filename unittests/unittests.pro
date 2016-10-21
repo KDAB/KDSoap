@@ -32,6 +32,7 @@ SUBDIRS = \
   unqualified_formdefault \
   onvif.org \
   onvif_ptz \
+  cribis \
   encapsecurity \
   prefix_wsdl \
   vidyo \
