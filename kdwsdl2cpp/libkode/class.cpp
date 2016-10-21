@@ -381,6 +381,10 @@ static bool allKnown( const QStringList& deps, const QStringList& classNames )
     return true;
 }
 
+static bool classLessThan(const Class& c1, const Class& c2)
+{
+    return c1.qualifiedName() < c2.qualifiedName();
+}
 
 /**
  * This method sorts a list of classes in a way that the base class
@@ -390,8 +394,10 @@ static bool allKnown( const QStringList& deps, const QStringList& classNames )
 static Class::List sortByDependenciesHelper( const Class::List &classes, const QStringList& excludedClasses )
 {
     Class::List allClasses( classes );
+    qSort(allClasses.begin(), allClasses.end(), classLessThan); // make result deterministic
+
     QStringList allClassNames;
-    Q_FOREACH( const Class& c, classes )
+    Q_FOREACH( const Class& c, allClasses )
         allClassNames.append( c.qualifiedName() );
 
     Class::List retval;
@@ -399,22 +405,23 @@ static Class::List sortByDependenciesHelper( const Class::List &classes, const Q
     QStringList classNames;
 
     // copy all classes without dependencies
-    Class::List::Iterator it;
-    for ( it = allClasses.begin(); it != allClasses.end(); ++it ) {
+    Class::List::Iterator it = allClasses.begin();
+    while ( it != allClasses.end() ) {
       if ( dependenciesForClass( *it, allClassNames, excludedClasses ).isEmpty() ) {
         retval.append( *it );
         classNames.append( (*it).qualifiedName() );
 
         it = allClasses.erase( it );
-        it--;
+      } else {
+        ++it;
       }
     }
 
-    while ( allClasses.count() > 0 ) {
+    while ( !allClasses.isEmpty() ) {
       const int currentCount = allClasses.count();
       // copy all classes which have a class from retval/classNames (i.e. already written out)
       // as base class - or as member variable
-      for ( it = allClasses.begin(); it != allClasses.end(); ++it ) {
+      for ( it = allClasses.begin(); it != allClasses.end(); ) {
 
         const QStringList deps = dependenciesForClass( *it, allClassNames, excludedClasses );
         if ( allKnown( deps, classNames ) ) {
@@ -422,7 +429,8 @@ static Class::List sortByDependenciesHelper( const Class::List &classes, const Q
           classNames.append( (*it).qualifiedName() );
 
           it = allClasses.erase( it );
-          it--;
+        } else {
+          ++it;
         }
       }
       if (allClasses.count() == currentCount) {

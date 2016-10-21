@@ -434,8 +434,9 @@ bool Converter::convertClientService()
     excludedClasses << QLatin1String("KDSoapServerObjectInterface");
     excludedClasses << QLatin1String("KDSoapJob");
     mClasses.sortByDependencies(excludedClasses);
+    // Then add the server base classes
+    mClasses += mServerClasses;
     // Then add the service, at the end
-
     mClasses += bindingClasses;
     return true;
 }

@@ -97,6 +97,7 @@ private:
     WSDL mWSDL;
 
     KODE::Class::List mClasses;
+    KODE::Class::List mServerClasses;
     KODE::Class mQObject;
     KODE::Class mKDSoapServerObjectInterface;
 
