@@ -341,6 +341,8 @@ public:
     void sortByDependencies( const QStringList& excludedClasses = QStringList() );
     // maybe we could have a bool ignoreUnknownClasses, too, for people who write bugfree code...
 
+    void sortAlphabetically();
+
     void addClass(const Class& cl);
 
     QStringList classNames() const;

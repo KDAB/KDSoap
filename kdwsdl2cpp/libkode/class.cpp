@@ -452,6 +452,11 @@ void ClassList::sortByDependencies( const QStringList& excludedClasses )
     *this = sortByDependenciesHelper( *this, excludedClasses );
 }
 
+void ClassList::sortAlphabetically()
+{
+    qSort(begin(), end(), classLessThan);
+}
+
 ClassList::iterator ClassList::findClass(const QString &name)
 {
     ClassList::iterator it = begin();
