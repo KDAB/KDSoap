@@ -79,6 +79,12 @@ private:
     Private *d;
 };
 
+bool operator==(const Attribute& lhs, const Attribute& rhs);
+inline bool operator!=(const Attribute& lhs, const Attribute& rhs)
+{
+    return !(lhs == rhs);
+}
+
 }
 
 SCHEMA_EXPORT QDebug operator<<(QDebug dbg, const XSD::Attribute &attr);

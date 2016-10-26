@@ -120,6 +120,12 @@ public:
     iterator findComplexType(const QName &qualifiedName);
 };
 
+bool operator==(const ComplexType& lhs, const ComplexType& rhs);
+inline bool operator!=(const ComplexType& lhs, const ComplexType& rhs)
+{
+    return !(lhs == rhs);
+}
+
 } // namespace XSD
 
 SCHEMA_EXPORT QDebug operator<<(QDebug dbg, const XSD::ComplexType &type);

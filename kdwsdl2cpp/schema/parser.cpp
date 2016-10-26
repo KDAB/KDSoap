@@ -520,18 +520,29 @@ Element Parser::parseElement(ParserContext *context,
             //qDebug() << "childName:" << childName.localName();
             if (childName.localName() == QLatin1String("complexType")) {
                 ComplexType ct = parseComplexType(context, childElement);
-                QString name = newElement.name();
-                int i = 0;
-                while (!d->mComplexTypes.complexType(QName(ct.nameSpace(), name)).name().isEmpty())
-                    name = newElement.name() + QString::number(++i);
-                if (name != newElement.name() && debugParsing())
-                    qDebug() << " detected potential type collision in nested complexType, updated name" << newElement.name() << "to" << name;
-                ct.setName(name);
                 ct.setAnonymous(true);
-                d->mComplexTypes.append(ct);
-
-                if (debugParsing()) {
-                    qDebug() << " found nested complexType element, type name is now element name, i.e. " << ct.name() << "newElement.setType" << ct.qualifiedName();
+                ct.setName(newElement.name());
+                int i = 0;
+                bool typeExists = false;
+                ComplexType existingType = d->mComplexTypes.complexType(QName(ct.nameSpace(), ct.name()));
+                while (existingType != ComplexType()) {
+                    if (existingType == ct) {
+                        if (debugParsing())
+                            qDebug() << "  Nested complexType of name" << ct.name() << "is structurally identical with existing complexType of the same name, skipping this instance...";
+                        typeExists = true;
+                        break;
+                    } else {
+                        ct.setName(newElement.name() + QString::number(++i));
+                        existingType = d->mComplexTypes.complexType(QName(ct.nameSpace(), ct.name()));
+                    }
+                }
+                if (!typeExists) {
+                    d->mComplexTypes.append(ct);
+                    if (debugParsing()) {
+                        if (newElement.name() != ct.name())
+                            qDebug() << "  Detected type collision for nested complexType, updated name" << newElement.name() << "to" << ct.name();
+                        qDebug() << " found nested complexType element, type name is now element name, i.e. " << ct.name() << "newElement.setType" << ct.qualifiedName();
+                    }
                 }
                 newElement.setType(ct.qualifiedName());
             } else if (childName.localName() == QLatin1String("simpleType")) {

@@ -60,6 +60,7 @@ XSDType::~XSDType()
 
 XSDType &XSDType::operator=(const XSDType &other)
 {
+    XmlElement::operator=(other);
     if (this == &other) {
         return *this;
     }
