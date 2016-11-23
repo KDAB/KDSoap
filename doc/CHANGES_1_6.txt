@@ -1,0 +1,17 @@
+General:
+========
+*
+
+Client-side:
+============
+* 
+
+Server-side:
+============
+
+* 
+
+WSDL parser / code generator changes, applying to both client and server side:
+================================================================
+* Fix deserialization of optional lists (the associated nil variable wasn't set to false)
+
