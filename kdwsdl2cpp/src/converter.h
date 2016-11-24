@@ -77,7 +77,7 @@ private:
     KODE::Code serializePart(const Part &part, const QString &localVariableName, const QString &varName, bool append);
     KODE::Code demarshalVarHelper(const QName &type, const QName &elementType, const QString &variableName, const QString &qtTypeName, const QString &soapValueVarName, bool optional) const;
     KODE::Code demarshalVar(const QName &type, const QName &elementType, const QString &variableName, const QString &typeName, const QString &soapValueVarName, bool optional, bool usePointer) const;
-    KODE::Code demarshalArrayVar(const QName &type, const QString &variableName, const QString &qtTypeName, bool optional) const;
+    KODE::Code demarshalArrayVar(const QName &type, const QString &variableName, const QString &qtTypeName) const;
     void addVariableInitializer(KODE::MemberVariable &variable) const;
     QString generateMemberVariable(const QString &rawName, const QString &typeName, const QString &inputTypeName, KODE::Class &newClass, XSD::Attribute::AttributeUse, bool usePointer, bool polymorphic);
     QString listTypeFor(const QString &itemTypeName, KODE::Class &newClass);

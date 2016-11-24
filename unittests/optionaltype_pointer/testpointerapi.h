@@ -36,7 +36,6 @@ public:
 
 private slots:
     void test();
-    void testOptionalArray();
 
 private:
 };

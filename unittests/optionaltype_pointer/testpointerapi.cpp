@@ -25,7 +25,6 @@
 #include "testpointerapi.h"
 #include <QtTest/QtTest>
 #include <QDebug>
-#include <QList>
 
 TestPointerApi::TestPointerApi()
 {
@@ -38,20 +37,6 @@ void TestPointerApi::test()
     QString newVal("newval");
     resp.setOut(newVal);
     QCOMPARE(*resp.out(), newVal);
-}
-
-void TestPointerApi::testOptionalArray()
-{
-    TNS__TestOperationResponse1 resp;
-    QVERIFY(!resp.outOptionalArray());
-    const QList<qint64> valIn(QList<qint64>() << 1 << 2 << 3);
-    resp.setOutOptionalArray(valIn);
-
-    TNS__TestOperationResponse1 resp2;
-    resp2.deserialize(resp.serialize("array"));
-
-    QVERIFY(resp2.outOptionalArray());
-    QCOMPARE(valIn, *resp2.outOptionalArray());
 }
 
 QTEST_MAIN(TestPointerApi)

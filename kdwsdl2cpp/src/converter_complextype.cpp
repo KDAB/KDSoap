@@ -420,7 +420,7 @@ KODE::Code Converter::demarshalVar(const QName &type, const QName &elementType, 
     }
 }
 
-KODE::Code Converter::demarshalArrayVar(const QName &type, const QString &variableName, const QString &qtTypeName, bool optional) const
+KODE::Code Converter::demarshalArrayVar(const QName &type, const QString &variableName, const QString &qtTypeName) const
 {
     KODE::Code code;
     if (mTypeMap.isTypeAny(type)) {     // KDSoapValue doesn't support temp vars [still true?]. This special-casing is ugly though.
@@ -443,9 +443,6 @@ KODE::Code Converter::demarshalArrayVar(const QName &type, const QString &variab
             toAppend = storageType + "(new " + qtTypeName + "(" + tempVar + "))";
         }
         code += variableName + QLatin1String(".append(") + toAppend + QLatin1String(");") + COMMENT;
-        if (optional) {
-            code += variableName + QLatin1String("_nil = false;") + COMMENT;
-        }
     }
     return code;
 }
@@ -559,7 +556,7 @@ void Converter::createComplexTypeSerializer(KODE::Class &newClass, const XSD::Co
         marshalCode.unindent();
         marshalCode += '}';
 
-        demarshalCode.addBlock(demarshalArrayVar(arrayType, variableName, typeName, isElementOptional(elem)));
+        demarshalCode.addBlock(demarshalArrayVar(arrayType, variableName, typeName));
     } else {
         bool first = true;
         Q_FOREACH (const XSD::Element &elem, elements) {
@@ -602,7 +599,7 @@ void Converter::createComplexTypeSerializer(KODE::Class &newClass, const XSD::Co
                 marshalCode.unindent();
                 marshalCode += '}';
 
-                demarshalCode.addBlock(demarshalArrayVar(elem.type(), variableName, typeName, isElementOptional(elem)));
+                demarshalCode.addBlock(demarshalArrayVar(elem.type(), variableName, typeName));
             } else {
                 const bool optional = isElementOptional(elem);
                 if (elem.hasSubstitutions())
