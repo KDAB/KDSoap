@@ -4,11 +4,10 @@ General:
 
 Client-side:
 ============
-* 
+* Fix generated KDSoapJob never emitting finished, when an RPC-mode reply is empty (and expected to be empty) (github issue 94)
 
 Server-side:
 ============
-
 * 
 
 WSDL parser / code generator changes, applying to both client and server side:

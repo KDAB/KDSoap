@@ -33,6 +33,7 @@ SUBDIRS = \
   onvif.org \
   onvif_ptz \
   cribis \
+  uitapi \
   encapsecurity \
   prefix_wsdl \
   vidyo \

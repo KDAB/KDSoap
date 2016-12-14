@@ -1,0 +1,1912 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="https://www.uit.hpc.mil/UITAPIv3/uitapi.jws" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="https://www.uit.hpc.mil/UITAPIv3/uitapi.jws" xmlns:intf="https://www.uit.hpc.mil/UITAPIv3/uitapi.jws" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--WSDL created by Apache Axis version: 1.4
+Built on Apr 22, 2006 (06:55:48 PDT)-->
+ <wsdl:types>
+  <schema targetNamespace="https://www.uit.hpc.mil/UITAPIv3/uitapi.jws" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="ArrayOf_xsd_string">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="xsd:string[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="getUserHomeDirectoryResponse">
+
+      <wsdl:part name="getUserHomeDirectoryReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="addBatchScriptEntryRequest">
+
+      <wsdl:part name="token" type="xsd:string"/>
+
+      <wsdl:part name="hostID" type="xsd:long"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+      <wsdl:part name="entryXML" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="copyDirectoryResponse">
+
+      <wsdl:part name="copyDirectoryReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="archiveGetRequest">
+
+      <wsdl:part name="token" type="xsd:string"/>
+
+      <wsdl:part name="hostID" type="xsd:long"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+      <wsdl:part name="archiveDir" type="xsd:string"/>
+
+      <wsdl:part name="filename" type="xsd:string"/>
+
+      <wsdl:part name="localDir" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteBatchScriptEntryRequest">
+
+      <wsdl:part name="token" type="xsd:string"/>
+
+      <wsdl:part name="hostID" type="xsd:long"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+      <wsdl:part name="scriptName" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="cancelAsyncOperationRequest">
+
+      <wsdl:part name="token" type="xsd:string"/>
+
+      <wsdl:part name="statusID" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getRealmsRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="destroyTokenRequest">
+
+      <wsdl:part name="token" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteDirectoryRequest">
+
+      <wsdl:part name="token" type="xsd:string"/>
+
+      <wsdl:part name="hostID" type="xsd:long"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+      <wsdl:part name="directory" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getBatchScriptContentsRequest">
+
+      <wsdl:part name="token" type="xsd:string"/>
+
+      <wsdl:part name="hostID" type="xsd:long"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+      <wsdl:part name="scriptName" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="renameFileOrDirectoryResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="getDirectoryListingRequest">
+
+      <wsdl:part name="token" type="xsd:string"/>
+
+      <wsdl:part name="hostID" type="xsd:long"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+      <wsdl:part name="directory" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="runSimpleCommandRequest">
+
+      <wsdl:part name="token" type="xsd:string"/>
+
+      <wsdl:part name="hostID" type="xsd:long"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+      <wsdl:part name="command" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="runSimpleCommandResponse">
+
+      <wsdl:part name="runSimpleCommandReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="archiveDirListingResponse">
+
+      <wsdl:part name="archiveDirListingReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteBatchScriptEntryResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="getUserHostAssocRequest">
+
+      <wsdl:part name="token" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getJobsForHostForAllUsersByNumDaysRequest">
+
+      <wsdl:part name="token" type="xsd:string"/>
+
+      <wsdl:part name="hostID" type="xsd:long"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+      <wsdl:part name="numDays" type="xsd:long"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="copyFileResponse">
+
+      <wsdl:part name="copyFileReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteFileRequest">
+
+      <wsdl:part name="token" type="xsd:string"/>
+
+      <wsdl:part name="hostID" type="xsd:long"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+      <wsdl:part name="file" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="cancelJobRequest">
+
+      <wsdl:part name="token" type="xsd:string"/>
+
+      <wsdl:part name="hostID" type="xsd:long"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+      <wsdl:part name="jobID" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="statFileResponse">
+
+      <wsdl:part name="statFileReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="cancelJobResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="chmodFileOrDirectoryResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="runSimpleAsyncCommandResponse">
+
+      <wsdl:part name="runSimpleAsyncCommandReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="copyDirectoryRequest">
+
+      <wsdl:part name="token" type="xsd:string"/>
+
+      <wsdl:part name="hostID" type="xsd:long"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+      <wsdl:part name="srcDirectory" type="xsd:string"/>
+
+      <wsdl:part name="destDirectory" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getStreamingFileUploadURLResponse">
+
+      <wsdl:part name="getStreamingFileUploadURLReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getStreamingFileDownloadURLResponse">
+
+      <wsdl:part name="getStreamingFileDownloadURLReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteFileResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="authenticateUserRequest">
+
+      <wsdl:part name="credentials" type="xsd:string"/>
+
+      <wsdl:part name="clientID" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getJobsForHostForUserByNumDaysRequest">
+
+      <wsdl:part name="token" type="xsd:string"/>
+
+      <wsdl:part name="hostID" type="xsd:long"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+      <wsdl:part name="searchUser" type="xsd:string"/>
+
+      <wsdl:part name="numDays" type="xsd:long"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="copyFileRequest">
+
+      <wsdl:part name="token" type="xsd:string"/>
+
+      <wsdl:part name="hostID" type="xsd:long"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+      <wsdl:part name="src" type="xsd:string"/>
+
+      <wsdl:part name="dest" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="archiveStatusResponse">
+
+      <wsdl:part name="archiveStatusReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="checkStatusForAsyncOperationRequest">
+
+      <wsdl:part name="token" type="xsd:string"/>
+
+      <wsdl:part name="statusID" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="archivePutRequest">
+
+      <wsdl:part name="token" type="xsd:string"/>
+
+      <wsdl:part name="hostID" type="xsd:long"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+      <wsdl:part name="archiveDir" type="xsd:string"/>
+
+      <wsdl:part name="localFilename" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="runSimpleAsyncCommandRequest">
+
+      <wsdl:part name="token" type="xsd:string"/>
+
+      <wsdl:part name="hostID" type="xsd:long"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+      <wsdl:part name="command" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="submitBatchScriptJobRequest">
+
+      <wsdl:part name="token" type="xsd:string"/>
+
+      <wsdl:part name="hostID" type="xsd:long"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+      <wsdl:part name="batchScript" type="xsd:string"/>
+
+      <wsdl:part name="workingDir" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="archiveRemoveFileResponse">
+
+      <wsdl:part name="archiveRemoveFileReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getHostConfigInfoRequest">
+
+      <wsdl:part name="token" type="xsd:string"/>
+
+      <wsdl:part name="hostID" type="xsd:long"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteDirectoryResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="cancelAsyncOperationResponse">
+
+      <wsdl:part name="cancelAsyncOperationReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getStreamingFileDownloadURLRequest">
+
+      <wsdl:part name="token" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="archiveHomeDirResponse">
+
+      <wsdl:part name="archiveHomeDirReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="submitBatchScriptJobResponse">
+
+      <wsdl:part name="submitBatchScriptJobReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="chownFileOrDirectoryRequest">
+
+      <wsdl:part name="token" type="xsd:string"/>
+
+      <wsdl:part name="hostID" type="xsd:long"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+      <wsdl:part name="filename" type="xsd:string"/>
+
+      <wsdl:part name="permissions" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getSystemLoadResponse">
+
+      <wsdl:part name="getSystemLoadReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getUserHomeDirectoryRequest">
+
+      <wsdl:part name="token" type="xsd:string"/>
+
+      <wsdl:part name="hostID" type="xsd:long"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getQueueListRequest">
+
+      <wsdl:part name="token" type="xsd:string"/>
+
+      <wsdl:part name="hostID" type="xsd:long"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getUserWorkDirectoryRequest">
+
+      <wsdl:part name="token" type="xsd:string"/>
+
+      <wsdl:part name="hostID" type="xsd:long"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getUserWorkDirectoryResponse">
+
+      <wsdl:part name="getUserWorkDirectoryReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getAllocationInfoRequest">
+
+      <wsdl:part name="token" type="xsd:string"/>
+
+      <wsdl:part name="hostID" type="xsd:long"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getRealmsResponse">
+
+      <wsdl:part name="getRealmsReturn" type="impl:ArrayOf_xsd_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="createDirectoryResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="archiveHomeDirRequest">
+
+      <wsdl:part name="token" type="xsd:string"/>
+
+      <wsdl:part name="hostID" type="xsd:long"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getStreamingFileUploadURLRequest">
+
+      <wsdl:part name="token" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="archiveGetResponse">
+
+      <wsdl:part name="archiveGetReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getQueueListResponse">
+
+      <wsdl:part name="getQueueListReturn" type="impl:ArrayOf_xsd_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="archiveStatusRequest">
+
+      <wsdl:part name="token" type="xsd:string"/>
+
+      <wsdl:part name="hostID" type="xsd:long"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="authenticateUserResponse">
+
+      <wsdl:part name="authenticateUserReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getBatchScriptListingRequest">
+
+      <wsdl:part name="token" type="xsd:string"/>
+
+      <wsdl:part name="hostID" type="xsd:long"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="destroyTokenResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="getBatchScriptListingResponse">
+
+      <wsdl:part name="getBatchScriptListingReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getAllocationInfoResponse">
+
+      <wsdl:part name="getAllocationInfoReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getPublicHostsRequest">
+
+      <wsdl:part name="token" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="statFileRequest">
+
+      <wsdl:part name="token" type="xsd:string"/>
+
+      <wsdl:part name="hostID" type="xsd:long"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+      <wsdl:part name="filename" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getSystemLoadRequest">
+
+      <wsdl:part name="token" type="xsd:string"/>
+
+      <wsdl:part name="hostID" type="xsd:long"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getPublicHostsResponse">
+
+      <wsdl:part name="getPublicHostsReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="archiveDirListingRequest">
+
+      <wsdl:part name="token" type="xsd:string"/>
+
+      <wsdl:part name="hostID" type="xsd:long"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+      <wsdl:part name="archiveDir" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getJobsForHostForUserByNumDaysResponse">
+
+      <wsdl:part name="getJobsForHostForUserByNumDaysReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="renameFileOrDirectoryRequest">
+
+      <wsdl:part name="token" type="xsd:string"/>
+
+      <wsdl:part name="hostID" type="xsd:long"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+      <wsdl:part name="src" type="xsd:string"/>
+
+      <wsdl:part name="dest" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getJobsForHostForAllUsersByNumDaysResponse">
+
+      <wsdl:part name="getJobsForHostForAllUsersByNumDaysReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="copyFileFromHostToHostRequest">
+
+      <wsdl:part name="token" type="xsd:string"/>
+
+      <wsdl:part name="hostIDSrc" type="xsd:long"/>
+
+      <wsdl:part name="hostIDDest" type="xsd:long"/>
+
+      <wsdl:part name="usernameSrc" type="xsd:string"/>
+
+      <wsdl:part name="usernameDest" type="xsd:string"/>
+
+      <wsdl:part name="src" type="xsd:string"/>
+
+      <wsdl:part name="dest" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="chmodFileOrDirectoryRequest">
+
+      <wsdl:part name="token" type="xsd:string"/>
+
+      <wsdl:part name="hostID" type="xsd:long"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+      <wsdl:part name="filename" type="xsd:string"/>
+
+      <wsdl:part name="permissions" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getDirectoryListingResponse">
+
+      <wsdl:part name="getDirectoryListingReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getSystemNewsRequest">
+
+      <wsdl:part name="token" type="xsd:string"/>
+
+      <wsdl:part name="hostID" type="xsd:long"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getUserHostAssocResponse">
+
+      <wsdl:part name="getUserHostAssocReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="copyFileFromHostToHostResponse">
+
+      <wsdl:part name="copyFileFromHostToHostReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="createDirectoryRequest">
+
+      <wsdl:part name="token" type="xsd:string"/>
+
+      <wsdl:part name="hostID" type="xsd:long"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+      <wsdl:part name="directory" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="archiveCreateDirResponse">
+
+      <wsdl:part name="archiveCreateDirReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="checkStatusForAsyncOperationResponse">
+
+      <wsdl:part name="checkStatusForAsyncOperationReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getBatchScriptContentsResponse">
+
+      <wsdl:part name="getBatchScriptContentsReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="archivePutResponse">
+
+      <wsdl:part name="archivePutReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getHostConfigInfoResponse">
+
+      <wsdl:part name="getHostConfigInfoReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="archiveCreateDirRequest">
+
+      <wsdl:part name="token" type="xsd:string"/>
+
+      <wsdl:part name="hostID" type="xsd:long"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+      <wsdl:part name="archiveDir" type="xsd:string"/>
+
+      <wsdl:part name="newDir" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="chownFileOrDirectoryResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="addBatchScriptEntryResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="archiveRemoveFileRequest">
+
+      <wsdl:part name="token" type="xsd:string"/>
+
+      <wsdl:part name="hostID" type="xsd:long"/>
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+      <wsdl:part name="archiveDir" type="xsd:string"/>
+
+      <wsdl:part name="filename" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getSystemNewsResponse">
+
+      <wsdl:part name="getSystemNewsReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:portType name="uitapi">
+
+      <wsdl:operation name="getHostConfigInfo" parameterOrder="token hostID">
+
+         <wsdl:input message="impl:getHostConfigInfoRequest" name="getHostConfigInfoRequest"/>
+
+         <wsdl:output message="impl:getHostConfigInfoResponse" name="getHostConfigInfoResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="chmodFileOrDirectory" parameterOrder="token hostID username filename permissions">
+
+         <wsdl:input message="impl:chmodFileOrDirectoryRequest" name="chmodFileOrDirectoryRequest"/>
+
+         <wsdl:output message="impl:chmodFileOrDirectoryResponse" name="chmodFileOrDirectoryResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="chownFileOrDirectory" parameterOrder="token hostID username filename permissions">
+
+         <wsdl:input message="impl:chownFileOrDirectoryRequest" name="chownFileOrDirectoryRequest"/>
+
+         <wsdl:output message="impl:chownFileOrDirectoryResponse" name="chownFileOrDirectoryResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="copyDirectory" parameterOrder="token hostID username srcDirectory destDirectory">
+
+         <wsdl:input message="impl:copyDirectoryRequest" name="copyDirectoryRequest"/>
+
+         <wsdl:output message="impl:copyDirectoryResponse" name="copyDirectoryResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="copyFile" parameterOrder="token hostID username src dest">
+
+         <wsdl:input message="impl:copyFileRequest" name="copyFileRequest"/>
+
+         <wsdl:output message="impl:copyFileResponse" name="copyFileResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteDirectory" parameterOrder="token hostID username directory">
+
+         <wsdl:input message="impl:deleteDirectoryRequest" name="deleteDirectoryRequest"/>
+
+         <wsdl:output message="impl:deleteDirectoryResponse" name="deleteDirectoryResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteFile" parameterOrder="token hostID username file">
+
+         <wsdl:input message="impl:deleteFileRequest" name="deleteFileRequest"/>
+
+         <wsdl:output message="impl:deleteFileResponse" name="deleteFileResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="statFile" parameterOrder="token hostID username filename">
+
+         <wsdl:input message="impl:statFileRequest" name="statFileRequest"/>
+
+         <wsdl:output message="impl:statFileResponse" name="statFileResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="renameFileOrDirectory" parameterOrder="token hostID username src dest">
+
+         <wsdl:input message="impl:renameFileOrDirectoryRequest" name="renameFileOrDirectoryRequest"/>
+
+         <wsdl:output message="impl:renameFileOrDirectoryResponse" name="renameFileOrDirectoryResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="runSimpleAsyncCommand" parameterOrder="token hostID username command">
+
+         <wsdl:input message="impl:runSimpleAsyncCommandRequest" name="runSimpleAsyncCommandRequest"/>
+
+         <wsdl:output message="impl:runSimpleAsyncCommandResponse" name="runSimpleAsyncCommandResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="checkStatusForAsyncOperation" parameterOrder="token statusID">
+
+         <wsdl:input message="impl:checkStatusForAsyncOperationRequest" name="checkStatusForAsyncOperationRequest"/>
+
+         <wsdl:output message="impl:checkStatusForAsyncOperationResponse" name="checkStatusForAsyncOperationResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="cancelAsyncOperation" parameterOrder="token statusID">
+
+         <wsdl:input message="impl:cancelAsyncOperationRequest" name="cancelAsyncOperationRequest"/>
+
+         <wsdl:output message="impl:cancelAsyncOperationResponse" name="cancelAsyncOperationResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getPublicHosts" parameterOrder="token">
+
+         <wsdl:input message="impl:getPublicHostsRequest" name="getPublicHostsRequest"/>
+
+         <wsdl:output message="impl:getPublicHostsResponse" name="getPublicHostsResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getQueueList" parameterOrder="token hostID username">
+
+         <wsdl:input message="impl:getQueueListRequest" name="getQueueListRequest"/>
+
+         <wsdl:output message="impl:getQueueListResponse" name="getQueueListResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getStreamingFileUploadURL" parameterOrder="token">
+
+         <wsdl:input message="impl:getStreamingFileUploadURLRequest" name="getStreamingFileUploadURLRequest"/>
+
+         <wsdl:output message="impl:getStreamingFileUploadURLResponse" name="getStreamingFileUploadURLResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getStreamingFileDownloadURL" parameterOrder="token">
+
+         <wsdl:input message="impl:getStreamingFileDownloadURLRequest" name="getStreamingFileDownloadURLRequest"/>
+
+         <wsdl:output message="impl:getStreamingFileDownloadURLResponse" name="getStreamingFileDownloadURLResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="archiveGet" parameterOrder="token hostID username archiveDir filename localDir">
+
+         <wsdl:input message="impl:archiveGetRequest" name="archiveGetRequest"/>
+
+         <wsdl:output message="impl:archiveGetResponse" name="archiveGetResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="archivePut" parameterOrder="token hostID username archiveDir localFilename">
+
+         <wsdl:input message="impl:archivePutRequest" name="archivePutRequest"/>
+
+         <wsdl:output message="impl:archivePutResponse" name="archivePutResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="archiveDirListing" parameterOrder="token hostID username archiveDir">
+
+         <wsdl:input message="impl:archiveDirListingRequest" name="archiveDirListingRequest"/>
+
+         <wsdl:output message="impl:archiveDirListingResponse" name="archiveDirListingResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="archiveCreateDir" parameterOrder="token hostID username archiveDir newDir">
+
+         <wsdl:input message="impl:archiveCreateDirRequest" name="archiveCreateDirRequest"/>
+
+         <wsdl:output message="impl:archiveCreateDirResponse" name="archiveCreateDirResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="archiveRemoveFile" parameterOrder="token hostID username archiveDir filename">
+
+         <wsdl:input message="impl:archiveRemoveFileRequest" name="archiveRemoveFileRequest"/>
+
+         <wsdl:output message="impl:archiveRemoveFileResponse" name="archiveRemoveFileResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="archiveStatus" parameterOrder="token hostID username">
+
+         <wsdl:input message="impl:archiveStatusRequest" name="archiveStatusRequest"/>
+
+         <wsdl:output message="impl:archiveStatusResponse" name="archiveStatusResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="archiveHomeDir" parameterOrder="token hostID username">
+
+         <wsdl:input message="impl:archiveHomeDirRequest" name="archiveHomeDirRequest"/>
+
+         <wsdl:output message="impl:archiveHomeDirResponse" name="archiveHomeDirResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getBatchScriptListing" parameterOrder="token hostID username">
+
+         <wsdl:input message="impl:getBatchScriptListingRequest" name="getBatchScriptListingRequest"/>
+
+         <wsdl:output message="impl:getBatchScriptListingResponse" name="getBatchScriptListingResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getBatchScriptContents" parameterOrder="token hostID username scriptName">
+
+         <wsdl:input message="impl:getBatchScriptContentsRequest" name="getBatchScriptContentsRequest"/>
+
+         <wsdl:output message="impl:getBatchScriptContentsResponse" name="getBatchScriptContentsResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteBatchScriptEntry" parameterOrder="token hostID username scriptName">
+
+         <wsdl:input message="impl:deleteBatchScriptEntryRequest" name="deleteBatchScriptEntryRequest"/>
+
+         <wsdl:output message="impl:deleteBatchScriptEntryResponse" name="deleteBatchScriptEntryResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addBatchScriptEntry" parameterOrder="token hostID username entryXML">
+
+         <wsdl:input message="impl:addBatchScriptEntryRequest" name="addBatchScriptEntryRequest"/>
+
+         <wsdl:output message="impl:addBatchScriptEntryResponse" name="addBatchScriptEntryResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getJobsForHostForAllUsersByNumDays" parameterOrder="token hostID username numDays">
+
+         <wsdl:input message="impl:getJobsForHostForAllUsersByNumDaysRequest" name="getJobsForHostForAllUsersByNumDaysRequest"/>
+
+         <wsdl:output message="impl:getJobsForHostForAllUsersByNumDaysResponse" name="getJobsForHostForAllUsersByNumDaysResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getSystemNews" parameterOrder="token hostID username">
+
+         <wsdl:input message="impl:getSystemNewsRequest" name="getSystemNewsRequest"/>
+
+         <wsdl:output message="impl:getSystemNewsResponse" name="getSystemNewsResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="cancelJob" parameterOrder="token hostID username jobID">
+
+         <wsdl:input message="impl:cancelJobRequest" name="cancelJobRequest"/>
+
+         <wsdl:output message="impl:cancelJobResponse" name="cancelJobResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getJobsForHostForUserByNumDays" parameterOrder="token hostID username searchUser numDays">
+
+         <wsdl:input message="impl:getJobsForHostForUserByNumDaysRequest" name="getJobsForHostForUserByNumDaysRequest"/>
+
+         <wsdl:output message="impl:getJobsForHostForUserByNumDaysResponse" name="getJobsForHostForUserByNumDaysResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getUserHostAssoc" parameterOrder="token">
+
+         <wsdl:input message="impl:getUserHostAssocRequest" name="getUserHostAssocRequest"/>
+
+         <wsdl:output message="impl:getUserHostAssocResponse" name="getUserHostAssocResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getUserWorkDirectory" parameterOrder="token hostID username">
+
+         <wsdl:input message="impl:getUserWorkDirectoryRequest" name="getUserWorkDirectoryRequest"/>
+
+         <wsdl:output message="impl:getUserWorkDirectoryResponse" name="getUserWorkDirectoryResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="submitBatchScriptJob" parameterOrder="token hostID username batchScript workingDir">
+
+         <wsdl:input message="impl:submitBatchScriptJobRequest" name="submitBatchScriptJobRequest"/>
+
+         <wsdl:output message="impl:submitBatchScriptJobResponse" name="submitBatchScriptJobResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getUserHomeDirectory" parameterOrder="token hostID username">
+
+         <wsdl:input message="impl:getUserHomeDirectoryRequest" name="getUserHomeDirectoryRequest"/>
+
+         <wsdl:output message="impl:getUserHomeDirectoryResponse" name="getUserHomeDirectoryResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="runSimpleCommand" parameterOrder="token hostID username command">
+
+         <wsdl:input message="impl:runSimpleCommandRequest" name="runSimpleCommandRequest"/>
+
+         <wsdl:output message="impl:runSimpleCommandResponse" name="runSimpleCommandResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="copyFileFromHostToHost" parameterOrder="token hostIDSrc hostIDDest usernameSrc usernameDest src dest">
+
+         <wsdl:input message="impl:copyFileFromHostToHostRequest" name="copyFileFromHostToHostRequest"/>
+
+         <wsdl:output message="impl:copyFileFromHostToHostResponse" name="copyFileFromHostToHostResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getAllocationInfo" parameterOrder="token hostID username">
+
+         <wsdl:input message="impl:getAllocationInfoRequest" name="getAllocationInfoRequest"/>
+
+         <wsdl:output message="impl:getAllocationInfoResponse" name="getAllocationInfoResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="destroyToken" parameterOrder="token">
+
+         <wsdl:input message="impl:destroyTokenRequest" name="destroyTokenRequest"/>
+
+         <wsdl:output message="impl:destroyTokenResponse" name="destroyTokenResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getDirectoryListing" parameterOrder="token hostID username directory">
+
+         <wsdl:input message="impl:getDirectoryListingRequest" name="getDirectoryListingRequest"/>
+
+         <wsdl:output message="impl:getDirectoryListingResponse" name="getDirectoryListingResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getRealms">
+
+         <wsdl:input message="impl:getRealmsRequest" name="getRealmsRequest"/>
+
+         <wsdl:output message="impl:getRealmsResponse" name="getRealmsResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="authenticateUser" parameterOrder="credentials clientID">
+
+         <wsdl:input message="impl:authenticateUserRequest" name="authenticateUserRequest"/>
+
+         <wsdl:output message="impl:authenticateUserResponse" name="authenticateUserResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getSystemLoad" parameterOrder="token hostID username">
+
+         <wsdl:input message="impl:getSystemLoadRequest" name="getSystemLoadRequest"/>
+
+         <wsdl:output message="impl:getSystemLoadResponse" name="getSystemLoadResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="createDirectory" parameterOrder="token hostID username directory">
+
+         <wsdl:input message="impl:createDirectoryRequest" name="createDirectoryRequest"/>
+
+         <wsdl:output message="impl:createDirectoryResponse" name="createDirectoryResponse"/>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="uitapiSoapBinding" type="impl:uitapi">
+
+      <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="getHostConfigInfo">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getHostConfigInfoRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getHostConfigInfoResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://www.uit.hpc.mil/UITAPIv3/uitapi.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="chmodFileOrDirectory">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="chmodFileOrDirectoryRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="chmodFileOrDirectoryResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://www.uit.hpc.mil/UITAPIv3/uitapi.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="chownFileOrDirectory">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="chownFileOrDirectoryRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="chownFileOrDirectoryResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://www.uit.hpc.mil/UITAPIv3/uitapi.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="copyDirectory">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="copyDirectoryRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="copyDirectoryResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://www.uit.hpc.mil/UITAPIv3/uitapi.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="copyFile">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="copyFileRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="copyFileResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://www.uit.hpc.mil/UITAPIv3/uitapi.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteDirectory">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="deleteDirectoryRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="deleteDirectoryResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://www.uit.hpc.mil/UITAPIv3/uitapi.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteFile">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="deleteFileRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="deleteFileResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://www.uit.hpc.mil/UITAPIv3/uitapi.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="statFile">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="statFileRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="statFileResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://www.uit.hpc.mil/UITAPIv3/uitapi.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="renameFileOrDirectory">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="renameFileOrDirectoryRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="renameFileOrDirectoryResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://www.uit.hpc.mil/UITAPIv3/uitapi.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="runSimpleAsyncCommand">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="runSimpleAsyncCommandRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="runSimpleAsyncCommandResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://www.uit.hpc.mil/UITAPIv3/uitapi.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="checkStatusForAsyncOperation">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="checkStatusForAsyncOperationRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="checkStatusForAsyncOperationResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://www.uit.hpc.mil/UITAPIv3/uitapi.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="cancelAsyncOperation">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="cancelAsyncOperationRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="cancelAsyncOperationResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://www.uit.hpc.mil/UITAPIv3/uitapi.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getPublicHosts">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getPublicHostsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getPublicHostsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://www.uit.hpc.mil/UITAPIv3/uitapi.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getQueueList">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getQueueListRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getQueueListResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://www.uit.hpc.mil/UITAPIv3/uitapi.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getStreamingFileUploadURL">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getStreamingFileUploadURLRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getStreamingFileUploadURLResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://www.uit.hpc.mil/UITAPIv3/uitapi.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getStreamingFileDownloadURL">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getStreamingFileDownloadURLRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getStreamingFileDownloadURLResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://www.uit.hpc.mil/UITAPIv3/uitapi.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="archiveGet">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="archiveGetRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="archiveGetResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://www.uit.hpc.mil/UITAPIv3/uitapi.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="archivePut">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="archivePutRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="archivePutResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://www.uit.hpc.mil/UITAPIv3/uitapi.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="archiveDirListing">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="archiveDirListingRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="archiveDirListingResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://www.uit.hpc.mil/UITAPIv3/uitapi.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="archiveCreateDir">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="archiveCreateDirRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="archiveCreateDirResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://www.uit.hpc.mil/UITAPIv3/uitapi.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="archiveRemoveFile">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="archiveRemoveFileRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="archiveRemoveFileResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://www.uit.hpc.mil/UITAPIv3/uitapi.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="archiveStatus">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="archiveStatusRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="archiveStatusResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://www.uit.hpc.mil/UITAPIv3/uitapi.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="archiveHomeDir">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="archiveHomeDirRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="archiveHomeDirResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://www.uit.hpc.mil/UITAPIv3/uitapi.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getBatchScriptListing">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getBatchScriptListingRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getBatchScriptListingResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://www.uit.hpc.mil/UITAPIv3/uitapi.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getBatchScriptContents">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getBatchScriptContentsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getBatchScriptContentsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://www.uit.hpc.mil/UITAPIv3/uitapi.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteBatchScriptEntry">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="deleteBatchScriptEntryRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="deleteBatchScriptEntryResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://www.uit.hpc.mil/UITAPIv3/uitapi.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addBatchScriptEntry">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="addBatchScriptEntryRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="addBatchScriptEntryResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://www.uit.hpc.mil/UITAPIv3/uitapi.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getJobsForHostForAllUsersByNumDays">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getJobsForHostForAllUsersByNumDaysRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getJobsForHostForAllUsersByNumDaysResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://www.uit.hpc.mil/UITAPIv3/uitapi.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getSystemNews">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getSystemNewsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getSystemNewsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://www.uit.hpc.mil/UITAPIv3/uitapi.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="cancelJob">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="cancelJobRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="cancelJobResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://www.uit.hpc.mil/UITAPIv3/uitapi.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getJobsForHostForUserByNumDays">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getJobsForHostForUserByNumDaysRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getJobsForHostForUserByNumDaysResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://www.uit.hpc.mil/UITAPIv3/uitapi.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getUserHostAssoc">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getUserHostAssocRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getUserHostAssocResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://www.uit.hpc.mil/UITAPIv3/uitapi.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getUserWorkDirectory">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getUserWorkDirectoryRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getUserWorkDirectoryResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://www.uit.hpc.mil/UITAPIv3/uitapi.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="submitBatchScriptJob">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="submitBatchScriptJobRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="submitBatchScriptJobResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://www.uit.hpc.mil/UITAPIv3/uitapi.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getUserHomeDirectory">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getUserHomeDirectoryRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getUserHomeDirectoryResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://www.uit.hpc.mil/UITAPIv3/uitapi.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="runSimpleCommand">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="runSimpleCommandRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="runSimpleCommandResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://www.uit.hpc.mil/UITAPIv3/uitapi.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="copyFileFromHostToHost">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="copyFileFromHostToHostRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="copyFileFromHostToHostResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://www.uit.hpc.mil/UITAPIv3/uitapi.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getAllocationInfo">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getAllocationInfoRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getAllocationInfoResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://www.uit.hpc.mil/UITAPIv3/uitapi.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="destroyToken">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="destroyTokenRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="destroyTokenResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://www.uit.hpc.mil/UITAPIv3/uitapi.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getDirectoryListing">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getDirectoryListingRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getDirectoryListingResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://www.uit.hpc.mil/UITAPIv3/uitapi.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getRealms">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getRealmsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getRealmsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://www.uit.hpc.mil/UITAPIv3/uitapi.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="authenticateUser">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="authenticateUserRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="authenticateUserResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://www.uit.hpc.mil/UITAPIv3/uitapi.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getSystemLoad">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getSystemLoadRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getSystemLoadResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://www.uit.hpc.mil/UITAPIv3/uitapi.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="createDirectory">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="createDirectoryRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://DefaultNamespace" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="createDirectoryResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://www.uit.hpc.mil/UITAPIv3/uitapi.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="uitapiService">
+
+      <wsdl:port binding="impl:uitapiSoapBinding" name="uitapi">
+
+         <wsdlsoap:address location="https://www.uit.hpc.mil/UITAPIv3/uitapi.jws"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

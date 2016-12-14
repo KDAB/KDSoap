@@ -382,44 +382,52 @@ bool Converter::convertClientService()
                 KODE::Code slotCode;
                 slotCode += QLatin1String("watcher->deleteLater();");
                 slotCode += QLatin1String("KDSoapMessage _reply = watcher->returnMessage();");
-                slotCode += QLatin1String("if (!_reply.isFault()) {") + COMMENT;
-                slotCode.indent();
+                const Part::List outputParts = selectedParts(binding, outputMsg, operation, false /*input*/);
+                const SoapBinding::Headers outputHeaders = getOutputHeaders(binding, operationName);
 
-                if (soapStyle(binding) == SoapBinding::RPCStyle /*adds a wrapper*/) {
-                    // Protect the call to .at(0) below
-                    slotCode += "if (_reply.childValues().isEmpty()) {";
+                if (!outputParts.isEmpty() || !outputHeaders.isEmpty()) {
+                    slotCode += QLatin1String("if (!_reply.isFault()) {") + COMMENT;
                     slotCode.indent();
-                    slotCode += "_reply.setFault(true);" + COMMENT;
-                    slotCode += "_reply.addArgument(QString::fromLatin1(\"faultcode\"), QString::fromLatin1(\"Server.EmptyResponse\"));";
-                    slotCode += QLatin1String("return;");
+
+                    if (!outputParts.isEmpty()) {
+                        if (soapStyle(binding) == SoapBinding::RPCStyle /*adds a wrapper*/) {
+                            Q_ASSERT(outputParts.count() == 1);
+                            // Protect the call to .at(0) below
+                            slotCode += "if (_reply.childValues().isEmpty()) {";
+                            slotCode.indent();
+                            slotCode += "_reply.setFault(true);" + COMMENT;
+                            slotCode += "_reply.addArgument(QString::fromLatin1(\"faultcode\"), QString::fromLatin1(\"Server.EmptyResponse\"));";
+                            slotCode += QLatin1String("return;");
+                            slotCode.unindent();
+                            slotCode += "}";
+
+                            slotCode += QLatin1String("_reply = _reply.childValues().at(0);") + COMMENT;
+                        }
+
+                        Q_FOREACH (const Part &part, outputParts) {
+                            const QString varName = mNameMapper.escape(QLatin1String("result") + upperlize(part.name()));
+                            const KODE::MemberVariable member(varName, QString());
+                            slotCode.addBlock(deserializeRetVal(part, QLatin1String("_reply"), mTypeMap.localType(part.type(), part.element()), member.name()));
+
+                            addJobResultMember(jobClass, part, varName, inputGetters);
+                        }
+                    }
+                    Q_FOREACH (const SoapBinding::Header &header, outputHeaders) {
+                        const QName messageName = header.message();
+                        const QString partName = header.part();
+                        const Message message = mWSDL.findMessage(messageName);
+                        const Part part = message.partByName(partName);
+
+                        const QString varName = QLatin1String("resultHeader") + upperlize(part.name());
+                        const KODE::MemberVariable member(varName, QString());
+                        const QString getHeader = QString::fromLatin1("watcher->returnHeaders().header(QLatin1String(\"%1\"), QLatin1String(\"%2\"))").arg(part.element().localName(), part.element().nameSpace());
+                        slotCode.addBlock(deserializeRetVal(part, getHeader, mTypeMap.localType(part.type(), part.element()), member.name()));
+                        addJobResultMember(jobClass, part, varName, inputGetters);
+                    }
+
                     slotCode.unindent();
-                    slotCode += "}";
-
-                    slotCode += QLatin1String("_reply = _reply.childValues().at(0);") + COMMENT;
+                    slotCode += QLatin1String("}");
                 }
-
-                Q_FOREACH (const Part &part, selectedParts(binding, outputMsg, operation, false /*input*/)) {
-                    const QString varName = mNameMapper.escape(QLatin1String("result") + upperlize(part.name()));
-                    const KODE::MemberVariable member(varName, QString());
-                    slotCode.addBlock(deserializeRetVal(part, QLatin1String("_reply"), mTypeMap.localType(part.type(), part.element()), member.name()));
-
-                    addJobResultMember(jobClass, part, varName, inputGetters);
-                }
-                Q_FOREACH (const SoapBinding::Header &header, getOutputHeaders(binding, operationName)) {
-                    const QName messageName = header.message();
-                    const QString partName = header.part();
-                    const Message message = mWSDL.findMessage(messageName);
-                    const Part part = message.partByName(partName);
-
-                    const QString varName = QLatin1String("resultHeader") + upperlize(part.name());
-                    const KODE::MemberVariable member(varName, QString());
-                    const QString getHeader = QString::fromLatin1("watcher->returnHeaders().header(QLatin1String(\"%1\"), QLatin1String(\"%2\"))").arg(part.element().localName(), part.element().nameSpace());
-                    slotCode.addBlock(deserializeRetVal(part, getHeader, mTypeMap.localType(part.type(), part.element()), member.name()));
-                    addJobResultMember(jobClass, part, varName, inputGetters);
-                }
-
-                slotCode.unindent();
-                slotCode += QLatin1String("}");
                 slotCode += QLatin1String("emitFinished(_reply, watcher->returnHeaders());");
                 slot.setBody(slotCode);
                 jobClass.addFunction(slot);
