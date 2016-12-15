@@ -8,7 +8,7 @@ if sys.version_info[0] != 2:
 
 from cpack import CPackGenerateConfiguration 
 from configure import ConfigureScriptGenerator
-from header import ForwardHeaderGenerator
+import header
 
 def parseSvnInfo( stdout ):
 	lines = stdout.splitlines()
@@ -96,7 +96,7 @@ def autogen(project, version, subprojects, prefixed, forwardHeaderMap = {}, step
 	srcPath = os.path.join( sourceDirectory, "src" )
 
 	if subprojects and "generate-cpack" in steps:
-		forwardHeaderGenerator = ForwardHeaderGenerator( 
+		forwardHeaderGenerator = header.ForwardHeaderGenerator( 
 			copy = True, path = sourceDirectory, includepath = includePath, srcpath = srcPath,
 			project = project, subprojects = subprojects, prefix = installPrefix, prefixed = prefixed,
 			additionalHeaders = forwardHeaderMap			
