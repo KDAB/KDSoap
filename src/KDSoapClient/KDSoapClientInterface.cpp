@@ -76,7 +76,8 @@ KDSoapClientInterfacePrivate::KDSoapClientInterfacePrivate()
 KDSoapClientInterfacePrivate::~KDSoapClientInterfacePrivate()
 {
 #ifndef QT_NO_OPENSSL
-    delete m_sslHandler;
+    if (m_sslHandler)
+        m_sslHandler->deleteLater();
 #endif
 }
 
