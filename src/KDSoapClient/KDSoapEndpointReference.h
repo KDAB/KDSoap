@@ -1,5 +1,5 @@
 /****************************************************************************
-** Copyright (C) 2015-2016 Klaralvdalens Datakonsult AB, a KDAB Group company, info@kdab.com.
+** Copyright (C) 2015-2017 Klaralvdalens Datakonsult AB, a KDAB Group company, info@kdab.com.
 ** All rights reserved.
 **
 ** This file is part of the KD Soap library.

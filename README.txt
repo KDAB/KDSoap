@@ -43,7 +43,7 @@ https://github.com/KDAB/KDSoap
 
 License
 =======
-KD Soap is (C) 2010-2016, Klaralvdalens Datakonsult AB, and is available
+KD Soap is (C) 2010-2017, Klaralvdalens Datakonsult AB, and is available
 under the terms of:
 * the LGPL (see LICENSE.LGPL.txt for details)
     (except libkdsoap-server, see LICENSE.AGPL3-modified.txt)
