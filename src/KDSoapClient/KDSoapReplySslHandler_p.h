@@ -25,13 +25,14 @@
 #define KDSOAPREPLYSSLHANDLER_P_H
 
 #include <QObject>
+#include <QSslError>
 QT_BEGIN_NAMESPACE
 class QNetworkReply;
 QT_END_NAMESPACE
 
-#ifndef QT_NO_OPENSSL
-#include <QSslError>
 class KDSoapSslHandler;
+
+#ifndef QT_NO_OPENSSL
 
 class KDSoapReplySslHandler : public QObject
 {
