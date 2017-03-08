@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<wsdl:definitions xmlns:tns="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://tempuri.org/" name="DateExample">
+  <wsdl:message name="StringToDate_Input">
+    <wsdl:part name="dateString" type="xs:string" nillable="true"/>
+  </wsdl:message>
+  <wsdl:message name="StringToDate_Output">
+    <wsdl:part name="dateObject" type="xs:date"/>
+  </wsdl:message>
+  <wsdl:portType name="DateExample_PortType">
+    <wsdl:operation name="StringToDate">
+      <wsdl:input message="tns:StringToDate_Input"/>
+      <wsdl:output message="tns:StringToDate_Output"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="DateExample_Binding" type="tns:DateExample_PortType">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+    <wsdl:operation name="StringToDate">
+      <soap:operation style="document" soapAction="http://tempuri.org/DateExample/StringToDate"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="DateExample">
+    <wsdl:port name="DateExample_Port" binding="tns:DateExample_Binding">
+      <soap:address location="http://localhost:50002/"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

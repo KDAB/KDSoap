@@ -85,3 +85,4 @@ add_subdirectory(webcalls_wsdl)
 
 add_subdirectory(test_calc)
 add_subdirectory(dv_terminalauth)
+add_subdirectory(date_example)

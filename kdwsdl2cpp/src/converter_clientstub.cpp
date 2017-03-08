@@ -630,6 +630,7 @@ bool Converter::convertClientCall(const Operation &operation, const Binding &bin
             return false;
         }
         callFunc.setReturnType(retType);
+        newClass.addHeaderIncludes(mTypeMap.headerIncludes(retPart.type()));
 
         code += "if (d_ptr->m_lastReply.isFault())";
         code.indent();
