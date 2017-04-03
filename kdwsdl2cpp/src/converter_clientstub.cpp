@@ -175,6 +175,20 @@ bool Converter::convertClientService()
                                                      "version can be KDSoapClientInterface::SOAP1_1 or KDSoapClientInterface::SOAP1_2"));
                 newClass.addFunction(setSoapVersion);
             }
+            // lastErrorCode() method
+            {
+                KODE::Function lastError(QLatin1String("lastErrorCode"), QLatin1String("int"));
+                lastError.setConst(true);
+                KODE::Code code;
+                code += "if (d_ptr->m_lastReply.isFault())";
+                code.indent();
+                code += "return d_ptr->m_lastReply.childValues().child(QLatin1String(\"faultcode\")).value().toInt();";
+                code.unindent();
+                code += "return 0;";
+                lastError.setBody(code);
+                lastError.setDocs(QLatin1String("Return the fault code from the last blocking call.\nEmpty if no error."));
+                newClass.addFunction(lastError);
+            }
             // lastError() method
             {
                 KODE::Function lastError(QLatin1String("lastError"), QLatin1String("QString"));

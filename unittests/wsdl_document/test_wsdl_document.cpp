@@ -337,6 +337,7 @@ private Q_SLOTS:
         QSignalSpy sslErrorsSpy(service.clientInterface()->sslHandler(), SIGNAL(sslErrors(KDSoapSslHandler*,QList<QSslError>)));
         QByteArray ret = service.addEmployee(addEmployeeParameters());
         QVERIFY(ret.isEmpty());
+        QCOMPARE(service.lastErrorCode(), static_cast<int>(QNetworkReply::SslHandshakeFailedError));
         QVERIFY2(service.lastError().contains(QLatin1String("SSL handshake failed")), qPrintable(service.lastError()));
         // Disable SSL so that termination can happen normally (do it asap, in case of failure below)
         server.disableSsl();
