@@ -1,5 +1,5 @@
 Name:           kdsoap
-Version:        1.4.99
+Version:        1.6.0
 Release:        1
 Summary:        A Qt-based client-side and server-side SOAP component
 Source:         %{name}-%{version}.tar.gz
@@ -77,6 +77,12 @@ QMAKE_ARGS="LIB_SUFFIX=64" ./configure.sh -shared -release -prefix %{buildroot}/
 %{_libdir}/libkdsoap-server.so
 
 %changelog
+* Mon May 01 2017 Allen Winter <allen.winter@kdab.com> 1.6.0
+  1.6.0
+* Mon Jun 06 2016 Allen Winter <allen.winter@kdab.com> 1.5.1
+  1.5.1 bug fix
+* Thu Mar 03 2016 Allen Winter <allen.winter@kdab.com> 1.5.0
+  1.5.0 Final
 * Mon Feb 29 2016 Allen Winter <allen.winter@kdab.com> 1.4.99
   1.5.0 RC1
 * Thu Jun 25 2015 Allen Winter <allen.winter@kdab.com> 1.4.0

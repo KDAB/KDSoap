@@ -1,5 +1,5 @@
 Name:           qt5-kdsoap
-Version:        1.5.1
+Version:        1.6.0
 Release:        1
 Summary:        A Qt5-based client-side and server-side SOAP component
 Source:         %{name}-%{version}.tar.gz
@@ -76,6 +76,8 @@ cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
 %{_libdir}/libkdsoap-server.so
 
 %changelog
+* Mon May 01 2017 Allen Winter <allen.winter@kdab.com> 1.6.0
+  1.6.0
 * Mon Jun 07 2016 Allen Winter <allen.winter@kdab.com> 1.5.1
   1.5.1 bug fix
 * Mon Feb 29 2016 Allen Winter <allen.winter@kdab.com> 1.4.99
