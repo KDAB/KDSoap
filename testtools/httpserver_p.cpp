@@ -314,13 +314,15 @@ static HeadersMap parseHeaders(const QByteArray &headerData)
 
 void HttpServerThread::disableSsl()
 {
-    m_server->disableSsl();
+    if (m_server) {
+        m_server->disableSsl();
+    }
 }
 
 void HttpServerThread::run()
 {
     m_server = new BlockingHttpServer(m_features & Ssl);
-    m_server->listen();
+    Q_ASSERT(m_server->listen());
     QMutexLocker lock(&m_mutex);
     m_port = m_server->serverPort();
     lock.unlock();

@@ -56,6 +56,9 @@ class WsdlDocumentTest : public QObject
 {
     Q_OBJECT
 
+public:
+    WsdlDocumentTest() : m_expectedDelayedCalls(0) {}
+
 private:
     static KDAB__AddEmployee addEmployeeParameters()
     {

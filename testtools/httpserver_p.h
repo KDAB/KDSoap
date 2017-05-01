@@ -65,7 +65,7 @@ public:
     Q_DECLARE_FLAGS(Features, Feature)
 
     HttpServerThread(const QByteArray &dataToSend, Features features)
-        : m_dataToSend(dataToSend), m_features(features)
+        : m_dataToSend(dataToSend), m_port(0), m_features(features), m_server(0)
     {
         start();
         m_ready.acquire();
@@ -224,4 +224,3 @@ private:
 };
 
 #endif /* HTTPSERVER_P_H */
-

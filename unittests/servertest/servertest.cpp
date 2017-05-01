@@ -82,7 +82,7 @@ class CountryServerObject : public QObject, public KDSoapServerObjectInterface, 
 public:
     CountryServerObject(bool auth, bool rawXML)
         : QObject(), KDSoapServerObjectInterface(),
-          m_requireAuth(auth), m_useRawXML(rawXML)
+          m_requireAuth(auth), m_useRawXML(rawXML), m_rawXMLValid(false)
     {
         //qDebug() << "Server object created in thread" << QThread::currentThread();
         QMutexLocker locker(&s_serverObjectsMutex);
