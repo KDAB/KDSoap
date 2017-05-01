@@ -322,7 +322,9 @@ void HttpServerThread::disableSsl()
 void HttpServerThread::run()
 {
     m_server = new BlockingHttpServer(m_features & Ssl);
-    Q_ASSERT(m_server->listen());
+    if (!m_server->listen()) {
+        qFatal("HttpServerThread::run is unable to listen");
+    }
     QMutexLocker lock(&m_mutex);
     m_port = m_server->serverPort();
     lock.unlock();
