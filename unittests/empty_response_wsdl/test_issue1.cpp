@@ -58,7 +58,7 @@ void TestIssue1::test()
     service.createDirectory("t", 42, "user", "dir");
 
     const QByteArray expectedData = QByteArray(xmlEnvBegin11()) + "><soap:Body>"
-                                    "<n1:createDirectory xmlns:n1=\"https://www.test.com/testapiv3/testapi.jws\">"
+                                    "<n1:createDirectory xmlns:n1=\"http://DefaultNamespace\">"
                                     "<token xsi:type=\"xsd:string\">t</token>"
                                     "<hostID xsi:type=\"xsd:long\">42</hostID>"
                                     "<username xsi:type=\"xsd:string\">user</username>"

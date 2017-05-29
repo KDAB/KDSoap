@@ -37,6 +37,7 @@ SUBDIRS = \
   encapsecurity \
   prefix_wsdl \
   vidyo \
+  calc \
   ws_addressing_support
 
 # These need internet access

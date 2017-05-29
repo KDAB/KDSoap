@@ -1,0 +1,4 @@
+WSDL parser / code generator changes, applying to both client and server side:
+================================================================
+
+* Add support for body namespace specification in RPC calls.

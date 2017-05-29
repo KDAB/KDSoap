@@ -525,7 +525,7 @@ QName Converter::elementNameForPart(const Part &part, bool *qualified, bool *nil
     } else { // type (rpc style)
         *qualified = false;
         *nillable = false;
-        return QName(part.nameSpace(), part.name());
+        return QName(part.nameSpace(), part.name()); // NOTE: part.nameSpace() is usually empty.
     }
 }
 
@@ -557,6 +557,10 @@ void Converter::clientGenerateMessage(KODE::Code &code, const Binding &binding, 
             code += "message.setUse(KDSoapMessage::LiteralUse);";
         }
         //qDebug() << "input headers:" << op.inputHeaders().count();
+
+        if (!op.input().nameSpace().isEmpty()) {
+            code += "message.setNamespaceUri(QString::fromLatin1(\"" + op.input().nameSpace() + "\"));";
+        }
     }
 
     bool isBuiltin = false;
@@ -845,6 +849,9 @@ void Converter::createHeader(const SoapBinding::Header &header, KODE::Class &new
             code += "message.setUse(KDSoapMessage::EncodedUse);";
         } else {
             code += "message.setUse(KDSoapMessage::LiteralUse);";
+        }
+        if (!header.nameSpace().isEmpty()) {
+            code += "message.setNamespaceUri(QString::fromLatin1(\"" + header.nameSpace() + "\"));";
         }
         addMessageArgument(code, SoapBinding::RPCStyle, part, partName, "message");
         code += QLatin1String("clientInterface()->setHeader( QLatin1String(\"") + partName + QLatin1String("\"), message );");

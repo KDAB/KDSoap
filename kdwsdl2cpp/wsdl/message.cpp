@@ -84,7 +84,7 @@ void Message::loadXML(ParserContext *context, const QDomElement &element)
         NSManager namespaceManager(context, child);
         const QName tagName(child.tagName());
         if (tagName.localName() == QLatin1String("part")) {
-            Part part(nameSpace());
+            Part part; // not part(nameSpace()), we'll use the body namespace (github issue #101)
             part.loadXML(context, child);
             mParts.append(part);
         } else if (tagName.localName() == QLatin1String("documentation")) {
