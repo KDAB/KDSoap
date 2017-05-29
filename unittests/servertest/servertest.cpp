@@ -906,7 +906,12 @@ private Q_SLOTS:
 
         QTest::newRow("readable") << "file_download.txt" << readable << QNetworkReply::NoError;
         QTest::newRow("nonexistent") << "nonexistent.txt" << readable << QNetworkReply::ContentNotFoundError;
-        QTest::newRow("unreadable") << "file_download.txt" << writable << QNetworkReply::ContentOperationNotPermittedError;
+        QTest::newRow("unreadable") << "file_download.txt" << writable
+#if QT_VERSION >= QT_VERSION_CHECK(5, 9, 0) // this changed in qtbase 079aa711ec
+        << QNetworkReply::ContentAccessDenied;
+#else
+        << QNetworkReply::ContentOperationNotPermittedError;
+#endif
     }
 
     void testFileDownload()

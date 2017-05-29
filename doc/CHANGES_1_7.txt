@@ -1,3 +1,13 @@
+General:
+========
+* Qt 5.9.0 support (compilation fix due to qt_qhash_seed being removed, unittest fix due to QNetworkReply error code difference)
+
+Client-side:
+============
+
+Server-side:
+============
+
 WSDL parser / code generator changes, applying to both client and server side:
 ================================================================
 
