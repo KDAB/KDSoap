@@ -204,8 +204,7 @@ private:
     {
         return QByteArray(xmlEnvBegin11()) + ">"
                "<soap:Body>"
-               "<n1:sayHello xmlns:n1=\"http://www.ecerami.com/wsdl/HelloService.wsdl\">"
-               /*"<n1:sayHello xmlns:n1=\"urn:examples:helloservice\">" // TODO! Add support for * namespace="urn:examples:helloservice" */
+               "<n1:sayHello xmlns:n1=\"urn:examples:helloservice\">"
                "<firstName xsi:type=\"xsd:string\">Hello</firstName>"
                "<lastName xsi:type=\"xsd:string\">World</lastName>"
                "</n1:sayHello>"
