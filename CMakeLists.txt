@@ -49,6 +49,7 @@ endif()
 
 if(Qt5Core_FOUND)
   find_package(Qt5Network REQUIRED)
+  find_package(Qt5Widgets CONFIG)
   set(QT_LIBRARIES Qt5::Core)
   set(QT_USE_FILE "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Qt5Portability.cmake")
 
