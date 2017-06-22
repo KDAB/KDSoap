@@ -77,4 +77,4 @@ add_subdirectory(webcalls_wsdl)
 # TODO: If boost optional is installed
 #add_subdirectory(optionaltype_boost_optional)
 
-add_subdirectory(calc)
+add_subdirectory(test_calc)
