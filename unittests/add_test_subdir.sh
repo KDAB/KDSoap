@@ -23,10 +23,10 @@ git add $subdir/CMakeLists.txt
 echo "add_subdirectory($subdir)" >> CMakeLists.txt
 
 # QMake
+# Note: do NOT set TARGET, runTest.bat assumes exename==dirname
 
 cat > $subdir/${subdir}.pro <<EOF
 include( \$\${TOP_SOURCE_DIR}/unittests/unittests.pri )
-TARGET = test_${subdir}
 QT += network xml
 SOURCES = $cppfiles
 test.target = test
