@@ -505,10 +505,8 @@ bool Converter::clientAddAction(KODE::Code &code, const Binding &binding, const 
     if (binding.type() == Binding::SOAPBinding) {
         const SoapBinding soapBinding(binding.soapBinding());
         const SoapBinding::Operation op = soapBinding.operations().value(operationName);
-        if (!op.action().isEmpty()) {
-            code += QLatin1String("const QString action = QString::fromLatin1(\"") + op.action() + QLatin1String("\");");
-            hasAction = true;
-        }
+        code += QLatin1String("const QString action = QString::fromLatin1(\"") + op.action() + QLatin1String("\");");
+        hasAction = true;
     }
     return hasAction;
 }

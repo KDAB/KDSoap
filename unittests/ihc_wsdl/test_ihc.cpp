@@ -196,6 +196,7 @@ private Q_SLOTS:
         {
             QVERIFY(xmlBufferCompare(server.receivedData(), expectedSetResourceValueRequest()));
             QCOMPARE(QString::fromUtf8(server.receivedData().constData()), QString::fromUtf8(expectedSetResourceValueRequest().constData()));
+            QCOMPARE(server.header("SoapAction").constData(), "\"setResourceValue\"");
         }
     }
 

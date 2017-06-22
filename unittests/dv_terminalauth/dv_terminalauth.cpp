@@ -76,6 +76,7 @@ private Q_SLOTS:
         {
             QVERIFY(xmlBufferCompare(server.receivedData(), expectedGetCACertRequest()));
             QCOMPARE(QString::fromUtf8(server.receivedData().constData()), QString::fromUtf8(expectedGetCACertRequest().constData()));
+            QCOMPARE(server.header("SoapAction").constData(), "\"\""); // SOAP-135
         }
 
         QCOMPARE(NS__GetCACertificates_returnCodeType::Type(result.returnCode()), NS__GetCACertificates_returnCodeType::Ok_cert_available);

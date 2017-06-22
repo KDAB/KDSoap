@@ -143,12 +143,11 @@ private slots:
     {
         const QString endPoint = QString::fromLatin1("http://mathertel.de/AJAXEngine/S02_AJAXCoreSamples/OrteLookup.asmx?WSDL");
         const QString messageNamespace = QString::fromLatin1("http://www.mathertel.de/OrteLookup/");
-        const QString action = QString::fromLatin1("");
         KDSoapClientInterface client(endPoint, messageNamespace);
         KDSoapMessage message;
         message.setQualified(true); // so that the prefix element is qualified
         message.addArgument(QLatin1String("prefix"), QLatin1String("Berl"));
-        KDSoapPendingCall pendingCall = client.asyncCall(QLatin1String("OrteStartWith"), message, action);
+        KDSoapPendingCall pendingCall = client.asyncCall(QLatin1String("OrteStartWith"), message);
         KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);
         connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher*)),
                 this, SLOT(slotFinished(KDSoapPendingCallWatcher*)));

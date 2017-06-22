@@ -172,7 +172,7 @@ private Q_SLOTS:
         QByteArray expectedRequestXml = expectedCountryRequest();
         client.setSoapVersion(KDSoapClientInterface::SOAP1_1);
         {
-            KDSoapMessage ret = client.call(QLatin1String("getEmployeeCountry"), countryMessage());
+            KDSoapMessage ret = client.call(QLatin1String("getEmployeeCountry"), countryMessage(), "http://www.kdab.com/xml/MyWsdl/getEmployeeCountry");
             // Check what we sent
             QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
             QVERIFY(!ret.isFault());
@@ -189,7 +189,7 @@ private Q_SLOTS:
         }
         client.setSoapVersion(KDSoapClientInterface::SOAP1_2);
         {
-            KDSoapMessage ret = client.call(QLatin1String("getEmployeeCountry"), countryMessage());
+            KDSoapMessage ret = client.call(QLatin1String("getEmployeeCountry"), countryMessage(), "http://www.kdab.com/xml/MyWsdl/getEmployeeCountry");
             // Check what we sent
             QByteArray expectedRequestXml12 = expectedRequestXml;
             expectedRequestXml12.replace("http://schemas.xmlsoap.org/soap/envelope/", "http://www.w3.org/2003/05/soap-envelope");

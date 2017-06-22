@@ -97,6 +97,8 @@ public:
      * \param method method name, without arguments. For instance \c "addContact". Only used in RPC style.
      * \param message arguments for the method call
      * \param soapAction optional \c "SoapAction" header, see the specification of the SOAP service.
+     *        You are strongly encouraged to pass a value here, even if it's just "", given that by default
+     *        (for a null string) KDSoap will generate a SOAPAction for backwards compatibility reasons.
      * \param headers optional arguments which will be passed as \c <soap:Header>.
      *
      * This is an asynchronous call, so this function returns immediately.
@@ -143,6 +145,8 @@ public:
      * \param method method name, without arguments. For instance \c "addContact". Only used in RPC style.
      * \param message arguments for the method call
      * \param soapAction optional \c "SoapAction" header, see the specification of the SOAP service.
+     *        You are strongly encouraged to pass a value here, even if it's just "", given that by default
+     *        (for a null string) KDSoap will generate a SOAPAction for backwards compatibility reasons.
      * \param headers optional arguments which will be passed as \c <soap:Header>.
      *
      * \warning This is a blocking call. It is NOT recommended to use this in the main thread of
@@ -159,6 +163,8 @@ public:
      * \param method method name, without arguments. For instance \c "addContact". Only used in RPC style.
      * \param message arguments for the method call
      * \param soapAction optional \c "SoapAction" header, see the specification of the SOAP service.
+     *        You are strongly encouraged to pass a value here, even if it's just "", given that by default
+     *        (for a null string) KDSoap will generate a SOAPAction for backwards compatibility reasons.
      * \param headers optional arguments which will be passed as \c <soap:Header>.
      *
      * This is an asynchronous call, where the caller does not want to wait for a response.

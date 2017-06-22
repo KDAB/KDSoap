@@ -94,11 +94,12 @@ QNetworkRequest KDSoapClientInterfacePrivate::prepareRequest(const QString &meth
 {
     QNetworkRequest request(QUrl(this->m_endPoint));
 
-    // The soap action seems to be namespace + method in most cases, but not always
-    // (e.g. urn:GoogleSearchAction for google).
     QString soapAction = action;
-    if (soapAction.isEmpty()) {
-        // Does the namespace always end with a '/'? - nope, it doesn't.
+
+    if (soapAction.isNull()) {
+        // The automatic generation of SoapAction done in this block is a mistake going back to KDSoap 1.0.
+        // The spec says "there is no default value for SoapAction" (https://www.w3.org/TR/wsdl#_soap:operation)
+        // but we keep this for compatibility, when nothing was passed as argument (see the webcalls unittest)
         soapAction = this->m_messageNamespace;
         if (!soapAction.endsWith(QLatin1Char('/'))) {
             soapAction += QLatin1Char('/');

@@ -4,6 +4,7 @@ General:
 
 Client-side:
 ============
+* Fix unwanted generation of SoapAction header when it should be empty (SOAP-135).
 
 Server-side:
 ============
