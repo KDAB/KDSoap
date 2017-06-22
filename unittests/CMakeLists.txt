@@ -78,3 +78,4 @@ add_subdirectory(webcalls_wsdl)
 #add_subdirectory(optionaltype_boost_optional)
 
 add_subdirectory(test_calc)
+add_subdirectory(dv_terminalauth)

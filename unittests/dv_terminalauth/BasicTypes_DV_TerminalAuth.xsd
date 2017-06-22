@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:nsBT="uri:eacBT/1.1" targetNamespace="uri:eacBT/1.1" elementFormDefault="qualified">
+	<!-- this scheme is based on the document 
+	 PKIs for Machine Readable Travel Documents - Protocols for the Management of Certififcates and CRLs
+	 Version 1.1, Date 30.06.2010
+	 -->
+	<!-- Definition of the type for a message ID -->
+	<xsd:simpleType name="MessageIDType">
+		<xsd:restriction base="xsd:string"/>
+	</xsd:simpleType>
+	<!-- Definition of the type for a callbackIndicator -->
+	<xsd:simpleType name="CallbackIndicatorType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="callback_possible"/>
+			<xsd:enumeration value="callback_not_possible"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!-- Definition of the type of an optional messageID parameter -->
+	<xsd:complexType name="OptionalMessageIDType">
+		<xsd:sequence>
+			<xsd:element name="messageID" type="nsBT:MessageIDType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- Definition of the type of an optional string parameter -->
+	<xsd:complexType name="OptionalStringType">
+		<xsd:sequence>
+			<xsd:element name="string" type="xsd:string" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- Definition of the complex type for a sequence of certificates -->
+	<xsd:complexType name="CertificateSeqType">
+		<xsd:sequence>
+			<xsd:element name="certificate" type="xsd:base64Binary" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- Definition of the types of the status codes for the messages SendCertificates -->
+	<xsd:simpleType name="SendCertificates_statusInfoType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="ok_cert_available"/>
+			<xsd:enumeration value="failure_inner_signature"/>
+			<xsd:enumeration value="failure_outer_signature"/>
+			<xsd:enumeration value="failure_expired"/>
+			<xsd:enumeration value="failure_domain_parameters"/>
+			<xsd:enumeration value="failure_request_not_accepted"/>
+			<xsd:enumeration value="failure_foreignCAR_unknown"/>
+			<xsd:enumeration value="failure_not_forwarded"/>
+			<xsd:enumeration value="failure_request_not_accepted_foreign"/>
+			<xsd:enumeration value="failure_syntax"/>
+			<xsd:enumeration value="failure_internal_error"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<!-- ==================== -->
+	<!-- Definition of the types of the return codes for the different messages -->
+	<xsd:simpleType name="RequestCertificate_returnCodeType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="ok_cert_available"/>
+			<xsd:enumeration value="ok_syntax"/>
+			<xsd:enumeration value="ok_reception_ack"/>
+			<xsd:enumeration value="failure_inner_signature"/>
+			<xsd:enumeration value="failure_outer_signature"/>
+			<xsd:enumeration value="failure_expired"/>
+			<xsd:enumeration value="failure_domain_parameters"/>
+			<xsd:enumeration value="failure_request_not_accepted"/>
+			<xsd:enumeration value="failure_syntax"/>
+			<xsd:enumeration value="failure_synchronous_processing_not_possible"/>
+			<xsd:enumeration value="failure_internal_error"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="GetCACertificates_returnCodeType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="ok_cert_available"/>
+			<xsd:enumeration value="ok_syntax"/>
+			<xsd:enumeration value="ok_reception_ack"/>
+			<xsd:enumeration value="failure_syntax"/>
+			<xsd:enumeration value="failure_synchronous_processing_not_possible"/>
+			<xsd:enumeration value="failure_internal_error"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="SendCertificates_returnCodeType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="ok_received_correctly"/>
+			<xsd:enumeration value="failure_syntax"/>
+			<xsd:enumeration value="failure_messageID_unknown"/>
+			<xsd:enumeration value="failure_internal_error"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<!-- ==================== -->
+	<!-- Definition of the types of the result for the different messages -->
+	<xsd:complexType name="RequestCertificateResult">
+		<xsd:sequence>
+			<xsd:element name="returnCode" type="nsBT:RequestCertificate_returnCodeType"/>
+			<xsd:element name="certificateSeq" type="nsBT:CertificateSeqType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="GetCACertificatesResult">
+		<xsd:sequence>
+			<xsd:element name="returnCode" type="nsBT:GetCACertificates_returnCodeType"/>
+			<xsd:element name="certificateSeq" type="nsBT:CertificateSeqType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="SendCertificatesResult">
+		<xsd:sequence>
+			<xsd:element name="returnCode" type="nsBT:SendCertificates_returnCodeType"/>
+		</xsd:sequence>
+	</xsd:complexType>
+</xsd:schema>

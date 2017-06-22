@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- this WSDL-specification is based on the document 
+	 PKIs for Machine Readable Travel Documents - Protocols for the Management of Certififcates and CRLs
+	 Version 1.1, Date 30.06.2010
+	 -->
+<!-- this specification contains the functions that have to be implemented as part of the Web-Service
+	of a DV. Currently the following functions are part of this Web-Service:
+	- RequestCertificate used for requests by an Inspection System
+	- GetCACertificates used for requests by an Inspection System
+	- SendCertificates used for a callback by a CVCA	
+	-->
+	
+<definitions
+    name="EAC-PKI-DV"
+    targetNamespace="uri:EAC-PKI-DV-Protocol/1.1"
+    xmlns:tns="uri:EAC-PKI-DV-Protocol/1.1"
+
+    xmlns:ns="uri:eacBT/1.1"
+
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://schemas.xmlsoap.org/wsdl/ http://schemas.xmlsoap.org/wsdl/2003-02-11.xsd"
+
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:SOAP="http://schemas.xmlsoap.org/wsdl/soap/"
+    xmlns="http://schemas.xmlsoap.org/wsdl/"
+    >
+    
+    <types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+        	<import namespace="http://www.w3.org/2001/XMLSchema"/>
+            <import namespace="uri:eacBT/1.1" schemaLocation="./BasicTypes_DV_TerminalAuth.xsd"/>
+        </schema> 
+    </types>
+	
+	<!-- Definition of the messages of the protocol -->
+	<!-- message RequestCertificate -->
+	<message name="RequestCertificate_Req">
+		<part name="callbackIndicator" type="ns:CallbackIndicatorType"/>
+		<part name="messageID" type="ns:OptionalMessageIDType"/>
+		<part name="responseURL" type="ns:OptionalStringType"/>
+		<part name="certReq" type="xsd:base64Binary"/>
+	</message>
+	<message name="RequestCertificate_Res">
+		<part name="Result" type="ns:RequestCertificateResult"/>
+	</message>
+	<!-- message GetCACertificates -->
+	<message name="GetCACertificates_Req">
+		<part name="callbackIndicator" type="ns:CallbackIndicatorType"/>		
+		<part name="messageID" type="ns:OptionalMessageIDType"/>
+		<part name="responseURL" type="ns:OptionalStringType"/>
+	</message>
+	<message name="GetCACertificates_Res">
+		<part name="Result" type="ns:GetCACertificatesResult"/>
+	</message>
+	<!-- message SendCertificates -->
+	<message name="SendCertificates_Req">
+		<part name="messageID" type="ns:OptionalMessageIDType"/>
+		<part name="statusInfo" type="ns:SendCertificates_statusInfoType"/>
+		<part name="certificateSeq" type="ns:CertificateSeqType"/>
+	</message>
+	<message name="SendCertificates_Res">
+		<part name="Result" type="ns:SendCertificatesResult"/>
+	</message>
+	
+	<!-- Definition of the port types -->
+	<portType name="EAC-PKI-DV-ProtocolType">
+		<!-- port type for message RequestCertificate -->
+		<operation name="RequestCertificate">
+			<input message="tns:RequestCertificate_Req"/>
+			<output message="tns:RequestCertificate_Res"/>
+		</operation>
+		<!-- port type for message GetCACertificates -->
+		<operation name="GetCACertificates">
+			<input message="tns:GetCACertificates_Req"/>
+			<output message="tns:GetCACertificates_Res"/>
+		</operation>
+		<!-- port type for message SendCertificates -->
+		<operation name="SendCertificates">
+			<input message="tns:SendCertificates_Req"/>
+			<output message="tns:SendCertificates_Res"/>
+		</operation>
+	</portType>
+	
+	<!-- Definition of the bindings -->
+	<binding name="EAC-DV" type="tns:EAC-PKI-DV-ProtocolType">
+		<SOAP:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<operation name="RequestCertificate">
+			<SOAP:operation style="rpc" soapAction=""/>
+			<input>
+				<SOAP:body use="literal" namespace="uri:EAC-PKI-DV-Protocol/1.1" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+			</input>
+			<output>
+				<SOAP:body use="literal" namespace="uri:EAC-PKI-DV-Protocol/1.1" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+			</output>
+		</operation>
+		<operation name="GetCACertificates">
+			<SOAP:operation style="rpc" soapAction=""/>
+			<input>
+				<SOAP:body use="literal" namespace="uri:EAC-PKI-DV-Protocol/1.1" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+			</input>
+			<output>
+				<SOAP:body use="literal" namespace="uri:EAC-PKI-DV-Protocol/1.1" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+			</output>
+		</operation>
+		<operation name="SendCertificates">
+			<SOAP:operation style="rpc" soapAction=""/>
+			<input>
+				<SOAP:body use="literal" namespace="uri:EAC-PKI-DV-Protocol/1.1" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+			</input>
+			<output>
+				<SOAP:body use="literal" namespace="uri:EAC-PKI-DV-Protocol/1.1" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+			</output>
+		</operation>		
+	</binding>
+
+   <!-- Definition of the service -->
+    <service name="EAC-DV-ProtocolService">
+        <port name="EAC-DV-ProtocolServicePort" binding="tns:EAC-DV">
+            <SOAP:address location="http://URL_NOT_SPECIFIED"/>
+        </port>
+    </service>
+</definitions>
