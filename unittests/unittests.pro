@@ -32,7 +32,6 @@ SUBDIRS = \
   unqualified_formdefault \
   onvif.org \
   onvif_ptz \
-  cribis \
   uitapi \
   encapsecurity \
   prefix_wsdl \
@@ -46,6 +45,9 @@ SUBDIRS += webcalls webcalls_wsdl
 
 # TODO: If boost optional is installed
 #SUBDIRS += optionaltype_boost_optional
+
+#with msvc2015-win64, cribis requires the /bigobj option
+!win32 { SUBDIRS += cribis }
 
 test.target=test
 unix:!macx {
@@ -70,4 +72,3 @@ win32 {
 }
 test.depends = first
 QMAKE_EXTRA_TARGETS += test
-
