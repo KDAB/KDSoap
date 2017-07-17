@@ -28,7 +28,7 @@ static bool usePointerForElement(const XSD::Element &elem, const KODE::Class &ne
 {
     const QString typeName = typeMap.localType(elem.type());
     const bool polymorphic = isElementPolymorphic(elem, typeMap, isList);
-    if (!isList && isElementOptional(elem) && newClass.name() == typeName) {
+    if (!isList && isElementOptional(elem) && newClass.qualifiedName() == typeName) {
         if (qgetenv("KDSOAP_TYPE_DEBUG").toInt()) {
             qDebug() << "Making element polymorphic:" << typeName << "in" << newClass.name();
         }
