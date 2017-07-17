@@ -47,8 +47,8 @@ SUBDIRS += webcalls webcalls_wsdl
 # TODO: If boost optional is installed
 #SUBDIRS += optionaltype_boost_optional
 
-#with msvc2015-win64, cribis requires the /bigobj option
-!win32 { SUBDIRS += cribis }
+#with msvc, cribis requires the /bigobj option
+win32-msvc*: QMAKE_CXXFLAGS += /bigobj
 
 test.target=test
 unix:!macx {

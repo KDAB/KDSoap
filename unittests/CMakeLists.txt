@@ -31,6 +31,11 @@ macro(add_unittest _source)
   endif(EXTRA_LIBS)
 endmacro()
 
+if(MSVC)
+  #with msvc, cribis requires the /bigobj option
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj")
+endif()
+
 add_subdirectory(basic)
 add_subdirectory(builtinhttp)
 add_subdirectory(wsdl_rpc)
