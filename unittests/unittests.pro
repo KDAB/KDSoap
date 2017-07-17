@@ -31,6 +31,7 @@ SUBDIRS = \
   import_definition \
   unqualified_formdefault \
   onvif.org \
+  onvif.org-media \
   onvif_ptz \
   uitapi \
   encapsecurity \

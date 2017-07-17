@@ -30,7 +30,7 @@ static bool usePointerForElement(const XSD::Element &elem, const KODE::Class &ne
     const bool polymorphic = isElementPolymorphic(elem, typeMap, isList);
     if (!isList && isElementOptional(elem) && newClass.qualifiedName() == typeName) {
         if (qgetenv("KDSOAP_TYPE_DEBUG").toInt()) {
-            qDebug() << "Making element polymorphic:" << typeName << "in" << newClass.name();
+            qDebug() << "Using pointer for optional type" << typeName << "used inside itself";
         }
         // Optional "Foo" in class "Foo" - can't just have a value and bool, we need a pointer, to avoid infinite recursion
         //use == XSD::Attribute::Required;

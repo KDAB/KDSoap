@@ -13,3 +13,4 @@ WSDL parser / code generator changes, applying to both client and server side:
 ================================================================
 
 * Add support for body namespace specification in RPC calls.
+* Fix namespace handling in typename comparison for optional element used inside itself (github issue #83).
