@@ -45,6 +45,7 @@ static void showHelp(const char *appName)
             "  -optional-element-type <type>\n"
             "                            use <type> as the getter return value for optional elements.\n"
             "                            <type> can be either raw-pointer or boost-optional\n"
+            " -keep-unused-types         keep the wsdl unused types to the cpp generation step\n"
             "\n", appName);
 }
 
@@ -61,6 +62,7 @@ int main(int argc, char **argv)
     QString exportMacro;
     QString nameSpace;
     Settings::OptionalElementType optionalElementType = Settings::ENone;
+    bool keepUnusedTypes = false;
 
     int arg = 1;
     while (arg < argc) {
@@ -121,6 +123,8 @@ int main(int argc, char **argv)
             } else if (optType == QLatin1String("boost-optional")) {
                 optionalElementType = Settings::EBoostOptional;
             }
+        } else if (opt == QLatin1String("-keep-unused-types")) {
+            keepUnusedTypes = true;
         } else if (!fileName) {
             fileName = argv[arg];
         } else {
@@ -145,6 +149,7 @@ int main(int argc, char **argv)
     Settings::self()->setExportDeclaration(exportMacro);
     Settings::self()->setNameSpace(nameSpace);
     Settings::self()->setOptionalElementType(optionalElementType);
+    Settings::self()->setKeepUnusedTypes(keepUnusedTypes);
     KWSDL::Compiler compiler;
 
     // so that we have an event loop, for downloads

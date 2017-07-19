@@ -42,6 +42,7 @@ Settings::Settings()
     mOutputFileName = QString::fromLatin1("kwsdl_generated");
     mImpl = false;
     mServer = false;
+    mKeepUnusedTypes = false;
     mOptionalElementType = Settings::ENone;
 }
 
@@ -127,6 +128,16 @@ void Settings::setOptionalElementType(Settings::OptionalElementType optionalElem
 Settings::OptionalElementType Settings::optionalElementType() const
 {
     return mOptionalElementType;
+}
+
+void Settings::setKeepUnusedTypes(bool b)
+{
+    mKeepUnusedTypes = b;
+}
+
+bool Settings::keepUnusedTypes() const
+{
+    return mKeepUnusedTypes;
 }
 
 void Settings::setNamespaceMapping(const NSMapping &namespaceMapping)
