@@ -32,6 +32,7 @@
 #include "annotation.h"
 #include <kode_export.h>
 
+class QUrl;
 class ParserContext;
 
 namespace XSD
