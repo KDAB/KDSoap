@@ -43,7 +43,7 @@ private slots:
 
 };
 
-QTEST_GUILESS_MAIN(DateExampleWSDL)
+QTEST_MAIN(DateExampleWSDL)
 
 #include "date_example.moc"
 
