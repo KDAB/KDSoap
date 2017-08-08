@@ -189,6 +189,7 @@ void KDSoapServerObjectInterface::writeHTTP(const QByteArray &httpReply)
 {
     const qint64 written = d->m_serverSocket->write(httpReply);
     Q_ASSERT(written == httpReply.size()); // Please report a bug if you hit this.
+    Q_UNUSED(written);
 }
 
 void KDSoapServerObjectInterface::writeXML(const QByteArray &reply, bool isFault)
