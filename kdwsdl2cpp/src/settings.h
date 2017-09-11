@@ -56,6 +56,9 @@ public:
     void setOptionalElementType(OptionalElementType optionalElementType);
     OptionalElementType optionalElementType() const;
 
+    void setKeepUnusedTypes(bool b);
+    bool keepUnusedTypes() const;
+
     // UNUSED
     void setNamespaceMapping(const NSMapping &namespaceMapping);
     NSMapping namespaceMapping() const;
@@ -84,6 +87,7 @@ private:
     bool mImpl;
     bool mServer;
     OptionalElementType mOptionalElementType;
+    bool mKeepUnusedTypes;
 };
 
 #endif

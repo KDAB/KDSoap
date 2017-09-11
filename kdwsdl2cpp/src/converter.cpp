@@ -65,7 +65,9 @@ void Converter::setWSDL(const WSDL &wsdl)
 
     mTypeMap.setNSManager(&mNSManager);
 
-    cleanupUnusedTypes();
+    if (!Settings::self()->keepUnusedTypes()) {
+        cleanupUnusedTypes();
+    }
 
     // set the xsd types
     mTypeMap.addSchemaTypes(mWSDL.definitions().type().types(), Settings::self()->nameSpace());
