@@ -46,7 +46,7 @@ develop programs which need to access web services using the SOAP protocol.
 
 %build
 touch .license.accepted
-cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
+cmake . -DCMAKE_INSTALL_PREFIX=/usr
 %__make %{?_smp_mflags}
 
 %post -p /sbin/ldconfig
@@ -78,7 +78,7 @@ cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
 %changelog
 * Mon May 01 2017 Allen Winter <allen.winter@kdab.com> 1.6.0
   1.6.0
-* Mon Jun 07 2016 Allen Winter <allen.winter@kdab.com> 1.5.1
+* Tue Jun 07 2016 Allen Winter <allen.winter@kdab.com> 1.5.1
   1.5.1 bug fix
 * Mon Feb 29 2016 Allen Winter <allen.winter@kdab.com> 1.4.99
   1.5.0 RC1
