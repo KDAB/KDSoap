@@ -79,7 +79,7 @@ QMAKE_ARGS="LIB_SUFFIX=64" ./configure.sh -shared -release -prefix %{buildroot}/
 %changelog
 * Mon May 01 2017 Allen Winter <allen.winter@kdab.com> 1.6.0
   1.6.0
-* Mon Jun 06 2016 Allen Winter <allen.winter@kdab.com> 1.5.1
+* Tue Jun 06 2016 Allen Winter <allen.winter@kdab.com> 1.5.1
   1.5.1 bug fix
 * Thu Mar 03 2016 Allen Winter <allen.winter@kdab.com> 1.5.0
   1.5.0 Final
