@@ -32,6 +32,9 @@ Authors:
 --------
       Klaralvdalens Datakonsult AB (KDAB) <info@kdab.com>
 
+%define debug_package %{nil}
+%global __debug_install_post %{nil}
+
 %package devel
 Summary:        Development files for %{name}
 Group:          Development/Libraries/C and C++
@@ -46,7 +49,7 @@ develop programs which need to access web services using the SOAP protocol.
 
 %build
 touch .license.accepted
-cmake . -DCMAKE_INSTALL_PREFIX=/usr
+cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
 %__make %{?_smp_mflags}
 
 %post -p /sbin/ldconfig
