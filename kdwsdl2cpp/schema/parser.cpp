@@ -182,7 +182,10 @@ bool Parser::parseSchemaTag(ParserContext *context, const QDomElement &root)
     context->namespaceManager()->enterChild(root);
 
     // This method can call itself recursively, so save/restore the member attribute.
-    QString oldNamespace = d->mNameSpace;
+    const QString oldNamespace = d->mNameSpace;
+    const bool oldDefaultQualifiedElements = d->mDefaultQualifiedElements;
+    const bool oldDefaultQualifiedAttributes = d->mDefaultQualifiedAttributes;
+
     if (root.hasAttribute(QLatin1String("targetNamespace"))) {
         d->mNameSpace = root.attribute(QLatin1String("targetNamespace"));
     }
@@ -233,6 +236,8 @@ bool Parser::parseSchemaTag(ParserContext *context, const QDomElement &root)
 
     d->mImportedSchemas.append(d->mNameSpace);
     d->mNameSpace = oldNamespace;
+    d->mDefaultQualifiedElements = oldDefaultQualifiedElements;
+    d->mDefaultQualifiedAttributes = oldDefaultQualifiedAttributes;
 
     return true;
 }
