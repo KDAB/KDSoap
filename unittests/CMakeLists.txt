@@ -14,21 +14,17 @@ macro(add_unittest _source)
   set(_test ${_source})
   get_filename_component(_name ${_source} NAME_WE)
 
-  qt4_wrap_cpp(_mocs ${_source} )
   if(WSDL_FILES)
-    KDSOAP_GENERATE_WSDL(_test ${WSDL_FILES} )
-  endif(WSDL_FILES)
-  set_property(SOURCE ${_source} PROPERTY OBJECT_DEPENDS ${_mocs})
-
-
+    kdsoap_generate_wsdl(_test ${WSDL_FILES})
+  endif()
 
   add_executable(${_name} ${_source} ${_test})
 
   add_test(NAME kdsoap-${_name} COMMAND ${_name})
   target_link_libraries(${_name} ${QT_QTCORE_LIBRARY} ${QT_LIBRARIES} kdsoap testtools)
   if(EXTRA_LIBS)
-    target_link_libraries(${_name} ${EXTRA_LIBS} )
-  endif(EXTRA_LIBS)
+    target_link_libraries(${_name} ${EXTRA_LIBS})
+  endif()
 endmacro()
 
 if(MSVC)
