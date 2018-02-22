@@ -22,8 +22,6 @@ endif()
 
 project(KDSoap CXX)
 
-set(CMAKE_CXX_STANDARD 11)
-
 option(
   ${PROJECT_NAME}_ENFORCE_QT4_BUILD
   "Enable if you want to enforce a build with Qt4"
