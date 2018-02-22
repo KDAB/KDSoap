@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo">
+  <xs:import schemaLocation="xsd2.xsd" namespace="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract"/>
+  <xs:complexType name="EnzoResponse">
+    <xs:sequence>
+      <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="Error" nillable="true" type="q1:Error"/>
+      <xs:element minOccurs="0" name="Success" type="xs:boolean"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="EnzoResponse" nillable="true" type="tns:EnzoResponse"/>
+  <xs:complexType name="EnzoRequest">
+    <xs:sequence>
+      <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="CommonParameters" nillable="true" type="q2:CommonParameters"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="EnzoRequest" nillable="true" type="tns:EnzoRequest"/>
+</xs:schema>

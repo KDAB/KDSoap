@@ -793,6 +793,7 @@ void Parser::parseComplexContent(ParserContext *context, const QDomElement &elem
     QDomElement childElement = element.firstChildElement();
 
     while (!childElement.isNull()) {
+        NSManager namespaceManager(context, childElement);
         const QName name(childElement.tagName());
 
         if (name.localName() == QLatin1String("restriction") || name.localName() == QLatin1String("extension")) {

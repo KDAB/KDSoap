@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:mss="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://hotelconcepts.com/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" targetNamespace="http://hotelconcepts.com/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://hotelconcepts.com/Imports">
+      <xsd:import schemaLocation="xsd0.xsd" namespace="http://hotelconcepts.com/"/>
+      <xsd:import schemaLocation="xsd1.xsd" namespace="http://schemas.microsoft.com/2003/10/Serialization/"/>
+      <xsd:import schemaLocation="xsd2.xsd" namespace="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract"/>
+      <xsd:import schemaLocation="xsd3.xsd" namespace="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo"/>
+      <xsd:import schemaLocation="xsd4.xsd" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IEnzoService_Authenticate_InputMessage">
+    <wsdl:part name="parameters" element="tns:Authenticate"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_Authenticate_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AuthenticateResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_PmsGetPmsStatus_InputMessage">
+    <wsdl:part name="parameters" element="tns:PmsGetPmsStatus"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_PmsGetPmsStatus_OutputMessage">
+    <wsdl:part name="parameters" element="tns:PmsGetPmsStatusResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_PmsGetConfiguration_InputMessage">
+    <wsdl:part name="parameters" element="tns:PmsGetConfiguration"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_PmsGetConfiguration_OutputMessage">
+    <wsdl:part name="parameters" element="tns:PmsGetConfigurationResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_PmsGetTranslations_InputMessage">
+    <wsdl:part name="parameters" element="tns:PmsGetTranslations"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_PmsGetTranslations_OutputMessage">
+    <wsdl:part name="parameters" element="tns:PmsGetTranslationsResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_PmsFindRoomBooking_InputMessage">
+    <wsdl:part name="parameters" element="tns:PmsFindRoomBooking"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_PmsFindRoomBooking_OutputMessage">
+    <wsdl:part name="parameters" element="tns:PmsFindRoomBookingResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_PmsGetReservation_InputMessage">
+    <wsdl:part name="parameters" element="tns:PmsGetReservation"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_PmsGetReservation_OutputMessage">
+    <wsdl:part name="parameters" element="tns:PmsGetReservationResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_PmsGetRoomBooking_InputMessage">
+    <wsdl:part name="parameters" element="tns:PmsGetRoomBooking"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_PmsGetRoomBooking_OutputMessage">
+    <wsdl:part name="parameters" element="tns:PmsGetRoomBookingResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_PmsGetRooms_InputMessage">
+    <wsdl:part name="parameters" element="tns:PmsGetRooms"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_PmsGetRooms_OutputMessage">
+    <wsdl:part name="parameters" element="tns:PmsGetRoomsResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_PmsGetRoomSpecification_InputMessage">
+    <wsdl:part name="parameters" element="tns:PmsGetRoomSpecification"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_PmsGetRoomSpecification_OutputMessage">
+    <wsdl:part name="parameters" element="tns:PmsGetRoomSpecificationResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_PmsGetRoomOffer_InputMessage">
+    <wsdl:part name="parameters" element="tns:PmsGetRoomOffer"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_PmsGetRoomOffer_OutputMessage">
+    <wsdl:part name="parameters" element="tns:PmsGetRoomOfferResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_PmsGetRoomOffers_InputMessage">
+    <wsdl:part name="parameters" element="tns:PmsGetRoomOffers"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_PmsGetRoomOffers_OutputMessage">
+    <wsdl:part name="parameters" element="tns:PmsGetRoomOffersResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_PmsSetRoomBookingStatus_InputMessage">
+    <wsdl:part name="parameters" element="tns:PmsSetRoomBookingStatus"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_PmsSetRoomBookingStatus_OutputMessage">
+    <wsdl:part name="parameters" element="tns:PmsSetRoomBookingStatusResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_PmsSetRoomBookingGuests_InputMessage">
+    <wsdl:part name="parameters" element="tns:PmsSetRoomBookingGuests"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_PmsSetRoomBookingGuests_OutputMessage">
+    <wsdl:part name="parameters" element="tns:PmsSetRoomBookingGuestsResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_PmsSetRoomBookingDetails_InputMessage">
+    <wsdl:part name="parameters" element="tns:PmsSetRoomBookingDetails"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_PmsSetRoomBookingDetails_OutputMessage">
+    <wsdl:part name="parameters" element="tns:PmsSetRoomBookingDetailsResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_PmsSetRoomBookingSelectedOptions_InputMessage">
+    <wsdl:part name="parameters" element="tns:PmsSetRoomBookingSelectedOptions"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_PmsSetRoomBookingSelectedOptions_OutputMessage">
+    <wsdl:part name="parameters" element="tns:PmsSetRoomBookingSelectedOptionsResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_PmsRegisterRoomBookingPayment_InputMessage">
+    <wsdl:part name="parameters" element="tns:PmsRegisterRoomBookingPayment"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_PmsRegisterRoomBookingPayment_OutputMessage">
+    <wsdl:part name="parameters" element="tns:PmsRegisterRoomBookingPaymentResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_PmsRegisterRoomBookingCharge_InputMessage">
+    <wsdl:part name="parameters" element="tns:PmsRegisterRoomBookingCharge"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_PmsRegisterRoomBookingCharge_OutputMessage">
+    <wsdl:part name="parameters" element="tns:PmsRegisterRoomBookingChargeResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_PmsCreateReservation_InputMessage">
+    <wsdl:part name="parameters" element="tns:PmsCreateReservation"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_PmsCreateReservation_OutputMessage">
+    <wsdl:part name="parameters" element="tns:PmsCreateReservationResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_PmsDeleteReservation_InputMessage">
+    <wsdl:part name="parameters" element="tns:PmsDeleteReservation"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_PmsDeleteReservation_OutputMessage">
+    <wsdl:part name="parameters" element="tns:PmsDeleteReservationResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_PmsFindGuest_InputMessage">
+    <wsdl:part name="parameters" element="tns:PmsFindGuest"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_PmsFindGuest_OutputMessage">
+    <wsdl:part name="parameters" element="tns:PmsFindGuestResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_PmsGetGuest_InputMessage">
+    <wsdl:part name="parameters" element="tns:PmsGetGuest"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_PmsGetGuest_OutputMessage">
+    <wsdl:part name="parameters" element="tns:PmsGetGuestResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_ImageStoreGetImage_InputMessage">
+    <wsdl:part name="parameters" element="tns:ImageStoreGetImage"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_ImageStoreGetImage_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ImageStoreGetImageResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_ImageStoreSetImage_InputMessage">
+    <wsdl:part name="parameters" element="tns:ImageStoreSetImage"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_ImageStoreSetImage_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ImageStoreSetImageResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_ImageStoreGetImageList_InputMessage">
+    <wsdl:part name="parameters" element="tns:ImageStoreGetImageList"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_ImageStoreGetImageList_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ImageStoreGetImageListResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_RoomKeySystemReadKey_InputMessage">
+    <wsdl:part name="parameters" element="tns:RoomKeySystemReadKey"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_RoomKeySystemReadKey_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RoomKeySystemReadKeyResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_RoomKeySystemRemoveAllKeys_InputMessage">
+    <wsdl:part name="parameters" element="tns:RoomKeySystemRemoveAllKeys"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_RoomKeySystemRemoveAllKeys_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RoomKeySystemRemoveAllKeysResponse"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_RoomKeySystemCreateKey_InputMessage">
+    <wsdl:part name="parameters" element="tns:RoomKeySystemCreateKey"/>
+  </wsdl:message>
+  <wsdl:message name="IEnzoService_RoomKeySystemCreateKey_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RoomKeySystemCreateKeyResponse"/>
+  </wsdl:message>
+  <wsdl:portType name="IEnzoService">
+    <wsdl:operation name="Authenticate">
+      <wsdl:input wsaw:Action="http://hotelconcepts.com/IEnzoService/Authenticate" message="tns:IEnzoService_Authenticate_InputMessage"/>
+      <wsdl:output wsaw:Action="http://hotelconcepts.com/IEnzoService/AuthenticateResponse" message="tns:IEnzoService_Authenticate_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="PmsGetPmsStatus">
+      <wsdl:input wsaw:Action="http://hotelconcepts.com/IEnzoService/PmsGetPmsStatus" message="tns:IEnzoService_PmsGetPmsStatus_InputMessage"/>
+      <wsdl:output wsaw:Action="http://hotelconcepts.com/IEnzoService/PmsGetPmsStatusResponse" message="tns:IEnzoService_PmsGetPmsStatus_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="PmsGetConfiguration">
+      <wsdl:input wsaw:Action="http://hotelconcepts.com/IEnzoService/PmsGetConfiguration" message="tns:IEnzoService_PmsGetConfiguration_InputMessage"/>
+      <wsdl:output wsaw:Action="http://hotelconcepts.com/IEnzoService/PmsGetConfigurationResponse" message="tns:IEnzoService_PmsGetConfiguration_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="PmsGetTranslations">
+      <wsdl:input wsaw:Action="http://hotelconcepts.com/IEnzoService/PmsGetTranslations" message="tns:IEnzoService_PmsGetTranslations_InputMessage"/>
+      <wsdl:output wsaw:Action="http://hotelconcepts.com/IEnzoService/PmsGetTranslationsResponse" message="tns:IEnzoService_PmsGetTranslations_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="PmsFindRoomBooking">
+      <wsdl:input wsaw:Action="http://hotelconcepts.com/IEnzoService/PmsFindRoomBooking" message="tns:IEnzoService_PmsFindRoomBooking_InputMessage"/>
+      <wsdl:output wsaw:Action="http://hotelconcepts.com/IEnzoService/PmsFindRoomBookingResponse" message="tns:IEnzoService_PmsFindRoomBooking_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="PmsGetReservation">
+      <wsdl:input wsaw:Action="http://hotelconcepts.com/IEnzoService/PmsGetReservation" message="tns:IEnzoService_PmsGetReservation_InputMessage"/>
+      <wsdl:output wsaw:Action="http://hotelconcepts.com/IEnzoService/PmsGetReservationResponse" message="tns:IEnzoService_PmsGetReservation_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="PmsGetRoomBooking">
+      <wsdl:input wsaw:Action="http://hotelconcepts.com/IEnzoService/PmsGetRoomBooking" message="tns:IEnzoService_PmsGetRoomBooking_InputMessage"/>
+      <wsdl:output wsaw:Action="http://hotelconcepts.com/IEnzoService/PmsGetRoomBookingResponse" message="tns:IEnzoService_PmsGetRoomBooking_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="PmsGetRooms">
+      <wsdl:input wsaw:Action="http://hotelconcepts.com/IEnzoService/PmsGetRooms" message="tns:IEnzoService_PmsGetRooms_InputMessage"/>
+      <wsdl:output wsaw:Action="http://hotelconcepts.com/IEnzoService/PmsGetRoomsResponse" message="tns:IEnzoService_PmsGetRooms_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="PmsGetRoomSpecification">
+      <wsdl:input wsaw:Action="http://hotelconcepts.com/IEnzoService/PmsGetRoomSpecification" message="tns:IEnzoService_PmsGetRoomSpecification_InputMessage"/>
+      <wsdl:output wsaw:Action="http://hotelconcepts.com/IEnzoService/PmsGetRoomSpecificationResponse" message="tns:IEnzoService_PmsGetRoomSpecification_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="PmsGetRoomOffer">
+      <wsdl:input wsaw:Action="http://hotelconcepts.com/IEnzoService/PmsGetRoomOffer" message="tns:IEnzoService_PmsGetRoomOffer_InputMessage"/>
+      <wsdl:output wsaw:Action="http://hotelconcepts.com/IEnzoService/PmsGetRoomOfferResponse" message="tns:IEnzoService_PmsGetRoomOffer_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="PmsGetRoomOffers">
+      <wsdl:input wsaw:Action="http://hotelconcepts.com/IEnzoService/PmsGetRoomOffers" message="tns:IEnzoService_PmsGetRoomOffers_InputMessage"/>
+      <wsdl:output wsaw:Action="http://hotelconcepts.com/IEnzoService/PmsGetRoomOffersResponse" message="tns:IEnzoService_PmsGetRoomOffers_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="PmsSetRoomBookingStatus">
+      <wsdl:input wsaw:Action="http://hotelconcepts.com/IEnzoService/PmsSetRoomBookingStatus" message="tns:IEnzoService_PmsSetRoomBookingStatus_InputMessage"/>
+      <wsdl:output wsaw:Action="http://hotelconcepts.com/IEnzoService/PmsSetRoomBookingStatusResponse" message="tns:IEnzoService_PmsSetRoomBookingStatus_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="PmsSetRoomBookingGuests">
+      <wsdl:input wsaw:Action="http://hotelconcepts.com/IEnzoService/PmsSetRoomBookingGuests" message="tns:IEnzoService_PmsSetRoomBookingGuests_InputMessage"/>
+      <wsdl:output wsaw:Action="http://hotelconcepts.com/IEnzoService/PmsSetRoomBookingGuestsResponse" message="tns:IEnzoService_PmsSetRoomBookingGuests_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="PmsSetRoomBookingDetails">
+      <wsdl:input wsaw:Action="http://hotelconcepts.com/IEnzoService/PmsSetRoomBookingDetails" message="tns:IEnzoService_PmsSetRoomBookingDetails_InputMessage"/>
+      <wsdl:output wsaw:Action="http://hotelconcepts.com/IEnzoService/PmsSetRoomBookingDetailsResponse" message="tns:IEnzoService_PmsSetRoomBookingDetails_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="PmsSetRoomBookingSelectedOptions">
+      <wsdl:input wsaw:Action="http://hotelconcepts.com/IEnzoService/PmsSetRoomBookingSelectedOptions" message="tns:IEnzoService_PmsSetRoomBookingSelectedOptions_InputMessage"/>
+      <wsdl:output wsaw:Action="http://hotelconcepts.com/IEnzoService/PmsSetRoomBookingSelectedOptionsResponse" message="tns:IEnzoService_PmsSetRoomBookingSelectedOptions_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="PmsRegisterRoomBookingPayment">
+      <wsdl:input wsaw:Action="http://hotelconcepts.com/IEnzoService/PmsRegisterRoomBookingPayment" message="tns:IEnzoService_PmsRegisterRoomBookingPayment_InputMessage"/>
+      <wsdl:output wsaw:Action="http://hotelconcepts.com/IEnzoService/PmsRegisterRoomBookingPaymentResponse" message="tns:IEnzoService_PmsRegisterRoomBookingPayment_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="PmsRegisterRoomBookingCharge">
+      <wsdl:input wsaw:Action="http://hotelconcepts.com/IEnzoService/PmsRegisterRoomBookingCharge" message="tns:IEnzoService_PmsRegisterRoomBookingCharge_InputMessage"/>
+      <wsdl:output wsaw:Action="http://hotelconcepts.com/IEnzoService/PmsRegisterRoomBookingChargeResponse" message="tns:IEnzoService_PmsRegisterRoomBookingCharge_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="PmsCreateReservation">
+      <wsdl:input wsaw:Action="http://hotelconcepts.com/IEnzoService/PmsCreateReservation" message="tns:IEnzoService_PmsCreateReservation_InputMessage"/>
+      <wsdl:output wsaw:Action="http://hotelconcepts.com/IEnzoService/PmsCreateReservationResponse" message="tns:IEnzoService_PmsCreateReservation_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="PmsDeleteReservation">
+      <wsdl:input wsaw:Action="http://hotelconcepts.com/IEnzoService/PmsDeleteReservation" message="tns:IEnzoService_PmsDeleteReservation_InputMessage"/>
+      <wsdl:output wsaw:Action="http://hotelconcepts.com/IEnzoService/PmsDeleteReservationResponse" message="tns:IEnzoService_PmsDeleteReservation_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="PmsFindGuest">
+      <wsdl:input wsaw:Action="http://hotelconcepts.com/IEnzoService/PmsFindGuest" message="tns:IEnzoService_PmsFindGuest_InputMessage"/>
+      <wsdl:output wsaw:Action="http://hotelconcepts.com/IEnzoService/PmsFindGuestResponse" message="tns:IEnzoService_PmsFindGuest_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="PmsGetGuest">
+      <wsdl:input wsaw:Action="http://hotelconcepts.com/IEnzoService/PmsGetGuest" message="tns:IEnzoService_PmsGetGuest_InputMessage"/>
+      <wsdl:output wsaw:Action="http://hotelconcepts.com/IEnzoService/PmsGetGuestResponse" message="tns:IEnzoService_PmsGetGuest_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="ImageStoreGetImage">
+      <wsdl:input wsaw:Action="http://hotelconcepts.com/IEnzoService/ImageStoreGetImage" message="tns:IEnzoService_ImageStoreGetImage_InputMessage"/>
+      <wsdl:output wsaw:Action="http://hotelconcepts.com/IEnzoService/ImageStoreGetImageResponse" message="tns:IEnzoService_ImageStoreGetImage_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="ImageStoreSetImage">
+      <wsdl:input wsaw:Action="http://hotelconcepts.com/IEnzoService/ImageStoreSetImage" message="tns:IEnzoService_ImageStoreSetImage_InputMessage"/>
+      <wsdl:output wsaw:Action="http://hotelconcepts.com/IEnzoService/ImageStoreSetImageResponse" message="tns:IEnzoService_ImageStoreSetImage_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="ImageStoreGetImageList">
+      <wsdl:input wsaw:Action="http://hotelconcepts.com/IEnzoService/ImageStoreGetImageList" message="tns:IEnzoService_ImageStoreGetImageList_InputMessage"/>
+      <wsdl:output wsaw:Action="http://hotelconcepts.com/IEnzoService/ImageStoreGetImageListResponse" message="tns:IEnzoService_ImageStoreGetImageList_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="RoomKeySystemReadKey">
+      <wsdl:input wsaw:Action="http://hotelconcepts.com/IEnzoService/RoomKeySystemReadKey" message="tns:IEnzoService_RoomKeySystemReadKey_InputMessage"/>
+      <wsdl:output wsaw:Action="http://hotelconcepts.com/IEnzoService/RoomKeySystemReadKeyResponse" message="tns:IEnzoService_RoomKeySystemReadKey_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="RoomKeySystemRemoveAllKeys">
+      <wsdl:input wsaw:Action="http://hotelconcepts.com/IEnzoService/RoomKeySystemRemoveAllKeys" message="tns:IEnzoService_RoomKeySystemRemoveAllKeys_InputMessage"/>
+      <wsdl:output wsaw:Action="http://hotelconcepts.com/IEnzoService/RoomKeySystemRemoveAllKeysResponse" message="tns:IEnzoService_RoomKeySystemRemoveAllKeys_OutputMessage"/>
+    </wsdl:operation>
+    <wsdl:operation name="RoomKeySystemCreateKey">
+      <wsdl:input wsaw:Action="http://hotelconcepts.com/IEnzoService/RoomKeySystemCreateKey" message="tns:IEnzoService_RoomKeySystemCreateKey_InputMessage"/>
+      <wsdl:output wsaw:Action="http://hotelconcepts.com/IEnzoService/RoomKeySystemCreateKeyResponse" message="tns:IEnzoService_RoomKeySystemCreateKey_OutputMessage"/>
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>

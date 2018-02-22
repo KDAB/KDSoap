@@ -1,0 +1,1047 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract">
+  <xs:import schemaLocation="xsd3.xsd" namespace="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo"/>
+  <xs:import schemaLocation="xsd4.xsd" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/>
+  <xs:complexType name="AuthenticationRequest">
+    <xs:sequence>
+      <xs:element name="HotelCode" nillable="true" type="xs:string"/>
+      <xs:element name="PassWord" nillable="true" type="xs:string"/>
+      <xs:element name="UserName" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="AuthenticationRequest" nillable="true" type="tns:AuthenticationRequest"/>
+  <xs:complexType name="AuthenticationResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q1="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q1:EnzoResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Token" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="UTCExpirationDate" type="xs:dateTime"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="AuthenticationResponse" nillable="true" type="tns:AuthenticationResponse"/>
+  <xs:complexType name="Error">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Code" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Description" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Error" nillable="true" type="tns:Error"/>
+  <xs:complexType name="Authentication">
+    <xs:sequence>
+      <xs:element name="Token" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Authentication" nillable="true" type="tns:Authentication"/>
+  <xs:complexType name="PmsGetPmsStatusRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q2="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q2:EnzoRequest">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PmsGetPmsStatusRequest" nillable="true" type="tns:PmsGetPmsStatusRequest"/>
+  <xs:complexType name="CommonParameters">
+    <xs:sequence>
+      <xs:element name="CurrencyCode" nillable="true" type="xs:string"/>
+      <xs:element name="HotelChain" nillable="true" type="xs:string"/>
+      <xs:element name="HotelId" nillable="true" type="xs:string"/>
+      <xs:element name="KioskId" nillable="true" type="xs:string"/>
+      <xs:element name="UserLocale" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="CommonParameters" nillable="true" type="tns:CommonParameters"/>
+  <xs:complexType name="PmsGetPmsStatusResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q3="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q3:EnzoResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="PmsStatus" nillable="true" type="tns:PmsStatus"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PmsGetPmsStatusResponse" nillable="true" type="tns:PmsGetPmsStatusResponse"/>
+  <xs:complexType name="PmsStatus">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Description" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Status" type="tns:Status"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="PmsStatus" nillable="true" type="tns:PmsStatus"/>
+  <xs:simpleType name="Status">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Okay"/>
+      <xs:enumeration value="ExternalProblem"/>
+      <xs:enumeration value="InternalProblem"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="Status" nillable="true" type="tns:Status"/>
+  <xs:complexType name="PmsGetConfigurationRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q4="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q4:EnzoRequest">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PmsGetConfigurationRequest" nillable="true" type="tns:PmsGetConfigurationRequest"/>
+  <xs:complexType name="PmsGetConfigurationResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q5="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q5:EnzoResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="NameValuePairs" nillable="true" type="tns:ArrayOfNameValuePair"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PmsGetConfigurationResponse" nillable="true" type="tns:PmsGetConfigurationResponse"/>
+  <xs:complexType name="ArrayOfNameValuePair">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="NameValuePair" nillable="true" type="tns:NameValuePair"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfNameValuePair" nillable="true" type="tns:ArrayOfNameValuePair"/>
+  <xs:complexType name="NameValuePair">
+    <xs:sequence>
+      <xs:element name="Name" nillable="true" type="xs:string"/>
+      <xs:element name="Value" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="NameValuePair" nillable="true" type="tns:NameValuePair"/>
+  <xs:complexType name="PmsGetTranslationsRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q6="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q6:EnzoRequest">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PmsGetTranslationsRequest" nillable="true" type="tns:PmsGetTranslationsRequest"/>
+  <xs:complexType name="PmsGetTranslationsResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q7="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q7:EnzoResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="NameValuePairs" nillable="true" type="tns:ArrayOfNameValuePair"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PmsGetTranslationsResponse" nillable="true" type="tns:PmsGetTranslationsResponse"/>
+  <xs:complexType name="PmsFindRoomBookingRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q8="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q8:EnzoRequest">
+        <xs:sequence>
+          <xs:element name="SearchTerms" nillable="true" type="tns:ArrayOfSearchTerm"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PmsFindRoomBookingRequest" nillable="true" type="tns:PmsFindRoomBookingRequest"/>
+  <xs:complexType name="ArrayOfSearchTerm">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="SearchTerm" nillable="true" type="tns:SearchTerm"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfSearchTerm" nillable="true" type="tns:ArrayOfSearchTerm"/>
+  <xs:complexType name="SearchTerm">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Field" type="tns:SearchField"/>
+      <xs:element minOccurs="0" name="MatchOption" type="tns:MatchOption"/>
+      <xs:element minOccurs="0" name="Value" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SearchTerm" nillable="true" type="tns:SearchTerm"/>
+  <xs:simpleType name="SearchField">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="ReservationLookupNumber"/>
+      <xs:enumeration value="RoomBookingLookupNumber"/>
+      <xs:enumeration value="RoomBookingStatus"/>
+      <xs:enumeration value="RoomBookingCheckinDate"/>
+      <xs:enumeration value="RoomBookingCheckoutDate"/>
+      <xs:enumeration value="RoomBookingDateRange"/>
+      <xs:enumeration value="PermittedCheckinDate"/>
+      <xs:enumeration value="PermittedCheckoutDate"/>
+      <xs:enumeration value="DoorKey"/>
+      <xs:enumeration value="RoomName"/>
+      <xs:enumeration value="GuestName"/>
+      <xs:enumeration value="GuestNamePartial"/>
+      <xs:enumeration value="GuestDoorKey"/>
+      <xs:enumeration value="GuestEmail"/>
+      <xs:enumeration value="GuestTelephoneNumber"/>
+      <xs:enumeration value="GuestLoyaltyCardId"/>
+      <xs:enumeration value="GuestPassportId"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="SearchField" nillable="true" type="tns:SearchField"/>
+  <xs:simpleType name="MatchOption">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="RequiredMatch"/>
+      <xs:enumeration value="MatchOneGroupA"/>
+      <xs:enumeration value="MatchOneGroupB"/>
+      <xs:enumeration value="MatchOneGroupC"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="MatchOption" nillable="true" type="tns:MatchOption"/>
+  <xs:complexType name="PmsFindRoomBookingResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q9="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q9:EnzoResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="FindRoomBookingResults" nillable="true" type="tns:ArrayOfFindRoomBookingResult"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PmsFindRoomBookingResponse" nillable="true" type="tns:PmsFindRoomBookingResponse"/>
+  <xs:complexType name="ArrayOfFindRoomBookingResult">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="FindRoomBookingResult" nillable="true" type="tns:FindRoomBookingResult"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfFindRoomBookingResult" nillable="true" type="tns:ArrayOfFindRoomBookingResult"/>
+  <xs:complexType name="FindRoomBookingResult">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Checkin" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="Checkout" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="GuestName" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="NumberOfGuests" type="xs:int"/>
+      <xs:element minOccurs="0" name="ReservationId" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="RoomBookingId" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="RoomBookingStatus" type="tns:RoomBookingStatusType"/>
+      <xs:element minOccurs="0" name="RoomSpecificationName" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="FindRoomBookingResult" nillable="true" type="tns:FindRoomBookingResult"/>
+  <xs:simpleType name="RoomBookingStatusType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="WaitingForGuest"/>
+      <xs:enumeration value="Arriving"/>
+      <xs:enumeration value="Checkedin"/>
+      <xs:enumeration value="Leaving"/>
+      <xs:enumeration value="Checkedout"/>
+      <xs:enumeration value="Other"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="RoomBookingStatusType" nillable="true" type="tns:RoomBookingStatusType"/>
+  <xs:complexType name="PmsGetReservationRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q10="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q10:EnzoRequest">
+        <xs:sequence>
+          <xs:element name="ReservationId" nillable="true" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PmsGetReservationRequest" nillable="true" type="tns:PmsGetReservationRequest"/>
+  <xs:complexType name="PmsGetReservationResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q11="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q11:EnzoResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Reservation" nillable="true" type="tns:Reservation"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PmsGetReservationResponse" nillable="true" type="tns:PmsGetReservationResponse"/>
+  <xs:complexType name="Reservation">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="IsGroupReservation" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="LookupNumber" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="PmsId" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="RoomBookings" nillable="true" type="tns:ArrayOfRoomBooking"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Reservation" nillable="true" type="tns:Reservation"/>
+  <xs:complexType name="ArrayOfRoomBooking">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="RoomBooking" nillable="true" type="tns:RoomBooking"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfRoomBooking" nillable="true" type="tns:ArrayOfRoomBooking"/>
+  <xs:complexType name="RoomBooking">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="AdditionalStatements" nillable="true" type="tns:ArrayOfAdditionalStatement"/>
+      <xs:element minOccurs="0" name="AvailableOptions" nillable="true" type="tns:ArrayOfAvailableOption"/>
+      <xs:element minOccurs="0" name="Extensions" nillable="true" type="tns:ArrayOfNameValuePair"/>
+      <xs:element minOccurs="0" name="Guests" nillable="true" type="tns:ArrayOfGuest"/>
+      <xs:element minOccurs="0" name="LookupNumber" nillable="true" type="xs:string"/>
+      <xs:element name="NumberOfGuests" type="xs:int"/>
+      <xs:element minOccurs="0" name="PmsId" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Questions" nillable="true" type="tns:ArrayOfQuestion"/>
+      <xs:element minOccurs="0" name="Room" nillable="true" type="tns:Room"/>
+      <xs:element minOccurs="0" name="ScheduledCheckinDate" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="ScheduledCheckoutDate" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="SelectedOptions" nillable="true" type="tns:ArrayOfSelectedOption"/>
+      <xs:element name="SelectedRoomOffer" nillable="true" type="tns:RoomOffer"/>
+      <xs:element name="Statement" nillable="true" type="tns:Statement"/>
+      <xs:element name="Status" type="tns:RoomBookingStatusType"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="RoomBooking" nillable="true" type="tns:RoomBooking"/>
+  <xs:complexType name="ArrayOfAdditionalStatement">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="AdditionalStatement" nillable="true" type="tns:AdditionalStatement"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfAdditionalStatement" nillable="true" type="tns:ArrayOfAdditionalStatement"/>
+  <xs:complexType name="AdditionalStatement">
+    <xs:sequence>
+      <xs:element name="Company" nillable="true" type="tns:Company"/>
+      <xs:element name="CompanyEditable" type="xs:boolean"/>
+      <xs:element name="PmsId" nillable="true" type="xs:string"/>
+      <xs:element name="Statement" nillable="true" type="tns:Statement"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="AdditionalStatement" nillable="true" type="tns:AdditionalStatement"/>
+  <xs:complexType name="Company">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Address" nillable="true" type="tns:Address"/>
+      <xs:element minOccurs="0" name="BillingEmail" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="FaxNumber" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Notes" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="PmsId" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="TaxNumber" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="TelephoneNumber" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Company" nillable="true" type="tns:Company"/>
+  <xs:complexType name="Address">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="City" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Country" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="PostalCode" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Street" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Territory" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Address" nillable="true" type="tns:Address"/>
+  <xs:complexType name="Statement">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Groups" nillable="true" type="tns:ArrayOfStatementGroup"/>
+      <xs:element minOccurs="0" name="Items" nillable="true" type="tns:ArrayOfStatementItem"/>
+      <xs:element minOccurs="0" name="StatementSlip" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="TotalAlreadyPaid" type="xs:int"/>
+      <xs:element minOccurs="0" name="TotalCharges" type="xs:int"/>
+      <xs:element minOccurs="0" name="TotalRemainingToBePaid" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Statement" nillable="true" type="tns:Statement"/>
+  <xs:complexType name="ArrayOfStatementGroup">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="StatementGroup" nillable="true" type="tns:StatementGroup"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfStatementGroup" nillable="true" type="tns:ArrayOfStatementGroup"/>
+  <xs:complexType name="StatementGroup">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="GroupId" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="TotalAmount" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="StatementGroup" nillable="true" type="tns:StatementGroup"/>
+  <xs:complexType name="ArrayOfStatementItem">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="StatementItem" nillable="true" type="tns:StatementItem"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfStatementItem" nillable="true" type="tns:ArrayOfStatementItem"/>
+  <xs:complexType name="StatementItem">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Amount" type="xs:int"/>
+      <xs:element minOccurs="0" name="DateTime" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="Description" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="GroupId" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="PmsId" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Type" type="tns:Type"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="StatementItem" nillable="true" type="tns:StatementItem"/>
+  <xs:simpleType name="Type">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="DescriptionOnly"/>
+      <xs:enumeration value="Charge"/>
+      <xs:enumeration value="TaxCharge"/>
+      <xs:enumeration value="Payment"/>
+      <xs:enumeration value="Refund"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="Type" nillable="true" type="tns:Type"/>
+  <xs:complexType name="ArrayOfAvailableOption">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="AvailableOption" nillable="true" type="tns:AvailableOption"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfAvailableOption" nillable="true" type="tns:ArrayOfAvailableOption"/>
+  <xs:complexType name="AvailableOption">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="BasePrice" type="xs:int"/>
+      <xs:element minOccurs="0" name="CalculationMethod" type="tns:CalculationMethod"/>
+      <xs:element minOccurs="0" name="Extensions" nillable="true" type="tns:ArrayOfNameValuePair"/>
+      <xs:element xmlns:q12="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="ImageIds" nillable="true" type="q12:ArrayOfstring"/>
+      <xs:element xmlns:q13="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="LockIds" nillable="true" type="q13:ArrayOfstring"/>
+      <xs:element minOccurs="0" name="LongDescription" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="PmsId" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="RequiresGuestId" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="ShortDescription" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="AvailableOption" nillable="true" type="tns:AvailableOption"/>
+  <xs:simpleType name="CalculationMethod">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="PerStay"/>
+      <xs:enumeration value="PerPerson"/>
+      <xs:enumeration value="PerNight"/>
+      <xs:enumeration value="PerPersonPerNight"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="CalculationMethod" nillable="true" type="tns:CalculationMethod"/>
+  <xs:complexType name="ArrayOfGuest">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Guest" nillable="true" type="tns:Guest"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfGuest" nillable="true" type="tns:ArrayOfGuest"/>
+  <xs:complexType name="Guest">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Address" nillable="true" type="tns:Address"/>
+      <xs:element minOccurs="0" name="Birthday" nillable="true" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="Company" nillable="true" type="tns:Company"/>
+      <xs:element minOccurs="0" name="Email" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Extensions" nillable="true" type="tns:ArrayOfNameValuePair"/>
+      <xs:element minOccurs="0" name="FirstName" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Identification" nillable="true" type="tns:ArrayOfIdentification"/>
+      <xs:element minOccurs="0" name="LastName" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Nationality" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="PmsId" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Sex" type="tns:Sex"/>
+      <xs:element minOccurs="0" name="TelephoneNumber" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Guest" nillable="true" type="tns:Guest"/>
+  <xs:complexType name="ArrayOfIdentification">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Identification" nillable="true" type="tns:Identification"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfIdentification" nillable="true" type="tns:ArrayOfIdentification"/>
+  <xs:complexType name="Identification">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Country" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Expires" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="ImageId" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Issued" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="Number" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Type" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Identification" nillable="true" type="tns:Identification"/>
+  <xs:simpleType name="Sex">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Unknown"/>
+      <xs:enumeration value="Male"/>
+      <xs:enumeration value="Female"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="Sex" nillable="true" type="tns:Sex"/>
+  <xs:complexType name="ArrayOfQuestion">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Question" nillable="true" type="tns:Question"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfQuestion" nillable="true" type="tns:ArrayOfQuestion"/>
+  <xs:complexType name="Question">
+    <xs:sequence>
+      <xs:element xmlns:q14="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="ImageIds" nillable="true" type="q14:ArrayOfstring"/>
+      <xs:element xmlns:q15="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="PermittedAnswers" nillable="true" type="q15:ArrayOfstring"/>
+      <xs:element minOccurs="0" name="PmsId" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Text" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Question" nillable="true" type="tns:Question"/>
+  <xs:complexType name="Room">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Location" nillable="true" type="xs:string"/>
+      <xs:element xmlns:q16="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="LockIds" nillable="true" type="q16:ArrayOfstring"/>
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="PmsId" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="RoomSlip" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="RoomSpecificationId" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Status" type="tns:RoomStatusType"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Room" nillable="true" type="tns:Room"/>
+  <xs:simpleType name="RoomStatusType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Clean"/>
+      <xs:enumeration value="Occupied"/>
+      <xs:enumeration value="Dirty"/>
+      <xs:enumeration value="Maintenance"/>
+      <xs:enumeration value="Other"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="RoomStatusType" nillable="true" type="tns:RoomStatusType"/>
+  <xs:complexType name="ArrayOfSelectedOption">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="SelectedOption" nillable="true" type="tns:SelectedOption"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfSelectedOption" nillable="true" type="tns:ArrayOfSelectedOption"/>
+  <xs:complexType name="SelectedOption">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="AvailableOptionId" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Qualifiers" nillable="true" type="tns:ArrayOfSelectedOptionQualifier"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SelectedOption" nillable="true" type="tns:SelectedOption"/>
+  <xs:complexType name="ArrayOfSelectedOptionQualifier">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="SelectedOptionQualifier" nillable="true" type="tns:SelectedOptionQualifier"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfSelectedOptionQualifier" nillable="true" type="tns:ArrayOfSelectedOptionQualifier"/>
+  <xs:complexType name="SelectedOptionQualifier">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Date" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="GuestId" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SelectedOptionQualifier" nillable="true" type="tns:SelectedOptionQualifier"/>
+  <xs:complexType name="RoomOffer">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Extensions" nillable="true" type="tns:ArrayOfNameValuePair"/>
+      <xs:element xmlns:q17="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="ImageIds" nillable="true" type="q17:ArrayOfstring"/>
+      <xs:element minOccurs="0" name="LongDescription" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="PmsId" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Rates" nillable="true" type="tns:ArrayOfRate"/>
+      <xs:element minOccurs="0" name="RoomSpecification" nillable="true" type="tns:RoomSpecification"/>
+      <xs:element minOccurs="0" name="ShortDescription" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="RoomOffer" nillable="true" type="tns:RoomOffer"/>
+  <xs:complexType name="ArrayOfRate">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Rate" nillable="true" type="tns:Rate"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfRate" nillable="true" type="tns:ArrayOfRate"/>
+  <xs:complexType name="Rate">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Amount" type="xs:int"/>
+      <xs:element minOccurs="0" name="Date" type="xs:dateTime"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Rate" nillable="true" type="tns:Rate"/>
+  <xs:complexType name="RoomSpecification">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="BedType" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Extensions" nillable="true" type="tns:ArrayOfNameValuePair"/>
+      <xs:element xmlns:q18="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="ImageIds" nillable="true" type="q18:ArrayOfstring"/>
+      <xs:element minOccurs="0" name="LongDescription" nillable="true" type="xs:string"/>
+      <xs:element name="MaximumNumberOfRoomKeysAllowed" type="xs:int"/>
+      <xs:element name="MaximumOccupancy" type="xs:int"/>
+      <xs:element name="MinimumOccupancy" type="xs:int"/>
+      <xs:element name="Name" nillable="true" type="xs:string"/>
+      <xs:element name="PmsId" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ShortDescription" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="RoomSpecification" nillable="true" type="tns:RoomSpecification"/>
+  <xs:complexType name="PmsGetRoomBookingRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q19="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q19:EnzoRequest">
+        <xs:sequence>
+          <xs:element name="RoomBookingId" nillable="true" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PmsGetRoomBookingRequest" nillable="true" type="tns:PmsGetRoomBookingRequest"/>
+  <xs:complexType name="PmsGetRoomBookingResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q20="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q20:EnzoResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="RoomBooking" nillable="true" type="tns:RoomBooking"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PmsGetRoomBookingResponse" nillable="true" type="tns:PmsGetRoomBookingResponse"/>
+  <xs:complexType name="PmsGetRoomsRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q21="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q21:EnzoRequest">
+        <xs:sequence>
+          <xs:element name="Filters" nillable="true" type="tns:ArrayOfNameValuePair"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PmsGetRoomsRequest" nillable="true" type="tns:PmsGetRoomsRequest"/>
+  <xs:complexType name="PmsGetRoomsResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q22="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q22:EnzoResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Rooms" nillable="true" type="tns:ArrayOfRoom"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PmsGetRoomsResponse" nillable="true" type="tns:PmsGetRoomsResponse"/>
+  <xs:complexType name="ArrayOfRoom">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Room" nillable="true" type="tns:Room"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfRoom" nillable="true" type="tns:ArrayOfRoom"/>
+  <xs:complexType name="PmsGetRoomSpecificationRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q23="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q23:EnzoRequest">
+        <xs:sequence>
+          <xs:element name="RoomSpecificationId" nillable="true" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PmsGetRoomSpecificationRequest" nillable="true" type="tns:PmsGetRoomSpecificationRequest"/>
+  <xs:complexType name="PmsGetRoomSpecificationResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q24="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q24:EnzoResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="RoomSpecification" nillable="true" type="tns:RoomSpecification"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PmsGetRoomSpecificationResponse" nillable="true" type="tns:PmsGetRoomSpecificationResponse"/>
+  <xs:complexType name="PmsGetRoomOfferRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q25="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q25:EnzoRequest">
+        <xs:sequence>
+          <xs:element name="RoomOfferId" nillable="true" type="xs:string"/>
+          <xs:element name="RoomOfferSearch" nillable="true" type="tns:RoomOfferSearch"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PmsGetRoomOfferRequest" nillable="true" type="tns:PmsGetRoomOfferRequest"/>
+  <xs:complexType name="RoomOfferSearch">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="AdditionalFilters" nillable="true" type="tns:ArrayOfNameValuePair"/>
+      <xs:element name="CheckinDate" type="xs:dateTime"/>
+      <xs:element name="NumberOfGuests" type="xs:int"/>
+      <xs:element name="NumberOfNights" type="xs:int"/>
+      <xs:element minOccurs="0" name="RoomBookingId" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="RoomOfferSearch" nillable="true" type="tns:RoomOfferSearch"/>
+  <xs:complexType name="PmsGetRoomOfferResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q26="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q26:EnzoResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="RoomOffer" nillable="true" type="tns:RoomOffer"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PmsGetRoomOfferResponse" nillable="true" type="tns:PmsGetRoomOfferResponse"/>
+  <xs:complexType name="PmsGetRoomOffersRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q27="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q27:EnzoRequest">
+        <xs:sequence>
+          <xs:element name="RoomOfferSearch" nillable="true" type="tns:RoomOfferSearch"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PmsGetRoomOffersRequest" nillable="true" type="tns:PmsGetRoomOffersRequest"/>
+  <xs:complexType name="PmsGetRoomOffersResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q28="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q28:EnzoResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="RoomOffers" nillable="true" type="tns:ArrayOfRoomOffer"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PmsGetRoomOffersResponse" nillable="true" type="tns:PmsGetRoomOffersResponse"/>
+  <xs:complexType name="ArrayOfRoomOffer">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="RoomOffer" nillable="true" type="tns:RoomOffer"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfRoomOffer" nillable="true" type="tns:ArrayOfRoomOffer"/>
+  <xs:complexType name="PmsSetRoomBookingStatusRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q29="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q29:EnzoRequest">
+        <xs:sequence>
+          <xs:element name="NewStatus" type="tns:RoomBookingStatusType"/>
+          <xs:element name="OldStatus" type="tns:RoomBookingStatusType"/>
+          <xs:element name="RoomBookingId" nillable="true" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PmsSetRoomBookingStatusRequest" nillable="true" type="tns:PmsSetRoomBookingStatusRequest"/>
+  <xs:complexType name="PmsSetRoomBookingStatusResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q30="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q30:EnzoResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="RoomBooking" nillable="true" type="tns:RoomBooking"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PmsSetRoomBookingStatusResponse" nillable="true" type="tns:PmsSetRoomBookingStatusResponse"/>
+  <xs:complexType name="PmsSetRoomBookingGuestsRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q31="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q31:EnzoRequest">
+        <xs:sequence>
+          <xs:element name="Guests" nillable="true" type="tns:ArrayOfGuest"/>
+          <xs:element name="RoomBookingId" nillable="true" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PmsSetRoomBookingGuestsRequest" nillable="true" type="tns:PmsSetRoomBookingGuestsRequest"/>
+  <xs:complexType name="PmsSetRoomBookingGuestsResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q32="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q32:EnzoResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="RoomBooking" nillable="true" type="tns:RoomBooking"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PmsSetRoomBookingGuestsResponse" nillable="true" type="tns:PmsSetRoomBookingGuestsResponse"/>
+  <xs:complexType name="PmsSetRoomBookingDetailsRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q33="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q33:EnzoRequest">
+        <xs:sequence>
+          <xs:element name="RoomBookingDetails" nillable="true" type="tns:RoomBookingDetails"/>
+          <xs:element name="RoomBookingId" nillable="true" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PmsSetRoomBookingDetailsRequest" nillable="true" type="tns:PmsSetRoomBookingDetailsRequest"/>
+  <xs:complexType name="RoomBookingDetails">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="AdditionalDetails" nillable="true" type="tns:ArrayOfNameValuePair"/>
+      <xs:element minOccurs="0" name="CheckinDate" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="NumberOfGuests" type="xs:int"/>
+      <xs:element minOccurs="0" name="NumberOfNights" type="xs:int"/>
+      <xs:element minOccurs="0" name="RoomId" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="RoomOfferId" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="RoomBookingDetails" nillable="true" type="tns:RoomBookingDetails"/>
+  <xs:complexType name="PmsSetRoomBookingDetailsResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q34="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q34:EnzoResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="RoomBooking" nillable="true" type="tns:RoomBooking"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PmsSetRoomBookingDetailsResponse" nillable="true" type="tns:PmsSetRoomBookingDetailsResponse"/>
+  <xs:complexType name="PmsSetRoomBookingSelectedOptionsRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q35="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q35:EnzoRequest">
+        <xs:sequence>
+          <xs:element name="RoomBookingId" nillable="true" type="xs:string"/>
+          <xs:element name="SelectedOptions" nillable="true" type="tns:ArrayOfSelectedOption"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PmsSetRoomBookingSelectedOptionsRequest" nillable="true" type="tns:PmsSetRoomBookingSelectedOptionsRequest"/>
+  <xs:complexType name="PmsSetRoomBookingSelectedOptionsResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q36="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q36:EnzoResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="RoomBooking" nillable="true" type="tns:RoomBooking"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PmsSetRoomBookingSelectedOptionsResponse" nillable="true" type="tns:PmsSetRoomBookingSelectedOptionsResponse"/>
+  <xs:complexType name="PmsRegisterRoomBookingPaymentRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q37="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q37:EnzoRequest">
+        <xs:sequence>
+          <xs:element name="PaymentDetails" nillable="true" type="tns:PaymentDetails"/>
+          <xs:element name="RoomBookingId" nillable="true" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PmsRegisterRoomBookingPaymentRequest" nillable="true" type="tns:PmsRegisterRoomBookingPaymentRequest"/>
+  <xs:complexType name="PaymentDetails">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Amount" type="xs:int"/>
+      <xs:element minOccurs="0" name="DateTime" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="Details" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Id" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="PaymentMethod" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="PaymentDetails" nillable="true" type="tns:PaymentDetails"/>
+  <xs:complexType name="PmsRegisterRoomBookingPaymentResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q38="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q38:EnzoResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="RoomBooking" nillable="true" type="tns:RoomBooking"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PmsRegisterRoomBookingPaymentResponse" nillable="true" type="tns:PmsRegisterRoomBookingPaymentResponse"/>
+  <xs:complexType name="PmsRegisterRoomBookingChargeRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q39="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q39:EnzoRequest">
+        <xs:sequence>
+          <xs:element name="ChargeDetails" nillable="true" type="tns:ChargeDetails"/>
+          <xs:element name="RoomBookingId" nillable="true" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PmsRegisterRoomBookingChargeRequest" nillable="true" type="tns:PmsRegisterRoomBookingChargeRequest"/>
+  <xs:complexType name="ChargeDetails">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Amount" type="xs:int"/>
+      <xs:element minOccurs="0" name="DateTime" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="Details" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Id" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ChargeDetails" nillable="true" type="tns:ChargeDetails"/>
+  <xs:complexType name="PmsRegisterRoomBookingChargeResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q40="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q40:EnzoResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="RoomBooking" nillable="true" type="tns:RoomBooking"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PmsRegisterRoomBookingChargeResponse" nillable="true" type="tns:PmsRegisterRoomBookingChargeResponse"/>
+  <xs:complexType name="PmsCreateReservationRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q41="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q41:EnzoRequest">
+        <xs:sequence>
+          <xs:element name="RoomBookings" nillable="true" type="tns:ArrayOfRoomBookingDetails"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PmsCreateReservationRequest" nillable="true" type="tns:PmsCreateReservationRequest"/>
+  <xs:complexType name="ArrayOfRoomBookingDetails">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="RoomBookingDetails" nillable="true" type="tns:RoomBookingDetails"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfRoomBookingDetails" nillable="true" type="tns:ArrayOfRoomBookingDetails"/>
+  <xs:complexType name="PmsCreateReservationResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q42="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q42:EnzoResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Reservation" nillable="true" type="tns:Reservation"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PmsCreateReservationResponse" nillable="true" type="tns:PmsCreateReservationResponse"/>
+  <xs:complexType name="PmsDeleteReservationRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q43="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q43:EnzoRequest">
+        <xs:sequence>
+          <xs:element name="Reservationid" nillable="true" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PmsDeleteReservationRequest" nillable="true" type="tns:PmsDeleteReservationRequest"/>
+  <xs:complexType name="PmsDeleteReservationResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q44="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q44:EnzoResponse">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PmsDeleteReservationResponse" nillable="true" type="tns:PmsDeleteReservationResponse"/>
+  <xs:complexType name="PmsFindGuestRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q45="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q45:EnzoRequest">
+        <xs:sequence>
+          <xs:element name="SearchTerms" nillable="true" type="tns:ArrayOfSearchTerm"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PmsFindGuestRequest" nillable="true" type="tns:PmsFindGuestRequest"/>
+  <xs:complexType name="PmsFindGuestResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q46="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q46:EnzoResponse">
+        <xs:sequence>
+          <xs:element xmlns:q47="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="GuestIds" nillable="true" type="q47:ArrayOfstring"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PmsFindGuestResponse" nillable="true" type="tns:PmsFindGuestResponse"/>
+  <xs:complexType name="PmsGetGuestRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q48="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q48:EnzoRequest">
+        <xs:sequence>
+          <xs:element name="GuestId" nillable="true" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PmsGetGuestRequest" nillable="true" type="tns:PmsGetGuestRequest"/>
+  <xs:complexType name="PmsGetGuestResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q49="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q49:EnzoResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Guest" nillable="true" type="tns:Guest"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PmsGetGuestResponse" nillable="true" type="tns:PmsGetGuestResponse"/>
+  <xs:complexType name="ImageStoreGetImageRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q50="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q50:EnzoRequest">
+        <xs:sequence>
+          <xs:element name="ImageId" nillable="true" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ImageStoreGetImageRequest" nillable="true" type="tns:ImageStoreGetImageRequest"/>
+  <xs:complexType name="ImageStoreGetImageResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q51="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q51:EnzoResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="ImageFileData" nillable="true" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ImageStoreGetImageResponse" nillable="true" type="tns:ImageStoreGetImageResponse"/>
+  <xs:complexType name="ImageStoreSetImageRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q52="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q52:EnzoRequest">
+        <xs:sequence>
+          <xs:element name="Image" nillable="true" type="xs:string"/>
+          <xs:element name="ImageId" nillable="true" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ImageStoreSetImageRequest" nillable="true" type="tns:ImageStoreSetImageRequest"/>
+  <xs:complexType name="ImageStoreSetImageResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q53="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q53:EnzoResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="ImageId" nillable="true" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ImageStoreSetImageResponse" nillable="true" type="tns:ImageStoreSetImageResponse"/>
+  <xs:complexType name="ImageStoreGetImageListRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q54="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q54:EnzoRequest">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ImageStoreGetImageListRequest" nillable="true" type="tns:ImageStoreGetImageListRequest"/>
+  <xs:complexType name="ImageStoreGetImageListResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q55="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q55:EnzoResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="ImageInfos" nillable="true" type="tns:ArrayOfImageInfo"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ImageStoreGetImageListResponse" nillable="true" type="tns:ImageStoreGetImageListResponse"/>
+  <xs:complexType name="ArrayOfImageInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="ImageInfo" nillable="true" type="tns:ImageInfo"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfImageInfo" nillable="true" type="tns:ArrayOfImageInfo"/>
+  <xs:complexType name="ImageInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="FileSize" type="xs:int"/>
+      <xs:element minOccurs="0" name="Hash" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ImageId" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ImageInfo" nillable="true" type="tns:ImageInfo"/>
+  <xs:complexType name="RoomKeySystemReadKeyRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q56="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q56:EnzoRequest">
+        <xs:sequence>
+          <xs:element name="KeyData" nillable="true" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="RoomKeySystemReadKeyRequest" nillable="true" type="tns:RoomKeySystemReadKeyRequest"/>
+  <xs:complexType name="RoomKeySystemReadKeyResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q57="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q57:EnzoResponse">
+        <xs:sequence>
+          <xs:element name="ReservationId" nillable="true" type="xs:string"/>
+          <xs:element name="RoomBookingId" nillable="true" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="RoomKeySystemReadKeyResponse" nillable="true" type="tns:RoomKeySystemReadKeyResponse"/>
+  <xs:complexType name="RoomKeySystemRemoveAllKeysRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q58="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q58:EnzoRequest">
+        <xs:sequence>
+          <xs:element name="RoomBookingId" nillable="true" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="RoomKeySystemRemoveAllKeysRequest" nillable="true" type="tns:RoomKeySystemRemoveAllKeysRequest"/>
+  <xs:complexType name="RoomKeySystemRemoveAllKeysResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q59="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q59:EnzoResponse">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="RoomKeySystemRemoveAllKeysResponse" nillable="true" type="tns:RoomKeySystemRemoveAllKeysResponse"/>
+  <xs:complexType name="RoomKeySystemCreateKeyRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q60="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q60:EnzoRequest">
+        <xs:sequence>
+          <xs:element name="KeyData" nillable="true" type="xs:string"/>
+          <xs:element xmlns:q61="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="LockIds" nillable="true" type="q61:ArrayOfstring"/>
+          <xs:element name="RoomBookingId" nillable="true" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="RoomKeySystemCreateKeyRequest" nillable="true" type="tns:RoomKeySystemCreateKeyRequest"/>
+  <xs:complexType name="RoomKeySystemCreateKeyResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q62="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.Enzo" base="q62:EnzoResponse">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="RoomKeySystemCreateKeyResponse" nillable="true" type="tns:RoomKeySystemCreateKeyResponse"/>
+</xs:schema>
