@@ -731,14 +731,16 @@ void Converter::convertClientOutputMessage(const Operation &operation,
         const Binding &binding, KODE::Class &newClass)
 {
     // result signal
-    QString operationName = lowerlize(operation.name());
-    KODE::Function doneSignal(operationName + QLatin1String("Done"), QLatin1String("void"), KODE::Function::Signal);
-    doneSignal.setDocs(QLatin1String("This signal is emitted whenever the call to ") + operationName + QLatin1String("() succeeded."));
+    const QString operationName = lowerlize(operation.name());
+    const QString signalBase = lowerlize(operation.name());
+    const QString callName = QLatin1String("async") + upperlize(operation.name());
+    KODE::Function doneSignal(signalBase + QLatin1String("Done"), QLatin1String("void"), KODE::Function::Signal);
+    doneSignal.setDocs(QLatin1String("This signal is emitted whenever the asynchronous call ") + callName + QLatin1String("() has succeeded."));
 
     // error signal
-    KODE::Function errorSignal(operationName + QLatin1String("Error"), QLatin1String("void"), KODE::Function::Signal);
+    KODE::Function errorSignal(signalBase + QLatin1String("Error"), QLatin1String("void"), KODE::Function::Signal);
     errorSignal.addArgument(QLatin1String("const KDSoapMessage& fault"));
-    errorSignal.setDocs(QLatin1String("This signal is emitted whenever the call to ") + operationName + QLatin1String("() failed."));
+    errorSignal.setDocs(QLatin1String("This signal is emitted whenever the asynchronous call ") + callName + QLatin1String("() has failed."));
 
     // finished slot
     const QString finishedSlotName = QLatin1String("_kd_slot") + upperlize(operationName) + QLatin1String("Finished");
