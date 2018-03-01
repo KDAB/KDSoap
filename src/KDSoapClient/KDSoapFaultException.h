@@ -30,9 +30,9 @@
 /**
  * KDSoapFaultException is the base class for exceptions representing a fault element.
  * So far supporting only SOAP 1.1 version which mean the following attributes :
- * <faultcode>, <faultstring>, <faultfactor>, <detail>
+ * \<faultcode\>, \<faultstring\>, \<faultfactor\>, \<detail\>
  *
- * The <detail> tag optionally contains specific serialized fault information.
+ * The \<detail\> tag optionally contains specific serialized fault information.
  * represented as an exception in the client side.
  */
 class KDSOAP_EXPORT KDSoapFaultException
@@ -45,8 +45,8 @@ public:
     void deserialize(const KDSoapValue &mainValue);
 
     /**
-     * Returns the KDSoapValue representing the <detail> tag from the parameter.
-     * \param faultValue Represent the <fault> tag in the SOAP protocol
+     * Returns the KDSoapValue representing the \<detail\> tag from the parameter.
+     * \param faultValue Represent the \<fault\> tag in the SOAP protocol
      */
     static const KDSoapValue &faultDetails(const KDSoapValue &faultValue);
 
@@ -84,7 +84,7 @@ public:
     void setFaultActor(const QString &faultActor);
 
     /**
-     * Returns the <detail> tag of the fault element as a KDSoapValue.
+     * Returns the \<detail\> tag of the fault element as a KDSoapValue.
      * When the fault is generic, return an empty KDSoapValue.
      * When the fault is specific the KDSoapValue optionally contains specific serialized fault information.
      */
@@ -92,7 +92,7 @@ public:
 
     /**
      * Set the KDSoapValue of the fault.
-     * \param detailValue KDSoapValue representing the <detail> tag of a fault message
+     * \param detailValue KDSoapValue representing the \<detail\> tag of a fault message
      */
     void setDetailValue(const KDSoapValue &detailValue);
 

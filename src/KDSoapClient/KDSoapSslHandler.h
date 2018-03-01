@@ -56,6 +56,7 @@ Q_SIGNALS:
      * method should be called from the slot connected to this signal. If it is not called, the SSL session
      * will be torn down before any data is exchanged.
      *
+     * @param handler is a pointer the KDSoapSSLHandler associated with the errors
      * @param errors list of ssl errors
      */
     void sslErrors(KDSoapSslHandler *handler, const QList<QSslError> &errors);
