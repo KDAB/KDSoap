@@ -732,7 +732,7 @@ void Converter::convertClientOutputMessage(const Operation &operation,
 {
     // result signal
     const QString operationName = lowerlize(operation.name());
-    const QString signalBase = lowerlize(operation.name());
+    const QString signalBase = operationName;
     const QString callName = QLatin1String("async") + upperlize(operation.name());
     KODE::Function doneSignal(signalBase + QLatin1String("Done"), QLatin1String("void"), KODE::Function::Signal);
     doneSignal.setDocs(QLatin1String("This signal is emitted whenever the asynchronous call ") + callName + QLatin1String("() has succeeded."));
