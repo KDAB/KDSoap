@@ -45,7 +45,7 @@ static void showHelp(const char *appName)
             "  -optional-element-type <type>\n"
             "                            use <type> as the getter return value for optional elements.\n"
             "                            <type> can be either raw-pointer or boost-optional\n"
-            " -keep-unused-types         keep the wsdl unused types to the cpp generation step\n"
+            "  -keep-unused-types        keep the wsdl unused types to the cpp generation step\n"
             "\n", appName);
 }
 
