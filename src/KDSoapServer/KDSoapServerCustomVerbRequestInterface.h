@@ -33,7 +33,7 @@ class KDSoapServerSocket;
  * Additional interface for handling custom verb request.
  *
  * In addition to deriving from KDSoapServerObjectInterface, you can derive from
- * KDSoapServerCustomVerbRequestInterface in order to handle custom verb HTML requests.
+ * KDSoapServerCustomVerbRequestInterface in order to handle custom verb HTTP requests.
  *
  * Use Q_INTERFACES(KDSoapServerCustomVerbRequestInterface) in your derived class (under Q_OBJECT)
  * so that Qt can discover the additional inheritance.

@@ -121,10 +121,12 @@ KODE::Code ElementArgumentSerializer::generate() const
         }
         if (mAppend && mOmitIfEmpty) {   // omit empty children (testcase: MSExchange, no <ParentFolderIds/>)
             block += "if (!" + mValueVarName + ".isNil())";
+            block.indent();
         }
         block += varAndMethodBefore + mValueVarName + varAndMethodAfter + QLatin1String(";") + COMMENT;
 
         if (mAppend && mOmitIfEmpty) {
+            block.unindent();
             block.unindent();
             block += "}";
         }

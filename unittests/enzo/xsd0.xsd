@@ -1,0 +1,408 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://hotelconcepts.com/" elementFormDefault="qualified" targetNamespace="http://hotelconcepts.com/">
+  <xs:import schemaLocation="xsd2.xsd" namespace="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract"/>
+  <xs:element name="Authenticate">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="request" nillable="true" type="q1:AuthenticationRequest"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AuthenticateResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="AuthenticateResult" nillable="true" type="q2:AuthenticationResponse"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PmsGetPmsStatus">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="authentication" nillable="true" type="q3:Authentication"/>
+        <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="pmsGetPmsStatusRequest" nillable="true" type="q4:PmsGetPmsStatusRequest"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PmsGetPmsStatusResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="PmsGetPmsStatusResult" nillable="true" type="q5:PmsGetPmsStatusResponse"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PmsGetConfiguration">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="authentication" nillable="true" type="q6:Authentication"/>
+        <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="pmsGetConfigurationRequest" nillable="true" type="q7:PmsGetConfigurationRequest"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PmsGetConfigurationResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q8="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="PmsGetConfigurationResult" nillable="true" type="q8:PmsGetConfigurationResponse"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PmsGetTranslations">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q9="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="authentication" nillable="true" type="q9:Authentication"/>
+        <xs:element xmlns:q10="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="pmsGetTranslationsRequest" nillable="true" type="q10:PmsGetTranslationsRequest"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PmsGetTranslationsResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q11="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="PmsGetTranslationsResult" nillable="true" type="q11:PmsGetTranslationsResponse"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PmsFindRoomBooking">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q12="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="authentication" nillable="true" type="q12:Authentication"/>
+        <xs:element xmlns:q13="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="pmsFindRoomBookingRequest" nillable="true" type="q13:PmsFindRoomBookingRequest"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PmsFindRoomBookingResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q14="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="PmsFindRoomBookingResult" nillable="true" type="q14:PmsFindRoomBookingResponse"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PmsGetReservation">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q15="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="authentication" nillable="true" type="q15:Authentication"/>
+        <xs:element xmlns:q16="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="pmsGetReservationRequest" nillable="true" type="q16:PmsGetReservationRequest"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PmsGetReservationResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q17="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="PmsGetReservationResult" nillable="true" type="q17:PmsGetReservationResponse"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PmsGetRoomBooking">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q18="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="authentication" nillable="true" type="q18:Authentication"/>
+        <xs:element xmlns:q19="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="pmsGetRoomBookingRequest" nillable="true" type="q19:PmsGetRoomBookingRequest"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PmsGetRoomBookingResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q20="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="PmsGetRoomBookingResult" nillable="true" type="q20:PmsGetRoomBookingResponse"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PmsGetRooms">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q21="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="authentication" nillable="true" type="q21:Authentication"/>
+        <xs:element xmlns:q22="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="pmsGetRoomsRequest" nillable="true" type="q22:PmsGetRoomsRequest"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PmsGetRoomsResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q23="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="PmsGetRoomsResult" nillable="true" type="q23:PmsGetRoomsResponse"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PmsGetRoomSpecification">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q24="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="authentication" nillable="true" type="q24:Authentication"/>
+        <xs:element xmlns:q25="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="pmsGetRoomSpecificationRequest" nillable="true" type="q25:PmsGetRoomSpecificationRequest"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PmsGetRoomSpecificationResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q26="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="PmsGetRoomSpecificationResult" nillable="true" type="q26:PmsGetRoomSpecificationResponse"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PmsGetRoomOffer">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q27="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="authentication" nillable="true" type="q27:Authentication"/>
+        <xs:element xmlns:q28="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="pmsGetRoomOfferRequest" nillable="true" type="q28:PmsGetRoomOfferRequest"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PmsGetRoomOfferResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q29="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="PmsGetRoomOfferResult" nillable="true" type="q29:PmsGetRoomOfferResponse"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PmsGetRoomOffers">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q30="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="authentication" nillable="true" type="q30:Authentication"/>
+        <xs:element xmlns:q31="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="pmsGetRoomOffersRequest" nillable="true" type="q31:PmsGetRoomOffersRequest"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PmsGetRoomOffersResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q32="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="PmsGetRoomOffersResult" nillable="true" type="q32:PmsGetRoomOffersResponse"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PmsSetRoomBookingStatus">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q33="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="authentication" nillable="true" type="q33:Authentication"/>
+        <xs:element xmlns:q34="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="pmsSetRoomBookingStatusRequest" nillable="true" type="q34:PmsSetRoomBookingStatusRequest"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PmsSetRoomBookingStatusResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q35="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="PmsSetRoomBookingStatusResult" nillable="true" type="q35:PmsSetRoomBookingStatusResponse"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PmsSetRoomBookingGuests">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q36="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="authentication" nillable="true" type="q36:Authentication"/>
+        <xs:element xmlns:q37="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="pmsSetRoomBookingGuestsRequest" nillable="true" type="q37:PmsSetRoomBookingGuestsRequest"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PmsSetRoomBookingGuestsResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q38="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="PmsSetRoomBookingGuestsResult" nillable="true" type="q38:PmsSetRoomBookingGuestsResponse"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PmsSetRoomBookingDetails">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q39="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="authentication" nillable="true" type="q39:Authentication"/>
+        <xs:element xmlns:q40="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="pmsSetRoomBookingDetailsRequest" nillable="true" type="q40:PmsSetRoomBookingDetailsRequest"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PmsSetRoomBookingDetailsResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q41="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="PmsSetRoomBookingDetailsResult" nillable="true" type="q41:PmsSetRoomBookingDetailsResponse"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PmsSetRoomBookingSelectedOptions">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q42="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="authentication" nillable="true" type="q42:Authentication"/>
+        <xs:element xmlns:q43="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="pmsSetRoomBookingSelectedOptionsRequest" nillable="true" type="q43:PmsSetRoomBookingSelectedOptionsRequest"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PmsSetRoomBookingSelectedOptionsResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q44="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="PmsSetRoomBookingSelectedOptionsResult" nillable="true" type="q44:PmsSetRoomBookingSelectedOptionsResponse"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PmsRegisterRoomBookingPayment">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q45="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="authentication" nillable="true" type="q45:Authentication"/>
+        <xs:element xmlns:q46="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="pmsRegisterRoomBookingPaymentRequest" nillable="true" type="q46:PmsRegisterRoomBookingPaymentRequest"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PmsRegisterRoomBookingPaymentResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q47="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="PmsRegisterRoomBookingPaymentResult" nillable="true" type="q47:PmsRegisterRoomBookingPaymentResponse"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PmsRegisterRoomBookingCharge">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q48="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="authentication" nillable="true" type="q48:Authentication"/>
+        <xs:element xmlns:q49="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="pmsRegisterRoomBookingChargeRequest" nillable="true" type="q49:PmsRegisterRoomBookingChargeRequest"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PmsRegisterRoomBookingChargeResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q50="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="PmsRegisterRoomBookingChargeResult" nillable="true" type="q50:PmsRegisterRoomBookingChargeResponse"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PmsCreateReservation">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q51="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="authentication" nillable="true" type="q51:Authentication"/>
+        <xs:element xmlns:q52="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="pmsCreateReservationRequest" nillable="true" type="q52:PmsCreateReservationRequest"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PmsCreateReservationResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q53="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="PmsCreateReservationResult" nillable="true" type="q53:PmsCreateReservationResponse"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PmsDeleteReservation">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q54="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="authentication" nillable="true" type="q54:Authentication"/>
+        <xs:element xmlns:q55="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="pmsDeleteReservationRequest" nillable="true" type="q55:PmsDeleteReservationRequest"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PmsDeleteReservationResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q56="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="PmsDeleteReservationResult" nillable="true" type="q56:PmsDeleteReservationResponse"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PmsFindGuest">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q57="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="authentication" nillable="true" type="q57:Authentication"/>
+        <xs:element xmlns:q58="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="pmsFindGuestRequest" nillable="true" type="q58:PmsFindGuestRequest"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PmsFindGuestResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q59="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="PmsFindGuestResult" nillable="true" type="q59:PmsFindGuestResponse"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PmsGetGuest">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q60="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="authentication" nillable="true" type="q60:Authentication"/>
+        <xs:element xmlns:q61="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="pmsGetGuestRequest" nillable="true" type="q61:PmsGetGuestRequest"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PmsGetGuestResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q62="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="PmsGetGuestResult" nillable="true" type="q62:PmsGetGuestResponse"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ImageStoreGetImage">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q63="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="authentication" nillable="true" type="q63:Authentication"/>
+        <xs:element xmlns:q64="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="imageStoreGetImageRequest" nillable="true" type="q64:ImageStoreGetImageRequest"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ImageStoreGetImageResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q65="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="ImageStoreGetImageResult" nillable="true" type="q65:ImageStoreGetImageResponse"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ImageStoreSetImage">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q66="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="authentication" nillable="true" type="q66:Authentication"/>
+        <xs:element xmlns:q67="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="imageStoreSetImageRequest" nillable="true" type="q67:ImageStoreSetImageRequest"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ImageStoreSetImageResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q68="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="ImageStoreSetImageResult" nillable="true" type="q68:ImageStoreSetImageResponse"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ImageStoreGetImageList">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q69="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="authentication" nillable="true" type="q69:Authentication"/>
+        <xs:element xmlns:q70="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="imageStoreGetImageListRequest" nillable="true" type="q70:ImageStoreGetImageListRequest"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ImageStoreGetImageListResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q71="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="ImageStoreGetImageListResult" nillable="true" type="q71:ImageStoreGetImageListResponse"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RoomKeySystemReadKey">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q72="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="authentication" nillable="true" type="q72:Authentication"/>
+        <xs:element xmlns:q73="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="roomKeySystemReadKeyRequest" nillable="true" type="q73:RoomKeySystemReadKeyRequest"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RoomKeySystemReadKeyResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q74="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="RoomKeySystemReadKeyResult" nillable="true" type="q74:RoomKeySystemReadKeyResponse"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RoomKeySystemRemoveAllKeys">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q75="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="authentication" nillable="true" type="q75:Authentication"/>
+        <xs:element xmlns:q76="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="roomKeySystemRemoveAllKeysRequest" nillable="true" type="q76:RoomKeySystemRemoveAllKeysRequest"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RoomKeySystemRemoveAllKeysResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q77="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="RoomKeySystemRemoveAllKeysResult" nillable="true" type="q77:RoomKeySystemRemoveAllKeysResponse"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RoomKeySystemCreateKey">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q78="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="authentication" nillable="true" type="q78:Authentication"/>
+        <xs:element xmlns:q79="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="roomKeySystemRemoveAllKeysRequest" nillable="true" type="q79:RoomKeySystemCreateKeyRequest"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RoomKeySystemCreateKeyResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q80="http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract" minOccurs="0" name="RoomKeySystemCreateKeyResult" nillable="true" type="q80:RoomKeySystemCreateKeyResponse"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

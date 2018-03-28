@@ -5,6 +5,7 @@ General:
 Client-side:
 ============
 * Fix unwanted generation of SoapAction header when it should be empty (SOAP-135).
+* Abort the connection when destroying a job with a pending call (SOAP-138).
 
 Server-side:
 ============
@@ -15,3 +16,5 @@ WSDL parser / code generator changes, applying to both client and server side:
 * Add support for body namespace specification in RPC calls.
 * Fix namespace handling in typename comparison for optional element used inside itself (github issue #83).
 * Add missing include in generated header, when an operation's return value needs one (ex: QDate) (github issue #110).
+* Fix namespace handling in restriction and extension tags
+* Fix wrong indentation of "};" for classes inside namespaces

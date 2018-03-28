@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:i0="http://hotelconcepts.com/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://hotelconcepts.com/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" name="EnzoService" targetNamespace="http://hotelconcepts.com/">
+  <wsdl:import namespace="http://hotelconcepts.com/" location="EnzoServiceWsdl0.xml"/>
+  <wsdl:types/>
+  <wsdl:binding name="BasicHttpBinding_IEnzoService" type="i0:IEnzoService">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="Authenticate">
+      <soap:operation soapAction="http://hotelconcepts.com/IEnzoService/Authenticate" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PmsGetPmsStatus">
+      <soap:operation soapAction="http://hotelconcepts.com/IEnzoService/PmsGetPmsStatus" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PmsGetConfiguration">
+      <soap:operation soapAction="http://hotelconcepts.com/IEnzoService/PmsGetConfiguration" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PmsGetTranslations">
+      <soap:operation soapAction="http://hotelconcepts.com/IEnzoService/PmsGetTranslations" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PmsFindRoomBooking">
+      <soap:operation soapAction="http://hotelconcepts.com/IEnzoService/PmsFindRoomBooking" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PmsGetReservation">
+      <soap:operation soapAction="http://hotelconcepts.com/IEnzoService/PmsGetReservation" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PmsGetRoomBooking">
+      <soap:operation soapAction="http://hotelconcepts.com/IEnzoService/PmsGetRoomBooking" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PmsGetRooms">
+      <soap:operation soapAction="http://hotelconcepts.com/IEnzoService/PmsGetRooms" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PmsGetRoomSpecification">
+      <soap:operation soapAction="http://hotelconcepts.com/IEnzoService/PmsGetRoomSpecification" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PmsGetRoomOffer">
+      <soap:operation soapAction="http://hotelconcepts.com/IEnzoService/PmsGetRoomOffer" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PmsGetRoomOffers">
+      <soap:operation soapAction="http://hotelconcepts.com/IEnzoService/PmsGetRoomOffers" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PmsSetRoomBookingStatus">
+      <soap:operation soapAction="http://hotelconcepts.com/IEnzoService/PmsSetRoomBookingStatus" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PmsSetRoomBookingGuests">
+      <soap:operation soapAction="http://hotelconcepts.com/IEnzoService/PmsSetRoomBookingGuests" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PmsSetRoomBookingDetails">
+      <soap:operation soapAction="http://hotelconcepts.com/IEnzoService/PmsSetRoomBookingDetails" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PmsSetRoomBookingSelectedOptions">
+      <soap:operation soapAction="http://hotelconcepts.com/IEnzoService/PmsSetRoomBookingSelectedOptions" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PmsRegisterRoomBookingPayment">
+      <soap:operation soapAction="http://hotelconcepts.com/IEnzoService/PmsRegisterRoomBookingPayment" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PmsRegisterRoomBookingCharge">
+      <soap:operation soapAction="http://hotelconcepts.com/IEnzoService/PmsRegisterRoomBookingCharge" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PmsCreateReservation">
+      <soap:operation soapAction="http://hotelconcepts.com/IEnzoService/PmsCreateReservation" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PmsDeleteReservation">
+      <soap:operation soapAction="http://hotelconcepts.com/IEnzoService/PmsDeleteReservation" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PmsFindGuest">
+      <soap:operation soapAction="http://hotelconcepts.com/IEnzoService/PmsFindGuest" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PmsGetGuest">
+      <soap:operation soapAction="http://hotelconcepts.com/IEnzoService/PmsGetGuest" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ImageStoreGetImage">
+      <soap:operation soapAction="http://hotelconcepts.com/IEnzoService/ImageStoreGetImage" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ImageStoreSetImage">
+      <soap:operation soapAction="http://hotelconcepts.com/IEnzoService/ImageStoreSetImage" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ImageStoreGetImageList">
+      <soap:operation soapAction="http://hotelconcepts.com/IEnzoService/ImageStoreGetImageList" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RoomKeySystemReadKey">
+      <soap:operation soapAction="http://hotelconcepts.com/IEnzoService/RoomKeySystemReadKey" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RoomKeySystemRemoveAllKeys">
+      <soap:operation soapAction="http://hotelconcepts.com/IEnzoService/RoomKeySystemRemoveAllKeys" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RoomKeySystemCreateKey">
+      <soap:operation soapAction="http://hotelconcepts.com/IEnzoService/RoomKeySystemCreateKey" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="EnzoService">
+    <wsdl:port name="BasicHttpBinding_IEnzoService" binding="tns:BasicHttpBinding_IEnzoService">
+      <soap:address location="http://itesso-enzo-cm-test.azurewebsites.net/EnzoService.svc"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

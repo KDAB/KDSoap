@@ -123,7 +123,7 @@ public:
 
     /**
      * Define the way the message should be serialized: with or without type information.
-     * This value usually comes from the <binding> element in the WSDL service description.
+     * This value usually comes from the \<binding\> element in the WSDL service description.
      * The default value is KDSoapMessage::LiteralUse.
      * \see KDSoapMessage::Use
      */

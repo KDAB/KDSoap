@@ -266,11 +266,7 @@ QString Printer::Private::classHeader( const Class &classObject, bool publicMemb
       code.unindent();
   }
 
-  if( !nestedClass )
-    code.setIndent( 0 );
-  else
-    code.unindent();
-
+  code.unindent();
   code += "};";
 
   for (int i = 0; i < numNamespaces; ++i) {
