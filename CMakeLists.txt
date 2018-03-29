@@ -169,3 +169,26 @@ if(${PROJECT_NAME}_IS_ROOT_PROJECT)
   endif()
   add_subdirectory(examples)
 endif()
+
+### FOR PACKAGING #####################################################################################
+set(CPACK_PACKAGE_VERSION ${${PROJECT_NAME}_VERSION})
+set(CPACK_PACKAGE_NAME ${PROJECT_NAME})
+set(CPACK_PACKAGE_VENDOR "Klaralvdalens Datakonsult AB (KDAB)")
+
+set(CXX_COMPILER_ARGUMENT "-dumpmachine")
+execute_process(COMMAND ${CMAKE_CXX_COMPILER} ${CXX_COMPILER_ARGUMENT} OUTPUT_VARIABLE CXX_COMPILER_TARGET)
+string(REGEX REPLACE "-.*" "" CXX_COMPILER_TARGET ${CXX_COMPILER_TARGET})
+
+set(CPACK_RPM_PACKAGE_ARCHITECTURE ${CXX_COMPILER_TARGET})
+
+#set(CPACK_PACKAGE_DESCRIPTION_FILE ${DESCRIPTION})
+set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}.${CPACK_RPM_PACKAGE_ARCHITECTURE}")
+
+set(CPACK_RPM_COMPONENT_INSTALL ON)
+set(CPACK_RPM_PACKAGE_SUMMARY "A Qt-based client-side and server-side SOAP component")
+set(CPACK_RPM_PACKAGE_GROUP "System Environment/Libraries")
+set(CPACK_RPM_PACKAGE_URL "http://github.com/KDAB/KDSoap")
+
+include(CPack)
+
+
