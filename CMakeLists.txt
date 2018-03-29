@@ -11,7 +11,7 @@
 #  Build the test harness.
 #  Default=false
 #
-cmake_minimum_required(VERSION 2.8.7)
+cmake_minimum_required(VERSION 3.9.1)
 cmake_policy(SET CMP0020 NEW)
 
 if("${CMAKE_INSTALL_PREFIX}" STREQUAL "")
@@ -127,7 +127,7 @@ if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
   set(CMAKE_INSTALL_RPATH ${INSTALL_LIBRARY_DIR})
   set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
-  install(FILES LICENSE.GPL.txt LICENSE.US.txt LICENSE.txt README.txt kdsoap.pri kdwsdl2cpp.pri DESTINATION ${INSTALL_DOC_DIR})
+  install(FILES LICENSE.GPL.txt LICENSE.US.txt LICENSE.txt README.txt kdsoap.pri kdwsdl2cpp.pri DESTINATION ${INSTALL_DOC_DIR} COMPONENT devel)
 
   if(CMAKE_VERSION VERSION_LESS 2.8.8)
     include("${CMAKE_SOURCE_DIR}/cmake/CMakePackageConfigHelpers.cmake")
@@ -161,10 +161,10 @@ if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
       "${CMAKE_CURRENT_BINARY_DIR}/install/KDSoapConfig.cmake"
       "${CMAKE_CURRENT_BINARY_DIR}/KDSoap/KDSoapConfigVersion.cmake"
       KDSoapMacros.cmake
-    DESTINATION "${INSTALL_LIBRARY_DIR}/cmake/KDSoap"
+    DESTINATION "${INSTALL_LIBRARY_DIR}/cmake/KDSoap" COMPONENT devel
   )
   install(EXPORT KDSoapTargets NAMESPACE KDSoap::
-    DESTINATION "${INSTALL_LIBRARY_DIR}/cmake/KDSoap"
+    DESTINATION "${INSTALL_LIBRARY_DIR}/cmake/KDSoap" COMPONENT devel
   )
 endif()
 
@@ -186,10 +186,12 @@ if(${PROJECT_NAME}_IS_ROOT_PROJECT)
 endif()
 
 ### FOR PACKAGING #####################################################################################
-set(CPACK_PACKAGE_VERSION ${${PROJECT_NAME}_VERSION})
+set(PROJECT_VERSION ${${PROJECT_NAME}_VERSION})
+set(CPACK_PACKAGE_VERSION ${PROJECT_VERSION})
 set(CPACK_PACKAGE_NAME ${PROJECT_NAME})
 set(CPACK_PACKAGE_VENDOR "Klaralvdalens Datakonsult AB (KDAB)")
 
+<<<<<<< HEAD
 set(CXX_COMPILER_ARGUMENT "-dumpmachine")
 execute_process(COMMAND ${CMAKE_CXX_COMPILER} ${CXX_COMPILER_ARGUMENT} OUTPUT_VARIABLE CXX_COMPILER_TARGET)
 string(REGEX REPLACE "-.*" "" CXX_COMPILER_TARGET ${CXX_COMPILER_TARGET})
@@ -200,9 +202,12 @@ set(CPACK_RPM_PACKAGE_ARCHITECTURE ${CXX_COMPILER_TARGET})
 set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}.${CPACK_RPM_PACKAGE_ARCHITECTURE}")
 
 set(CPACK_RPM_COMPONENT_INSTALL ON)
+set(CPACK_RPM_FILE_NAME "RPM-DEFAULT")
 set(CPACK_RPM_PACKAGE_SUMMARY "A Qt-based client-side and server-side SOAP component")
 set(CPACK_RPM_PACKAGE_GROUP "System Environment/Libraries")
 set(CPACK_RPM_PACKAGE_URL "http://github.com/KDAB/KDSoap")
+
+set(CPACK_RPM_devel_PACKAGE_REQUIRES "kdsoap-core = ${PROJECT_VERSION} kdsoap-server = ${PROJECT_VERSION}")
 
 include(CPack)
 
