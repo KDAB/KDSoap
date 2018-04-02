@@ -4,8 +4,9 @@
 # (See INSTALL-cmake.txt for more information)
 #
 # -DKDSoap_ENFORCE_QT4_BUILD=[true|false]
-#  Force building against Qt4, even if Qt5 is found.
+#  Force building against Qt4.
 #  Default=false
+#
 #
 # -DKDSoap_TESTS=[true|false]
 #  Build the test harness.
@@ -13,12 +14,6 @@
 #
 cmake_minimum_required(VERSION 3.9.1)
 cmake_policy(SET CMP0020 NEW)
-
-if("${CMAKE_INSTALL_PREFIX}" STREQUAL "")
-  set(USE_DEFAULT_INSTALL_LOCATION True)
-else()
-  set(USE_DEFAULT_INSTALL_LOCATION False)
-endif()
 
 project(KDSoap CXX)
 
@@ -35,19 +30,19 @@ option(${PROJECT_NAME}_TESTS "Build the tests" OFF)
 
 set(${PROJECT_NAME}_VERSION_MAJOR 1)
 set(${PROJECT_NAME}_VERSION_MINOR 7)
-set(${PROJECT_NAME}_VERSION_PATCH 50)
+set(${PROJECT_NAME}_VERSION_PATCH 51)
 set(${PROJECT_NAME}_VERSION ${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR}.${${PROJECT_NAME}_VERSION_PATCH})
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 # setup default install locations
 include(InstallLocation)
 
-# try Qt5 first, and prefer that (if found), but only if not disabled via option
-if(NOT ${PROJECT_NAME}_ENFORCE_QT4_BUILD)
-  find_package(Qt5Core QUIET)
-endif()
+set(QT_VERSION "qt5")
 
-if(Qt5Core_FOUND)
+# Build against Qt5 by default. To build against Qt4 use -DKDSoap_ENFORCE_QT4_BUILD
+if(NOT ${PROJECT_NAME}_ENFORCE_QT4_BUILD)
+  message("Build against Qt5 by default. To build against Qt4 use \"-DKDSoap_ENFORCE_QT4_BUILD\"")
+  find_package(Qt5Core REQUIRED)
   find_package(Qt5Network REQUIRED)
   find_package(Qt5Widgets CONFIG)
   set(QT_LIBRARIES Qt5::Core)
@@ -64,10 +59,12 @@ if(Qt5Core_FOUND)
       set(CMAKE_POSITION_INDEPENDENT_CODE ON)
     endif()
   endif()
-
 else()
-  find_package(Qt4 4.7 QUIET REQUIRED QtCore QtMain)
+  find_package(Qt4 4.7 REQUIRED QtCore QtMain)
+  set(QT_VERSION "qt4")
 endif()
+
+set(PROJECT_NAME_FOR_INSTALL "${PROJECT_NAME}-${QT_VERSION}")
 
 set(CMAKE_INCLUDE_CURRENT_DIR TRUE)
 set(CMAKE_AUTOMOC TRUE)
@@ -95,14 +92,6 @@ if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
     set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "" FORCE)
   endif()
 
-  if(USE_DEFAULT_INSTALL_LOCATION)
-    if(UNIX)
-      set(CMAKE_INSTALL_PREFIX "/usr/local/KDAB/${PROJECT_NAME}-${${PROJECT_NAME}_VERSION}")
-    elseif(WIN32)
-      set(CMAKE_INSTALL_PREFIX "C:\\KDAB\\${PROJECT_NAME}-${${PROJECT_NAME}_VERSION}")
-    endif()
-  endif()
-
   message(STATUS "Building ${PROJECT_NAME} ${${PROJECT_NAME}_VERSION} in ${CMAKE_BUILD_TYPE} mode. Installing to ${CMAKE_INSTALL_PREFIX}")
 
   set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin")
@@ -112,7 +101,7 @@ if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
   set(CMAKE_INSTALL_RPATH ${INSTALL_LIBRARY_DIR})
   set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
-  install(FILES LICENSE.GPL.txt LICENSE.US.txt LICENSE.txt README.txt kdsoap.pri kdwsdl2cpp.pri DESTINATION ${INSTALL_DOC_DIR} COMPONENT devel)
+  install(FILES LICENSE.GPL.txt LICENSE.US.txt LICENSE.txt README.txt kdsoap.pri kdwsdl2cpp.pri DESTINATION ${INSTALL_DOC_DIR} COMPONENT doc)
 
   if(CMAKE_VERSION VERSION_LESS 2.8.8)
     include("${CMAKE_SOURCE_DIR}/cmake/CMakePackageConfigHelpers.cmake")
@@ -135,21 +124,38 @@ if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
     DESTINATION
     "${CMAKE_CURRENT_BINARY_DIR}/KDSoap/"
   )
+  
+  set(PROJECT_INSTALL_INCLUDE_DIR "${INSTALL_INCLUDE_DIR}/${PROJECT_NAME_FOR_INSTALL}")
+  
   configure_package_config_file(
     "${CMAKE_CURRENT_SOURCE_DIR}/KDSoapConfig.cmake.in"
     "${CMAKE_CURRENT_BINARY_DIR}/install/KDSoapConfig.cmake"
-    INSTALL_DESTINATION "${INSTALL_LIBRARY_DIR}/cmake/KDSoap"
-    PATH_VARS INSTALL_INCLUDE_DIR
+    INSTALL_DESTINATION "${INSTALL_LIBRARY_DIR}/cmake/${PROJECT_NAME_FOR_INSTALL}"
+    PATH_VARS PROJECT_INSTALL_INCLUDE_DIR
   )
 
   install(FILES
-      "${CMAKE_CURRENT_BINARY_DIR}/install/KDSoapConfig.cmake"
-      "${CMAKE_CURRENT_BINARY_DIR}/KDSoap/KDSoapConfigVersion.cmake"
       KDSoapMacros.cmake
-    DESTINATION "${INSTALL_LIBRARY_DIR}/cmake/KDSoap" COMPONENT devel
+    DESTINATION "${INSTALL_LIBRARY_DIR}/cmake/${PROJECT_NAME_FOR_INSTALL}" 
+    COMPONENT devel
   )
+  
+  install(FILES
+      "${CMAKE_CURRENT_BINARY_DIR}/install/KDSoapConfig.cmake"
+    DESTINATION "${INSTALL_LIBRARY_DIR}/cmake/${PROJECT_NAME_FOR_INSTALL}" 
+    RENAME "KDSoap-${QT_VERSION}Config.cmake"
+    COMPONENT devel
+  )
+  
+  install(FILES
+      "${CMAKE_CURRENT_BINARY_DIR}/KDSoap/KDSoapConfigVersion.cmake"
+    DESTINATION "${INSTALL_LIBRARY_DIR}/cmake/${PROJECT_NAME_FOR_INSTALL}" 
+    RENAME "KDSoap-${QT_VERSION}ConfigVersion.cmake"
+    COMPONENT devel
+  )
+  
   install(EXPORT KDSoapTargets NAMESPACE KDSoap::
-    DESTINATION "${INSTALL_LIBRARY_DIR}/cmake/KDSoap" COMPONENT devel
+    DESTINATION "${INSTALL_LIBRARY_DIR}/cmake/${PROJECT_NAME_FOR_INSTALL}" COMPONENT devel
   )
 endif()
 
@@ -173,7 +179,9 @@ endif()
 ### FOR PACKAGING #####################################################################################
 set(PROJECT_VERSION ${${PROJECT_NAME}_VERSION})
 set(CPACK_PACKAGE_VERSION ${PROJECT_VERSION})
-set(CPACK_PACKAGE_NAME ${PROJECT_NAME})
+set(CPACK_PACKAGE_NAME ${PROJECT_NAME_FOR_INSTALL})
+set(CPACK_RPM_doc_PACKAGE_NAME "kdsoap-doc")
+set(CPACK_RPM_doc_PACKAGE_ARCHITECTURE "noarch")
 set(CPACK_PACKAGE_VENDOR "Klaralvdalens Datakonsult AB (KDAB)")
 
 set(CPACK_RPM_COMPONENT_INSTALL ON)
@@ -185,9 +193,14 @@ set(CPACK_RPM_PACKAGE_LICENSE "LGPL-2.1+")
 set(CPACK_PACKAGING_INSTALL_PREFIX "/usr")
 set(CPACK_RPM_EXCLUDE_FROM_AUTO_FILELIST_ADDITION "${CPACK_PACKAGING_INSTALL_PREFIX}/${INSTALL_LIBRARY_DIR}/cmake")
 set(CPACK_RPM_SOURCE_PKG_PACKAGING_INSTALL_PREFIX ${CPACK_PACKAGING_INSTALL_PREFIX})
-set(CPACK_RPM_SOURCE_PKG_BUILD_PARAMS "-DCMAKE_BUILD_TYPE=Release -DKDSoap_ENFORCE_QT4_BUILD=true")
 
-set(CPACK_RPM_devel_PACKAGE_REQUIRES "kdsoap-core = ${PROJECT_VERSION} kdsoap-server = ${PROJECT_VERSION}")
+if(${PROJECT_NAME}_ENFORCE_QT4_BUILD)
+  set(CPACK_RPM_SOURCE_PKG_BUILD_PARAMS "-DCMAKE_BUILD_TYPE=Release -DKDSoap_ENFORCE_QT4_BUILD=true")
+else()
+  set(CPACK_RPM_SOURCE_PKG_BUILD_PARAMS "-DCMAKE_BUILD_TYPE=Release")
+endif()    
+
+set(CPACK_RPM_devel_PACKAGE_REQUIRES "kdsoap-${QT_VERSION}-core = ${PROJECT_VERSION} kdsoap-${QT_VERSION}-server = ${PROJECT_VERSION}")
 
 include(CPack)
 
