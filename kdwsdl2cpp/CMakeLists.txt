@@ -73,6 +73,6 @@ add_executable(kdwsdl2cpp ${SOURCES_EXE})
 target_link_libraries(kdwsdl2cpp kdwsdl2cpp_lib ${QT_LIBRARIES})
 
 install(TARGETS kdwsdl2cpp EXPORT "KDSoapTargets"
-  DESTINATION ${INSTALL_RUNTIME_DIR}
+  DESTINATION ${INSTALL_RUNTIME_DIR}/${PROJECT_NAME_FOR_INSTALL}
   COMPONENT devel
 )

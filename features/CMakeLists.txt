@@ -1,1 +1,1 @@
-install(FILES kdsoap.prf DESTINATION ${INSTALL_DATADIR}/mkspecs/features COMPONENT devel)
+install(FILES kdsoap.prf DESTINATION ${INSTALL_DATADIR}/mkspecs/features COMPONENT doc)
