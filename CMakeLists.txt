@@ -39,9 +39,9 @@ include(InstallLocation)
 
 set(QT_VERSION "qt5")
 
-# Build against Qt5 by default. To build against Qt4 use -DKDSoap_ENFORCE_QT4_BUILD
+# Build against Qt5 by default. To build against Qt4 use "-DKDSoap_ENFORCE_QT4_BUILD=true"
 if(NOT ${PROJECT_NAME}_ENFORCE_QT4_BUILD)
-  message("Build against Qt5 by default. To build against Qt4 use \"-DKDSoap_ENFORCE_QT4_BUILD\"")
+  message("Build against Qt5 by default. To build against Qt4 use \"-DKDSoap_ENFORCE_QT4_BUILD=true\"")
   find_package(Qt5Core REQUIRED)
   find_package(Qt5Network REQUIRED)
   find_package(Qt5Widgets CONFIG)
