@@ -180,17 +180,20 @@ endif()
 set(PROJECT_VERSION ${${PROJECT_NAME}_VERSION})
 set(CPACK_PACKAGE_VERSION ${PROJECT_VERSION})
 set(CPACK_PACKAGE_NAME ${PROJECT_NAME_FOR_INSTALL})
+set(CPACK_PACKAGING_INSTALL_PREFIX "/usr")
+set(CPACK_PACKAGE_VENDOR "Klaralvdalens Datakonsult AB (KDAB) && R&EC SPb ETU")
+
+### RPM ################################################################################################
+set(CPACK_RPM_PACKAGE_DEBUG ON)
 set(CPACK_RPM_doc_PACKAGE_NAME "kdsoap-doc")
 set(CPACK_RPM_doc_PACKAGE_ARCHITECTURE "noarch")
-set(CPACK_PACKAGE_VENDOR "Klaralvdalens Datakonsult AB (KDAB)")
-
 set(CPACK_RPM_COMPONENT_INSTALL ON)
 set(CPACK_RPM_FILE_NAME "RPM-DEFAULT")
 set(CPACK_RPM_PACKAGE_SUMMARY "A Qt-based client-side and server-side SOAP component")
 set(CPACK_RPM_PACKAGE_GROUP "System Environment/Libraries")
 set(CPACK_RPM_PACKAGE_URL "http://github.com/REC-SPb-ETU/KDSoap")
 set(CPACK_RPM_PACKAGE_LICENSE "LGPL-2.1+")
-set(CPACK_PACKAGING_INSTALL_PREFIX "/usr")
+
 set(CPACK_RPM_EXCLUDE_FROM_AUTO_FILELIST_ADDITION "${CPACK_PACKAGING_INSTALL_PREFIX}/${INSTALL_LIBRARY_DIR}/cmake")
 set(CPACK_RPM_SOURCE_PKG_PACKAGING_INSTALL_PREFIX ${CPACK_PACKAGING_INSTALL_PREFIX})
 
@@ -202,6 +205,35 @@ endif()
 
 set(CPACK_RPM_devel_PACKAGE_REQUIRES "kdsoap-${QT_VERSION}-core = ${PROJECT_VERSION} kdsoap-${QT_VERSION}-server = ${PROJECT_VERSION}")
 
+### DEB ################################################################################################
+
+set(CPACK_DEBIAN_PACKAGE_DEBUG ON)
+set(CPACK_DEBIAN_PACKAGE_MAINTAINER "R&EC SPb ETU")
+set(CPACK_DEBIAN_PACKAGE_HOMEPAGE "http://nicetu.spb.ru")
+
+set(CPACK_DEB_COMPONENT_INSTALL ON)
+set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
+set(CPACK_DEBIAN_PACKAGE_GENERATE_SHLIBS ON)
+set(CPACK_DEBIAN_FILE_NAME "DEB-DEFAULT")
+set(CPACK_DEBIAN_DOC_PACKAGE_ARCHITECTURE "noarch")
+set(CPACK_DEBIAN_DOC_PACKAGE_NAME "kdsoap-doc")
+
+set(CPACK_DEBIAN_DEVEL_PACKAGE_DEPENDS "kdsoap-${QT_VERSION}-core (= ${PROJECT_VERSION}), kdsoap-${QT_VERSION}-server (= ${PROJECT_VERSION})")
+
+# Explicit dependencies because of CPackDEB can't process component interdependency with dpkg-shlibdeps correctly
+# https://gitlab.kitware.com/cmake/cmake/issues/17447
+set(CPACK_DEBIAN_SERVER_PACKAGE_DEPENDS "kdsoap-${QT_VERSION}-core (= ${PROJECT_VERSION})")
+
+# LD_LIBRARY_PATH because of https://gitlab.kitware.com/cmake/cmake/issues/17447
+add_custom_target(deb
+  COMMAND rm *.deb -f
+  COMMAND ${CMAKE_COMMAND} -E env LD_LIBRARY_PATH="${CMAKE_BINARY_DIR}/lib" cpack -G DEB
+)
+
+add_custom_target(rpm
+  COMMAND rm *.rpm -f
+  COMMAND cpack -G RPM
+)
+
+
 include(CPack)
-
-
