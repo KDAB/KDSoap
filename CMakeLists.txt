@@ -184,6 +184,7 @@ set(CPACK_PACKAGING_INSTALL_PREFIX "/usr")
 set(CPACK_PACKAGE_VENDOR "Klaralvdalens Datakonsult AB (KDAB) && R&EC SPb ETU")
 
 ### RPM ################################################################################################
+set(CPACK_RPM_PACKAGE_DEBUG ON)
 set(CPACK_RPM_doc_PACKAGE_NAME "kdsoap-doc")
 set(CPACK_RPM_doc_PACKAGE_ARCHITECTURE "noarch")
 set(CPACK_RPM_COMPONENT_INSTALL ON)
