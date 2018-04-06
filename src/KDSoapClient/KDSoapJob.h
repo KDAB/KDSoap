@@ -105,11 +105,17 @@ public:
      */
     void start();
 
+    /**
+     * Defines whether the job should be automatically deleted or not.
+     */
+    void setAutoDelete(bool enable);
+
 Q_SIGNALS:
     /**
      * emitted when the job is completed, i.e. the reply for the job's request
      * was received. To read the result, call reply() in the connected slot.
-     * Do not delete the job, the job will auto-delete itself.
+     * Do not delete the job, the job will auto-delete itself. This behavior
+     * can be changed with setAutoDelete().
      *
      * \param job The job instance that emitted the signal
      */

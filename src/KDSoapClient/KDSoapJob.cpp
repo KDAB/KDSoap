@@ -29,12 +29,14 @@ class KDSoapJob::Private
 public:
     KDSoapMessage reply;
     KDSoapHeaders replyHeaders;
+    bool isAutoDelete;
 };
 
 KDSoapJob::KDSoapJob(QObject *parent)
     : QObject(parent)
     , d(new Private)
 {
+    d->isAutoDelete = true;
 }
 
 KDSoapJob::~KDSoapJob()
@@ -47,12 +49,19 @@ void KDSoapJob::start()
     QMetaObject::invokeMethod(this, "doStart", Qt::QueuedConnection);
 }
 
+void KDSoapJob::setAutoDelete(bool enable)
+{
+    d->isAutoDelete = enable;
+}
+
 void KDSoapJob::emitFinished(const KDSoapMessage &reply, const KDSoapHeaders &replyHeaders)
 {
     d->reply = reply;
     d->replyHeaders = replyHeaders;
     emit finished(this);
-    deleteLater();
+    if (d->isAutoDelete) {
+        deleteLater();
+    }
 }
 
 KDSoapMessage KDSoapJob::reply() const
