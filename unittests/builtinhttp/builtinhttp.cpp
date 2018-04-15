@@ -151,6 +151,7 @@ private Q_SLOTS:
         client.setAuthentication(auth);
         KDSoapMessage reply = client.call(QLatin1String("getEmployeeCountry"), countryMessage());
         QVERIFY(reply.isFault());
+        QCOMPARE(reply.childValues().child(QLatin1String("faultcode")).value().toInt(), QNetworkReply::AuthenticationRequiredError);
     }
 
     void testCorrectHttpHeader()

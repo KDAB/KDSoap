@@ -89,8 +89,5 @@ void KDSoapAuthentication::handleAuthenticationRequired(QNetworkReply *reply, QA
         authenticator->setUser(d->user);
         authenticator->setPassword(d->password);
         reply->setProperty("authAdded", true);
-    } else {
-        // protected... reply->setError(QNetworkReply::AuthenticationRequiredError, QString());
-        reply->abort();
     }
 }
