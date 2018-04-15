@@ -1,0 +1,18 @@
+General:
+========
+*
+
+Client-side:
+============
+* Add support for soap 1.2 faults in faultAsString()
+* Fix error code when authentication failed
+
+Server-side:
+============
+
+WSDL parser / code generator changes, applying to both client and server side:
+================================================================
+* Fix double-handling of empty elements
+* Fix fault elements being generated in the wrong namespace, must be SOAP-ENV:Fault.
+
+
