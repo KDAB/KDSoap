@@ -119,14 +119,9 @@ KODE::Code ElementArgumentSerializer::generate() const
         if (mNillable) {
             block += mValueVarName + QLatin1String(".setNillable(true);");
         }
-        if (mAppend && mOmitIfEmpty) {   // omit empty children (testcase: MSExchange, no <ParentFolderIds/>)
-            block += "if (!" + mValueVarName + ".isNil())";
-            block.indent();
-        }
         block += varAndMethodBefore + mValueVarName + varAndMethodAfter + QLatin1String(";") + COMMENT;
 
         if (mAppend && mOmitIfEmpty) {
-            block.unindent();
             block.unindent();
             block += "}";
         }
