@@ -28,6 +28,8 @@ macro( KDSOAP_GENERATE_WSDL _sources )
        MAIN_DEPENDENCY ${_tmp_FILE} ${_header_wsdl_FILE}
        DEPENDS ${_tmp_FILE} ${KDWSDL2CPP} )
 
+    set_source_files_properties(${_header_wsdl_FILE} ${_source_wsdl_FILE} PROPERTIES SKIP_AUTOMOC ON)
+
     if (Qt5Core_FOUND)
        qt5_wrap_cpp(_sources_MOCS ${_header_wsdl_FILE})
     else()
