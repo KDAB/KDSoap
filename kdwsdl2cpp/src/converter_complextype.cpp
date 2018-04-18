@@ -51,18 +51,29 @@ static QString pointerStorageType(const QString &typeName)
 
 static void generateDefaultAttributeValueCode(KODE::Code& result, const QString& typeName, const Converter::DefaultAttributeValue& defaultValue)
 {
+  result += "{";
+  result.indent();
+
   if(!defaultValue.mIsBuiltin) {
-    result += "{";
-    result.indent();
     result += typeName  + " defaultValue;";
     result += "defaultValue.deserialize(\"" + defaultValue.mValue + "\");";
     result += "return defaultValue;";
-    result.unindent();
-    result += "}";
   }
   else {
-    result += "return " + defaultValue.mValue + ";";
+    result += "const QString defaultValueFromWsdl(\"" + defaultValue.mValue + "\");";
+    result += "const QVariant tmp(defaultValueFromWsdl);";
+    result += "if(!tmp.canConvert<" + typeName + ">())";
+    result += "{";
+    result.indent();
+    result += "qDebug(\"Can't convert to " + typeName + "\");";
+    result += "Q_ASSERT(!\"Can't convert to " + typeName + "\");";
+    result.unindent();
+    result += "}";
+    result += "return tmp.value<" + typeName + ">();";
   }
+
+  result.unindent();
+  result += "}";
 }
 
 void Converter::convertComplexType(const XSD::ComplexType *type)
