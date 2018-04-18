@@ -65,8 +65,8 @@ static void generateDefaultAttributeValueCode(KODE::Code& result, const QString&
     result += "if(!tmp.canConvert<" + typeName + ">())";
     result += "{";
     result.indent();
-    result += "qDebug(\"Can't convert to " + typeName + "\");";
-    result += "Q_ASSERT(!\"Can't convert to " + typeName + "\");";
+    result += "qDebug(\"Can't convert to " + typeName + " from " + defaultValue.mValue + "\");";
+    result += "Q_ASSERT(!\"Can't convert to " + typeName + " from " + defaultValue.mValue + "\");";
     result.unindent();
     result += "}";
     result += "return tmp.value<" + typeName + ">();";
