@@ -102,19 +102,6 @@ void KDSoapPendingCall::Private::parseReply()
     }
 #endif
     parsed = true;
-    if (reply->error()) {
-        replyMessage.setFault(true);
-        replyMessage.addArgument(QString::fromLatin1("faultcode"), QString::number(reply->error()));
-        replyMessage.addArgument(QString::fromLatin1("faultstring"), reply->errorString());
-        if (reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt() != 500) {
-            if (doDebug) {
-                //qDebug() << reply->readAll();
-                qDebug() << reply->errorString();
-            }
-            return;
-        }
-        // HTTP 500 is used to return faults, so parse the fault, below
-    }
     const QByteArray data = reply->readAll();
     if (doDebug) {
         qDebug() << data;
@@ -123,5 +110,16 @@ void KDSoapPendingCall::Private::parseReply()
     if (!data.isEmpty()) {
         KDSoapMessageReader reader;
         reader.xmlToMessage(data, &replyMessage, 0, &replyHeaders);
+    }
+
+    if (reply->error()) {
+        if (!replyMessage.isFault())
+        {
+            replyHeaders.clear();
+            replyMessage = KDSoapMessage();
+            replyMessage.setFault(true);
+            replyMessage.addArgument(QString::fromLatin1("faultcode"), QString::number(reply->error()));
+            replyMessage.addArgument(QString::fromLatin1("faultstring"), reply->errorString());
+        }
     }
 }
