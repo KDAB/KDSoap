@@ -56,7 +56,7 @@ private Q_SLOTS:
         QString ns;
         KDSoapMessage msg;
         KDSoapHeaders headers;
-        const KDSoapMessageReader::XmlError err = reader.xmlToMessage(xmlNoWhitespace, &msg, &ns, &headers);
+        const KDSoapMessageReader::XmlError err = reader.xmlToMessage(xmlNoWhitespace, &msg, &ns, &headers, KDSoapClientInterface::SOAP1_1);
         QCOMPARE(err, KDSoapMessageReader::NoError);
         QVERIFY(!msg.isFault());
         QCOMPARE(msg.name(), QLatin1String("GetEaster"));
@@ -66,7 +66,7 @@ private Q_SLOTS:
         KDSoapMessage msg2;
         KDSoapHeaders headers2;
 
-        const KDSoapMessageReader::XmlError err2 = reader.xmlToMessage(xmlWithWhitespace, &msg2, &ns2, &headers2);
+        const KDSoapMessageReader::XmlError err2 = reader.xmlToMessage(xmlWithWhitespace, &msg2, &ns2, &headers2, KDSoapClientInterface::SOAP1_1);
         QCOMPARE(err2, KDSoapMessageReader::NoError);
         QCOMPARE(msg2.name(), QLatin1String("GetEaster"));
 
@@ -76,6 +76,42 @@ private Q_SLOTS:
             qDebug() << msg;
             qDebug() << msg2;
         }
+    }
+
+    void testFaultSoap11()
+    {
+        const QByteArray xmlMissingEnd =
+            "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:dat=\"http://www.27seconds.com/Holidays/US/Dates/\">"
+            "<soapenv:Header/>"
+            "<soapenv:Body>";
+
+        const KDSoapMessageReader reader;
+        QString ns;
+        KDSoapMessage msg;
+        KDSoapHeaders headers;
+        const KDSoapMessageReader::XmlError err = reader.xmlToMessage(xmlMissingEnd, &msg, &ns, &headers, KDSoapClientInterface::SOAP1_1);
+        QCOMPARE(err, KDSoapMessageReader::PrematureEndOfDocumentError);
+        QVERIFY(msg.isFault());
+        QCOMPARE(msg.faultAsString(), QString::fromLatin1(
+                     "Fault code 4: XML error: [1:163] Premature end of document."));
+    }
+
+    void testFaultSoap12()
+    {
+        const QByteArray xmlMissingEnd =
+            "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:dat=\"http://www.27seconds.com/Holidays/US/Dates/\">"
+            "<soapenv:Header/>"
+            "<soapenv:Body>";
+
+        const KDSoapMessageReader reader;
+        QString ns;
+        KDSoapMessage msg;
+        KDSoapHeaders headers;
+        const KDSoapMessageReader::XmlError err = reader.xmlToMessage(xmlMissingEnd, &msg, &ns, &headers, KDSoapClientInterface::SOAP1_2);
+        QCOMPARE(err, KDSoapMessageReader::PrematureEndOfDocumentError);
+        QVERIFY(msg.isFault());
+        QCOMPARE(msg.faultAsString(), QString::fromLatin1(
+                     "Fault 4: XML error: [1:163] Premature end of document."));
     }
 };
 

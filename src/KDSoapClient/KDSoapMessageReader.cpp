@@ -203,7 +203,7 @@ static QByteArray handleNotWellFormedError(const QByteArray &data, qint64 offset
     return dataCleanedUp;
 }
 
-KDSoapMessageReader::XmlError KDSoapMessageReader::xmlToMessage(const QByteArray &data, KDSoapMessage *pMsg, QString *pMessageNamespace, KDSoapHeaders *pRequestHeaders) const
+KDSoapMessageReader::XmlError KDSoapMessageReader::xmlToMessage(const QByteArray &data, KDSoapMessage *pMsg, QString *pMessageNamespace, KDSoapHeaders *pRequestHeaders, KDSoapClientInterface::SoapVersion soapVersion) const
 {
     Q_ASSERT(pMsg);
     QXmlStreamReader reader(data);
@@ -248,15 +248,26 @@ KDSoapMessageReader::XmlError KDSoapMessageReader::xmlToMessage(const QByteArray
             qWarning() << "Handling a Not well Formed Error";
             QByteArray dataCleanedUp = handleNotWellFormedError(data, reader.characterOffset());
             if (!dataCleanedUp.isEmpty()) {
-                return xmlToMessage(dataCleanedUp, pMsg, pMessageNamespace, pRequestHeaders);
+                return xmlToMessage(dataCleanedUp, pMsg, pMessageNamespace, pRequestHeaders, soapVersion);
             }
         }
         pMsg->setFault(true);
-        pMsg->addArgument(QString::fromLatin1("faultcode"), QString::number(reader.error()));
-        pMsg->addArgument(QString::fromLatin1("faultstring"),
-                          QString::fromLatin1("XML error: [%1:%2] %3").arg(QString::number(reader.lineNumber()),
-                                  QString::number(reader.columnNumber()),
-                                  reader.errorString()));
+        QString faultText = QString::fromLatin1("XML error: [%1:%2] %3")
+                .arg(QString::number(reader.lineNumber()),
+                     QString::number(reader.columnNumber()),
+                     reader.errorString());
+        if (soapVersion == KDSoapClientInterface::SOAP1_2) {
+            pMsg->setNamespaceUri(QString::fromLatin1("http://www.w3.org/2003/05/soap-envelope"));
+            KDSoapValueList codeValueList;
+            codeValueList.addArgument(QString::fromLatin1("Value"), QString::number(reader.error()));
+            pMsg->addArgument(QString::fromLatin1("Code"), codeValueList);
+            KDSoapValueList reasonValueList;
+            reasonValueList.addArgument(QString::fromLatin1("Text"), faultText);
+            pMsg->addArgument(QString::fromLatin1("Reason"), reasonValueList);
+        } else {
+            pMsg->addArgument(QString::fromLatin1("faultcode"), QString::number(reader.error()));
+            pMsg->addArgument(QString::fromLatin1("faultstring"), faultText);
+        }
         return reader.error() == QXmlStreamReader::PrematureEndOfDocumentError ? PrematureEndOfDocumentError : ParseError;
     }
 

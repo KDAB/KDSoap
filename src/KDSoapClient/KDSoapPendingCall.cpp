@@ -109,17 +109,26 @@ void KDSoapPendingCall::Private::parseReply()
 
     if (!data.isEmpty()) {
         KDSoapMessageReader reader;
-        reader.xmlToMessage(data, &replyMessage, 0, &replyHeaders);
+        reader.xmlToMessage(data, &replyMessage, 0, &replyHeaders, this->soapVersion);
     }
 
     if (reply->error()) {
-        if (!replyMessage.isFault())
-        {
+        if (!replyMessage.isFault()) {
             replyHeaders.clear();
             replyMessage = KDSoapMessage();
             replyMessage.setFault(true);
-            replyMessage.addArgument(QString::fromLatin1("faultcode"), QString::number(reply->error()));
-            replyMessage.addArgument(QString::fromLatin1("faultstring"), reply->errorString());
+            if (this->soapVersion == KDSoapClientInterface::SOAP1_2) {
+                replyMessage.setNamespaceUri(QString::fromLatin1("http://www.w3.org/2003/05/soap-envelope"));
+                KDSoapValueList codeValueList;
+                codeValueList.addArgument(QString::fromLatin1("Value"), QString::number(reply->error()));
+                replyMessage.addArgument(QString::fromLatin1("Code"), codeValueList);
+                KDSoapValueList reasonValueList;
+                reasonValueList.addArgument(QString::fromLatin1("Text"), reply->errorString());
+                replyMessage.addArgument(QString::fromLatin1("Reason"), reasonValueList);
+            } else {
+                replyMessage.addArgument(QString::fromLatin1("faultcode"), QString::number(reply->error()));
+                replyMessage.addArgument(QString::fromLatin1("faultstring"), reply->errorString());
+            }
         }
     }
 }
