@@ -37,6 +37,7 @@ SUBDIRS = \
   encapsecurity \
   prefix_wsdl \
   vidyo \
+  fault_namespace \
   enzo \
   date_example \
   dv_terminalauth \
