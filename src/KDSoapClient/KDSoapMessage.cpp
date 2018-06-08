@@ -124,26 +124,12 @@ bool KDSoapMessage::isFault() const
 
 QString KDSoapMessage::faultAsString() const
 {
-    if (namespaceUri() == QLatin1String("http://www.w3.org/2003/05/soap-envelope")) {
-        QString faultCodeStr;
-        KDSoapValue faultCode = childValues().child(QLatin1String("Code"));
-        while (!faultCode.isNull()) {
-            if (!faultCodeStr.isEmpty())
-                faultCodeStr += QLatin1String(" ");
-            faultCodeStr += faultCode.childValues().child(QLatin1String("Value")).value().toString();
-            faultCode = faultCode.childValues().child(QLatin1String("Subcode"));
-        }
-        return QObject::tr("Fault %1: %2")
-                .arg(faultCodeStr)
-                .arg(childValues().child(QLatin1String("Reason")).childValues().child(QLatin1String("Text")).value().toString());
-    } else {
-        // This better be on a single line, since it's used by server-side logging too
-        const QString actor = childValues().child(QLatin1String("faultactor")).value().toString();
-        return QObject::tr("Fault code %1: %2%3")
-               .arg(childValues().child(QLatin1String("faultcode")).value().toString())
-               .arg(childValues().child(QLatin1String("faultstring")).value().toString())
-               .arg(actor.isEmpty() ? QString() : QString::fromLatin1(" (%1)").arg(actor));
-    }
+    // This better be on a single line, since it's used by server-side logging too
+    const QString actor = childValues().child(QLatin1String("faultactor")).value().toString();
+    return QObject::tr("Fault code %1: %2%3")
+           .arg(childValues().child(QLatin1String("faultcode")).value().toString())
+           .arg(childValues().child(QLatin1String("faultstring")).value().toString())
+           .arg(actor.isEmpty() ? QString() : QString::fromLatin1(" (%1)").arg(actor));
 }
 
 void KDSoapMessage::setFault(bool fault)
