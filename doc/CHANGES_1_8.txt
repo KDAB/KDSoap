@@ -5,6 +5,7 @@ General:
 Client-side:
 ============
 * Add support for soap 1.2 faults in faultAsString()
+* Improve detection of soap 1.2 faults in HTTP response
 * Fix error code when authentication failed
 * Stricter namespace check for Fault elements being received
 
