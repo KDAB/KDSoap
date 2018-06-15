@@ -38,6 +38,7 @@ SUBDIRS = \
   prefix_wsdl \
   vidyo \
   empty_element_wsdl \
+  fault_namespace \
   enzo \
   date_example \
   dv_terminalauth \
