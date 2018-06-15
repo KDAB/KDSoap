@@ -228,7 +228,8 @@ KDSoapMessageReader::XmlError KDSoapMessageReader::xmlToMessage(const QByteArray
                         if (pMessageNamespace) {
                             *pMessageNamespace = pMsg->namespaceUri();
                         }
-                        if (pMsg->name() == QLatin1String("Fault")) {
+                        if (pMsg->name() == QLatin1String("Fault") && (reader.namespaceUri() == KDSoapNamespaceManager::soapEnvelope() ||
+                                                                       reader.namespaceUri() == KDSoapNamespaceManager::soapEnvelope200305())) {
                             pMsg->setFault(true);
                         }
                     }

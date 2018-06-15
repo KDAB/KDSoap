@@ -6,6 +6,7 @@ Client-side:
 ============
 * Add support for soap 1.2 faults in faultAsString()
 * Fix error code when authentication failed
+* Stricter namespace check for Fault elements being received
 
 Server-side:
 ============
