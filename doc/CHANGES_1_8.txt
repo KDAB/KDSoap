@@ -16,6 +16,6 @@ Server-side:
 WSDL parser / code generator changes, applying to both client and server side:
 ================================================================
 * Fix double-handling of empty elements
-* Fix fault elements being generated in the wrong namespace, must be SOAP-ENV:Fault.
+* Fix fault elements being generated in the wrong namespace, must be SOAP-ENV:Fault (github issue #81).
 
 
