@@ -145,14 +145,11 @@ static QByteArray httpResponseHeaders(bool fault, const QByteArray &contentType,
     if (serverObjectInterface) {
         const KDSoapServerObjectInterface::HttpResponseHeaderItems& additionalItems = serverObjectInterface->additionalHttpResponseHeaderItems();
         Q_FOREACH (const KDSoapServerObjectInterface::HttpResponseHeaderItem& headerItem, additionalItems) {
-            httpResponse += headerItem.first.toLatin1();
+            httpResponse += headerItem.m_name;
             httpResponse += ": ";
-            httpResponse += headerItem.second.toLatin1();
+            httpResponse += headerItem.m_value;
             httpResponse += "\r\n";
         }
-    } else {
-        qWarning() << QString::fromLatin1("Server object %1 does not implement KDSoapServerObjectInterface!").arg(QString::fromLatin1(serverObject->metaObject()->className()))
-                   << QString::fromLatin1("Can't add additional header items to HTTP response header");
     }
 
     httpResponse += "\r\n"; // end of headers

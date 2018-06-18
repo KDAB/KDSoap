@@ -83,7 +83,7 @@ void KDSoapServerObjectInterface::processRequestWithPath(const KDSoapMessage &re
     response.addArgument(QString::fromLatin1("faultstring"), QString::fromLatin1("Method %1 not found in path %2").arg(method, path));
 }
 
-const KDSoapServerObjectInterface::HttpResponseHeaderItems KDSoapServerObjectInterface::additionalHttpResponseHeaderItems()
+KDSoapServerObjectInterface::HttpResponseHeaderItems KDSoapServerObjectInterface::additionalHttpResponseHeaderItems() const
 {
     return HttpResponseHeaderItems();
 }
