@@ -174,6 +174,14 @@ public:
         return false;
     }
 
+    virtual HttpResponseHeaderItems additionalHttpResponseHeaderItems() const
+    {
+        static KDSoapServerObjectInterface::HttpResponseHeaderItems result = KDSoapServerObjectInterface::HttpResponseHeaderItems()
+                <<  KDSoapServerObjectInterface::HttpResponseHeaderItem("Access-Control-Allow-Origin", "*")
+                <<  KDSoapServerObjectInterface::HttpResponseHeaderItem("Access-Control-Allow-Headers", "Content-Type");
+        return result;
+    }
+
 public: // SOAP-accessible methods
     QString getEmployeeCountry(const QString &employeeName)
     {
@@ -1298,6 +1306,29 @@ private Q_SLOTS:
         QVERIFY(server->endPoint().startsWith(QLatin1String("https")));
         makeSimpleCall(server->endPoint());
 #endif
+    }
+
+    void testAdditionalHttpResponseHeaderItems()
+    {
+        CountryServerThread serverThread;
+        CountryServer *server = serverThread.startThread();
+
+        QUrl url(server->endPoint());
+        QNetworkRequest request(url);
+        request.setRawHeader("SoapAction", "http://www.kdab.com/xml/MyWsdl/getEmployeeCountry");
+        QString soapHeader = QString::fromLatin1("text/xml;charset=utf-8");
+        request.setHeader(QNetworkRequest::ContentTypeHeader, soapHeader.toUtf8());
+        QNetworkAccessManager accessManager;
+        QNetworkReply *reply = accessManager.post(request, rawCountryMessage());
+        QEventLoop loop;
+        connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+        loop.exec();
+        reply->readAll();
+
+        QVERIFY(reply->rawHeaderList().contains("Access-Control-Allow-Origin"));
+        QVERIFY(reply->rawHeader("Access-Control-Allow-Origin") == "*");
+        QVERIFY(reply->rawHeaderList().contains("Access-Control-Allow-Headers"));
+        QVERIFY(reply->rawHeader("Access-Control-Allow-Headers") == "Content-Type");
     }
 
 public Q_SLOTS:

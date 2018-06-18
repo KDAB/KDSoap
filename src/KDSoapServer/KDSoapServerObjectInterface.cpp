@@ -46,6 +46,14 @@ public:
     QPointer<KDSoapServerSocket> m_serverSocket;
 };
 
+KDSoapServerObjectInterface::HttpResponseHeaderItem::HttpResponseHeaderItem(const QByteArray &name, const QByteArray &value): m_value(value), m_name(name)
+{
+}
+
+KDSoapServerObjectInterface::HttpResponseHeaderItem::HttpResponseHeaderItem()
+{
+}
+
 KDSoapServerObjectInterface::KDSoapServerObjectInterface()
     : d(new Private)
 {
