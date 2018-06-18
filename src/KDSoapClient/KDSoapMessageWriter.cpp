@@ -109,7 +109,12 @@ QByteArray KDSoapMessageWriter::messageToXml(const KDSoapMessage &message, const
         // Note that the message itself is always qualified.
         // http://www.ibm.com/developerworks/webservices/library/ws-tip-namespace/index.html
         // isQualified() is only for child elements.
-        writer.writeStartElement(messageNamespace, elementName);
+        if (!message.isFault()) {
+            writer.writeStartElement(messageNamespace, elementName);
+        } else {
+            // Fault element should be inside soap namespace
+            writer.writeStartElement(soapEnvelope, elementName);
+        }
         message.writeElementContents(namespacePrefixes, writer, message.use(), messageNamespace);
         writer.writeEndElement();
     }

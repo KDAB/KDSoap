@@ -28,6 +28,7 @@
 #include "KDSoapSslHandler.h"
 #include "KDSoapReplySslHandler_p.h"
 #endif
+#include "KDSoapPendingCall_p.h"
 #include <QSslConfiguration>
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -158,7 +159,9 @@ KDSoapPendingCall KDSoapClientInterface::asyncCall(const QString &method, const 
     //qDebug() << "post()";
     QNetworkReply *reply = d->accessManager()->post(request, buffer);
     d->setupReply(reply);
-    return KDSoapPendingCall(reply, buffer);
+    KDSoapPendingCall call(reply, buffer);
+    call.d->soapVersion = d->m_version;
+    return call;
 }
 
 KDSoapMessage KDSoapClientInterface::call(const QString &method, const KDSoapMessage &message, const QString &soapAction, const KDSoapHeaders &headers)

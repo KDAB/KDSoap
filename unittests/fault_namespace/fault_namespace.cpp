@@ -21,24 +21,34 @@
 **
 **********************************************************************/
 
-#ifndef KDSOAPMESSAGEREADER_P_H
-#define KDSOAPMESSAGEREADER_P_H
+#include "KDSoapMessageWriter_p.h"
+#include <QtTest>
 
-#include "KDSoapMessage.h"
-#include "KDSoapClientInterface.h"
-
-class KDSOAP_EXPORT KDSoapMessageReader
+class FaultNamespace:
+  public QObject
 {
-public:
-    enum XmlError {
-        NoError = 0,
-        ParseError,
-        PrematureEndOfDocumentError
-    };
+  Q_OBJECT
+private Q_SLOTS:
 
-    KDSoapMessageReader();
+  void testFaultMessageNamespace()
+  {
+    KDSoapMessageWriter writer;
+    KDSoapMessage faultMessage;
+    faultMessage.setFault(true);
+    faultMessage.addArgument("faultCode", "fooCode");
 
-    XmlError xmlToMessage(const QByteArray &data, KDSoapMessage *pParsedMessage, QString *pMessageNamespace, KDSoapHeaders *pRequestHeaders, KDSoapClientInterface::SoapVersion soapVersion) const;
+    const QByteArray faultString("Fault");
+    const QByteArray startTag("<soap:" + faultString +">");
+    const QByteArray endTag("</soap:" + faultString + ">");
+
+    const QByteArray result = writer.messageToXml(faultMessage, faultString, KDSoapHeaders(), QMap<QString, KDSoapMessage>());
+
+    QVERIFY(result.contains(startTag));
+    QVERIFY(result.contains(endTag));
+  }
 };
 
-#endif
+QTEST_MAIN(FaultNamespace)
+
+#include "fault_namespace.moc"
+

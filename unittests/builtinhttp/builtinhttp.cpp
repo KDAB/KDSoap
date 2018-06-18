@@ -62,10 +62,11 @@ private Q_SLOTS:
         QCOMPARE(call.returnMessage().arguments().child(QLatin1String("employeeCountry")).value().toString(), QString::fromLatin1("France"));
     }
 
-    void testFault() // HTTP error, creates fault on client side
+    void testFaultSoap11() // HTTP error, creates fault on client side
     {
         HttpServerThread server(QByteArray(), HttpServerThread::Public | HttpServerThread::Error404);
         KDSoapClientInterface client(server.endPoint(), QString::fromLatin1("urn:msg"));
+        client.setSoapVersion(KDSoapClientInterface::SOAP1_1);
         KDSoapMessage message;
         KDSoapMessage ret = client.call(QLatin1String("Method1"), message);
         QVERIFY(ret.isFault());
@@ -75,6 +76,23 @@ private Q_SLOTS:
 #else
         QCOMPARE(ret.faultAsString(), QString::fromLatin1(
                      "Fault code 203: Error downloading %1 - server replied: Not Found").arg(server.endPoint()));
+#endif
+    }
+
+    void testFaultSoap12() // HTTP error, creates fault on client side
+    {
+        HttpServerThread server(QByteArray(), HttpServerThread::Public | HttpServerThread::Error404);
+        KDSoapClientInterface client(server.endPoint(), QString::fromLatin1("urn:msg"));
+        client.setSoapVersion(KDSoapClientInterface::SOAP1_2);
+        KDSoapMessage message;
+        KDSoapMessage ret = client.call(QLatin1String("Method1"), message);
+        QVERIFY(ret.isFault());
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+        QCOMPARE(ret.faultAsString(), QString::fromLatin1(
+                     "Fault 203: Error transferring %1 - server replied: Not Found").arg(server.endPoint()));
+#else
+        QCOMPARE(ret.faultAsString(), QString::fromLatin1(
+                     "Fault 203: Error downloading %1 - server replied: Not Found").arg(server.endPoint()));
 #endif
     }
 
@@ -151,6 +169,7 @@ private Q_SLOTS:
         client.setAuthentication(auth);
         KDSoapMessage reply = client.call(QLatin1String("getEmployeeCountry"), countryMessage());
         QVERIFY(reply.isFault());
+        QCOMPARE(reply.childValues().child(QLatin1String("faultcode")).value().toInt(), static_cast<int>(QNetworkReply::AuthenticationRequiredError));
     }
 
     void testCorrectHttpHeader()

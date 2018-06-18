@@ -71,6 +71,7 @@ add_subdirectory(encapsecurity)
 add_subdirectory(prefix_wsdl)
 add_subdirectory(vidyo)
 add_subdirectory(ws_addressing_support)
+add_subdirectory(empty_element_wsdl)
 
 # These need internet access
 add_subdirectory(webcalls)
@@ -83,3 +84,4 @@ add_subdirectory(test_calc)
 add_subdirectory(dv_terminalauth)
 add_subdirectory(date_example)
 add_subdirectory(enzo)
+add_subdirectory(fault_namespace)

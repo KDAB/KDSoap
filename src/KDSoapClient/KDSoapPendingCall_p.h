@@ -28,17 +28,16 @@
 #include <QXmlStreamReader>
 #include "KDSoapMessage.h"
 #include <QPointer>
+#include "KDSoapClientInterface.h"
+#include <QNetworkReply>
 
-QT_BEGIN_NAMESPACE
-class QNetworkReply;
-QT_END_NAMESPACE
 class KDSoapValue;
 
 class KDSoapPendingCall::Private : public QSharedData
 {
 public:
     Private(QNetworkReply *r, QBuffer *b)
-        : reply(r), buffer(b), parsed(false)
+        : reply(r), buffer(b), soapVersion(KDSoapClientInterface::SOAP1_1), parsed(false)
     {
     }
     ~Private();
@@ -52,6 +51,7 @@ public:
     QBuffer *buffer;
     KDSoapMessage replyMessage;
     KDSoapHeaders replyHeaders;
+    KDSoapClientInterface::SoapVersion soapVersion;
     bool parsed;
 };
 

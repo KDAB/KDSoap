@@ -21,24 +21,44 @@
 **
 **********************************************************************/
 
-#ifndef KDSOAPMESSAGEREADER_P_H
-#define KDSOAPMESSAGEREADER_P_H
+#include "KDSoapValue.h"
+#include "wsdl_empty_element.h"
 
-#include "KDSoapMessage.h"
-#include "KDSoapClientInterface.h"
+#include <QtTest>
 
-class KDSOAP_EXPORT KDSoapMessageReader
+class EmptyElementTest : public QObject
 {
-public:
-    enum XmlError {
-        NoError = 0,
-        ParseError,
-        PrematureEndOfDocumentError
-    };
+    Q_OBJECT
 
-    KDSoapMessageReader();
+private Q_SLOTS:
 
-    XmlError xmlToMessage(const QByteArray &data, KDSoapMessage *pParsedMessage, QString *pMessageNamespace, KDSoapHeaders *pRequestHeaders, KDSoapClientInterface::SoapVersion soapVersion) const;
+    void testMustContainIdleState()
+    {
+      TNS__State state;
+      TNS__IdleState idleState;
+      state.setIdleState(idleState);
+
+      const KDSoapValue& value = state.serialize("State");
+      const QByteArray& actualXml = value.toXml();
+
+      // Serialized XML must contain "idleState"
+      QVERIFY(actualXml.contains("idleState"));
+    }
+
+    void testMustContainSeanceRemovingState()
+    {
+      TNS__State state;
+      TNS__SeanceRemovingState seanceRemovingState;
+      state.setSeanceRemovingState(seanceRemovingState);
+
+      const KDSoapValue& value = state.serialize("State");
+      const QByteArray& actualXml = value.toXml();
+
+      // Serialized XML must contain "seanceRemovingState"
+      QVERIFY(actualXml.contains("seanceRemovingState"));
+    }
 };
 
-#endif
+QTEST_MAIN(EmptyElementTest)
+
+#include "empty_element_wsdl.moc"
