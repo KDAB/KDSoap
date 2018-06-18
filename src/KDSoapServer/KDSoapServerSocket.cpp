@@ -143,8 +143,8 @@ static QByteArray httpResponseHeaders(bool fault, const QByteArray &contentType,
 
     KDSoapServerObjectInterface *serverObjectInterface = qobject_cast<KDSoapServerObjectInterface *>(serverObject);
     if (serverObjectInterface) {
-        const KDSoapServerObjectInterface::HttpResponseHeaderItems& additionalItems = serverObjectInterface->additionalHttpResponseHeaderItems();
-        Q_FOREACH (const KDSoapServerObjectInterface::HttpResponseHeaderItem& headerItem, additionalItems) {
+        const KDSoapServerObjectInterface::HttpResponseHeaderItems &additionalItems = serverObjectInterface->additionalHttpResponseHeaderItems();
+        Q_FOREACH (const KDSoapServerObjectInterface::HttpResponseHeaderItem &headerItem, additionalItems) {
             httpResponse += headerItem.m_name;
             httpResponse += ": ";
             httpResponse += headerItem.m_value;

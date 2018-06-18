@@ -127,10 +127,9 @@ public:
      */
     virtual void processRequestWithPath(const KDSoapMessage &request, KDSoapMessage &response, const QByteArray &soapAction, const QString &path);
 
-    struct HttpResponseHeaderItem
-    {
-      QByteArray m_name;
-      QByteArray m_value;
+    struct HttpResponseHeaderItem {
+        QByteArray m_name;
+        QByteArray m_value;
     };
 
     typedef QVector<HttpResponseHeaderItem> HttpResponseHeaderItems;
