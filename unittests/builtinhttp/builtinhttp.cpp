@@ -35,6 +35,7 @@
 #include <QEventLoop>
 #include <QNetworkCookie>
 #include <QNetworkCookieJar>
+#include <QNetworkReply>
 #include <QDebug>
 
 using namespace KDSoapUnitTestHelpers;
