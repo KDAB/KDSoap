@@ -28,6 +28,8 @@
 #include "KDSoapDelayedResponseHandle.h"
 
 #include <QtCore/QObject>
+#include <QtCore/QByteArray>
+#include <QtCore/QVector>
 #include <QIODevice>
 
 class KDSoapServerSocket;
@@ -124,6 +126,23 @@ public:
      * \since 1.3
      */
     virtual void processRequestWithPath(const KDSoapMessage &request, KDSoapMessage &response, const QByteArray &soapAction, const QString &path);
+
+    struct HttpResponseHeaderItem {
+        HttpResponseHeaderItem();
+        HttpResponseHeaderItem(const QByteArray &name, const QByteArray &value);
+        QByteArray m_name;
+        QByteArray m_value;
+    };
+
+    typedef QVector<HttpResponseHeaderItem> HttpResponseHeaderItems;
+
+    /**
+     * Returns additional HTTP response header items to be added to each HTTP response header
+     * The default implementation in this base class returns an empty list
+     * Subclasses can override this method as needed
+     * \since 1.8
+     */
+    virtual HttpResponseHeaderItems additionalHttpResponseHeaderItems() const;
 
     /**
      * Call this after processRequestWithPath has finished handling a request,
