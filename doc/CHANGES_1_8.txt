@@ -12,6 +12,9 @@ Client-side:
 
 Server-side:
 ============
+* New method KDSoapServerObjectInterface::additionalHttpResponseHeaderItems to let server objects return additional http headers.
+  This can be used to implement support for CORS, using KDSoapServerCustomVerbRequestInterface to implement OPTIONS response,
+  with "Access-Control-Allow-Origin" in the headers of the response (github issue #117).
 
 WSDL parser / code generator changes, applying to both client and server side:
 ================================================================
