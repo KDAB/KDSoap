@@ -1326,9 +1326,9 @@ private Q_SLOTS:
         reply->readAll();
 
         QVERIFY(reply->rawHeaderList().contains("Access-Control-Allow-Origin"));
-        QVERIFY(reply->rawHeader("Access-Control-Allow-Origin") == "*");
+        QCOMPARE(reply->rawHeader("Access-Control-Allow-Origin").constData(), "*");
         QVERIFY(reply->rawHeaderList().contains("Access-Control-Allow-Headers"));
-        QVERIFY(reply->rawHeader("Access-Control-Allow-Headers") == "Content-Type");
+        QCOMPARE(reply->rawHeader("Access-Control-Allow-Headers").constData(), "Content-Type");
     }
 
 public Q_SLOTS:
