@@ -38,13 +38,13 @@ SUBDIRS = \
   prefix_wsdl \
   vidyo \
   fault_namespace \
-  default_attribute_value_wsdl \
   empty_element_wsdl \
   enzo \
   date_example \
   dv_terminalauth \
   test_calc \
-  ws_addressing_support
+  ws_addressing_support \
+  default_attribute_value_wsdl
 
 # These need internet access
 SUBDIRS += webcalls webcalls_wsdl

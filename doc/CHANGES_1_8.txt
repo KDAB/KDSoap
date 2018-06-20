@@ -1,0 +1,24 @@
+General:
+========
+*
+
+Client-side:
+============
+* Add support for soap 1.2 faults in faultAsString()
+* Improve detection of soap 1.2 faults in HTTP response
+* Stricter namespace check for Fault elements being received
+* Report client-generated faults as SOAP 1.2 if selected
+* Fix error code when authentication failed
+
+Server-side:
+============
+* New method KDSoapServerObjectInterface::additionalHttpResponseHeaderItems to let server objects return additional http headers.
+  This can be used to implement support for CORS, using KDSoapServerCustomVerbRequestInterface to implement OPTIONS response,
+  with "Access-Control-Allow-Origin" in the headers of the response (github issue #117).
+
+WSDL parser / code generator changes, applying to both client and server side:
+================================================================
+* Fix double-handling of empty elements
+* Fix fault elements being generated in the wrong namespace, must be SOAP-ENV:Fault (github issue #81).
+
+

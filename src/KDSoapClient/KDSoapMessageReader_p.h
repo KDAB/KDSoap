@@ -25,6 +25,7 @@
 #define KDSOAPMESSAGEREADER_P_H
 
 #include "KDSoapMessage.h"
+#include "KDSoapClientInterface.h"
 
 class KDSOAP_EXPORT KDSoapMessageReader
 {
@@ -37,7 +38,7 @@ public:
 
     KDSoapMessageReader();
 
-    XmlError xmlToMessage(const QByteArray &data, KDSoapMessage *pParsedMessage, QString *pMessageNamespace, KDSoapHeaders *pRequestHeaders) const;
+    XmlError xmlToMessage(const QByteArray &data, KDSoapMessage *pParsedMessage, QString *pMessageNamespace, KDSoapHeaders *pRequestHeaders, KDSoapClientInterface::SoapVersion soapVersion) const;
 };
 
 #endif

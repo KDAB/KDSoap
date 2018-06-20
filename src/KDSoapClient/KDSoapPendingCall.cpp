@@ -102,19 +102,6 @@ void KDSoapPendingCall::Private::parseReply()
     }
 #endif
     parsed = true;
-    if (reply->error()) {
-        replyMessage.setFault(true);
-        replyMessage.addArgument(QString::fromLatin1("faultcode"), QString::number(reply->error()));
-        replyMessage.addArgument(QString::fromLatin1("faultstring"), reply->errorString());
-        if (reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt() != 500) {
-            if (doDebug) {
-                //qDebug() << reply->readAll();
-                qDebug() << reply->errorString();
-            }
-            return;
-        }
-        // HTTP 500 is used to return faults, so parse the fault, below
-    }
     const QByteArray data = reply->readAll();
     if (doDebug) {
         qDebug() << data;
@@ -122,6 +109,26 @@ void KDSoapPendingCall::Private::parseReply()
 
     if (!data.isEmpty()) {
         KDSoapMessageReader reader;
-        reader.xmlToMessage(data, &replyMessage, 0, &replyHeaders);
+        reader.xmlToMessage(data, &replyMessage, 0, &replyHeaders, this->soapVersion);
+    }
+
+    if (reply->error()) {
+        if (!replyMessage.isFault()) {
+            replyHeaders.clear();
+            replyMessage = KDSoapMessage();
+            replyMessage.setFault(true);
+            if (this->soapVersion == KDSoapClientInterface::SOAP1_2) {
+                replyMessage.setNamespaceUri(QString::fromLatin1("http://www.w3.org/2003/05/soap-envelope"));
+                KDSoapValueList codeValueList;
+                codeValueList.addArgument(QString::fromLatin1("Value"), QString::number(reply->error()));
+                replyMessage.addArgument(QString::fromLatin1("Code"), codeValueList);
+                KDSoapValueList reasonValueList;
+                reasonValueList.addArgument(QString::fromLatin1("Text"), reply->errorString());
+                replyMessage.addArgument(QString::fromLatin1("Reason"), reasonValueList);
+            } else {
+                replyMessage.addArgument(QString::fromLatin1("faultcode"), QString::number(reply->error()));
+                replyMessage.addArgument(QString::fromLatin1("faultstring"), reply->errorString());
+            }
+        }
     }
 }

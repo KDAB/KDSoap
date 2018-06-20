@@ -37,14 +37,14 @@ private Q_SLOTS:
     faultMessage.setFault(true);
     faultMessage.addArgument("faultCode", "fooCode");
 
-    const QString faultString("Fault");
-    const QString startTag("<soap:" + faultString +">");
-    const QString endTag("</soap:" + faultString + ">");
+    const QByteArray faultString("Fault");
+    const QByteArray startTag("<soap:" + faultString +">");
+    const QByteArray endTag("</soap:" + faultString + ">");
 
-    const QByteArray& result = writer.messageToXml(faultMessage, faultString, KDSoapHeaders(), QMap<QString, KDSoapMessage>());
+    const QByteArray result = writer.messageToXml(faultMessage, faultString, KDSoapHeaders(), QMap<QString, KDSoapMessage>());
 
-    QVERIFY(result.contains(startTag.toLatin1()));
-    QVERIFY(result.contains(endTag.toLatin1()));
+    QVERIFY(result.contains(startTag));
+    QVERIFY(result.contains(endTag));
   }
 };
 

@@ -27,6 +27,7 @@
 #include "KDSoapClientInterface.h"
 #include "KDSoapClientInterface_p.h"
 #include "KDSoapPendingCall.h"
+#include "KDSoapPendingCall_p.h"
 #include <QNetworkRequest>
 #include <QNetworkProxy>
 #include <QBuffer>
@@ -104,6 +105,7 @@ void KDSoapThreadTask::process(QNetworkAccessManager &accessManager)
     QNetworkReply *reply = accessManager.post(request, buffer);
     m_data->m_iface->d->setupReply(reply);
     KDSoapPendingCall pendingCall(reply, buffer);
+    pendingCall.d->soapVersion = m_data->m_iface->d->m_version;
 
     KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);
     connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher*)),

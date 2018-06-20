@@ -143,16 +143,13 @@ static QByteArray httpResponseHeaders(bool fault, const QByteArray &contentType,
 
     KDSoapServerObjectInterface *serverObjectInterface = qobject_cast<KDSoapServerObjectInterface *>(serverObject);
     if (serverObjectInterface) {
-        const KDSoapServerObjectInterface::HttpResponseHeaderItems& additionalItems = serverObjectInterface->additionalHttpResponseHeaderItems();
-        Q_FOREACH (const KDSoapServerObjectInterface::HttpResponseHeaderItem& headerItem, additionalItems) {
-            httpResponse += headerItem.first.toLatin1();
+        const KDSoapServerObjectInterface::HttpResponseHeaderItems &additionalItems = serverObjectInterface->additionalHttpResponseHeaderItems();
+        Q_FOREACH (const KDSoapServerObjectInterface::HttpResponseHeaderItem &headerItem, additionalItems) {
+            httpResponse += headerItem.m_name;
             httpResponse += ": ";
-            httpResponse += headerItem.second.toLatin1();
+            httpResponse += headerItem.m_value;
             httpResponse += "\r\n";
         }
-    } else {
-        qWarning() << QString::fromLatin1("Server object %1 does not implement KDSoapServerObjectInterface!").arg(QString::fromLatin1(serverObject->metaObject()->className()))
-                   << QString::fromLatin1("Can't add additional header items to HTTP response header");
     }
 
     httpResponse += "\r\n"; // end of headers
@@ -344,7 +341,7 @@ void KDSoapServerSocket::handleRequest(const QMap<QByteArray, QByteArray> &httpH
     KDSoapMessage requestMsg;
     KDSoapHeaders requestHeaders;
     KDSoapMessageReader reader;
-    KDSoapMessageReader::XmlError err = reader.xmlToMessage(receivedData, &requestMsg, &m_messageNamespace, &requestHeaders);
+    KDSoapMessageReader::XmlError err = reader.xmlToMessage(receivedData, &requestMsg, &m_messageNamespace, &requestHeaders, KDSoapClientInterface::SOAP1_1);
     if (err == KDSoapMessageReader::PrematureEndOfDocumentError) {
         //qDebug() << "Incomplete SOAP message, wait for more data";
         // This should never happen, since we check for content-size above.

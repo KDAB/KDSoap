@@ -46,6 +46,15 @@ public:
     QPointer<KDSoapServerSocket> m_serverSocket;
 };
 
+KDSoapServerObjectInterface::HttpResponseHeaderItem::HttpResponseHeaderItem(const QByteArray &name, const QByteArray &value)
+    : m_value(value), m_name(name)
+{
+}
+
+KDSoapServerObjectInterface::HttpResponseHeaderItem::HttpResponseHeaderItem()
+{
+}
+
 KDSoapServerObjectInterface::KDSoapServerObjectInterface()
     : d(new Private)
 {
@@ -83,7 +92,7 @@ void KDSoapServerObjectInterface::processRequestWithPath(const KDSoapMessage &re
     response.addArgument(QString::fromLatin1("faultstring"), QString::fromLatin1("Method %1 not found in path %2").arg(method, path));
 }
 
-const KDSoapServerObjectInterface::HttpResponseHeaderItems KDSoapServerObjectInterface::additionalHttpResponseHeaderItems()
+KDSoapServerObjectInterface::HttpResponseHeaderItems KDSoapServerObjectInterface::additionalHttpResponseHeaderItems() const
 {
     return HttpResponseHeaderItems();
 }
