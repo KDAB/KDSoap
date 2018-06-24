@@ -20,5 +20,5 @@ WSDL parser / code generator changes, applying to both client and server side:
 ================================================================
 * Fix double-handling of empty elements
 * Fix fault elements being generated in the wrong namespace, must be SOAP-ENV:Fault (github issue #81).
-
+* Added import-path argument for setting the local path to get (otherwise downloaded) files from
 

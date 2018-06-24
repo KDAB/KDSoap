@@ -205,3 +205,18 @@ void Settings::setNameSpace(const QString &ns)
 {
     mNameSpace = ns;
 }
+
+QStringList Settings::importPathList() const
+{
+    return mImportPathList;
+}
+
+void Settings::setImportPathList(const QStringList &importPathList)
+{
+    mImportPathList = importPathList;
+    if (mWsdlUrl.isLocalFile()) {
+        QFileInfo wsdlFileInfo(mWsdlUrl.toLocalFile());
+        QString wsdlDirPath = wsdlFileInfo.absolutePath();
+        mImportPathList.prepend(wsdlDirPath);
+    }
+}

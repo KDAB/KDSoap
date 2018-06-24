@@ -26,10 +26,12 @@
 #include <QFile>
 #include <QUrl>
 #include <QDebug>
+#include <QDir>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QTemporaryFile>
+#include "src/settings.h"
 
 #ifndef Q_OS_WIN
 #include <unistd.h>
@@ -61,6 +63,17 @@ bool FileProvider::get( const QUrl &url, QString &target )
   if (url.scheme() == QLatin1String("qrc")) {
       target = QLatin1String(":") + url.path();
       return true;
+  }
+
+  const QStringList importPathList = Settings::self()->importPathList();
+  Q_FOREACH (const QString& importPath, importPathList) {
+      QDir importDir(importPath);
+      QString path = importDir.absoluteFilePath(url.host() + QDir::separator() + url.path());
+      if (QFile::exists(path)) {
+          qDebug("Using import path '%s'", qPrintable(path));
+          target = path;
+          return true;
+      }
   }
 
   if ( target.isEmpty() ) {
