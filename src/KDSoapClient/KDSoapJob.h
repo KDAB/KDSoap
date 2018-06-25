@@ -107,6 +107,7 @@ public:
 
     /**
      * Defines whether the job should be automatically deleted or not.
+     * \since 1.8
      */
     void setAutoDelete(bool enable);
 

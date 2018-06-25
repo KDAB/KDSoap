@@ -9,6 +9,7 @@ Client-side:
 * Stricter namespace check for Fault elements being received
 * Report client-generated faults as SOAP 1.2 if selected
 * Fix error code when authentication failed
+* Autodeletion of jobs is now configurable (github pull #125)
 
 Server-side:
 ============
