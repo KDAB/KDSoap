@@ -46,6 +46,16 @@ Settings::Settings()
     mOptionalElementType = Settings::ENone;
 }
 
+bool Settings::useLocalFilesOnly() const
+{
+    return mUseLocalFilesOnly;
+}
+
+void Settings::setUseLocalFilesOnly(bool useLocalFilesOnly)
+{
+    mUseLocalFilesOnly = useLocalFilesOnly;
+}
+
 Settings::~Settings()
 {
 }

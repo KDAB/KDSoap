@@ -76,6 +76,16 @@ bool FileProvider::get( const QUrl &url, QString &target )
       }
   }
 
+  if (Settings::self()->useLocalFilesOnly()) {
+      qCritical("ERROR: Could not find the local file for '%s'", qPrintable(url.toEncoded()));
+      qCritical("ERROR: Try to download the file using:");
+      qCritical("ERROR:  $ cd %s", qPrintable(importPathList.first()));
+      qCritical("ERROR:  $ wget -r %s", qPrintable(url.toEncoded()));
+      qCritical("ERROR: Or use the -import-path argument to set the correct search path");
+      QCoreApplication::exit(12);
+      return false;
+  }
+
   if ( target.isEmpty() ) {
     QTemporaryFile tmpFile;
     tmpFile.setAutoRemove(false);

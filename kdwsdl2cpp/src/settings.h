@@ -75,6 +75,9 @@ public:
     QStringList importPathList() const;
     void setImportPathList(const QStringList &importPathList);
 
+    bool useLocalFilesOnly() const;
+    void setUseLocalFilesOnly(bool useLocalFilesOnly);
+
 private:
     friend class SettingsSingleton;
     Settings();
@@ -92,6 +95,7 @@ private:
     bool mServer;
     OptionalElementType mOptionalElementType;
     bool mKeepUnusedTypes;
+    bool mUseLocalFilesOnly;
 };
 
 #endif
