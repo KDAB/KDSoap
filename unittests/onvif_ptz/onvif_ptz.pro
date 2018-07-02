@@ -1,4 +1,4 @@
-KDWSDL_OPTIONS = -server
+KDWSDL_OPTIONS = -server -import-path $${TOP_SOURCE_DIR}/unittests/onvif.org -use-local-files-only
 include( $${TOP_SOURCE_DIR}/unittests/unittests.pri )
 TARGET = onvif_ptz
 QT += network xml
