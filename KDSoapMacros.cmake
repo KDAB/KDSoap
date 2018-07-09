@@ -4,7 +4,9 @@
 
 macro( KDSOAP_GENERATE_WSDL _sources )
   set(KDWSDL2CPP kdwsdl2cpp)
-  if (TARGET KDSoap::kdwsdl2cpp)
+  if (KDSOAP_KDWSDL2CPP_COMPILER)
+    set(KDWSDL2CPP ${KDSOAP_KDWSDL2CPP_COMPILER})
+  elseif (TARGET KDSoap::kdwsdl2cpp)
     set(KDWSDL2CPP KDSoap::kdwsdl2cpp)
   endif()
   set(_KSWSDL2CPP_OPTION)
