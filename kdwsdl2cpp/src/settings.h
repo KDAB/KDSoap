@@ -72,6 +72,12 @@ public:
     QString nameSpace() const;
     void setNameSpace(const QString &ns);
 
+    QStringList importPathList() const;
+    void setImportPathList(const QStringList &importPathList);
+
+    bool useLocalFilesOnly() const;
+    void setUseLocalFilesOnly(bool useLocalFilesOnly);
+
 private:
     friend class SettingsSingleton;
     Settings();
@@ -83,11 +89,13 @@ private:
     QString mWantedService;
     QString mExportDeclaration;
     QString mNameSpace;
+    QStringList mImportPathList;
     NSMapping mNamespaceMapping;
     bool mImpl;
     bool mServer;
     OptionalElementType mOptionalElementType;
     bool mKeepUnusedTypes;
+    bool mUseLocalFilesOnly;
 };
 
 #endif

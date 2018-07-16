@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--<?xml-stylesheet type="text/xsl" href="onvif-schema-viewer.xsl"?>-->
 <!--
-Copyright (c) 2008-2012 by ONVIF: Open Network Video Interface Forum. All rights reserved.
+Copyright (c) 2008-2018 by ONVIF: Open Network Video Interface Forum. All rights reserved.
 
 Recipients of this document may copy, distribute, publish, or display this document so long as this copyright notice, license and disclaimer are retained with all copies of the document. No license is granted to modify this document.
 
 THIS DOCUMENT IS PROVIDED "AS IS," AND THE CORPORATION AND ITS MEMBERS AND THEIR AFFILIATES, MAKE NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO, WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT, OR TITLE; THAT THE CONTENTS OF THIS DOCUMENT ARE SUITABLE FOR ANY PURPOSE; OR THAT THE IMPLEMENTATION OF SUCH CONTENTS WILL NOT INFRINGE ANY PATENTS, COPYRIGHTS, TRADEMARKS OR OTHER RIGHTS.
 IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FOR ANY DIRECT, INDIRECT, SPECIAL, INCIDENTAL, PUNITIVE OR CONSEQUENTIAL DAMAGES, ARISING OUT OF OR RELATING TO ANY USE OR DISTRIBUTION OF THIS DOCUMENT, WHETHER OR NOT (1) THE CORPORATION, MEMBERS OR THEIR AFFILIATES HAVE BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES, OR (2) SUCH DAMAGES WERE REASONABLY FORESEEABLE, AND ARISING OUT OF OR RELATING TO ANY USE OR DISTRIBUTION OF THIS DOCUMENT.  THE FOREGOING DISCLAIMER AND LIMITATION ON LIABILITY DO NOT APPLY TO, INVALIDATE, OR LIMIT REPRESENTATIONS AND WARRANTIES MADE BY THE MEMBERS AND THEIR RESPECTIVE AFFILIATES TO THE CORPORATION AND OTHER MEMBERS IN CERTAIN WRITTEN POLICIES OF THE CORPORATION.
 -->
-<xs:schema xmlns:tt="http://www.onvif.org/ver10/schema" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:wsnt="http://docs.oasis-open.org/wsn/b-2" xmlns:xop="http://www.w3.org/2004/08/xop/include" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" targetNamespace="http://www.onvif.org/ver10/schema" elementFormDefault="qualified" version="2.4.1">
-	<xs:import namespace="http://www.w3.org/2005/05/xmlmime" schemaLocation="xmlmime"/>
-    <!--<xs:import namespace="http://schemas.xmlsoap.org/soap/envelope/" schemaLocation="http://schemas.xmlsoap.org/soap/envelope/"/>-->
-	<xs:import namespace="http://docs.oasis-open.org/wsn/b-2" schemaLocation="oasis/b-2.xsd"/>
-	<xs:import namespace="http://www.w3.org/2004/08/xop/include" schemaLocation="xop-include"/>
+<xs:schema xmlns:tt="http://www.onvif.org/ver10/schema" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:wsnt="http://docs.oasis-open.org/wsn/b-2" xmlns:xop="http://www.w3.org/2004/08/xop/include" xmlns:soapenv="http://www.w3.org/2003/05/soap-envelope" targetNamespace="http://www.onvif.org/ver10/schema" elementFormDefault="qualified" version="18.06">
+	<xs:include schemaLocation="common.xsd"/>
+	<xs:import namespace="http://www.w3.org/2005/05/xmlmime" schemaLocation="http://www.w3.org/2005/05/xmlmime"/>
+	<xs:import namespace="http://www.w3.org/2003/05/soap-envelope" schemaLocation="http://www.w3.org/2003/05/soap-envelope"/>
+	<xs:import namespace="http://docs.oasis-open.org/wsn/b-2" schemaLocation="http://docs.oasis-open.org/wsn/b-2.xsd"/>
+	<xs:import namespace="http://www.w3.org/2004/08/xop/include" schemaLocation="http://www.w3.org/2004/08/xop/include"/>
 	<!--===============================-->
 	<!--         Generic Types         -->
 	<!--===============================-->
@@ -26,17 +27,6 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 			</xs:annotation>
 		</xs:attribute>
 	</xs:complexType>
-	<!--===============================-->
-	<xs:simpleType name="ReferenceToken">
-		<xs:annotation>
-			<xs:documentation>Unique identifier for a physical or logical resource.
-			Tokens should be assigned such that they are unique within a device. Tokens must be at least unique within its class.
-			Length up to 64 characters.</xs:documentation>
-		</xs:annotation>
-		<xs:restriction base="xs:string">
-			<xs:maxLength value="64"/>
-		</xs:restriction>
-	</xs:simpleType>
 	<!--===============================-->
 	<xs:simpleType name="Name">
 		<xs:annotation>
@@ -136,6 +126,10 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 		<xs:list itemType="xs:string"/>
 	</xs:simpleType>
 	<!--===============================-->
+	<xs:simpleType name="ReferenceTokenList">
+		<xs:list itemType="tt:ReferenceToken"/>
+	</xs:simpleType>
+	<!--===============================-->
 	<xs:complexType name="FloatList">
 		<xs:sequence>
 			<xs:element name="Items" type="xs:float" minOccurs="0" maxOccurs="unbounded"/>
@@ -144,7 +138,7 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 	<!--===============================-->
 	<xs:complexType name="AnyHolder">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -214,7 +208,7 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 							<xs:documentation>number of available audio channels. (1: mono, 2: stereo) </xs:documentation>
 						</xs:annotation>
 					</xs:element>
-					<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 				</xs:sequence>
 				<xs:anyAttribute processContents="lax"/>
 			</xs:extension>
@@ -340,13 +334,13 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 			</xs:element>
 			<xs:element name="UseCount" type="xs:int">
 				<xs:annotation>
-					<xs:documentation>Number of internal references currently using this configuration. <br/>This parameter is read-only and cannot be changed by a set request. <br/>For example the value increases if the configuration is added to a media profile or attached to a PaneConfiguration.</xs:documentation>
+					<xs:documentation>Number of internal references currently using this configuration. <p style='margin:0'>This informational parameter is read-only. Deprecated for Media2 Service.</p></xs:documentation>
 				</xs:annotation>
 			</xs:element>
 		</xs:sequence>
 		<xs:attribute name="token" type="tt:ReferenceToken" use="required">
 			<xs:annotation>
-				<xs:documentation>Token that uniquely refernces this configuration. Length up to 64 characters.</xs:documentation>
+				<xs:documentation>Token that uniquely references this configuration. Length up to 64 characters.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
 	</xs:complexType>
@@ -370,6 +364,11 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 					<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
 					<xs:element name="Extension" type="tt:VideoSourceConfigurationExtension" minOccurs="0"/>
 				</xs:sequence>
+				<xs:attribute name="ViewMode" type="xs:string">
+					<xs:annotation>
+						<xs:documentation>Readonly parameter signalling Source configuration's view mode, for devices supporting different view modes as defined in tt:viewModes.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
 				<xs:anyAttribute processContents="lax"/>
 			</xs:extension>
 		</xs:complexContent>
@@ -379,7 +378,12 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 		<xs:sequence>
 			<xs:element name="Rotate" type="tt:Rotate" minOccurs="0">
 				<xs:annotation>
-					<xs:documentation>Optional element to configure rotation of captured image.</xs:documentation>
+					<xs:documentation>Optional element to configure rotation of captured image.
+						What resolutions a device supports shall be unaffected by the Rotate parameters.<br/>
+						If a device is configured with Rotate=AUTO, the device shall take control over the Degree parameter and automatically update it so that a client can query current rotation.<br/>
+						The device shall automatically apply the same rotation to its pan/tilt control direction depending on the following condition: 
+						if Reverse=AUTO in PTControlDirection or if the device doesn’t support Reverse in PTControlDirection
+					</xs:documentation>
 				</xs:annotation>
 			</xs:element>
 			<xs:element name="Extension" type="tt:VideoSourceConfigurationExtension2" minOccurs="0"/>
@@ -388,7 +392,13 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 	<!--===============================-->
 	<xs:complexType name="VideoSourceConfigurationExtension2">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="LensDescription" type="tt:LensDescription" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation><xs:documentation>Optional element describing the geometric lens distortion. Multiple instances for future variable lens support.</xs:documentation></xs:annotation>
+			</xs:element>
+			<xs:element name="SceneOrientation" type="tt:SceneOrientation" minOccurs="0" maxOccurs="1">
+				<xs:annotation><xs:documentation>Optional element describing the scene orientation in the camera’s field of view.</xs:documentation></xs:annotation>
+			</xs:element>
+			<xs:any namespace="##targetNamespace" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -411,23 +421,80 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 	<!--===============================-->
 	<xs:complexType name="RotateExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##targetNamespace" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
 	<xs:simpleType name="RotateMode">
 		<xs:restriction base="xs:string">
-			<xs:enumeration value="OFF"/>
-			<xs:enumeration value="ON"/>
-			<xs:enumeration value="AUTO"/>
+			<xs:enumeration value="OFF">
+				<xs:annotation><xs:documentation>Enable the Rotate feature. Degree of rotation is specified Degree parameter.</xs:documentation></xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="ON">
+			<xs:annotation><xs:documentation>Disable the Rotate feature.</xs:documentation></xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="AUTO">
+				<xs:annotation><xs:documentation>Rotate feature is automatically activated by the device.</xs:documentation></xs:annotation>
+			</xs:enumeration>
 		</xs:restriction>
 	</xs:simpleType>
+	<!--===============================-->
+	<xs:complexType name="LensProjection">
+		<xs:sequence>
+			<xs:element name="Angle" type="xs:float">
+				<xs:annotation><xs:documentation>Angle of incidence.</xs:documentation></xs:annotation>
+			</xs:element>
+			<xs:element name="Radius" type="xs:float">
+				<xs:annotation><xs:documentation>Mapping radius as a consequence of the emergent angle.</xs:documentation></xs:annotation>
+			</xs:element>
+			<xs:element name="Transmittance" type="xs:float" minOccurs="0">
+				<xs:annotation><xs:documentation>Optional ray absorption at the given angle due to vignetting. A value of one means no absorption.</xs:documentation></xs:annotation>
+			</xs:element>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first ONVIF then Vendor -->
+		</xs:sequence>
+		<xs:anyAttribute processContents="lax"/>
+	</xs:complexType>
+	<!--===============================-->
+	<xs:complexType name="LensOffset">
+		<xs:attribute name="x" type="xs:float">
+			<xs:annotation><xs:documentation>Optional horizontal offset of the lens center in normalized coordinates.</xs:documentation></xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="y" type="xs:float">
+			<xs:annotation><xs:documentation>Optional vertical offset of the lens center in normalized coordinates.</xs:documentation></xs:annotation>
+		</xs:attribute>
+		<xs:anyAttribute processContents="lax"/>
+	</xs:complexType>
+	<!--===============================-->
+	<xs:complexType name="LensDescription">
+		<xs:sequence>
+			<xs:element name="Offset" type="tt:LensOffset">
+				<xs:annotation><xs:documentation>Offset of the lens center to the imager center in normalized coordinates.</xs:documentation></xs:annotation>
+			</xs:element>
+			<xs:element name="Projection" type="tt:LensProjection" maxOccurs="unbounded">
+				<xs:annotation><xs:documentation>Radial description of the projection characteristics. The resulting curve is defined by the B-Spline interpolation 
+					over the given elements. The element for Radius zero shall not be provided. The projection points shall be ordered with ascending Radius. 
+					Items outside the last projection Radius shall be assumed to be invisible (black).</xs:documentation></xs:annotation>
+			</xs:element>
+			<xs:element name="XFactor" type="xs:float">
+				<xs:annotation><xs:documentation>Compensation of the x coordinate needed for the ONVIF normalized coordinate system. </xs:documentation></xs:annotation>
+			</xs:element>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first ONVIF then Vendor -->
+		</xs:sequence>
+		<xs:attribute name="FocalLength" type="xs:float">
+			<xs:annotation><xs:documentation>Optional focal length of the optical system.</xs:documentation></xs:annotation>
+		</xs:attribute>
+		<xs:anyAttribute processContents="lax"/>
+	</xs:complexType>
 	<!--===============================-->
 	<xs:complexType name="VideoSourceConfigurationOptions">
 		<xs:sequence>
 			<xs:element name="BoundsRange" type="tt:IntRectangleRange">
 				<xs:annotation>
-					<xs:documentation>Supported range for the capturing area.</xs:documentation>
+					<xs:documentation>
+						Supported range for the capturing area.
+						Device that does not support cropped streaming shall express BoundsRange option as mentioned below
+						BoundsRange->XRange and BoundsRange->YRange with same Min/Max values HeightRange and WidthRange Min/Max values same as VideoSource Height and Width Limits.
+					</xs:documentation>
 				</xs:annotation>
 			</xs:element>
 			<xs:element name="VideoSourceTokensAvailable" type="tt:ReferenceToken" maxOccurs="unbounded">
@@ -437,6 +504,11 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 			</xs:element>
 			<xs:element name="Extension" type="tt:VideoSourceConfigurationOptionsExtension" minOccurs="0"/>
 		</xs:sequence>
+		<xs:attribute name="MaximumNumberOfProfiles" type="xs:int">
+			<xs:annotation>
+				<xs:documentation>Maximum number of profiles.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
 	<!--===============================-->
@@ -454,7 +526,12 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 	<!--===============================-->
 	<xs:complexType name="VideoSourceConfigurationOptionsExtension2">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="SceneOrientationMode" type="tt:SceneOrientationMode" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Scene orientation modes supported by the device for this configuration.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:any namespace="##targetNamespace" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -477,9 +554,100 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 	<!--===============================-->
 	<xs:complexType name="RotateOptionsExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##targetNamespace" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
+	<!--===============================-->
+	<!--    Scene Orientation    -->
+	<!--===============================-->
+	<xs:simpleType name="SceneOrientationMode">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="MANUAL" />
+			<xs:enumeration value="AUTO" />
+		</xs:restriction>
+	</xs:simpleType>
+	<!--===============================-->
+	<xs:simpleType name="SceneOrientationOption">
+		<xs:restriction base="xs:string">
+			<xs:annotation>
+				<xs:documentation>
+					Defines the acceptable values for the Orientation element of the SceneOrientation type
+				</xs:documentation>
+			</xs:annotation>
+			<xs:enumeration value="Below" />
+			<xs:enumeration value="Horizon" />
+			<xs:enumeration value="Above" />
+		</xs:restriction>
+	</xs:simpleType>
+	<!--===============================-->
+	<xs:complexType name="SceneOrientation">
+		<xs:sequence>
+			<xs:element name="Mode" type="tt:SceneOrientationMode">
+				<xs:annotation>
+					<xs:documentation>
+						Parameter to assign the way the camera determines the scene orientation.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>      
+			<xs:element name="Orientation" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>
+						Assigned or determined scene orientation based on the Mode. When assigning the Mode to AUTO, this field 
+						is optional and will be ignored by the device. When assigning the Mode to MANUAL, this field is required 
+						and the device will return an InvalidArgs fault if missing. 
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!--===============================-->
+	<xs:simpleType name="ViewModes">
+		<xs:annotation>
+			<xs:documentation>Source view modes supported by device.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="tt:Fisheye">
+				<xs:annotation>	
+					<xs:documentation>Undewarped viewmode from device supporting fisheye lens.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="tt:360Panorama">
+				<xs:annotation>
+					<xs:documentation>360 degree panoramic view.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="tt:180Panorama">
+				<xs:annotation>
+					<xs:documentation>180 degree panoramic view.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="tt:Quad">
+				<xs:annotation>
+					<xs:documentation>View mode combining four streams in single Quad, eg., applicable for devices supporting four heads.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="tt:Original">
+				<xs:annotation>
+					<xs:documentation>Unaltered view from the sensor.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="tt:LeftHalf">
+				<xs:annotation>
+					<xs:documentation>Viewmode combining the left side sensors, applicable for devices supporting multiple sensors.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="tt:RightHalf">
+				<xs:annotation>	
+					<xs:documentation>Viewmode combining the right side sensors, applicable for devices supporting multiple sensors.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="tt:Dewarp">
+				<xs:annotation>
+					<xs:documentation>Dewarped view mode for device supporting fisheye lens.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
 	<!--===============================-->
 	<!--   VideoEncoderConfiguration   -->
 	<!--===============================-->
@@ -527,7 +695,7 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 							<xs:documentation>The rtsp session timeout for the related video stream</xs:documentation>
 						</xs:annotation>
 					</xs:element>
-					<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 				</xs:sequence>
 				<xs:anyAttribute processContents="lax"/>
 			</xs:extension>
@@ -707,7 +875,7 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 							<xs:documentation>Supported range of encoded bitrate in kbps.</xs:documentation>
 						</xs:annotation>
 					</xs:element>
-					<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 				</xs:sequence>
 				<xs:anyAttribute processContents="lax"/>
 			</xs:extension>
@@ -753,7 +921,7 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 							<xs:documentation>Supported range of encoded bitrate in kbps.</xs:documentation>
 						</xs:annotation>
 					</xs:element>
-					<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 				</xs:sequence>
 				<xs:anyAttribute processContents="lax"/>
 			</xs:extension>
@@ -799,11 +967,168 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 							<xs:documentation>Supported range of encoded bitrate in kbps.</xs:documentation>
 						</xs:annotation>
 					</xs:element>
-					<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 				</xs:sequence>
 				<xs:anyAttribute processContents="lax"/>
 			</xs:extension>
 		</xs:complexContent>
+	</xs:complexType>
+	<!--===============================-->
+	<!--   VideoEncoder2Configuration   -->
+	<!--===============================-->
+	<xs:simpleType name="VideoEncodingMimeNames">
+		<xs:annotation>
+			<xs:documentation>ONVIF prominent MIME type names as referenced by IANA. See also <a href='http://www.iana.org/assignments/media-types/media-types.xhtml'>IANA Media Types</a>.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="JPEG"/>
+			<xs:enumeration value="MPV4-ES"/>
+			<xs:enumeration value="H264"/>
+			<xs:enumeration value="H265"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!--===============================-->
+	<xs:simpleType name="VideoEncodingProfiles">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Simple"/>			<!-- MPEG4 SP -->
+			<xs:enumeration value="AdvancedSimple"/>	<!-- MPEG4 ASP -->
+			<xs:enumeration value="Baseline"/>			<!-- H264 Baseline -->
+			<xs:enumeration value="Main"/>				<!-- H264 Main, H.265 Main -->
+			<xs:enumeration value="Main10"/>			<!-- H265 Main 10 -->
+			<xs:enumeration value="Extended"/>			<!-- H264 Extended -->
+			<xs:enumeration value="High"/>				<!-- H264 High -->
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="VideoEncoder2Configuration">
+		<xs:complexContent>
+			<xs:extension base="tt:ConfigurationEntity">
+				<xs:sequence>
+					<xs:element name="Encoding" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>Mime name of the supported video format. For name definitions see tt:VideoEncodingMimeNames and <a href='http://www.iana.org/assignments/media-types/media-types.xhtml'>IANA Media Types</a>.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Resolution" type="tt:VideoResolution2">
+						<xs:annotation>
+							<xs:documentation>Configured video resolution</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="RateControl" type="tt:VideoRateControl2" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Optional element to configure rate control related parameters.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Multicast" type="tt:MulticastConfiguration" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Defines the multicast settings that could be used for video streaming.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Quality" type="xs:float">
+						<xs:annotation>
+							<xs:documentation>Relative value for the video quantizers and the quality of the video. A high value within supported quality range means higher quality</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first ONVIF then Vendor -->
+				</xs:sequence>
+				<xs:attribute name="GovLength" type="xs:int">
+					<xs:annotation>
+						<xs:documentation>Group of Video frames length. Determines typically the interval in which the I-Frames will be coded. An entry of 1 indicates I-Frames are continuously generated. An entry of 2 indicates that every 2nd image is an I-Frame, and 3 only every 3rd frame, etc. The frames in between are coded as P or B Frames.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="Profile" type="xs:string">
+					<xs:annotation>
+						<xs:documentation>The encoder profile as defined in tt:VideoEncodingProfiles.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:anyAttribute processContents="lax"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--===============================-->
+	<xs:complexType name="VideoResolution2">
+		<xs:sequence>
+			<xs:element name="Width" type="xs:int">
+				<xs:annotation>
+					<xs:documentation>Number of the columns of the Video image.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Height" type="xs:int">
+				<xs:annotation>
+					<xs:documentation>Number of the lines of the Video image.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first ONVIF then Vendor -->
+		</xs:sequence>
+		<xs:anyAttribute processContents="lax"/>
+	</xs:complexType>
+	<!--===============================-->
+	<xs:complexType name="VideoRateControl2">
+		<xs:sequence>
+			<xs:element name="FrameRateLimit" type="xs:float">
+				<xs:annotation>
+					<xs:documentation>Desired frame rate in fps. The actual rate may be lower due to e.g. performance limitations.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="BitrateLimit" type="xs:int">
+				<xs:annotation>
+					<xs:documentation>the maximum output bitrate in kbps</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first ONVIF then Vendor -->
+		</xs:sequence>
+		<xs:attribute name="ConstantBitRate" type="xs:boolean">
+			<xs:annotation>
+				<xs:documentation>Enforce constant bitrate.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:anyAttribute processContents="lax"/>
+	</xs:complexType>
+	<!--===============================-->
+	<xs:complexType name="VideoEncoder2ConfigurationOptions">
+		<xs:sequence>
+			<xs:element name="Encoding" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Mime name of the supported Video format. For name definitions see tt:VideoEncodingMimeNames and <a href='http://www.iana.org/assignments/media-types/media-types.xhtml'>IANA Media Types</a>.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="QualityRange" type="tt:FloatRange">
+				<xs:annotation>
+					<xs:documentation>Range of the quality values. A high value means higher quality.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ResolutionsAvailable" type="tt:VideoResolution2" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>List of supported image sizes.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="BitrateRange" type="tt:IntRange">
+				<xs:annotation>
+					<xs:documentation>Supported range of encoded bitrate in kbps.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first ONVIF then Vendor -->
+		</xs:sequence>
+		<xs:attribute name="GovLengthRange" type="tt:IntAttrList">
+			<xs:annotation>
+				<xs:documentation>Exactly two values, which define the Lower and Upper bounds for the supported group of Video frames length. These values typically correspond to the I-Frame distance.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="FrameRatesSupported" type="tt:FloatAttrList">
+			<xs:annotation>
+				<xs:documentation>List of supported target frame rates in fps (frames per second). The list shall be sorted with highest values first.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ProfilesSupported" type="tt:StringAttrList">
+			<xs:annotation>
+				<xs:documentation>List of supported encoder profiles as defined in tt::VideoEncodingProfiles.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ConstantBitRateSupported" type="xs:boolean">
+			<xs:annotation>
+				<xs:documentation>Signal whether enforcing constant bitrate is supported.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
 	<!--===============================-->
 	<!--    AudioSourceConfiguration   -->
@@ -817,7 +1142,7 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 							<xs:documentation>Token of the Audio Source the configuration applies to</xs:documentation>
 						</xs:annotation>
 					</xs:element>
-					<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 				</xs:sequence>
 				<xs:anyAttribute processContents="lax"/>
 			</xs:extension>
@@ -838,7 +1163,7 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 	<!--===============================-->
 	<xs:complexType name="AudioSourceOptionsExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -873,7 +1198,7 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 							<xs:documentation>The rtsp session timeout for the related audio stream</xs:documentation>
 						</xs:annotation>
 					</xs:element>
-					<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 				</xs:sequence>
 				<xs:anyAttribute processContents="lax"/>
 			</xs:extension>
@@ -916,7 +1241,74 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 					<xs:documentation>List of supported Sample Rates in kHz for the specified Encoding</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
+		</xs:sequence>
+		<xs:anyAttribute processContents="lax"/>
+	</xs:complexType>
+	<!--===============================-->
+	<!--   AudioEncoder2Configuration   -->
+	<!--===============================-->
+	<xs:simpleType name="AudioEncodingMimeNames">
+		<xs:annotation>
+			<xs:documentation>ONVIF prominent MIME type names as referenced by IANA. See also <a href='http://www.iana.org/assignments/media-types/media-types.xhtml'>IANA Media Types</a> .</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="PCMU"/>		<!-- G.711 uLaw -->
+			<xs:enumeration value="G726"/>
+			<xs:enumeration value="MP4A-LATM"/>		<!-- AAC -->
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="AudioEncoder2Configuration">
+		<xs:complexContent>
+			<xs:extension base="tt:ConfigurationEntity">
+				<xs:sequence>
+					<xs:element name="Encoding" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>Mime name of the supported audio format. For definitions see tt:AudioEncodingMimeNames and <a href='http://www.iana.org/assignments/media-types/media-types.xhtml'>IANA Media Types</a>.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Multicast" type="tt:MulticastConfiguration" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Optional multicast configuration of the audio stream.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Bitrate" type="xs:int">
+						<xs:annotation>
+							<xs:documentation>The output bitrate in kbps.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="SampleRate" type="xs:int">
+						<xs:annotation>
+							<xs:documentation>The output sample rate in kHz.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first ONVIF then Vendor -->
+				</xs:sequence>
+				<xs:anyAttribute processContents="lax"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--===============================-->
+	<!-- Options used for both Audio encoder and decoder -->
+	<xs:complexType name="AudioEncoder2ConfigurationOptions">
+		<xs:sequence>
+			<xs:element name="Encoding" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Mime name of the supported audio format. For definitions see tt:AudioEncodingMimeNames and <a href='http://www.iana.org/assignments/media-types/media-types.xhtml'>IANA Media Types</a>.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="BitrateList" type="tt:IntList">
+				<xs:annotation>
+					<xs:documentation>List of supported bitrates in kbps for the specified Encoding</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="SampleRateList" type="tt:IntList">
+				<xs:annotation>
+					<xs:documentation>List of supported Sample Rates in kHz for the specified Encoding</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first ONVIF then Vendor -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -929,7 +1321,7 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 				<xs:sequence>
 					<xs:element name="AnalyticsEngineConfiguration" type="tt:AnalyticsEngineConfiguration"/>
 					<xs:element name="RuleEngineConfiguration" type="tt:RuleEngineConfiguration"/>
-					<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 				</xs:sequence>
 				<xs:anyAttribute processContents="lax"/>
 			</xs:extension>
@@ -970,13 +1362,23 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 					</xs:element>
 					<xs:element name="SessionTimeout" type="xs:duration">
 						<xs:annotation>
-							<xs:documentation>The rtsp session timeout for the related audio stream</xs:documentation>
+							<xs:documentation>The rtsp session timeout for the related audio stream (when using Media2 Service, this value is deprecated and ignored)</xs:documentation>
 						</xs:annotation>
 					</xs:element>
 					<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
 					<xs:element name="AnalyticsEngineConfiguration" type="tt:AnalyticsEngineConfiguration" minOccurs="0"/>
 					<xs:element name="Extension" type="tt:MetadataConfigurationExtension" minOccurs="0"/>
 				</xs:sequence>
+				<xs:attribute name="CompressionType" type="xs:string">
+					<xs:annotation>
+						<xs:documentation>Optional parameter to configure compression type of Metadata payload. Use values from enumeration MetadataCompressionType.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="GeoLocation" type="xs:boolean">
+					<xs:annotation>
+						<xs:documentation>Optional parameter to configure if the metadata stream shall contain the Geo Location coordinates of each target.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
 				<xs:anyAttribute processContents="lax"/>
 			</xs:extension>
 		</xs:complexContent>
@@ -1025,10 +1427,41 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 	<xs:complexType name="MetadataConfigurationOptions">
 		<xs:sequence>
 			<xs:element name="PTZStatusFilterOptions" type="tt:PTZStatusFilterOptions"/>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name ="Extension" type="tt:MetadataConfigurationOptionsExtension" minOccurs="0"/>
 		</xs:sequence>
+		<xs:attribute name="GeoLocation" type="xs:boolean">
+			<xs:annotation>
+				<xs:documentation>True if the device is able to stream the Geo Located positions of each target.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
+	<!--===============================-->
+	<xs:complexType name="MetadataConfigurationOptionsExtension">
+		<xs:sequence>
+			<xs:element name="CompressionType" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>List of supported metadata compression type. Its options shall be chosen from tt:MetadataCompressionType.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Extension" type="tt:MetadataConfigurationOptionsExtension2" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--===============================-->
+	<xs:complexType name="MetadataConfigurationOptionsExtension2">
+		<xs:sequence>
+			<xs:any namespace="##targetNamespace" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--===============================-->
+	<xs:simpleType name="MetadataCompressionType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="None"/>
+			<xs:enumeration value="GZIP"/>
+			<xs:enumeration value="EXI"/>
+		</xs:restriction>
+	</xs:simpleType>
 	<!--===============================-->
 	<xs:complexType name="PTZStatusFilterOptions">
 		<xs:sequence>
@@ -1113,7 +1546,7 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 							<xs:documentation>Token of the Video Output the configuration applies to</xs:documentation>
 						</xs:annotation>
 					</xs:element>
-					<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 				</xs:sequence>
 				<xs:anyAttribute processContents="lax"/>
 			</xs:extension>
@@ -1124,7 +1557,7 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 	<!--===============================-->
 	<xs:complexType name="VideoOutputConfigurationOptions">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -1175,7 +1608,7 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 					<xs:documentation>Supported H.264 framerate range in fps</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -1197,7 +1630,7 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 					<xs:documentation>Supported Jpeg framerate range in fps</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -1224,14 +1657,14 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 					<xs:documentation>Supported Mpeg4 framerate range in fps</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
 	<!--===============================-->
 	<xs:complexType name="VideoDecoderConfigurationOptionsExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -1244,7 +1677,7 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 		<xs:complexContent>
 			<xs:extension base="tt:DeviceEntity">
 				<xs:sequence>
-					<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 				</xs:sequence>
 				<xs:anyAttribute processContents="lax"/>
 			</xs:extension>
@@ -1289,7 +1722,7 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 							<xs:documentation>Volume setting of the output. The applicable range is defined via the option AudioOutputOptions.OutputLevelRange.</xs:documentation>
 						</xs:annotation>
 					</xs:element>
-					<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 				</xs:sequence>
 				<xs:anyAttribute processContents="lax"/>
 			</xs:extension>
@@ -1332,7 +1765,7 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 					<xs:documentation>Minimum and maximum level range supported for this Output.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -1347,7 +1780,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 		<xs:complexContent>
 			<xs:extension base="tt:ConfigurationEntity">
 				<xs:sequence>
-					<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 				</xs:sequence>
 				<xs:anyAttribute processContents="lax"/>
 			</xs:extension>
@@ -1390,7 +1823,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 					<xs:documentation>List of supported sample rates in kHz</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -1407,7 +1840,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 					<xs:documentation>List of supported sample rates in kHz</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -1424,14 +1857,14 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 					<xs:documentation>List of supported sample rates in kHz</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
 	<!--===============================-->
 	<xs:complexType name="AudioDecoderConfigurationOptionsExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -1459,7 +1892,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 					<xs:documentation>Read only property signalling that streaming is persistant. Use the methods StartMulticastStreaming and StopMulticastStreaming to switch its state.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -1472,7 +1905,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 				</xs:annotation>
 			</xs:element>
 			<xs:element name="Transport" type="tt:Transport"/>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -1502,7 +1935,11 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 	<xs:simpleType name="TransportProtocol">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="UDP"/>
-			<xs:enumeration value="TCP"/>
+			<xs:enumeration value="TCP">
+				<xs:annotation>
+					<xs:documentation>This value is deprecated.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
 			<xs:enumeration value="RTSP"/>
 			<xs:enumeration value="HTTP"/>
 		</xs:restriction>
@@ -1530,7 +1967,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 					<xs:documentation>Duration how long the Uri is valid. This parameter shall be set to PT0S to indicate that this stream URI is indefinitely valid even if the profile changes</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -1636,7 +2073,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 	<xs:complexType name="Dot3Configuration">
 		<xs:sequence>
 			<!-- Placeholder for 802.3 configuration -->
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -1776,7 +2213,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 					<xs:documentation>Indicates whether or not DHCP is used.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -1820,7 +2257,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 	<!--===============================-->
 	<xs:complexType name="IPv6ConfigurationExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -1857,7 +2294,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 	<!--===============================-->
 	<xs:complexType name="NetworkProtocolExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -1906,7 +2343,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 	<!--===============================-->
 	<xs:complexType name="NetworkHostExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -2002,7 +2439,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 	<!--===============================-->
 	<xs:complexType name="HostnameInformationExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -2035,7 +2472,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 	<!--===============================-->
 	<xs:complexType name="DNSInformationExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -2063,7 +2500,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 	<!--===============================-->
 	<xs:complexType name="NTPInformationExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -2102,7 +2539,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 	<!--===============================-->
 	<xs:complexType name="DynamicDNSInformationExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -2267,7 +2704,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 	<!--===============================-->
 	<xs:complexType name="IPAddressFilterExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -2278,7 +2715,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 			<xs:element name="Alias" type="tt:Name"/>
 			<xs:element name="Priority" type="tt:NetworkInterfaceConfigPriority"/>
 			<xs:element name="Security" type="tt:Dot11SecurityConfiguration"/>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -2311,7 +2748,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 	<!--===============================-->
 	<xs:complexType name="Dot11SecurityConfigurationExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -2373,7 +2810,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 	<!--===============================-->
 	<xs:complexType name="Dot11PSKSetExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -2390,7 +2827,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 			<xs:element name="MultipleConfiguration" type="xs:boolean"/>
 			<xs:element name="AdHocStationMode" type="xs:boolean"/>
 			<xs:element name="WEP" type="xs:boolean"/>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -2414,7 +2851,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 			<xs:element name="GroupCipher" type="tt:Dot11Cipher" minOccurs="0"/>
 			<xs:element name="SignalStrength" type="tt:Dot11SignalStrength" minOccurs="0"/>
 			<xs:element name="ActiveConfigAlias" type="tt:ReferenceToken"/>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -2447,7 +2884,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 	<!--===============================-->
 	<xs:complexType name="Dot11AvailableNetworksExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -2544,7 +2981,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 					<xs:documentation>Indicates whether or not modules are supported.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -2583,7 +3020,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 	<!--===============================-->
 	<xs:complexType name="DeviceCapabilitiesExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -2609,7 +3046,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 					<xs:documentation>Indicates whether or not WS Pausable Subscription Manager Interface is supported.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -2697,7 +3134,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 	<!--===============================-->
 	<xs:complexType name="RealTimeStreamingCapabilitiesExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -2708,7 +3145,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 					<xs:documentation>Maximum number of profiles.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -2836,7 +3273,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 			</xs:element>
 			<xs:element name="RemoteDiscovery" type="xs:boolean">
 				<xs:annotation>
-					<xs:documentation>Indicates whether or not remote discovery, see WS-Discovery, is supported.</xs:documentation>
+					<xs:documentation>Indicates whether or not remote discovery is supported.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
 			<xs:element name="SystemBackup" type="xs:boolean">
@@ -2877,7 +3314,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 	<!--===============================-->
 	<xs:complexType name="SystemCapabilitiesExtension2">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -2890,7 +3327,11 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 			</xs:element>
 			<xs:element name="Minor" type="xs:int">
 				<xs:annotation>
-					<xs:documentation>Two digit minor version number (e.g. X.0.1 maps to "01" and X.2.1 maps to "21" where X stands for Major version number).</xs:documentation>
+					<xs:documentation>
+						Two digit minor version number.
+						If major version number is less than "16", X.0.1 maps to "01" and X.2.1 maps to "21" where X stands for Major version number.
+						Otherwise, minor number is month of release, such as "06" for June.
+					</xs:documentation>
 				</xs:annotation>
 			</xs:element>
 		</xs:sequence>
@@ -2914,7 +3355,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 					<xs:documentation>PTZ service URI.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -2927,7 +3368,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 			<xs:element name="AudioSources" type="xs:int"/>
 			<xs:element name="AudioOutputs" type="xs:int"/>
 			<xs:element name="RelayOutputs" type="xs:int"/>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -2940,7 +3381,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 					<xs:documentation>Indication that the SetLayout command supports only predefined layouts.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -2953,7 +3394,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 			<xs:element name="DynamicRecordings" type="xs:boolean"/>
 			<xs:element name="DynamicTracks" type="xs:boolean"/>
 			<xs:element name="MaxStringLength" type="xs:int"/>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -2962,7 +3403,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 		<xs:sequence>
 			<xs:element name="XAddr" type="xs:anyURI"/>
 			<xs:element name="MetadataSearch" type="xs:boolean"/>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -2974,7 +3415,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 					<xs:documentation>The address of the replay service.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -3011,7 +3452,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 					<xs:documentation>The maximum allowed length for RTSP URIs.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -3031,7 +3472,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 	<!--===============================-->
 	<xs:complexType name="AnalyticsDeviceExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -3125,7 +3566,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 		<xs:sequence>
 			<xs:element name="Type" type="tt:SystemLogType"/>
 			<xs:element name="Uri" type="xs:anyURI"/>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -3200,7 +3641,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 	<!--===============================-->
 	<xs:complexType name="SystemDateTimeExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -3282,7 +3723,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 			<xs:element name="Username" type="xs:string"/>
 			<xs:element name="Password" type="xs:string" minOccurs="0"/>
 			<xs:element name="UseDerivedPassword" type="xs:boolean"/>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -3326,7 +3767,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 	<!--===============================-->
 	<xs:complexType name="UserExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -3349,7 +3790,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 	<!--===============================-->
 	<xs:complexType name="CertificateGenerationParametersExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -3380,7 +3821,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 					<xs:documentation>Indicates whether or not a certificate is used in a HTTPS configuration.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -3390,7 +3831,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 			<xs:element name="CertificateID" type="xs:token" minOccurs="0"/>
 			<xs:element name="Certificate" type="tt:BinaryData"/>
 			<xs:element name="PrivateKey" type="tt:BinaryData"/>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -3426,7 +3867,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 	<!--===============================-->
 	<xs:complexType name="CertificateInformationExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -3457,7 +3898,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 	<!--===============================-->
 	<xs:complexType name="Dot1XConfigurationExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -3480,21 +3921,21 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 	<!--===============================-->
 	<xs:complexType name="EapMethodExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
 	<xs:complexType name="TLSConfiguration">
 		<xs:sequence>
 			<xs:element name="CertificateID" type="xs:token"/>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
 	<!--===============================-->
 	<xs:complexType name="GenericEapPwdConfigurationExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -3562,19 +4003,33 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 			<xs:extension base="tt:DeviceEntity">
 				<xs:sequence>
 					<xs:element name="Properties" type="tt:RelayOutputSettings"/>
-					<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 				</xs:sequence>
 				<xs:anyAttribute processContents="lax"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
 	<!--===============================-->
+	<xs:simpleType name="DigitalIdleState">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="closed"/>
+			<xs:enumeration value="open"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!--===============================-->
 	<xs:complexType name="DigitalInput">
 		<xs:complexContent>
 			<xs:extension base="tt:DeviceEntity">
 				<xs:sequence>
-					<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first ONVIF then Vendor -->
 				</xs:sequence>
+				<xs:attribute name="IdleState" type="tt:DigitalIdleState">
+					<xs:annotation>
+						<xs:documentation>
+							Indicate the Digital IdleState status.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
 				<xs:anyAttribute processContents="lax"/>
 			</xs:extension>
 		</xs:complexContent>
@@ -3631,8 +4086,15 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 				<xs:attribute name="FixedHomePosition" type="xs:boolean">
 					<xs:annotation>
 						<xs:documentation>
-      				Indication whether the HomePosition of a Node is fixed or it can be changed via the SetHomePosition command.
-      			</xs:documentation>
+							Indication whether the HomePosition of a Node is fixed or it can be changed via the SetHomePosition command.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="GeoMove" type="xs:boolean">
+					<xs:annotation>
+						<xs:documentation>
+							Indication whether the Node supports the geo-referenced move command.
+						</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 				<xs:anyAttribute processContents="lax"/>
@@ -3679,7 +4141,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 	<!--===============================-->
 	<xs:complexType name="PTZPresetTourSupportedExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -3771,6 +4233,21 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 						</xs:annotation>
 					</xs:element>
 				</xs:sequence>
+				<xs:attribute name="MoveRamp" type="xs:int">
+					<xs:annotation>
+						<xs:documentation>The optional acceleration ramp used by the device when moving.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="PresetRamp" type="xs:int">
+					<xs:annotation>
+						<xs:documentation>The optional acceleration ramp used by the device when recalling presets.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="PresetTourRamp" type="xs:int">
+					<xs:annotation>
+						<xs:documentation>The optional acceleration ramp used by the device when executing PresetTours.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
 				<xs:anyAttribute processContents="lax"/>
 			</xs:extension>
 		</xs:complexContent>
@@ -3813,7 +4290,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 	<!--===============================-->
 	<xs:complexType name="PTControlDirectionExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##targetNamespace" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -3825,7 +4302,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 					<xs:documentation>Parameter to enable/disable E-Flip feature.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##targetNamespace" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -3837,7 +4314,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 					<xs:documentation>Parameter to enable/disable Reverse feature.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##targetNamespace" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -3883,6 +4360,15 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 			</xs:element>
 			<xs:element name="Extension" type="tt:PTZConfigurationOptions2" minOccurs="0"/>
 		</xs:sequence>
+		<xs:attribute name="PTZRamps" type="tt:IntAttrList">
+			<xs:annotation>
+				<xs:documentation>
+					The list of acceleration ramps supported by the device. The
+					smallest acceleration value corresponds to the minimal index, the
+					highest acceleration corresponds to the maximum index.					
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
 	<!--===============================-->
@@ -3911,7 +4397,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 	<!--===============================-->
 	<xs:complexType name="PTControlDirectionOptionsExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##targetNamespace" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -3929,7 +4415,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 	<!--===============================-->
 	<xs:complexType name="EFlipOptionsExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##targetNamespace" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -3947,7 +4433,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 	<!--===============================-->
 	<xs:complexType name="ReverseOptionsExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##targetNamespace" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -4054,7 +4540,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 	<!--===============================-->
 	<xs:complexType name="PTZSpacesExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -4103,56 +4589,6 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
-	<xs:complexType name="Vector2D">
-		<xs:attribute name="x" type="xs:float" use="required"/>
-		<xs:attribute name="y" type="xs:float" use="required"/>
-		<xs:attribute name="space" type="xs:anyURI" use="optional">
-			<xs:annotation>
-				<xs:documentation>
-  				Pan/tilt coordinate space selector. The following options are defined:<ul>
-						<li> http://www.onvif.org/ver10/tptz/PanTiltSpaces/PositionGenericSpace</li>
-						<li> http://www.onvif.org/ver10/tptz/PanTiltSpaces/TranslationGenericSpace</li>
-						<li> http://www.onvif.org/ver10/tptz/PanTiltSpaces/VelocityGenericSpace</li>
-						<li> http://www.onvif.org/ver10/tptz/PanTiltSpaces/GenericSpeedSpace</li>
-					</ul>
-				</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-	</xs:complexType>
-	<!--===============================-->
-	<xs:complexType name="Vector1D">
-		<xs:attribute name="x" type="xs:float" use="required"/>
-		<xs:attribute name="space" type="xs:anyURI" use="optional">
-			<xs:annotation>
-				<xs:documentation>
-  				Pan/tilt coordinate space selector. The following options are defined:<ul style="">
-						<li> http://www.onvif.org/ver10/tptz/PanTiltSpaces/PositionGenericSpace</li>
-						<li> http://www.onvif.org/ver10/tptz/PanTiltSpaces/TranslationGenericSpace</li>
-						<li> http://www.onvif.org/ver10/tptz/PanTiltSpaces/VelocityGenericSpace</li>
-						<li> http://www.onvif.org/ver10/tptz/PanTiltSpaces/GenericSpeedSpace</li>
-					</ul>
-				</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-	</xs:complexType>
-	<!--===============================-->
-	<xs:complexType name="PTZVector">
-		<xs:sequence>
-			<xs:element name="PanTilt" type="tt:Vector2D" minOccurs="0">
-				<xs:annotation>
-					<xs:documentation>Pan and tilt position. The x component corresponds to pan and the y component to tilt.</xs:documentation>
-				</xs:annotation>
-			</xs:element>
-			<xs:element name="Zoom" type="tt:Vector1D" minOccurs="0">
-				<xs:annotation>
-					<xs:documentation>
-            A zoom position.
-          </xs:documentation>
-				</xs:annotation>
-			</xs:element>
-		</xs:sequence>
-	</xs:complexType>
-	<!--===============================-->
 	<xs:complexType name="PTZSpeed">
 		<xs:sequence>
 			<xs:element name="PanTilt" type="tt:Vector2D" minOccurs="0">
@@ -4168,41 +4604,6 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 				</xs:annotation>
 			</xs:element>
 		</xs:sequence>
-	</xs:complexType>
-	<!--===============================-->
-	<xs:complexType name="PTZStatus">
-		<xs:sequence>
-			<xs:element name="Position" type="tt:PTZVector" minOccurs="0">
-				<xs:annotation>
-					<xs:documentation>
-            Specifies the absolute position of the PTZ unit together with the Space references. The default absolute spaces of the corresponding PTZ configuration MUST be referenced within the Position element.
-          </xs:documentation>
-				</xs:annotation>
-			</xs:element>
-			<xs:element name="MoveStatus" type="tt:PTZMoveStatus" minOccurs="0">
-				<xs:annotation>
-					<xs:documentation>
-            Indicates if the Pan/Tilt/Zoom device unit is currently moving, idle or in an unknown state.
-          </xs:documentation>
-				</xs:annotation>
-			</xs:element>
-			<xs:element name="Error" type="xs:string" minOccurs="0">
-				<xs:annotation>
-					<xs:documentation>
-            States a current PTZ error.
-          </xs:documentation>
-				</xs:annotation>
-			</xs:element>
-			<xs:element name="UtcTime" type="xs:dateTime">
-				<xs:annotation>
-					<xs:documentation>
-            Specifies the UTC time when this status was generated.
-          </xs:documentation>
-				</xs:annotation>
-			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
-		</xs:sequence>
-		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
 	<!--===============================-->
 	<xs:complexType name="PTZPreset">
@@ -4231,34 +4632,9 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
 	<!--===============================-->
-	<xs:complexType name="PTZMoveStatus">
-		<xs:sequence>
-			<xs:element name="PanTilt" type="tt:MoveStatus" minOccurs="0">
-				<xs:annotation>
-					<xs:documentation>
-          </xs:documentation>
-				</xs:annotation>
-			</xs:element>
-			<xs:element name="Zoom" type="tt:MoveStatus" minOccurs="0">
-				<xs:annotation>
-					<xs:documentation>
-          </xs:documentation>
-				</xs:annotation>
-			</xs:element>
-		</xs:sequence>
-	</xs:complexType>
-	<!--===============================-->
 	<xs:simpleType name="AuxiliaryData">
 		<xs:restriction base="xs:string">
 			<xs:maxLength value="128"/>
-		</xs:restriction>
-	</xs:simpleType>
-	<!--===============================-->
-	<xs:simpleType name="MoveStatus">
-		<xs:restriction base="xs:string">
-			<xs:enumeration value="IDLE"/>
-			<xs:enumeration value="MOVING"/>
-			<xs:enumeration value="UNKNOWN"/>
 		</xs:restriction>
 	</xs:simpleType>
 	<!--===============================-->
@@ -4327,7 +4703,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 	<!--===============================-->
 	<xs:complexType name="PTZPresetTourExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -4355,7 +4731,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 	<!--===============================-->
 	<xs:complexType name="PTZPresetTourSpotExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##targetNamespace" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -4379,14 +4755,14 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 				</xs:element>
 				<xs:element name="TypeExtension" type="tt:PTZPresetTourTypeExtension"/>
 			</xs:choice>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
 	<!--===============================-->
 	<xs:complexType name="PTZPresetTourTypeExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##targetNamespace" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -4409,7 +4785,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 	<!--===============================-->
 	<xs:complexType name="PTZPresetTourStatusExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -4432,12 +4808,17 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 			</xs:element>
 			<xs:element name="Extension" type="tt:PTZPresetTourStartingConditionExtension" minOccurs="0"/>
 		</xs:sequence>
+		<xs:attribute name="RandomPresetOrder" type="xs:boolean">
+			<xs:annotation>
+				<xs:documentation>Execute presets in random order. If set to true and Direction is also present, Direction will be ignored and presets of the Tour will be recalled randomly.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
 	<!--===============================-->
 	<xs:complexType name="PTZPresetTourStartingConditionExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##targetNamespace" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -4458,7 +4839,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 					<xs:documentation>Supported options for Preset Tour Spot.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -4475,7 +4856,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 					<xs:documentation>Supported range of stay time for a tour spot.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##targetNamespace" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -4509,7 +4890,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 	<!--===============================-->
 	<xs:complexType name="PTZPresetTourPresetDetailOptionsExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##targetNamespace" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -4537,7 +4918,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 	<!--===============================-->
 	<xs:complexType name="PTZPresetTourStartingConditionOptionsExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##targetNamespace" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -4550,7 +4931,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 	<xs:complexType name="ImagingStatus">
 		<xs:sequence>
 			<xs:element name="FocusStatus" type="tt:FocusStatus"/>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -4578,7 +4959,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 				</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -4598,7 +4979,7 @@ decoding .A decoder shall decode every data it receives (according to its capabi
 If set to 0.0, infinity will be used.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -4669,7 +5050,7 @@ If set to 0.0, infinity will be used.</xs:documentation>
 	<!--===============================-->
 	<xs:complexType name="ImagingSettingsExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -4844,7 +5225,7 @@ If set to 0.0, infinity will be used.</xs:documentation>
 			<xs:element name="Sharpness" type="tt:FloatRange"/>
 			<xs:element name="WideDynamicRange" type="tt:WideDynamicRangeOptions"/>
 			<xs:element name="WhiteBalance" type="tt:WhiteBalanceOptions"/>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -5076,7 +5457,7 @@ If set to 0.0, infinity will be used.</xs:documentation>
 					<xs:documentation>Bgain (unitless).</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -5102,7 +5483,7 @@ If set to 0.0, infinity will be used.</xs:documentation>
 	<!--===============================-->
 	<xs:complexType name="ImagingStatus20Extension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -5136,7 +5517,7 @@ If set to 0.0, infinity will be used.</xs:documentation>
 	<!--===============================-->
 	<xs:complexType name="FocusStatus20Extension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -5225,6 +5606,27 @@ If set to 0.0, infinity will be used.</xs:documentation>
 	<!--===============================-->
 	<xs:complexType name="ImagingSettingsExtension203">
 		<xs:sequence>
+			<xs:element name="ToneCompensation" type="tt:ToneCompensation" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Optional element to configure Image Contrast Compensation.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Defogging" type="tt:Defogging" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Optional element to configure Image Defogging.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="NoiseReduction" type="tt:NoiseReduction" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Optional element to configure Image Noise Reduction.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Extension" type="tt:ImagingSettingsExtension204" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--===============================-->
+	<xs:complexType name="ImagingSettingsExtension204">
+		<xs:sequence>
 			<xs:any namespace="##targetNamespace" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
@@ -5248,7 +5650,7 @@ If set to 0.0, infinity will be used.</xs:documentation>
 	<!--===============================-->
 	<xs:complexType name="ImageStabilizationExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -5285,7 +5687,7 @@ If set to 0.0, infinity will be used.</xs:documentation>
 	<!--===============================-->
 	<xs:complexType name="IrCutFilterAutoAdjustmentExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded" />
+			<xs:any namespace="##targetNamespace" processContents="lax" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -5430,6 +5832,80 @@ If set to 0.0, infinity will be used.</xs:documentation>
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
+	<xs:complexType name="ToneCompensation">
+		<xs:sequence>
+			<xs:element name="Mode" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Parameter to enable/disable or automatic ToneCompensation feature. Its options shall be chosen from tt:ToneCompensationMode Type.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Level" type="xs:float" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Optional level parameter specified with unitless normalized value from 0.0 to +1.0.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Extension" type="tt:ToneCompensationExtension" minOccurs="0"/>
+		</xs:sequence>
+		<xs:anyAttribute processContents="lax"/>
+	</xs:complexType>
+	<!--===============================-->
+	<xs:complexType name="ToneCompensationExtension">
+		<xs:sequence>
+			<xs:any namespace="##targetNamespace" processContents="lax" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	<!--===============================-->
+	<xs:simpleType name="ToneCompensationMode">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="OFF"/>
+			<xs:enumeration value="ON"/>
+			<xs:enumeration value="AUTO"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!--===============================-->
+	<xs:complexType name="Defogging">
+		<xs:sequence>
+			<xs:element name="Mode" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Parameter to enable/disable or automatic Defogging feature. Its options shall be chosen from tt:DefoggingMode Type.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Level" type="xs:float" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Optional level parameter specified with unitless normalized value from 0.0 to +1.0.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Extension" type="tt:DefoggingExtension" minOccurs="0"/>
+		</xs:sequence>
+		<xs:anyAttribute processContents="lax"/>
+	</xs:complexType>
+	<!--===============================-->
+	<xs:complexType name="DefoggingExtension">
+		<xs:sequence>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded" />   <!-- first ONVIF then Vendor -->
+		</xs:sequence>
+	</xs:complexType>
+	<!--===============================-->
+	<xs:simpleType name="DefoggingMode">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="OFF"/>
+			<xs:enumeration value="ON"/>
+			<xs:enumeration value="AUTO"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!--===============================-->
+	<xs:complexType name="NoiseReduction">
+		<xs:sequence>
+			<xs:element name="Level" type="xs:float">
+				<xs:annotation>
+					<xs:documentation>Level parameter specified with unitless normalized value from 0.0 to +1.0. Level=0 means no noise reduction or minimal noise reduction.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded" />   <!-- first ONVIF then Vendor -->
+		</xs:sequence>
+		<xs:anyAttribute processContents="lax"/>
+	</xs:complexType>
+	<!--===============================-->
 	<xs:complexType name="ImagingOptions20">
 		<xs:sequence>
 			<xs:element name="BacklightCompensation" type="tt:BacklightCompensationOptions20" minOccurs="0">
@@ -5532,6 +6008,27 @@ If set to 0.0, infinity will be used.</xs:documentation>
 	<!--===============================-->
 	<xs:complexType name="ImagingOptions20Extension3">
 		<xs:sequence>
+			<xs:element name="ToneCompensationOptions" type="tt:ToneCompensationOptions" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Options of parameters for Tone Compensation feature.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="DefoggingOptions" type="tt:DefoggingOptions" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Options of parameters for Defogging feature.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="NoiseReductionOptions" type="tt:NoiseReductionOptions" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Options of parameter for Noise Reduction feature.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Extension" type="tt:ImagingOptions20Extension4" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--===============================-->
+	<xs:complexType name="ImagingOptions20Extension4">
+		<xs:sequence>
 			<xs:any namespace="##targetNamespace" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
@@ -5555,7 +6052,7 @@ If set to 0.0, infinity will be used.</xs:documentation>
 	<!--===============================-->
 	<xs:complexType name="ImageStabilizationOptionsExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -5583,7 +6080,7 @@ If set to 0.0, infinity will be used.</xs:documentation>
 	<!--===============================-->
 	<xs:complexType name="IrCutFilterAutoAdjustmentOptionsExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded" />
+			<xs:any namespace="##targetNamespace" processContents="lax" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -5774,7 +6271,7 @@ If set to 0.0, infinity will be used.</xs:documentation>
 	<!--===============================-->
 	<xs:complexType name="WhiteBalance20Extension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -5783,11 +6280,12 @@ If set to 0.0, infinity will be used.</xs:documentation>
 			<xs:element name="AutoFocusMode" type="tt:AutoFocusMode">
 				<xs:annotation>
 					<xs:documentation>
-			Mode of auto fucus.
-			<ul>
-							<li>AUTO</li>
-							<li>MANUAL</li>
+						Mode of auto focus.
+						<ul>
+							<li>AUTO - The device automatically adjusts focus.</li>
+							<li>MANUAL - The device does not automatically adjust focus.</li>
 						</ul>
+						Note: for devices supporting both manual and auto operation at the same time manual operation may be supported even if the Mode parameter is set to Auto.
 					</xs:documentation>
 				</xs:annotation>
 			</xs:element>
@@ -5809,7 +6307,7 @@ If set to 0.0, infinity will be used.</xs:documentation>
 	<!--===============================-->
 	<xs:complexType name="FocusConfiguration20Extension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -5834,7 +6332,7 @@ If set to 0.0, infinity will be used.</xs:documentation>
 	<!--===============================-->
 	<xs:complexType name="WhiteBalanceOptions20Extension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -5843,10 +6341,10 @@ If set to 0.0, infinity will be used.</xs:documentation>
 			<xs:element name="AutoFocusModes" type="tt:AutoFocusMode" minOccurs="0" maxOccurs="unbounded">
 				<xs:annotation>
 					<xs:documentation>
-					Mode of Auto Focus.
+					Supported modes for auto focus.
 					<ul>
-							<li>AUTO</li>
-							<li>MANUAL</li>
+						<li>AUTO - The device supports automatic focus adjustment.</li>
+						<li>MANUAL - The device supports manual focus adjustment.</li>
 						</ul>
 					</xs:documentation>
 				</xs:annotation>
@@ -5878,8 +6376,54 @@ If set to 0.0, infinity will be used.</xs:documentation>
 	<!--===============================-->
 	<xs:complexType name="FocusOptions20Extension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
+	</xs:complexType>
+	<!--===============================-->
+	<xs:complexType name="ToneCompensationOptions">
+		<xs:sequence>
+			<xs:element name="Mode" type="xs:string" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Supported options for Tone Compensation mode. Its options shall be chosen from tt:ToneCompensationMode Type.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Level" type="xs:boolean">
+				<xs:annotation>
+					<xs:documentation>Indicates whether or not support Level parameter for Tone Compensation.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded" />   <!-- first ONVIF then Vendor -->
+		</xs:sequence>
+		<xs:anyAttribute processContents="lax"/>
+	</xs:complexType>
+	<!--===============================-->
+	<xs:complexType name="DefoggingOptions">
+		<xs:sequence>
+			<xs:element name="Mode" type="xs:string" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Supported options for Defogging mode. Its options shall be chosen from tt:DefoggingMode Type.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Level" type="xs:boolean">
+				<xs:annotation>
+					<xs:documentation>Indicates whether or not support Level parameter for Defogging.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded" />   <!-- first ONVIF then Vendor -->
+		</xs:sequence>
+		<xs:anyAttribute processContents="lax"/>
+	</xs:complexType>
+	<!--===============================-->
+	<xs:complexType name="NoiseReductionOptions">
+		<xs:sequence>
+			<xs:element name="Level" type="xs:boolean">
+				<xs:annotation>
+					<xs:documentation>Indicates whether or not support Level parameter for NoiseReduction.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded" />   <!-- first ONVIF then Vendor -->
+		</xs:sequence>
+		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
 	<!--===============================-->
 	<!--===============================-->
@@ -5921,7 +6465,7 @@ If set to 0.0, infinity will be used.</xs:documentation>
 	<!--===============================-->
 	<xs:complexType name="MessageExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -5956,7 +6500,7 @@ If set to 0.0, infinity will be used.</xs:documentation>
 				</xs:annotation>
 				<xs:complexType>
 					<xs:sequence>
-						<xs:any namespace="##any">
+						<xs:any namespace="##any" processContents="lax">
 							<xs:annotation>
 								<xs:documentation>XML tree contiaing the element value as defined in the corresponding description.</xs:documentation>
 							</xs:annotation>
@@ -5976,7 +6520,7 @@ If set to 0.0, infinity will be used.</xs:documentation>
 	<!--===============================-->
 	<xs:complexType name="ItemListExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -6015,7 +6559,7 @@ If set to 0.0, infinity will be used.</xs:documentation>
 	<!--===============================-->
 	<xs:complexType name="MessageDescriptionExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -6067,28 +6611,9 @@ If set to 0.0, infinity will be used.</xs:documentation>
 	<!--===============================-->
 	<xs:complexType name="ItemListDescriptionExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
-	<!--===============================-->
-	<xs:complexType name="Vector">
-		<xs:attribute name="x" type="xs:float"/>
-		<xs:attribute name="y" type="xs:float"/>
-	</xs:complexType>
-	<!--===============================-->
-	<xs:complexType name="Rectangle">
-		<xs:attribute name="bottom" type="xs:float"/>
-		<xs:attribute name="top" type="xs:float"/>
-		<xs:attribute name="right" type="xs:float"/>
-		<xs:attribute name="left" type="xs:float"/>
-	</xs:complexType>
-	<!--===============================-->
-	<xs:complexType name="Polygon">
-		<xs:sequence>
-			<xs:element name="Point" type="tt:Vector" minOccurs="3" maxOccurs="unbounded"/>
-		</xs:sequence>
-	</xs:complexType>
-	<xs:element name="Polygon" type="tt:Polygon"/>
 	<!--===============================-->
 	<xs:complexType name="Polyline">
 		<xs:sequence>
@@ -6104,288 +6629,6 @@ If set to 0.0, infinity will be used.</xs:documentation>
 			<xs:enumeration value="Any"/>
 		</xs:restriction>
 	</xs:simpleType>
-	<!--===============================-->
-	<xs:complexType name="Color">
-		<xs:attribute name="X" type="xs:float" use="required"/>
-		<xs:attribute name="Y" type="xs:float" use="required"/>
-		<xs:attribute name="Z" type="xs:float" use="required"/>
-		<xs:attribute name="Colorspace" type="xs:anyURI"/>
-	</xs:complexType>
-	<!--===============================-->
-	<xs:complexType name="ColorCovariance">
-		<xs:attribute name="XX" type="xs:float" use="required"/>
-		<xs:attribute name="YY" type="xs:float" use="required"/>
-		<xs:attribute name="ZZ" type="xs:float" use="required"/>
-		<xs:attribute name="XY" type="xs:float"/>
-		<xs:attribute name="XZ" type="xs:float"/>
-		<xs:attribute name="YZ" type="xs:float"/>
-		<xs:attribute name="Colorspace" type="xs:anyURI"/>
-	</xs:complexType>
-	<!--===============================-->
-	<!--       Scene Description       -->
-	<!--===============================-->
-	<xs:complexType name="Appearance">
-		<xs:sequence>
-			<xs:element name="Transformation" type="tt:Transformation" minOccurs="0"/>
-			<xs:element name="Shape" type="tt:ShapeDescriptor" minOccurs="0"/>
-			<xs:element name="Color" type="tt:ColorDescriptor" minOccurs="0"/>
-			<xs:element name="Class" type="tt:ClassDescriptor" minOccurs="0"/>
-			<xs:element name="Extension" type="tt:AppearanceExtension" minOccurs="0"/>
-		</xs:sequence>
-		<xs:anyAttribute processContents="lax"/>
-	</xs:complexType>
-	<!--===============================-->
-	<xs:complexType name="AppearanceExtension">
-		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
-		</xs:sequence>
-	</xs:complexType>
-	<!--===============================-->
-	<xs:complexType name="ShapeDescriptor">
-		<xs:sequence>
-			<xs:element name="BoundingBox" type="tt:Rectangle"/>
-			<xs:element name="CenterOfGravity" type="tt:Vector"/>
-			<xs:element name="Polygon" type="tt:Polygon" minOccurs="0" maxOccurs="unbounded"/>
-			<xs:element name="Extension" type="tt:ShapeDescriptorExtension" minOccurs="0"/>
-		</xs:sequence>
-		<xs:anyAttribute processContents="lax"/>
-	</xs:complexType>
-	<!--===============================-->
-	<xs:complexType name="ShapeDescriptorExtension">
-		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
-		</xs:sequence>
-	</xs:complexType>
-	<!--===============================-->
-	<xs:complexType name="ColorDescriptor">
-		<xs:sequence>
-			<xs:element name="ColorCluster" minOccurs="0" maxOccurs="unbounded">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="Color" type="tt:Color"/>
-						<xs:element name="Weight" type="xs:float" minOccurs="0"/>
-						<xs:element name="Covariance" type="tt:ColorCovariance" minOccurs="0"/>
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
-			<xs:element name="Extension" type="tt:ColorDescriptorExtension" minOccurs="0"/>
-		</xs:sequence>
-		<xs:anyAttribute processContents="lax"/>
-	</xs:complexType>
-	<!--===============================-->
-	<xs:complexType name="ColorDescriptorExtension">
-		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
-		</xs:sequence>
-	</xs:complexType>
-	<!--===============================-->
-	<xs:simpleType name="ClassType">
-		<xs:restriction base="xs:string">
-			<xs:enumeration value="Animal"/>
-			<xs:enumeration value="Face"/>
-			<xs:enumeration value="Human"/>
-			<xs:enumeration value="Vehical"/>
-			<xs:enumeration value="Other"/>
-		</xs:restriction>
-	</xs:simpleType>
-	<!--===============================-->
-	<xs:complexType name="ClassDescriptor">
-		<xs:sequence>
-			<xs:element name="ClassCandidate" minOccurs="0" maxOccurs="unbounded">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="Type" type="tt:ClassType"/>
-						<xs:element name="Likelihood" type="xs:float"/>
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
-			<xs:element name="Extension" type="tt:ClassDescriptorExtension" minOccurs="0"/>
-		</xs:sequence>
-	</xs:complexType>
-	<!--===============================-->
-	<xs:complexType name="ClassDescriptorExtension">
-		<xs:sequence>
-			<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
-			<xs:element name="OtherTypes" type="tt:OtherType" maxOccurs="unbounded"/>
-			<xs:element name="Extension" type="tt:ClassDescriptorExtension2" minOccurs="0"/>
-		</xs:sequence>
-	</xs:complexType>
-	<!--===============================-->
-	<xs:complexType name="ClassDescriptorExtension2">
-		<xs:sequence>
-			<xs:any namespace="##targetNamespace" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
-		</xs:sequence>
-		<xs:anyAttribute processContents="lax"/>
-	</xs:complexType>
-	<!--===============================-->
-	<xs:complexType name="OtherType">
-		<xs:sequence>
-			<xs:element name="Type" type="xs:string">
-				<xs:annotation>
-					<xs:documentation>Object Class Type</xs:documentation>
-				</xs:annotation>
-			</xs:element>
-			<xs:element name="Likelihood" type="xs:float">
-				<xs:annotation>
-					<xs:documentation>A likelihood/probability that the corresponding object belongs to this class. The sum of the likelihoods shall NOT exceed 1</xs:documentation>
-				</xs:annotation>
-			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="1" maxOccurs="unbounded"/>
-		</xs:sequence>
-		<xs:anyAttribute processContents="lax"/>
-	</xs:complexType>
-	<!--===============================-->
-	<xs:complexType name="Object">
-		<xs:complexContent>
-			<xs:extension base="tt:ObjectId">
-				<xs:sequence>
-					<xs:element name="Appearance" type="tt:Appearance" minOccurs="0"/>
-					<xs:element name="Behaviour" type="tt:Behaviour" minOccurs="0"/>
-					<xs:element name="Extension" type="tt:ObjectExtension" minOccurs="0"/>
-				</xs:sequence>
-				<xs:anyAttribute processContents="lax"/>
-			</xs:extension>
-		</xs:complexContent>
-	</xs:complexType>
-	<!--===============================-->
-	<xs:complexType name="ObjectExtension">
-		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
-		</xs:sequence>
-	</xs:complexType>
-	<!--===============================-->
-	<xs:complexType name="Transformation">
-		<xs:sequence>
-			<xs:element name="Translate" type="tt:Vector" minOccurs="0"/>
-			<xs:element name="Scale" type="tt:Vector" minOccurs="0"/>
-			<xs:element name="Extension" type="tt:TransformationExtension" minOccurs="0"/>
-		</xs:sequence>
-		<xs:anyAttribute processContents="lax"/>
-	</xs:complexType>
-	<!--===============================-->
-	<xs:complexType name="TransformationExtension">
-		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
-		</xs:sequence>
-	</xs:complexType>
-	<!--===============================-->
-	<xs:complexType name="Frame">
-		<xs:sequence>
-			<xs:element name="PTZStatus" type="tt:PTZStatus" minOccurs="0"/>
-			<xs:element name="Transformation" type="tt:Transformation" minOccurs="0"/>
-			<xs:element name="Object" type="tt:Object" minOccurs="0" maxOccurs="unbounded"/>
-			<xs:element name="ObjectTree" type="tt:ObjectTree" minOccurs="0"/>
-			<xs:element name="Extension" type="tt:FrameExtension" minOccurs="0"/>
-		</xs:sequence>
-		<xs:attribute name="UtcTime" type="xs:dateTime" use="required"/>
-		<xs:anyAttribute processContents="lax"/>
-	</xs:complexType>
-	<!--===============================-->
-	<xs:complexType name="FrameExtension">
-		<xs:sequence>
-			<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
-			<xs:element name="MotionInCells" type="tt:MotionInCells" minOccurs="0"/>
-			<xs:element name="Extension" type="tt:FrameExtension2" minOccurs="0"/>
-		</xs:sequence>
-	</xs:complexType>
-	<!--===============================-->
-	<xs:complexType name="FrameExtension2">
-		<xs:sequence>
-			<xs:any namespace="##targetNamespace" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
-		</xs:sequence>
-	</xs:complexType>
-	<!--===============================-->
-	<xs:complexType name="Merge">
-		<xs:sequence>
-			<xs:element name="from" type="tt:ObjectId" minOccurs="2" maxOccurs="unbounded"/>
-			<xs:element name="to" type="tt:ObjectId"/>
-		</xs:sequence>
-	</xs:complexType>
-	<!--===============================-->
-	<xs:complexType name="Split">
-		<xs:sequence>
-			<xs:element name="from" type="tt:ObjectId"/>
-			<xs:element name="to" type="tt:ObjectId" minOccurs="2" maxOccurs="unbounded"/>
-		</xs:sequence>
-	</xs:complexType>
-	<!--===============================-->
-	<xs:complexType name="Rename">
-		<xs:sequence>
-			<xs:element name="from" type="tt:ObjectId"/>
-			<xs:element name="to" type="tt:ObjectId"/>
-		</xs:sequence>
-	</xs:complexType>
-	<!--===============================-->
-	<xs:complexType name="ObjectId">
-		<xs:attribute name="ObjectId" type="xs:integer"/>
-	</xs:complexType>
-	<!--===============================-->
-	<xs:complexType name="Behaviour">
-		<xs:sequence>
-			<xs:element name="Removed" minOccurs="0">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
-			<xs:element name="Idle" minOccurs="0">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
-			<xs:element name="Extension" type="tt:BehaviourExtension" minOccurs="0"/>
-		</xs:sequence>
-		<xs:anyAttribute processContents="lax"/>
-	</xs:complexType>
-	<!--===============================-->
-	<xs:complexType name="BehaviourExtension">
-		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
-		</xs:sequence>
-	</xs:complexType>
-	<!--===============================-->
-	<xs:complexType name="ObjectTree">
-		<xs:sequence>
-			<xs:element name="Rename" type="tt:Rename" minOccurs="0" maxOccurs="unbounded"/>
-			<xs:element name="Split" type="tt:Split" minOccurs="0" maxOccurs="unbounded"/>
-			<xs:element name="Merge" type="tt:Merge" minOccurs="0" maxOccurs="unbounded"/>
-			<xs:element name="Delete" type="tt:ObjectId" minOccurs="0" maxOccurs="unbounded"/>
-			<xs:element name="Extension" type="tt:ObjectTreeExtension" minOccurs="0"/>
-		</xs:sequence>
-		<xs:anyAttribute processContents="lax"/>
-	</xs:complexType>
-	<!--===============================-->
-	<xs:complexType name="ObjectTreeExtension">
-		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
-		</xs:sequence>
-	</xs:complexType>
-	<!--===============================-->
-	<xs:complexType name="MotionInCells">
-		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
-		</xs:sequence>
-		<xs:attribute name="Columns" type="xs:integer" use="required">
-			<xs:annotation>
-				<xs:documentation>Number of columns of the cell grid (x dimension)</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-		<xs:attribute name="Rows" type="xs:integer" use="required">
-			<xs:annotation>
-				<xs:documentation>Number of rows of the cell grid (y dimension)</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-		<xs:attribute name="Cells" type="xs:base64Binary" use="required">
-			<xs:annotation>
-				<xs:documentation>A “1” denotes a cell where motion is detected and a “0” an empty cell. The first cell is in the upper left corner. Then the cell order goes first from left to right and then from up to down.  If the number of cells is not a multiple of 8 the last byte is filled with zeros. The information is run length encoded according to Packbit coding in ISO 12369 (TIFF, Revision 6.0).</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-		<xs:anyAttribute processContents="lax"/>
-	</xs:complexType>
-	<!--===============================-->
 	<!--    Analytics Configuration    -->
 	<!--===============================-->
 	<xs:complexType name="AnalyticsEngineConfiguration">
@@ -6398,7 +6641,7 @@ If set to 0.0, infinity will be used.</xs:documentation>
 	<!--===============================-->
 	<xs:complexType name="AnalyticsEngineConfigurationExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -6412,7 +6655,7 @@ If set to 0.0, infinity will be used.</xs:documentation>
 	<!--===============================-->
 	<xs:complexType name="RuleEngineConfigurationExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -6431,7 +6674,7 @@ If set to 0.0, infinity will be used.</xs:documentation>
 		</xs:attribute>
 		<xs:attribute name="Type" type="xs:QName" use="required">
 			<xs:annotation>
-				<xs:documentation>Type of the configuration represented by a unique QName. The Type characterizes a ConfigDescription defining the Parameters.</xs:documentation>
+				<xs:documentation>The Type attribute specifies the type of rule and shall be equal to value of one of Name attributes of ConfigDescription elements returned by GetSupportedRules and GetSupportedAnalyticsModules command.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
 	</xs:complexType>
@@ -6480,7 +6723,17 @@ If set to 0.0, infinity will be used.</xs:documentation>
 		</xs:sequence>
 		<xs:attribute name="Name" type="xs:QName" use="required">
 			<xs:annotation>
-				<xs:documentation>XML Type of the Configuration (e.g. "tt::LineDetector"). </xs:documentation>
+				<xs:documentation>The Name attribute (e.g. "tt::LineDetector") uniquely identifies the type of rule, not a type definition in a schema.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="fixed" type="xs:boolean">
+			<xs:annotation>
+				<xs:documentation>The fixed attribute signals that it is not allowed to add or remove this type of configuration.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="maxInstances" type="xs:integer">
+			<xs:annotation>
+				<xs:documentation>The maxInstances attribute signals the maximum number of instances per configuration.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
 		<xs:anyAttribute processContents="lax"/>
@@ -6488,7 +6741,7 @@ If set to 0.0, infinity will be used.</xs:documentation>
 	<!--===============================-->
 	<xs:complexType name="ConfigDescriptionExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -6511,7 +6764,7 @@ If set to 0.0, infinity will be used.</xs:documentation>
 	<!--===============================-->
 	<xs:complexType name="SupportedRulesExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -6533,7 +6786,7 @@ If set to 0.0, infinity will be used.</xs:documentation>
 	<!--===============================-->
 	<xs:complexType name="SupportedAnalyticsModulesExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -6544,7 +6797,7 @@ If set to 0.0, infinity will be used.</xs:documentation>
 					<xs:documentation>Contains Polygon configuration for rule parameters</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -6563,7 +6816,7 @@ If set to 0.0, infinity will be used.</xs:documentation>
 	<!--===============================-->
 	<xs:complexType name="PolylineArrayExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -6574,7 +6827,7 @@ If set to 0.0, infinity will be used.</xs:documentation>
 					<xs:documentation>Contains PolylineArray configuration data</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -6586,7 +6839,7 @@ If set to 0.0, infinity will be used.</xs:documentation>
 					<xs:documentation>Motion Expression data structure contains motion expression which is based on Scene Descriptor schema with XPATH syntax. The Type argument could allow introduction of different dialects </xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:attribute name="Type" type="xs:string"/>
 		<xs:anyAttribute processContents="lax"/>
@@ -6599,7 +6852,7 @@ If set to 0.0, infinity will be used.</xs:documentation>
 					<xs:documentation>Contains Rule MotionExpression configuration</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -6611,7 +6864,7 @@ If set to 0.0, infinity will be used.</xs:documentation>
 					<xs:documentation>Mapping of the cell grid to the Video frame. The cell grid is starting from the upper left corner and x dimension is going from left to right and the y dimension from up to down.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:attribute name="Columns" type="xs:integer" use="required">
 			<xs:annotation>
@@ -6627,104 +6880,6 @@ If set to 0.0, infinity will be used.</xs:documentation>
 	</xs:complexType>
 	<!--===============================-->
 	<!--End, Event and Analytics Types -->
-	<!--===============================-->
-	<!--===============================-->
-	<!--===============================-->
-	<!--   Metadata Streaming Types    -->
-	<!--===============================-->
-	<xs:complexType name="MetadataStream">
-		<xs:sequence>
-			<xs:choice minOccurs="0" maxOccurs="unbounded">
-				<xs:element name="VideoAnalytics" type="tt:VideoAnalyticsStream"/>
-				<xs:element name="PTZ" type="tt:PTZStream"/>
-				<xs:element name="Event" type="tt:EventStream"/>
-				<xs:element name="Extension" type="tt:MetadataStreamExtension"/>
-			</xs:choice>
-		</xs:sequence>
-		<xs:anyAttribute processContents="lax"/>
-	</xs:complexType>
-	<!--===============================-->
-	<xs:complexType name="MetadataStreamExtension">
-		<xs:sequence>
-			<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
-			<xs:element name="AudioAnalyticsStream" type="tt:AudioAnalyticsStream" minOccurs="0"/>
-			<xs:element name="Extension" type="tt:MetadataStreamExtension2" minOccurs="0"/>
-		</xs:sequence>
-	</xs:complexType>
-	<!--===============================-->
-	<xs:complexType name="MetadataStreamExtension2">
-		<xs:sequence>
-			<xs:any namespace="##targetNamespace" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
-		</xs:sequence>
-		<xs:anyAttribute processContents="lax"/>
-	</xs:complexType>
-	<!--===============================-->
-	<xs:complexType name="AudioAnalyticsStream">
-		<xs:sequence>
-			<xs:element name="AudioDescriptor" type="tt:AudioDescriptor" minOccurs="0" maxOccurs="unbounded"/>
-			<xs:element name="Extension" type="tt:AudioAnalyticsStreamExtension" minOccurs="0" />
-		</xs:sequence>
-		<xs:anyAttribute processContents="lax"/>
-	</xs:complexType>
-	<!--===============================-->
-	<xs:complexType name="AudioDescriptor">
-		<xs:sequence>
-		<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
-		</xs:sequence>
-		<xs:attribute name="UtcTime" type="xs:dateTime" use="required">
-		</xs:attribute>
-		<xs:anyAttribute processContents="lax"/>
-	</xs:complexType>
-	<!--===============================-->
-	<xs:complexType name="AudioAnalyticsStreamExtension">
-		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
-		</xs:sequence>
-		<xs:anyAttribute processContents="lax"/>
-	</xs:complexType>
-	<!--===============================-->
-	<xs:element name="MetadataStream" type="tt:MetadataStream"/>
-	<!--===============================-->
-	<xs:complexType name="VideoAnalyticsStream">
-		<xs:choice minOccurs="0" maxOccurs="unbounded">
-			<xs:element name="Frame" type="tt:Frame"/>
-			<xs:element name="Extension" type="tt:VideoAnalyticsStreamExtension"/>
-		</xs:choice>
-	</xs:complexType>
-	<!--===============================-->
-	<xs:complexType name="VideoAnalyticsStreamExtension">
-		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
-		</xs:sequence>
-	</xs:complexType>
-	<!--===============================-->
-	<xs:complexType name="PTZStream">
-		<xs:choice minOccurs="0" maxOccurs="unbounded">
-			<xs:element name="PTZStatus" type="tt:PTZStatus"/>
-			<xs:element name="Extension" type="tt:PTZStreamExtension"/>
-		</xs:choice>
-	</xs:complexType>
-	<!--===============================-->
-	<xs:complexType name="PTZStreamExtension">
-		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
-		</xs:sequence>
-	</xs:complexType>
-	<!--===============================-->
-	<xs:complexType name="EventStream">
-		<xs:choice minOccurs="0" maxOccurs="unbounded">
-			<xs:element ref="wsnt:NotificationMessage"/>
-			<xs:element name="Extension" type="tt:EventStreamExtension"/>
-		</xs:choice>
-	</xs:complexType>
-	<!--===============================-->
-	<xs:complexType name="EventStreamExtension">
-		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
-		</xs:sequence>
-	</xs:complexType>
-	<!--===============================-->
-	<!-- End, Metadata Streaming Types -->
 	<!--===============================-->
 	<!--===============================-->
 	<!--      Display Related Types  -->
@@ -6770,7 +6925,7 @@ and sample rate. </xs:documentation>
 					<xs:documentation>A unique identifier in the display device.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -6790,7 +6945,7 @@ and sample rate. </xs:documentation>
 					<xs:documentation>Describes the location and size of the area on the monitor. The area coordinate values are espressed in normalized units [-1.0, 1.0].</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -6812,7 +6967,7 @@ and sample rate. </xs:documentation>
 	<!--===============================-->
 	<xs:complexType name="LayoutExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -6836,7 +6991,7 @@ and sample rate. </xs:documentation>
 					<xs:documentation>This section describes the supported video codesc and their configuration.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -6858,7 +7013,7 @@ and sample rate. </xs:documentation>
 	<!--===============================-->
 	<xs:complexType name="LayoutOptionsExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -6879,7 +7034,7 @@ and sample rate. </xs:documentation>
 	<!--===============================-->
 	<xs:complexType name="PaneOptionExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -6905,7 +7060,7 @@ and sample rate. </xs:documentation>
 					<xs:documentation>Describes the configuration of the receiver.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -6932,7 +7087,7 @@ and sample rate. </xs:documentation>
 					<xs:documentation>Stream connection parameters.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -7014,7 +7169,7 @@ and sample rate. </xs:documentation>
 					<xs:documentation>Indicates whether or not the receiver was created automatically.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -7036,7 +7191,7 @@ and sample rate. </xs:documentation>
 	<xs:complexType name="SourceReference">
 		<xs:sequence>
 			<xs:element name="Token" type="tt:ReferenceToken"/>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:attribute name="Type" type="xs:anyURI" use="optional" default="http://www.onvif.org/ver10/schema/Receiver"/>
 		<xs:anyAttribute processContents="lax"/>
@@ -7054,7 +7209,7 @@ and sample rate. </xs:documentation>
 		<xs:sequence>
 			<xs:element name="From" type="xs:dateTime"/>
 			<xs:element name="Until" type="xs:dateTime"/>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -7076,7 +7231,7 @@ and sample rate. </xs:documentation>
 					<xs:documentation>The device contains this many recordings.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -7112,7 +7267,7 @@ and sample rate. </xs:documentation>
 	<!--===============================-->
 	<xs:complexType name="SearchScopeExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -7141,7 +7296,7 @@ and sample rate. </xs:documentation>
 					<xs:documentation>If true, search for when entering the specified PTZ volume.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -7149,7 +7304,7 @@ and sample rate. </xs:documentation>
 	<xs:complexType name="MetadataFilter">
 		<xs:sequence>
 			<xs:element name="MetadataStreamFilter" type="tt:XPathExpression"/>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -7215,7 +7370,7 @@ and sample rate. </xs:documentation>
 					<xs:documentation>If true, indicates that the event is a virtual event generated for this particular search session to give the state of a property at the start time of the search.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -7257,7 +7412,7 @@ and sample rate. </xs:documentation>
 					<xs:documentation>The PTZ position.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -7294,7 +7449,7 @@ and sample rate. </xs:documentation>
 					<xs:documentation>The point in time when the matching metadata occurs in the metadata track.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -7349,7 +7504,7 @@ and sample rate. </xs:documentation>
 				</xs:annotation>
 			</xs:element>
 			<xs:element name="RecordingStatus" type="tt:RecordingStatus"/>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -7388,7 +7543,7 @@ and sample rate. </xs:documentation>
 					<xs:documentation>URI provided by the service supplying data to be recorded. A device shall support at least 128 characters.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -7432,7 +7587,7 @@ and sample rate. </xs:documentation>
 					<xs:documentation>The stop date and time of the newest recorded data in the track.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -7475,7 +7630,7 @@ and sample rate. </xs:documentation>
 					<xs:documentation>The attributes are valid until this point in time in the recording. Can be equal to 'From' to indicate that the attributes are only known to be valid for this particular point in time.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -7513,7 +7668,7 @@ and sample rate. </xs:documentation>
 	<!--===============================-->
 	<xs:complexType name="TrackAttributesExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##targetNamespace" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -7534,9 +7689,9 @@ and sample rate. </xs:documentation>
 					<xs:documentation>The height of the video in pixels.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:element name="Encoding" type="tt:VideoEncoding">
+			<xs:element name="Encoding" type="xs:string">
 				<xs:annotation>
-					<xs:documentation>Used video codec, either Jpeg, H.264 or Mpeg4</xs:documentation>
+					<xs:documentation>Video encoding of the track. Use values from tt:VideoEncoding for JPEG, MPEG4 and H264. Otherwise use type definitions as defined by <a href="http://www.iana.org/assignments/media-types/media-types.xhtml">IANA</a>.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
 			<xs:element name="Framerate" type="xs:float">
@@ -7544,7 +7699,7 @@ and sample rate. </xs:documentation>
 					<xs:documentation>Average framerate in frames per second.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##targetNamespace" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -7556,9 +7711,9 @@ and sample rate. </xs:documentation>
 					<xs:documentation>The bitrate in kbps.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:element name="Encoding" type="tt:AudioEncoding">
+			<xs:element name="Encoding" type="xs:string">
 				<xs:annotation>
-					<xs:documentation>Audio codec used for encoding the audio (either G.711, G.726 or AAC)</xs:documentation>
+					<xs:documentation>Audio encoding of the track. Use values from tt:AudioEncoding for G711, G726, AAC. Otherwise use type definitions as defined by <a href="http://www.iana.org/assignments/media-types/media-types.xhtml">IANA</a>.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
 			<xs:element name="Samplerate" type="xs:int">
@@ -7566,7 +7721,7 @@ and sample rate. </xs:documentation>
 					<xs:documentation>The sample rate in kHz.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##targetNamespace" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -7588,7 +7743,7 @@ and sample rate. </xs:documentation>
 					<xs:documentation>Indicates that there can be notifications in the metadata track in the specified time interval.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##targetNamespace" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 		<xs:attribute name="PtzSpaces" type="tt:StringAttrList">
 			<xs:annotation>
@@ -7627,7 +7782,7 @@ and sample rate. </xs:documentation>
 				recordings to free up storage space for new recordings.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -7645,7 +7800,7 @@ and sample rate. </xs:documentation>
 					<xs:documentation>Informative description of the track.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -7667,7 +7822,7 @@ and sample rate. </xs:documentation>
 					<xs:documentation>List of tracks.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -7695,7 +7850,7 @@ and sample rate. </xs:documentation>
 					<xs:documentation>Configuration of the track.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -7716,7 +7871,7 @@ and sample rate. </xs:documentation>
 			</xs:element>
 			<xs:element name="Priority" type="xs:int">
 				<xs:annotation>
-					<xs:documentation>This shall be a positive number. If there are multiple recording jobs that store data to
+					<xs:documentation>This shall be a non-negative number. If there are multiple recording jobs that store data to
 				the same track, the device will only store the data for the recording job with the highest
 				priority. The priority is specified per recording job, but the device shall determine the priority
 				of each track individually. If there are two recording jobs with the same priority, the device
@@ -7739,7 +7894,7 @@ and sample rate. </xs:documentation>
 	<!--===============================-->
 	<xs:complexType name="RecordingJobConfigurationExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -7775,7 +7930,7 @@ and sample rate. </xs:documentation>
 	<!--===============================-->
 	<xs:complexType name="RecordingJobSourceExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -7793,7 +7948,7 @@ and sample rate. </xs:documentation>
 				received data.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##targetNamespace" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -7822,7 +7977,7 @@ and sample rate. </xs:documentation>
 	<!--===============================-->
 	<xs:complexType name="RecordingJobStateInformationExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -7847,7 +8002,7 @@ and sample rate. </xs:documentation>
 					<xs:documentation>List of track items.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##targetNamespace" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -7883,7 +8038,7 @@ and sample rate. </xs:documentation>
 				values of state shall be “Idle”, “Active” and “Error”. If state equals “Error”, the Error field may be filled in with an implementation defined value.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##targetNamespace" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -7892,7 +8047,7 @@ and sample rate. </xs:documentation>
 		<xs:sequence>
 			<xs:element name="JobToken" type="tt:RecordingJobReference"/>
 			<xs:element name="JobConfiguration" type="tt:RecordingJobConfiguration"/>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -7915,7 +8070,7 @@ and sample rate. </xs:documentation>
 					<xs:documentation>The RTSP session timeout.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -7931,7 +8086,7 @@ and sample rate. </xs:documentation>
 			<xs:extension base="tt:ConfigurationEntity">
 				<xs:sequence>
 					<xs:element name="AnalyticsEngineConfiguration" type="tt:AnalyticsDeviceEngineConfiguration"/>
-					<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 				</xs:sequence>
 				<xs:anyAttribute processContents="lax"/>
 			</xs:extension>
@@ -7948,7 +8103,7 @@ and sample rate. </xs:documentation>
 	<!--===============================-->
 	<xs:complexType name="AnalyticsDeviceEngineConfigurationExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -7956,7 +8111,7 @@ and sample rate. </xs:documentation>
 		<xs:sequence>
 			<xs:element name="VideoAnalyticsConfiguration" type="tt:VideoAnalyticsConfiguration"/>
 			<xs:element name="AnalyticsEngineInputInfo" type="tt:AnalyticsEngineInputInfo"/>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -7971,7 +8126,7 @@ and sample rate. </xs:documentation>
 	<!--===============================-->
 	<xs:complexType name="AnalyticsEngineInputInfoExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -7982,7 +8137,7 @@ and sample rate. </xs:documentation>
 					<xs:element name="SourceIdentification" type="tt:SourceIdentification"/>
 					<xs:element name="VideoInput" type="tt:VideoEncoderConfiguration"/>
 					<xs:element name="MetadataInput" type="tt:MetadataInput"/>
-					<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 				</xs:sequence>
 				<xs:anyAttribute processContents="lax"/>
 			</xs:extension>
@@ -8000,7 +8155,7 @@ and sample rate. </xs:documentation>
 	<!--===============================-->
 	<xs:complexType name="SourceIdentificationExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -8014,7 +8169,7 @@ and sample rate. </xs:documentation>
 	<!--===============================-->
 	<xs:complexType name="MetadataInputExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 	</xs:complexType>
 	<!--===============================-->
@@ -8045,7 +8200,7 @@ and sample rate. </xs:documentation>
 					<xs:element name="Multicast" type="tt:MulticastConfiguration" minOccurs="0"/>
 					<xs:element name="Subscription" type="tt:Config"/>
 					<xs:element name="Mode" type="tt:ModeOfOperation"/>
-					<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 				</xs:sequence>
 				<xs:anyAttribute processContents="lax"/>
 			</xs:extension>
@@ -8072,7 +8227,7 @@ and sample rate. </xs:documentation>
 				</xs:annotation>
 			</xs:element>
 			<xs:element name="State" type="tt:AnalyticsState"/>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -8081,7 +8236,7 @@ and sample rate. </xs:documentation>
 		<xs:sequence>
 			<xs:element name="Error" type="xs:string" minOccurs="0"/>
 			<xs:element name="State" type="xs:string"/>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -8119,7 +8274,7 @@ and sample rate. </xs:documentation>
 	<!--===============================-->
 	<xs:complexType name="ActionEngineEventPayloadExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -8169,13 +8324,41 @@ and sample rate. </xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="AudioClassDescriptorExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
 	<!--=========================================-->
 	<!--  End, Audio event types                 -->
-	<!--=========================================-->	
+	<!--=========================================-->
+	<!--=========================================-->
+	<!--  Begin, Media event types               -->
+	<!--=========================================-->
+	<xs:complexType name="ActiveConnection">
+		<xs:sequence>
+			<xs:element name="CurrentBitrate" type="xs:float"/>
+			<xs:element name="CurrentFps" type="xs:float"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
+		</xs:sequence>
+		<xs:anyAttribute processContents="lax"/>
+	</xs:complexType>
+	<!--===============================-->
+	<xs:complexType name="ProfileStatus">
+		<xs:sequence>
+			<xs:element name="ActiveConnections" type="tt:ActiveConnection" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Extension" type="tt:ProfileStatusExtension" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	<!--===============================-->
+	<xs:complexType name="ProfileStatusExtension">
+		<xs:sequence>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
+		</xs:sequence>
+		<xs:anyAttribute processContents="lax"/>
+	</xs:complexType>
+	<!--=========================================-->
+	<!--  End, Media event types                 -->
+	<!--=========================================-->
 	<!--==================================-->
 	<!--  Begin, OSD Device Types         -->
 	<!--==================================-->
@@ -8215,7 +8398,7 @@ and sample rate. </xs:documentation>
 	<!--===============================-->
 	<xs:complexType name="OSDPosConfigurationExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -8295,12 +8478,15 @@ and sample rate. </xs:documentation>
 			</xs:element>
 			<xs:element name="Extension" type="tt:OSDTextConfigurationExtension" minOccurs="0"/>
 		</xs:sequence>
+		<xs:attribute name="IsPersistentText" type="xs:boolean" use="optional">
+			<xs:annotation><xs:documentation>This flag is applicable for Type Plain and defaults to true. When set to false the PlainText content will not be persistent across device reboots. </xs:documentation></xs:annotation>
+		</xs:attribute>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
 	<!--===============================-->
 	<xs:complexType name="OSDTextConfigurationExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -8319,7 +8505,7 @@ and sample rate. </xs:documentation>
 	<!--===============================-->
 	<xs:complexType name="OSDImgConfigurationExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -8342,20 +8528,18 @@ and sample rate. </xs:documentation>
 				<li>http://www.onvif.org/ver10/colorspace/HSV - HSV colourspace</li></ul>
 			</xs:documentation>
 		</xs:annotation>
-		<xs:sequence>
-			<xs:choice>
-				<xs:element name="ColorList" type="tt:Color" maxOccurs="unbounded">
-					<xs:annotation>
-						<xs:documentation>List the supported color.</xs:documentation>
-					</xs:annotation>
-				</xs:element>
-				<xs:element name="ColorspaceRange" type="tt:ColorspaceRange" maxOccurs="unbounded">
-					<xs:annotation>
-						<xs:documentation>Define the rang of color supported.</xs:documentation>
-					</xs:annotation>
-				</xs:element>
-			</xs:choice>
-		</xs:sequence>
+		<xs:choice>
+			<xs:element name="ColorList" type="tt:Color" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>List the supported color.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ColorspaceRange" type="tt:ColorspaceRange" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Define the rang of color supported.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
 	<!--===============================-->
@@ -8381,7 +8565,7 @@ and sample rate. </xs:documentation>
 	<!--===============================-->
 	<xs:complexType name="OSDColorOptionsExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -8425,7 +8609,7 @@ and sample rate. </xs:documentation>
 	<!--===============================-->
 	<xs:complexType name="OSDTextOptionsExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -8434,17 +8618,37 @@ and sample rate. </xs:documentation>
 		<xs:sequence>
 			<xs:element name="ImagePath" type="xs:anyURI" maxOccurs="unbounded">
 				<xs:annotation>
-					<xs:documentation>List of avaiable uris of image.</xs:documentation>
+					<xs:documentation>List of available image URIs.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
 			<xs:element name="Extension" type="tt:OSDImgOptionsExtension" minOccurs="0"/>
 		</xs:sequence>
+		<xs:attribute name="FormatsSupported" type="tt:StringAttrList">
+			<xs:annotation>
+				<xs:documentation>List of supported image MIME types, such as "image/png".</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="MaxSize" type="xs:int">
+			<xs:annotation>
+				<xs:documentation>The maximum size (in bytes) of the image that can be uploaded.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="MaxWidth" type="xs:int">
+			<xs:annotation>
+				<xs:documentation>The maximum width (in pixels) of the image that can be uploaded.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="MaxHeight" type="xs:int">
+			<xs:annotation>
+				<xs:documentation>The maximum height (in pixels) of the image that can be uploaded.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
 	<!--===============================-->
 	<xs:complexType name="OSDImgOptionsExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -8487,7 +8691,7 @@ and sample rate. </xs:documentation>
 	<!--===============================-->
 	<xs:complexType name="OSDConfigurationExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
@@ -8506,7 +8710,7 @@ and sample rate. </xs:documentation>
 		<xs:sequence>
 			<xs:element name="MaximumNumberOfOSDs" type="tt:MaximumNumberOfOSDs">
 				<xs:annotation>
-					<xs:documentation>The maximum number of OSD configurations supported for the specificate video source configuration. If a device limits the number of instances by OSDType, it should indicate the supported number via the related attribute.</xs:documentation>
+					<xs:documentation>The maximum number of OSD configurations supported for the specified video source configuration. If the configuration does not support OSDs, this value shall be zero and the Type and PositionOption elements are ignored. If a device limits the number of instances by OSDType, it shall indicate the supported number for each type via the related attribute.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
 			<xs:element name="Type" type="tt:OSDType" maxOccurs="unbounded">
@@ -8541,11 +8745,75 @@ and sample rate. </xs:documentation>
 	<!--===============================-->
 	<xs:complexType name="OSDConfigurationOptionsExtension">
 		<xs:sequence>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 		</xs:sequence>
 		<xs:anyAttribute processContents="lax"/>
 	</xs:complexType>
 	<!--=========================================-->
 	<!--  End, OSD Device Types                  -->
+	<!--=========================================-->
+
+	<!--=========================================-->
+	<!--  Begin, StorageConfiguration            -->
+	<!--=========================================-->
+	<xs:complexType name="FileProgress">
+    	<xs:sequence>
+    		<xs:element name="FileName" type="xs:string">
+    			<xs:annotation>
+    				<xs:documentation>Exported file name</xs:documentation>
+    			</xs:annotation>
+    		</xs:element>
+    		<xs:element name="Progress" type="xs:float">
+    			<xs:annotation>
+    				<xs:documentation>Normalized percentage completion for uploading the exported file</xs:documentation>
+    			</xs:annotation>
+    		</xs:element>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
+		</xs:sequence>
+		<xs:anyAttribute processContents="lax"/>
+    </xs:complexType>
+
+	<xs:complexType name="ArrayOfFileProgress">
+    	<xs:sequence>
+    		<xs:element name="FileProgress" type="tt:FileProgress" minOccurs="0" maxOccurs="unbounded">
+    			<xs:annotation>
+    				<xs:documentation>Exported file name and export progress information</xs:documentation>
+    			</xs:annotation>
+    		</xs:element>
+			<xs:element name="Extension" type="tt:ArrayOfFileProgressExtension" minOccurs="0"/>
+		</xs:sequence>
+		<xs:anyAttribute processContents="lax"/>
+    </xs:complexType>
+	<xs:complexType name="ArrayOfFileProgressExtension">
+		<xs:sequence>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
+		</xs:sequence>
+		<xs:anyAttribute processContents="lax"/>
+	</xs:complexType>
+
+	<xs:complexType name="StorageReferencePath">
+    	<xs:sequence>
+    		<xs:element name="StorageToken" type="tt:ReferenceToken">
+    			<xs:annotation>
+    				<xs:documentation>identifier of an existing Storage Configuration.</xs:documentation>
+    			</xs:annotation>
+    		</xs:element>
+    		<xs:element name="RelativePath" type="xs:string" minOccurs="0">
+    			<xs:annotation>
+    				<xs:documentation>gives the relative directory path on the storage</xs:documentation>
+    			</xs:annotation>
+    		</xs:element>
+			<xs:element name="Extension" type="tt:StorageReferencePathExtension" minOccurs="0"/>
+		</xs:sequence>
+		<xs:anyAttribute processContents="lax"/>
+    </xs:complexType>
+	<xs:complexType name="StorageReferencePathExtension">
+		<xs:sequence>
+			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
+		</xs:sequence>
+		<xs:anyAttribute processContents="lax"/>
+	</xs:complexType>
+	<!--=========================================-->
+	<!--  End, StorageConfiguration              -->
 	<!--=========================================-->
 </xs:schema>

@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../../../ver20/util/onvif-wsdl-viewer.xsl"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="http://www.onvif.org/ver20/util/onvif-wsdl-viewer.xsl"?>
 <!--
-Copyright (c) 2008-2012 by ONVIF: Open Network Video Interface Forum. All rights reserved.
+Copyright (c) 2008-2017 by ONVIF: Open Network Video Interface Forum. All rights reserved.
 
 Recipients of this document may copy, distribute, publish, or display this document so long as this copyright notice, license and disclaimer are retained with all copies of the document. No license is granted to modify this document.
 
@@ -10,8 +10,8 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 -->
 <wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tds="http://www.onvif.org/ver10/device/wsdl" targetNamespace="http://www.onvif.org/ver10/device/wsdl">
 	<wsdl:types>
-		<xs:schema targetNamespace="http://www.onvif.org/ver10/device/wsdl" xmlns:tt="http://www.onvif.org/ver10/schema" xmlns:tds="http://www.onvif.org/ver10/device/wsdl" elementFormDefault="qualified" version="2.4.1">
-			<xs:import namespace="http://www.onvif.org/ver10/schema" schemaLocation="onvif.xsd"/>
+		<xs:schema targetNamespace="http://www.onvif.org/ver10/device/wsdl" xmlns:tt="http://www.onvif.org/ver10/schema" xmlns:tds="http://www.onvif.org/ver10/device/wsdl" elementFormDefault="qualified" version="17.06">
+                        <xs:import namespace="http://www.onvif.org/ver10/schema" schemaLocation="http://www.onvif.org/ver10/schema/onvif.xsd"/>
 			<!--===============================-->
 			<xs:element name="GetServices">
 				<xs:complexType>
@@ -64,7 +64,7 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 							<xs:documentation>The version of the service (not the ONVIF core spec version).</xs:documentation>
 						</xs:annotation>
 					</xs:element>
-					<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 				</xs:sequence>
 				<xs:anyAttribute processContents="lax"/>
 			</xs:complexType>
@@ -245,6 +245,16 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 						<xs:documentation>The maximum number of users that the device supports.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
+				<xs:attribute name="MaxUserNameLength" type="xs:int">
+					<xs:annotation>
+						<xs:documentation>Maximum number of characters supported for the username by CreateUsers.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="MaxPasswordLength" type="xs:int">
+					<xs:annotation>
+						<xs:documentation>Maximum number of characters supported for the password by CreateUsers and SetUser.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
 				<xs:anyAttribute processContents="lax"/>
 			</xs:complexType>
 			<!--===============================-->
@@ -261,7 +271,7 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 				</xs:attribute>
 				<xs:attribute name="RemoteDiscovery" type="xs:boolean">
 					<xs:annotation>
-						<xs:documentation>Indicates support for remote discovery, see WS-Discovery.</xs:documentation>
+						<xs:documentation>Indicates support for remote discovery.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 				<xs:attribute name="SystemBackup" type="xs:boolean">
@@ -281,7 +291,7 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 				</xs:attribute>
 				<xs:attribute name="HttpFirmwareUpgrade" type="xs:boolean">
 					<xs:annotation>
-						<xs:documentation>Indicates support for system backup through MTOM.</xs:documentation>
+						<xs:documentation>Indicates support for firmware upgrade through HTTP.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 				<xs:attribute name="HttpSystemBackup" type="xs:boolean">
@@ -299,8 +309,53 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 						<xs:documentation>Indicates support for retrieving support information through HTTP.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
+				<xs:attribute name="StorageConfiguration" type="xs:boolean">
+					<xs:annotation>
+						<xs:documentation>Indicates support for storage configuration interfaces.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="MaxStorageConfigurations" type="xs:int">
+					<xs:annotation>
+						<xs:documentation>Indicates maximum number of storage configurations supported.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="GeoLocationEntries" type="xs:int">
+					<xs:annotation>
+						<xs:documentation>If present signals support for geo location. The value signals the supported number of entries.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="AutoGeo" type="tt:StringAttrList">
+					<xs:annotation>
+						<xs:documentation>List of supported automatic GeoLocation adjustment supported by the device. Valid items are defined by tds:AutoGeoMode.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="StorageTypesSupported" type="tt:StringAttrList">
+					<xs:annotation>
+						<xs:documentation>Enumerates the supported StorageTypes, see tds:StorageType.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
 				<xs:anyAttribute processContents="lax"/>
 			</xs:complexType>
+			<!--===============================-->
+			<xs:simpleType name="AutoGeoModes">
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="Location">
+						<xs:annotation>	
+							<xs:documentation>Automatic adjustment of the device location.</xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="Heading">
+						<xs:annotation>	
+							<xs:documentation>Automatic adjustment of the device orientation relative to the compass also called yaw.</xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="Leveling">
+						<xs:annotation>	
+							<xs:documentation>Automatic adjustment of the deviation from the horizon also called pitch and roll.</xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+    			</xs:restriction>
+			</xs:simpleType>
 			<!--===============================-->
 			<xs:complexType name="MiscCapabilities">
 				<xs:attribute name="AuxiliaryCommands" type="tt:StringAttrList">
@@ -710,7 +765,7 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 				<xs:complexType>
 					<xs:sequence>
 						<xs:element name="GUID" type="xs:string"/>
-						<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+						<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
@@ -1745,7 +1800,7 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 			<xs:element name="GetDot11Capabilities">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+						<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
@@ -1801,7 +1856,7 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 						<xs:element name="Extension" minOccurs="0">
 							<xs:complexType>
 								<xs:sequence>
-									<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+									<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
 								</xs:sequence>
 							</xs:complexType>
 						</xs:element>
@@ -1837,6 +1892,221 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
+			<!--===============================-->
+			
+			<xs:complexType name="UserCredential">
+				<xs:sequence>
+					<xs:element name="UserName" type="xs:string">
+						<xs:annotation>	
+							<xs:documentation>User name</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Password" type="xs:string" minOccurs="0">
+						<xs:annotation>	
+							<xs:documentation> optional password</xs:documentation> 
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Extension" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:complexType>
+			
+			<xs:simpleType name="StorageType">
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="NFS">
+						<xs:annotation>	
+							<xs:documentation>NFS protocol</xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="CIFS">
+						<xs:annotation>
+							<xs:documentation>CIFS protocol</xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="CDMI">
+						<xs:annotation>
+							<xs:documentation>CDMI protocol</xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="FTP">
+						<xs:annotation>
+							<xs:documentation>FTP protocol</xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+				</xs:restriction>
+			</xs:simpleType>
+			
+			<xs:complexType name="StorageConfigurationData">
+				<xs:sequence>
+					<xs:element name="LocalPath" type="xs:anyURI" minOccurs="0">
+						<xs:annotation>
+			  				<xs:documentation> local path </xs:documentation>
+			  			</xs:annotation>
+					</xs:element>
+					<xs:element name="StorageUri" type="xs:anyURI" minOccurs="0">
+			  			<xs:annotation>
+			  				<xs:documentation> Storage server address </xs:documentation>
+			  			</xs:annotation>
+			  		</xs:element>
+					<xs:element name="User" type="tds:UserCredential"  minOccurs="0">
+			  			<xs:annotation>
+			  				<xs:documentation> User credential for the storage server </xs:documentation>
+			  			</xs:annotation>
+			  		</xs:element>
+					<xs:element name="Extension" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>   <!-- first Vendor then ONVIF -->
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="type" type="xs:string" use="required">
+					<xs:annotation>
+						<xs:documentation>StorageType lists the acceptable values for type attribute </xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:anyAttribute processContents="lax"/>
+			 </xs:complexType>
+
+			<xs:complexType name="StorageConfiguration">
+				<xs:complexContent>
+					<xs:extension base="tt:DeviceEntity">
+						<xs:sequence>
+							<xs:element name="Data" type="tds:StorageConfigurationData">
+							</xs:element>
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+
+			<!--===============================-->
+			<!--===============================-->
+			<xs:element name="GetStorageConfigurations">
+				<xs:complexType>
+					<xs:sequence/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="GetStorageConfigurationsResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="StorageConfigurations" type="tds:StorageConfiguration" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>			
+			<!--===============================-->
+			<!--===============================-->
+ 			<xs:element name="CreateStorageConfiguration">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="StorageConfiguration" type="tds:StorageConfigurationData">
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>			
+			<xs:element name="CreateStorageConfigurationResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Token" type="tt:ReferenceToken">
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>	 		
+			<!--===============================-->
+			<!--===============================-->
+ 			<xs:element name="GetStorageConfiguration">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Token" type="tt:ReferenceToken">
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>			
+			<xs:element name="GetStorageConfigurationResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="StorageConfiguration" type="tds:StorageConfiguration">
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>	 		
+			<!--===============================-->
+			<!--===============================-->
+ 			<xs:element name="SetStorageConfiguration">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="StorageConfiguration" type="tds:StorageConfiguration">
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>			
+			<xs:element name="SetStorageConfigurationResponse">
+				<xs:complexType>
+					<xs:sequence/>
+				</xs:complexType>
+			</xs:element>	 		
+			<!--===============================-->
+			<!--===============================-->
+ 			<xs:element name="DeleteStorageConfiguration">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Token" type="tt:ReferenceToken">
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>			
+			<xs:element name="DeleteStorageConfigurationResponse">
+				<xs:complexType>
+					<xs:sequence/>
+				</xs:complexType>
+			</xs:element>	 		
+			<!--===============================-->
+			<xs:element name="GetGeoLocation">
+				<xs:complexType>
+					<xs:sequence>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>			
+			<xs:element name="GetGeoLocationResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Location" type="tt:LocationEntity" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>	 		
+			<!--===============================-->
+			<xs:element name="SetGeoLocation">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Location" type="tt:LocationEntity" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>			
+			<xs:element name="SetGeoLocationResponse">
+				<xs:complexType>
+					<xs:sequence/>
+				</xs:complexType>
+			</xs:element>	 		
+			<!--===============================-->
+			<xs:element name="DeleteGeoLocation">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Location" type="tt:LocationEntity" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>			
+			<xs:element name="DeleteGeoLocationResponse">
+				<xs:complexType>
+					<xs:sequence/>
+				</xs:complexType>
+			</xs:element>	 		
+			<!--===============================-->
+			<!--===============================-->
 		</xs:schema>
 	</wsdl:types>
 	<wsdl:message name="GetServicesRequest">
@@ -2331,6 +2601,57 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 	<wsdl:message name="StartSystemRestoreResponse">
 		<wsdl:part name="parameters" element="tds:StartSystemRestoreResponse"/>
 	</wsdl:message>
+	
+	<wsdl:message name="GetStorageConfigurationsRequest">
+		<wsdl:part name="parameters" element="tds:GetStorageConfigurations"/>
+	</wsdl:message>
+	<wsdl:message name="GetStorageConfigurationsResponse">
+		<wsdl:part name="parameters" element="tds:GetStorageConfigurationsResponse"/>
+	</wsdl:message>
+	<wsdl:message name="CreateStorageConfigurationRequest">
+		<wsdl:part name="parameters" element="tds:CreateStorageConfiguration"/>
+	</wsdl:message>
+	<wsdl:message name="CreateStorageConfigurationResponse">
+		<wsdl:part name="parameters" element="tds:CreateStorageConfigurationResponse"/>
+	</wsdl:message>
+	<wsdl:message name="GetStorageConfigurationRequest">
+		<wsdl:part name="parameters" element="tds:GetStorageConfiguration"/>
+	</wsdl:message>
+	<wsdl:message name="GetStorageConfigurationResponse">
+		<wsdl:part name="parameters" element="tds:GetStorageConfigurationResponse"/>
+	</wsdl:message>
+	<wsdl:message name="SetStorageConfigurationRequest">
+		<wsdl:part name="parameters" element="tds:SetStorageConfiguration"/>
+	</wsdl:message>
+	<wsdl:message name="SetStorageConfigurationResponse">
+		<wsdl:part name="parameters" element="tds:SetStorageConfigurationResponse"/>
+	</wsdl:message>
+	<wsdl:message name="DeleteStorageConfigurationRequest">
+		<wsdl:part name="parameters" element="tds:DeleteStorageConfiguration"/>
+	</wsdl:message>
+	<wsdl:message name="DeleteStorageConfigurationResponse">
+		<wsdl:part name="parameters" element="tds:DeleteStorageConfigurationResponse"/>
+	</wsdl:message>	
+	
+	<wsdl:message name="GetGeoLocationRequest">
+		<wsdl:part name="parameters" element="tds:GetGeoLocation"/>
+	</wsdl:message>
+	<wsdl:message name="GetGeoLocationResponse">
+		<wsdl:part name="parameters" element="tds:GetGeoLocationResponse"/>
+	</wsdl:message>
+	<wsdl:message name="SetGeoLocationRequest">
+		<wsdl:part name="parameters" element="tds:SetGeoLocation"/>
+	</wsdl:message>
+	<wsdl:message name="SetGeoLocationResponse">
+		<wsdl:part name="parameters" element="tds:SetGeoLocationResponse"/>
+	</wsdl:message>
+	<wsdl:message name="DeleteGeoLocationRequest">
+		<wsdl:part name="parameters" element="tds:DeleteGeoLocation"/>
+	</wsdl:message>
+	<wsdl:message name="DeleteGeoLocationResponse">
+		<wsdl:part name="parameters" element="tds:DeleteGeoLocationResponse"/>
+	</wsdl:message>	
+	
 	<wsdl:portType name="Device">
 		<wsdl:operation name="GetServices">
 			<wsdl:documentation>Returns information about services on the device.</wsdl:documentation>
@@ -2420,13 +2741,10 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 					<li>Fixed</li>
 					<li>Configurable</li>
 				</ul>
-				Fixed scope parameters cannot be altered through the device management interface but are
-				permanent device characteristics part of the device firmware configurations. The scope type is
-				indicated in the scope list returned in the get scope parameters response. Configurable scope
-				parameters can be set throught the set and add scope parameters operations. 
-				The device shall support retrieval of discovery scope parameters
-				through the GetScopes command. As some scope parameters are mandatory, the client
-				always expects a scope list in the response.</wsdl:documentation>
+				Fixed scope parameters are permanent device characteristics and cannot be removed through the device management interface. 
+				The scope type is indicated in the scope list returned in the get scope parameters response. A device shall support 
+				retrieval of discovery scope parameters through the GetScopes command. As some scope parameters are mandatory, 
+				the device shall return a non-empty scope list in the response.</wsdl:documentation>
 			<wsdl:input message="tds:GetScopesRequest"/>
 			<wsdl:output message="tds:GetScopesResponse"/>
 		</wsdl:operation>
@@ -2683,7 +3001,6 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 			<wsdl:documentation>This operation gets the zero-configuration from a device. If the device supports dynamic IP
 				configuration according to [RFC3927], it shall support the return of IPv4 zero configuration
 				address and status through the GetZeroConfiguration command.<br/>
-			Use GetCapalities to check if zero-zero-configuration is supported.<br/>
 			Devices supporting zero configuration on more than one interface shall use the extension to list the additional interface settings.</wsdl:documentation>
 			<wsdl:input message="tds:GetZeroConfigurationRequest"/>
 			<wsdl:output message="tds:GetZeroConfigurationResponse"/>
@@ -2863,6 +3180,9 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 					<li>tt:Washer|Off – Request to stop the washer.</li>
 					<li>tt:WashingProcedure|On – Request to start the washing procedure.</li>
 					<li>tt: WashingProcedure |Off – Request to stop the washing procedure.</li>
+					<li>tt:IRLamp|On – Request to turn ON an IR illuminator attached to the unit.</li>
+					<li>tt:IRLamp|Off – Request to turn OFF an IR illuminator attached to the unit.</li>
+					<li>tt:IRLamp|Auto – Request to configure an IR illuminator attached to the unit so that it automatically turns ON and OFF.</li>
 				</ul>
 				A device that indicates auxiliary service capability shall support this command.</wsdl:documentation>
 			<wsdl:input message="tds:SendAuxiliaryCommandRequest"/>
@@ -3034,6 +3354,66 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 			<wsdl:input message="tds:StartSystemRestoreRequest"/>
 			<wsdl:output message="tds:StartSystemRestoreResponse"/>
 		</wsdl:operation>
+
+		<wsdl:operation name="GetStorageConfigurations">
+			<wsdl:documentation>
+			This operation lists all existing storage configurations for the device. 
+			</wsdl:documentation>
+			<wsdl:input message="tds:GetStorageConfigurationsRequest"/>
+			<wsdl:output message="tds:GetStorageConfigurationsResponse"/>
+		</wsdl:operation>
+		<wsdl:operation name="CreateStorageConfiguration">
+			<wsdl:documentation>
+			This operation creates a new storage configuration. 
+			The configuration data shall be created in the device and shall be persistent (remain after reboot).
+			</wsdl:documentation>
+			<wsdl:input message="tds:CreateStorageConfigurationRequest"/>
+			<wsdl:output message="tds:CreateStorageConfigurationResponse"/>
+		</wsdl:operation>
+		<wsdl:operation name="GetStorageConfiguration">
+			<wsdl:documentation>
+			This operation retrieves the Storage configuration associated with the given storage configuration token.
+			</wsdl:documentation>
+			<wsdl:input message="tds:GetStorageConfigurationRequest"/>
+			<wsdl:output message="tds:GetStorageConfigurationResponse"/>
+		</wsdl:operation>
+		<wsdl:operation name="SetStorageConfiguration">
+			<wsdl:documentation>
+			This operation modifies an existing Storage configuration.
+			</wsdl:documentation>
+			<wsdl:input message="tds:SetStorageConfigurationRequest"/>
+			<wsdl:output message="tds:SetStorageConfigurationResponse"/>
+		</wsdl:operation>
+		<wsdl:operation name="DeleteStorageConfiguration">
+			<wsdl:documentation>
+			This operation deletes the given storage configuration and configuration change shall always be persistent.
+			</wsdl:documentation>
+			<wsdl:input message="tds:DeleteStorageConfigurationRequest"/>
+			<wsdl:output message="tds:DeleteStorageConfigurationResponse"/>
+		</wsdl:operation>
+
+		<wsdl:operation name="GetGeoLocation">
+			<wsdl:documentation>
+				This operation lists all existing geo location configurations for the device. 
+			</wsdl:documentation>
+			<wsdl:input message="tds:GetGeoLocationRequest"/>
+			<wsdl:output message="tds:GetGeoLocationResponse"/>
+		</wsdl:operation>
+		<wsdl:operation name="SetGeoLocation">
+			<wsdl:documentation>
+				This operation allows to modify one or more geo configuration entries.
+			</wsdl:documentation>
+			<wsdl:input message="tds:SetGeoLocationRequest"/>
+			<wsdl:output message="tds:SetGeoLocationResponse"/>
+		</wsdl:operation>
+		<wsdl:operation name="DeleteGeoLocation">
+			<wsdl:documentation>
+				This operation deletes the given geo location entries.
+			</wsdl:documentation>
+			<wsdl:input message="tds:DeleteGeoLocationRequest"/>
+			<wsdl:output message="tds:DeleteGeoLocationResponse"/>
+		</wsdl:operation>
+		
 	</wsdl:portType>
 	<wsdl:binding name="DeviceBinding" type="tds:Device">
 		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
@@ -3775,6 +4155,82 @@ IN NO EVENT WILL THE CORPORATION OR ITS MEMBERS OR THEIR AFFILIATES BE LIABLE FO
 				<soap:body use="literal"/>
 			</wsdl:output>
 		</wsdl:operation>
+
+		<wsdl:operation name="GetStorageConfigurations">
+			<soap:operation soapAction="http://www.onvif.org/ver10/device/wsdl/GetStorageConfigurations"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="CreateStorageConfiguration">
+			<soap:operation soapAction="http://www.onvif.org/ver10/device/wsdl/CreateStorageConfiguration"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="GetStorageConfiguration">
+			<soap:operation soapAction="http://www.onvif.org/ver10/device/wsdl/GetStorageConfiguration"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="SetStorageConfiguration">
+			<soap:operation soapAction="http://www.onvif.org/ver10/device/wsdl/SetStorageConfiguration"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="DeleteStorageConfiguration">
+			<soap:operation soapAction="http://www.onvif.org/ver10/device/wsdl/DeleteStorageConfiguration"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+
+		<wsdl:operation name="GetGeoLocation">
+			<soap:operation soapAction="http://www.onvif.org/ver10/device/wsdl/GetGeoLocation"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="SetGeoLocation">
+			<soap:operation soapAction="http://www.onvif.org/ver10/device/wsdl/SetGeoLocation"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="DeleteGeoLocation">
+			<soap:operation soapAction="http://www.onvif.org/ver10/device/wsdl/DeleteGeoLocation"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		
+		
 	</wsdl:binding>
 	<!--===============================-->
 	<!--===============================-->

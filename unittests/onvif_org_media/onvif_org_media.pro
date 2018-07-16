@@ -1,4 +1,4 @@
-KDWSDL_OPTIONS = -server -namespace media
+KDWSDL_OPTIONS = -server -namespace media -import-path $${TOP_SOURCE_DIR}/unittests/onvif.org -use-local-files-only
 include( $${TOP_SOURCE_DIR}/unittests/unittests.pri )
 QT += network xml
 SOURCES = test_onvif_media.cpp

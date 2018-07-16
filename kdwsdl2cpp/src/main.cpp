@@ -46,6 +46,13 @@ static void showHelp(const char *appName)
             "                            use <type> as the getter return value for optional elements.\n"
             "                            <type> can be either raw-pointer or boost-optional\n"
             "  -keep-unused-types        keep the wsdl unused types to the cpp generation step\n"
+            "  -import-path <importpath> search for files first in this path before\n"
+            "                            downloading them. may be specified multiple times.\n"
+            "                            the file needs to be located at:\n"
+            "                            <importpath>/<url-host>/<url-path>\n"
+            "  -use-local-files-only     only use local files instead of downloading them\n"
+            "                            automatically. this can be used to force the correct\n"
+            "                            use of the import-path option\n"
             "\n", appName);
 }
 
@@ -63,6 +70,8 @@ int main(int argc, char **argv)
     QString nameSpace;
     Settings::OptionalElementType optionalElementType = Settings::ENone;
     bool keepUnusedTypes = false;
+    QStringList importPathList;
+    bool useLocalFilesOnly = false;
 
     int arg = 1;
     while (arg < argc) {
@@ -125,6 +134,15 @@ int main(int argc, char **argv)
             }
         } else if (opt == QLatin1String("-keep-unused-types")) {
             keepUnusedTypes = true;
+        } else if (opt == QLatin1String("-import-path")) {
+            ++arg;
+            if (!argv[arg]) {
+                showHelp(argv[0]);
+                return 1;
+            }
+            importPathList.append(QFile::decodeName(argv[arg]));
+        } else if (opt == QLatin1String("-use-local-files-only")) {
+            useLocalFilesOnly = true;
         } else if (!fileName) {
             fileName = argv[arg];
         } else {
@@ -150,6 +168,8 @@ int main(int argc, char **argv)
     Settings::self()->setNameSpace(nameSpace);
     Settings::self()->setOptionalElementType(optionalElementType);
     Settings::self()->setKeepUnusedTypes(keepUnusedTypes);
+    Settings::self()->setImportPathList(importPathList);
+    Settings::self()->setUseLocalFilesOnly(useLocalFilesOnly);
     KWSDL::Compiler compiler;
 
     // so that we have an event loop, for downloads

@@ -27,14 +27,14 @@ This document and the information contained herein is provided on an "AS IS" bas
 <!-- ======================== Imports  ============================ -->
   
   <xsd:import namespace="http://www.w3.org/2005/08/addressing"
-              schemaLocation="ws-addr.xsd" 
+              schemaLocation="http://www.w3.org/2005/08/addressing/ws-addr.xsd" 
   />
 
   <xsd:import namespace="http://docs.oasis-open.org/wsrf/bf-2"
-              schemaLocation="bf-2.xsd" 
+              schemaLocation="http://docs.oasis-open.org/wsrf/bf-2.xsd" 
   />
   <xsd:import namespace="http://docs.oasis-open.org/wsn/t-1"
-              schemaLocation="t-1.xsd" 
+              schemaLocation="http://docs.oasis-open.org/wsn/t-1.xsd" 
   />
   
 <!-- ===================== Misc. Helper Types ===================== -->
