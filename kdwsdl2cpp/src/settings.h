@@ -21,7 +21,7 @@
 #define SETTINGS_H
 
 #include <QMap>
-#include <QString>
+#include <QStringList>
 #include <QUrl>
 
 class Settings
