@@ -5,7 +5,6 @@ KDWSDL_OPTIONS = -optional-element-type raw-pointer
 include(../unittests.pri)
 
 CONFIG   += console
-CONFIG   -= app_bundle
 
 TEMPLATE = app
 

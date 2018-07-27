@@ -7,6 +7,9 @@ DESTDIR=.
 QT += testlib
 QT += xml
 
+macx:CONFIG -= app_bundle
+static { macx:QMAKE_LFLAGS += -Wl,-rpath,$$[QT_INSTALL_LIBS] }
+
 INCLUDEPATH += $${TOP_SOURCE_DIR}/testtools
 DEPENDPATH += $${TOP_SOURCE_DIR}/testtools
 
