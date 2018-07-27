@@ -5,7 +5,6 @@ KDWSDL_OPTIONS = -optional-element-type boost-optional
 include(../unittests.pri)
 
 CONFIG   += console
-CONFIG   -= app_bundle
 
 TEMPLATE = app
 
