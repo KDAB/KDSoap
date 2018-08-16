@@ -25,10 +25,9 @@
 
 #include <QtGlobal>
 
+#include <QTcpSocket> //may define QT_NO_OPENSSL
 #ifndef QT_NO_OPENSSL
 #include <QSslSocket>
-#else
-#include <QTcpSocket>
 #endif
 
 #include <QMap>
