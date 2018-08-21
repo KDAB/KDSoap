@@ -147,7 +147,7 @@ QString KDSoapMessage::faultAsString() const
         if (!detail.isEmpty()) {
             if (!ret.endsWith(QLatin1Char('.')))
                 ret += QLatin1Char('.');
-            ret += QStringLiteral(" Error detail: ") + detail;
+            ret += QLatin1String(" Error detail: ") + detail;
         }
         return ret;
     }
