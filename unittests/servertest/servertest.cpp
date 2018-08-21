@@ -835,7 +835,7 @@ private Q_SLOTS:
 
         QList<QByteArray> expected;
         expected << "CALL getEmployeeCountry";
-        expected << "FAULT getEmployeeCountry -- Fault code Client.Data: Empty employee name (CountryServerObject)";
+        expected << "FAULT getEmployeeCountry -- Fault code Client.Data: Empty employee name (CountryServerObject). Error detail: Employee name must not be empty";
         compareLines(expected, fileName);
 
         server->setLogLevel(KDSoapServer::LogNothing);
@@ -847,7 +847,7 @@ private Q_SLOTS:
         server->setLogLevel(KDSoapServer::LogFaults);
         makeSimpleCall(server->endPoint());
         makeFaultyCall(server->endPoint());
-        expected << "FAULT getEmployeeCountry -- Fault code Client.Data: Empty employee name (CountryServerObject)";
+        expected << "FAULT getEmployeeCountry -- Fault code Client.Data: Empty employee name (CountryServerObject). Error detail: Employee name must not be empty";
         server->flushLogFile();
         compareLines(expected, fileName);
 

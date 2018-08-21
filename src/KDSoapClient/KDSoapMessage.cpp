@@ -139,10 +139,17 @@ QString KDSoapMessage::faultAsString() const
     } else {
         // This better be on a single line, since it's used by server-side logging too
         const QString actor = childValues().child(QLatin1String("faultactor")).value().toString();
-        return QObject::tr("Fault code %1: %2%3")
-               .arg(childValues().child(QLatin1String("faultcode")).value().toString())
-               .arg(childValues().child(QLatin1String("faultstring")).value().toString())
-               .arg(actor.isEmpty() ? QString() : QString::fromLatin1(" (%1)").arg(actor));
+        QString ret = QObject::tr("Fault code %1: %2%3")
+               .arg(childValues().child(QLatin1String("faultcode")).value().toString(),
+                    childValues().child(QLatin1String("faultstring")).value().toString(),
+                    actor.isEmpty() ? QString() : QString::fromLatin1(" (%1)").arg(actor));
+        const QString detail = childValues().child(QLatin1String("detail")).value().toString();
+        if (!detail.isEmpty()) {
+            if (!ret.endsWith(QLatin1Char('.')))
+                ret += QLatin1Char('.');
+            ret += QStringLiteral(" Error detail: ") + detail;
+        }
+        return ret;
     }
 }
 

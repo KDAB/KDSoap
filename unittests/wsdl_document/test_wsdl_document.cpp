@@ -1039,7 +1039,7 @@ void WsdlDocumentTest::testServerFault() // test the error signals emitted on er
     QCOMPARE(addEmployeeErrorSpy.count(), 1);
     QCOMPARE(soapErrorSpy[0][0].toString(), QString::fromLatin1("addEmployee"));
     KDSoapMessage msg = soapErrorSpy[0][1].value<KDSoapMessage>();
-    QCOMPARE(msg.faultAsString(), QString::fromLatin1("Fault code Client.Data: Empty employee name (DocServerObject)"));
+    QCOMPARE(msg.faultAsString(), QString::fromLatin1("Fault code Client.Data: Empty employee name (DocServerObject). Error detail: Employee name must not be empty"));
 }
 
 void WsdlDocumentTest::testSendTelegram()
@@ -1230,7 +1230,7 @@ void WsdlDocumentTest::testServerDifferentPathFault()
     TNS__GetNameInfo req;
     req.setName(QLatin1String("DOESNOTEXIST"));
     const TNS__NameInfo names = serv.getNameInfo(req).nameinfo();
-    QCOMPARE(serv.lastError(), QLatin1String("Fault code Server.Implementation: Not implemented (NameServiceServerObject)"));
+    QCOMPARE(serv.lastError(), QLatin1String("Fault code Server.Implementation: Not implemented (NameServiceServerObject). Error detail: DOESNOTEXIST"));
 }
 
 QTEST_MAIN(WsdlDocumentTest)
