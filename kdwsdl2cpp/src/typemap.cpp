@@ -19,6 +19,7 @@
 */
 
 #include <common/nsmanager.h>
+#include "settings.h"
 
 #include <QDebug>
 #include "typemap.h"
@@ -203,6 +204,12 @@ QString TypeMap::localType(const QName &typeName) const
     QList<Entry>::ConstIterator it = typeEntry(typeName);
     if (it == mTypeMap.constEnd()) {
         qDebug() << "ERROR: basic type not found:" << typeName;
+        if (Settings::self()->helpOnMissing()) {
+            QList<Entry>::ConstIterator it;
+            for (it = mTypeMap.constBegin(); it != mTypeMap.constEnd(); ++it) {
+                qDebug() << (*it).nameSpace << " :: " << (*it).typeName;
+            }
+        }
         return QString();
     }
     if (!(*it).builtinType) {
@@ -304,6 +311,12 @@ QString TypeMap::localTypeForElement(const QName &elementName) const
     }
 
     qDebug() << "TypeMap::localTypeForElement: unknown type" << elementName;
+    if (Settings::self()->helpOnMissing()) {
+        QList<Entry>::ConstIterator jt;
+        for (jt = mElementMap.constBegin(); jt != mElementMap.constEnd(); ++jt) {
+            qDebug() << (*jt).nameSpace << " :: " << (*jt).typeName;
+        }
+    }
     return QString();
 }
 
@@ -315,6 +328,12 @@ QName TypeMap::baseTypeForElement(const QName &elementName) const
     }
 
     qDebug() << "TypeMap::typeForElement: unknown type" << elementName;
+    if (Settings::self()->helpOnMissing()) {
+        QList<Entry>::ConstIterator jt;
+        for (jt = mElementMap.constBegin(); jt != mElementMap.constEnd(); ++jt) {
+            qDebug() << (*jt).nameSpace << " :: " << (*jt).typeName;
+        }
+    }
     return QName();
 }
 
@@ -420,6 +439,12 @@ void TypeMap::addSchemaTypes(const XSD::Types &types, const QString &ns)
         QList<Entry>::ConstIterator it = typeEntry(type);
         if (it == mTypeMap.constEnd()) {
             qDebug() << "ERROR: basic type not found:" << type;
+            if (Settings::self()->helpOnMissing()) {
+                QList<Entry>::ConstIterator jt;
+                for (jt = mTypeMap.constBegin(); jt != mTypeMap.constEnd(); ++jt) {
+                    qDebug() << (*jt).nameSpace << " :: " << (*jt).typeName;
+                }
+            }
             Q_ASSERT(0);
             continue;
         }

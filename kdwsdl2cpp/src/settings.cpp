@@ -230,3 +230,13 @@ void Settings::setImportPathList(const QStringList &importPathList)
         mImportPathList.prepend(wsdlDirPath);
     }
 }
+
+void Settings::setHelpOnMissing(bool b)
+{
+    mHelpOnMissing = b;
+}
+
+bool Settings::helpOnMissing() const
+{
+    return mHelpOnMissing;
+}

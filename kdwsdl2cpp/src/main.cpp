@@ -53,6 +53,8 @@ static void showHelp(const char *appName)
             "  -use-local-files-only     only use local files instead of downloading them\n"
             "                            automatically. this can be used to force the correct\n"
             "                            use of the import-path option\n"
+            "  -help-on-missing          When groups or basic types could not be found, display\n"
+            "                            available types (helps with wrong namespaces)\n"
             "\n", appName);
 }
 
@@ -72,6 +74,7 @@ int main(int argc, char **argv)
     bool keepUnusedTypes = false;
     QStringList importPathList;
     bool useLocalFilesOnly = false;
+    bool helpOnMissing = false;
 
     int arg = 1;
     while (arg < argc) {
@@ -143,6 +146,8 @@ int main(int argc, char **argv)
             importPathList.append(QFile::decodeName(argv[arg]));
         } else if (opt == QLatin1String("-use-local-files-only")) {
             useLocalFilesOnly = true;
+        } else if (opt == QLatin1String("-help-on-missing")) {
+            helpOnMissing = true;
         } else if (!fileName) {
             fileName = argv[arg];
         } else {
@@ -170,6 +175,7 @@ int main(int argc, char **argv)
     Settings::self()->setKeepUnusedTypes(keepUnusedTypes);
     Settings::self()->setImportPathList(importPathList);
     Settings::self()->setUseLocalFilesOnly(useLocalFilesOnly);
+    Settings::self()->setHelpOnMissing(helpOnMissing);
     KWSDL::Compiler compiler;
 
     // so that we have an event loop, for downloads
