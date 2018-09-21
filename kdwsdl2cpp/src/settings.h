@@ -78,6 +78,9 @@ public:
     bool useLocalFilesOnly() const;
     void setUseLocalFilesOnly(bool useLocalFilesOnly);
 
+    bool helpOnMissing() const;
+    void setHelpOnMissing(bool b);
+
 private:
     friend class SettingsSingleton;
     Settings();
@@ -96,6 +99,7 @@ private:
     OptionalElementType mOptionalElementType;
     bool mKeepUnusedTypes;
     bool mUseLocalFilesOnly;
+    bool mHelpOnMissing;
 };
 
 #endif
