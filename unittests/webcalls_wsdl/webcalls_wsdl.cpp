@@ -88,7 +88,9 @@ private slots:
             expectedResults += QString::fromLatin1("%1-02-14T00:00:00").arg(year);
         }
         connect(&holidays, SIGNAL(getValentinesDayDone(TNS__GetValentinesDayResponse)),
-                this,  SLOT(slotGetValentinesDayDone(TNS__GetValentinesDayResponse)));
+                this, SLOT(slotGetValentinesDayDone(TNS__GetValentinesDayResponse)));
+        connect(&holidays, SIGNAL(getValentinesDayError(KDSoapMessage)),
+                this, SLOT(slotGetValentinesDayError(KDSoapMessage)));
         m_eventLoop.exec();
 
         //qDebug() << m_resultsReceived;
@@ -142,6 +144,14 @@ protected slots:
     void slotGetValentinesDayDone(const TNS__GetValentinesDayResponse &response)
     {
         m_resultsReceived << response.getValentinesDayResult().toString(Qt::ISODate);
+        if (m_resultsReceived.count() == 3) {
+            m_eventLoop.quit();
+        }
+    }
+
+    void slotGetValentinesDayError(const KDSoapMessage &msg)
+    {
+        m_resultsReceived << msg.faultAsString();
         if (m_resultsReceived.count() == 3) {
             m_eventLoop.quit();
         }
