@@ -32,7 +32,7 @@ class KDSoapNamespacePrefixes : public QMap<QString /*ns*/, QString /*prefix*/>
 {
 public:
     void writeStandardNamespaces(QXmlStreamWriter &writer,
-                                 KDSoapClientInterface::SoapVersion version = KDSoapClientInterface::SOAP1_1,
+                                 KDSoap::SoapVersion version = KDSoap::SOAP1_1,
                                  bool messageAddressingEnabled = false);
 
     void writeNamespace(QXmlStreamWriter &writer, const QString &ns, const QString &prefix)

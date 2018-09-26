@@ -25,13 +25,13 @@
 #include "KDSoapNamespaceManager.h"
 
 void KDSoapNamespacePrefixes::writeStandardNamespaces(QXmlStreamWriter &writer,
-        KDSoapClientInterface::SoapVersion version,
+        KDSoap::SoapVersion version,
         bool messageAddressingEnabled)
 {
-    if (version == KDSoapClientInterface::SOAP1_1) {
+    if (version == KDSoap::SOAP1_1) {
         writeNamespace(writer, KDSoapNamespaceManager::soapEnvelope(), QLatin1String("soap"));
         writeNamespace(writer, KDSoapNamespaceManager::soapEncoding(), QLatin1String("soap-enc"));
-    } else if (version == KDSoapClientInterface::SOAP1_2) {
+    } else if (version == KDSoap::SOAP1_2) {
         writeNamespace(writer, KDSoapNamespaceManager::soapEnvelope200305(), QLatin1String("soap"));
         writeNamespace(writer, KDSoapNamespaceManager::soapEncoding200305(), QLatin1String("soap-enc"));
     }

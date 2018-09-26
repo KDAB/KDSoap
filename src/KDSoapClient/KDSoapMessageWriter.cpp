@@ -29,11 +29,11 @@
 #include <QDebug>
 
 KDSoapMessageWriter::KDSoapMessageWriter()
-    : m_version(KDSoapClientInterface::SOAP1_1)
+    : m_version(KDSoap::SOAP1_1)
 {
 }
 
-void KDSoapMessageWriter::setVersion(KDSoapClientInterface::SoapVersion version)
+void KDSoapMessageWriter::setVersion(KDSoap::SoapVersion version)
 {
     m_version = version;
 }
@@ -55,10 +55,10 @@ QByteArray KDSoapMessageWriter::messageToXml(const KDSoapMessage &message, const
 
     QString soapEnvelope;
     QString soapEncoding;
-    if (m_version == KDSoapClientInterface::SOAP1_1) {
+    if (m_version == KDSoap::SOAP1_1) {
         soapEnvelope = KDSoapNamespaceManager::soapEnvelope();
         soapEncoding = KDSoapNamespaceManager::soapEncoding();
-    } else if (m_version == KDSoapClientInterface::SOAP1_2) {
+    } else if (m_version == KDSoap::SOAP1_2) {
         soapEnvelope = KDSoapNamespaceManager::soapEnvelope200305();
         soapEncoding = KDSoapNamespaceManager::soapEncoding200305();
     }

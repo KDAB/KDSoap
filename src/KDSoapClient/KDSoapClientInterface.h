@@ -192,12 +192,12 @@ public:
      * \param version #SOAP1_1 or #SOAP1_2
      * The default version is SOAP 1.1.
      */
-    void setSoapVersion(SoapVersion version);
+    void setSoapVersion(KDSoapClientInterface::SoapVersion version);
 
     /**
      * Returns the version of SOAP being used in this instance.
      */
-    SoapVersion soapVersion();
+    KDSoapClientInterface::SoapVersion soapVersion();
 
     /**
      * Returns the end point of the SOAP service.

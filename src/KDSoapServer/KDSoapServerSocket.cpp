@@ -341,7 +341,7 @@ void KDSoapServerSocket::handleRequest(const QMap<QByteArray, QByteArray> &httpH
     KDSoapMessage requestMsg;
     KDSoapHeaders requestHeaders;
     KDSoapMessageReader reader;
-    KDSoapMessageReader::XmlError err = reader.xmlToMessage(receivedData, &requestMsg, &m_messageNamespace, &requestHeaders, KDSoapClientInterface::SOAP1_1);
+    KDSoapMessageReader::XmlError err = reader.xmlToMessage(receivedData, &requestMsg, &m_messageNamespace, &requestHeaders, KDSoap::SOAP1_1);
     if (err == KDSoapMessageReader::PrematureEndOfDocumentError) {
         //qDebug() << "Incomplete SOAP message, wait for more data";
         // This should never happen, since we check for content-size above.

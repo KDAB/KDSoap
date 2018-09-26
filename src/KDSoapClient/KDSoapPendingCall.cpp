@@ -117,7 +117,7 @@ void KDSoapPendingCall::Private::parseReply()
             replyHeaders.clear();
             replyMessage = KDSoapMessage();
             replyMessage.setFault(true);
-            if (this->soapVersion == KDSoapClientInterface::SOAP1_2) {
+            if (this->soapVersion == KDSoap::SOAP1_2) {
                 replyMessage.setNamespaceUri(QString::fromLatin1("http://www.w3.org/2003/05/soap-envelope"));
                 KDSoapValueList codeValueList;
                 codeValueList.addArgument(QString::fromLatin1("Value"), QString::number(reply->error()));

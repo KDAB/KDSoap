@@ -42,7 +42,7 @@ KDSoapClientInterface::KDSoapClientInterface(const QString &endPoint, const QStr
 {
     d->m_endPoint = endPoint;
     d->m_messageNamespace = messageNamespace;
-    d->m_version = SOAP1_1;
+    d->m_version = KDSoap::SOAP1_1;
 }
 
 KDSoapClientInterface::~KDSoapClientInterface()
@@ -54,18 +54,18 @@ KDSoapClientInterface::~KDSoapClientInterface()
 
 void KDSoapClientInterface::setSoapVersion(KDSoapClientInterface::SoapVersion version)
 {
-    d->m_version = version;
+    d->m_version = static_cast<KDSoap::SoapVersion>(version);
 }
 
 KDSoapClientInterface::SoapVersion KDSoapClientInterface::soapVersion()
 {
-    return d->m_version;
+    return static_cast<KDSoapClientInterface::SoapVersion>(d->m_version);
 }
 
 KDSoapClientInterfacePrivate::KDSoapClientInterfacePrivate()
     : m_accessManager(0),
       m_authentication(),
-      m_version(KDSoapClientInterface::SOAP1_1),
+      m_version(KDSoap::SOAP1_1),
       m_style(KDSoapClientInterface::RPCStyle),
       m_ignoreSslErrors(false)
 {
@@ -110,10 +110,10 @@ QNetworkRequest KDSoapClientInterfacePrivate::prepareRequest(const QString &meth
     //qDebug() << "soapAction=" << soapAction;
 
     QString soapHeader;
-    if (m_version == KDSoapClientInterface::SOAP1_1) {
+    if (m_version == KDSoap::SOAP1_1) {
         soapHeader += QString::fromLatin1("text/xml;charset=utf-8");
         request.setRawHeader("SoapAction", '\"' + soapAction.toUtf8() + '\"');
-    } else if (m_version == KDSoapClientInterface::SOAP1_2) {
+    } else if (m_version == KDSoap::SOAP1_2) {
         soapHeader += QString::fromLatin1("application/soap+xml;charset=utf-8;action=") + soapAction;
     }
 

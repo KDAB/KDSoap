@@ -38,7 +38,7 @@ public:
 
     KDSoapMessageReader();
 
-    XmlError xmlToMessage(const QByteArray &data, KDSoapMessage *pParsedMessage, QString *pMessageNamespace, KDSoapHeaders *pRequestHeaders, KDSoapClientInterface::SoapVersion soapVersion) const;
+    XmlError xmlToMessage(const QByteArray &data, KDSoapMessage *pParsedMessage, QString *pMessageNamespace, KDSoapHeaders *pRequestHeaders, KDSoap::SoapVersion soapVersion) const;
 };
 
 #endif

@@ -203,7 +203,7 @@ static QByteArray handleNotWellFormedError(const QByteArray &data, qint64 offset
     return dataCleanedUp;
 }
 
-KDSoapMessageReader::XmlError KDSoapMessageReader::xmlToMessage(const QByteArray &data, KDSoapMessage *pMsg, QString *pMessageNamespace, KDSoapHeaders *pRequestHeaders, KDSoapClientInterface::SoapVersion soapVersion) const
+KDSoapMessageReader::XmlError KDSoapMessageReader::xmlToMessage(const QByteArray &data, KDSoapMessage *pMsg, QString *pMessageNamespace, KDSoapHeaders *pRequestHeaders, KDSoap::SoapVersion soapVersion) const
 {
     Q_ASSERT(pMsg);
     QXmlStreamReader reader(data);
@@ -257,7 +257,7 @@ KDSoapMessageReader::XmlError KDSoapMessageReader::xmlToMessage(const QByteArray
                 .arg(QString::number(reader.lineNumber()),
                      QString::number(reader.columnNumber()),
                      reader.errorString());
-        if (soapVersion == KDSoapClientInterface::SOAP1_2) {
+        if (soapVersion == KDSoap::SOAP1_2) {
             pMsg->setNamespaceUri(QString::fromLatin1("http://www.w3.org/2003/05/soap-envelope"));
             KDSoapValueList codeValueList;
             codeValueList.addArgument(QString::fromLatin1("Value"), QString::number(reader.error()));

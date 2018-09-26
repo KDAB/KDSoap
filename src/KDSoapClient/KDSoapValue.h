@@ -47,6 +47,16 @@ QT_BEGIN_NAMESPACE
 class QXmlStreamWriter;
 QT_END_NAMESPACE
 
+namespace KDSoap {
+/// @internal not used in public API
+enum SoapVersion {
+    /** Use format version 1.1 of the SOAP specification */
+    SOAP1_1 = 1,
+    /** Use format version 1.2 of the SOAP specification */
+    SOAP1_2 = 2
+};
+}
+
 /**
  * KDSoapValue represents a value in a SOAP argument list.
  * It is composed of the argument name, and actual value as a QVariant.

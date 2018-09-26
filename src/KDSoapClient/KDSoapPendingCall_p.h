@@ -37,7 +37,7 @@ class KDSoapPendingCall::Private : public QSharedData
 {
 public:
     Private(QNetworkReply *r, QBuffer *b)
-        : reply(r), buffer(b), soapVersion(KDSoapClientInterface::SOAP1_1), parsed(false)
+        : reply(r), buffer(b), soapVersion(KDSoap::SOAP1_1), parsed(false)
     {
     }
     ~Private();
@@ -51,7 +51,7 @@ public:
     QBuffer *buffer;
     KDSoapMessage replyMessage;
     KDSoapHeaders replyHeaders;
-    KDSoapClientInterface::SoapVersion soapVersion;
+    KDSoap::SoapVersion soapVersion;
     bool parsed;
 };
 
