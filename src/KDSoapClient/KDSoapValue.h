@@ -48,7 +48,11 @@ class QXmlStreamWriter;
 QT_END_NAMESPACE
 
 namespace KDSoap {
-/// @internal not used in public API
+/**
+ * Version of the SOAP protocol to use when sending requests.
+ * This enum value is used in KDSoapMessage.
+ * For historical reasons, KDSoapClientInterface uses its own version enum.
+ */
 enum SoapVersion {
     /** Use format version 1.1 of the SOAP specification */
     SOAP1_1 = 1,
@@ -246,6 +250,10 @@ public:
     };
 
     QByteArray toXml(Use use = LiteralUse, const QString &messageNamespace = QString()) const;
+
+protected: // for KDSoapMessage
+
+    void setName(const QString &name);
 
 private:
     // To catch mistakes

@@ -95,6 +95,11 @@ QString KDSoapValue::name() const
     return d->m_name;
 }
 
+void KDSoapValue::setName(const QString &name)
+{
+    d->m_name = name;
+}
+
 QVariant KDSoapValue::value() const
 {
     return d->m_value;

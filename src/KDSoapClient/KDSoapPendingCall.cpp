@@ -115,20 +115,7 @@ void KDSoapPendingCall::Private::parseReply()
     if (reply->error()) {
         if (!replyMessage.isFault()) {
             replyHeaders.clear();
-            replyMessage = KDSoapMessage();
-            replyMessage.setFault(true);
-            if (this->soapVersion == KDSoap::SOAP1_2) {
-                replyMessage.setNamespaceUri(QString::fromLatin1("http://www.w3.org/2003/05/soap-envelope"));
-                KDSoapValueList codeValueList;
-                codeValueList.addArgument(QString::fromLatin1("Value"), QString::number(reply->error()));
-                replyMessage.addArgument(QString::fromLatin1("Code"), codeValueList);
-                KDSoapValueList reasonValueList;
-                reasonValueList.addArgument(QString::fromLatin1("Text"), reply->errorString());
-                replyMessage.addArgument(QString::fromLatin1("Reason"), reasonValueList);
-            } else {
-                replyMessage.addArgument(QString::fromLatin1("faultcode"), QString::number(reply->error()));
-                replyMessage.addArgument(QString::fromLatin1("faultstring"), reply->errorString());
-            }
+            replyMessage.createFaultMessage(QString::number(reply->error()), reply->errorString(), soapVersion);
         }
     }
 }

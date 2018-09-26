@@ -1,6 +1,6 @@
 General:
 ========
-*
+* Fix internally-created faults lacking an XML element name (so e.g. toXml() would abort)
 
 Client-side:
 ============

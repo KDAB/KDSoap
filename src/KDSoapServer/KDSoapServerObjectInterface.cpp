@@ -22,6 +22,7 @@
 **********************************************************************/
 #include "KDSoapServerObjectInterface.h"
 #include "KDSoapServerSocket_p.h"
+#include "KDSoapValue.h"
 #include <QDebug>
 #include <QPointer>
 
@@ -69,9 +70,8 @@ void KDSoapServerObjectInterface::processRequest(const KDSoapMessage &request, K
 {
     const QString method = request.name();
     qDebug() << "Slot not found:" << method << "[soapAction =" << soapAction << "]" /* << "in" << metaObject()->className()*/;
-    response.setFault(true);
-    response.addArgument(QString::fromLatin1("faultcode"), QString::fromLatin1("Server.MethodNotFound"));
-    response.addArgument(QString::fromLatin1("faultstring"), QString::fromLatin1("%1 not found").arg(method));
+    const KDSoap::SoapVersion soapVersion = KDSoap::SOAP1_1; // TODO version selection on the server side
+    response.createFaultMessage(QString::fromLatin1("Server.MethodNotFound"), QString::fromLatin1("%1 not found").arg(method), soapVersion);
 }
 
 QIODevice *KDSoapServerObjectInterface::processFileRequest(const QString &path, QByteArray &contentType)
@@ -87,9 +87,8 @@ void KDSoapServerObjectInterface::processRequestWithPath(const KDSoapMessage &re
     const QString method = request.name();
     qWarning("Invalid path: \"%s\"", qPrintable(path));
     //qWarning() << "Invalid path:" << path << "[method =" << method << "; soapAction =" << soapAction << "]" /* << "in" << metaObject()->className()*/;
-    response.setFault(true);
-    response.addArgument(QString::fromLatin1("faultcode"), QString::fromLatin1("Client.Data"));
-    response.addArgument(QString::fromLatin1("faultstring"), QString::fromLatin1("Method %1 not found in path %2").arg(method, path));
+    const KDSoap::SoapVersion soapVersion = KDSoap::SOAP1_1; // TODO version selection on the server side
+    response.createFaultMessage(QString::fromLatin1("Client.Data"), QString::fromLatin1("Method %1 not found in path %2").arg(method, path), soapVersion);
 }
 
 KDSoapServerObjectInterface::HttpResponseHeaderItems KDSoapServerObjectInterface::additionalHttpResponseHeaderItems() const

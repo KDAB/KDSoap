@@ -516,9 +516,8 @@ void KDSoapServerSocket::setResponseDelayed()
 void KDSoapServerSocket::handleError(KDSoapMessage &replyMsg, const char *errorCode, const QString &error)
 {
     qWarning("%s", qPrintable(error));
-    replyMsg.setFault(true);
-    replyMsg.addArgument(QString::fromLatin1("faultcode"), QString::fromLatin1(errorCode));
-    replyMsg.addArgument(QString::fromLatin1("faultstring"), error);
+    const KDSoap::SoapVersion soapVersion = KDSoap::SOAP1_1; // TODO version selection on the server side
+    replyMsg.createFaultMessage(QString::fromLatin1(errorCode), error, soapVersion);
 }
 
 void KDSoapServerSocket::makeCall(KDSoapServerObjectInterface *serverObjectInterface, const KDSoapMessage &requestMsg, KDSoapMessage &replyMsg, const KDSoapHeaders &requestHeaders, const QByteArray &soapAction, const QString &path)

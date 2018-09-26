@@ -252,23 +252,11 @@ KDSoapMessageReader::XmlError KDSoapMessageReader::xmlToMessage(const QByteArray
                 return xmlToMessage(dataCleanedUp, pMsg, pMessageNamespace, pRequestHeaders, soapVersion);
             }
         }
-        pMsg->setFault(true);
         QString faultText = QString::fromLatin1("XML error: [%1:%2] %3")
                 .arg(QString::number(reader.lineNumber()),
                      QString::number(reader.columnNumber()),
                      reader.errorString());
-        if (soapVersion == KDSoap::SOAP1_2) {
-            pMsg->setNamespaceUri(QString::fromLatin1("http://www.w3.org/2003/05/soap-envelope"));
-            KDSoapValueList codeValueList;
-            codeValueList.addArgument(QString::fromLatin1("Value"), QString::number(reader.error()));
-            pMsg->addArgument(QString::fromLatin1("Code"), codeValueList);
-            KDSoapValueList reasonValueList;
-            reasonValueList.addArgument(QString::fromLatin1("Text"), faultText);
-            pMsg->addArgument(QString::fromLatin1("Reason"), reasonValueList);
-        } else {
-            pMsg->addArgument(QString::fromLatin1("faultcode"), QString::number(reader.error()));
-            pMsg->addArgument(QString::fromLatin1("faultstring"), faultText);
-        }
+        pMsg->createFaultMessage(QString::number(reader.error()), faultText, soapVersion);
         return reader.error() == QXmlStreamReader::PrematureEndOfDocumentError ? PrematureEndOfDocumentError : ParseError;
     }
 
