@@ -861,7 +861,7 @@ private Q_SLOTS:
         for (int i = 0; i < numClients; ++i) {
             KDSoapClientInterface *client = new KDSoapClientInterface(server->endPoint(), countryMessageNamespace());
             clients[i] = client;
-            makeAsyncCalls(*client, 1, true);
+            makeAsyncCalls(*client, 1, true /*slow*/);
         }
         m_eventLoop.exec();
         QTest::qWait(1000);
@@ -1329,6 +1329,20 @@ private Q_SLOTS:
         QCOMPARE(reply->rawHeader("Access-Control-Allow-Origin").constData(), "*");
         QVERIFY(reply->rawHeaderList().contains("Access-Control-Allow-Headers"));
         QCOMPARE(reply->rawHeader("Access-Control-Allow-Headers").constData(), "Content-Type");
+    }
+
+    void testTimeout()
+    {
+        CountryServerThread serverThread;
+        CountryServer *server = serverThread.startThread();
+
+        KDSoapClientInterface client(server->endPoint(), countryMessageNamespace());
+        client.setTimeout(10);
+        KDSoapPendingCall pendingCall = client.asyncCall(QLatin1String("getEmployeeCountry"), countryMessage(true)); // the server object sleeps for 100ms
+        QTest::qWait(20);
+        QVERIFY(pendingCall.isFinished());
+        QVERIFY(pendingCall.returnMessage().isFault());
+        QCOMPARE(pendingCall.returnMessage().faultAsString(), QString::fromLatin1("Fault code 4: Operation timed out"));
     }
 
 public Q_SLOTS:

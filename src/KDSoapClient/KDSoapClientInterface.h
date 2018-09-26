@@ -332,6 +332,20 @@ public:
     void setSslConfiguration(const QSslConfiguration &config);
 #endif
 
+    /**
+      * Returns the timeout used for requests, in milliseconds.
+      * The default timeout is 30 minutes.
+      * \since 1.8
+      */
+    int timeout() const;
+
+    /**
+      * Sets the timeout used for future requests, in milliseconds.
+      * A negative value disables the timeout feature.
+      * \since 1.8
+      */
+    void setTimeout(int msecs);
+
 private:
     friend class KDSoapThreadTask;
 

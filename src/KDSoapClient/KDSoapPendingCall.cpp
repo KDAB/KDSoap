@@ -102,7 +102,8 @@ void KDSoapPendingCall::Private::parseReply()
     }
 #endif
     parsed = true;
-    const QByteArray data = reply->readAll();
+    // Don't try to read from an aborted (closed) reply
+    const QByteArray data = reply->isOpen() ? reply->readAll() : QByteArray();
     if (doDebug) {
         qDebug() << data;
     }
@@ -115,7 +116,10 @@ void KDSoapPendingCall::Private::parseReply()
     if (reply->error()) {
         if (!replyMessage.isFault()) {
             replyHeaders.clear();
-            replyMessage.createFaultMessage(QString::number(reply->error()), reply->errorString(), soapVersion);
+            if (reply->error() == QNetworkReply::OperationCanceledError && reply->property("kdsoap_reply_timed_out").toBool()) // see KDSoapClientInterface.cpp
+                replyMessage.createFaultMessage(QString::number(QNetworkReply::TimeoutError), QLatin1String("Operation timed out"), soapVersion);
+            else
+                replyMessage.createFaultMessage(QString::number(reply->error()), reply->errorString(), soapVersion);
         }
     }
 }

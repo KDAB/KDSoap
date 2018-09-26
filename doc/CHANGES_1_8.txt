@@ -4,6 +4,7 @@ General:
 
 Client-side:
 ============
+* Add support for timing out requests (default 30 minutes, configurable with KDSoapClientInterface::setTimeout())
 * Add support for soap 1.2 faults in faultAsString()
 * Improve detection of soap 1.2 faults in HTTP response
 * Stricter namespace check for Fault elements being received
