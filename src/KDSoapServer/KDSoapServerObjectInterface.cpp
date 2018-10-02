@@ -22,7 +22,7 @@
 **********************************************************************/
 #include "KDSoapServerObjectInterface.h"
 #include "KDSoapServerSocket_p.h"
-#include "KDSoapValue.h"
+#include "KDSoapClient/KDSoapValue.h"
 #include <QDebug>
 #include <QPointer>
 
