@@ -78,21 +78,12 @@ private Q_SLOTS:
         QCOMPARE(ret.faultAsString(), QString::fromLatin1(
                      "Fault code 203: Error downloading %1 - server replied: Not Found").arg(server.endPoint()));
 #endif
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-        QCOMPARE(QString::fromLatin1(ret.toXml()), QLatin1String(
+        QCOMPARE(QString::fromLatin1(ret.toXml().constData()), QLatin1String(
                      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
                      "<soap:Fault xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
                       "<faultcode>203</faultcode>"
                       "<faultstring>Error transferring ") + server.endPoint() + QLatin1String(" - server replied: Not Found</faultstring>"
                      "</soap:Fault>\n"));
-#else
-        QCOMPARE(QString::fromLatin1(ret.toXml().constData()), QLatin1String(
-                     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-                     "<soap:Fault xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
-                     "<faultcode>203</faultcode>"
-                     "<faultstring>Error downloading ") + server.endPoint() + QLatin1String(" - server replied: Not Found</faultstring>"
-                     "</soap:Fault>\n"));
-#endif
     }
 
     void testFaultSoap12() // HTTP error, creates fault on client side
