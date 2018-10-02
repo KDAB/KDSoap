@@ -1339,7 +1339,7 @@ private Q_SLOTS:
         KDSoapClientInterface client(server->endPoint(), countryMessageNamespace());
         client.setTimeout(10);
         KDSoapPendingCall pendingCall = client.asyncCall(QLatin1String("getEmployeeCountry"), countryMessage(true)); // the server object sleeps for 100ms
-        QTest::qWait(20);
+        QTest::qWait(50);
         QVERIFY(pendingCall.isFinished());
         QVERIFY(pendingCall.returnMessage().isFault());
         QCOMPARE(pendingCall.returnMessage().faultAsString(), QString::fromLatin1("Fault code 4: Operation timed out"));
