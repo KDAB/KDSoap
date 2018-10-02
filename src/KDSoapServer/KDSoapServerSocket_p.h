@@ -24,6 +24,7 @@
 #define KDSOAPSERVERSOCKET_P_H
 
 #include <QtGlobal>
+#include <qtnetwork-config.h>
 
 #include <QTcpSocket> //may define QT_NO_OPENSSL
 #ifndef QT_NO_OPENSSL
