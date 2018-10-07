@@ -324,6 +324,16 @@ void KDSoapClientInterface::setProxy(const QNetworkProxy &proxy)
     d->accessManager()->setProxy(proxy);
 }
 
+int KDSoapClientInterface::timeout() const
+{
+    return d->m_timeout;
+}
+
+void KDSoapClientInterface::setTimeout(int msecs)
+{
+    d->m_timeout = msecs;
+}
+
 #ifndef QT_NO_OPENSSL
 QSslConfiguration KDSoapClientInterface::sslConfiguration() const
 {
@@ -333,16 +343,6 @@ QSslConfiguration KDSoapClientInterface::sslConfiguration() const
 void KDSoapClientInterface::setSslConfiguration(const QSslConfiguration &config)
 {
     d->m_sslConfiguration = config;
-}
-
-int KDSoapClientInterface::timeout() const
-{
-    return d->m_timeout;
-}
-
-void KDSoapClientInterface::setTimeout(int msecs)
-{
-    d->m_timeout = msecs;
 }
 
 KDSoapSslHandler *KDSoapClientInterface::sslHandler() const
