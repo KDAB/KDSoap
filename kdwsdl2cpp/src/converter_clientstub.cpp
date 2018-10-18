@@ -317,6 +317,9 @@ bool Converter::convertClientService()
 
                 const QString operationName = operation.name();
                 KODE::Class jobClass(KODE::Style::className(operation.name()) + QLatin1String("Job"), jobsNamespace);
+                if (mClasses.findClass(jobClass.qualifiedName()) != mClasses.constEnd()) {
+                    jobClass.setName(KODE::Style::className(className /*binding name*/ + jobClass.name()));
+                }
                 jobClass.addInclude(QString(), fullyQualified(newClass));
                 jobClass.addHeaderInclude(QLatin1String("KDSoapClient/KDSoapJob.h"));
                 if (!Settings::self()->exportDeclaration().isEmpty()) {

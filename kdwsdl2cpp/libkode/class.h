@@ -347,7 +347,7 @@ public:
 
     QStringList classNames() const;
 
-    iterator findClass(const QString& name);
+    const_iterator findClass(const QString& qualifiedName) const;
 };
 
 }

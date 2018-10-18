@@ -457,11 +457,11 @@ void ClassList::sortAlphabetically()
     qSort(begin(), end(), classLessThan);
 }
 
-ClassList::iterator ClassList::findClass(const QString &name)
+ClassList::const_iterator ClassList::findClass(const QString &qualifiedName) const
 {
-    ClassList::iterator it = begin();
+    ClassList::const_iterator it = begin();
     for (; it != end(); ++it)
-        if ((*it).name() == name)
+        if ((*it).qualifiedName() == qualifiedName)
             break;
     return it;
 }
