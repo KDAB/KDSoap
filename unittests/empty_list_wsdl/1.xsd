@@ -1,0 +1,274 @@
+<?xml version='1.0' encoding='UTF-8'?><!-- Published by JAX-WS RI at http://jax-ws.dev.java.net. RI's version is JAX-WS RI 2.2.8 svn-revision#13980. --><xs:schema xmlns:ns2="http://nicetu.spb.ru/dto/model/types" xmlns:ns1="http://nicetu.spb.ru/dto/service/types" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" version="1.0" targetNamespace="http://nicetu.spb.ru/rmv-service">
+
+<xs:import namespace="http://nicetu.spb.ru/dto/service/types" schemaLocation="2.xsd"/>
+
+<xs:import namespace="http://nicetu.spb.ru/dto/model/types" schemaLocation="3.xsd"/>
+
+<xs:element name="deleteParamMeasures">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="seanceIdentifier" type="ns1:seanceIdentifier"/>
+<xs:element name="groundedMeasurersIdents" type="xs:long" minOccurs="0" maxOccurs="unbounded"/>
+<xs:element name="agregatsIdents" type="xs:long" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+
+<xs:element name="deleteParamMeasuresResponse">
+<xs:complexType>
+<xs:sequence/>
+</xs:complexType>
+</xs:element>
+
+<xs:element name="deleteTrajectoryMeasures">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="seanceIdentifier" type="ns1:seanceIdentifier"/>
+<xs:element name="launchBoardedMeasurersIdents" type="xs:long" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+
+<xs:element name="deleteTrajectoryMeasuresResponse">
+<xs:complexType>
+<xs:sequence/>
+</xs:complexType>
+</xs:element>
+
+<xs:element name="getNominalFallPoints">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="launchId" type="xs:long"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+
+<xs:element name="getNominalFallPointsResponse">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="rmvAggregateFallPoints" type="ns1:rmvAggregateFallPoint" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+
+<xs:element name="getParamMeasures">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="seanceIdentifier" type="ns1:seanceIdentifier"/>
+<xs:element name="groundedMeasurerId" type="xs:long" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+
+<xs:element name="getParamMeasuresResponse">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="paramMeasuresSets" type="ns1:paramMeasuresSet" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+
+<xs:element name="getRmvAggregats">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="launchId" type="xs:long"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+
+<xs:element name="getRmvAggregatsResponse">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="rmvAggregates" type="ns1:rmvAggregate" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+
+<xs:element name="getRmvLaunch">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="launchId" type="xs:long"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+
+<xs:element name="getRmvLaunchResponse">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="rmvLaunch" type="ns1:rmvLaunch"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+
+<xs:element name="getRmvLaunches">
+<xs:complexType>
+<xs:sequence/>
+</xs:complexType>
+</xs:element>
+
+<xs:element name="getRmvLaunchesResponse">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="rmvLaunch" type="ns1:rmvLaunch" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+
+<xs:element name="getRmvMeasuresSetInfo">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="launchId" type="xs:long"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+
+<xs:element name="getRmvMeasuresSetInfoResponse">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="measuresSetInfos" type="ns1:measuresSetInfo" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+
+<xs:element name="getRmvOir">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="oirId" type="xs:long"/>
+<xs:element name="launchId" type="xs:long"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+
+<xs:element name="getRmvOirResponse">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="rmvOir" type="ns1:rmvOir" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+
+<xs:element name="getRmvOirs">
+<xs:complexType>
+<xs:sequence/>
+</xs:complexType>
+</xs:element>
+
+<xs:element name="getRmvOirsResponse">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="rmvOirs" type="ns1:rmvOir" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+
+<xs:element name="getRmvRealTrajectory">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="seanceIdentifier" type="ns1:seanceIdentifier"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+
+<xs:element name="getRmvRealTrajectoryResponse">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="realTrajectory" type="ns1:realTrajectory" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+
+<xs:element name="getRmvTrajectoryMeasuresSet">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="ident" type="xs:long"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+
+<xs:element name="getRmvTrajectoryMeasuresSetResponse">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="trajectory" type="ns1:trajectory" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+
+<xs:element name="getTrajectoryMeasures">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="seanceIdentifier" type="ns1:seanceIdentifier"/>
+<xs:element name="launchBoardedMeasurersId" type="xs:long" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+
+<xs:element name="getTrajectoryMeasuresResponse">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="trajectoryMeasuresSets" type="ns1:trajectMeasuresSet" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+
+<xs:element name="saveAccidentFallPoint">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="seanceIdentifier" type="ns1:seanceIdentifier"/>
+<xs:element name="accidentPoint" type="ns1:forecastFallPoint"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+
+<xs:element name="saveAccidentFallPointResponse">
+<xs:complexType>
+<xs:sequence/>
+</xs:complexType>
+</xs:element>
+
+<xs:element name="saveParamMeasures">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="seanceIdentifier" type="ns1:seanceIdentifier"/>
+<xs:element name="measures" type="ns1:paramMeasuresSet"/>
+<xs:element name="zeroTime" type="ns2:timestampType"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+
+<xs:element name="saveParamMeasuresResponse">
+<xs:complexType>
+<xs:sequence/>
+</xs:complexType>
+</xs:element>
+
+<xs:element name="saveRmvRealTrajectory">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="seanceIdentifier" type="ns1:seanceIdentifier"/>
+<xs:element name="trajectory" type="ns1:realTrajectory"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+
+<xs:element name="saveRmvRealTrajectoryResponse">
+<xs:complexType>
+<xs:sequence/>
+</xs:complexType>
+</xs:element>
+
+<xs:element name="saveTrajectoryMeasures">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="seanceIdentifier" type="ns1:seanceIdentifier"/>
+<xs:element name="trajectory" type="ns1:trajectMeasuresSet"/>
+<xs:element name="deltaStartTime" type="xs:double"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+
+<xs:element name="saveTrajectoryMeasuresResponse">
+<xs:complexType>
+<xs:sequence/>
+</xs:complexType>
+</xs:element>
+</xs:schema>

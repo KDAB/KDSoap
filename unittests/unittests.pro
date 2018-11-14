@@ -37,6 +37,7 @@ SUBDIRS = \
   encapsecurity \
   prefix_wsdl \
   vidyo \
+  empty_list_wsdl \
   fault_namespace \
   empty_element_wsdl \
   enzo \
