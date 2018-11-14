@@ -21,7 +21,6 @@
 **
 **********************************************************************/
 
-#include "KDSoapValue.h"
 #include "wsdl_empty_list.h"
 
 #include <QtTest>
