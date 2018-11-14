@@ -1,0 +1,317 @@
+<?xml version='1.0' encoding='UTF-8'?><!-- Published by JAX-WS RI at http://jax-ws.dev.java.net. RI's version is JAX-WS RI 2.2.8 svn-revision#13980. --><xs:schema xmlns:tns="http://nicetu.spb.ru/dto/model/types" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" version="1.0" targetNamespace="http://nicetu.spb.ru/dto/model/types">
+
+<xs:complexType name="stringMap">
+<xs:sequence>
+<xs:element name="stringEntry" nillable="true" minOccurs="0" maxOccurs="unbounded">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="key" type="xs:string"/>
+<xs:element name="value" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="longMap">
+<xs:sequence>
+<xs:element name="longEntry" nillable="true" minOccurs="0" maxOccurs="unbounded">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="key" type="xs:long"/>
+<xs:element name="value" type="xs:long" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="crdSysCategoryType">
+<xs:complexContent>
+<xs:extension base="tns:uniqueObjectType">
+<xs:sequence/>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="uniqueObjectType" abstract="true">
+<xs:complexContent>
+<xs:extension base="tns:namedObjectType">
+<xs:sequence/>
+<xs:attribute name="identifier" type="xs:string" use="required"/>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="namedObjectType" abstract="true">
+<xs:complexContent>
+<xs:extension base="tns:objectType">
+<xs:sequence>
+<xs:element name="comment" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+<xs:attribute name="name" type="xs:string" use="required"/>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="objectType" abstract="true">
+<xs:sequence/>
+<xs:attribute name="ident" type="xs:long" use="required"/>
+</xs:complexType>
+
+<xs:complexType name="launchGroundedMeasurerType">
+<xs:complexContent>
+<xs:extension base="tns:objectType">
+<xs:sequence/>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="measurerLocationType">
+<xs:complexContent>
+<xs:extension base="tns:objectType">
+<xs:sequence>
+<xs:element name="geoTime" type="tns:timestampType"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="timestampType">
+<xs:sequence/>
+<xs:attribute name="seconds" type="xs:long" use="required"/>
+<xs:attribute name="micros" type="xs:int" use="required"/>
+</xs:complexType>
+
+<xs:complexType name="soompMeasurerCuType">
+<xs:complexContent>
+<xs:extension base="tns:objectType">
+<xs:sequence>
+<xs:element name="cuTime" type="tns:timestampType"/>
+</xs:sequence>
+<xs:attribute name="acousticSensorGainCoeff1" type="xs:int" use="required"/>
+<xs:attribute name="acousticSensorGainCoeff2" type="xs:int" use="required"/>
+<xs:attribute name="infrasonicSensorGainCoeff1" type="xs:int" use="required"/>
+<xs:attribute name="infrasonicSensorGainCoeff2" type="xs:int" use="required"/>
+<xs:attribute name="seismometerGainCoeff" type="xs:int" use="required"/>
+<xs:attribute name="seismographGainCoeff1" type="xs:int" use="required"/>
+<xs:attribute name="seismographGainCoeff2" type="xs:int" use="required"/>
+<xs:attribute name="seismographGainCoeff3" type="xs:int" use="required"/>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="measurerType">
+<xs:complexContent>
+<xs:extension base="tns:objectType">
+<xs:sequence>
+<xs:element name="serialNumber" type="xs:string"/>
+<xs:element name="lastTgoDate" type="tns:timestampType" minOccurs="0"/>
+<xs:element name="fixDatePlan" type="tns:timestampType" minOccurs="0"/>
+<xs:element name="comment" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+<xs:attribute name="name" type="xs:string" use="required"/>
+<xs:attribute name="ftpServer" type="xs:string"/>
+<xs:attribute name="unavailableSign" type="xs:boolean"/>
+<xs:attribute name="unavailableReason" type="xs:string"/>
+<xs:attribute name="unexploited" type="xs:boolean" use="required"/>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="agregatType">
+<xs:complexContent>
+<xs:extension base="tns:objectType">
+<xs:sequence/>
+<xs:attribute name="number" type="xs:int" use="required"/>
+<xs:attribute name="serialNumber" type="xs:string"/>
+<xs:attribute name="planSeparateTime" type="xs:double" use="required"/>
+<xs:attribute name="realSeparateTime" type="xs:double"/>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="amgTable2DValuesType">
+<xs:complexContent>
+<xs:extension base="tns:objectType">
+<xs:sequence>
+<xs:element name="arg" type="xs:double"/>
+<xs:element name="f1" type="xs:double"/>
+<xs:element name="f2" type="xs:double" minOccurs="0"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="measurerParameterType">
+<xs:complexContent>
+<xs:extension base="tns:objectType">
+<xs:sequence/>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="launchBoardedMeasurerType">
+<xs:complexContent>
+<xs:extension base="tns:objectType">
+<xs:sequence/>
+<xs:attribute name="serialNumber" type="xs:string"/>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="scatteringEllipseAxesType">
+<xs:complexContent>
+<xs:extension base="tns:objectType">
+<xs:sequence/>
+<xs:attribute name="left" type="xs:double" use="required"/>
+<xs:attribute name="right" type="xs:double" use="required"/>
+<xs:attribute name="up" type="xs:double" use="required"/>
+<xs:attribute name="down" type="xs:double" use="required"/>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="systemErrorPolynomType">
+<xs:complexContent>
+<xs:extension base="tns:objectType">
+<xs:sequence/>
+<xs:attribute name="pow" type="xs:int" use="required"/>
+<xs:attribute name="baseTime" type="xs:double" use="required"/>
+<xs:attribute name="coeffs">
+<xs:simpleType>
+<xs:list itemType="xs:double"/>
+</xs:simpleType>
+</xs:attribute>
+<xs:attribute name="std">
+<xs:simpleType>
+<xs:list itemType="xs:double"/>
+</xs:simpleType>
+</xs:attribute>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="meteoForecastPointType">
+<xs:complexContent>
+<xs:extension base="tns:objectType">
+<xs:sequence>
+<xs:element name="predictionTime" type="xs:dateTime" minOccurs="0"/>
+<xs:element name="forecastDate" type="xs:dateTime" minOccurs="0"/>
+<xs:element name="t" type="xs:double"/>
+<xs:element name="p" type="xs:double"/>
+<xs:element name="hum" type="xs:double" minOccurs="0"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="amgTable3DValuesType">
+<xs:complexContent>
+<xs:extension base="tns:objectType">
+<xs:sequence>
+<xs:element name="arg1" type="xs:double"/>
+<xs:element name="arg2" type="xs:double" minOccurs="0"/>
+<xs:element name="f" type="xs:double"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="agregatCategoryType">
+<xs:complexContent>
+<xs:extension base="tns:namedObjectType">
+<xs:sequence/>
+<xs:attribute name="identifier" type="xs:string" use="required"/>
+<xs:attribute name="isSeparatedPart" type="xs:boolean" use="required"/>
+<xs:attribute name="isFallingPart" type="xs:boolean" use="required"/>
+<xs:attribute name="isOrbitalPart" type="xs:boolean" use="required"/>
+<xs:attribute name="hasEngines" type="xs:boolean" use="required"/>
+<xs:attribute name="hasTrajectory" type="xs:boolean" use="required"/>
+<xs:attribute name="isFightingEquipment" type="xs:boolean" use="required"/>
+<xs:attribute name="isSystem" type="xs:boolean" use="required"/>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="measurersDepartmentType">
+<xs:complexContent>
+<xs:extension base="tns:namedObjectType">
+<xs:sequence/>
+<xs:attribute name="number" type="xs:int" use="required"/>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="ellipseType">
+<xs:complexContent>
+<xs:extension base="tns:namedObjectType">
+<xs:sequence>
+<xs:element name="identifier" type="xs:string"/>
+<xs:element name="system" type="xs:boolean" minOccurs="0"/>
+<xs:element name="la" type="xs:double"/>
+<xs:element name="e2" type="xs:double"/>
+<xs:element name="m" type="xs:double"/>
+<xs:element name="j2" type="xs:double"/>
+<xs:element name="j4" type="xs:double"/>
+<xs:element name="orientation" minOccurs="0">
+<xs:simpleType>
+<xs:list itemType="xs:double"/>
+</xs:simpleType>
+</xs:element>
+<xs:element name="displacement" minOccurs="0">
+<xs:simpleType>
+<xs:list itemType="xs:double"/>
+</xs:simpleType>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="transportItemType">
+<xs:complexContent>
+<xs:extension base="tns:namedObjectType">
+<xs:sequence>
+<xs:element name="fixDatePlan" type="tns:timestampType" minOccurs="0"/>
+</xs:sequence>
+<xs:attribute name="serialNumber" type="xs:string" use="required"/>
+<xs:attribute name="unavailableSign" type="xs:boolean"/>
+<xs:attribute name="unavailableReason" type="xs:string"/>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="measurerCategoryType">
+<xs:complexContent>
+<xs:extension base="tns:namedObjectType">
+<xs:sequence/>
+<xs:attribute name="hasLocation" type="xs:boolean" use="required"/>
+<xs:attribute name="isSystem" type="xs:boolean" use="required"/>
+<xs:attribute name="icon" type="xs:string"/>
+<xs:attribute name="identifier" type="xs:string"/>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="measurerParameterDescriptorType">
+<xs:complexContent>
+<xs:extension base="tns:uniqueObjectType">
+<xs:sequence/>
+<xs:attribute name="type" type="xs:string"/>
+<xs:attribute name="size" type="xs:int"/>
+<xs:attribute name="precision" type="xs:int"/>
+<xs:attribute name="regex" type="xs:string"/>
+<xs:attribute name="form" type="xs:string"/>
+<xs:attribute name="multiplier" type="xs:double"/>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="propertyPair">
+<xs:sequence>
+<xs:element name="key" type="xs:string"/>
+<xs:element name="value" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+</xs:schema>

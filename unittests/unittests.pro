@@ -37,6 +37,7 @@ SUBDIRS = \
   encapsecurity \
   prefix_wsdl \
   vidyo \
+  empty_list_wsdl \
   onvif_org_event \
   empty_element_wsdl \
   fault_namespace \
