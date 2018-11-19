@@ -207,7 +207,10 @@ void KDSoapServer::log(const QByteArray &text)
     }
 
     QMutexLocker lock(&d->m_logMutex);
-    if (!d->m_logFile.isOpen() && !d->m_logFileName.isEmpty()) {
+    if (d->m_logFileName.isEmpty()) {
+        return;
+    }
+    if (!d->m_logFile.isOpen()) {
         d->m_logFile.setFileName(d->m_logFileName);
         if (!d->m_logFile.open(QIODevice::Append)) {
             qCritical("Could not open log file for writing: %s", qPrintable(d->m_logFileName));
