@@ -8,6 +8,9 @@ DEFINES += QT_NO_CAST_TO_ASCII QT_NO_CAST_FROM_ASCII QT_NO_CAST_FROM_BYTEARRAY
 
 solaris-cc:DEFINES += SUN7
 
+# for C++11 support
+mac: QMAKE_CXXFLAGS += -stdlib=libc++
+
 win32-msvc*:DEFINES += _SCL_SECURE_NO_WARNINGS
 
 win32-msvc*:QMAKE_CXXFLAGS += /GR /EHsc /wd4251
