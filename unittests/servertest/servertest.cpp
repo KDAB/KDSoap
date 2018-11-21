@@ -777,9 +777,9 @@ private Q_SLOTS:
         const int numClients = 80;
         const int maxThreads = 5;
 
-        KDSoapThreadPool threadPool;
-        threadPool.setMaxThreadCount(maxThreads);
-        CountryServerThread serverThread(&threadPool);
+        KDSoapThreadPool* threadPool = new KDSoapThreadPool;
+        threadPool->setMaxThreadCount(maxThreads);
+        CountryServerThread serverThread(threadPool);
         CountryServer *server = serverThread.startThread();
         QVector<KDSoapClientInterface *> clients;
         clients.resize(numClients);
@@ -809,6 +809,9 @@ private Q_SLOTS:
         // some of them got an error, trying to connect while server was suspended.
 
         qDeleteAll(clients);
+        server->setThreadPool(nullptr);
+        delete threadPool; // stop all threads before deleting the server (which they access)
+        // ## it would have been better API to make the server own the threadpool, to avoid this switcheroo on deletion
     }
 
     void testServerFault() // fault returned by server
