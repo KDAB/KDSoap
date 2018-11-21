@@ -809,7 +809,7 @@ private Q_SLOTS:
         // some of them got an error, trying to connect while server was suspended.
 
         qDeleteAll(clients);
-        server->setThreadPool(0);
+        server->setThreadPool(nullptr);
         delete threadPool; // stop all threads before deleting the server (which they access)
         // ## it would have been better API to make the server own the threadpool, to avoid this switcheroo on deletion
     }
