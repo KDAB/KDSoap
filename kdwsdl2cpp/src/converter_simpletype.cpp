@@ -403,6 +403,7 @@ void Converter::createSimpleTypeSerializer(KODE::Class &newClass, const XSD::Sim
         {
             newClass.addHeaderInclude("QtCore/QStringList");
             KODE::Code code;
+            code += "if (value.toString().trimmed().isEmpty()) return;";
             code += "const QStringList list = value.toString().split(QLatin1Char(' '));";
             code += "for (int i = 0; i < list.count(); ++i) {";
             code.indent();

@@ -1,0 +1,733 @@
+<?xml version='1.0' encoding='UTF-8'?><!-- Published by JAX-WS RI at http://jax-ws.dev.java.net. RI's version is JAX-WS RI 2.2.8 svn-revision#13980. --><xs:schema xmlns:tns="http://nicetu.spb.ru/dto/service/types" xmlns:ns1="http://nicetu.spb.ru/dto/model/types" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" version="1.0" targetNamespace="http://nicetu.spb.ru/dto/service/types">
+
+<xs:import namespace="http://nicetu.spb.ru/dto/model/types" schemaLocation="3.xsd"/>
+
+<xs:complexType name="duLaunch">
+<xs:complexContent>
+<xs:extension base="tns:simpleLaunch">
+<xs:sequence>
+<xs:element name="users" type="tns:combatStrengthUser" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+<xs:element name="measurersCount" type="xs:int"/>
+<xs:element name="csMeasurersCount" type="xs:int"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="simpleLaunch">
+<xs:sequence>
+<xs:element name="id" type="xs:long"/>
+<xs:element name="startTime" type="ns1:timestampType"/>
+<xs:element name="factStartTime" type="ns1:timestampType" minOccurs="0"/>
+<xs:element name="wareIndex" type="xs:string"/>
+<xs:element name="wareComplex" type="xs:string"/>
+<xs:element name="startPolygon" type="xs:string" minOccurs="0"/>
+<xs:element name="startPosition" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="combatStrengthUser">
+<xs:sequence>
+<xs:element name="id" type="xs:long"/>
+<xs:element name="name" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="launchCombatStrengths">
+<xs:sequence>
+<xs:element name="uuid" type="xs:string"/>
+<xs:element name="measurersCombatStrengths" type="tns:measurerCombatStrength" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="measurerCombatStrength">
+<xs:sequence>
+<xs:element name="measurer" type="tns:groundedMeasurer"/>
+<xs:element name="userId" type="xs:long" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="groundedMeasurer">
+<xs:sequence>
+<xs:element name="id" type="xs:long"/>
+<xs:element name="name" type="xs:string"/>
+<xs:element name="type" type="xs:string"/>
+<xs:element name="typeId" type="xs:string"/>
+<xs:element name="department" type="xs:string" minOccurs="0"/>
+<xs:element name="sysParams" type="ns1:stringMap"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="rmvOir">
+<xs:complexContent>
+<xs:extension base="tns:oir">
+<xs:sequence>
+<xs:element name="launches" type="tns:rmvLaunch" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="oir">
+<xs:sequence>
+<xs:element name="simpleOirId" type="xs:long"/>
+<xs:element name="uuid" type="xs:string"/>
+<xs:element name="time" type="ns1:timestampType"/>
+<xs:element name="task" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="rmvLaunch">
+<xs:sequence>
+<xs:element name="launchId" type="xs:long"/>
+<xs:element name="uuid" type="xs:string"/>
+<xs:element name="oirUuid" type="xs:string"/>
+<xs:element name="name" type="xs:string" minOccurs="0"/>
+<xs:element name="comment" type="xs:string" minOccurs="0"/>
+<xs:element name="startTime" type="ns1:timestampType"/>
+<xs:element name="realStartTime" type="ns1:timestampType" minOccurs="0"/>
+<xs:element name="launchWare" type="tns:launchWare"/>
+<xs:element name="oirTask" type="xs:string"/>
+<xs:element name="otpDelta" type="xs:double" minOccurs="0"/>
+<xs:element name="startPosition" type="tns:startPoint" minOccurs="0"/>
+<xs:element name="startPolygonName" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="launchWare">
+<xs:sequence>
+<xs:element name="id" type="xs:long"/>
+<xs:element name="wareClass" type="xs:string"/>
+<xs:element name="wareType" type="xs:string"/>
+<xs:element name="wareIndex" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="startPoint">
+<xs:sequence>
+<xs:element name="id" type="xs:long"/>
+<xs:element name="startPositionName" type="xs:string"/>
+<xs:element name="coordinateSystem" type="tns:coordinateSystem"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="coordinateSystem">
+<xs:sequence>
+<xs:element name="ellipse" type="ns1:ellipseType"/>
+<xs:element name="crdSysType" type="xs:string"/>
+<xs:element name="absFreezeTime" type="ns1:timestampType" minOccurs="0"/>
+<xs:element name="azimuth" type="xs:double" minOccurs="0"/>
+<xs:element name="etha" type="xs:double" minOccurs="0"/>
+<xs:element name="ksi" type="xs:double" minOccurs="0"/>
+<xs:element name="bindingPoint" type="xs:double" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="parameterVariant">
+<xs:sequence>
+<xs:element name="double" type="tns:parameterDouble" minOccurs="0"/>
+<xs:element name="boolean" type="tns:parameterBoolean" minOccurs="0"/>
+<xs:element name="int" type="tns:parameterInt" minOccurs="0"/>
+<xs:element name="doubles" type="tns:parameterDoubles" minOccurs="0"/>
+<xs:element name="booleans" type="tns:parameterBooleans" minOccurs="0"/>
+<xs:element name="ints" type="tns:parameterInts" minOccurs="0"/>
+<xs:element name="string" type="tns:parameterString" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="parameterDouble">
+<xs:sequence>
+<xs:element name="value" type="xs:double"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="parameterBoolean">
+<xs:sequence>
+<xs:element name="value" type="xs:boolean"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="parameterInt">
+<xs:sequence>
+<xs:element name="value" type="xs:int"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="parameterDoubles">
+<xs:sequence>
+<xs:element name="values" type="xs:double" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="parameterBooleans">
+<xs:sequence>
+<xs:element name="values" type="xs:boolean" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="parameterInts">
+<xs:sequence>
+<xs:element name="values" type="xs:int" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="parameterString">
+<xs:sequence>
+<xs:element name="value" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="seanceInputDataInfo">
+<xs:sequence>
+<xs:element name="id" type="xs:long"/>
+<xs:element name="params" type="tns:seanceParameter" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+<xs:element name="externalMeasures" type="tns:measuresSetInfo" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+<xs:element name="trajectMeasures" type="tns:measuresSetInfo" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+<xs:element name="data" type="tns:psoSeanceInputData" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="seanceParameter">
+<xs:complexContent>
+<xs:extension base="tns:parameter">
+<xs:sequence/>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="parameter" abstract="true">
+<xs:sequence>
+<xs:element name="name" type="xs:string"/>
+<xs:element name="identifier" type="xs:string"/>
+<xs:element name="type" type="xs:string"/>
+<xs:element name="value" type="tns:parameterVariant"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="cuParameter">
+<xs:complexContent>
+<xs:extension base="tns:parameter">
+<xs:sequence>
+<xs:element name="sko" type="xs:double" minOccurs="0"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="measurerParameter">
+<xs:complexContent>
+<xs:extension base="tns:parameter">
+<xs:sequence/>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="orbitParameter">
+<xs:complexContent>
+<xs:extension base="tns:parameter">
+<xs:sequence/>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="measuresSetInfo">
+<xs:sequence>
+<xs:element name="id" type="xs:long"/>
+<xs:element name="name" type="xs:string"/>
+<xs:element name="comment" type="xs:string" minOccurs="0"/>
+<xs:element name="agregat" type="xs:long" minOccurs="0"/>
+<xs:element name="measurer" type="xs:long"/>
+<xs:element name="category" type="xs:string" minOccurs="0"/>
+<xs:element name="params" type="xs:string" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="trajectMeasuresSet">
+<xs:complexContent>
+<xs:extension base="tns:measuresSetInfo">
+<xs:sequence>
+<xs:element name="measures" type="tns:trajectory"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="trajectory">
+<xs:sequence>
+<xs:element name="id" type="xs:long"/>
+<xs:element name="category" type="xs:string"/>
+<xs:element name="coordinateSystem" type="tns:coordinateSystem"/>
+<xs:element name="points" type="tns:trajectoryPoint" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="trajectoryPoint">
+<xs:sequence>
+<xs:element name="time" type="xs:double"/>
+<xs:element name="cv" type="xs:double" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="realTrajectoryPoint">
+<xs:complexContent>
+<xs:extension base="tns:trajectoryPoint">
+<xs:sequence>
+<xs:element name="covMatrix" type="xs:double" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="paramMeasuresSet">
+<xs:complexContent>
+<xs:extension base="tns:measuresSetInfo">
+<xs:sequence>
+<xs:element name="measures" type="tns:paramMeasuresPoint" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="paramMeasuresPoint">
+<xs:sequence>
+<xs:element name="time" type="xs:double"/>
+<xs:element name="measures" type="tns:paramMeasureValue" maxOccurs="unbounded"/>
+<xs:element name="covMatrix" type="xs:double" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="paramMeasureValue">
+<xs:sequence>
+<xs:element name="param" type="xs:string"/>
+<xs:element name="value" type="xs:double"/>
+<xs:element name="sko" type="xs:double" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="psoParamMeasuresSet">
+<xs:complexContent>
+<xs:extension base="tns:paramMeasuresSet">
+<xs:sequence>
+<xs:element name="sysError" type="ns1:systemErrorPolynomType" minOccurs="0"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="psoSeanceInputData">
+<xs:sequence>
+<xs:element name="usedFallPoint" type="xs:long" minOccurs="0"/>
+<xs:element name="initialConditions" type="tns:singleTrajectoryPoint" minOccurs="0"/>
+<xs:element name="referenceTrajectory" type="tns:realTrajectory" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="singleTrajectoryPoint">
+<xs:sequence>
+<xs:element name="coordinateSystem" type="tns:coordinateSystem"/>
+<xs:element name="point" type="tns:realTrajectoryPoint"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="realTrajectory">
+<xs:sequence>
+<xs:element name="id" type="xs:long"/>
+<xs:element name="category" type="xs:string"/>
+<xs:element name="coordinateSystem" type="tns:coordinateSystem"/>
+<xs:element name="points" type="tns:realTrajectoryPoint" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="launchInfo">
+<xs:sequence>
+<xs:element name="simpleLaunchId" type="xs:long"/>
+<xs:element name="uuid" type="xs:string"/>
+<xs:element name="name" type="xs:string" minOccurs="0"/>
+<xs:element name="comment" type="xs:string" minOccurs="0"/>
+<xs:element name="azimuth" type="xs:double" minOccurs="0"/>
+<xs:element name="stateName" type="xs:string" minOccurs="0"/>
+<xs:element name="startTime" type="ns1:timestampType"/>
+<xs:element name="realStartTime" type="ns1:timestampType" minOccurs="0"/>
+<xs:element name="startPositionName" type="xs:string" minOccurs="0"/>
+<xs:element name="startPolygonName" type="xs:string" minOccurs="0"/>
+<xs:element name="wareIndex" type="xs:string"/>
+<xs:element name="wareComplex" type="xs:string"/>
+<xs:element name="oirTask" type="xs:string"/>
+<xs:element name="wareSerialNumber" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="meteoPoint">
+<xs:sequence>
+<xs:element name="height" type="xs:double"/>
+<xs:element name="pressure" type="xs:double"/>
+<xs:element name="temperature" type="xs:double"/>
+<xs:element name="humidity" type="xs:double" minOccurs="0"/>
+<xs:element name="windAzimuth" type="xs:double" minOccurs="0"/>
+<xs:element name="windVelocity" type="xs:double" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="measurer">
+<xs:sequence>
+<xs:element name="measurerId" type="xs:long"/>
+<xs:element name="name" type="xs:string"/>
+<xs:element name="fullName" type="xs:string"/>
+<xs:element name="type" type="xs:string"/>
+<xs:element name="typeIdentifier" type="xs:string"/>
+<xs:element name="parentType" type="xs:string" minOccurs="0"/>
+<xs:element name="parentTypeIdentifier" type="xs:string" minOccurs="0"/>
+<xs:element name="location" type="tns:coordinateSystem"/>
+<xs:element name="department" type="xs:string" minOccurs="0"/>
+<xs:element name="departmentNum" type="xs:int" minOccurs="0"/>
+<xs:element name="params" type="tns:measurerParameter" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="launchGroundedMeasurer">
+<xs:complexContent>
+<xs:extension base="tns:measurer">
+<xs:sequence>
+<xs:element name="id" type="xs:long"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="targetPoint">
+<xs:sequence>
+<xs:element name="time" type="xs:double"/>
+<xs:element name="params" type="tns:cuParameter" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="seanceResultDataInfo">
+<xs:sequence>
+<xs:element name="id" type="xs:long"/>
+<xs:element name="params" type="tns:seanceParameter" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+<xs:element name="externalMeasures" type="tns:measuresSetInfo" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+<xs:element name="trajectMeasures" type="tns:measuresSetInfo" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+<xs:element name="seanceTrajectory" type="tns:realTrajectory" minOccurs="0"/>
+<xs:element name="forecast" type="tns:forecastFallPoint" minOccurs="0"/>
+<xs:element name="data" type="tns:psoSeanceResultData" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="forecastFallPoint">
+<xs:sequence>
+<xs:element name="forecastFallTime" type="xs:double" minOccurs="0"/>
+<xs:element name="skoForecastFallTime" type="xs:double" minOccurs="0"/>
+<xs:element name="scatteringEllipseAxes" type="ns1:scatteringEllipseAxesType" minOccurs="0"/>
+<xs:element name="ScatteringEllipseCenter" type="tns:coordinateSystem"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="psoSeanceResultData">
+<xs:sequence>
+<xs:element name="atmEntry" type="tns:singleTrajectoryPoint" minOccurs="0"/>
+<xs:element name="initialConditions" type="tns:singleTrajectoryPoint" minOccurs="0"/>
+<xs:element name="identifiedFallPoint" type="xs:long" minOccurs="0"/>
+<xs:element name="identifiedSoompPoint" type="xs:long" minOccurs="0"/>
+<xs:element name="soompPoints" type="tns:soompFallPoint" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+<xs:element name="orbitParameters" type="tns:orbitParameter" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="soompFallPoint">
+<xs:sequence>
+<xs:element name="id" type="xs:long"/>
+<xs:element name="soompFallTime" type="ns1:timestampType" minOccurs="0"/>
+<xs:element name="skoFallTime" type="xs:double" minOccurs="0"/>
+<xs:element name="soompFallPoint" type="tns:coordinateSystem"/>
+<xs:element name="geoSko" type="xs:double" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="doublesTabularFunctionEntry">
+<xs:sequence/>
+<xs:attribute name="argument" type="xs:double" use="required"/>
+<xs:attribute name="value" type="xs:double" use="required"/>
+</xs:complexType>
+
+<xs:complexType name="seanceIdentifier">
+<xs:sequence>
+<xs:element name="launchId" type="xs:long"/>
+<xs:element name="categoryIdentifier" type="xs:string"/>
+<xs:element name="seanceName" type="xs:string"/>
+<xs:element name="pkIdentifier" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="measurerLocation">
+<xs:sequence>
+<xs:element name="id" type="xs:long"/>
+<xs:element name="time" type="ns1:timestampType"/>
+<xs:element name="coordinateSystem" type="tns:coordinateSystem"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="measurerLandmark">
+<xs:sequence>
+<xs:element name="number" type="xs:int"/>
+<xs:element name="isActive" type="xs:boolean"/>
+<xs:element name="source" type="xs:string" minOccurs="0"/>
+<xs:element name="comment" type="xs:string" minOccurs="0"/>
+<xs:element name="azimuth" type="xs:double"/>
+<xs:element name="elevationAngle" type="xs:double"/>
+<xs:element name="distance" type="xs:double" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="amgModel">
+<xs:sequence>
+<xs:element name="CxOfHeightTable" type="tns:doublesTabularFunction" minOccurs="0"/>
+<xs:element name="CxOfMachTable" type="tns:doublesTabularFunction" minOccurs="0"/>
+<xs:element name="MassLossOfHeightTable" type="tns:doublesTabularFunction" minOccurs="0"/>
+<xs:element name="MidelLossOfHeightTable" type="tns:doublesTabularFunction" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="doublesTabularFunction">
+<xs:sequence>
+<xs:element name="entry" type="tns:doublesTabularFunctionEntry" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="amgModelExtra">
+<xs:sequence>
+<xs:element name="id" type="xs:long"/>
+<xs:element name="name" type="xs:string"/>
+<xs:element name="tables2D" type="tns:amgTable2D" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+<xs:element name="tables3D" type="tns:amgTable3D" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="amgTable2D">
+<xs:sequence>
+<xs:element name="arg" type="xs:string"/>
+<xs:element name="f1" type="xs:string"/>
+<xs:element name="f2" type="xs:string" minOccurs="0"/>
+<xs:element name="values" type="ns1:amgTable2DValuesType" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="amgTable3D">
+<xs:sequence>
+<xs:element name="arg1" type="xs:string"/>
+<xs:element name="arg2" type="xs:string"/>
+<xs:element name="f" type="xs:string" minOccurs="0"/>
+<xs:element name="values" type="ns1:amgTable3DValuesType" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="seanceInfo">
+<xs:sequence>
+<xs:element name="id" type="xs:long"/>
+<xs:element name="name" type="xs:string"/>
+<xs:element name="comment" type="xs:string" minOccurs="0"/>
+<xs:element name="time" type="ns1:timestampType"/>
+<xs:element name="seanceCategory" type="xs:string"/>
+<xs:element name="pkIdentifier" type="xs:string" minOccurs="0"/>
+<xs:element name="seanceDestination" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="realMeteoData">
+<xs:sequence>
+<xs:element name="polygonName" type="xs:string"/>
+<xs:element name="realMeteoPoints" type="tns:meteoPoint" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="soompDetectionUnit">
+<xs:sequence>
+<xs:element name="coordinates" type="tns:simpleGeoPoint"/>
+<xs:element name="cu" type="ns1:soompMeasurerCuType" minOccurs="0"/>
+</xs:sequence>
+<xs:attribute name="name" type="xs:string" use="required"/>
+<xs:attribute name="measurerId" type="xs:long" use="required"/>
+</xs:complexType>
+
+<xs:complexType name="simpleGeoPoint">
+<xs:sequence>
+<xs:element name="b" type="xs:double"/>
+<xs:element name="l" type="xs:double"/>
+<xs:element name="h" type="xs:double"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="targetSetInfo">
+<xs:sequence>
+<xs:element name="agregat" type="xs:long" minOccurs="0" maxOccurs="unbounded"/>
+<xs:element name="measurerId" type="xs:long"/>
+<xs:element name="launchMeasurerId" type="xs:long"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="targetSet">
+<xs:complexContent>
+<xs:extension base="tns:targetSetInfo">
+<xs:sequence>
+<xs:element name="cuTime" type="ns1:timestampType"/>
+<xs:element name="targetTrajectory" type="tns:targetPoint" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="planningMeasurer">
+<xs:sequence>
+<xs:element name="measurerId" type="xs:long"/>
+<xs:element name="cuTime" type="ns1:timestampType"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="launchBoardedMeasurer">
+<xs:sequence>
+<xs:element name="id" type="xs:long"/>
+<xs:element name="type" type="xs:string"/>
+<xs:element name="agregat" type="xs:long"/>
+<xs:element name="fullName" type="xs:string"/>
+<xs:element name="params" type="tns:measurerParameter" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="aggregate">
+<xs:sequence>
+<xs:element name="id" type="xs:long"/>
+<xs:element name="type" type="ns1:agregatCategoryType"/>
+<xs:element name="number" type="xs:int"/>
+<xs:element name="name" type="xs:string" minOccurs="0"/>
+<xs:element name="separateTime" type="xs:double"/>
+<xs:element name="nominalTrajectory" type="tns:trajectory" minOccurs="0"/>
+<xs:element name="nominalFallPoint" type="tns:aggregateFallPoint" minOccurs="0"/>
+<xs:element name="mass" type="xs:double" minOccurs="0"/>
+<xs:element name="midel" type="xs:double" minOccurs="0"/>
+<xs:element name="cx" type="xs:double" minOccurs="0"/>
+<xs:element name="orbitParameters" type="tns:orbitParameter" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="aggregateFallPoint">
+<xs:sequence>
+<xs:element name="expectedFallTime" type="xs:double" minOccurs="0"/>
+<xs:element name="scatteringEllipseAxes" type="ns1:scatteringEllipseAxesType" minOccurs="0"/>
+<xs:element name="scatteringEllipseCenter" type="tns:coordinateSystem"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="rmvAggregate">
+<xs:complexContent>
+<xs:extension base="tns:aggregate">
+<xs:sequence>
+<xs:element name="amgModel" type="tns:amgModel" minOccurs="0"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="psoAggregate">
+<xs:complexContent>
+<xs:extension base="tns:aggregate">
+<xs:sequence>
+<xs:element name="amgModel" type="tns:amgModelExtra" minOccurs="0"/>
+<xs:element name="realFallTime" type="xs:double" minOccurs="0"/>
+<xs:element name="reallFallPoint" type="xs:long" minOccurs="0"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="soompMeasurerPlan">
+<xs:sequence>
+<xs:element name="meteoForecast" type="ns1:meteoForecastPointType" minOccurs="0"/>
+<xs:element name="planTime" type="ns1:timestampType"/>
+</xs:sequence>
+<xs:attribute name="startingMeasurementTime" type="xs:dateTime" use="required"/>
+<xs:attribute name="finishingMeasurementTime" type="xs:dateTime" use="required"/>
+<xs:attribute name="numberOfObjects" type="xs:int" use="required"/>
+<xs:attribute name="extHumidity" type="xs:double"/>
+<xs:attribute name="extPressure" type="xs:double"/>
+<xs:attribute name="extTemperature" type="xs:double"/>
+</xs:complexType>
+
+<xs:complexType name="rmvAggregateFallPoint">
+<xs:sequence>
+<xs:element name="aggregate" type="xs:long"/>
+<xs:element name="nominalFallPoint" type="tns:aggregateFallPoint"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="lsag">
+<xs:sequence>
+<xs:element name="detectionUnits" type="tns:soompDetectionUnit" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+<xs:element name="usedAgregats" type="ns1:agregatType" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+<xs:attribute name="lsagNumber" type="xs:int" use="required"/>
+<xs:attribute name="active" type="xs:boolean" use="required"/>
+<xs:attribute name="centralDetectionUnitName" type="xs:string" use="required"/>
+</xs:complexType>
+
+<xs:complexType name="launchTargetPoint">
+<xs:sequence>
+<xs:element name="agregat" type="ns1:agregatType"/>
+<xs:element name="coordinates" type="tns:simpleGeoPoint"/>
+</xs:sequence>
+<xs:attribute name="fallPointName" type="xs:string" use="required"/>
+<xs:attribute name="agregatNumber" type="xs:string" use="required"/>
+<xs:attribute name="agregatSerialNumber" type="xs:string" use="required"/>
+<xs:attribute name="agregatCategory" type="xs:string" use="required"/>
+<xs:attribute name="fallTime" type="xs:double" use="required"/>
+</xs:complexType>
+
+<xs:complexType name="visibilityBorderPoint">
+<xs:sequence>
+<xs:element name="azimuth" type="xs:double"/>
+<xs:element name="elevationAngle" type="xs:double"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="command">
+<xs:sequence>
+<xs:element name="id" type="xs:long"/>
+<xs:element name="code" type="xs:string"/>
+<xs:element name="name" type="xs:string"/>
+<xs:element name="nomTime" type="xs:double"/>
+<xs:element name="realTime" type="xs:double" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="psoLaunchObject">
+<xs:sequence>
+<xs:element name="id" type="xs:long"/>
+<xs:element name="stateName" type="xs:string" minOccurs="0"/>
+<xs:element name="comment" type="xs:string" minOccurs="0"/>
+<xs:element name="startTime" type="ns1:timestampType"/>
+<xs:element name="realStartTime" type="ns1:timestampType" minOccurs="0"/>
+<xs:element name="otpDelta" type="xs:double" minOccurs="0"/>
+<xs:element name="start" type="tns:startPoint" minOccurs="0"/>
+<xs:element name="ware" type="tns:launchWare"/>
+<xs:element name="agregats" type="tns:psoAggregate" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+<xs:element name="ftp" type="tns:realFallPoint" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+<xs:element name="seances" type="tns:seanceInfo" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="realFallPoint">
+<xs:sequence>
+<xs:element name="id" type="xs:long"/>
+<xs:element name="name" type="xs:string"/>
+<xs:element name="realFallPoint" type="tns:coordinateSystem"/>
+<xs:element name="geoSko" type="xs:double" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="seanceDataInfo">
+<xs:sequence>
+<xs:element name="Id" type="xs:long"/>
+<xs:element name="identifiedAgregat" type="xs:long" minOccurs="0"/>
+<xs:element name="seanceInputData" type="tns:seanceInputDataInfo" minOccurs="0"/>
+<xs:element name="seanceResultData" type="tns:seanceResultDataInfo" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+</xs:schema>
