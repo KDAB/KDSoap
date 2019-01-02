@@ -22,8 +22,6 @@
 **********************************************************************/
 
 #include "KDSoapClientInterface.h"
-//#include "KDSoapMessage.h"
-//#include "KDSoapValue.h"
 #include "wsdl_soapresponder.h"
 #include "wsdl_holidays.h"
 #include "wsdl_BFGlobalService.h"

@@ -25,7 +25,6 @@
 #include "KDSoapMessage.h"
 #include "KDSoapValue.h"
 #include "KDSoapPendingCallWatcher.h"
-#include "KDSoapAuthentication.h"
 #include "wsdl_import_definition.h"
 #include "httpserver_p.h"
 #include <QtTest/QtTest>
