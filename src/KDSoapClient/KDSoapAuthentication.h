@@ -40,6 +40,9 @@ QT_END_NAMESPACE
 class KDSOAP_EXPORT KDSoapAuthentication
 {
 public:
+    friend class KDSoapClientInterfacePrivate;
+    friend class KDSoapThreadTask;
+
     /**
      * Constructs an empty authentication object.
      */
@@ -82,6 +85,7 @@ public:
      */
     KDSoapAuthentication &operator=(const KDSoapAuthentication &other);
 
+private:
     /**
      * \internal
      */
