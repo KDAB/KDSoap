@@ -1,5 +1,6 @@
 /****************************************************************************
 ** Copyright (C) 2010-2018 Klaralvdalens Datakonsult AB, a KDAB Group company, info@kdab.com.
+** Copyright (C) 2019 Casper Meijn  <casper@meijn.net>
 ** All rights reserved.
 **
 ** This file is part of the KD Soap library.
@@ -27,8 +28,11 @@
 #include <QtCore/QUrl>
 QT_BEGIN_NAMESPACE
 class QAuthenticator;
+class QDateTime;
 class QNetworkReply;
+class QXmlStreamWriter;
 QT_END_NAMESPACE
+class KDSoapNamespacePrefixes;
 
 /**
  * KDSoapAuthentication provides an authentication object.
@@ -40,6 +44,7 @@ QT_END_NAMESPACE
 class KDSOAP_EXPORT KDSoapAuthentication
 {
 public:
+    friend class KDSoapMessageWriter;
     friend class KDSoapClientInterfacePrivate;
     friend class KDSoapThreadTask;
 
@@ -75,6 +80,42 @@ public:
     QString password() const;
 
     /**
+     * Sets whether WS-UsernameToken is used for authentication. When
+     * set, the WS-UsernameToken headers are included in each request.
+     * \since 1.8
+     */
+    void setUseWSUsernameToken(bool useWSUsernameToken);
+    /**
+     * \since 1.8
+     * \return whether WS-UsernameToken is used for authentication
+     */
+    bool useWSUsernameToken() const;
+
+    /**
+     * Sets the created time used during WS-UsernameToken authentication
+     * This is useful for devices with an incorrect time and during testing
+     * \since 1.8
+     */
+    void setOverrideWSUsernameCreatedTime(QDateTime overrideWSUsernameCreatedTime);
+    /**
+     * \since 1.8
+     * \return the created time used during WS-UsernameToken authentication
+     */
+    QDateTime overrideWSUsernameCreatedTime() const;
+
+    /**
+     * Sets the nonce used during WS-UsernameToken authentication
+     * This is useful during testing
+     * \since 1.8
+     */
+    void setOverrideWSUsernameNonce(QByteArray overrideWSUsernameNonce);
+    /**
+     * \since 1.8
+     * \return the created time used during WS-UsernameToken authentication
+     */
+    QByteArray overrideWSUsernameNonce() const;
+
+    /**
      * \return \c true if authentication was defined, or
      * \c false if this object is only a default-constructed KDSoapAuthentication().
      */
@@ -90,6 +131,10 @@ private:
      * \internal
      */
     void handleAuthenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator);
+
+    bool hasWSUsernameTokenHeader() const;
+
+    void writeWSUsernameTokenHeader(KDSoapNamespacePrefixes &namespacePrefixes, QXmlStreamWriter &writer, const QString &messageNamespace, bool forceQualified) const;
 
 private:
     class Private;

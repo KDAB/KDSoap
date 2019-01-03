@@ -45,7 +45,8 @@ SUBDIRS = \
   date_example \
   dv_terminalauth \
   test_calc \
-  ws_addressing_support
+  ws_addressing_support \
+  ws_usernametoken_support
 
 # These need internet access
 SUBDIRS += webcalls webcalls_wsdl

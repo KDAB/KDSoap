@@ -12,6 +12,7 @@ Client-side:
 * Fix error code when authentication failed
 * Autodeletion of jobs is now configurable (github pull #125)
 * Add error details in faultAsString() - and the generated lastError() - coming from the SOAP 1.2 detail element.
+* Add support for WS-UsernameToken, see KDSoapAuthentication
 
 Server-side:
 ============

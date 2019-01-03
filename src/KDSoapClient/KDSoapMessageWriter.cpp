@@ -44,7 +44,8 @@ void KDSoapMessageWriter::setMessageNamespace(const QString &ns)
 }
 
 QByteArray KDSoapMessageWriter::messageToXml(const KDSoapMessage &message, const QString &method,
-        const KDSoapHeaders &headers, const QMap<QString, KDSoapMessage> &persistentHeaders) const
+        const KDSoapHeaders &headers, const QMap<QString, KDSoapMessage> &persistentHeaders,
+        const KDSoapAuthentication &authentication) const
 {
     QByteArray data;
     QXmlStreamWriter writer(&data);
@@ -73,7 +74,7 @@ QByteArray KDSoapMessageWriter::messageToXml(const KDSoapMessage &message, const
         messageNamespace = message.namespaceUri();
     }
 
-    if (!headers.isEmpty() || !persistentHeaders.isEmpty() || message.hasMessageAddressingProperties()) {
+    if (!headers.isEmpty() || !persistentHeaders.isEmpty() || message.hasMessageAddressingProperties() || authentication.hasWSUsernameTokenHeader()) {
         // This writeNamespace line adds the xmlns:n1 to <Envelope>, which looks ugly and unusual (and breaks all unittests)
         // However it's the best solution in case of headers, otherwise we get n1 in the header and n2 in the body,
         // and xsi:type attributes that refer to n1, which isn't defined in the body...
@@ -87,6 +88,9 @@ QByteArray KDSoapMessageWriter::messageToXml(const KDSoapMessage &message, const
         }
         if (message.hasMessageAddressingProperties()) {
             message.messageAddressingProperties().writeMessageAddressingProperties(namespacePrefixes, writer, messageNamespace, true);
+        }
+        if (authentication.hasWSUsernameTokenHeader()) {
+            authentication.writeWSUsernameTokenHeader(namespacePrefixes, writer, messageNamespace, true);
         }
         writer.writeEndElement(); // Header
     } else {
