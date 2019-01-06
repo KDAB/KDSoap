@@ -241,6 +241,13 @@ public:
     QString type() const;
 
     /**
+     * Returns the list of split values.
+     * The data is split on spaces and the properties are copied.
+     * \since 1.8
+     */
+    KDSoapValueList split() const;
+
+    /**
      * Defines the way the message should be serialized.
      * See the "use" attribute for soap:body, in the WSDL file.
      */

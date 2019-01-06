@@ -572,16 +572,16 @@ QString KWSDL::TypeMap::deserializeBuiltin(const QName &typeName, const QName &e
 {
     const QName type = typeName.isEmpty() ? baseTypeForElement(elementName) : typeName;
     if (type.nameSpace() == XMLSchemaURI && type.localName() == "hexBinary") {
-        return "QByteArray::fromHex(" + var + ".toString().toLatin1())";
+        return "QByteArray::fromHex(" + var + ".value().toString().toLatin1())";
     } else if (type.nameSpace() == XMLSchemaURI && type.localName() == "base64Binary") {
-        return "QByteArray::fromBase64(" + var + ".toString().toLatin1())";
+        return "QByteArray::fromBase64(" + var + ".value().toString().toLatin1())";
     } else if (type.nameSpace() == XMLSchemaURI && type.localName() == "dateTime") {
         Q_ASSERT(qtTypeName == QLatin1String("KDDateTime"));
-        return "KDDateTime::fromDateString(" + var + ".toString())";
+        return "KDDateTime::fromDateString(" + var + ".value().toString())";
     } else if (type.nameSpace() == XMLSchemaURI && type.localName() == "anySimpleType") {
-        return var;
+        return var + ".value()";
     } else {
-        return var + ".value<" + qtTypeName + ">()";
+        return var + ".value().value<" + qtTypeName + ">()";
     }
 }
 

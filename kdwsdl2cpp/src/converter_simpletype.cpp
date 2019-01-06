@@ -282,7 +282,7 @@ void Converter::createSimpleTypeSerializer(KODE::Class &newClass, const XSD::Sim
     serializeFunc.setConst(true);
 
     KODE::Function deserializeFunc("deserialize", "void");
-    deserializeFunc.addArgument("const QVariant& value");
+    deserializeFunc.addArgument("const KDSoapValue& mainValue");
 
     switch (type->subType()) {
     case XSD::SimpleType::TypeRestriction:
@@ -336,7 +336,7 @@ void Converter::createSimpleTypeSerializer(KODE::Class &newClass, const XSD::Sim
                     code += "{ \"" + enums[ i ] + "\", " + typeName + "::" + escapedEnums[ i ] + " }" + (i < enums.count() - 1 ? "," : "");
                 }
                 code += "};";
-                code += "const QString str = value.toString();";
+                code += "const QString str = mainValue.value().toString();";
                 code += "for ( int i = 0; i < " + QString::number(enums.count()) + "; ++i ) {";
                 code.indent();
                 code += "if (str == QLatin1String(s_values[i].name)) {";
@@ -367,10 +367,10 @@ void Converter::createSimpleTypeSerializer(KODE::Class &newClass, const XSD::Sim
             //Q_UNUSED(mostBasicTypeName);
             if (mTypeMap.isBuiltinType(baseType)) {     // serialize from QString, int, etc.
                 serializeFunc.addBodyLine("return " + mTypeMap.serializeBuiltin(baseType, QName(), variableName, baseTypeName) + ";" + COMMENT);
-                deserializeFunc.addBodyLine(variableName + " = " + mTypeMap.deserializeBuiltin(baseType, QName(), "value", baseTypeName) + ";" + COMMENT);
+                deserializeFunc.addBodyLine(variableName + " = " + mTypeMap.deserializeBuiltin(baseType, QName(), "mainValue", baseTypeName) + ";" + COMMENT);
             } else { // inherits another simple type, need to call its serialize/deserialize method
                 serializeFunc.addBodyLine("return " + variableName + ".serialize();" + COMMENT);
-                deserializeFunc.addBodyLine(variableName + ".deserialize( value );" + COMMENT);
+                deserializeFunc.addBodyLine(variableName + ".deserialize( mainValue );" + COMMENT);
             }
 
         }
@@ -391,7 +391,7 @@ void Converter::createSimpleTypeSerializer(KODE::Class &newClass, const XSD::Sim
             if (itemTypeName == "QString") { // special but common case, no conversion needed
                 code += "str += " + variableName + ".at(i);";
             } else if (mTypeMap.isBuiltinType(baseName)) { // serialize from int, float, bool, etc.
-                code += "str += QVariant(" + variableName + ".at(i)).toString();";
+                code += "str += " + mTypeMap.serializeBuiltin(baseName, QName(), variableName + ".at(i)", itemTypeName) + ".toString();";
             } else {
                 code += "str += " + variableName + ".at(i).serialize().toString();";
             }
@@ -403,15 +403,15 @@ void Converter::createSimpleTypeSerializer(KODE::Class &newClass, const XSD::Sim
         {
             newClass.addHeaderInclude("QtCore/QStringList");
             KODE::Code code;
-            code += "if (value.toString().trimmed().isEmpty()) return;";
-            code += "const QStringList list = value.toString().split(QLatin1Char(' '));";
+            code += "if (mainValue.value().toString().trimmed().isEmpty()) return;";
+            code += "const KDSoapValueList list = mainValue.split();";
             code += "for (int i = 0; i < list.count(); ++i) {";
             code.indent();
             QString val = QString::fromLatin1("list.at(i)");
             if (itemTypeName == "QString")
-                /*nothing to do*/;
+                val = val + ".value().toString()";
             else if (mTypeMap.isBuiltinType(baseName)) {     // deserialize to int, float, bool, etc.
-                val = "QVariant(" + val + ").value<" + itemTypeName + ">()";
+                val = mTypeMap.deserializeBuiltin(baseName, QName(), val, itemTypeName);
             } else {
                 code += itemTypeName + " tmp;";
                 code += "tmp.deserialize(" + val + ");";
@@ -433,7 +433,7 @@ void Converter::createSimpleTypeSerializer(KODE::Class &newClass, const XSD::Sim
         }
         {
             KODE::Code code;
-            code += variableName + " = value;" + COMMENT;
+            code += variableName + " = mainValue.value();" + COMMENT;
             deserializeFunc.setBody(code);
         }
         break;

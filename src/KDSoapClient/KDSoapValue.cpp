@@ -367,6 +367,20 @@ QString KDSoapValue::type() const
     return d->m_typeName;
 }
 
+KDSoapValueList KDSoapValue::split() const
+{
+    KDSoapValueList valueList;
+    if (value().toString().trimmed().isEmpty()) return valueList;
+
+    const QStringList list = value().toString().split(QLatin1Char(' '));
+    for (int i = 0; i < list.count(); ++i) {
+        KDSoapValue value(*this);
+        value.setValue(list.at(i));
+        valueList << value;
+    }
+    return valueList;
+}
+
 KDSoapValue KDSoapValueList::child(const QString &name) const
 {
     const_iterator it = begin();
