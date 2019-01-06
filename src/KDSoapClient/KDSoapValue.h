@@ -30,6 +30,7 @@
 #include <QtCore/QSet>
 #include <QtCore/QVector>
 #include <QtCore/QSharedDataPointer>
+#include <QtCore/QXmlStreamNamespaceDeclarations>
 #include "KDSoapGlobal.h"
 
 #ifndef QT_NO_STL
@@ -239,6 +240,18 @@ public:
      * Example: "string".
      */
     QString type() const;
+
+    /**
+     * Sets the \p namespaceDeclarations of this value.
+     * \since 1.8
+     */
+    void setNamespaceDeclarations(const QXmlStreamNamespaceDeclarations& namespaceDeclarations);
+
+    /**
+     * Returns the namespaceDeclarations as it was during parsing of the message
+     * \since 1.8
+     */
+    QXmlStreamNamespaceDeclarations namespaceDeclarations() const;
 
     /**
      * Returns the list of split values.

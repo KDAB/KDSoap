@@ -43,6 +43,7 @@ public:
     KDSoapValueList m_childValues;
     bool m_qualified;
     bool m_nillable;
+    QXmlStreamNamespaceDeclarations m_namespaceDeclarations;
 };
 
 uint qHash(const KDSoapValue &value)
@@ -118,6 +119,16 @@ bool KDSoapValue::isQualified() const
 void KDSoapValue::setQualified(bool qualified)
 {
     d->m_qualified = qualified;
+}
+
+void KDSoapValue::setNamespaceDeclarations(const QXmlStreamNamespaceDeclarations &namespaceDeclarations)
+{
+    d->m_namespaceDeclarations = namespaceDeclarations;
+}
+
+QXmlStreamNamespaceDeclarations KDSoapValue::namespaceDeclarations() const
+{
+    return d->m_namespaceDeclarations;
 }
 
 KDSoapValueList &KDSoapValue::childValues() const
