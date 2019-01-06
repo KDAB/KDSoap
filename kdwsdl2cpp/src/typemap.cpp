@@ -92,7 +92,7 @@ TypeMap::TypeMap()
     addBuiltinType("nonPositiveInteger", "qint64"); // unbounded (-inf to 0)
     addBuiltinType("normalizedString", "QString");
     addBuiltinType("positiveInteger", "quint64"); // unbounded (1 to inf)
-    addBuiltinType("QName", "QString");
+    addBuiltinType("QName", "KDQName");
     addBuiltinType("short", "int"); // 16 bits. But QVariant doesn't support short.
     addBuiltinType("string", "QString");
     addBuiltinType("time", "QTime");
@@ -578,6 +578,9 @@ QString KWSDL::TypeMap::deserializeBuiltin(const QName &typeName, const QName &e
     } else if (type.nameSpace() == XMLSchemaURI && type.localName() == "dateTime") {
         Q_ASSERT(qtTypeName == QLatin1String("KDDateTime"));
         return "KDDateTime::fromDateString(" + var + ".value().toString())";
+    } else if (type.nameSpace() == XMLSchemaURI && type.localName() == "QName") {
+        Q_ASSERT(qtTypeName == QLatin1String("KDQName"));
+        return "KDQName::fromSoapValue(" + var + ")";
     } else if (type.nameSpace() == XMLSchemaURI && type.localName() == "anySimpleType") {
         return var + ".value()";
     } else {
@@ -597,6 +600,8 @@ QString KWSDL::TypeMap::serializeBuiltin(const QName &typeName, const QName &ele
         return "QString::fromLatin1(" + var + ".toBase64().constData())";
     } else if (type.nameSpace() == XMLSchemaURI && type.localName() == "dateTime") {
         return var + ".toDateString()";
+    } else if (type.nameSpace() == XMLSchemaURI && type.localName() == "QName") {
+        return"QVariant::fromValue(" +  var + ".qname()" + ")";
     } else if (type.nameSpace() == XMLSchemaURI && type.localName() == "anySimpleType") {
         return var;
     } else {
