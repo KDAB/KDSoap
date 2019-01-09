@@ -107,7 +107,7 @@ KODE::Code ElementArgumentSerializer::generate() const
 
                 block += QLatin1String("KDSoapValue ") + mValueVarName + QLatin1String("(") + mNameArg + QLatin1String(", ") + value + QLatin1String(", ") + typeArgs + QLatin1String(");") + COMMENT;
             } else {
-                block += QLatin1String("KDSoapValue ") + mValueVarName + QLatin1String("(") + mNameArg + QLatin1String(", ") + mLocalVarName + QLatin1String(".serialize(), ") + typeArgs + QLatin1String(");") + COMMENT;
+                block += QLatin1String("KDSoapValue ") + mValueVarName + QLatin1String(" = ") + mLocalVarName + QLatin1String(".serialize(") + mNameArg + QLatin1String(");") + COMMENT;
             }
         }
         if (!mNameNamespace.isEmpty()) {

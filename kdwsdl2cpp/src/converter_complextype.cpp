@@ -479,22 +479,19 @@ void Converter::createComplexTypeSerializer(KODE::Class &newClass, const XSD::Co
         const QString variableName = QLatin1String("d_ptr->") + variable.name();
 
         if (mTypeMap.isComplexType(baseName)) {
-            //marshalCode += QLatin1String("KDSoapValue mainValue = ") + variableName + QLatin1String(".serialize(valueName);") + COMMENT;
-            //marshalCode += QLatin1String("mainValue.setType(") + typeArgs + QLatin1String(");");
             marshalCode += QLatin1String("KDSoapValue mainValue = ") + typeName + QLatin1String("::serialize(valueName);") + COMMENT;
             marshalCode += QLatin1String("mainValue.setType(") + typeArgs + QLatin1String(");");
-            //demarshalCode += demarshalVar( baseName, QName(), variableName, typeName, QLatin1String("mainValue") );
-
             demarshalCode += typeName + "::deserialize(mainValue);";
-            //demarshalCode += demarshalVar( baseName, QName(), variableName, typeName, QLatin1String("mainValue") );
         } else {
             QString value;
             if (mTypeMap.isBuiltinType(baseName)) {
                 value = mTypeMap.serializeBuiltin(baseName, QName(), variableName, typeName);
+                marshalCode += QLatin1String("KDSoapValue mainValue(valueName, ") + value + QLatin1String(", ") + typeArgs + QLatin1String(");") + COMMENT;
             } else {
-                value += variableName + QLatin1String(".serialize()");
+                value += variableName + QLatin1String(".serialize(valueName)");
+                marshalCode += QLatin1String("KDSoapValue mainValue = ") + value + QLatin1String(";") + COMMENT;
+                marshalCode += QLatin1String("mainValue.setType(") + typeArgs + QLatin1String(");");
             }
-            marshalCode += QLatin1String("KDSoapValue mainValue(valueName, ") + value + QLatin1String(", ") + typeArgs + QLatin1String(");") + COMMENT;
             demarshalCode += demarshalVar(baseName, QName(), variableName, typeName, QLatin1String("mainValue"), false, false);
         }
 
