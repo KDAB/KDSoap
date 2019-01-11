@@ -23,6 +23,7 @@
 
 #include <QDebug>
 #include "typemap.h"
+#include "converter.h"
 
 using namespace KWSDL;
 
@@ -588,23 +589,24 @@ QString KWSDL::TypeMap::deserializeBuiltin(const QName &typeName, const QName &e
     }
 }
 
-QString KWSDL::TypeMap::serializeBuiltin(const QName &typeName, const QName &elementName, const QString &var, const QString &qtTypeName) const
+QString KWSDL::TypeMap::serializeBuiltin(const QName &baseTypeName, const QName &elementName, const QString &var, const QString &name, const QString &typeNameSpace, const QString &typeName) const
 {
-    Q_UNUSED(qtTypeName);
-    const QName type = typeName.isEmpty() ? baseTypeForElement(elementName) : typeName;
+    QString value;
+    const QName baseType = baseTypeName.isEmpty() ? baseTypeForElement(elementName) : baseTypeName;
     // variantToTextValue also has support for calling toHex/toBase64 at runtime, but this fails
     // when the type derives from hexBinary and is named differently, see Telegram testcase.
-    if (type.nameSpace() == XMLSchemaURI && type.localName() == "hexBinary") {
-        return "QString::fromLatin1(" + var + ".toHex().constData())";
-    } else if (type.nameSpace() == XMLSchemaURI && type.localName() == "base64Binary") {
-        return "QString::fromLatin1(" + var + ".toBase64().constData())";
-    } else if (type.nameSpace() == XMLSchemaURI && type.localName() == "dateTime") {
-        return var + ".toDateString()";
-    } else if (type.nameSpace() == XMLSchemaURI && type.localName() == "QName") {
-        return"QVariant::fromValue(" +  var + ".qname()" + ")";
-    } else if (type.nameSpace() == XMLSchemaURI && type.localName() == "anySimpleType") {
-        return var;
+    if (baseType.nameSpace() == XMLSchemaURI && baseType.localName() == "hexBinary") {
+        value = "QString::fromLatin1(" + var + ".toHex().constData())";
+    } else if (baseType.nameSpace() == XMLSchemaURI && baseType.localName() == "base64Binary") {
+        value = "QString::fromLatin1(" + var + ".toBase64().constData())";
+    } else if (baseType.nameSpace() == XMLSchemaURI && baseType.localName() == "dateTime") {
+        value = var + ".toDateString()";
+    } else if (baseType.nameSpace() == XMLSchemaURI && baseType.localName() == "QName") {
+        value = "QVariant::fromValue(" +  var + ".qname()" + ")";
+    } else if (baseType.nameSpace() == XMLSchemaURI && baseType.localName() == "anySimpleType") {
+        value = var;
     } else {
-        return "QVariant::fromValue(" + var + ")";
+        value = "QVariant::fromValue(" + var + ")";
     }
+    return "KDSoapValue(" + name + ", " + value + ", " + namespaceString(typeNameSpace) + ", QString::fromLatin1(\"" + typeName + "\"))";
 }

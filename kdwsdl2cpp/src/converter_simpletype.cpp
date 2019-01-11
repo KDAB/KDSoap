@@ -367,7 +367,7 @@ void Converter::createSimpleTypeSerializer(KODE::Class &newClass, const XSD::Sim
             //const QName mostBasicTypeName = simpleTypeList.mostBasicType( baseType );
             //Q_UNUSED(mostBasicTypeName);
             if (mTypeMap.isBuiltinType(baseType)) {     // serialize from QString, int, etc.
-                serializeFunc.addBodyLine("return KDSoapValue(valueName, " + mTypeMap.serializeBuiltin(baseType, QName(), variableName, baseTypeName) + ", " + namespaceString(type->nameSpace()) + ", QString::fromLatin1(\"" + type->name() + "\"));" + COMMENT);
+                serializeFunc.addBodyLine("return " + mTypeMap.serializeBuiltin(baseType, QName(), variableName, "valueName", type->nameSpace(), type->name()) + ";" + COMMENT);
                 deserializeFunc.addBodyLine(variableName + " = " + mTypeMap.deserializeBuiltin(baseType, QName(), "mainValue", baseTypeName) + ";" + COMMENT);
             } else { // inherits another simple type, need to call its serialize/deserialize method
                 serializeFunc.addBodyLine("KDSoapValue value = mValue.serialize(valueName);");
@@ -393,10 +393,13 @@ void Converter::createSimpleTypeSerializer(KODE::Class &newClass, const XSD::Sim
             code.unindent();
             if (itemTypeName == "QString") { // special but common case, no conversion needed
                 code += "str += " + variableName + ".at(i);";
-            } else if (mTypeMap.isBuiltinType(baseName)) { // serialize from int, float, bool, etc.
-                code += "str += " + mTypeMap.serializeBuiltin(baseName, QName(), variableName + ".at(i)", itemTypeName) + ".toString();";
             } else {
-                code += "str += " + variableName + ".at(i).serialize(QString()).value().toString();";
+                if (mTypeMap.isBuiltinType(baseName)) { // serialize from int, float, bool, etc.
+                    code += "KDSoapValue subValue = " + mTypeMap.serializeBuiltin(baseName, QName(), variableName + ".at(i)", "QString()", QString(), QString()) + ";";
+                } else {
+                    code += "KDSoapValue subValue =  " + variableName + ".at(i).serialize(QString());";
+                }
+                code += "str += subValue.value().toString();";
             }
             code.unindent();
             code += "}";
