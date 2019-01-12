@@ -126,6 +126,11 @@ void KDSoapValue::setNamespaceDeclarations(const QXmlStreamNamespaceDeclarations
     d->m_namespaceDeclarations = namespaceDeclarations;
 }
 
+void KDSoapValue::addNamespaceDeclaration(const QXmlStreamNamespaceDeclaration &namespaceDeclaration)
+{
+    d->m_namespaceDeclarations.append(namespaceDeclaration);
+}
+
 QXmlStreamNamespaceDeclarations KDSoapValue::namespaceDeclarations() const
 {
     return d->m_namespaceDeclarations;
@@ -284,6 +289,10 @@ void KDSoapValue::writeElement(KDSoapNamespacePrefixes &namespacePrefixes, QXmlS
 void KDSoapValue::writeElementContents(KDSoapNamespacePrefixes &namespacePrefixes, QXmlStreamWriter &writer, KDSoapValue::Use use, const QString &messageNamespace) const
 {
     const QVariant value = this->value();
+
+    foreach (QXmlStreamNamespaceDeclaration decl, d->m_namespaceDeclarations) {
+        writer.writeNamespace(decl.namespaceUri().toString(), decl.prefix().toString());
+    }
 
     if (isNil() && d->m_nillable) {
         writer.writeAttribute(KDSoapNamespaceManager::xmlSchemaInstance2001(), QLatin1String("nil"), QLatin1String("true"));

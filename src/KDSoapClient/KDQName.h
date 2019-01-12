@@ -63,6 +63,11 @@ class KDSOAP_EXPORT KDQName
      */
     static KDQName fromSoapValue(const KDSoapValue &value);
 
+    /**
+     * Returns a KDSoapValue representation.
+     */
+    KDSoapValue toSoapValue(const QString &name, const QString &typeNameSpace = QString(), const QString &typeName = QString()) const;
+
   private:
     void parse( const QString& );
 

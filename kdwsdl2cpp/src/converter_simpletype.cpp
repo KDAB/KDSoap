@@ -385,6 +385,7 @@ void Converter::createSimpleTypeSerializer(KODE::Class &newClass, const XSD::Sim
         {
             KODE::Code code;
             code += "QString str;";
+            code += "QXmlStreamNamespaceDeclarations decls;";
             code += "for ( int i = 0; i < " + variableName + ".count(); ++i ) {";
             code.indent();
             code += "if (!str.isEmpty())";
@@ -400,10 +401,13 @@ void Converter::createSimpleTypeSerializer(KODE::Class &newClass, const XSD::Sim
                     code += "KDSoapValue subValue =  " + variableName + ".at(i).serialize(QString());";
                 }
                 code += "str += subValue.value().toString();";
+                code += "decls += subValue.namespaceDeclarations();";
             }
             code.unindent();
             code += "}";
-            code += "return KDSoapValue(valueName, str, " + namespaceString(type->nameSpace()) + ", QString::fromLatin1(\"" + type->name() + "\"));";
+            code += "KDSoapValue value(valueName, str, " + namespaceString(type->nameSpace()) + ", QString::fromLatin1(\"" + type->name() + "\"));";
+            code += "value.setNamespaceDeclarations(decls);";
+            code += "return value;";
             serializeFunc.setBody(code);
         }
         {

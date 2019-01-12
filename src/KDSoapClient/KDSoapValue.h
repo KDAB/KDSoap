@@ -248,6 +248,12 @@ public:
     void setNamespaceDeclarations(const QXmlStreamNamespaceDeclarations& namespaceDeclarations);
 
     /**
+     * Adds a \p namespaceDeclaration to the existing list of namespaceDeclarations.
+     * \since 1.8
+     */
+    void addNamespaceDeclaration(const QXmlStreamNamespaceDeclaration& namespaceDeclaration);
+
+    /**
      * Returns the namespaceDeclarations as it was during parsing of the message
      * \since 1.8
      */

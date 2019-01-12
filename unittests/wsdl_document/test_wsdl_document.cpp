@@ -1060,7 +1060,7 @@ void WsdlDocumentTest::testSendTelegram()
 
     // Check the request as received by the server.
     const QByteArray expectedRequestXml =
-        QByteArray(xmlBegin) + "<TelegramRequest " + xmlNamespaces + ">"
+        QByteArray(xmlBegin) + "<TelegramRequest " + xmlNamespaces + " xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
         "<TelegramHex>48656c6c6f</TelegramHex>"
         "<TelegramBase64>SGVsbG8=</TelegramBase64>"
         "</TelegramRequest>";

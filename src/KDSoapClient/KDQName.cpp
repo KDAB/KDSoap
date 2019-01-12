@@ -104,6 +104,16 @@ KDQName KDQName::fromSoapValue(const KDSoapValue &value)
     return qname;
 }
 
+KDSoapValue KDQName::toSoapValue(const QString &name, const QString &typeNameSpace, const QString &typeName) const
+{
+    KDSoapValue value = KDSoapValue(name, qname(), typeNameSpace, typeName);
+    if ( !mPrefix.isEmpty() && !mNameSpace.isEmpty() ) {
+        QXmlStreamNamespaceDeclaration decl(mPrefix, mNameSpace);
+        value.addNamespaceDeclaration(decl);
+    }
+    return value;
+}
+
 void KDQName::parse( const QString &str )
 {
     int pos = str.indexOf( QLatin1Char(':') );

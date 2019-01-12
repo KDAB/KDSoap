@@ -602,7 +602,7 @@ QString KWSDL::TypeMap::serializeBuiltin(const QName &baseTypeName, const QName 
     } else if (baseType.nameSpace() == XMLSchemaURI && baseType.localName() == "dateTime") {
         value = var + ".toDateString()";
     } else if (baseType.nameSpace() == XMLSchemaURI && baseType.localName() == "QName") {
-        value = "QVariant::fromValue(" +  var + ".qname()" + ")";
+        return var + ".toSoapValue(" + name + ", " + namespaceString(typeNameSpace) + ", QString::fromLatin1(\"" + typeName + "\"))";
     } else if (baseType.nameSpace() == XMLSchemaURI && baseType.localName() == "anySimpleType") {
         value = var;
     } else {
