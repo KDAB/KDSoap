@@ -27,6 +27,7 @@
 #include <QDateTime>
 #include <QUrl>
 #include <QDebug>
+#include <QStringList>
 
 class KDSoapValue::Private : public QSharedData
 {
