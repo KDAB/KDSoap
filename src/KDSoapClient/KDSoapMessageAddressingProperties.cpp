@@ -221,6 +221,14 @@ QString KDSoapMessageAddressingProperties::predefinedAddressToString(KDSoapMessa
     }
 }
 
+bool KDSoapMessageAddressingProperties::isWSAddressingNamespace(const QString &namespaceUri)
+{
+    return namespaceUri == KDSoapNamespaceManager::soapMessageAddressing() ||
+            namespaceUri == KDSoapNamespaceManager::soapMessageAddressing200303() ||
+            namespaceUri == KDSoapNamespaceManager::soapMessageAddressing200403() ||
+            namespaceUri == KDSoapNamespaceManager::soapMessageAddressing200408();
+}
+
 static void writeAddressField(QXmlStreamWriter &writer, const QString &address)
 {
     writer.writeStartElement(KDSoapNamespaceManager::soapMessageAddressing(), QLatin1String("Address"));
@@ -328,6 +336,37 @@ void KDSoapMessageAddressingProperties::writeMessageAddressingProperties(KDSoapN
         writer.writeStartElement(addressingNS, QLatin1String("Metadata"));
         writeKDSoapValueListHierarchy(namespacePrefixes, writer, d->metadata);
         writer.writeEndElement();
+    }
+}
+
+void KDSoapMessageAddressingProperties::readMessageAddressingProperty(const KDSoapValue &value)
+{
+    if (value.name() == QLatin1String("Action")) {
+        d->action = value.value().toString();
+    } else if (value.name() == QLatin1String("MessageID")) {
+        d->messageID = value.value().toString();
+    } else if (value.name() == QLatin1String("To")) {
+        d->destination = value.value().toString();
+    } else if (value.name() == QLatin1String("From")) {
+        d->sourceEndpoint.setAddress(value.childValues().child(QLatin1String("Address")).value().toString());
+    } else if (value.name() == QLatin1String("ReplyTo")) {
+        d->replyEndpoint.setAddress(value.childValues().child(QLatin1String("Address")).value().toString());
+    } else if (value.name() == QLatin1String("RelatesTo")) {
+        KDSoapMessageRelationship::Relationship relationship;
+        relationship.uri = (value.value().toString());
+        relationship.relationshipType = QLatin1String("http://www.w3.org/2005/08/addressing/reply");
+        foreach (KDSoapValue attr, value.childValues().attributes()) {
+            if (attr.name() == QLatin1String("RelationshipType")) {
+                relationship.relationshipType = attr.value().toString();
+            }
+        }
+        d->relationships.append(relationship);
+    } else if (value.name() == QLatin1String("FaultTo")) {
+        d->faultEndpoint.setAddress(value.childValues().child(QLatin1String("Address")).value().toString());
+    } else if (value.name() == QLatin1String("ReferenceParameters")) {
+        d->referenceParameters = value.childValues();
+    } else if (value.name() == QLatin1String("Metadata")) {
+        d->metadata = value.childValues();
     }
 }
 

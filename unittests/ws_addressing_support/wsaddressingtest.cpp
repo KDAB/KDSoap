@@ -62,6 +62,59 @@ private Q_SLOTS:
         KDSoapClientInterface client(server.endPoint(), "http://www.ecerami.com/wsdl/HelloService");
 
         KDSoapMessage message;
+        const QString action = QString::fromLatin1("sayHello");
+        message.setUse(KDSoapMessage::EncodedUse);
+        message.addArgument(QString::fromLatin1("msg"), QVariant::fromValue(QString("HelloContentMessage")), KDSoapNamespaceManager::xmlSchema2001(), QString::fromLatin1("string"));
+        message.setNamespaceUri(QString::fromLatin1("http://www.ecerami.com/wsdl/HelloService.wsdl"));
+
+        // WHEN
+        message.setMessageAddressingProperties(addressingProperties());
+        KDSoapMessage reply = client.call(QLatin1String("sayHello"), message, action);
+
+        // THEN
+        QVERIFY(xmlBufferCompare(server.receivedData(), expectedSoapMessage()));
+    }
+
+    void shouldReadAProperSoapMessageWithRightsAddressingProperties()
+    {
+        // GIVEN
+        HttpServerThread server(expectedSoapMessage(), HttpServerThread::Public);
+        KDSoapClientInterface client(server.endPoint(), "http://www.ecerami.com/wsdl/HelloService");
+
+        KDSoapMessage message;
+        const QString action = QString::fromLatin1("sayHello");
+
+        // WHEN
+        KDSoapMessage reply = client.call(QLatin1String("sayHello"), message, action);
+
+        // THEN
+        QVERIFY(reply.hasMessageAddressingProperties());
+        KDSoapMessageAddressingProperties map = reply.messageAddressingProperties();
+        QCOMPARE(map.action(), "sayHello");
+        QCOMPARE(map.destination(), "http://www.ecerami.com/wsdl/HelloService");
+        QCOMPARE(map.sourceEndpointAddress(), "http://www.ecerami.com/wsdl/source");
+        QCOMPARE(map.faultEndpointAddress(), "http://www.ecerami.com/wsdl/fault");
+        QCOMPARE(map.messageID(), "uuid:e197db59-0982-4c9c-9702-4234d204f7f4");
+        QCOMPARE(map.replyEndpointAddress(), "http://www.w3.org/2005/08/addressing/anonymous");
+        QCOMPARE(map.relationships().at(0).uri, "uuid:http://www.ecerami.com/wsdl/someUniqueString");
+        QCOMPARE(map.relationships().at(0).relationshipType, "http://www.w3.org/2005/08/addressing/reply");
+        QCOMPARE(map.relationships().at(1).uri, "uuid:http://www.ecerami.com/wsdl/someUniqueStringBis");
+        QCOMPARE(map.relationships().at(1).relationshipType, "CustomTypeReply");
+        QCOMPARE(map.referenceParameters().at(0).name(), "myReferenceParameter");
+        QCOMPARE(map.referenceParameters().at(0).value().toString(), "ReferencParameterContent");
+        QCOMPARE(map.referenceParameters().at(1).name(), "myReferenceParameterWithChildren");
+        QCOMPARE(map.referenceParameters().at(1).childValues().size(), 2);
+        QCOMPARE(map.metadata().at(0).name(), "myMetadata");
+        QCOMPARE(map.metadata().at(0).value().toString(), "MetadataContent");
+        QCOMPARE(map.metadata().at(1).name(), "myMetadataBis");
+        QCOMPARE(map.metadata().at(1).childValues().size(), 1);
+        QCOMPARE(map.metadata().at(1).childValues().first().name(), "myMetadataBisChild");
+        QCOMPARE(map.metadata().at(1).childValues().first().value().toString(), "MetadataBisChildContent");
+    }
+
+private:
+    static KDSoapMessageAddressingProperties addressingProperties()
+    {
         KDSoapMessageAddressingProperties map;
 
         // with some message addressing properties
@@ -104,21 +157,9 @@ private Q_SLOTS:
         map.setMetadata(metadataContainer);
         map.addMetadata(metadataBis);
 
-        // and some request content
-        const QString action = QString::fromLatin1("sayHello");
-        message.setUse(KDSoapMessage::EncodedUse);
-        message.addArgument(QString::fromLatin1("msg"), QVariant::fromValue(QString("HelloContentMessage")), KDSoapNamespaceManager::xmlSchema2001(), QString::fromLatin1("string"));
-        message.setNamespaceUri(QString::fromLatin1("http://www.ecerami.com/wsdl/HelloService.wsdl"));
-
-        // WHEN
-        message.setMessageAddressingProperties(map);
-        KDSoapMessage reply = client.call(QLatin1String("sayHello"), message, action);
-
-        // THEN
-        QVERIFY(xmlBufferCompare(server.receivedData(), expectedSoapMessage()));
+        return map;
     }
 
-private:
     static QByteArray expectedSoapMessage()
     {
         return QByteArray(xmlEnvBegin11()) + " xmlns:wsa=\"http://www.w3.org/2005/08/addressing\""

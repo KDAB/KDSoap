@@ -214,11 +214,18 @@ KDSoapMessageReader::XmlError KDSoapMessageReader::xmlToMessage(const QByteArray
             if (readNextStartElement(reader)) {
                 if (reader.name() == QLatin1String("Header") && (reader.namespaceUri() == KDSoapNamespaceManager::soapEnvelope() ||
                         reader.namespaceUri() == KDSoapNamespaceManager::soapEnvelope200305())) {
+                    KDSoapMessageAddressingProperties messageAddressingProperties;
                     while (readNextStartElement(reader)) {
-                        KDSoapMessage header;
-                        static_cast<KDSoapValue &>(header) = parseElement(reader, envNsDecls);
-                        pRequestHeaders->append(header);
+                        if (KDSoapMessageAddressingProperties::isWSAddressingNamespace(reader.namespaceUri().toString())) {
+                            KDSoapValue value = parseElement(reader, envNsDecls);
+                            messageAddressingProperties.readMessageAddressingProperty(value);
+                        } else {
+                            KDSoapMessage header;
+                            static_cast<KDSoapValue &>(header) = parseElement(reader, envNsDecls);
+                            pRequestHeaders->append(header);
+                        }
                     }
+                    pMsg->setMessageAddressingProperties(messageAddressingProperties);
                     readNextStartElement(reader); // read <Body>
                 }
                 if (reader.name() == QLatin1String("Body") && (reader.namespaceUri() == KDSoapNamespaceManager::soapEnvelope() ||
