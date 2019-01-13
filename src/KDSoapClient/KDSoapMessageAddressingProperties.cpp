@@ -269,7 +269,7 @@ void KDSoapMessageAddressingProperties::writeMessageAddressingProperties(KDSoapN
     Q_UNUSED(messageNamespace);
     Q_UNUSED(forceQualified);
 
-    if (d->destination == predefinedAddressToString(None) || d->destination.isEmpty()) {
+    if (d->destination == predefinedAddressToString(None)) {
         return;
     }
 
@@ -279,13 +279,17 @@ void KDSoapMessageAddressingProperties::writeMessageAddressingProperties(KDSoapN
 
     const QString addressingNS = KDSoapNamespaceManager::soapMessageAddressing();
 
-    writer.writeStartElement(addressingNS, QLatin1String("To"));
-    writer.writeCharacters(d->destination);
-    writer.writeEndElement();
+    if (!d->destination.isEmpty()) {
+        writer.writeStartElement(addressingNS, QLatin1String("To"));
+        writer.writeCharacters(d->destination);
+        writer.writeEndElement();
+    }
 
-    writer.writeStartElement(addressingNS, QLatin1String("From"));
-    writeAddressField(writer, d->sourceEndpoint.address());
-    writer.writeEndElement();
+    if (!d->sourceEndpoint.isEmpty()) {
+        writer.writeStartElement(addressingNS, QLatin1String("From"));
+        writeAddressField(writer, d->sourceEndpoint.address());
+        writer.writeEndElement();
+    }
 
     if (!d->replyEndpoint.isEmpty()) {
         writer.writeStartElement(addressingNS, QLatin1String("ReplyTo"));
