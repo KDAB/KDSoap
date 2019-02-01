@@ -37,6 +37,9 @@
 #include <unistd.h>
 #endif
 
+QHash<QUrl, QByteArray> fileProviderCache;
+
+
 FileProvider::FileProvider()
   : QObject( 0 )
 {
@@ -44,84 +47,92 @@ FileProvider::FileProvider()
 
 void FileProvider::cleanUp()
 {
-  if (!mFileName.isEmpty()) {
-    QFile::remove( mFileName );
-    mFileName = QString();
-  }
+    if (!mFileName.isEmpty()) {
+        QFile::remove( mFileName );
+        mFileName = QString();
+    }
 }
 
 bool FileProvider::get( const QUrl &url, QString &target )
 {
-  if ( !mFileName.isEmpty() ) {
-    cleanUp();
-  }
+    if ( !mFileName.isEmpty() ) {
+        cleanUp();
+    }
 
-  if (url.scheme() == QLatin1String("file")) {
-      target = url.toLocalFile();
-      return true;
-  }
-  if (url.scheme() == QLatin1String("qrc")) {
-      target = QLatin1String(":") + url.path();
-      return true;
-  }
+    if (url.scheme() == QLatin1String("file")) {
+        target = url.toLocalFile();
+        return true;
+    }
+    if (url.scheme() == QLatin1String("qrc")) {
+        target = QLatin1String(":") + url.path();
+        return true;
+    }
 
-  const QStringList importPathList = Settings::self()->importPathList();
-  Q_FOREACH (const QString& importPath, importPathList) {
-      QDir importDir(importPath);
-      QString path = importDir.absoluteFilePath(url.host() + QDir::separator() + url.path());
-      if (QFile::exists(path)) {
-          qDebug("Using import path '%s'", qPrintable(path));
-          target = path;
-          return true;
-      }
-  }
+    const QStringList importPathList = Settings::self()->importPathList();
+    Q_FOREACH (const QString& importPath, importPathList) {
+        QDir importDir(importPath);
+        QString path = importDir.absoluteFilePath(url.host() + QDir::separator() + url.path());
+        if (QFile::exists(path)) {
+            qDebug("Using import path '%s'", qPrintable(path));
+            target = path;
+            return true;
+        }
+    }
 
-  if (Settings::self()->useLocalFilesOnly()) {
-      qCritical("ERROR: Could not find the local file for '%s'", qPrintable(url.toEncoded()));
-      qCritical("ERROR: Try to download the file using:");
-      qCritical("ERROR:  $ cd %s", qPrintable(importPathList.first()));
-      qCritical("ERROR:  $ wget -r %s", qPrintable(url.toEncoded()));
-      qCritical("ERROR: Or use the -import-path argument to set the correct search path");
-      QCoreApplication::exit(12);
-      return false;
-  }
+    if (Settings::self()->useLocalFilesOnly()) {
+        qCritical("ERROR: Could not find the local file for '%s'", qPrintable(url.toEncoded()));
+        qCritical("ERROR: Try to download the file using:");
+        qCritical("ERROR:  $ cd %s", qPrintable(importPathList.first()));
+        qCritical("ERROR:  $ wget -r %s", qPrintable(url.toEncoded()));
+        qCritical("ERROR: Or use the -import-path argument to set the correct search path");
+        QCoreApplication::exit(12);
+        return false;
+    }
 
-  if ( target.isEmpty() ) {
-    QTemporaryFile tmpFile;
-    tmpFile.setAutoRemove(false);
-    tmpFile.open();
-    target = tmpFile.fileName();
-    mFileName = target;
-  }
+    if ( target.isEmpty() ) {
+        QTemporaryFile tmpFile;
+        tmpFile.setAutoRemove(false);
+        tmpFile.open();
+        target = tmpFile.fileName();
+        mFileName = target;
+    }
 
-  qDebug("Downloading '%s'", url.toEncoded().constData());
+    QByteArray data;
+    if (fileProviderCache.contains(url)) {
+        data = fileProviderCache[url];
+        qDebug( "Using cached copy" );
+    } else {
+        qDebug("Downloading '%s'", url.toEncoded().constData());
 
-  QNetworkAccessManager manager;
-  QNetworkRequest request(url);
-  QNetworkReply* job = manager.get(request);
+        QNetworkAccessManager manager;
+        QNetworkRequest request(url);
+        QNetworkReply* job = manager.get(request);
 
-  QEventLoop loop;
-  connect(job, SIGNAL(finished()),
-          &loop, SLOT(quit()));
-  loop.exec();
+        QEventLoop loop;
+        connect(job, SIGNAL(finished()),
+        &loop, SLOT(quit()));
+        loop.exec();
 
-  if (job->error()) {
-      qWarning("Error downloading '%s': %s", url.toEncoded().constData(), qPrintable(job->errorString()));
-      return false;
-  }
+        if (job->error()) {
+            qWarning("Error downloading '%s': %s", url.toEncoded().constData(), qPrintable(job->errorString()));
+            return false;
+        }
 
-  const QByteArray data = job->readAll();
-  QFile file( mFileName );
-  if ( !file.open( QIODevice::WriteOnly ) ) {
-      qDebug( "Unable to create temporary file" );
-      return false;
-  }
+        qDebug( "Download successful" );
+        data = job->readAll();
+        fileProviderCache[url] = data;
+    }
 
-  qDebug( "Download successful" );
-  file.write( data );
-  file.close();
+    QFile file( mFileName );
+    if ( !file.open( QIODevice::WriteOnly ) ) {
+        qDebug( qPrintable("Unable to create temporary file: " + file.errorString()) );
+        return false;
+    }
 
-  return true;
+    file.write( data );
+    file.close();
+
+    return true;
 }
 
 #include "moc_fileprovider.cpp"
