@@ -192,6 +192,7 @@ void KDSoapClientInterface::callNoReply(const QString &method, const KDSoapMessa
     QNetworkReply *reply = d->accessManager()->post(request, buffer);
     d->setupReply(reply);
     QObject::connect(reply, SIGNAL(finished()), reply, SLOT(deleteLater()));
+    QObject::connect(reply, SIGNAL(finished()), buffer, SLOT(deleteLater()));
 }
 
 void KDSoapClientInterfacePrivate::_kd_slotAuthenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator)
