@@ -37,7 +37,7 @@
 #include <unistd.h>
 #endif
 
-QHash<QUrl, QByteArray> fileProviderCache;
+static QHash<QUrl, QByteArray> fileProviderCache;
 
 
 FileProvider::FileProvider()
@@ -98,8 +98,9 @@ bool FileProvider::get( const QUrl &url, QString &target )
   }
 
   QByteArray data;
-  if (fileProviderCache.contains(url)) {
-    data = fileProviderCache[url];
+  const QHash<QUrl, QByteArray>::const_iterator it = fileProviderCache.constFind(url);
+  if (it != fileProviderCache.constEnd()) {
+    data = it.value();
     qDebug( "Using cached copy" );
   } else {
     qDebug("Downloading '%s'", url.toEncoded().constData());
@@ -125,7 +126,7 @@ bool FileProvider::get( const QUrl &url, QString &target )
 
   QFile file( mFileName );
   if ( !file.open( QIODevice::WriteOnly ) ) {
-      qDebug( qPrintable("Unable to create temporary file: " + file.errorString()) );
+      qWarning() << "Unable to create" << mFileName << ":" << file.errorString();
       return false;
   }
 
