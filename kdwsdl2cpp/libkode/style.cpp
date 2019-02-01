@@ -83,8 +83,7 @@ QString Style::lowerFirst( const QString &str )
 
 QString Style::makeIdentifier( const QString &str )
 {
-  if ( str.isEmpty() )
-    return str;
+  Q_ASSERT(!str.isEmpty());
 
   QString identifier = str;
   identifier.replace( "-", "_" );
