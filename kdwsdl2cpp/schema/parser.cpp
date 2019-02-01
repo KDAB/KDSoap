@@ -487,7 +487,7 @@ Element Parser::parseElement(ParserContext *context,
     newElement.setNillable(stringToBoolean(element.attribute(QLatin1String("nillable"))));
 
     if (element.hasAttribute(QLatin1String("type"))) {
-        QName typeName(element.attribute(QLatin1String("type")));
+        QName typeName(element.attribute(QLatin1String("type")).trimmed());
         typeName.setNameSpace(context->namespaceManager()->uri(typeName.prefix()));
         if (debugParsing()) {
             qDebug() << "typeName=" << typeName.qname() << "namespace=" << context->namespaceManager()->uri(typeName.prefix());
