@@ -112,18 +112,6 @@ void Settings::setImplementationFileName(const QString &implementationFileName)
     mImplementationFileName = implementationFileName;
 }
 
-/*
-QString Settings::outputFileName() const
-{
-    if (mOutputFileName.isEmpty()) {
-        QFileInfo fi(wsdlFileName());
-        return QLatin1String("wsdl_") + fi.completeBaseName() + QLatin1String(mImpl ? ".cpp" : ".h");
-    }
-
-    return mOutputFileName;
-}
-*/
-
 void Settings::setOutputDirectory(const QString &outputDirectory)
 {
     mOutputDirectory = outputDirectory;
