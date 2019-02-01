@@ -70,3 +70,18 @@ QString KDSoapNamespaceManager::soapMessageAddressing()
 {
     return QString::fromLatin1("http://www.w3.org/2005/08/addressing");
 }
+
+QString KDSoapNamespaceManager::soapMessageAddressing200303()
+{
+    return QString::fromLatin1("http://schemas.xmlsoap.org/ws/2003/03/addressing");
+}
+
+QString KDSoapNamespaceManager::soapMessageAddressing200403()
+{
+    return QString::fromLatin1("http://schemas.xmlsoap.org/ws/2004/03/addressing");
+}
+
+QString KDSoapNamespaceManager::soapMessageAddressing200408()
+{
+    return QString::fromLatin1("http://schemas.xmlsoap.org/ws/2004/08/addressing");
+}

@@ -83,6 +83,7 @@ class KDSOAP_EXPORT KDSoapMessageAddressingProperties
 {
 public:
     friend class KDSoapMessageWriter;
+    friend class KDSoapMessageReader;
 
     /**
      * This enum contains all the predefined addresses defined by the ws addressing specification
@@ -270,11 +271,21 @@ public:
      */
     static QString predefinedAddressToString(KDSoapAddressingPredefinedAddress address);
 
+    /**
+     * Helper function that compares \p namespaceUri with the known WS-Addressing namespaces
+     */
+    static bool isWSAddressingNamespace(const QString& namespaceUri);
+
 private:
     /**
      * Private method called to write the properties to the soap header, using QXmlStreamWriter
      */
     void writeMessageAddressingProperties(KDSoapNamespacePrefixes &namespacePrefixes, QXmlStreamWriter &writer, const QString &messageNamespace, bool forceQualified) const;
+
+    /**
+     * Private method called to read a property from a soap header
+     */
+    void readMessageAddressingProperty(const KDSoapValue& value);
 
 private:
     QSharedDataPointer<KDSoapMessageAddressingPropertiesData> d;
