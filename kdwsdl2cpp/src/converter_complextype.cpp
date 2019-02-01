@@ -644,7 +644,9 @@ void Converter::createComplexTypeSerializer(KODE::Class &newClass, const XSD::Co
         bool first = true;
         Q_FOREACH (const XSD::Attribute &attribute, attributes) {
             const QString attrName = attribute.name();
-            if (attrName.isEmpty()) { continue; }
+            if (attrName.isEmpty()) {
+                continue;
+            }
             const QString variableName = QLatin1String("d_ptr->") + KODE::MemberVariable::memberVariableName(attrName);
 
             demarshalCode.addBlock(demarshalNameTest(attribute.type(), attrName, &first));
