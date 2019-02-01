@@ -167,7 +167,9 @@ int main(int argc, char **argv)
 
                 while (!file.atEnd()) {
                     QString mapping = file.readLine().trimmed();
-                    if (mapping.startsWith("#")) { continue; }
+                    if (mapping.startsWith('#')) {
+                        continue;
+                    }
 
                     QString uri = mapping.section("=", 0, -2);
                     QString target = mapping.section("=", -1, -1);
