@@ -27,6 +27,7 @@
 class KDSoapJob::Private
 {
 public:
+    KDSoapHeaders requestHeaders;
     KDSoapMessage reply;
     KDSoapHeaders replyHeaders;
     bool isAutoDelete;
@@ -42,6 +43,16 @@ KDSoapJob::KDSoapJob(QObject *parent)
 KDSoapJob::~KDSoapJob()
 {
     delete d;
+}
+
+KDSoapHeaders KDSoapJob::requestHeaders() const
+{
+    return d->requestHeaders;
+}
+
+void KDSoapJob::setRequestHeaders(const KDSoapHeaders &headers)
+{
+    d->requestHeaders = headers;
 }
 
 void KDSoapJob::start()
@@ -67,6 +78,11 @@ void KDSoapJob::emitFinished(const KDSoapMessage &reply, const KDSoapHeaders &re
 KDSoapMessage KDSoapJob::reply() const
 {
     return d->reply;
+}
+
+KDSoapHeaders KDSoapJob::replyHeaders() const
+{
+    return d->replyHeaders;
 }
 
 bool KDSoapJob::isFault() const

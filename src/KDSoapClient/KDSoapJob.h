@@ -79,6 +79,18 @@ public:
     ~KDSoapJob();
 
     /**
+     * Returns the reply headers received from the SOAP server once the request was completed.
+     * Only valid once the request is completed and finished() was emitted.
+     */
+    KDSoapHeaders requestHeaders() const;
+
+    /**
+     * Sets request headers to be sent to the SOAP server. These are sent in addition
+     * to the persistent headers set via the client interface.
+     */
+    void setRequestHeaders(const KDSoapHeaders &headers);
+
+    /**
      * Returns whether the reply message (see reply()) represents a fault.
      */
     bool isFault() const;
@@ -98,7 +110,7 @@ public:
      * Returns the reply headers received from the SOAP server once the request was completed.
      * Only valid once the request is completed and finished() was emitted.
      */
-    KDSoapHeaders returnHeaders() const;
+    KDSoapHeaders replyHeaders() const;
 
     /**
      * Starts the job. The job will emit finished() once done.

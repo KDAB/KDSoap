@@ -385,6 +385,7 @@ bool Converter::convertClientService()
                 if (hasAction) {
                     callLine += QLatin1String(", action");
                 }
+                callLine += QLatin1String(", requestHeaders()");
                 callLine += QLatin1String(");");
                 doStartCode += callLine;
 
