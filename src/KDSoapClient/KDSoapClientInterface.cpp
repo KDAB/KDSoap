@@ -58,7 +58,7 @@ void KDSoapClientInterface::setSoapVersion(KDSoapClientInterface::SoapVersion ve
     d->m_version = static_cast<KDSoap::SoapVersion>(version);
 }
 
-KDSoapClientInterface::SoapVersion KDSoapClientInterface::soapVersion() const
+KDSoapClientInterface::SoapVersion KDSoapClientInterface::soapVersion()
 {
     return static_cast<KDSoapClientInterface::SoapVersion>(d->m_version);
 }

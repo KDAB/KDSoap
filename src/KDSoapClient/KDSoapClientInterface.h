@@ -197,7 +197,7 @@ public:
     /**
      * Returns the version of SOAP being used in this instance.
      */
-    KDSoapClientInterface::SoapVersion soapVersion() const;
+    KDSoapClientInterface::SoapVersion soapVersion();
 
     /**
      * Returns the end point of the SOAP service.
