@@ -87,6 +87,8 @@ public:
     /**
      * Sets request headers to be sent to the SOAP server. These are sent in addition
      * to the persistent headers set via the client interface.
+     *
+     * \since 1.8
      */
     void setRequestHeaders(const KDSoapHeaders &headers);
 
@@ -109,6 +111,8 @@ public:
     /**
      * Returns the reply headers received from the SOAP server once the request was completed.
      * Only valid once the request is completed and finished() was emitted.
+     *
+     * \since 1.8
      */
     KDSoapHeaders replyHeaders() const;
 
