@@ -103,7 +103,6 @@ void Compiler::parse(const QDomElement &element)
 
         definitions.fixUpDefinitions(/*&context, element*/);
 
-        KODE::Code::setDefaultIndentation(4);
 
         WSDL wsdl;
         wsdl.setDefinitions(definitions);
@@ -116,7 +115,19 @@ void Compiler::parse(const QDomElement &element)
             QCoreApplication::exit(4);
         } else {
             KWSDL::Creator creator;
-            creator.create(converter.classes());
+            creator.setOutputDirectory(Settings::self()->outputDirectory());
+            creator.setSourceFile(Settings::self()->wsdlFileName());
+            creator.setHeaderFileName(Settings::self()->headerFileName());
+            creator.setImplementationFileName(Settings::self()->implementationFileName());
+
+            creator.setClasses(converter.classes());
+            if (Settings::self()->generateHeader()) {
+                creator.createHeader();
+            }
+            if (Settings::self()->generateImplementation()) {
+                creator.createImplementation();
+            }
+
             QCoreApplication::exit(0);
         }
     } else {
