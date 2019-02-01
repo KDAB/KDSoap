@@ -78,6 +78,7 @@ int main(int argc, char **argv)
     QFileInfo outputFile;
     bool both = false;
     bool impl = false;
+    bool outfileGiven = false;
     bool server = false;
     QString baseFile;
     QString headerFile;
@@ -125,6 +126,7 @@ int main(int argc, char **argv)
                 showHelp(argv[0]);
                 return 1;
             }
+            outfileGiven = true;
             outputFile.setFile(QFile::decodeName(argv[arg]));
         } else if (opt == QLatin1String("-s") || opt == QLatin1String("-service")) {
             ++arg;
@@ -155,15 +157,15 @@ int main(int argc, char **argv)
             }
             QString mapping = argv[arg];
             if (mapping.startsWith('@')) {
-                QString mappingFileName = mapping.mid(1);
+                QString mappingFileName = QFile::decodeName(argv[arg] + 1); // +1 to skip the '@'
                 QFile file(mappingFileName);
                 if (!file.open(QIODevice::ReadOnly)) {
-                    fprintf(stderr, "Error reading %s: %s\n", mappingFileName.toLatin1().data(), file.errorString().toLatin1().data());
+                    fprintf(stderr, "Error reading %s: %s\n", QFile::encodeName(mappingFileName).constData(), qPrintable(file.errorString()));
                     showHelp(argv[0]);
                     return 1;
                 }
 
-                while(!file.atEnd()) {
+                while (!file.atEnd()) {
                     QString mapping = file.readLine().trimmed();
                     if (mapping.startsWith("#")) { continue; }
 
@@ -171,7 +173,6 @@ int main(int argc, char **argv)
                     QString target = mapping.section("=", -1, -1);
                     if (!uri.isEmpty() && !target.isEmpty()) {
                         nsmapping[uri] = target;
-                        //fprintf(stderr, "%s = %s\n", uri.toLatin1().data(), target.toLatin1().data());
                     }
                 }
 
@@ -179,7 +180,6 @@ int main(int argc, char **argv)
                 QString uri = mapping.section("=", 0, -2);
                 QString target = mapping.section("=", -1, -1);
                 nsmapping[uri] = target;
-                //fprintf(stderr, "%s = %s\n", uri.toLatin1().data(), target.toLatin1().data());
             }
         } else if (opt == QLatin1String("-optional-element-type")) {
             ++arg;
@@ -223,7 +223,7 @@ int main(int argc, char **argv)
 
     // if you're saying "just make the impl-file", you can't
     //    also say "make both the header and the impl"
-    if (both && impl) {
+    if (both && (outfileGiven || impl)) {
         showHelp(argv[0]);
         return 1;
     }
@@ -234,14 +234,12 @@ int main(int argc, char **argv)
         Settings::self()->setGenerateImplementation(true);
         Settings::self()->setHeaderFileName(baseFile + ".h");
         Settings::self()->setImplementationFileName(baseFile + ".cpp");
-    }
-    else if (impl) {
+    } else if (impl) {
         Settings::self()->setGenerateHeader(false);
         Settings::self()->setGenerateImplementation(true);
         Settings::self()->setHeaderFileName(headerFile);
         Settings::self()->setImplementationFileName(outputFile.fileName());
-    } 
-    else {
+    } else {
         Settings::self()->setGenerateHeader(true);
         Settings::self()->setGenerateImplementation(false);
         Settings::self()->setHeaderFileName(outputFile.fileName());
@@ -261,11 +259,6 @@ int main(int argc, char **argv)
     Settings::self()->setImportPathList(importPathList);
     Settings::self()->setUseLocalFilesOnly(useLocalFilesOnly);
     Settings::self()->setHelpOnMissing(helpOnMissing);
-
-    //fprintf(stderr, "Output dir: %s\n", Settings::self()->outputDirectory().toLatin1().data());
-    //fprintf(stderr, "HeaderFile: %s\n", Settings::self()->headerFileName().toLatin1().data());
-    //fprintf(stderr, "Impl  File: %s\n", Settings::self()->implementationFileName().toLatin1().data());
-    //fprintf(stderr, "Generate: header? %d implementation? %d\n", Settings::self()->generateHeader(), Settings::self()->generateImplementation());
 
     KWSDL::Compiler compiler;
 
