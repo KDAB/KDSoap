@@ -90,26 +90,26 @@ private Q_SLOTS:
         // THEN
         QVERIFY(reply.hasMessageAddressingProperties());
         KDSoapMessageAddressingProperties map = reply.messageAddressingProperties();
-        QCOMPARE(map.action(), "sayHello");
-        QCOMPARE(map.destination(), "http://www.ecerami.com/wsdl/HelloService");
-        QCOMPARE(map.sourceEndpointAddress(), "http://www.ecerami.com/wsdl/source");
-        QCOMPARE(map.faultEndpointAddress(), "http://www.ecerami.com/wsdl/fault");
-        QCOMPARE(map.messageID(), "uuid:e197db59-0982-4c9c-9702-4234d204f7f4");
-        QCOMPARE(map.replyEndpointAddress(), "http://www.w3.org/2005/08/addressing/anonymous");
-        QCOMPARE(map.relationships().at(0).uri, "uuid:http://www.ecerami.com/wsdl/someUniqueString");
-        QCOMPARE(map.relationships().at(0).relationshipType, "http://www.w3.org/2005/08/addressing/reply");
-        QCOMPARE(map.relationships().at(1).uri, "uuid:http://www.ecerami.com/wsdl/someUniqueStringBis");
-        QCOMPARE(map.relationships().at(1).relationshipType, "CustomTypeReply");
-        QCOMPARE(map.referenceParameters().at(0).name(), "myReferenceParameter");
-        QCOMPARE(map.referenceParameters().at(0).value().toString(), "ReferencParameterContent");
-        QCOMPARE(map.referenceParameters().at(1).name(), "myReferenceParameterWithChildren");
+        QCOMPARE(map.action(), QString("sayHello"));
+        QCOMPARE(map.destination(), QString("http://www.ecerami.com/wsdl/HelloService"));
+        QCOMPARE(map.sourceEndpointAddress(), QString("http://www.ecerami.com/wsdl/source"));
+        QCOMPARE(map.faultEndpointAddress(), QString("http://www.ecerami.com/wsdl/fault"));
+        QCOMPARE(map.messageID(), QString("uuid:e197db59-0982-4c9c-9702-4234d204f7f4"));
+        QCOMPARE(map.replyEndpointAddress(), QString("http://www.w3.org/2005/08/addressing/anonymous"));
+        QCOMPARE(map.relationships().at(0).uri, QString("uuid:http://www.ecerami.com/wsdl/someUniqueString"));
+        QCOMPARE(map.relationships().at(0).relationshipType, QString("http://www.w3.org/2005/08/addressing/reply"));
+        QCOMPARE(map.relationships().at(1).uri, QString("uuid:http://www.ecerami.com/wsdl/someUniqueStringBis"));
+        QCOMPARE(map.relationships().at(1).relationshipType, QString("CustomTypeReply"));
+        QCOMPARE(map.referenceParameters().at(0).name(), QString("myReferenceParameter"));
+        QCOMPARE(map.referenceParameters().at(0).value().toString(), QString("ReferencParameterContent"));
+        QCOMPARE(map.referenceParameters().at(1).name(), QString("myReferenceParameterWithChildren"));
         QCOMPARE(map.referenceParameters().at(1).childValues().size(), 2);
-        QCOMPARE(map.metadata().at(0).name(), "myMetadata");
-        QCOMPARE(map.metadata().at(0).value().toString(), "MetadataContent");
-        QCOMPARE(map.metadata().at(1).name(), "myMetadataBis");
+        QCOMPARE(map.metadata().at(0).name(), QString("myMetadata"));
+        QCOMPARE(map.metadata().at(0).value().toString(), QString("MetadataContent"));
+        QCOMPARE(map.metadata().at(1).name(), QString("myMetadataBis"));
         QCOMPARE(map.metadata().at(1).childValues().size(), 1);
-        QCOMPARE(map.metadata().at(1).childValues().first().name(), "myMetadataBisChild");
-        QCOMPARE(map.metadata().at(1).childValues().first().value().toString(), "MetadataBisChildContent");
+        QCOMPARE(map.metadata().at(1).childValues().first().name(), QString("myMetadataBisChild"));
+        QCOMPARE(map.metadata().at(1).childValues().first().value().toString(), QString("MetadataBisChildContent"));
     }
 
 private:
