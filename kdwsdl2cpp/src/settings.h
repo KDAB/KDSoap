@@ -35,9 +35,16 @@ public:
 
     static Settings *self();
 
-    void setGenerateImplementation(bool b, const QString &headerFile);
+    void setImplementationFileName(const QString &implFileName);
+    void setHeaderFileName(const QString &implFileName);
+    QString headerFileName() const;
+    QString implementationFileName() const;
+
+    void setGenerateImplementation(bool b);
     bool generateImplementation() const;
-    QString headerFile() const;
+
+    void setGenerateHeader(bool b);
+    bool generateHeader() const;
 
     void setGenerateServerCode(bool b);
     bool generateServerCode() const;
@@ -46,9 +53,6 @@ public:
     QUrl wsdlUrl() const;
     QString wsdlBaseUrl() const;
     QString wsdlFileName() const;
-
-    void setOutputFileName(const QString &outputFileName);
-    QString outputFileName() const;
 
     void setOutputDirectory(const QString &outputDirectory);
     QString outputDirectory() const;
@@ -86,14 +90,15 @@ private:
     Settings();
 
     QUrl mWsdlUrl;
-    QString mOutputFileName;
     QString mOutputDirectory;
-    QString mHeaderFile;
+    QString mHeaderFileName;
+    QString mImplementationFileName;
     QString mWantedService;
     QString mExportDeclaration;
     QString mNameSpace;
     QStringList mImportPathList;
     NSMapping mNamespaceMapping;
+    bool mHeader;
     bool mImpl;
     bool mServer;
     OptionalElementType mOptionalElementType;
