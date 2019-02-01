@@ -34,21 +34,30 @@ Creator::Creator()
     KODE::Code::setDefaultIndentation(4);
 
     // Set generated header details.
-    setCreationWarning(true);
-    setGenerator(QLatin1String("KDAB's kdwsdl2cpp"));
+    _printer.setCreationWarning(true);
+    _printer.setGenerator(QLatin1String("KDAB's kdwsdl2cpp"));
 
     // Qt-like coding style
-    setLabelsDefineIndent(false);
-    setIndentLabels(false);
-
+    _printer.setLabelsDefineIndent(false);
+    _printer.setIndentLabels(false);
 
     _file.setLicense(KODE::License::GeneratedNoRestriction);
+}
+
+void Creator::setOutputDirectory(const QString &outputDirectory)
+{
+    _printer.setOutputDirectory(outputDirectory);
+}
+
+void Creator::setSourceFile(const QString &sourceFile)
+{
+    _printer.setSourceFile(sourceFile);
 }
 
 void Creator::setHeaderFileName(const QString &headerFileName)
 {
     _file.setHeaderFilename(headerFileName);
-    }
+}
 
 void Creator::setImplementationFileName(const QString &implementationFileName)
 {
@@ -61,14 +70,14 @@ void Creator::setClasses(const KODE::Class::List &list)
     for (it = list.constBegin(); it != list.constEnd(); ++it) {
         _file.insertClass(*it);
     }
-    }
+}
 
 void Creator::createHeader()
 {
-    printHeader(_file);
-    }
+    _printer.printHeader(_file);
+}
 
 void Creator::createImplementation()
 {
-    printImplementation(_file);
+    _printer.printImplementation(_file);
 }

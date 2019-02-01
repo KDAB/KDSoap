@@ -28,13 +28,13 @@
 namespace KWSDL
 {
 
-class Creator : private KODE::Printer
+class Creator
 {
 public:
     Creator();
 
-    using KODE::Printer::setOutputDirectory;
-    using KODE::Printer::setSourceFile;
+    void setOutputDirectory(const QString &outputDirectory);
+    void setSourceFile(const QString &sourceFile);
 
     void setHeaderFileName(const QString &headerFileName);
     void setImplementationFileName(const QString &implementationFileName);
@@ -45,6 +45,7 @@ public:
 
 private:
     KODE::File _file;
+    KODE::Printer _printer;
 };
 
 }
