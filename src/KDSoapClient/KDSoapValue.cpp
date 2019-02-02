@@ -291,7 +291,7 @@ void KDSoapValue::writeElementContents(KDSoapNamespacePrefixes &namespacePrefixe
 {
     const QVariant value = this->value();
 
-    foreach (QXmlStreamNamespaceDeclaration decl, d->m_namespaceDeclarations) {
+    foreach (const QXmlStreamNamespaceDeclaration& decl, d->m_namespaceDeclarations) {
         writer.writeNamespace(decl.namespaceUri().toString(), decl.prefix().toString());
     }
 
@@ -391,9 +391,8 @@ QString KDSoapValue::type() const
 KDSoapValueList KDSoapValue::split() const
 {
     KDSoapValueList valueList;
-    if (value().toString().trimmed().isEmpty()) return valueList;
-
-    const QStringList list = value().toString().split(QLatin1Char(' '));
+    const QStringList list = value().toString().split(QLatin1Char(' '), QString::SkipEmptyParts);
+    valueList.reserve(list.count());
     for (int i = 0; i < list.count(); ++i) {
         KDSoapValue value(*this);
         value.setValue(list.at(i));
