@@ -164,6 +164,16 @@ bool Converter::convertClientService()
                 setEndPoint.setDocs(QLatin1String("Overwrite the end point defined in the .wsdl file, with another http/https URL."));
                 newClass.addFunction(setEndPoint);
             }
+            // endPoint() accessor
+            {
+                KODE::Function getEndPoint(QLatin1String("endPoint"), QLatin1String("QString"));
+                getEndPoint.setConst(true);
+                KODE::Code code;
+                code += "return d_ptr->m_endPoint;";
+                getEndPoint.setBody(code);
+                getEndPoint.setDocs(QLatin1String("Return the end point that will be used."));
+                newClass.addFunction(getEndPoint);
+            }
             //setSoapVersion() method
             {
                 KODE::Function setSoapVersion(QLatin1String("setSoapVersion"), QLatin1String("void"));
@@ -174,6 +184,16 @@ bool Converter::convertClientService()
                 setSoapVersion.setDocs(QLatin1String("Overwrite the soap version defined in the .wsdl file, with another version. \n"
                                                      "version can be KDSoapClientInterface::SOAP1_1 or KDSoapClientInterface::SOAP1_2"));
                 newClass.addFunction(setSoapVersion);
+            }
+            //soapVersion() method
+            {
+                KODE::Function getSoapVersion(QLatin1String("soapVersion"), QLatin1String("KDSoapClientInterface::SoapVersion"));
+                getSoapVersion.setConst(true);
+                KODE::Code code;
+                code += "return clientInterface()->soapVersion();";
+                getSoapVersion.setBody(code);
+                getSoapVersion.setDocs(QLatin1String("Return the soap version used.n"));
+                newClass.addFunction(getSoapVersion);
             }
             // lastErrorCode() method
             {
@@ -385,6 +405,7 @@ bool Converter::convertClientService()
                 if (hasAction) {
                     callLine += QLatin1String(", action");
                 }
+                callLine += QLatin1String(", requestHeaders()");
                 callLine += QLatin1String(");");
                 doStartCode += callLine;
 

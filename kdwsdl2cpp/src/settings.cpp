@@ -39,7 +39,8 @@ Q_GLOBAL_STATIC(SettingsSingleton, s_settings)
 Settings::Settings()
 {
     mOutputDirectory = QDir::current().path();
-    mOutputFileName = QString::fromLatin1("kwsdl_generated");
+    mHeaderFileName = QString::fromLatin1("kwsdl_generated");
+    mImplementationFileName = QString::fromLatin1("kwsdl_generated");
     mImpl = false;
     mServer = false;
     mKeepUnusedTypes = false;
@@ -101,19 +102,14 @@ QString Settings::wsdlFileName() const
     return strUrl.mid(strUrl.lastIndexOf(QLatin1Char('/')) + 1);
 }
 
-void Settings::setOutputFileName(const QString &outputFileName)
+void Settings::setHeaderFileName(const QString &headerFileName)
 {
-    mOutputFileName = outputFileName;
+    mHeaderFileName = headerFileName;
 }
 
-QString Settings::outputFileName() const
+void Settings::setImplementationFileName(const QString &implementationFileName)
 {
-    if (mOutputFileName.isEmpty()) {
-        QFileInfo fi(wsdlFileName());
-        return QLatin1String("wsdl_") + fi.completeBaseName() + QLatin1String(mImpl ? ".cpp" : ".h");
-    }
-
-    return mOutputFileName;
+    mImplementationFileName = implementationFileName;
 }
 
 void Settings::setOutputDirectory(const QString &outputDirectory)
@@ -160,10 +156,9 @@ Settings::NSMapping Settings::namespaceMapping() const
     return mNamespaceMapping;
 }
 
-void Settings::setGenerateImplementation(bool b, const QString &headerFile)
+void Settings::setGenerateImplementation(bool b)
 {
     mImpl = b;
-    mHeaderFile = headerFile;
 }
 
 bool Settings::generateImplementation() const
@@ -171,10 +166,26 @@ bool Settings::generateImplementation() const
     return mImpl;
 }
 
-QString Settings::headerFile() const
+void Settings::setGenerateHeader(bool b)
 {
-    return mHeaderFile;
+    mHeader = b;
 }
+
+bool Settings::generateHeader() const
+{
+    return mHeader;
+}
+
+QString Settings::headerFileName() const
+{
+    return mHeaderFileName;
+}
+
+QString Settings::implementationFileName() const
+{
+    return mImplementationFileName;
+}
+
 
 void Settings::setWantedService(const QString &service)
 {

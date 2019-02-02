@@ -11,7 +11,7 @@
 #  Build the test harness.
 #  Default=false
 #
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 2.8.7)
 cmake_policy(SET CMP0020 NEW)
 
 if("${CMAKE_INSTALL_PREFIX}" STREQUAL "")
@@ -28,7 +28,13 @@ option(
   OFF
 )
 
-set(CMAKE_CXX_STANDARD 11)
+if(CMAKE_VERSION VERSION_LESS "3.1")
+    if(CMAKE_COMPILER_IS_GNUCXX)
+        set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+    endif ()
+else()
+    set(CMAKE_CXX_STANDARD 11)
+endif()
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/ ${CMAKE_MODULE_PATH}")
 

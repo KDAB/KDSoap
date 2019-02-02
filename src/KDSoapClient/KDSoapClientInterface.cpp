@@ -58,7 +58,7 @@ void KDSoapClientInterface::setSoapVersion(KDSoapClientInterface::SoapVersion ve
     d->m_version = static_cast<KDSoap::SoapVersion>(version);
 }
 
-KDSoapClientInterface::SoapVersion KDSoapClientInterface::soapVersion()
+KDSoapClientInterface::SoapVersion KDSoapClientInterface::soapVersion() const
 {
     return static_cast<KDSoapClientInterface::SoapVersion>(d->m_version);
 }
@@ -192,6 +192,7 @@ void KDSoapClientInterface::callNoReply(const QString &method, const KDSoapMessa
     QNetworkReply *reply = d->accessManager()->post(request, buffer);
     d->setupReply(reply);
     QObject::connect(reply, SIGNAL(finished()), reply, SLOT(deleteLater()));
+    QObject::connect(reply, SIGNAL(finished()), buffer, SLOT(deleteLater()));
 }
 
 void KDSoapClientInterfacePrivate::_kd_slotAuthenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator)

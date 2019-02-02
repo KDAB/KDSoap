@@ -1,6 +1,7 @@
 General:
 ========
 * Fix internally-created faults lacking an XML element name (so e.g. toXml() would abort)
+* KDSoapMessage::messageAddressingProperties() is now correctly filled in when receiving a message with WS-Addressing in the header
 
 Client-side:
 ============
@@ -12,6 +13,7 @@ Client-side:
 * Fix error code when authentication failed
 * Autodeletion of jobs is now configurable (github pull #125)
 * Add error details in faultAsString() - and the generated lastError() - coming from the SOAP 1.2 detail element.
+* Fix memory leak in KDSoapClientInterface::callNoReply
 * Add support for WS-UsernameToken, see KDSoapAuthentication
 
 Server-side:
