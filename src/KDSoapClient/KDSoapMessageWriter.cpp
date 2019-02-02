@@ -90,7 +90,7 @@ QByteArray KDSoapMessageWriter::messageToXml(const KDSoapMessage &message, const
             message.messageAddressingProperties().writeMessageAddressingProperties(namespacePrefixes, writer, messageNamespace, true);
         }
         if (authentication.hasWSUsernameTokenHeader()) {
-            authentication.writeWSUsernameTokenHeader(namespacePrefixes, writer, messageNamespace, true);
+            authentication.writeWSUsernameTokenHeader(writer);
         }
         writer.writeEndElement(); // Header
     } else {

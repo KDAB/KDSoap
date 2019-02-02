@@ -139,12 +139,8 @@ bool KDSoapAuthentication::hasWSUsernameTokenHeader() const
     return hasAuth() && d->useWSUsernameToken;
 }
 
-void KDSoapAuthentication::writeWSUsernameTokenHeader(KDSoapNamespacePrefixes &namespacePrefixes, QXmlStreamWriter &writer, const QString &messageNamespace, bool forceQualified) const
+void KDSoapAuthentication::writeWSUsernameTokenHeader(QXmlStreamWriter &writer) const
 {
-    Q_UNUSED(namespacePrefixes);
-    Q_UNUSED(messageNamespace);
-    Q_UNUSED(forceQualified);
-
     if (!hasAuth()) {
         return;
     }

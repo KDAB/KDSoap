@@ -82,6 +82,7 @@ public:
     /**
      * Sets whether WS-UsernameToken is used for authentication. When
      * set, the WS-UsernameToken headers are included in each request.
+     * See https://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0.pdf
      * \since 1.8
      */
     void setUseWSUsernameToken(bool useWSUsernameToken);
@@ -132,9 +133,15 @@ private:
      */
     void handleAuthenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator);
 
+    /**
+     * \internal
+     */
     bool hasWSUsernameTokenHeader() const;
 
-    void writeWSUsernameTokenHeader(KDSoapNamespacePrefixes &namespacePrefixes, QXmlStreamWriter &writer, const QString &messageNamespace, bool forceQualified) const;
+    /**
+     * \internal
+     */
+    void writeWSUsernameTokenHeader(QXmlStreamWriter &writer) const;
 
 private:
     class Private;
