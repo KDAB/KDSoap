@@ -41,6 +41,8 @@ public:
     static QString soapEncoding();
     static QString soapEncoding200305();
     static QString soapMessageAddressing();
+    static QString soapSecurityExtention();
+    static QString soapSecurityUtility();
     static QString soapMessageAddressing200303();
     static QString soapMessageAddressing200403();
     static QString soapMessageAddressing200408();

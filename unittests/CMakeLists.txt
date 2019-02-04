@@ -71,6 +71,7 @@ add_subdirectory(encapsecurity)
 add_subdirectory(prefix_wsdl)
 add_subdirectory(vidyo)
 add_subdirectory(ws_addressing_support)
+add_subdirectory(ws_usernametoken_support)
 add_subdirectory(empty_element_wsdl)
 
 # These need internet access
