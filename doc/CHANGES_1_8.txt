@@ -15,6 +15,7 @@ Client-side:
 * Add error details in faultAsString() - and the generated lastError() - coming from the SOAP 1.2 detail element.
 * Fix memory leak in KDSoapClientInterface::callNoReply
 * Add support for WS-UsernameToken, see KDSoapAuthentication
+* Extend KDSOAP_DEBUG functionality (e.g. "KDSOAP_DEBUG=http,reformat" will now print http-headers and pretty-print the xml)
 
 Server-side:
 ============
