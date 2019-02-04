@@ -16,6 +16,9 @@ Client-side:
 * Fix memory leak in KDSoapClientInterface::callNoReply
 * Add support for WS-UsernameToken, see KDSoapAuthentication
 * Extend KDSOAP_DEBUG functionality (e.g. "KDSOAP_DEBUG=http,reformat" will now print http-headers and pretty-print the xml)
+* Add support for specifying requestHeaders as part of KDSoapJob via KDSoapJob::setRequestHeaders()
+* Rename the missing KDSoapJob::returnHeaders() to KDSoapJob::replyHeaders(), and provide an implementation
+* Make KDSoapClientInterface::soapVersion() const
 
 Server-side:
 ============
@@ -32,3 +35,7 @@ WSDL parser / code generator changes, applying to both client and server side:
 * Added import-path argument for setting the local path to get (otherwise downloaded) files from.
 * Added -help-on-missing option to kdwsdl2cpp to display extra help on missing types.
 * Added C++17 std::optional as possible return value for optional elements.
+* Added -both to create both header(.h) and implementation(.cpp) files in one run
+* Added -namespaceMapping @mapping.txt to import url=code mappings, affects C++ class name generation
+* Added functionality to prevent downloading the same WSDL/XSD file twice in one run
+* Generated services now include soapVersion() and endpoint() accessors to match the setSoapVersion(...) and setEndpoint(...) mutators
