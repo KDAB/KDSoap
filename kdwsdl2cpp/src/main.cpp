@@ -56,7 +56,7 @@ static void showHelp(const char *appName)
             "                            (affects the generated class names)\n"
             "  -optional-element-type <type>\n"
             "                            use <type> as the getter return value for optional elements.\n"
-            "                            <type> can be either raw-pointer or boost-optional\n"
+            "                            <type> can be either raw-pointer, boost-optional or std-optional\n"
             "  -keep-unused-types        keep the wsdl unused types to the cpp generation step\n"
             "  -import-path <importpath> search for files first in this path before\n"
             "                            downloading them. may be specified multiple times.\n"
@@ -194,6 +194,8 @@ int main(int argc, char **argv)
                 optionalElementType = Settings::ERawPointer;
             } else if (optType == QLatin1String("boost-optional")) {
                 optionalElementType = Settings::EBoostOptional;
+            } else if (optType == QLatin1String("std-optional")) {
+                optionalElementType = Settings::EStdOptional;
             }
         } else if (opt == QLatin1String("-keep-unused-types")) {
             keepUnusedTypes = true;

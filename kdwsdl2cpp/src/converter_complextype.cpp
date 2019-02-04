@@ -309,6 +309,8 @@ QString Converter::generateMemberVariable(const QString &rawName, const QString 
     if (optional) {
         if (Settings::self()->optionalElementType() == Settings::EBoostOptional) {
             getterTypeName = "boost::optional<" + typeName + " >";
+        } else if (Settings::self()->optionalElementType() == Settings::EStdOptional) {
+            getterTypeName = "std::optional<" + typeName + " >";
         } else if (usePointer || Settings::self()->optionalElementType() == Settings::ERawPointer) {
             getterTypeName = "const " + typeName + QLatin1Char('*');
         }
@@ -327,6 +329,16 @@ QString Converter::generateMemberVariable(const QString &rawName, const QString 
                 getterCode += QLatin1String("else");
                 getterCode.indent();
                 getterCode += "return boost::optional<" + typeName + " >();";
+                getter.setBody(getterCode);
+            } else if (Settings::self()->optionalElementType() == Settings::EStdOptional) {
+                KODE::Code getterCode;
+                getterCode += QLatin1String("if (") + variableName + QLatin1String(")");
+                getterCode.indent();
+                getterCode += QLatin1String("return *") + variableName + QLatin1Char(';');
+                getterCode.unindent();
+                getterCode += QLatin1String("else");
+                getterCode.indent();
+                getterCode += "return std::nullopt;";
                 getter.setBody(getterCode);
             } else { // Regular isn't an option here. It would crash when the value is not set! So assume ERawPointer.
                 getter.setBody(QLatin1String("return ") + variableName + QLatin1String(".data();"));
@@ -355,6 +367,16 @@ QString Converter::generateMemberVariable(const QString &rawName, const QString 
             getterCode += QLatin1String("else");
             getterCode.indent();
             getterCode += "return boost::optional<" + typeName + " >();";
+            getter.setBody(getterCode);
+        } else if (Settings::self()->optionalElementType() == Settings::EStdOptional) {
+            KODE::Code getterCode;
+            getterCode += QLatin1String("if (!") + variableName + QLatin1String("_nil)");
+            getterCode.indent();
+            getterCode += QLatin1String("return ") + variableName + QLatin1Char(';');
+            getterCode.unindent();
+            getterCode += QLatin1String("else");
+            getterCode.indent();
+            getterCode += "return std::nullopt;";
             getter.setBody(getterCode);
         } else {
             getter.setBody(QLatin1String("return ") + variableName + QLatin1Char(';'));

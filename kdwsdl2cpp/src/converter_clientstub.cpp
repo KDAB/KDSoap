@@ -106,6 +106,8 @@ bool Converter::convertClientService()
             newClass.addHeaderInclude(QLatin1String("KDSoapClient/KDSoapClientInterface.h"));
             if (Settings::self()->optionalElementType() == Settings::EBoostOptional) {
                 newClass.addHeaderInclude(QLatin1String("boost/optional.hpp"));
+            } else if (Settings::self()->optionalElementType() == Settings::EStdOptional) {
+                newClass.addHeaderInclude(QLatin1String("optional"));
             }
 
             // Files included in the impl, with optional forward-declarations in the header
