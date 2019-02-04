@@ -33,6 +33,8 @@
 
 class KDSoapValue;
 
+void maybeDebugRequest(const QByteArray &data, const QNetworkRequest &request, QNetworkReply *reply);
+
 class KDSoapPendingCall::Private : public QSharedData
 {
 public:

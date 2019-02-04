@@ -126,8 +126,5 @@ QByteArray KDSoapMessageWriter::messageToXml(const KDSoapMessage &message, const
     writer.writeEndElement(); // Envelope
     writer.writeEndDocument();
 
-    if (qgetenv("KDSOAP_DEBUG").toInt()) {
-        qDebug() << data;
-    }
     return data;
 }
