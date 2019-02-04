@@ -27,7 +27,7 @@
 #include <QNetworkReply>
 #include <QDebug>
 
-void debugHelper(const QByteArray &data, QList< QNetworkReply::RawHeaderPair > headerList) {
+static void maybeDebug(const QByteArray &data, const QList<QNetworkReply::RawHeaderPair> &headerList) {
     const QByteArray doDebug = qgetenv("KDSOAP_DEBUG");
     if (doDebug.trimmed().isEmpty() || doDebug == "0") {
         return;
@@ -82,29 +82,32 @@ void debugHelper(const QByteArray &data, QList< QNetworkReply::RawHeaderPair > h
 }
 
 // Log the HTTP and XML of a response from the server.
-void debugHelper(const QByteArray &data, QNetworkReply *reply) {
-    debugHelper(data, reply->rawHeaderPairs());
+static void maybeDebugResponse(const QByteArray &data, QNetworkReply *reply) {
+    maybeDebug(data, reply->rawHeaderPairs());
 }
 
-// Log the HTTP and XML of a requst.
-void debugHelper(const QByteArray &data, const QNetworkRequest &request, QNetworkReply *reply) {
+// Log the HTTP and XML of a request.
+// (not static, because this is used in KDSoapClientInterface)
+void maybeDebugRequest(const QByteArray &data, const QNetworkRequest &request, QNetworkReply *reply) {
     QList<QNetworkReply::RawHeaderPair> headerList;
     if (reply) {
         QByteArray method;
-        switch(reply->operation()) {
-            default:
+        switch (reply->operation()) {
+            default: break; // don't try to mimic the basic HTTP command
             case QNetworkAccessManager::GetOperation: method = "GET"; break;
             case QNetworkAccessManager::HeadOperation: method = "HEAD"; break;
             case QNetworkAccessManager::PutOperation: method = "PUT"; break;
             case QNetworkAccessManager::PostOperation: method = "POST"; break;
             case QNetworkAccessManager::DeleteOperation: method = "DELETE"; break;
         }
-        headerList << qMakePair<QByteArray,QByteArray>("", method + " " + qPrintable(reply->url().toString()));
+        if (!method.isEmpty()) {
+            headerList << qMakePair<QByteArray,QByteArray>("", method + " " + qPrintable(reply->url().toString()));
+        }
     }
     Q_FOREACH( const QByteArray &h, request.rawHeaderList() ) {
         headerList << qMakePair<QByteArray,QByteArray>(h, request.rawHeader(h));
     }
-    debugHelper(data, headerList);
+    maybeDebug(data, headerList);
 }
 
 
@@ -185,7 +188,7 @@ void KDSoapPendingCall::Private::parseReply()
 
     // Don't try to read from an aborted (closed) reply
     const QByteArray data = reply->isOpen() ? reply->readAll() : QByteArray();
-    debugHelper(data, reply);
+    maybeDebugResponse(data, reply);
 
     if (!data.isEmpty()) {
         KDSoapMessageReader reader;
