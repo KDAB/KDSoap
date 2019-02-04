@@ -29,7 +29,7 @@ class Settings
 public:
     typedef QMap<QString, QString> NSMapping;
 
-    enum OptionalElementType { ENone, ERawPointer, EBoostOptional };
+    enum OptionalElementType { ENone, ERawPointer, EBoostOptional, EStdOptional };
 
     ~Settings();
 
