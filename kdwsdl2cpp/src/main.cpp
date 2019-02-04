@@ -33,7 +33,7 @@ static const char *WSDL2CPP_VERSION_STR = "2.1";
 static void showHelp(const char *appName)
 {
     fprintf(stderr, "%s %s\n", WSDL2CPP_DESCRIPTION, WSDL2CPP_VERSION_STR);
-    fprintf(stderr, 
+    fprintf(stderr,
             "Usage:\n"
             "   Header file: %s [options] -o <headerfile> <wsdlfile>\n"
             "   Impl.  file: %s [options] -o <cppfile> -impl <headerfile> <wsdlfile>\n"
@@ -80,7 +80,6 @@ int main(int argc, char **argv)
     bool impl = false;
     bool outfileGiven = false;
     bool server = false;
-    QString baseFile;
     QString headerFile;
     QString serviceName;
     QString exportMacro;
@@ -113,8 +112,7 @@ int main(int argc, char **argv)
                 showHelp(argv[0]);
                 return 1;
             }
-            baseFile = QFile::decodeName(argv[arg]);
-            outputFile.setFile(baseFile);
+            outputFile.setFile(QFile::decodeName(argv[arg]));
         } else if (opt == QLatin1String("-server")) {
             server = true;
         } else if (opt == QLatin1String("-v") || opt == QLatin1String("-version")) {
@@ -177,7 +175,6 @@ int main(int argc, char **argv)
                         nsmapping[uri] = target;
                     }
                 }
-
             } else {
                 QString uri = mapping.section("=", 0, -2);
                 QString target = mapping.section("=", -1, -1);
@@ -234,8 +231,8 @@ int main(int argc, char **argv)
     if (both) {
         Settings::self()->setGenerateHeader(true);
         Settings::self()->setGenerateImplementation(true);
-        Settings::self()->setHeaderFileName(baseFile + ".h");
-        Settings::self()->setImplementationFileName(baseFile + ".cpp");
+        Settings::self()->setHeaderFileName(outputFile.fileName() + ".h");
+        Settings::self()->setImplementationFileName(outputFile.fileName() + ".cpp");
     } else if (impl) {
         Settings::self()->setGenerateHeader(false);
         Settings::self()->setGenerateImplementation(true);
