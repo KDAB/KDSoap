@@ -37,6 +37,9 @@
 #include <unistd.h>
 #endif
 
+static QHash<QUrl, QByteArray> fileProviderCache;
+
+
 FileProvider::FileProvider()
   : QObject( 0 )
 {
@@ -94,30 +97,38 @@ bool FileProvider::get( const QUrl &url, QString &target )
     mFileName = target;
   }
 
-  qDebug("Downloading '%s'", url.toEncoded().constData());
+  QByteArray data;
+  const QHash<QUrl, QByteArray>::const_iterator it = fileProviderCache.constFind(url);
+  if (it != fileProviderCache.constEnd()) {
+    data = it.value();
+  } else {
+    qDebug("Downloading '%s'", url.toEncoded().constData());
 
-  QNetworkAccessManager manager;
-  QNetworkRequest request(url);
-  QNetworkReply* job = manager.get(request);
+    QNetworkAccessManager manager;
+    QNetworkRequest request(url);
+    QNetworkReply* job = manager.get(request);
 
-  QEventLoop loop;
-  connect(job, SIGNAL(finished()),
-          &loop, SLOT(quit()));
-  loop.exec();
+    QEventLoop loop;
+    connect(job, SIGNAL(finished()),
+            &loop, SLOT(quit()));
+    loop.exec();
 
-  if (job->error()) {
-      qWarning("Error downloading '%s': %s", url.toEncoded().constData(), qPrintable(job->errorString()));
-      return false;
+    if (job->error()) {
+        qWarning("Error downloading '%s': %s", url.toEncoded().constData(), qPrintable(job->errorString()));
+        return false;
+    }
+
+    qDebug( "Download successful" );
+    data = job->readAll();
+    fileProviderCache[url] = data;
   }
 
-  const QByteArray data = job->readAll();
   QFile file( mFileName );
   if ( !file.open( QIODevice::WriteOnly ) ) {
-      qDebug( "Unable to create temporary file" );
+      qWarning() << "Unable to create" << mFileName << ":" << file.errorString();
       return false;
   }
 
-  qDebug( "Download successful" );
   file.write( data );
   file.close();
 
