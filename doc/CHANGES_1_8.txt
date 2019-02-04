@@ -34,6 +34,7 @@ WSDL parser / code generator changes, applying to both client and server side:
 * Added import-path argument for setting the local path to get (otherwise downloaded) files from.
 * Added -help-on-missing option to kdwsdl2cpp to display extra help on missing types.
 * Added C++17 std::optional as possible return value for optional elements.
+* Added "hasValue{MemberName}()" accessor function, for optional elements
 * Added -both to create both header(.h) and implementation(.cpp) files in one run
 * Added -namespaceMapping @mapping.txt to import url=code mappings, affects C++ class name generation
 * Added functionality to prevent downloading the same WSDL/XSD file twice in one run
