@@ -27,12 +27,8 @@
 #include <QNetworkReply>
 #include <QDebug>
 
-static void maybeDebug(const QByteArray &data, const QList<QNetworkReply::RawHeaderPair> &headerList) {
+static void debugHelper(const QByteArray &data, const QList<QNetworkReply::RawHeaderPair> &headerList) {
     const QByteArray doDebug = qgetenv("KDSOAP_DEBUG");
-    if (doDebug.trimmed().isEmpty() || doDebug == "0") {
-        return;
-    }
-
     const QList<QByteArray> options = doDebug.toLower().split(',');
     const bool optEscape = options.contains("escape");
     const bool optHttp = options.contains("http") || options.contains("https");
@@ -83,12 +79,22 @@ static void maybeDebug(const QByteArray &data, const QList<QNetworkReply::RawHea
 
 // Log the HTTP and XML of a response from the server.
 static void maybeDebugResponse(const QByteArray &data, QNetworkReply *reply) {
-    maybeDebug(data, reply->rawHeaderPairs());
+    const QByteArray doDebug = qgetenv("KDSOAP_DEBUG");
+    if (doDebug.trimmed().isEmpty() || doDebug == "0") {
+        return;
+    }
+
+    debugHelper(data, reply->rawHeaderPairs());
 }
 
 // Log the HTTP and XML of a request.
 // (not static, because this is used in KDSoapClientInterface)
 void maybeDebugRequest(const QByteArray &data, const QNetworkRequest &request, QNetworkReply *reply) {
+    const QByteArray doDebug = qgetenv("KDSOAP_DEBUG");
+    if (doDebug.trimmed().isEmpty() || doDebug == "0") {
+        return;
+    }
+
     QList<QNetworkReply::RawHeaderPair> headerList;
     if (reply) {
         QByteArray method;
@@ -107,7 +113,7 @@ void maybeDebugRequest(const QByteArray &data, const QNetworkRequest &request, Q
     Q_FOREACH( const QByteArray &h, request.rawHeaderList() ) {
         headerList << qMakePair<QByteArray,QByteArray>(h, request.rawHeader(h));
     }
-    maybeDebug(data, headerList);
+    debugHelper(data, headerList);
 }
 
 
