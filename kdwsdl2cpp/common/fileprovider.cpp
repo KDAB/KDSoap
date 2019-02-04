@@ -101,7 +101,6 @@ bool FileProvider::get( const QUrl &url, QString &target )
   const QHash<QUrl, QByteArray>::const_iterator it = fileProviderCache.constFind(url);
   if (it != fileProviderCache.constEnd()) {
     data = it.value();
-    qDebug( "Using cached copy" );
   } else {
     qDebug("Downloading '%s'", url.toEncoded().constData());
 
