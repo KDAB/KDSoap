@@ -35,15 +35,18 @@ void TestPointerApi::test()
 {
     TNS__TestOperationResponse1 resp;
     QCOMPARE(resp.out(), (QString *)0);
+    QCOMPARE(resp.hasValueForOut(), false);
     QString newVal("newval");
     resp.setOut(newVal);
     QCOMPARE(*resp.out(), newVal);
+    QCOMPARE(resp.hasValueForOut(), true);
 }
 
 void TestPointerApi::testOptionalArray()
 {
     TNS__TestOperationResponse1 resp;
     QVERIFY(!resp.outOptionalArray());
+    QVERIFY(!resp.hasValueForOutOptionalArray());
     const QList<qint64> valIn(QList<qint64>() << 1 << 2 << 3);
     resp.setOutOptionalArray(valIn);
 
@@ -52,6 +55,7 @@ void TestPointerApi::testOptionalArray()
 
     QVERIFY(resp2.outOptionalArray());
     QCOMPARE(valIn, *resp2.outOptionalArray());
+    QVERIFY(resp.hasValueForOutOptionalArray());
 }
 
 QTEST_MAIN(TestPointerApi)
