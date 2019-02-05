@@ -158,9 +158,9 @@ KDSoapPendingCall KDSoapClientInterface::asyncCall(const QString &method, const 
 {
     QBuffer *buffer = d->prepareRequestBuffer(method, message, headers);
     QNetworkRequest request = d->prepareRequest(method, soapAction);
-    //qDebug() << "post()";
     QNetworkReply *reply = d->accessManager()->post(request, buffer);
     d->setupReply(reply);
+    maybeDebugRequest(buffer->data(), reply->request(), reply);
     KDSoapPendingCall call(reply, buffer);
     call.d->soapVersion = d->m_version;
     return call;
@@ -191,6 +191,7 @@ void KDSoapClientInterface::callNoReply(const QString &method, const KDSoapMessa
     QNetworkRequest request = d->prepareRequest(method, soapAction);
     QNetworkReply *reply = d->accessManager()->post(request, buffer);
     d->setupReply(reply);
+    maybeDebugRequest(buffer->data(), reply->request(), reply);
     QObject::connect(reply, SIGNAL(finished()), reply, SLOT(deleteLater()));
     QObject::connect(reply, SIGNAL(finished()), buffer, SLOT(deleteLater()));
 }
