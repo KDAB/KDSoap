@@ -34,11 +34,9 @@ void TestBoostApi::test()
 {
     TNS__TestOperationResponse1 resp;
     QCOMPARE(resp.out(), boost::optional<QString>());
-    QCOMPARE(resp.hasValueForOut(), false);
     QString newVal("newval");
     resp.setOut(newVal);
     QCOMPARE(*resp.out(), newVal);
-    QCOMPARE(resp.hasValueForOut(), true);
 }
 
 QTEST_MAIN(TestBoostApi)

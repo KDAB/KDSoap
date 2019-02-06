@@ -150,11 +150,7 @@ KDSoapPendingCall &KDSoapPendingCall::operator=(const KDSoapPendingCall &other)
 
 bool KDSoapPendingCall::isFinished() const
 {
-#if QT_VERSION >= 0x040600
     return d->reply.data()->isFinished();
-#else
-    return false;
-#endif
 }
 
 KDSoapMessage KDSoapPendingCall::returnMessage() const
