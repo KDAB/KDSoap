@@ -389,6 +389,16 @@ QString Converter::generateMemberVariable(const QString &rawName, const QString 
     newClass.addFunction(setter);
     newClass.addFunction(getter);
 
+    if (optional) {
+        KODE::Code checkerCode;
+        checkerCode += QLatin1String("return ") + variableName + QLatin1String("_nil == false;");
+
+        KODE::Function checker(QLatin1String("hasValueFor") + upperName, QLatin1String("bool"), access);
+        checker.setConst(true);
+        checker.setBody(checkerCode);
+        newClass.addFunction(checker);
+    }
+
     return variableName;
 }
 
