@@ -34,11 +34,9 @@ void TestRegularApi::test()
 {
     TNS__TestOperationResponse1 resp;
     QCOMPARE(resp.out(), QString());
-    QCOMPARE(resp.hasValueForOut(), false);
     QString newVal("newval");
     resp.setOut(newVal);
     QCOMPARE(resp.out(), newVal);
-    QCOMPARE(resp.hasValueForOut(), true);
 }
 
 void TestRegularApi::testPolymorphic()
