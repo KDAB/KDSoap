@@ -31,8 +31,6 @@ using namespace KWSDL;
 
 Creator::Creator()
 {
-    KODE::Code::setDefaultIndentation(4);
-
     // Set generated header details.
     _printer.setCreationWarning(true);
     _printer.setGenerator(QLatin1String("KDAB's kdwsdl2cpp"));

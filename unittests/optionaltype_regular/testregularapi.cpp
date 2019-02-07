@@ -39,4 +39,26 @@ void TestRegularApi::test()
     QCOMPARE(resp.out(), newVal);
 }
 
+void TestRegularApi::testPolymorphic()
+{
+    TNS__TestOperationResponse1 resp;
+    QCOMPARE(resp.out2(), (TNS__PolymorphicClass*)0);
+    QCOMPARE(resp.hasValueForOut2(), false);
+    TNS__PolymorphicClass value;
+    value.setValue(QString("newvalue"));
+    resp.setOut2(value);
+    QVERIFY(resp.out2());
+    QCOMPARE(resp.out2()->value(), QString("newvalue"));
+    QCOMPARE(resp.hasValueForOut2(), true);
+
+
+    TNS__DerivedClass derivedValue;
+    derivedValue.setValue("derived");
+    derivedValue.setValue2("derived");
+    resp.setOut2(derivedValue);
+    QVERIFY(resp.out2());
+    QCOMPARE(resp.out2()->value(), QString("derived"));
+    QCOMPARE(dynamic_cast<const TNS__DerivedClass*>(resp.out2())->value2(), QString("derived"));
+}
+
 QTEST_MAIN(TestRegularApi)

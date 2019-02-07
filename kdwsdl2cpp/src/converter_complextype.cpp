@@ -285,7 +285,7 @@ QString Converter::generateMemberVariable(const QString &rawName, const QString 
     }
 
     // setter method
-    const QString argName = '_' + memberName;
+    const QString argName = "arg_" + memberName;
     KODE::Function setter(QLatin1String("set") + upperName, QLatin1String("void"), access);
     setter.addArgument(inputTypeName + QLatin1Char(' ') + argName);
     KODE::Code code;
@@ -388,6 +388,20 @@ QString Converter::generateMemberVariable(const QString &rawName, const QString 
 
     newClass.addFunction(setter);
     newClass.addFunction(getter);
+
+    if (optional) {
+        KODE::Code checkerCode;
+        if (usePointer) {
+            checkerCode += QLatin1String("return ") + variableName + QLatin1String(".isNull() == false;");
+        } else {
+            checkerCode += QLatin1String("return ") + variableName + QLatin1String("_nil == false;");
+        }
+
+        KODE::Function checker(QLatin1String("hasValueFor") + upperName, QLatin1String("bool"), access);
+        checker.setConst(true);
+        checker.setBody(checkerCode);
+        newClass.addFunction(checker);
+    }
 
     return variableName;
 }
