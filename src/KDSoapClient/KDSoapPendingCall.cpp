@@ -71,9 +71,14 @@ static void debugHelper(const QByteArray &data, const QList<QNetworkReply::RawHe
     }
 
     if (optEscape) {
+        // no support for escaping with Qt4
         qDebug() << toOutput;
     } else {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 4, 0)
         qDebug().noquote() << toOutput;
+#else
+        qDebug() << toOutput;
+#endif
     }
 }
 
