@@ -9,20 +9,20 @@
         </xsd:complexType>
       </xsd:element>
 
-      <xs:complexType name="PolymorphicClass">
-        <xs:sequence>
-          <xs:element name="value" type="xsd:string"/>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="DerivedClass">
-        <xs:complexContent>
-          <xs:extension base="tns:PolymorphicClass">
-            <xs:sequence>
-              <xs:element name="value2" type="xsd:string"/>
-            </xs:sequence>
-          </xs:extension>
-        </xs:complexContent>
-      </xs:complexType>
+      <xsd:complexType name="PolymorphicClass">
+        <xsd:sequence>
+          <xsd:element name="value" type="xsd:string"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="DerivedClass">
+        <xsd:complexContent>
+          <xsd:extension base="tns:PolymorphicClass">
+            <xsd:sequence>
+              <xsd:element name="value2" type="xsd:string"/>
+            </xsd:sequence>
+          </xsd:extension>
+        </xsd:complexContent>
+      </xsd:complexType>
 
       <xsd:element name="NewOperationResponse">
         <xsd:complexType>
