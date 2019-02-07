@@ -108,6 +108,7 @@ void Compiler::parse(const QDomElement &element)
         wsdl.setDefinitions(definitions);
         wsdl.setNamespaceManager(namespaceManager);
 
+        KODE::Code::setDefaultIndentation(4);
         KWSDL::Converter converter;
         converter.setWSDL(wsdl);
 
