@@ -38,4 +38,5 @@ WSDL parser / code generator changes, applying to both client and server side:
 * Added -both to create both header(.h) and implementation(.cpp) files in one run
 * Added -namespaceMapping @mapping.txt to import url=code mappings, affects C++ class name generation
 * Added functionality to prevent downloading the same WSDL/XSD file twice in one run
+* Added "hasValueFor{MemberName}()" accessor function, for optional elements
 * Generated services now include soapVersion() and endpoint() accessors to match the setSoapVersion(...) and setEndpoint(...) mutators
