@@ -8,6 +8,22 @@
           </xsd:sequence>
         </xsd:complexType>
       </xsd:element>
+
+      <xs:complexType name="PolymorphicClass">
+        <xs:sequence>
+          <xs:element name="value" type="xsd:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="DerivedClass">
+        <xs:complexContent>
+          <xs:extension base="tns:PolymorphicClass">
+            <xs:sequence>
+              <xs:element name="value2" type="xsd:string"/>
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+
       <xsd:element name="NewOperationResponse">
         <xsd:complexType>
           <xsd:sequence>
@@ -19,6 +35,7 @@
       	<xsd:complexType>
       		<xsd:sequence>
       			<xsd:element name="out" type="xsd:string" maxOccurs="1" minOccurs="0"></xsd:element>
+                        <xsd:element name="out2" type="tns:PolymorphicClass" minOccurs="0"></xsd:element>
       		</xsd:sequence>
       	</xsd:complexType>
       </xsd:element>
