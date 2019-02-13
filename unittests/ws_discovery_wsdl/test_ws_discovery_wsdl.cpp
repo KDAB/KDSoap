@@ -120,7 +120,7 @@ private Q_SLOTS:
         const QList< TNS__ProbeMatchType >& probeMatchList = probeMatches.probeMatch();
         QCOMPARE(probeMatchList.size(), 1);
         const TNS__ProbeMatchType& probeMatch = probeMatchList.value(0);
-        QCOMPARE(probeMatch.endpointReference().address(), QString("uuid:98190dc2-0890-4ef8-ac9a-5940995e6119"));
+        QCOMPARE(QString(probeMatch.endpointReference().address()), QString("uuid:98190dc2-0890-4ef8-ac9a-5940995e6119"));
         const QStringList& typeList = probeMatch.types().entries();
         QCOMPARE(typeList.size(), 2);
         QCOMPARE(typeList.value(0), QString("i:PrintBasic"));
@@ -133,7 +133,7 @@ private Q_SLOTS:
         const QStringList& xaddrList = probeMatch.xAddrs().entries();
         QCOMPARE(xaddrList.size(), 1);
         QCOMPARE(xaddrList.value(0), QString("http://prn-example/PRN42/b42-1668-a"));
-        QCOMPARE(probeMatch.metadataVersion(), 75965);
+        QCOMPARE(int(probeMatch.metadataVersion()), 75965);
     }
 };
 
