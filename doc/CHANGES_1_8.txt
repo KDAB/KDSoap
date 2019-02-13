@@ -40,3 +40,4 @@ WSDL parser / code generator changes, applying to both client and server side:
 * Added functionality to prevent downloading the same WSDL/XSD file twice in one run
 * Added "hasValueFor{MemberName}()" accessor function, for optional elements
 * Generated services now include soapVersion() and endpoint() accessors to match the setSoapVersion(...) and setEndpoint(...) mutators
+* Added support for generating messages for WSDL files without services or bindings

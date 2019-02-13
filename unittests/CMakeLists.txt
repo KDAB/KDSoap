@@ -73,6 +73,7 @@ add_subdirectory(vidyo)
 add_subdirectory(ws_addressing_support)
 add_subdirectory(ws_usernametoken_support)
 add_subdirectory(empty_element_wsdl)
+add_subdirectory(ws_discovery_wsdl)
 
 # These need internet access
 add_subdirectory(webcalls)
