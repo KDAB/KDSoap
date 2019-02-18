@@ -27,6 +27,101 @@
 #include <QNetworkReply>
 #include <QDebug>
 
+static void debugHelper(const QByteArray &data, const QList<QNetworkReply::RawHeaderPair> &headerList) {
+    const QByteArray doDebug = qgetenv("KDSOAP_DEBUG");
+    const QList<QByteArray> options = doDebug.toLower().split(',');
+    const bool optEscape = options.contains("escape");
+    const bool optHttp = options.contains("http") || options.contains("https");
+    const bool optReformat = options.contains("reformat");
+    quint8 indentation = 4;
+    Q_FOREACH( const QByteArray &opt, options ) {
+        if (opt.startsWith("indent=")) {
+            indentation = opt.mid(7).toUShort();
+        }
+    }
+
+    QByteArray toOutput;
+    if (optHttp) {
+        Q_FOREACH( const QNetworkReply::RawHeaderPair &header, headerList ) {
+            if (!header.first.isEmpty()) {
+                toOutput += header.first + ": ";
+            }
+            toOutput += header.second + "\n";
+        }
+        toOutput += "\n";
+    }
+
+    if (optReformat) {
+        QByteArray reformatted;
+        QXmlStreamReader reader(data);
+        QXmlStreamWriter writer(&reformatted);
+        writer.setAutoFormatting(true);
+        writer.setAutoFormattingIndent(indentation);
+
+        while (!reader.atEnd()) {
+            reader.readNext();
+            if (!reader.isWhitespace()) {
+                writer.writeCurrentToken(reader);
+            }
+        }
+
+        toOutput += reader.hasError() ? data : reformatted;
+    } else {
+        toOutput += data;
+    }
+
+    if (optEscape) {
+        // no support for escaping with Qt4
+        qDebug() << toOutput;
+    } else {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 4, 0)
+        qDebug().noquote() << toOutput;
+#else
+        qDebug() << toOutput;
+#endif
+    }
+}
+
+// Log the HTTP and XML of a response from the server.
+static void maybeDebugResponse(const QByteArray &data, QNetworkReply *reply) {
+    const QByteArray doDebug = qgetenv("KDSOAP_DEBUG");
+    if (doDebug.trimmed().isEmpty() || doDebug == "0") {
+        return;
+    }
+
+    debugHelper(data, reply->rawHeaderPairs());
+}
+
+// Log the HTTP and XML of a request.
+// (not static, because this is used in KDSoapClientInterface)
+void maybeDebugRequest(const QByteArray &data, const QNetworkRequest &request, QNetworkReply *reply) {
+    const QByteArray doDebug = qgetenv("KDSOAP_DEBUG");
+    if (doDebug.trimmed().isEmpty() || doDebug == "0") {
+        return;
+    }
+
+    QList<QNetworkReply::RawHeaderPair> headerList;
+    if (reply) {
+        QByteArray method;
+        switch (reply->operation()) {
+            default: break; // don't try to mimic the basic HTTP command
+            case QNetworkAccessManager::GetOperation: method = "GET"; break;
+            case QNetworkAccessManager::HeadOperation: method = "HEAD"; break;
+            case QNetworkAccessManager::PutOperation: method = "PUT"; break;
+            case QNetworkAccessManager::PostOperation: method = "POST"; break;
+            case QNetworkAccessManager::DeleteOperation: method = "DELETE"; break;
+        }
+        if (!method.isEmpty()) {
+            headerList << qMakePair<QByteArray,QByteArray>("", method + " " + qPrintable(reply->url().toString()));
+        }
+    }
+    Q_FOREACH( const QByteArray &h, request.rawHeaderList() ) {
+        headerList << qMakePair<QByteArray,QByteArray>(h, request.rawHeader(h));
+    }
+    debugHelper(data, headerList);
+}
+
+
 KDSoapPendingCall::Private::~Private()
 {
     if (reply) {
@@ -60,11 +155,7 @@ KDSoapPendingCall &KDSoapPendingCall::operator=(const KDSoapPendingCall &other)
 
 bool KDSoapPendingCall::isFinished() const
 {
-#if QT_VERSION >= 0x040600
     return d->reply.data()->isFinished();
-#else
-    return false;
-#endif
 }
 
 KDSoapMessage KDSoapPendingCall::returnMessage() const
@@ -93,7 +184,6 @@ void KDSoapPendingCall::Private::parseReply()
     if (parsed) {
         return;
     }
-    const bool doDebug = qgetenv("KDSOAP_DEBUG").toInt();
     QNetworkReply *reply = this->reply.data();
 #if QT_VERSION >= 0x040600
     if (!reply->isFinished()) {
@@ -102,11 +192,10 @@ void KDSoapPendingCall::Private::parseReply()
     }
 #endif
     parsed = true;
+
     // Don't try to read from an aborted (closed) reply
     const QByteArray data = reply->isOpen() ? reply->readAll() : QByteArray();
-    if (doDebug) {
-        qDebug() << data;
-    }
+    maybeDebugResponse(data, reply);
 
     if (!data.isEmpty()) {
         KDSoapMessageReader reader;

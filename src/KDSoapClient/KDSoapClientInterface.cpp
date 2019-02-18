@@ -58,7 +58,7 @@ void KDSoapClientInterface::setSoapVersion(KDSoapClientInterface::SoapVersion ve
     d->m_version = static_cast<KDSoap::SoapVersion>(version);
 }
 
-KDSoapClientInterface::SoapVersion KDSoapClientInterface::soapVersion()
+KDSoapClientInterface::SoapVersion KDSoapClientInterface::soapVersion() const
 {
     return static_cast<KDSoapClientInterface::SoapVersion>(d->m_version);
 }
@@ -147,7 +147,7 @@ QBuffer *KDSoapClientInterfacePrivate::prepareRequestBuffer(const QString &metho
     KDSoapMessageWriter msgWriter;
     msgWriter.setMessageNamespace(m_messageNamespace);
     msgWriter.setVersion(m_version);
-    const QByteArray data = msgWriter.messageToXml(message, (m_style == KDSoapClientInterface::RPCStyle) ? method : QString(), headers, m_persistentHeaders);
+    const QByteArray data = msgWriter.messageToXml(message, (m_style == KDSoapClientInterface::RPCStyle) ? method : QString(), headers, m_persistentHeaders, m_authentication);
     QBuffer *buffer = new QBuffer;
     buffer->setData(data);
     buffer->open(QIODevice::ReadOnly);
@@ -158,9 +158,9 @@ KDSoapPendingCall KDSoapClientInterface::asyncCall(const QString &method, const 
 {
     QBuffer *buffer = d->prepareRequestBuffer(method, message, headers);
     QNetworkRequest request = d->prepareRequest(method, soapAction);
-    //qDebug() << "post()";
     QNetworkReply *reply = d->accessManager()->post(request, buffer);
     d->setupReply(reply);
+    maybeDebugRequest(buffer->data(), reply->request(), reply);
     KDSoapPendingCall call(reply, buffer);
     call.d->soapVersion = d->m_version;
     return call;
@@ -191,7 +191,9 @@ void KDSoapClientInterface::callNoReply(const QString &method, const KDSoapMessa
     QNetworkRequest request = d->prepareRequest(method, soapAction);
     QNetworkReply *reply = d->accessManager()->post(request, buffer);
     d->setupReply(reply);
+    maybeDebugRequest(buffer->data(), reply->request(), reply);
     QObject::connect(reply, SIGNAL(finished()), reply, SLOT(deleteLater()));
+    QObject::connect(reply, SIGNAL(finished()), buffer, SLOT(deleteLater()));
 }
 
 void KDSoapClientInterfacePrivate::_kd_slotAuthenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator)

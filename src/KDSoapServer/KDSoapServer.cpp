@@ -154,6 +154,7 @@ KDSoapThreadPool *KDSoapServer::threadPool() const
 
 QString KDSoapServer::endPoint() const
 {
+    QMutexLocker lock(&d->m_serverDataMutex);
     const QHostAddress address = serverAddress();
     if (address == QHostAddress::Null) {
         return QString();
@@ -356,11 +357,13 @@ int KDSoapServer::maxConnections() const
 
 void KDSoapServer::setFeatures(Features features)
 {
+    QMutexLocker lock(&d->m_serverDataMutex);
     d->m_features = features;
 }
 
 KDSoapServer::Features KDSoapServer::features() const
 {
+    QMutexLocker lock(&d->m_serverDataMutex);
     return d->m_features;
 }
 

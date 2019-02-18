@@ -31,43 +31,51 @@ using namespace KWSDL;
 
 Creator::Creator()
 {
-}
-
-void Creator::create(const KODE::Class::List &classes)
-{
-    KODE::Printer printer;
-    printer.setOutputDirectory(Settings::self()->outputDirectory());
-
     // Set generated header details.
-    printer.setCreationWarning(true);
-    printer.setGenerator(QLatin1String("KDAB's kdwsdl2cpp"));
-    printer.setSourceFile(Settings::self()->wsdlFileName());
+    _printer.setCreationWarning(true);
+    _printer.setGenerator(QLatin1String("KDAB's kdwsdl2cpp"));
 
     // Qt-like coding style
-    printer.setLabelsDefineIndent(false);
-    printer.setIndentLabels(false);
+    _printer.setLabelsDefineIndent(false);
+    _printer.setIndentLabels(false);
 
-    //qDebug() << "Create server=" << Settings::self()->generateServerCode() << "impl=" << Settings::self()->generateImplementation();
+    _file.setLicense(KODE::License::GeneratedNoRestriction);
+}
 
-    KODE::File file;
+void Creator::setOutputDirectory(const QString &outputDirectory)
+{
+    _printer.setOutputDirectory(outputDirectory);
+}
 
-    if (Settings::self()->generateImplementation()) {
-        file.setImplementationFilename(Settings::self()->outputFileName());
-        file.setHeaderFilename(Settings::self()->headerFile());
-    } else {
-        file.setHeaderFilename(Settings::self()->outputFileName());
-    }
+void Creator::setSourceFile(const QString &sourceFile)
+{
+    _printer.setSourceFile(sourceFile);
+}
 
-    file.setLicense(KODE::License::GeneratedNoRestriction);
+void Creator::setHeaderFileName(const QString &headerFileName)
+{
+    _file.setHeaderFilename(headerFileName);
+}
 
+void Creator::setImplementationFileName(const QString &implementationFileName)
+{
+    _file.setImplementationFilename(implementationFileName);
+}
+
+void Creator::setClasses(const KODE::Class::List &list)
+{
     KODE::Class::List::ConstIterator it;
-    for (it = classes.constBegin(); it != classes.constEnd(); ++it) {
-        file.insertClass(*it);
+    for (it = list.constBegin(); it != list.constEnd(); ++it) {
+        _file.insertClass(*it);
     }
+}
 
-    if (Settings::self()->generateImplementation()) {
-        printer.printImplementation(file);
-    } else {
-        printer.printHeader(file);
-    }
+void Creator::createHeader()
+{
+    _printer.printHeader(_file);
+}
+
+void Creator::createImplementation()
+{
+    _printer.printImplementation(_file);
 }

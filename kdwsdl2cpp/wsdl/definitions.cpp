@@ -189,22 +189,42 @@ bool Definitions::loadXML(ParserContext *context, const QDomElement &element)
 void Definitions::fixUpDefinitions(/*ParserContext *context, const QDomElement &element */)
 {
     if (mServices.isEmpty()) {
-        Q_ASSERT(!mBindings.isEmpty());
-        qDebug() << "No service tag found in the wsdl file, generating one service per binding";
-        Q_FOREACH (const Binding &bind, mBindings) {
-            Service service(mTargetNamespace);
-            service.setName(bind.name() + "Service");
+        if (!mBindings.isEmpty()) {
+            qDebug() << "No service tag found in the wsdl file, generating one service per binding";
+            Q_FOREACH (const Binding &bind, mBindings) {
+                Service service(mTargetNamespace);
+                service.setName(bind.name() + "Service");
 
-            Port port(mTargetNamespace);
-            port.setName(bind.name() + "Port");
-            QName bindingName(bind.portTypeName().prefix() + ":" + bind.name());
-            bindingName.setNameSpace(bind.nameSpace());
-            port.setBindingName(bindingName);
+                Port port(mTargetNamespace);
+                port.setName(bind.name() + "Port");
+                QName bindingName(bind.portTypeName().prefix() + ":" + bind.name());
+                bindingName.setNameSpace(bind.nameSpace());
+                port.setBindingName(bindingName);
 
-            Port::List portList;
-            portList.append(port);
-            service.setPorts(portList);
-            mServices.append(service);
+                Port::List portList;
+                portList.append(port);
+                service.setPorts(portList);
+                mServices.append(service);
+            }
+        } else {
+            Q_ASSERT(!mPortTypes.isEmpty());
+            qDebug() << "No service or binding tag found in the wsdl file, generating only messages";
+            Q_FOREACH (const PortType &portType, mPortTypes) {
+                Binding binding(mTargetNamespace);
+                binding.setName(portType.name() + "Binding");
+                binding.setPortTypeName(QName(portType.nameSpace(), portType.name()));
+                binding.setType(Binding::UnknownBinding);
+                mBindings.append(binding);
+
+                Port port(mTargetNamespace);
+                port.setName(portType.name());
+                port.setBindingName(QName(binding.nameSpace(), binding.name()));
+
+                Service service(mTargetNamespace);
+                service.setName(portType.name() + "Service");
+                service.setPorts(Port::List() << port);
+                mServices.append(service);
+            }
         }
     }
 }

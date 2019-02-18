@@ -21,6 +21,9 @@
 #define KWSDL_CREATOR_H
 
 #include <libkode/class.h>
+#include <libkode/file.h>
+#include <libkode/license.h>
+#include <libkode/printer.h>
 
 namespace KWSDL
 {
@@ -30,7 +33,19 @@ class Creator
 public:
     Creator();
 
-    void create(const KODE::Class::List &list);
+    void setOutputDirectory(const QString &outputDirectory);
+    void setSourceFile(const QString &sourceFile);
+
+    void setHeaderFileName(const QString &headerFileName);
+    void setImplementationFileName(const QString &implementationFileName);
+    void setClasses(const KODE::Class::List &list);
+
+    void createHeader();
+    void createImplementation();
+
+private:
+    KODE::File _file;
+    KODE::Printer _printer;
 };
 
 }

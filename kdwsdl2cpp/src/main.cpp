@@ -28,23 +28,35 @@
 #include <QDebug>
 
 static const char *WSDL2CPP_DESCRIPTION = "KDAB's WSDL to C++ compiler";
-static const char *WSDL2CPP_VERSION_STR = "2.0";
+static const char *WSDL2CPP_VERSION_STR = "2.1";
 
 static void showHelp(const char *appName)
 {
     fprintf(stderr, "%s %s\n", WSDL2CPP_DESCRIPTION, WSDL2CPP_VERSION_STR);
-    fprintf(stderr, "Usage: %s [options] [-impl <headerfile>] <wsdlfile>\n\n"
+    fprintf(stderr,
+            "Usage:\n"
+            "   Header file: %s [options] -o <headerfile> <wsdlfile>\n"
+            "   Impl.  file: %s [options] -o <cppfile> -impl <headerfile> <wsdlfile>\n"
+            "   Both files : %s [options] -both <basefile> <wsdlfile>\n"
+            "\n"
+            "Options:\n"
             "  -h, -help                 display this help and exit\n"
             "  -v, -version              display version\n"
             "  -s, -service              name of the service to generate\n"
-            "  -o <file>                 generate the header file into <file>\n"
-            "  -impl <headerfile>        generate the implementation file, and #include <headerfile>\n"
+            "  -o <file>                 output the generated file into <file>\n"
+            "  -impl <headerfile>        generate the implementation(.cpp) file, and #include <headerfile>\n"
+            "  -both <basefilename>      generate both the header(.h) and the implementation(.cpp) file\n"
             "  -server                   generate server-side base class, instead of client service\n"
             "  -exportMacro <macroname>  set the export declaration to use for generated classes\n"
             "  -namespace <ns>           put all generated classes into the given C++ namespace\n"
+            "  -namespaceMapping <mapping>\n"
+            "                            add the uri=code mapping\n"
+            "                            if <mapping> begins with '@', read from file instead\n"
+            "                            one entry per line\n"
+            "                            (affects the generated class names)\n"
             "  -optional-element-type <type>\n"
             "                            use <type> as the getter return value for optional elements.\n"
-            "                            <type> can be either raw-pointer or boost-optional\n"
+            "                            <type> can be either raw-pointer, boost-optional or std-optional\n"
             "  -keep-unused-types        keep the wsdl unused types to the cpp generation step\n"
             "  -import-path <importpath> search for files first in this path before\n"
             "                            downloading them. may be specified multiple times.\n"
@@ -55,7 +67,7 @@ static void showHelp(const char *appName)
             "                            use of the import-path option\n"
             "  -help-on-missing          When groups or basic types could not be found, display\n"
             "                            available types (helps with wrong namespaces)\n"
-            "\n", appName);
+            "\n", appName, appName, appName);
 }
 
 int main(int argc, char **argv)
@@ -64,12 +76,15 @@ int main(int argc, char **argv)
 
     const char *fileName = 0;
     QFileInfo outputFile;
+    bool both = false;
     bool impl = false;
+    bool outfileGiven = false;
     bool server = false;
     QString headerFile;
     QString serviceName;
     QString exportMacro;
     QString nameSpace;
+    Settings::NSMapping nsmapping; // XML mappings from URL to short code
     Settings::OptionalElementType optionalElementType = Settings::ENone;
     bool keepUnusedTypes = false;
     QStringList importPathList;
@@ -90,6 +105,14 @@ int main(int argc, char **argv)
                 return 1;
             }
             headerFile = QFile::decodeName(argv[arg]);
+        } else if (opt == QLatin1String("-both")) {
+            both = true;
+            ++arg;
+            if (!argv[arg]) {
+                showHelp(argv[0]);
+                return 1;
+            }
+            outputFile.setFile(QFile::decodeName(argv[arg]));
         } else if (opt == QLatin1String("-server")) {
             server = true;
         } else if (opt == QLatin1String("-v") || opt == QLatin1String("-version")) {
@@ -101,6 +124,7 @@ int main(int argc, char **argv)
                 showHelp(argv[0]);
                 return 1;
             }
+            outfileGiven = true;
             outputFile.setFile(QFile::decodeName(argv[arg]));
         } else if (opt == QLatin1String("-s") || opt == QLatin1String("-service")) {
             ++arg;
@@ -123,6 +147,39 @@ int main(int argc, char **argv)
                 return 1;
             }
             nameSpace = argv[arg];
+        } else if (opt == QLatin1String("-namespaceMapping")) {
+            ++arg;
+            if (!argv[arg]) {
+                showHelp(argv[0]);
+                return 1;
+            }
+            QString mapping = argv[arg];
+            if (mapping.startsWith('@')) {
+                QString mappingFileName = QFile::decodeName(argv[arg] + 1); // +1 to skip the '@'
+                QFile file(mappingFileName);
+                if (!file.open(QIODevice::ReadOnly)) {
+                    fprintf(stderr, "Error reading %s: %s\n", QFile::encodeName(mappingFileName).constData(), qPrintable(file.errorString()));
+                    showHelp(argv[0]);
+                    return 1;
+                }
+
+                while (!file.atEnd()) {
+                    QString mapping = file.readLine().trimmed();
+                    if (mapping.startsWith('#')) {
+                        continue;
+                    }
+
+                    QString uri = mapping.section("=", 0, -2);
+                    QString target = mapping.section("=", -1, -1);
+                    if (!uri.isEmpty() && !target.isEmpty()) {
+                        nsmapping[uri] = target;
+                    }
+                }
+            } else {
+                QString uri = mapping.section("=", 0, -2);
+                QString target = mapping.section("=", -1, -1);
+                nsmapping[uri] = target;
+            }
         } else if (opt == QLatin1String("-optional-element-type")) {
             ++arg;
             if (!argv[arg]) {
@@ -134,6 +191,8 @@ int main(int argc, char **argv)
                 optionalElementType = Settings::ERawPointer;
             } else if (optType == QLatin1String("boost-optional")) {
                 optionalElementType = Settings::EBoostOptional;
+            } else if (optType == QLatin1String("std-optional")) {
+                optionalElementType = Settings::EStdOptional;
             }
         } else if (opt == QLatin1String("-keep-unused-types")) {
             keepUnusedTypes = true;
@@ -163,19 +222,45 @@ int main(int argc, char **argv)
         return 1;
     }
 
+    // if you're saying "just make the impl-file", you can't
+    //    also say "make both the header and the impl"
+    if (both && (outfileGiven || impl)) {
+        showHelp(argv[0]);
+        return 1;
+    }
+
+
+    if (both) {
+        Settings::self()->setGenerateHeader(true);
+        Settings::self()->setGenerateImplementation(true);
+        Settings::self()->setHeaderFileName(outputFile.fileName() + ".h");
+        Settings::self()->setImplementationFileName(outputFile.fileName() + ".cpp");
+    } else if (impl) {
+        Settings::self()->setGenerateHeader(false);
+        Settings::self()->setGenerateImplementation(true);
+        Settings::self()->setHeaderFileName(headerFile);
+        Settings::self()->setImplementationFileName(outputFile.fileName());
+    } else {
+        Settings::self()->setGenerateHeader(true);
+        Settings::self()->setGenerateImplementation(false);
+        Settings::self()->setHeaderFileName(outputFile.fileName());
+        Settings::self()->setImplementationFileName("UNUSED");
+    }
+
+
     Settings::self()->setGenerateServerCode(server);
-    Settings::self()->setGenerateImplementation(impl, headerFile);
-    Settings::self()->setOutputFileName(outputFile.fileName());
     Settings::self()->setOutputDirectory(outputFile.absolutePath());
     Settings::self()->setWsdlFile(fileName);
     Settings::self()->setWantedService(serviceName);
     Settings::self()->setExportDeclaration(exportMacro);
     Settings::self()->setNameSpace(nameSpace);
+    Settings::self()->setNamespaceMapping(nsmapping);
     Settings::self()->setOptionalElementType(optionalElementType);
     Settings::self()->setKeepUnusedTypes(keepUnusedTypes);
     Settings::self()->setImportPathList(importPathList);
     Settings::self()->setUseLocalFilesOnly(useLocalFilesOnly);
     Settings::self()->setHelpOnMissing(helpOnMissing);
+
     KWSDL::Compiler compiler;
 
     // so that we have an event loop, for downloads

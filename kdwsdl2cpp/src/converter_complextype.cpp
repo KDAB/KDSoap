@@ -192,7 +192,8 @@ void Converter::convertComplexType(const XSD::ComplexType *type)
 
         typeName = mTypeMap.localType(attribute.type());
         if (typeName.isEmpty()) {
-            qDebug() << "ERROR: attribute with unknown type:" << attribute.name() << attribute.type() << "in" << typeName;
+            qWarning() << "ERROR: attribute with unknown type:" << attribute.name() << attribute.type() << "in" << typeName;
+            continue;
         }
         inputTypeName = mTypeMap.localInputType(attribute.type(), QName());
         //qDebug() << "Attribute" << attribute.name();
@@ -284,7 +285,7 @@ QString Converter::generateMemberVariable(const QString &rawName, const QString 
     }
 
     // setter method
-    const QString argName = '_' + memberName;
+    const QString argName = "arg_" + memberName;
     KODE::Function setter(QLatin1String("set") + upperName, QLatin1String("void"), access);
     setter.addArgument(inputTypeName + QLatin1Char(' ') + argName);
     KODE::Code code;
@@ -308,6 +309,8 @@ QString Converter::generateMemberVariable(const QString &rawName, const QString 
     if (optional) {
         if (Settings::self()->optionalElementType() == Settings::EBoostOptional) {
             getterTypeName = "boost::optional<" + typeName + " >";
+        } else if (Settings::self()->optionalElementType() == Settings::EStdOptional) {
+            getterTypeName = "std::optional<" + typeName + " >";
         } else if (usePointer || Settings::self()->optionalElementType() == Settings::ERawPointer) {
             getterTypeName = "const " + typeName + QLatin1Char('*');
         }
@@ -326,6 +329,16 @@ QString Converter::generateMemberVariable(const QString &rawName, const QString 
                 getterCode += QLatin1String("else");
                 getterCode.indent();
                 getterCode += "return boost::optional<" + typeName + " >();";
+                getter.setBody(getterCode);
+            } else if (Settings::self()->optionalElementType() == Settings::EStdOptional) {
+                KODE::Code getterCode;
+                getterCode += QLatin1String("if (") + variableName + QLatin1String(")");
+                getterCode.indent();
+                getterCode += QLatin1String("return *") + variableName + QLatin1Char(';');
+                getterCode.unindent();
+                getterCode += QLatin1String("else");
+                getterCode.indent();
+                getterCode += "return std::nullopt;";
                 getter.setBody(getterCode);
             } else { // Regular isn't an option here. It would crash when the value is not set! So assume ERawPointer.
                 getter.setBody(QLatin1String("return ") + variableName + QLatin1String(".data();"));
@@ -355,6 +368,16 @@ QString Converter::generateMemberVariable(const QString &rawName, const QString 
             getterCode.indent();
             getterCode += "return boost::optional<" + typeName + " >();";
             getter.setBody(getterCode);
+        } else if (Settings::self()->optionalElementType() == Settings::EStdOptional) {
+            KODE::Code getterCode;
+            getterCode += QLatin1String("if (!") + variableName + QLatin1String("_nil)");
+            getterCode.indent();
+            getterCode += QLatin1String("return ") + variableName + QLatin1Char(';');
+            getterCode.unindent();
+            getterCode += QLatin1String("else");
+            getterCode.indent();
+            getterCode += "return std::nullopt;";
+            getter.setBody(getterCode);
         } else {
             getter.setBody(QLatin1String("return ") + variableName + QLatin1Char(';'));
         }
@@ -365,6 +388,20 @@ QString Converter::generateMemberVariable(const QString &rawName, const QString 
 
     newClass.addFunction(setter);
     newClass.addFunction(getter);
+
+    if (optional) {
+        KODE::Code checkerCode;
+        if (usePointer) {
+            checkerCode += QLatin1String("return ") + variableName + QLatin1String(".isNull() == false;");
+        } else {
+            checkerCode += QLatin1String("return ") + variableName + QLatin1String("_nil == false;");
+        }
+
+        KODE::Function checker(QLatin1String("hasValueFor") + upperName, QLatin1String("bool"), access);
+        checker.setConst(true);
+        checker.setBody(checkerCode);
+        newClass.addFunction(checker);
+    }
 
     return variableName;
 }
@@ -637,6 +674,9 @@ void Converter::createComplexTypeSerializer(KODE::Class &newClass, const XSD::Co
         bool first = true;
         Q_FOREACH (const XSD::Attribute &attribute, attributes) {
             const QString attrName = attribute.name();
+            if (attrName.isEmpty()) {
+                continue;
+            }
             const QString variableName = QLatin1String("d_ptr->") + KODE::MemberVariable::memberVariableName(attrName);
 
             demarshalCode.addBlock(demarshalNameTest(attribute.type(), attrName, &first));

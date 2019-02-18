@@ -24,7 +24,6 @@
 #include "KDSoapClientInterface.h"
 #include "KDSoapMessage.h"
 #include "KDSoapValue.h"
-#include "KDSoapAuthentication.h"
 #include "KDDateTime.h"
 #include "wsdl_DWService.h"
 #include "httpserver_p.h"
