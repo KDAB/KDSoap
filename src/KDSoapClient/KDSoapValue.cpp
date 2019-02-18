@@ -44,7 +44,8 @@ public:
     KDSoapValueList m_childValues;
     bool m_qualified;
     bool m_nillable;
-    QXmlStreamNamespaceDeclarations m_namespaceDeclarations;
+    QXmlStreamNamespaceDeclarations m_environmentNamespaceDeclarations;
+    QXmlStreamNamespaceDeclarations m_localNamespaceDeclarations;
 };
 
 uint qHash(const KDSoapValue &value)
@@ -124,17 +125,27 @@ void KDSoapValue::setQualified(bool qualified)
 
 void KDSoapValue::setNamespaceDeclarations(const QXmlStreamNamespaceDeclarations &namespaceDeclarations)
 {
-    d->m_namespaceDeclarations = namespaceDeclarations;
+    d->m_localNamespaceDeclarations = namespaceDeclarations;
 }
 
 void KDSoapValue::addNamespaceDeclaration(const QXmlStreamNamespaceDeclaration &namespaceDeclaration)
 {
-    d->m_namespaceDeclarations.append(namespaceDeclaration);
+    d->m_localNamespaceDeclarations.append(namespaceDeclaration);
 }
 
 QXmlStreamNamespaceDeclarations KDSoapValue::namespaceDeclarations() const
 {
-    return d->m_namespaceDeclarations;
+    return d->m_localNamespaceDeclarations;
+}
+
+void KDSoapValue::setEnvironmentNamespaceDeclarations(const QXmlStreamNamespaceDeclarations &environmentNamespaceDeclarations)
+{
+    d->m_environmentNamespaceDeclarations = environmentNamespaceDeclarations;
+}
+
+QXmlStreamNamespaceDeclarations KDSoapValue::environmentNamespaceDeclarations() const
+{
+    return d->m_environmentNamespaceDeclarations;
 }
 
 KDSoapValueList &KDSoapValue::childValues() const
@@ -291,7 +302,7 @@ void KDSoapValue::writeElementContents(KDSoapNamespacePrefixes &namespacePrefixe
 {
     const QVariant value = this->value();
 
-    foreach (const QXmlStreamNamespaceDeclaration& decl, d->m_namespaceDeclarations) {
+    foreach (const QXmlStreamNamespaceDeclaration& decl, d->m_localNamespaceDeclarations) {
         writer.writeNamespace(decl.namespaceUri().toString(), decl.prefix().toString());
     }
 

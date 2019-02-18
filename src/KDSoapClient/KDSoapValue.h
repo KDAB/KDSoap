@@ -254,10 +254,22 @@ public:
     void addNamespaceDeclaration(const QXmlStreamNamespaceDeclaration& namespaceDeclaration);
 
     /**
-     * Returns the namespaceDeclarations as it was during parsing of the message
+     * Returns the namespaceDeclarations of this value as it was during parsing of the message
      * \since 1.8
      */
     QXmlStreamNamespaceDeclarations namespaceDeclarations() const;
+
+    /**
+     * Sets the \p environmentNamespaceDeclarations of this value.
+     * \since 1.8
+     */
+    void setEnvironmentNamespaceDeclarations(const QXmlStreamNamespaceDeclarations& environmentNamespaceDeclarations);
+
+    /**
+     * Returns the namespaceDeclarations of this value and its parents combined as it was during parsing of the message
+     * \since 1.8
+     */
+    QXmlStreamNamespaceDeclarations environmentNamespaceDeclarations() const;
 
     /**
      * Returns the list of split values.

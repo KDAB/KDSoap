@@ -93,7 +93,7 @@ KDQName KDQName::fromSoapValue(const KDSoapValue &value)
     KDQName qname;
     qname.parse(value.value().toString());
 
-    QXmlStreamNamespaceDeclarations decls = value.namespaceDeclarations();
+    QXmlStreamNamespaceDeclarations decls = value.environmentNamespaceDeclarations();
     for (int i = 0; i < decls.count(); ++i) {
         const QXmlStreamNamespaceDeclaration &decl = decls.at(i);
         if (decl.prefix() == qname.prefix()) {

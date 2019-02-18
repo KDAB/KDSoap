@@ -92,10 +92,12 @@ static int xmlTypeToMetaType(const QString &xmlType)
 
 static KDSoapValue parseElement(QXmlStreamReader &reader, const QXmlStreamNamespaceDeclarations &envNsDecls)
 {
+    const QXmlStreamNamespaceDeclarations combinedNamespaceDeclarations = envNsDecls + reader.namespaceDeclarations();
     const QString name = reader.name().toString();
     KDSoapValue val(name, QVariant());
     val.setNamespaceUri(reader.namespaceUri().toString());
     val.setNamespaceDeclarations(reader.namespaceDeclarations());
+    val.setEnvironmentNamespaceDeclarations(combinedNamespaceDeclarations);
     //qDebug() << "parsing" << name;
     QVariant::Type metaTypeId = QVariant::Invalid;
 
@@ -113,7 +115,7 @@ static KDSoapValue parseElement(QXmlStreamReader &reader, const QXmlStreamNamesp
                 const QString type = attrValue.toString();
                 const int pos = type.indexOf(QLatin1Char(':'));
                 const QString dataType = type.mid(pos + 1);
-                val.setType(namespaceForPrefix(envNsDecls, type.left(pos)).toString(), dataType);
+                val.setType(namespaceForPrefix(combinedNamespaceDeclarations, type.left(pos)).toString(), dataType);
                 metaTypeId = static_cast<QVariant::Type>(xmlTypeToMetaType(dataType));
             }
             continue;
@@ -133,7 +135,7 @@ static KDSoapValue parseElement(QXmlStreamReader &reader, const QXmlStreamNamesp
             text = reader.text().toString();
             //qDebug() << "text=" << text;
         } else if (reader.isStartElement()) {
-            const KDSoapValue subVal = parseElement(reader, envNsDecls); // recurse
+            const KDSoapValue subVal = parseElement(reader, combinedNamespaceDeclarations); // recurse
             val.childValues().append(subVal);
         }
     }
