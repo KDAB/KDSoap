@@ -228,6 +228,13 @@ void Converter::convertSimpleType(const XSD::SimpleType *type, const XSD::Simple
 
         newClass.addFunction(setter);
         newClass.addFunction(getter);
+
+        // getLength
+        KODE::Function length("length", "int");
+        length.setBody("return entries().size();");
+        length.setConst(true);
+
+        newClass.addFunction(length);
     }
     break;
     case XSD::SimpleType::TypeUnion:
