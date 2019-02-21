@@ -60,7 +60,7 @@ static void debugHelper(const QByteArray &data, const QList<QNetworkReply::RawHe
 
         while (!reader.atEnd()) {
             reader.readNext();
-            if (!reader.isWhitespace()) {
+            if (!reader.hasError() && !reader.isWhitespace()) {
                 writer.writeCurrentToken(reader);
             }
         }
