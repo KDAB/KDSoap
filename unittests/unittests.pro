@@ -38,8 +38,6 @@ SUBDIRS = \
   prefix_wsdl \
   vidyo \
   list_restriction \
-  list_restriction \
-  list_restriction \
   empty_list_wsdl \
   fault_namespace \
   empty_element_wsdl \
@@ -48,8 +46,7 @@ SUBDIRS = \
   dv_terminalauth \
   test_calc \
   ws_addressing_support \
-  default_attribute_value_wsdl \
-  list_restriction
+  default_attribute_value_wsdl
 
 # These need internet access
 SUBDIRS += webcalls webcalls_wsdl

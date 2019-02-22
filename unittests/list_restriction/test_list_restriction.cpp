@@ -1,14 +1,14 @@
-#include <wsdl/wsdl.h>
+#include <wsdl.h>
 
-#include <common/fileprovider.h>
-#include <common/messagehandler.h>
-#include <common/parsercontext.h>
+#include <fileprovider.h>
+#include <messagehandler.h>
+#include <parsercontext.h>
 
-#include <src/converter.h>
-#include <src/creator.h>
-#include <src/settings.h>
+#include <converter.h>
+#include <creator.h>
+#include <settings.h>
 
-#include <src/compiler.h>
+#include <compiler.h>
 //#include "wsdl_import_definition.h"
 #include "httpserver_p.h"
 
