@@ -5,7 +5,7 @@ set(QT_USE_QTTEST TRUE)
 
 include(${QT_USE_FILE})
 
-include_directories(../src/ ../src/KDSoapClient/ ../src/KDSoapServer/ ../testtools/)
+include_directories(../src/ ../src/KDSoapClient/ ../src/KDSoapServer/ ../testtools/ ../kdwsdl2cpp)
 include(../KDSoapMacros.cmake)
 
 remove_definitions(-DQT_NO_CAST_FROM_ASCII)
@@ -87,3 +87,4 @@ add_subdirectory(enzo)
 add_subdirectory(default_attribute_value_wsdl)
 add_subdirectory(fault_namespace)
 add_subdirectory(empty_list_wsdl)
+add_subdirectory(list_restriction)

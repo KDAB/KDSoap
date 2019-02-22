@@ -7,8 +7,8 @@ DESTDIR=.
 QT += testlib
 QT += xml
 
-INCLUDEPATH += $${TOP_SOURCE_DIR}/testtools
-DEPENDPATH += $${TOP_SOURCE_DIR}/testtools
+INCLUDEPATH += $${TOP_SOURCE_DIR}/testtools 
+DEPENDPATH += $${TOP_SOURCE_DIR}/testtools 
 
 DEBUG_SUFFIX=""
 CONFIG(debug, debug|release):!unix: DEBUG_SUFFIX = d
