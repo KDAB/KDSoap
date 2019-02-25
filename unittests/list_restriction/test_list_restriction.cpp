@@ -25,73 +25,114 @@ class ListRestrictionTest : public QObject
 
 private Q_SLOTS:
 
-    void testGenerateMethodSetValueOnClassD3ArrayType()
+    void testGenerateCodeWithListRestriction()
     {
-        QString generateStr, strToCompare;
+        QStringList generatedStrList;
+        QString generatedStr;
+        QString expectedStr = "rangeOk = rangeOk && (value.entries().length() == 3);";
 
-        FileProvider provider;
+        const QByteArray srcXml = QByteArray("<definitions name=\"HelloService\""
+                                             "   targetNamespace=\"http://www.examples.com/wsdl/HelloService.wsdl\""
+                                             "   xmlns=\"http://schemas.xmlsoap.org/wsdl/\""
+                                             "   xmlns:soap=\"http://schemas.xmlsoap.org/wsdl/soap/\""
+                                             "   xmlns:tns=\"http://www.examples.com/wsdl/HelloService.wsdl\""
+                                             "   xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\""
+                                             "   xmlns:test=\"urn:test\">"
+                                             "   <types>"
+                                             "    <xsd:schema targetNamespace=\"urn:test\""
+                                             "            xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" >"
+                                             "            <xsd:import namespace=\"http://www.w3.org/2001/XMLSchema\"/>  "
+                                             "        <xsd:simpleType name=\"dArrayType\">"
+                                             "           <xsd:list itemType=\"xsd:double\"/>"
+                                             "        </xsd:simpleType>"
+                                             "        <xsd:simpleType name=\"d3ArrayType\">"
+                                             "            <xsd:restriction base=\"test:dArrayType\">"
+                                             "                <xsd:length value=\"3\"/>"
+                                             "            </xsd:restriction>"
+                                             "        </xsd:simpleType>"
+                                             "    </xsd:schema>"
+                                             "    </types>"
+                                             "   <message name=\"SayHelloRequest\">"
+                                             "      <part name=\"firstName\" type=\"test:d3ArrayType\"/>"
+                                             "   </message>"
+                                             "   <message name=\"SayHelloResponse\">"
+                                             "      <part name=\"greeting\" type=\"xsd:string\"/>"
+                                             "   </message>"
+                                             "   <portType name=\"Hello_PortType\">"
+                                             "      <operation name=\"sayHello\">"
+                                             "         <input message=\"tns:SayHelloRequest\"/>"
+                                             "         <output message=\"tns:SayHelloResponse\"/>"
+                                             "      </operation>"
+                                             "   </portType>"
+                                             "   <binding name=\"Hello_Binding\" type=\"tns:Hello_PortType\">"
+                                             "   <soap:binding style=\"rpc\""
+                                             "      transport=\"http://schemas.xmlsoap.org/soap/http\"/>"
+                                             "   <operation name=\"sayHello\">"
+                                             "      <soap:operation soapAction=\"sayHello\"/>"
+                                             "      <input>"
+                                             "         <soap:body"
+                                             "            encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\""
+                                             "            namespace=\"urn:examples:helloservice\""
+                                             "            use=\"encoded\"/>"
+                                             "      </input>"
+                                             "      <output>"
+                                             "         <soap:body"
+                                             "            encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\""
+                                             "            namespace=\"urn:examples:helloservice\""
+                                             "            use=\"encoded\"/>"
+                                             "      </output>"
+                                             "   </operation>"
+                                             "   </binding> "
+                                             "   <service name=\"Hello_Service\">"
+                                             "      <documentation>WSDL File for HelloService</documentation>"
+                                             "      <port binding=\"tns:Hello_Binding\" name=\"Hello_Port\">"
+                                             "         <soap:address"
+                                             "            location=\"http://www.examples.com/SayHello/\"/>"
+                                             "      </port>"
+                                             "   </service>"
+                                             "</definitions>");
+        QXmlInputSource source;
+        source.setData(srcXml);
+        QXmlSimpleReader reader;
+        reader.setFeature(QLatin1String("http://xml.org/sax/features/namespace-prefixes"), true);
 
-        QString fileName = "test_list_restriction.wsdl";
-
-        QFile file(fileName);
-        //file.open();
-
-
-            //qDebug() << "parsing" << fileName;
-            QXmlInputSource source(&file);
-            QXmlSimpleReader reader;
-            reader.setFeature(QLatin1String("http://xml.org/sax/features/namespace-prefixes"), true);
-
-            QString errorMsg;
-            int errorLine, errorCol;
-            QDomDocument doc;
-           doc.setContent(&source, &reader, &errorMsg, &errorLine, &errorCol);
-
-
+        QString errorMsg;
+        int errorLine, errorCol;
+        QDomDocument doc;
+        doc.setContent(&source, &reader, &errorMsg, &errorLine, &errorCol);
 
         QDomElement element = doc.documentElement();
-
-
-
         NSManager namespaceManager;
-
-        // we don't parse xml.xsd, so hardcode the xml prefix (for xml:lang)
         namespaceManager.setPrefix(QLatin1String("xml"), NSManager::xmlNamespace());
 
         MessageHandler messageHandler;
         ParserContext context;
         context.setNamespaceManager(&namespaceManager);
         context.setMessageHandler(&messageHandler);
-        //context.setDocumentBaseUrl(QUrl(Settings::self()->wsdlBaseUrl()));
 
         KWSDL::Definitions definitions;
-        //definitions.setWantedService(Settings::self()->wantedService());
         if (definitions.loadXML(&context, element)) {
-
             definitions.fixUpDefinitions(/*&context, element*/);
-
             KODE::Code::setDefaultIndentation(4);
-
             KWSDL::WSDL wsdl;
             wsdl.setDefinitions(definitions);
             wsdl.setNamespaceManager(namespaceManager);
-
             KWSDL::Converter converter;
             converter.setWSDL(wsdl);
 
             converter.convert();
             foreach (auto elem, converter.classes()) {
-                if(elem.name() == QString("MODEL__D3ArrayType")) {
+                if(elem.name() == QString("TEST__D3ArrayType")) {
                     foreach(auto e_f,elem.functions()) {
                         if(e_f.name() == QString("setValue")) {
-                            generateStr = e_f.body();
+                            generatedStrList = e_f.body().split("\n");
+                            generatedStr = generatedStrList.at(2);
                         }
                     }
                 }
             }
         }
-        strToCompare = "bool rangeOk = true;\n\nrangeOk = rangeOk && (value.entries().length() == 3);\n\nif(!rangeOk)\n\tqDebug( \"Invalid range in MODEL__D3ArrayType::setValue()\" );\n\nmValue = value;\n";
-        QCOMPARE(generateStr, strToCompare);
+        QCOMPARE(generatedStr, expectedStr);
     }
 };
 
