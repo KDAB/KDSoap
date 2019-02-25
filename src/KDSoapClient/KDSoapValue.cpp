@@ -27,6 +27,7 @@
 #include <QDateTime>
 #include <QUrl>
 #include <QDebug>
+#include <QStringList>
 
 class KDSoapValue::Private : public QSharedData
 {
@@ -43,6 +44,8 @@ public:
     KDSoapValueList m_childValues;
     bool m_qualified;
     bool m_nillable;
+    QXmlStreamNamespaceDeclarations m_environmentNamespaceDeclarations;
+    QXmlStreamNamespaceDeclarations m_localNamespaceDeclarations;
 };
 
 uint qHash(const KDSoapValue &value)
@@ -118,6 +121,31 @@ bool KDSoapValue::isQualified() const
 void KDSoapValue::setQualified(bool qualified)
 {
     d->m_qualified = qualified;
+}
+
+void KDSoapValue::setNamespaceDeclarations(const QXmlStreamNamespaceDeclarations &namespaceDeclarations)
+{
+    d->m_localNamespaceDeclarations = namespaceDeclarations;
+}
+
+void KDSoapValue::addNamespaceDeclaration(const QXmlStreamNamespaceDeclaration &namespaceDeclaration)
+{
+    d->m_localNamespaceDeclarations.append(namespaceDeclaration);
+}
+
+QXmlStreamNamespaceDeclarations KDSoapValue::namespaceDeclarations() const
+{
+    return d->m_localNamespaceDeclarations;
+}
+
+void KDSoapValue::setEnvironmentNamespaceDeclarations(const QXmlStreamNamespaceDeclarations &environmentNamespaceDeclarations)
+{
+    d->m_environmentNamespaceDeclarations = environmentNamespaceDeclarations;
+}
+
+QXmlStreamNamespaceDeclarations KDSoapValue::environmentNamespaceDeclarations() const
+{
+    return d->m_environmentNamespaceDeclarations;
 }
 
 KDSoapValueList &KDSoapValue::childValues() const
@@ -274,6 +302,10 @@ void KDSoapValue::writeElementContents(KDSoapNamespacePrefixes &namespacePrefixe
 {
     const QVariant value = this->value();
 
+    foreach (const QXmlStreamNamespaceDeclaration& decl, d->m_localNamespaceDeclarations) {
+        writer.writeNamespace(decl.namespaceUri().toString(), decl.prefix().toString());
+    }
+
     if (isNil() && d->m_nillable) {
         writer.writeAttribute(KDSoapNamespaceManager::xmlSchemaInstance2001(), QLatin1String("nil"), QLatin1String("true"));
     }
@@ -365,6 +397,19 @@ QString KDSoapValue::typeNs() const
 QString KDSoapValue::type() const
 {
     return d->m_typeName;
+}
+
+KDSoapValueList KDSoapValue::split() const
+{
+    KDSoapValueList valueList;
+    const QStringList list = value().toString().split(QLatin1Char(' '), QString::SkipEmptyParts);
+    valueList.reserve(list.count());
+    for (int i = 0; i < list.count(); ++i) {
+        KDSoapValue value(*this);
+        value.setValue(list.at(i));
+        valueList << value;
+    }
+    return valueList;
 }
 
 KDSoapValue KDSoapValueList::child(const QString &name) const

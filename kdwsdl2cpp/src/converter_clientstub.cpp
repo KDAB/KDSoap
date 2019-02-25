@@ -611,13 +611,13 @@ KODE::Code Converter::deserializeRetVal(const KWSDL::Part &part, const QString &
     const bool isComplex = mTypeMap.isComplexType(part.type(), part.element());
     const bool isPolymorphic = mTypeMap.isPolymorphic(part.type(), part.element());
     if (isBuiltin) {
-        code += varName + QLatin1String(" = ") + mTypeMap.deserializeBuiltin(part.type(), part.element(), replyMsgName + QLatin1String(".value()"), qtRetType) + QLatin1String(";") + COMMENT;
+        code += varName + QLatin1String(" = ") + mTypeMap.deserializeBuiltin(part.type(), part.element(), replyMsgName, qtRetType) + QLatin1String(";") + COMMENT;
     } else if (isComplex) {
         const QString op = isPolymorphic ? "->" : ".";
         code += varName + op + QLatin1String("deserialize(") + replyMsgName + QLatin1String(");") + COMMENT;
     } else {
         // testcase: MyWsdlDocument::sendTelegram
-        code += varName + QLatin1String(".deserialize(") + replyMsgName + QLatin1String(".value());") + COMMENT;
+        code += varName + QLatin1String(".deserialize(") + replyMsgName + QLatin1String(");") + COMMENT;
     }
     return code;
 }
@@ -822,10 +822,6 @@ void Converter::convertClientOutputMessage(const Operation &operation,
                     partNames << value + QLatin1String(".value().value<") + partType + QLatin1String(">()");
                 } else {
                     slotCode += partType + QLatin1String(" ret;"); // local var. TODO ret1/ret2 etc. if more than one.
-                    const bool isComplex = mTypeMap.isComplexType(part.type(), part.element());
-                    if (!isComplex) {
-                        value += QLatin1String(".value()");
-                    }
                     slotCode += QLatin1String("ret.deserialize(") + value + QLatin1String(");") + COMMENT;
                     partNames << QLatin1String("ret");
                 }

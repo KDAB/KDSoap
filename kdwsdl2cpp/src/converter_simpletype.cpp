@@ -278,11 +278,12 @@ void Converter::createSimpleTypeSerializer(KODE::Class &newClass, const XSD::Sim
 {
     const QString typeName = mTypeMap.localType(type->qualifiedName());
 
-    KODE::Function serializeFunc("serialize", "QVariant");
+    KODE::Function serializeFunc(QLatin1String("serialize"), QLatin1String("KDSoapValue"));
+    serializeFunc.addArgument(QLatin1String("const QString& valueName"));
     serializeFunc.setConst(true);
 
     KODE::Function deserializeFunc("deserialize", "void");
-    deserializeFunc.addArgument("const QVariant& value");
+    deserializeFunc.addArgument("const KDSoapValue& mainValue");
 
     switch (type->subType()) {
     case XSD::SimpleType::TypeRestriction:
@@ -304,7 +305,7 @@ void Converter::createSimpleTypeSerializer(KODE::Class &newClass, const XSD::Sim
                 for (int i = 0; i < enums.count(); ++i) {
                     code += "case " + typeName + "::" + escapedEnums[ i ] + ':';
                     code.indent();
-                    code += "return QString::fromLatin1(\"" + enums[ i ] + "\");";
+                    code += "return KDSoapValue(valueName, \"" + enums[i] + "\", " + namespaceString(type->nameSpace()) + ", QString::fromLatin1(\"" + type->name() + "\"));";
                     code.unindent();
                     /* add a hack for msvc because that one cannot parse switch statements
                        longer than a certain length, so start a new switch statement */
@@ -326,7 +327,7 @@ void Converter::createSimpleTypeSerializer(KODE::Class &newClass, const XSD::Sim
                 code.unindent();
                 code += '}';
                 code.newLine();
-                code += "return QVariant();";
+                code += "return KDSoapValue();";
                 serializeFunc.setBody(code);
             }
             {
@@ -336,7 +337,7 @@ void Converter::createSimpleTypeSerializer(KODE::Class &newClass, const XSD::Sim
                     code += "{ \"" + enums[ i ] + "\", " + typeName + "::" + escapedEnums[ i ] + " }" + (i < enums.count() - 1 ? "," : "");
                 }
                 code += "};";
-                code += "const QString str = value.toString();";
+                code += "const QString str = mainValue.value().toString();";
                 code += "for ( int i = 0; i < " + QString::number(enums.count()) + "; ++i ) {";
                 code.indent();
                 code += "if (str == QLatin1String(s_values[i].name)) {";
@@ -366,11 +367,13 @@ void Converter::createSimpleTypeSerializer(KODE::Class &newClass, const XSD::Sim
             //const QName mostBasicTypeName = simpleTypeList.mostBasicType( baseType );
             //Q_UNUSED(mostBasicTypeName);
             if (mTypeMap.isBuiltinType(baseType)) {     // serialize from QString, int, etc.
-                serializeFunc.addBodyLine("return " + mTypeMap.serializeBuiltin(baseType, QName(), variableName, baseTypeName) + ";" + COMMENT);
-                deserializeFunc.addBodyLine(variableName + " = " + mTypeMap.deserializeBuiltin(baseType, QName(), "value", baseTypeName) + ";" + COMMENT);
+                serializeFunc.addBodyLine("return " + mTypeMap.serializeBuiltin(baseType, QName(), variableName, "valueName", type->nameSpace(), type->name()) + ";" + COMMENT);
+                deserializeFunc.addBodyLine(variableName + " = " + mTypeMap.deserializeBuiltin(baseType, QName(), "mainValue", baseTypeName) + ";" + COMMENT);
             } else { // inherits another simple type, need to call its serialize/deserialize method
-                serializeFunc.addBodyLine("return " + variableName + ".serialize();" + COMMENT);
-                deserializeFunc.addBodyLine(variableName + ".deserialize( value );" + COMMENT);
+                serializeFunc.addBodyLine("KDSoapValue value = mValue.serialize(valueName);");
+                serializeFunc.addBodyLine("value.setType(" + namespaceString(type->nameSpace()) + ", QString::fromLatin1(\"" + type->name() + "\"));");
+                serializeFunc.addBodyLine("return value;" + COMMENT);
+                deserializeFunc.addBodyLine(variableName + ".deserialize( mainValue );" + COMMENT);
             }
 
         }
@@ -382,6 +385,7 @@ void Converter::createSimpleTypeSerializer(KODE::Class &newClass, const XSD::Sim
         {
             KODE::Code code;
             code += "QString str;";
+            code += "QXmlStreamNamespaceDeclarations decls;";
             code += "for ( int i = 0; i < " + variableName + ".count(); ++i ) {";
             code.indent();
             code += "if (!str.isEmpty())";
@@ -390,28 +394,34 @@ void Converter::createSimpleTypeSerializer(KODE::Class &newClass, const XSD::Sim
             code.unindent();
             if (itemTypeName == "QString") { // special but common case, no conversion needed
                 code += "str += " + variableName + ".at(i);";
-            } else if (mTypeMap.isBuiltinType(baseName)) { // serialize from int, float, bool, etc.
-                code += "str += QVariant(" + variableName + ".at(i)).toString();";
             } else {
-                code += "str += " + variableName + ".at(i).serialize().toString();";
+                if (mTypeMap.isBuiltinType(baseName)) { // serialize from int, float, bool, etc.
+                    code += "KDSoapValue subValue = " + mTypeMap.serializeBuiltin(baseName, QName(), variableName + ".at(i)", "QString()", QString(), QString()) + ";";
+                } else {
+                    code += "KDSoapValue subValue =  " + variableName + ".at(i).serialize(QString());";
+                }
+                code += "str += subValue.value().toString();";
+                code += "decls += subValue.namespaceDeclarations();";
             }
             code.unindent();
             code += "}";
-            code += "return str;";
+            code += "KDSoapValue value(valueName, str, " + namespaceString(type->nameSpace()) + ", QString::fromLatin1(\"" + type->name() + "\"));";
+            code += "value.setNamespaceDeclarations(decls);";
+            code += "return value;";
             serializeFunc.setBody(code);
         }
         {
             newClass.addHeaderInclude("QtCore/QStringList");
             KODE::Code code;
-            code += "if (value.toString().trimmed().isEmpty()) return;";
-            code += "const QStringList list = value.toString().split(QLatin1Char(' '));";
+            code += "if (mainValue.value().toString().trimmed().isEmpty()) return;";
+            code += "const KDSoapValueList list = mainValue.split();";
             code += "for (int i = 0; i < list.count(); ++i) {";
             code.indent();
             QString val = QString::fromLatin1("list.at(i)");
             if (itemTypeName == "QString")
-                /*nothing to do*/;
+                val = val + ".value().toString()";
             else if (mTypeMap.isBuiltinType(baseName)) {     // deserialize to int, float, bool, etc.
-                val = "QVariant(" + val + ").value<" + itemTypeName + ">()";
+                val = mTypeMap.deserializeBuiltin(baseName, QName(), val, itemTypeName);
             } else {
                 code += itemTypeName + " tmp;";
                 code += "tmp.deserialize(" + val + ");";
@@ -428,12 +438,12 @@ void Converter::createSimpleTypeSerializer(KODE::Class &newClass, const XSD::Sim
         const QString variableName = KODE::MemberVariable::memberVariableName("value");
         {
             KODE::Code code;
-            code += "return " + variableName + ";" + COMMENT;
+            code += "return KDSoapValue(valueName, " + variableName + ", " + namespaceString(type->nameSpace()) + ", QString::fromLatin1(\"" + type->name() + "\"));";
             serializeFunc.setBody(code);
         }
         {
             KODE::Code code;
-            code += variableName + " = value;" + COMMENT;
+            code += variableName + " = mainValue.value();" + COMMENT;
             deserializeFunc.setBody(code);
         }
         break;

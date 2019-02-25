@@ -30,6 +30,7 @@
 #include <QtCore/QSet>
 #include <QtCore/QVector>
 #include <QtCore/QSharedDataPointer>
+#include <QtCore/QXmlStreamNamespaceDeclarations>
 #include "KDSoapGlobal.h"
 
 #ifndef QT_NO_STL
@@ -239,6 +240,43 @@ public:
      * Example: "string".
      */
     QString type() const;
+
+    /**
+     * Sets the \p namespaceDeclarations of this value.
+     * \since 1.8
+     */
+    void setNamespaceDeclarations(const QXmlStreamNamespaceDeclarations& namespaceDeclarations);
+
+    /**
+     * Adds a \p namespaceDeclaration to the existing list of namespaceDeclarations.
+     * \since 1.8
+     */
+    void addNamespaceDeclaration(const QXmlStreamNamespaceDeclaration& namespaceDeclaration);
+
+    /**
+     * Returns the namespaceDeclarations of this value as it was during parsing of the message
+     * \since 1.8
+     */
+    QXmlStreamNamespaceDeclarations namespaceDeclarations() const;
+
+    /**
+     * Sets the \p environmentNamespaceDeclarations of this value.
+     * \since 1.8
+     */
+    void setEnvironmentNamespaceDeclarations(const QXmlStreamNamespaceDeclarations& environmentNamespaceDeclarations);
+
+    /**
+     * Returns the namespaceDeclarations of this value and its parents combined as it was during parsing of the message
+     * \since 1.8
+     */
+    QXmlStreamNamespaceDeclarations environmentNamespaceDeclarations() const;
+
+    /**
+     * Returns the list of split values.
+     * The data is split on spaces and the properties are copied.
+     * \since 1.8
+     */
+    KDSoapValueList split() const;
 
     /**
      * Defines the way the message should be serialized.

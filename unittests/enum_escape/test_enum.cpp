@@ -51,8 +51,8 @@ void TestEnum::test()
     ar.setType(TNS__AudienceRating::Http___f_q_d_n_ext_enum2);
     ar.setType(TNS__AudienceRating::_6Bis);
 
-    QVariant var = ar.serialize();
-    ar.deserialize(var);
+    KDSoapValue soapValue = ar.serialize(QString());
+    ar.deserialize(soapValue);
 
     QCOMPARE(ar.type(), TNS__AudienceRating::_6Bis);
 }

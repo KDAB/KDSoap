@@ -35,7 +35,9 @@ private Q_SLOTS:
   void testMustReturnEmptyListWhenXmlValueIsEmpty()
   {
     NS2__Orientation list;
-    list.deserialize(QVariant::fromValue(QString("")));
+    KDSoapValue soapValue;
+    soapValue.setValue(QVariant::fromValue(QString("")));
+    list.deserialize(soapValue);
     QVERIFY(list.entries().empty());
   }
 
@@ -43,14 +45,18 @@ private Q_SLOTS:
   {
     NS2__Orientation list;
     QVariant null;
-    list.deserialize(null);
+    KDSoapValue soapValue;
+    soapValue.setValue(null);
+    list.deserialize(soapValue);
     QVERIFY(list.entries().empty());
   }
 
   void testMustReturnEmptyListWhenXmlContainsOnlySpaces()
   {
     NS2__Orientation list;
-    list.deserialize(QVariant::fromValue(QString("    \t   \t")));
+    KDSoapValue soapValue;
+    soapValue.setValue(QVariant::fromValue(QString("    \t   \t")));
+    list.deserialize(soapValue);
     QVERIFY(list.entries().empty());
   }
 };
