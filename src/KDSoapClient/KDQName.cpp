@@ -23,7 +23,7 @@
 #include "KDQName.h"
 #include <QDebug>
 
-#include <KDSoapValue>
+#include <KDSoapValue.h>
 
 KDQName::KDQName()
 {

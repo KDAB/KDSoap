@@ -36,7 +36,7 @@ WSDL parser / code generator changes, applying to both client and server side:
 * Source incompatible change: all serialize() functions now return a KDSoapValue instead of a 
     QVariant. If you use a QVariant serialize() function, you need to port your code to use 
     QVariant KDSoapValue::value() after serialize()
-* Source incompatible change: xs:QName is now respresented by KDQName instead of QString, which 
+* Source incompatible change: xs:QName is now represented by KDQName instead of QString, which 
     allows the namespace to be extracted. The old behaviour is available via KDQName::qname().
 * Fix double-handling of empty elements
 * Fix fault elements being generated in the wrong namespace, must be SOAP-ENV:Fault (github issue #81).
