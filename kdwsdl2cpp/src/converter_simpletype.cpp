@@ -229,13 +229,6 @@ void Converter::convertSimpleType(const XSD::SimpleType *type, const XSD::Simple
 
         newClass.addFunction(setter);
         newClass.addFunction(getter);
-
-        // getLength
-        //KODE::Function length("length", "int");
-        //length.setBody("return entries().size();");
-        //length.setConst(true);
-
-        //newClass.addFunction(length);
     }
     break;
     case XSD::SimpleType::TypeUnion:
@@ -466,14 +459,14 @@ static QString escapeRegExp(const QString &str)
 
 static KODE::Code createRangeCheckCode(const XSD::SimpleType *type, const QString &baseTypeName, const QString &variableName, KODE::Class &parentClass, const XSD::SimpleType &baseSimpleType)
 {
-    QString extendVariableName = variableName;
+    QString extendedVariableName = variableName;
 
     if (!baseSimpleType.isNull()) {
         if (baseSimpleType.subType() == XSD::SimpleType::SubType::TypeList) {
-            extendVariableName += ".entries()";
+            extendedVariableName += ".entries()";
         }
         else {
-            extendVariableName += ".value()";
+            extendedVariableName += ".value()";
         }
     }
 
@@ -505,13 +498,13 @@ static KODE::Code createRangeCheckCode(const XSD::SimpleType *type, const QStrin
     }
 
     if (type->facetType() & XSD::SimpleType::LENGTH) {
-        code += "rangeOk = rangeOk && (" + extendVariableName + ".length() == " + QString::number(type->facetLength()) + ");";
+        code += "rangeOk = rangeOk && (" + extendedVariableName + ".length() == " + QString::number(type->facetLength()) + ");";
     }
     if (type->facetType() & XSD::SimpleType::MINLEN) {
-        code += "rangeOk = rangeOk && (" + extendVariableName + ".length() >= " + QString::number(type->facetMinimumLength()) + ");";
+        code += "rangeOk = rangeOk && (" + extendedVariableName + ".length() >= " + QString::number(type->facetMinimumLength()) + ");";
     }
     if (type->facetType() & XSD::SimpleType::MAXLEN) {
-        code += "rangeOk = rangeOk && (" + extendVariableName + ".length() <= " + QString::number(type->facetMaximumLength()) + ");";
+        code += "rangeOk = rangeOk && (" + extendedVariableName + ".length() <= " + QString::number(type->facetMaximumLength()) + ");";
     }
     if (type->facetType() & XSD::SimpleType::PATTERN) {
         if (baseTypeName == "QString") {
