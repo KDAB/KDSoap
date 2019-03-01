@@ -5,7 +5,7 @@ include(${QT_USE_FILE})
 remove_definitions(-DQT_NO_CAST_TO_ASCII -DQT_NO_CAST_FROM_ASCII -DQT_NO_CAST_FROM_BYTEARRAY)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-set(SOURCES
+set(SOURCES_LIB
   common/fileprovider.cpp
   common/messagehandler.cpp
   common/nsmanager.cpp
@@ -59,16 +59,19 @@ set(SOURCES
   src/converter_simpletype.cpp
   src/creator.cpp
   src/elementargumentserializer.cpp
-  src/main.cpp
   src/namemapper.cpp
   src/settings.cpp
   src/typemap.cpp
 )
 
-add_executable(kdwsdl2cpp ${SOURCES})
-target_link_libraries(kdwsdl2cpp ${QT_LIBRARIES})
+set(SOURCES_EXE src/main.cpp)
+
+add_library(kdwsdl2cpp_lib STATIC ${SOURCES_LIB})
+add_executable(kdwsdl2cpp ${SOURCES_EXE})
+
+target_link_libraries(kdwsdl2cpp kdwsdl2cpp_lib ${QT_LIBRARIES})
 
 install(TARGETS kdwsdl2cpp EXPORT "KDSoapTargets"
-  RUNTIME DESTINATION ${INSTALL_RUNTIME_DIR}
-  BUNDLE DESTINATION .
+  DESTINATION ${INSTALL_RUNTIME_DIR}/${PROJECT_NAME_FOR_INSTALL}
+  COMPONENT devel
 )
