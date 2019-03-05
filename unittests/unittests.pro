@@ -37,16 +37,17 @@ SUBDIRS = \
   encapsecurity \
   prefix_wsdl \
   vidyo \
-  list_restriction \
   empty_list_wsdl \
-  fault_namespace \
+  onvif_org_event \
   empty_element_wsdl \
+  fault_namespace \
   enzo \
   date_example \
   dv_terminalauth \
   test_calc \
   ws_addressing_support \
-  default_attribute_value_wsdl
+  ws_usernametoken_support \
+  list_restriction
 
 # These need internet access
 SUBDIRS += webcalls webcalls_wsdl
