@@ -260,9 +260,10 @@ QString Converter::generateMemberVariable(const QString &rawName, const QString 
     // member variable
     const QString storageType = usePointer ? pointerStorageType(typeName) : typeName;
     KODE::MemberVariable variable(rawName, storageType);
-    addVariableInitializer(variable);
     if (usePointer && !optional) {
         variable.setInitializer("new " + typeName);
+    } else {
+        addVariableInitializer(variable);
     }
     newClass.addMemberVariable(variable);
 

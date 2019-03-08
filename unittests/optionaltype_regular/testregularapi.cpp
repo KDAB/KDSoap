@@ -64,11 +64,11 @@ void TestRegularApi::testPolymorphic()
 void TestRegularApi::testSerialize()
 {
     // TNS__TestOperationResponse1 has "out3" which is polymorphic AND non-optional
-    //    If "out3" is not initialied, then trying to serialize causes a crash.
+    //    If "out3" is not initialized, then trying to serialize causes a crash.
     //    Verify it doesn't crash. 
     TNS__TestOperationResponse1 resp;
     resp.serialize("Test");
-    QVERIFY(true);
+    QCOMPARE(resp.out3().value(), QString());
 
     TNS__DerivedClass derivedValue;
     derivedValue.setValue("derived");

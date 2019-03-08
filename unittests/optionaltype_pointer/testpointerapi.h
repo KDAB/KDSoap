@@ -37,6 +37,8 @@ public:
 private slots:
     void test();
     void testOptionalArray();
+    void testPolymorphic();
+    void testSerialize();
 
 private:
 };
