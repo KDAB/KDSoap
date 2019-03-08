@@ -51,3 +51,4 @@ WSDL parser / code generator changes, applying to both client and server side:
 * Added support for generating messages for WSDL files without services or bindings
 * KDSoapValue now stores the namespace declarations during parsing of a message and writes 
     namespace declarations during sending of a message
+* Avoid serialize crash with required polymorphic types, if the required variable wasn't actually provided
