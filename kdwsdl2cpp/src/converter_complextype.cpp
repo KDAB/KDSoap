@@ -253,20 +253,23 @@ void Converter::convertComplexType(const XSD::ComplexType *type)
 // Called for each element and for each attribute of a complex type, as well as for the base class "value".
 QString Converter::generateMemberVariable(const QString &rawName, const QString &typeName, const QString &inputTypeName, KODE::Class &newClass, XSD::Attribute::AttributeUse use, bool usePointer, bool polymorphic)
 {
+    const bool optional = (use == XSD::Attribute::Optional);
+    const bool prohibited = (use == XSD::Attribute::Prohibited);
+    const KODE::Function::AccessSpecifier access = (prohibited) ? KODE::Function::Private : KODE::Function::Public;
+
     // member variable
     const QString storageType = usePointer ? pointerStorageType(typeName) : typeName;
     KODE::MemberVariable variable(rawName, storageType);
     addVariableInitializer(variable);
+    if (usePointer && !optional) {
+        variable.setInitializer("new " + typeName);
+    }
     newClass.addMemberVariable(variable);
 
     const QString variableName = QLatin1String("d_ptr->") + variable.name();
     const QString upperName = upperlize(rawName);
     const QString lowerName = lowerlize(rawName);
     const QString memberName = mNameMapper.escape(lowerName);
-
-    bool optional = (use == XSD::Attribute::Optional);
-    bool prohibited = (use == XSD::Attribute::Prohibited);
-    const KODE::Function::AccessSpecifier access = (prohibited) ? KODE::Function::Private : KODE::Function::Public;
 
     if (usePointer) {
         newClass.addInclude("QSharedPointer");

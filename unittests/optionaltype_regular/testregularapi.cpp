@@ -61,4 +61,20 @@ void TestRegularApi::testPolymorphic()
     QCOMPARE(dynamic_cast<const TNS__DerivedClass*>(resp.out2())->value2(), QString("derived"));
 }
 
+void TestRegularApi::testSerialize()
+{
+    // TNS__TestOperationResponse1 has "out3" which is polymorphic AND non-optional
+    //    If "out3" is not initialied, then trying to serialize causes a crash.
+    //    Verify it doesn't crash. 
+    TNS__TestOperationResponse1 resp;
+    resp.serialize("Test");
+    QVERIFY(true);
+
+    TNS__DerivedClass derivedValue;
+    derivedValue.setValue("derived");
+    derivedValue.setValue2("derived");
+    resp.setOut3(derivedValue);
+    QCOMPARE(resp.out3().value(), QString("derived"));
+}
+
 QTEST_MAIN(TestRegularApi)
