@@ -426,11 +426,11 @@ KODE::Code Converter::demarshalVarHelper(const QName &type, const QName &element
     if (mTypeMap.isTypeAny(type)) {
         code += variableName + QLatin1String(" = ") + soapValueVarName + QLatin1String(";") + COMMENT;
     } else if (mTypeMap.isBuiltinType(type, elementType)) {
-        code += variableName + QLatin1String(" = ") + mTypeMap.deserializeBuiltin(type, elementType, soapValueVarName + QLatin1String(".value()"), qtTypeName) + QLatin1String(";") + COMMENT;
+        code += variableName + QLatin1String(" = ") + mTypeMap.deserializeBuiltin(type, elementType, soapValueVarName, qtTypeName) + QLatin1String(";") + COMMENT;
     } else if (mTypeMap.isComplexType(type, elementType)) {
         code += variableName + QLatin1String(".deserialize(") + soapValueVarName + QLatin1String(");") + COMMENT;
     } else {
-        code += variableName + QLatin1String(".deserialize(") + soapValueVarName + QLatin1String(".value());") + COMMENT;
+        code += variableName + QLatin1String(".deserialize(") + soapValueVarName + QLatin1String(");") + COMMENT;
     }
     if (optional) {
         code += variableName + QLatin1String("_nil = false;") + COMMENT;
@@ -516,22 +516,16 @@ void Converter::createComplexTypeSerializer(KODE::Class &newClass, const XSD::Co
         const QString variableName = QLatin1String("d_ptr->") + variable.name();
 
         if (mTypeMap.isComplexType(baseName)) {
-            //marshalCode += QLatin1String("KDSoapValue mainValue = ") + variableName + QLatin1String(".serialize(valueName);") + COMMENT;
-            //marshalCode += QLatin1String("mainValue.setType(") + typeArgs + QLatin1String(");");
             marshalCode += QLatin1String("KDSoapValue mainValue = ") + typeName + QLatin1String("::serialize(valueName);") + COMMENT;
             marshalCode += QLatin1String("mainValue.setType(") + typeArgs + QLatin1String(");");
-            //demarshalCode += demarshalVar( baseName, QName(), variableName, typeName, QLatin1String("mainValue") );
-
             demarshalCode += typeName + "::deserialize(mainValue);";
-            //demarshalCode += demarshalVar( baseName, QName(), variableName, typeName, QLatin1String("mainValue") );
         } else {
-            QString value;
             if (mTypeMap.isBuiltinType(baseName)) {
-                value = mTypeMap.serializeBuiltin(baseName, QName(), variableName, typeName);
+                marshalCode += QLatin1String("KDSoapValue mainValue = ") + mTypeMap.serializeBuiltin(baseName, QName(), variableName, "valueName", type->nameSpace(), type->name()) + QLatin1String(";") + COMMENT;
             } else {
-                value += variableName + QLatin1String(".serialize()");
+                marshalCode += QLatin1String("KDSoapValue mainValue = ") + variableName + QLatin1String(".serialize(valueName);") + COMMENT;
+                marshalCode += QLatin1String("mainValue.setType(") + typeArgs + QLatin1String(");");
             }
-            marshalCode += QLatin1String("KDSoapValue mainValue(valueName, ") + value + QLatin1String(", ") + typeArgs + QLatin1String(");") + COMMENT;
             demarshalCode += demarshalVar(baseName, QName(), variableName, typeName, QLatin1String("mainValue"), false, false);
         }
 

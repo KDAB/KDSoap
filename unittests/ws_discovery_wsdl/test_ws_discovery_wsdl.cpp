@@ -1,5 +1,6 @@
 /****************************************************************************
 ** Copyright (C) 2010-2018 Klaralvdalens Datakonsult AB, a KDAB Group company, info@kdab.com.
+** Copyright (C) 2019 Casper Meijn  <casper@meijn.net>
 ** All rights reserved.
 **
 ** This file is part of the KD Soap library.
@@ -39,10 +40,10 @@ private Q_SLOTS:
     void testGeneratingProbe()
     {
         // Types
-        QStringList typeList;
-        typeList << "i:PrintBasic"; //namespace: http://printer.example.org/2003/imaging
+        KDQName type(QString("i:PrintBasic"));
+        type.setNameSpace(QString("http://printer.example.org/2003/imaging"));
         TNS__QNameListType types;
-        types.setEntries(typeList);
+        types.setEntries(QList<KDQName>() << type);
 
         // Scopes
         QStringList uriStringList;
@@ -67,7 +68,7 @@ private Q_SLOTS:
                            " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
                            " xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\""
                            " xmlns:n1=\"http://schemas.xmlsoap.org/ws/2005/04/discovery\">"
-                           "<n1:Types>i:PrintBasic</n1:Types>"
+                           "<n1:Types xmlns:i=\"http://printer.example.org/2003/imaging\">i:PrintBasic</n1:Types>"
                            "<n1:Scopes MatchBy=\"http://schemas.xmlsoap.org/ws/2005/04/discovery/ldap\">"
                            "ldap:///ou=engineering,o=examplecom,c=us"
                            "</n1:Scopes>"
@@ -121,10 +122,14 @@ private Q_SLOTS:
         QCOMPARE(probeMatchList.size(), 1);
         const TNS__ProbeMatchType& probeMatch = probeMatchList.value(0);
         QCOMPARE(QString(probeMatch.endpointReference().address()), QString("uuid:98190dc2-0890-4ef8-ac9a-5940995e6119"));
-        const QStringList& typeList = probeMatch.types().entries();
+        const QList<KDQName>& typeList = probeMatch.types().entries();
         QCOMPARE(typeList.size(), 2);
-        QCOMPARE(typeList.value(0), QString("i:PrintBasic"));
-        QCOMPARE(typeList.value(1), QString("i:PrintAdvanced"));
+        QCOMPARE(typeList.value(0).localName(), QString("PrintBasic"));
+        QCOMPARE(typeList.value(0).prefix(), QString("i"));
+        QCOMPARE(typeList.value(0).nameSpace(), QString("http://printer.example.org/2003/imaging"));
+        QCOMPARE(typeList.value(1).localName(), QString("PrintAdvanced"));
+        QCOMPARE(typeList.value(1).prefix(), QString("i"));
+        QCOMPARE(typeList.value(1).nameSpace(), QString("http://printer.example.org/2003/imaging"));
         const QStringList& scopeList = probeMatch.scopes().value().entries();
         QCOMPARE(scopeList.size(), 3);
         QCOMPARE(scopeList.value(0), QString("ldap:///ou=engineering,o=examplecom,c=us"));

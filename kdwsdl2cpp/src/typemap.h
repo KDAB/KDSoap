@@ -108,7 +108,7 @@ public:
      * Return C++ code for converting the variant in "var" into the right type.
      */
     QString deserializeBuiltin(const QName &typeName, const QName &elementName, const QString &var, const QString &qtTypeName) const;
-    QString serializeBuiltin(const QName &typeName, const QName &elementName, const QString &var, const QString &qtTypeName) const;
+    QString serializeBuiltin(const QName &baseTypeName, const QName &elementName, const QString &var, const QString &name, const QString &typeNameSpace, const QString &typeName) const;
 
     QString localTypeForAttribute(const QName &typeName) const;
     QStringList headersForAttribute(const QName &typeName) const;

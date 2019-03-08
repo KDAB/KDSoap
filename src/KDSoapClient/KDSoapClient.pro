@@ -54,7 +54,10 @@ SOURCES = KDSoapMessage.cpp \
     KDSoapReplySslHandler.cpp \
     KDSoapFaultException.cpp \
     KDSoapMessageAddressingProperties.cpp \
-    KDSoapEndpointReference.cpp
+    KDSoapEndpointReference.cpp \
+    KDQName.cpp \
+
+
 DEFINES += KDSOAP_BUILD_KDSOAP_LIB
 
 # installation targets:
