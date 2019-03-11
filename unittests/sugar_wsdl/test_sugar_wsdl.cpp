@@ -26,9 +26,10 @@
 #include "KDSoapValue.h"
 #include "wsdl_sugarcrm.h"
 #include "httpserver_p.h"
-#include <QtTest/QtTest>
+#include <QTest>
 #include <QEventLoop>
 #include <QDebug>
+#include <QSignalSpy>
 
 Q_DECLARE_METATYPE(TNS__Set_entry_result)
 

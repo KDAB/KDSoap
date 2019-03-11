@@ -27,7 +27,7 @@
 #include "KDDateTime.h"
 #include "wsdl_DWService_12.h"
 #include "httpserver_p.h"
-#include <QtTest/QtTest>
+#include <QTest>
 #include <QDebug>
 
 using namespace KDSoapUnitTestHelpers;

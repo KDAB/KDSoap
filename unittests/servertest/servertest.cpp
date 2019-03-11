@@ -34,14 +34,17 @@
 #include "KDSoapServerRawXMLInterface.h"
 #include "KDSoapServerCustomVerbRequestInterface.h"
 #include "httpserver_p.h" // KDSoapUnitTestHelpers
-#include <QtTest/QtTest>
+#include <QTest>
 #include <QDebug>
+#include <QFile>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QAuthenticator>
 #ifndef QT_NO_OPENSSL
 #include <QSslConfiguration>
 #endif
+#include <QSignalSpy>
+#include <QTimer>
 using namespace KDSoapUnitTestHelpers;
 
 Q_DECLARE_METATYPE(QFile::Permissions)

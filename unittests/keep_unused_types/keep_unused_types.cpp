@@ -24,7 +24,7 @@
 #include "KDSoapClientInterface.h"
 #include "wsdl_keep_unused_types.h"
 
-#include <QtTest/QtTest>
+#include <QTest>
 #include <QDebug>
 
 class KeepUnusedTypesArgumentKDWSDL2CPP: public QObject

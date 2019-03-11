@@ -24,7 +24,7 @@
 #include "wsdl_transformMedia-V1_0_7.h"
 
 #include "httpserver_p.h"
-#include <QtTest/QtTest>
+#include <QTest>
 #include <QEventLoop>
 #include <QDebug>
 #include <KDSoapClientInterface.h>

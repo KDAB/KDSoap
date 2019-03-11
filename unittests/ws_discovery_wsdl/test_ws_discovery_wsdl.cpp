@@ -25,7 +25,7 @@
 #include "wsdl_ws_discovery200504.h"
 #include "httpserver_p.h"
 #include "KDSoapMessageReader_p.h"
-#include <QtTest/QtTest>
+#include <QTest>
 
 // Apperently the original file is not available anymore: http://schemas.xmlsoap.org/ws/2005/04/discovery/ws-discovery.wsdl
 // However it is available via: https://web.archive.org/web/20070225062601/http://schemas.xmlsoap.org/ws/2005/04/discovery/ws-discovery.wsdl

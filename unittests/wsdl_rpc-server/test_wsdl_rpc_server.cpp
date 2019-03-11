@@ -25,7 +25,7 @@
 #include "wsdl_sayhello.h"
 
 #include "httpserver_p.h"
-#include <QtTest/QtTest>
+#include <QTest>
 #include <QEventLoop>
 #include <QDebug>
 #include <KDSoapClientInterface.h>
@@ -37,6 +37,7 @@
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
+#include <QSignalSpy>
 
 using namespace KDSoapUnitTestHelpers;
 

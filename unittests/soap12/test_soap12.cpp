@@ -21,7 +21,7 @@
 **********************************************************************/
 
 #include "httpserver_p.h"
-#include <QtTest/QtTest>
+#include <QTest>
 #include <QDebug>
 #include "wsdl_soap12.h"
 

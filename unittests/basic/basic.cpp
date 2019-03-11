@@ -23,7 +23,7 @@
 
 #include "KDSoapValue.h"
 #include "KDDateTime.h"
-#include <QtTest/QtTest>
+#include <QTest>
 
 class Basic : public QObject
 {

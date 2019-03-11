@@ -23,7 +23,8 @@
 
 #include "KDSoapMessage.h"
 #include "KDSoapMessageReader_p.h"
-#include <QtTest/QtTest>
+#include <QTest>
+#include <QDebug>
 
 class TestMessageReader : public QObject
 {

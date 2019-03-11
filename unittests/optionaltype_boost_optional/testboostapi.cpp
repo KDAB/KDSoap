@@ -23,7 +23,7 @@
 **********************************************************************/
 
 #include "testboostapi.h"
-#include <QtTest/QtTest>
+#include <QTest>
 #include <QDebug>
 
 TestBoostApi::TestBoostApi()

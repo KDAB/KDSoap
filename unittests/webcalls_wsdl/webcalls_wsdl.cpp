@@ -26,7 +26,7 @@
 #include "wsdl_holidays.h"
 #include "wsdl_BFGlobalService.h"
 #include "wsdl_OrteLookup.h"
-#include <QtTest/QtTest>
+#include <QTest>
 #include <QEventLoop>
 #include <QDebug>
 

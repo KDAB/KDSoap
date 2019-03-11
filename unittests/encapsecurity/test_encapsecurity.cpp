@@ -27,7 +27,7 @@
 #include "KDSoapPendingCallWatcher.h"
 #include "wsdl_authstateless.h"
 #include "httpserver_p.h"
-#include <QtTest/QtTest>
+#include <QTest>
 #include <QEventLoop>
 #include <QDebug>
 

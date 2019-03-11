@@ -22,7 +22,7 @@
 
 #include "testcall.h"
 #include "httpserver_p.h"
-#include <QtTest/QtTest>
+#include <QTest>
 #include <QDebug>
 
 using namespace KDSoapUnitTestHelpers;

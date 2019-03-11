@@ -21,7 +21,7 @@
 **********************************************************************/
 
 #include "httpserver_p.h"
-#include <QtTest/QtTest>
+#include <QTest>
 #include "wsdl_test_enum.h"
 
 class TestEnum : public QObject

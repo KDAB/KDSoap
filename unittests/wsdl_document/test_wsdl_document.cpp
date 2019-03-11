@@ -24,7 +24,7 @@
 #include "wsdl_mywsdl_document.h"
 #include "wsdl_thomas-bayer.h"
 #include "httpserver_p.h"
-#include <QtTest/QtTest>
+#include <QTest>
 #include <QEventLoop>
 #include <QDebug>
 #include <KDSoapClientInterface.h>
@@ -34,6 +34,7 @@
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
+
 #ifndef QT_NO_OPENSSL
 #include <KDSoapSslHandler.h>
 #include <QSslSocket>
@@ -42,6 +43,9 @@
 class KDSoapSslHandler { };
 Q_DECLARE_METATYPE(KDSoapSslHandler *)
 #endif
+
+#include <QSignalSpy>
+#include <QTimer>
 
 using namespace KDSoapUnitTestHelpers;
 

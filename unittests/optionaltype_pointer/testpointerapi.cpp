@@ -23,7 +23,7 @@
 **********************************************************************/
 
 #include "testpointerapi.h"
-#include <QtTest/QtTest>
+#include <QTest>
 #include <QDebug>
 #include <QList>
 

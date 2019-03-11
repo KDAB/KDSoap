@@ -24,7 +24,7 @@
 
 #include "httpserver_p.h"
 
-#include <QtTest/QtTest>
+#include <QTest>
 #include <QObject>
 
 #include "KDSoapNamespaceManager.h"

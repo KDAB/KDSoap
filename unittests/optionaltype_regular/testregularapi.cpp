@@ -23,7 +23,7 @@
 **********************************************************************/
 
 #include "testregularapi.h"
-#include <QtTest/QtTest>
+#include <QTest>
 #include <QDebug>
 
 TestRegularApi::TestRegularApi()

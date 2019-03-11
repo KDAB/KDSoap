@@ -23,7 +23,7 @@
 
 #include "wsdl_uitapi.h"
 #include "httpserver_p.h"
-#include <QtTest/QtTest>
+#include <QTest>
 #include <QEventLoop>
 #include <QDebug>
 
