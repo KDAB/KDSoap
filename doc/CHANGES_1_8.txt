@@ -20,6 +20,7 @@ Client-side:
 * Rename the missing KDSoapJob::returnHeaders() to KDSoapJob::replyHeaders(), and provide an implementation
 * Make KDSoapClientInterface::soapVersion() const
 * Add lastFaultCode() for error handling after sync calls. Same as lastErrorCode() but it returns a QString rather than an int.
+* Add conversion operator from KDDateTime to QVariant to void implicit conversion to base QDateTime (github issue #123).
 
 Server-side:
 ============

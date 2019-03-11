@@ -57,6 +57,11 @@ KDDateTime::~KDDateTime()
 {
 }
 
+KDDateTime::operator QVariant() const
+{
+    return QVariant::fromValue(*this);
+}
+
 QString KDDateTime::timeZone() const
 {
     return d->mTimeZone;
