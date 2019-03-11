@@ -67,8 +67,9 @@ set(SOURCES_LIB
 set(SOURCES_EXE src/main.cpp)
 
 add_library(kdwsdl2cpp_lib STATIC ${SOURCES_LIB})
-add_executable(kdwsdl2cpp ${SOURCES_EXE})
+target_link_libraries(kdwsdl2cpp_lib ${QT_LIBRARIES})
 
+add_executable(kdwsdl2cpp ${SOURCES_EXE})
 target_link_libraries(kdwsdl2cpp kdwsdl2cpp_lib ${QT_LIBRARIES})
 
 install(TARGETS kdwsdl2cpp EXPORT "KDSoapTargets"
