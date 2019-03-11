@@ -345,6 +345,7 @@ private Q_SLOTS:
         QByteArray ret = service.addEmployee(addEmployeeParameters());
         QVERIFY(ret.isEmpty());
         QCOMPARE(service.lastErrorCode(), static_cast<int>(QNetworkReply::SslHandshakeFailedError));
+        QCOMPARE(service.lastFaultCode(), QString::number(QNetworkReply::SslHandshakeFailedError));
         QVERIFY2(service.lastError().contains(QLatin1String("SSL handshake failed")), qPrintable(service.lastError()));
         // Disable SSL so that termination can happen normally (do it asap, in case of failure below)
         server.disableSsl();
@@ -635,7 +636,8 @@ private Q_SLOTS:
     void testServerAddEmployeeJob();
     void testServerPostByHand();
     void testServerEmptyArgs();
-    void testServerFault();
+    void testServerFaultSync();
+    void testServerFaultAsync();
     void testSendTelegram();
     void testSendHugeTelegram();
     void testServerDelayedCall();
@@ -1025,7 +1027,26 @@ void WsdlDocumentTest::testServerEmptyArgs()
     QCOMPARE(service.lastError(), QString());
 }
 
-void WsdlDocumentTest::testServerFault() // test the error signals emitted on error, in async calls
+void WsdlDocumentTest::testServerFaultSync() // test the error signals emitted on error, in sync calls
+{
+    TestServerThread<DocServer> serverThread;
+    DocServer *server = serverThread.startThread();
+
+    MyWsdlDocument service;
+    service.setEndPoint(server->endPoint());
+    QSignalSpy addEmployeeErrorSpy(&service, SIGNAL(addEmployeeError(KDSoapMessage)));
+    QSignalSpy soapErrorSpy(&service, SIGNAL(soapError(QString,KDSoapMessage)));
+    service.addEmployee(KDAB__AddEmployee());
+
+    QCOMPARE(service.lastFaultCode(), QString::fromLatin1("Client.Data"));
+    QCOMPARE(service.lastError(), QString::fromLatin1("Fault code Client.Data: Empty employee name (DocServerObject). Error detail: Employee name must not be empty"));
+
+    // Sync call doesn't emit signals
+    QCOMPARE(soapErrorSpy.count(), 0);
+    QCOMPARE(addEmployeeErrorSpy.count(), 0);
+}
+
+void WsdlDocumentTest::testServerFaultAsync() // test the error signals emitted on error, in async calls
 {
     TestServerThread<DocServer> serverThread;
     DocServer *server = serverThread.startThread();

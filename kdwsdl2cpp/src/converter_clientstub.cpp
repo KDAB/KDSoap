@@ -197,7 +197,7 @@ bool Converter::convertClientService()
                 getSoapVersion.setDocs(QLatin1String("Return the soap version used.n"));
                 newClass.addFunction(getSoapVersion);
             }
-            // lastErrorCode() method
+            // lastErrorCode() method (which mistakenly returns an int, see github issue #166)
             {
                 KODE::Function lastError(QLatin1String("lastErrorCode"), QLatin1String("int"));
                 lastError.setConst(true);
@@ -210,6 +210,20 @@ bool Converter::convertClientService()
                 lastError.setBody(code);
                 lastError.setDocs(QLatin1String("Return the fault code from the last blocking call.\nEmpty if no error."));
                 newClass.addFunction(lastError);
+            }
+            // lastFaultCode() method
+            {
+                KODE::Function lastFault(QLatin1String("lastFaultCode"), QLatin1String("QString"));
+                lastFault.setConst(true);
+                KODE::Code code;
+                code += "if (d_ptr->m_lastReply.isFault())";
+                code.indent();
+                code += "return d_ptr->m_lastReply.childValues().child(QLatin1String(\"faultcode\")).value().toString();";
+                code.unindent();
+                code += "return QString();";
+                lastFault.setBody(code);
+                lastFault.setDocs(QLatin1String("Return the fault code from the last blocking call.\nEmpty if no error."));
+                newClass.addFunction(lastFault);
             }
             // lastError() method
             {

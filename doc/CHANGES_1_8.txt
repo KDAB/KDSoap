@@ -19,6 +19,7 @@ Client-side:
 * Add support for specifying requestHeaders as part of KDSoapJob via KDSoapJob::setRequestHeaders()
 * Rename the missing KDSoapJob::returnHeaders() to KDSoapJob::replyHeaders(), and provide an implementation
 * Make KDSoapClientInterface::soapVersion() const
+* Add lastFaultCode() for error handling after sync calls. Same as lastErrorCode() but it returns a QString rather than an int.
 
 Server-side:
 ============
