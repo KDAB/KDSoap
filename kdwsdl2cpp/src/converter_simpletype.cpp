@@ -7,7 +7,7 @@
 using namespace KWSDL;
 
 static QString escapeEnum(const QString &);
-static KODE::Code createRangeCheckCode(const XSD::SimpleType *, const QString &baseTypeName, const QString &, KODE::Class &);
+static KODE::Code createRangeCheckCode(const XSD::SimpleType *, const QString &baseTypeName, const QString &, KODE::Class &, const XSD::SimpleType &);
 
 void Converter::addVariableInitializer(KODE::MemberVariable &variable) const
 {
@@ -150,7 +150,8 @@ void Converter::convertSimpleType(const XSD::SimpleType *type, const XSD::Simple
             setter.addArgument(inputType + " value");
             KODE::Code setterBody;
             if (type->facetType() != XSD::SimpleType::NONE) {
-                setterBody += createRangeCheckCode(type, baseTypeName, "value", newClass);
+                const XSD::SimpleType baseSimpleType = simpleTypeList.simpleType(baseName);
+                setterBody += createRangeCheckCode(type, baseTypeName, "value", newClass, baseSimpleType);
                 setterBody.newLine();
                 setterBody += "if (!rangeOk)";
                 setterBody.indent();
@@ -228,6 +229,7 @@ void Converter::convertSimpleType(const XSD::SimpleType *type, const XSD::Simple
 
         newClass.addFunction(setter);
         newClass.addFunction(getter);
+
     }
     break;
     case XSD::SimpleType::TypeUnion:
@@ -466,8 +468,18 @@ static QString escapeRegExp(const QString &str)
     return reg;
 }
 
-static KODE::Code createRangeCheckCode(const XSD::SimpleType *type, const QString &baseTypeName, const QString &variableName, KODE::Class &parentClass)
+static KODE::Code createRangeCheckCode(const XSD::SimpleType *type, const QString &baseTypeName, const QString &variableName, KODE::Class &parentClass, const XSD::SimpleType &baseSimpleType)
 {
+    QString extendedVariableName = variableName;
+
+    if (!baseSimpleType.isNull()) {
+        if (baseSimpleType.subType() == XSD::SimpleType::SubType::TypeList) {
+            extendedVariableName += ".entries()";
+        } else {
+            extendedVariableName += ".value()";
+        }
+    }
+
     KODE::Code code;
     code += "bool rangeOk = true;";
     code.newLine();
@@ -496,13 +508,13 @@ static KODE::Code createRangeCheckCode(const XSD::SimpleType *type, const QStrin
     }
 
     if (type->facetType() & XSD::SimpleType::LENGTH) {
-        code += "rangeOk = rangeOk && (" + variableName + ".length() == " + QString::number(type->facetLength()) + ");";
+        code += "rangeOk = rangeOk && (" + extendedVariableName + ".length() == " + QString::number(type->facetLength()) + ");";
     }
     if (type->facetType() & XSD::SimpleType::MINLEN) {
-        code += "rangeOk = rangeOk && (" + variableName + ".length() >= " + QString::number(type->facetMinimumLength()) + ");";
+        code += "rangeOk = rangeOk && (" + extendedVariableName + ".length() >= " + QString::number(type->facetMinimumLength()) + ");";
     }
     if (type->facetType() & XSD::SimpleType::MAXLEN) {
-        code += "rangeOk = rangeOk && (" + variableName + ".length() <= " + QString::number(type->facetMaximumLength()) + ");";
+        code += "rangeOk = rangeOk && (" + extendedVariableName + ".length() <= " + QString::number(type->facetMaximumLength()) + ");";
     }
     if (type->facetType() & XSD::SimpleType::PATTERN) {
         if (baseTypeName == "QString") {

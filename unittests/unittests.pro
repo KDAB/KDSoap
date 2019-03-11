@@ -46,7 +46,8 @@ SUBDIRS = \
   dv_terminalauth \
   test_calc \
   ws_addressing_support \
-  ws_usernametoken_support
+  ws_usernametoken_support \
+  list_restriction
 
 # These need internet access
 SUBDIRS += webcalls webcalls_wsdl
