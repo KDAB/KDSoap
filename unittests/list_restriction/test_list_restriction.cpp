@@ -1,6 +1,5 @@
 #include <wsdl.h>
 
-#include <fileprovider.h>
 #include <messagehandler.h>
 #include <parsercontext.h>
 
@@ -9,12 +8,9 @@
 #include <settings.h>
 
 #include <compiler.h>
-//#include "wsdl_import_definition.h"
 #include "httpserver_p.h"
 
-#include <QtTest/QtTest>
-#include <QEventLoop>
-#include <QDebug>
+#include <QtTest>
 
 
 using namespace KDSoapUnitTestHelpers;
@@ -25,13 +21,63 @@ class ListRestrictionTest : public QObject
 
 private Q_SLOTS:
 
-    void testGenerateCodeWithListRestriction()
+    void getFunctionCodeBody(const QByteArray & srcXml, QString & generatedStr) 
     {
-        QStringList generatedStrList;
-        QString generatedStr;
-        QString expectedStr = "rangeOk = rangeOk && (value.entries().length() == 3);";
+        generatedStr = "";
+        QStringList generatedFunctionBody;
+        
+        QXmlInputSource source;
+        source.setData(srcXml);
+        QXmlSimpleReader reader;
+        reader.setFeature(QLatin1String("http://xml.org/sax/features/namespace-prefixes"), true);
 
-        const QByteArray srcXml = QByteArray("<definitions name=\"HelloService\""
+        QString errorMsg;
+        int errorLine, errorCol;
+        QDomDocument doc;
+        QVERIFY(doc.setContent(&source, &reader, &errorMsg, &errorLine, &errorCol));
+
+        QDomElement element = doc.documentElement();
+        NSManager namespaceManager;
+        namespaceManager.setPrefix(QLatin1String("xml"), NSManager::xmlNamespace());
+
+        MessageHandler messageHandler;
+        ParserContext context;
+        context.setNamespaceManager(&namespaceManager);
+        context.setMessageHandler(&messageHandler);
+
+        KWSDL::Definitions definitions;
+        QVERIFY(definitions.loadXML(&context, element));
+        definitions.fixUpDefinitions();        
+        KODE::Code::setDefaultIndentation(4);
+        
+        KWSDL::WSDL wsdl;
+        wsdl.setDefinitions(definitions);
+        wsdl.setNamespaceManager(namespaceManager);
+        
+        KWSDL::Converter converter;
+        converter.setWSDL(wsdl);
+        converter.convert();
+        
+        foreach (auto elem, converter.classes()) {
+            if (elem.name() == QString("TEST__D3ArrayType")) {
+                foreach (auto e_f, elem.functions()) {
+                    if (e_f.name() == QString("setValue")) {
+                        generatedFunctionBody = e_f.body().split("\n");
+                        generatedStr = generatedFunctionBody.at(2);
+                    }
+                }
+            }
+        }
+    }
+
+    void testGenerateCodeWithRestriction()
+    {
+        QString generatedCodeString;
+        QString expectedSrcListRestriction = "rangeOk = rangeOk && (value.entries().length() == 3);";
+        QString expectedSrcStringRestriction = "rangeOk = rangeOk && (value.value().length() == 3);";
+        QString expectedSrcXSDListRestriction = "rangeOk = rangeOk && (value.length() == 3);";
+
+        const QByteArray srcXmlListRestriction = QByteArray("<definitions name=\"HelloService\""
                                              "   targetNamespace=\"http://www.examples.com/wsdl/HelloService.wsdl\""
                                              "   xmlns=\"http://schemas.xmlsoap.org/wsdl/\""
                                              "   xmlns:soap=\"http://schemas.xmlsoap.org/wsdl/soap/\""
@@ -91,57 +137,8 @@ private Q_SLOTS:
                                              "      </port>"
                                              "   </service>"
                                              "</definitions>");
-        QXmlInputSource source;
-        source.setData(srcXml);
-        QXmlSimpleReader reader;
-        reader.setFeature(QLatin1String("http://xml.org/sax/features/namespace-prefixes"), true);
-
-        QString errorMsg;
-        int errorLine, errorCol;
-        QDomDocument doc;
-        doc.setContent(&source, &reader, &errorMsg, &errorLine, &errorCol);
-
-        QDomElement element = doc.documentElement();
-        NSManager namespaceManager;
-        namespaceManager.setPrefix(QLatin1String("xml"), NSManager::xmlNamespace());
-
-        MessageHandler messageHandler;
-        ParserContext context;
-        context.setNamespaceManager(&namespaceManager);
-        context.setMessageHandler(&messageHandler);
-
-        KWSDL::Definitions definitions;
-        if (definitions.loadXML(&context, element)) {
-            definitions.fixUpDefinitions(/*&context, element*/);
-            KODE::Code::setDefaultIndentation(4);
-            KWSDL::WSDL wsdl;
-            wsdl.setDefinitions(definitions);
-            wsdl.setNamespaceManager(namespaceManager);
-            KWSDL::Converter converter;
-            converter.setWSDL(wsdl);
-
-            converter.convert();
-            foreach (auto elem, converter.classes()) {
-                if(elem.name() == QString("TEST__D3ArrayType")) {
-                    foreach(auto e_f,elem.functions()) {
-                        if(e_f.name() == QString("setValue")) {
-                            generatedStrList = e_f.body().split("\n");
-                            generatedStr = generatedStrList.at(2);
-                        }
-                    }
-                }
-            }
-        }
-        QCOMPARE(generatedStr, expectedStr);
-    }
-
-    void testGenerateCodeWithStringRestriction()
-    {
-        QStringList generatedStrList;
-        QString generatedStr;
-        QString expectedStr = "rangeOk = rangeOk && (value.value().length() == 3);";
-
-        const QByteArray srcXml = QByteArray("<definitions name=\"HelloService\""
+        
+        const QByteArray srcXmlStringRestriction = QByteArray("<definitions name=\"HelloService\""
                                              "   targetNamespace=\"http://www.examples.com/wsdl/HelloService.wsdl\""
                                              "   xmlns=\"http://schemas.xmlsoap.org/wsdl/\""
                                              "   xmlns:soap=\"http://schemas.xmlsoap.org/wsdl/soap/\""
@@ -201,57 +198,8 @@ private Q_SLOTS:
                                              "      </port>"
                                              "   </service>"
                                              "</definitions>");
-        QXmlInputSource source;
-        source.setData(srcXml);
-        QXmlSimpleReader reader;
-        reader.setFeature(QLatin1String("http://xml.org/sax/features/namespace-prefixes"), true);
 
-        QString errorMsg;
-        int errorLine, errorCol;
-        QDomDocument doc;
-        doc.setContent(&source, &reader, &errorMsg, &errorLine, &errorCol);
-
-        QDomElement element = doc.documentElement();
-        NSManager namespaceManager;
-        namespaceManager.setPrefix(QLatin1String("xml"), NSManager::xmlNamespace());
-
-        MessageHandler messageHandler;
-        ParserContext context;
-        context.setNamespaceManager(&namespaceManager);
-        context.setMessageHandler(&messageHandler);
-
-        KWSDL::Definitions definitions;
-        if (definitions.loadXML(&context, element)) {
-            definitions.fixUpDefinitions(/*&context, element*/);
-            KODE::Code::setDefaultIndentation(4);
-            KWSDL::WSDL wsdl;
-            wsdl.setDefinitions(definitions);
-            wsdl.setNamespaceManager(namespaceManager);
-            KWSDL::Converter converter;
-            converter.setWSDL(wsdl);
-
-            converter.convert();
-            foreach (auto elem, converter.classes()) {
-                if(elem.name() == QString("TEST__D3ArrayType")) {
-                    foreach(auto e_f,elem.functions()) {
-                        if(e_f.name() == QString("setValue")) {
-                            generatedStrList = e_f.body().split("\n");
-                            generatedStr = generatedStrList.at(2);
-                        }
-                    }
-                }
-            }
-        }
-        QCOMPARE(generatedStr, expectedStr);
-    }
-
-    void testGenerateCodeWithXSDListRestriction()
-    {
-        QStringList generatedStrList;
-        QString generatedStr;
-        QString expectedStr = "rangeOk = rangeOk && (value.length() == 3);";
-
-        const QByteArray srcXml = QByteArray("<definitions name=\"HelloService\""
+        const QByteArray srcXmlXSDListRestriction = QByteArray("<definitions name=\"HelloService\""
                                              "   targetNamespace=\"http://www.examples.com/wsdl/HelloService.wsdl\""
                                              "   xmlns=\"http://schemas.xmlsoap.org/wsdl/\""
                                              "   xmlns:soap=\"http://schemas.xmlsoap.org/wsdl/soap/\""
@@ -308,48 +256,15 @@ private Q_SLOTS:
                                              "      </port>"
                                              "   </service>"
                                              "</definitions>");
-        QXmlInputSource source;
-        source.setData(srcXml);
-        QXmlSimpleReader reader;
-        reader.setFeature(QLatin1String("http://xml.org/sax/features/namespace-prefixes"), true);
 
-        QString errorMsg;
-        int errorLine, errorCol;
-        QDomDocument doc;
-        doc.setContent(&source, &reader, &errorMsg, &errorLine, &errorCol);
+        getFunctionCodeBody(srcXmlListRestriction, generatedCodeString);
+        QCOMPARE(expectedSrcListRestriction, generatedCodeString);
 
-        QDomElement element = doc.documentElement();
-        NSManager namespaceManager;
-        namespaceManager.setPrefix(QLatin1String("xml"), NSManager::xmlNamespace());
+        getFunctionCodeBody(srcXmlStringRestriction, generatedCodeString);
+        QCOMPARE(expectedSrcStringRestriction, generatedCodeString);
 
-        MessageHandler messageHandler;
-        ParserContext context;
-        context.setNamespaceManager(&namespaceManager);
-        context.setMessageHandler(&messageHandler);
-
-        KWSDL::Definitions definitions;
-        if (definitions.loadXML(&context, element)) {
-            definitions.fixUpDefinitions(/*&context, element*/);
-            KODE::Code::setDefaultIndentation(4);
-            KWSDL::WSDL wsdl;
-            wsdl.setDefinitions(definitions);
-            wsdl.setNamespaceManager(namespaceManager);
-            KWSDL::Converter converter;
-            converter.setWSDL(wsdl);
-
-            converter.convert();
-            foreach (auto elem, converter.classes()) {
-                if(elem.name() == QString("TEST__D3ArrayType")) {
-                    foreach(auto e_f,elem.functions()) {
-                        if(e_f.name() == QString("setValue")) {
-                            generatedStrList = e_f.body().split("\n");
-                            generatedStr = generatedStrList.at(2);
-                        }
-                    }
-                }
-            }
-        }
-        QCOMPARE(generatedStr, expectedStr);
+        getFunctionCodeBody(srcXmlXSDListRestriction, generatedCodeString);
+        QCOMPARE(expectedSrcXSDListRestriction, generatedCodeString);
     }
 };
 
