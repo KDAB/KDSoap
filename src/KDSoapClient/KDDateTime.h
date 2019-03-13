@@ -51,6 +51,13 @@ public:
     ~KDDateTime();
 
     /**
+     * Converts the KDDateTime to QVariant, to avoid implicit conversion
+     * to base QDateTime.
+     * \since 1.8
+     */
+    operator QVariant() const;
+
+    /**
      * Returns the time zone set by setTimeZone.
      */
     QString timeZone() const;
