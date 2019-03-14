@@ -56,7 +56,7 @@ static void generateDefaultAttributeValueCode(KODE::Code& result, const QString&
 
   if(!defaultValue.mIsBuiltin) {
     result += typeName  + " defaultValue;";
-    result += "defaultValue.deserialize(\"" + defaultValue.mValue + "\");";
+    result += "defaultValue.deserialize(KDSoapValue(QString(), \"" + defaultValue.mValue + "\"));";
     result += "return defaultValue;";
   }
   else {
