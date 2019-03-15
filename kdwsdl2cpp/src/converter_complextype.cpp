@@ -58,18 +58,28 @@ static void generateDefaultAttributeValueCode(KODE::Code& result, const QString&
     result += typeName  + " defaultValue;";
     result += "defaultValue.deserialize(KDSoapValue(QString(), \"" + defaultValue.mValue + "\"));";
     result += "return defaultValue;";
-  }
-  else {
+  } else {
     result += "const QString defaultValueFromWsdl(\"" + defaultValue.mValue + "\");";
-    result += "const QVariant tmp(defaultValueFromWsdl);";
-    result += "if(!tmp.canConvert<" + typeName + ">())";
-    result += "{";
-    result.indent();
-    result += "qDebug(\"Can't convert to " + typeName + " from " + defaultValue.mValue + "\");";
-    result += "Q_ASSERT(!\"Can't convert to " + typeName + " from " + defaultValue.mValue + "\");";
-    result.unindent();
-    result += "}";
-    result += "return tmp.value<" + typeName + ">();";
+    if (typeName == "KDDateTime") {
+      result += "KDDateTime defaultDateTime = KDDateTime::fromDateString(defaultValueFromWsdl);";
+      result += "if (defaultDateTime.toDateString() != defaultValueFromWsdl) {";
+      result.indent();
+      result += "qDebug(\"Can't convert to " + typeName + " from " + defaultValue.mValue + "\");";
+      result += "Q_ASSERT(!\"Can't convert to " + typeName + " from " + defaultValue.mValue + "\");";
+      result.unindent();
+      result += "}";
+      result += "return defaultDateTime;";
+    } else {
+      result += "const QVariant tmp(defaultValueFromWsdl);";
+      result += "if(!tmp.canConvert<" + typeName + ">())";
+      result += "{";
+      result.indent();
+      result += "qDebug(\"Can't convert to " + typeName + " from " + defaultValue.mValue + "\");";
+      result += "Q_ASSERT(!\"Can't convert to " + typeName + " from " + defaultValue.mValue + "\");";
+      result.unindent();
+      result += "}";
+      result += "return tmp.value<" + typeName + ">();";
+    }
   }
 
   result.unindent();

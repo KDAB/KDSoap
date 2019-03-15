@@ -76,6 +76,23 @@ private Q_SLOTS:
       QCOMPARE(state.enumerationValue(), TNS__SynchronizationType(TNS__SynchronizationType::MIDDLE));
     }
 
+    void testDefaultTimeValue()
+    {
+        TNS__State state;
+        QCOMPARE(state.timeValue(), QTime(9, 30, 10));
+    }
+    void testDefaultDateValue()
+    {
+        TNS__State state;
+        QCOMPARE(state.dateValue(), QDate(2002, 1, 24));
+    }
+
+    void testDefaultDateTimeValue()
+    {
+        TNS__State state;
+        QCOMPARE(state.dateTimeValue(), KDDateTime(QDateTime(QDate(2002, 5, 30), QTime(9, 30, 10))));
+    }
+
     void testMustNotSerializeWhenValueNotSet()
     {
       TNS__State state;
