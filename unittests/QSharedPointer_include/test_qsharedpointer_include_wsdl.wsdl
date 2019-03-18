@@ -1,0 +1,89 @@
+ 
+<definitions name="HelloService"
+targetNamespace="http://www.examples.com/wsdl/HelloService.wsdl"
+xmlns="http://schemas.xmlsoap.org/wsdl/"
+xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+xmlns:tns="http://www.examples.com/wsdl/HelloService.wsdl"
+xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+xmlns:test="urn:test">
+  <types>
+    <xsd:schema targetNamespace="urn:test"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema" >
+      <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/>
+      
+      <xsd:complexType name="trajectoryPoint">
+        <xsd:sequence>
+          <xsd:element name="time" type="xsd:double"/>
+          <xsd:element name="cv" type="xsd:double" minOccurs="6" maxOccurs="6"/>
+         </xsd:sequence>
+      </xsd:complexType>
+
+      <xsd:complexType name="realTrajectoryPoint">
+        <xsd:complexContent>
+          <xsd:extension base="test:trajectoryPoint">
+            <xsd:sequence>
+              <xsd:element name="covMatrix" type="xsd:double" minOccurs="36" maxOccurs="36"/>
+            </xsd:sequence>
+          </xsd:extension>
+        </xsd:complexContent>
+      </xsd:complexType>
+
+    <xsd:complexType name="trajectory">
+        <xsd:sequence>
+            <xsd:element name="id" type="xsd:long"/>
+            <xsd:element name="category" type="xsd:string"/>
+            <xsd:element name="coordinateSystem" type="xsd:string"/>
+            <xsd:element name="points" type="test:trajectoryPoint" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="realPoints" type="test:realTrajectoryPoint" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:element name="getTrajectoryResponse">
+      <xsd:complexType>
+        <xsd:sequence>
+          <xsd:element name="trajectoryInfo" type="test:trajectory" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+    </xsd:element>
+
+    </xsd:schema>
+  </types>
+  <message name="SayHelloRequest">
+    <part name="firstName" type="test:trajectory"/>
+  </message>
+  <message name="SayHelloResponse">
+    <part name="greeting" type="test:getTrajectoryResponse"/>
+  </message>
+  <portType name="Hello_PortType">
+    <operation name="sayHello">
+      <input message="tns:SayHelloRequest"/>
+      <output message="tns:SayHelloResponse"/>
+    </operation>
+  </portType>
+  <binding name="Hello_Binding" type="tns:Hello_PortType">
+    <soap:binding style="rpc"
+    transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="sayHello">
+      <soap:operation soapAction="sayHello"/>
+      <input>
+        <soap:body
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+        namespace="urn:examples:helloservice"
+        use="encoded"/>
+      </input>
+      <output>
+        <soap:body
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+        namespace="urn:examples:helloservice"
+        use="encoded"/>
+      </output>
+    </operation>
+  </binding> 
+  <service name="Hello_Service">
+    <documentation>WSDL File for HelloService</documentation>
+    <port binding="tns:Hello_Binding" name="Hello_Port">
+      <soap:address
+      location="http://www.examples.com/SayHello/"/>
+    </port>
+  </service>
+</definitions>

@@ -48,7 +48,8 @@ SUBDIRS = \
   test_calc \
   ws_addressing_support \
   ws_usernametoken_support \
-  list_restriction
+  list_restriction \
+  QSharedPointer_include
 
 # These need internet access
 SUBDIRS += webcalls webcalls_wsdl
