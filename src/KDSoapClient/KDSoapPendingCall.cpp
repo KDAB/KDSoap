@@ -1,5 +1,5 @@
 /****************************************************************************
-** Copyright (C) 2010-2018 Klaralvdalens Datakonsult AB, a KDAB Group company, info@kdab.com.
+** Copyright (C) 2010-2019 Klaralvdalens Datakonsult AB, a KDAB Group company, info@kdab.com.
 ** All rights reserved.
 **
 ** This file is part of the KD Soap library.
@@ -35,7 +35,7 @@ static void debugHelper(const QByteArray &data, const QList<QNetworkReply::RawHe
     const bool optReformat = options.contains("reformat");
     quint8 indentation = 4;
     Q_FOREACH( const QByteArray &opt, options ) {
-        if (opt.startsWith("indent=")) {
+        if (opt.startsWith("indent=")) { //krazy:exclude=strings
             indentation = opt.mid(7).toUShort();
         }
     }
