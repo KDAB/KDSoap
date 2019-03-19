@@ -2,7 +2,7 @@
 
 #include <QtTest>
 
-class rightInclude:
+class RightInclude:
   public QObject
 {
 Q_OBJECT
@@ -11,10 +11,10 @@ private Q_SLOTS:
 
   void testCompiled()
   {
-    QVERIFY(true);
+    Hello_Service service;
   }
 };
 
-QTEST_MAIN(rightInclude)
+QTEST_MAIN(RightInclude)
 
 #include "test_qsharedpointer_include.moc"
