@@ -1,6 +1,6 @@
 #include "wsdl_test_qsharedpointer_include_wsdl.h"
 
-#include <QtTest>
+#include <QTest>
 
 class RightInclude:
   public QObject
