@@ -29,7 +29,7 @@ set(SOURCES
 set_source_files_properties(KDSoapServerObjectInterface.cpp PROPERTIES SKIP_AUTOMOC TRUE)
 add_library(kdsoap-server ${KDSoap_LIBRARY_MODE} ${SOURCES})
 target_link_libraries(kdsoap-server kdsoap ${QT_LIBRARIES})
-set_target_properties(kdsoap-server PROPERTIES VERSION ${${PROJECT_NAME}_VERSION} OUTPUT_NAME kdsoap-server-${QT_VERSION})
+set_target_properties(kdsoap-server PROPERTIES VERSION ${${PROJECT_NAME}_VERSION} SOVERSION ${${PROJECT_NAME}_VERSION_MAJOR} OUTPUT_NAME kdsoap-server-${QT_VERSION})
 
 # append d to debug libraries for windows builds
 if(WIN32)

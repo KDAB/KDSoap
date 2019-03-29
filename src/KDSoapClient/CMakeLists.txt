@@ -33,7 +33,7 @@ set(SOURCES
 
 add_library(kdsoap ${KDSoap_LIBRARY_MODE} ${SOURCES})
 target_link_libraries(kdsoap ${QT_LIBRARIES})
-set_target_properties(kdsoap PROPERTIES VERSION ${${PROJECT_NAME}_VERSION} OUTPUT_NAME kdsoap-${QT_VERSION})
+set_target_properties(kdsoap PROPERTIES VERSION ${${PROJECT_NAME}_VERSION} SOVERSION ${${PROJECT_NAME}_VERSION_MAJOR} OUTPUT_NAME kdsoap-${QT_VERSION})
 
 # append d to debug libraries for windows builds
 if(WIN32)
