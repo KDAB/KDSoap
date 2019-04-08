@@ -20,41 +20,37 @@
 ** clear to you.
 **
 **********************************************************************/
-#ifndef KDSOAPPENDINGCALL_P_H
-#define KDSOAPPENDINGCALL_P_H
 
-#include <QSharedData>
-#include <QBuffer>
-#include <QXmlStreamReader>
-#include "KDSoapMessage.h"
-#include <QPointer>
-#include "KDSoapClientInterface.h"
-#include <QNetworkReply>
+#include "KDSoapValue.h"
+#include "KDDateTime.h"
+#include <QTest>
 
-class KDSoapValue;
-
-void maybeDebugRequest(const QByteArray &data, const QNetworkRequest &request, QNetworkReply *reply);
-
-class KDSoapPendingCall::Private : public QSharedData
+class KDDateTimeTest : public QObject
 {
-public:
-    Private(QNetworkReply *r, QBuffer *b)
-        : reply(r), buffer(b), soapVersion(KDSoap::SOAP1_1), parsed(false)
+    Q_OBJECT
+private Q_SLOTS:
+
+    void testQVariantArgConversion()
     {
+        KDDateTime inputDateTime(QDateTime::currentDateTimeUtc());
+        inputDateTime.setTimeZone("Z");
+
+        // Add to the value list, which implicitly constructs a QVariant
+        // from the KDDateTime...
+        KDSoapValueList list;
+        list.addArgument("Timestamp", inputDateTime);
+
+        /// Retrieve the KDDateTime from QVariant
+        KDDateTime outputDateTime = list.child("Timestamp").value().value<KDDateTime>();
+
+        QCOMPARE(inputDateTime, outputDateTime);
+
+        QCOMPARE(inputDateTime.timeZone(), outputDateTime.timeZone());
+        QCOMPARE(inputDateTime.toDateString(), outputDateTime.toDateString());
     }
-    ~Private();
-
-    void parseReply();
-    KDSoapValue parseReplyElement(QXmlStreamReader &reader);
-
-    // Can be deleted under us if the KDSoapClientInterface (and its QNetworkAccessManager)
-    // are deleted before the KDSoapPendingCall.
-    QPointer<QNetworkReply> reply;
-    QBuffer *buffer;
-    KDSoapMessage replyMessage;
-    KDSoapHeaders replyHeaders;
-    KDSoap::SoapVersion soapVersion;
-    bool parsed;
 };
 
-#endif // KDSOAPPENDINGCALL_P_H
+QTEST_MAIN(KDDateTimeTest)
+
+#include "kddatetime.moc"
+

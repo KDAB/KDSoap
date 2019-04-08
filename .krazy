@@ -2,6 +2,7 @@ CHECKSETS qt4,c++,foss
 
 #exclude intrusive checks to investigate later
 EXCLUDE constref,dpointer,inline,null,doublequote_chars
+EXCLUDE style
 
 #KDAB-specific checks
 EXTRA kdabcopyright
@@ -13,6 +14,7 @@ EXTRA defines,null
 SKIP /build-
 #no need to check 3rdparty stuff
 SKIP /kdwsdl2cpp/
+SKIP /KDQName\.cpp|/KDQName\.h
 #skip autogen buildsystem
 SKIP /autogen/|/autogen.py|/genignore.py
 #nor examples

@@ -1,5 +1,5 @@
 /****************************************************************************
-** Copyright (C) 2010-2018 Klaralvdalens Datakonsult AB, a KDAB Group company, info@kdab.com.
+** Copyright (C) 2010-2019 Klaralvdalens Datakonsult AB, a KDAB Group company, info@kdab.com.
 ** All rights reserved.
 **
 ** This file is part of the KD Soap library.
@@ -49,6 +49,13 @@ public:
     /*implicit*/ KDDateTime(const QDateTime &);
     KDDateTime &operator=(const KDDateTime &);
     ~KDDateTime();
+
+    /**
+     * Converts the KDDateTime to QVariant, to avoid implicit conversion
+     * to base QDateTime.
+     * \since 1.8
+     */
+    operator QVariant() const;
 
     /**
      * Returns the time zone set by setTimeZone.
