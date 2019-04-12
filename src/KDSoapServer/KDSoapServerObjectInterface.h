@@ -33,7 +33,10 @@
 #include <QIODevice>
 
 class KDSoapServerSocket;
+
+QT_BEGIN_NAMESPACE
 class QAbstractSocket;
+QT_END_NAMESPACE
 
 /**
  * Base class for server objects, i.e. objects implementing the methods
