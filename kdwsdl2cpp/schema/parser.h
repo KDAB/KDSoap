@@ -32,7 +32,10 @@
 #include "annotation.h"
 #include <kode_export.h>
 
+QT_BEGIN_NAMESPACE
 class QUrl;
+QT_END_NAMESPACE
+
 class ParserContext;
 
 namespace XSD
