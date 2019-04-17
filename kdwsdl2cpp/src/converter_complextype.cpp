@@ -235,9 +235,9 @@ void Converter::convertComplexType(const XSD::ComplexType *type)
         inputTypeName = mTypeMap.localInputType(attribute.type(), QName());
         //qDebug() << "Attribute" << attribute.name();
 
-        DefaultAttributeValue defaultValue;
-        defaultValue.mIsBuiltin = mTypeMap.isBuiltinType(attribute.type());
-        defaultValue.mValue = attribute.defaultValue();
+        bool isBuiltin = mTypeMap.isBuiltinType(attribute.type());
+        QString value = attribute.defaultValue();
+        DefaultAttributeValue defaultValue(isBuiltin, value);
         generateMemberVariable(KODE::Style::makeIdentifier(attribute.name()), typeName, inputTypeName, newClass, attribute.attributeUse(), false, false, defaultValue);
 
         // include header
