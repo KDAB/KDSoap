@@ -54,7 +54,7 @@ static void generateDefaultAttributeValueCode(KODE::Code& result, const QString&
   result += "{";
   result.indent();
 
-  if(!defaultValue.mIsBuiltin) {
+  if (!defaultValue.mIsBuiltin) {
     result += typeName  + " defaultValue;";
     result += "defaultValue.deserialize(KDSoapValue(QString(), \"" + defaultValue.mValue + "\"));";
     result += "return defaultValue;";
@@ -395,15 +395,18 @@ QString Converter::generateMemberVariable(const QString &rawName, const QString 
             KODE::Code getterCode;
             getterCode += QLatin1String("if (!") + variableName + QLatin1String("_nil)");
             getterCode.indent();
-            defaultValue.mValue.isNull() ? getterCode += QLatin1String("return &") + variableName + QLatin1Char(';') : getterCode += QLatin1String("return ") + variableName + QLatin1Char(';');
+            if (defaultValue.mValue.isNull()) {
+                getterCode += QLatin1String("return &") + variableName + QLatin1Char(';');
+            } else {
+                getterCode += QLatin1String("return ") + variableName + QLatin1Char(';');
+            }
             getterCode.unindent();
             getterCode += QLatin1String("else");
             getterCode.indent();
 
-            if(defaultValue.mValue.isNull()) {
+            if (defaultValue.mValue.isNull()) {
               getterCode += "return 0;";
-            }
-            else {
+            } else {
               generateDefaultAttributeValueCode(getterCode, typeName, defaultValue);
             }
             getter.setBody(getterCode);
@@ -417,11 +420,10 @@ QString Converter::generateMemberVariable(const QString &rawName, const QString 
             getterCode += QLatin1String("else");
             getterCode.indent();
 
-            if(defaultValue.mValue.isNull())
+            if (defaultValue.mValue.isNull())
             {
               getterCode += "return boost::optional<" + typeName + " >();";
-            }
-            else {
+            } else {
               generateDefaultAttributeValueCode(getterCode, typeName, defaultValue);
             }
 
