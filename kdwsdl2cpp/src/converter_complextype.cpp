@@ -350,7 +350,7 @@ QString Converter::generateMemberVariable(const QString &rawName, const QString 
 
     // getter method
     QString getterTypeName = typeName;
-    if (optional && defaultValue.mValue.isNull()) {
+    if (optional && defaultValue.isNull()) {
         if (Settings::self()->optionalElementType() == Settings::EBoostOptional) {
             getterTypeName = "boost::optional<" + typeName + " >";
         } else if (Settings::self()->optionalElementType() == Settings::EStdOptional) {
@@ -395,7 +395,7 @@ QString Converter::generateMemberVariable(const QString &rawName, const QString 
             KODE::Code getterCode;
             getterCode += QLatin1String("if (!") + variableName + QLatin1String("_nil)");
             getterCode.indent();
-            if (defaultValue.mValue.isNull()) {
+            if (defaultValue.isNull()) {
                 getterCode += QLatin1String("return &") + variableName + QLatin1Char(';');
             } else {
                 getterCode += QLatin1String("return ") + variableName + QLatin1Char(';');
@@ -404,7 +404,7 @@ QString Converter::generateMemberVariable(const QString &rawName, const QString 
             getterCode += QLatin1String("else");
             getterCode.indent();
 
-            if (defaultValue.mValue.isNull()) {
+            if (defaultValue.isNull()) {
               getterCode += "return 0;";
             } else {
               generateDefaultAttributeValueCode(getterCode, typeName, defaultValue);
@@ -420,7 +420,7 @@ QString Converter::generateMemberVariable(const QString &rawName, const QString 
             getterCode += QLatin1String("else");
             getterCode.indent();
 
-            if (defaultValue.mValue.isNull())
+            if (defaultValue.isNull())
             {
               getterCode += "return boost::optional<" + typeName + " >();";
             } else {

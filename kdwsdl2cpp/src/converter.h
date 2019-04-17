@@ -49,6 +49,10 @@ public:
 
     bool mIsBuiltin;
     QString mValue;
+
+    bool isNull() {
+        return mValue.isNull();
+    }
   };
 
     Converter();
