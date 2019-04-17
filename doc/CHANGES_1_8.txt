@@ -20,6 +20,7 @@ Client-side:
 * Rename the missing KDSoapJob::returnHeaders() to KDSoapJob::replyHeaders(), and provide an implementation
 * Make KDSoapClientInterface::soapVersion() const
 * Add lastFaultCode() for error handling after sync calls. Same as lastErrorCode() but it returns a QString rather than an int.
+* Add conversion operator from KDDateTime to QVariant to void implicit conversion to base QDateTime (github issue #123).
 
 Server-side:
 ============
@@ -54,4 +55,5 @@ WSDL parser / code generator changes, applying to both client and server side:
     namespace declarations during sending of a message
 * Avoid serialize crash with required polymorphic types, if the required variable wasn't actually provided
 * Fix generated code for restriction to base class (it wouldn't compile)
+* Prepend "undef daylight" and "undef timezone" to all generated files, to fix compilation errors in wsdl files that use those names, due to nasty Windows macros.
 

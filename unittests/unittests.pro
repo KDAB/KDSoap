@@ -37,6 +37,7 @@ SUBDIRS = \
   encapsecurity \
   prefix_wsdl \
   vidyo \
+  kddatetime \
   empty_list_wsdl \
   onvif_org_event \
   default_attribute_value_wsdl \

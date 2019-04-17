@@ -1,4 +1,4 @@
-# Copyright (c) 2011-2018 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
+# Copyright (c) 2011-2019 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
 
 # Redistribution and use is allowed according to the terms of the BSD license.
 

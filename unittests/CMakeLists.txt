@@ -92,3 +92,4 @@ add_subdirectory(empty_list_wsdl)
 add_subdirectory(list_restriction)
 
 add_subdirectory(default_attribute_value_wsdl)
+add_subdirectory(kddatetime)

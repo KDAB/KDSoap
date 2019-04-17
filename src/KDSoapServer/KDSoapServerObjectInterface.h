@@ -1,5 +1,5 @@
 /****************************************************************************
-** Copyright (C) 2010-2018 Klaralvdalens Datakonsult AB, a KDAB Group company, info@kdab.com.
+** Copyright (C) 2010-2019 Klaralvdalens Datakonsult AB, a KDAB Group company, info@kdab.com.
 ** All rights reserved.
 **
 ** This file is part of the KD Soap library.
@@ -33,7 +33,10 @@
 #include <QIODevice>
 
 class KDSoapServerSocket;
+
+QT_BEGIN_NAMESPACE
 class QAbstractSocket;
+QT_END_NAMESPACE
 
 /**
  * Base class for server objects, i.e. objects implementing the methods

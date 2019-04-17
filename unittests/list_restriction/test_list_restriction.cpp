@@ -1,3 +1,26 @@
+/****************************************************************************
+** Copyright (C) 2019 Klaralvdalens Datakonsult AB, a KDAB Group company, info@kdab.com.
+** All rights reserved.
+**
+** This file is part of the KD Soap library.
+**
+** Licensees holding valid commercial KD Soap licenses may use this file in
+** accordance with the KD Soap Commercial License Agreement provided with
+** the Software.
+**
+**
+** This file may be distributed and/or modified under the terms of the
+** GNU Lesser General Public License version 2.1 and version 3 as published by the
+** Free Software Foundation and appearing in the file LICENSE.LGPL.txt included.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+** Contact info@kdab.com if any conditions of this licensing are not
+** clear to you.
+**
+**********************************************************************/
+
 #include <wsdl.h>
 
 #include <messagehandler.h>
@@ -21,11 +44,11 @@ class ListRestrictionTest : public QObject
 
 private Q_SLOTS:
 
-    void getFunctionCodeBody(const QByteArray & srcXml, QString & generatedStr) 
+    void getFunctionCodeBody(const QByteArray & srcXml, QString & generatedStr)
     {
         generatedStr = "";
         QStringList generatedFunctionBody;
-        
+
         QXmlInputSource source;
         source.setData(srcXml);
         QXmlSimpleReader reader;
@@ -47,17 +70,17 @@ private Q_SLOTS:
 
         KWSDL::Definitions definitions;
         QVERIFY(definitions.loadXML(&context, element));
-        definitions.fixUpDefinitions();        
+        definitions.fixUpDefinitions();
         KODE::Code::setDefaultIndentation(4);
-        
+
         KWSDL::WSDL wsdl;
         wsdl.setDefinitions(definitions);
         wsdl.setNamespaceManager(namespaceManager);
-        
+
         KWSDL::Converter converter;
         converter.setWSDL(wsdl);
         converter.convert();
-        
+
         foreach (auto elem, converter.classes()) {
             if (elem.name() == QString("TEST__D3ArrayType")) {
                 foreach (auto e_f, elem.functions()) {
@@ -137,7 +160,7 @@ private Q_SLOTS:
                                              "      </port>"
                                              "   </service>"
                                              "</definitions>");
-        
+
         const QByteArray srcXmlStringRestriction = QByteArray("<definitions name=\"HelloService\""
                                              "   targetNamespace=\"http://www.examples.com/wsdl/HelloService.wsdl\""
                                              "   xmlns=\"http://schemas.xmlsoap.org/wsdl/\""
