@@ -1,5 +1,5 @@
 TEMPLATE = lib
-TARGET = kdwsdl2cpp_lib
+TARGET = $${KDWSDL2CPP_LIB}
 SOURCES = compiler.cpp \
     converter.cpp \
     converter_clientstub.cpp \
