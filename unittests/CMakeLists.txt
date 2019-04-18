@@ -79,8 +79,10 @@ add_subdirectory(ws_discovery_wsdl)
 add_subdirectory(webcalls)
 add_subdirectory(webcalls_wsdl)
 
-# TODO: If boost optional is installed
-#add_subdirectory(optionaltype_boost_optional)
+if (BOOST_OPTIONAL_FOUND)
+add_subdirectory(optionaltype_boost_optional)
+add_subdirectory(default_attribute_value_wsdl)
+endif()
 
 add_subdirectory(test_calc)
 add_subdirectory(dv_terminalauth)
@@ -91,5 +93,4 @@ add_subdirectory(onvif_org_event)
 add_subdirectory(empty_list_wsdl)
 add_subdirectory(list_restriction)
 
-add_subdirectory(default_attribute_value_wsdl)
 add_subdirectory(kddatetime)

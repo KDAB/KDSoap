@@ -40,7 +40,6 @@ SUBDIRS = \
   kddatetime \
   empty_list_wsdl \
   onvif_org_event \
-  default_attribute_value_wsdl \
   empty_element_wsdl \
   fault_namespace \
   enzo \
@@ -56,6 +55,7 @@ SUBDIRS += webcalls webcalls_wsdl
 
 # TODO: If boost optional is installed
 #SUBDIRS += optionaltype_boost_optional
+#SUBDIRS += default_attribute_value_wsdl
 
 #with msvc, cribis requires the /bigobj option
 win32-msvc*: QMAKE_CXXFLAGS += /bigobj

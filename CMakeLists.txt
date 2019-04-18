@@ -47,6 +47,11 @@ set(${PROJECT_NAME}_VERSION_PATCH 50)
 set(${PROJECT_NAME}_VERSION ${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR}.${${PROJECT_NAME}_VERSION_PATCH})
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
+find_file(BOOST_OPTIONAL_FOUND NAMES boost/optional.hpp)
+if (BOOST_OPTIONAL_FOUND)
+    add_definitions(-DBOOST_OPTIONAL_FOUND) # I'd really prefer using configure_file but this is more compatible with qmake
+endif()
+
 # setup default install locations
 include(InstallLocation)
 
