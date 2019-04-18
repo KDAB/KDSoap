@@ -23,7 +23,7 @@ win32-msvc*:PRE_TARGETDEPS += $${TOP_BUILD_DIR}/lib/kode.lib \
     $${TOP_BUILD_DIR}/lib/kdwsdl2cpp_lib.lib
 
 LIBS += -L$${TOP_BUILD_DIR}/lib \
-    -lkdwsdl2cpp_lib \
+    -l$${KDWSDL2CPP_LIB} \
     -lkode \
     -lwsdl \
     -lxmlschema \
