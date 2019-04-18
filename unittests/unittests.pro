@@ -40,6 +40,7 @@ SUBDIRS = \
   kddatetime \
   empty_list_wsdl \
   onvif_org_event \
+  default_attribute_value_wsdl \
   empty_element_wsdl \
   fault_namespace \
   enzo \
