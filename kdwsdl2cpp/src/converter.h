@@ -51,7 +51,7 @@ public:
     bool mIsBuiltin;
     QString mValue;
 
-    bool isNull() {
+    bool isNull() const {
         return mValue.isNull();
     }
   };
