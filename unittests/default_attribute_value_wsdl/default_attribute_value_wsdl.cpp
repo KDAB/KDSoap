@@ -109,13 +109,6 @@ private Q_SLOTS:
       QVERIFY(!actualXml.contains("byteArrayValue"));
       QVERIFY(!actualXml.contains("enumerationValue"));
     }
-
-//    Not implemented!
-//    void testDefaultDateTimeValue()
-//    {
-//      TNS__State state;
-//      QCOMPARE(state.xxx(), KDDateTime());
-//    }
 };
 
 QTEST_MAIN(DefaultAttributeValueTest)
