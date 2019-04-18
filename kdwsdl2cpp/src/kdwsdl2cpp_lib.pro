@@ -28,10 +28,10 @@ unix:PRE_TARGETDEPS += $${TOP_BUILD_DIR}/lib/libkode.a \
     $${TOP_BUILD_DIR}/lib/libwsdl.a \
     $${TOP_BUILD_DIR}/lib/libxmlschema.a \
     $${TOP_BUILD_DIR}/lib/libxmlcommon.a
-win32-msvc*:PRE_TARGETDEPS += $${TOP_BUILD_DIR}/lib/kode.lib \
-    $${TOP_BUILD_DIR}/lib/wsdl.lib \
-    $${TOP_BUILD_DIR}/lib/xmlschema.lib \
-    $${TOP_BUILD_DIR}/lib/xmlcommon.lib
+win32-msvc*:PRE_TARGETDEPS += $${TOP_BUILD_DIR}/lib/kode$$DEBUG_SUFFIX.lib \
+    $${TOP_BUILD_DIR}/lib/wsdl$$DEBUG_SUFFIX.lib \
+    $${TOP_BUILD_DIR}/lib/xmlschema$$DEBUG_SUFFIX.lib \
+    $${TOP_BUILD_DIR}/lib/xmlcommon$$DEBUG_SUFFIX.lib
 LIBS += -L$${TOP_BUILD_DIR}/lib \
     -lkode \
     -lwsdl \
