@@ -51,6 +51,7 @@ WSDL parser / code generator changes, applying to both client and server side:
 * Added "hasValueFor{MemberName}()" accessor function, for optional elements
 * Generated services now include soapVersion() and endpoint() accessors to match the setSoapVersion(...) and setEndpoint(...) mutators
 * Added support for generating messages for WSDL files without services or bindings
+* Fix erroneous QT_BEGIN_NAMESPACE around forward-declarations like Q17__DialogType.
 * KDSoapValue now stores the namespace declarations during parsing of a message and writes 
     namespace declarations during sending of a message
 * Avoid serialize crash with required polymorphic types, if the required variable wasn't actually provided

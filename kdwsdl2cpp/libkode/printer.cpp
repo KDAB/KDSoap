@@ -757,7 +757,7 @@ void Printer::printHeader( const File &file )
     }
 
     if (!clas.isNull()) {
-      const bool isQtClass = clas.startsWith(QLatin1Char('Q'));
+      const bool isQtClass = clas.startsWith(QLatin1Char('Q')) && !clas.contains(QLatin1Char('_'));
       if (isQtClass)
         out += QLatin1String("QT_BEGIN_NAMESPACE");
       out += "class " + clas + ';';
