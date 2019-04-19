@@ -59,6 +59,7 @@ class Printer::Private
     QString mGenerator;
     QString mOutputDirectory;
     QString mSourceFile;
+    QStringList mStatementsAfterIncludes;
 };
 
 void Printer::Private::addLabel( Code& code, const QString& label )
@@ -648,6 +649,11 @@ QString Printer::licenseHeader( const File &file ) const
   return code.text();
 }
 
+void Printer::setStatementsAfterIncludes(const QStringList &statements)
+{
+  d->mStatementsAfterIncludes = statements;
+}
+
 static QStringList commonLeft(const QStringList& l1, const QStringList& l2) {
     QStringList r;
     const int l = qMin(l1.size(), l2.size());
@@ -707,6 +713,10 @@ void Printer::printHeader( const File &file )
 
   if ( !processed.isEmpty() )
     out.newLine();
+
+  for ( const QString &statement : d->mStatementsAfterIncludes ) {
+      out += statement;
+  }
 
   // Create enums
   Enum::List enums = file.fileEnums();

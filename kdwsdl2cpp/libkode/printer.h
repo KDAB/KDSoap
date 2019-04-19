@@ -133,6 +133,11 @@ class KODE_EXPORT Printer
                                const QString &className = QString(),
                                bool forImplementation = false );
 
+    /**
+     * For #undef hacks for instance
+     */
+    void setStatementsAfterIncludes(const QStringList &statements);
+
   protected:
     /**
      * Returns the creation warning.

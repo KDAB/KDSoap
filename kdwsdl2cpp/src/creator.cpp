@@ -34,6 +34,7 @@ Creator::Creator()
     // Set generated header details.
     _printer.setCreationWarning(true);
     _printer.setGenerator(QLatin1String("KDAB's kdwsdl2cpp"));
+    _printer.setStatementsAfterIncludes(QStringList() << "#undef daylight" << "#undef timezone");
 
     // Qt-like coding style
     _printer.setLabelsDefineIndent(false);

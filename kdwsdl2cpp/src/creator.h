@@ -45,14 +45,7 @@ public:
 
 private:
     KODE::File _file;
-    class CustomPrinter : public KODE::Printer
-    {
-        virtual QString licenseHeader(const KODE::File &file) const {
-            QString str = "#undef daylight\n#undef timezone\n"; // workaround macros from Windows headers
-            return str + KODE::Printer::licenseHeader(file);
-        }
-    };
-    CustomPrinter _printer;
+    KODE::Printer _printer;
 };
 
 }
