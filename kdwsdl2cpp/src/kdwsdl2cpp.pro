@@ -16,12 +16,10 @@ unix:PRE_TARGETDEPS += $${TOP_BUILD_DIR}/lib/libkode.a \
     $${TOP_BUILD_DIR}/lib/libxmlcommon.a \
     $${TOP_BUILD_DIR}/lib/libkdwsdl2cpp_lib.a
 
-win32-msvc*:PRE_TARGETDEPS += $${TOP_BUILD_DIR}/lib/kode$$DEBUG_SUFFIX.lib \
-    $${TOP_BUILD_DIR}/lib/wsdl$$DEBUG_SUFFIX.lib \
-    $${TOP_BUILD_DIR}/lib/xmlschema$$DEBUG_SUFFIX.lib \
-    $${TOP_BUILD_DIR}/lib/xmlcommon$$DEBUG_SUFFIX.lib \
-    $${TOP_BUILD_DIR}/lib/kdwsdl2cpp_lib$$DEBUG_SUFFIX.lib
-
+win32-msvc*:PRE_TARGETDEPS += $${TOP_BUILD_DIR}/lib/kode.lib \
+    $${TOP_BUILD_DIR}/lib/wsdl.lib \
+    $${TOP_BUILD_DIR}/lib/xmlschema.lib \
+    $${TOP_BUILD_DIR}/lib/xmlcommon.lib
 LIBS += -L$${TOP_BUILD_DIR}/lib \
     -l$${KDWSDL2CPP_LIB} \
     -lkode \
