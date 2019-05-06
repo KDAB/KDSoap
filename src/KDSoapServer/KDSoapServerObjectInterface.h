@@ -133,8 +133,8 @@ public:
     struct KDSOAPSERVER_EXPORT HttpResponseHeaderItem {
         HttpResponseHeaderItem();
         HttpResponseHeaderItem(const QByteArray &name, const QByteArray &value);
-        QByteArray m_name;
         QByteArray m_value;
+        QByteArray m_name;
     };
 
     typedef QVector<HttpResponseHeaderItem> HttpResponseHeaderItems;
