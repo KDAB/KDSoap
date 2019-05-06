@@ -84,7 +84,7 @@ KODE::Code ElementArgumentSerializer::generate() const
         block += "}";
     } else {
         const QName actualType = mType.isEmpty() ? mElementType : mType;
-        const QString typeArgs = namespaceString(actualType.nameSpace()) + QLatin1String(", QString::fromLatin1(\"") + actualType.localName() + QLatin1String("\")");
+        //UNUSED const QString typeArgs = namespaceString(actualType.nameSpace()) + QLatin1String(", QString::fromLatin1(\"") + actualType.localName() + QLatin1String("\")");
         const bool isComplex = mTypeMap.isComplexType(mType, mElementType);
         const bool isPolymorphic = mTypeMap.isPolymorphic(mType, mElementType);
 
