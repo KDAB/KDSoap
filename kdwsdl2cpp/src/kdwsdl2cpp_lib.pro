@@ -21,7 +21,7 @@ QT += xml
 CONFIG += staticlib
 
 CONFIG += console
-static { macx:QMAKE_LFLAGS += -Wl,-rpath,$$[QT_INSTALL_LIBS] }
+static:macx:QMAKE_LFLAGS += -Wl,-rpath,$$[QT_INSTALL_LIBS]
 
 # Relink when a static lib changed
 unix:PRE_TARGETDEPS += $${TOP_BUILD_DIR}/lib/libkode.a \
