@@ -94,3 +94,5 @@ add_subdirectory(empty_list_wsdl)
 add_subdirectory(list_restriction)
 
 add_subdirectory(kddatetime)
+
+add_subdirectory(QSharedPointer_include)
