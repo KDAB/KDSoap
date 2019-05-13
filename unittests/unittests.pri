@@ -8,7 +8,7 @@ QT += testlib
 QT += xml
 
 macx:CONFIG -= app_bundle
-static { macx:QMAKE_LFLAGS += -Wl,-rpath,$$[QT_INSTALL_LIBS] }
+static:macx:QMAKE_LFLAGS += -Wl,-rpath,$$[QT_INSTALL_LIBS]
 
 INCLUDEPATH += $${TOP_SOURCE_DIR}/testtools \
     $${TOP_SOURCE_DIR}/kdwsdl2cpp/ $${TOP_SOURCE_DIR}/kdwsdl2cpp/src/ $${TOP_SOURCE_DIR}/kdwsdl2cpp/libkode/ $${TOP_SOURCE_DIR}/kdwsdl2cpp/common/ $${TOP_SOURCE_DIR}/kdwsdl2cpp/schema/ $${TOP_SOURCE_DIR}/kdwsdl2cpp/wsdl/
