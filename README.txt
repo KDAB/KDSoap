@@ -13,7 +13,7 @@ For more information, see http://www.kdab.com/kdab-products/kd-soap
 
 Using KD Soap
 =============
-KD Soap requires Qt 4.7.0 or newer.
+KD Soap requires Qt 4.7.0 or newer, and a compiler with C++11 support.
 
 See INSTALL.txt or INSTALL-cmake.txt for installation instructions.
 (Note that the qmake and CMake buildsystems are fully supported)
