@@ -137,7 +137,7 @@ class KODE_EXPORT Function
      */
     bool isStatic() const;
 
-    enum VirtualMode { NotVirtual, Virtual, PureVirtual };
+    enum VirtualMode { NotVirtual, Virtual, PureVirtual, Override };
     /**
      * Sets whether the function is marked as virtual or pure virtual.
      */

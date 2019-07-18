@@ -600,6 +600,10 @@ QString Printer::functionSignature( const Function &function,
 
   if ( function.isConst() )
     s += " const";
+  
+  if ( function.virtualMode() == Function::Override && !forImplementation ) {
+    s += " override";
+  }
 
   if ( function.virtualMode() == Function::PureVirtual )
     s += " = 0";

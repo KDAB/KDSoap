@@ -413,6 +413,7 @@ bool Converter::convertClientService()
                 }
 
                 KODE::Function doStart(QLatin1String("doStart"), QLatin1String("void"), KODE::Function::Protected);
+                doStart.setVirtualMode(KODE::Function::Override);
                 KODE::Code doStartCode;
                 const bool hasAction = clientAddAction(doStartCode, binding, operationName);
                 clientGenerateMessage(doStartCode, binding, message, operation, /*use members=*/true);
