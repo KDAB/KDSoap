@@ -264,7 +264,11 @@ void Converter::convertComplexType(const XSD::ComplexType *type)
         KODE::Function clone("_kd_clone");
         clone.setConst(true);
         clone.setReturnType(pbc + QLatin1String(" *"));
-        clone.setVirtualMode(KODE::Function::Virtual);
+        if (newClass.baseClasses().isEmpty()) {
+            clone.setVirtualMode(KODE::Function::Virtual);
+        } else {
+            clone.setVirtualMode(KODE::Function::Override);
+        }
         clone.setBody(QLatin1String("return new ") + newClassName + QLatin1String("(*this);"));
         newClass.addFunction(clone);
 
@@ -273,14 +277,22 @@ void Converter::convertComplexType(const XSD::ComplexType *type)
             KODE::Function substGetter("_kd_substitutionElementName");
             substGetter.setConst(true);
             substGetter.setReturnType(QLatin1String("QString"));
-            substGetter.setVirtualMode(KODE::Function::Virtual);
+            if (newClass.baseClasses().isEmpty()) {
+                substGetter.setVirtualMode(KODE::Function::Virtual);
+            } else {
+                substGetter.setVirtualMode(KODE::Function::Override);
+            }
             substGetter.setBody(QString::fromLatin1("return QString::fromLatin1(\"%1\");").arg(substElementName.localName()));
             newClass.addFunction(substGetter);
 
             KODE::Function substNSGetter("_kd_substitutionElementNameSpace");
             substNSGetter.setConst(true);
             substNSGetter.setReturnType(QLatin1String("QString"));
-            substNSGetter.setVirtualMode(KODE::Function::Virtual);
+            if (newClass.baseClasses().isEmpty()) {
+                substNSGetter.setVirtualMode(KODE::Function::Virtual);
+            } else {
+                substNSGetter.setVirtualMode(KODE::Function::Override);
+            }
             substNSGetter.setBody(QString::fromLatin1("return QString::fromLatin1(\"%1\");").arg(substElementName.nameSpace()));
             newClass.addFunction(substNSGetter);
         }
@@ -556,12 +568,18 @@ void Converter::createComplexTypeSerializer(KODE::Class &newClass, const XSD::Co
     if (!type->derivedTypes().isEmpty()) {
         serializeFunc.setVirtualMode(KODE::Function::Virtual);
     }
+    if (!newClass.baseClasses().isEmpty()) {
+        serializeFunc.setVirtualMode(KODE::Function::Override);
+    }
     serializeFunc.setConst(true);
 
     KODE::Function deserializeFunc(QLatin1String("deserialize"), QLatin1String("void"));
     deserializeFunc.addArgument(QLatin1String("const KDSoapValue& mainValue"));
     if (!type->derivedTypes().isEmpty()) {
         deserializeFunc.setVirtualMode(KODE::Function::Virtual);
+    }
+    if (!newClass.baseClasses().isEmpty()) {
+        deserializeFunc.setVirtualMode(KODE::Function::Override);
     }
 
     KODE::Code marshalCode, demarshalCode;

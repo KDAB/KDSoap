@@ -1,0 +1,12 @@
+General:
+========
+
+Client-side:
+============
+
+Server-side:
+============
+
+WSDL parser / code generator changes, applying to both client and server side:
+================================================================
+* Add override indicator to generated files. This requires c++11 for users of generated files.

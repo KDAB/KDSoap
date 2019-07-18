@@ -45,6 +45,7 @@ void Converter::convertServerService()
             processRequestMethod.addArgument("const KDSoapMessage &_request");
             processRequestMethod.addArgument("KDSoapMessage &_response");
             processRequestMethod.addArgument("const QByteArray& _soapAction");
+            processRequestMethod.setVirtualMode(KODE::Function::Override);
 
             KODE::Code body;
             const QString responseNs = mWSDL.definitions().targetNamespace();
