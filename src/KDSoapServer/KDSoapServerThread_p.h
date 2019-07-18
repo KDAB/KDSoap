@@ -77,7 +77,7 @@ public:
     void handleIncomingConnection(int socketDescriptor, KDSoapServer *server);
 
 protected:
-    virtual void run();
+    virtual void run() override;
 
 private:
     void start(); // use startThread instead

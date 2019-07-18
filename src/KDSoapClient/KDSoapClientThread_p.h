@@ -100,7 +100,7 @@ public:
     void stop();
 
 protected:
-    virtual void run();
+    virtual void run() override;
 
 private:
     QMutex m_mutex;

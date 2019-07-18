@@ -296,19 +296,19 @@ public:
     void setBinding(const Binding &binding);
     Binding binding() const;
 
-    void parseBinding(ParserContext *context, const QDomElement &parent);
-    void parseOperation(ParserContext *context, const QString &name, const QDomElement &parent);
-    void parseOperationInput(ParserContext *context, const QString &name, const QDomElement &parent);
-    void parseOperationOutput(ParserContext *context, const QString &name, const QDomElement &parent);
-    void parseOperationFault(ParserContext *context, const QString &name, const QDomElement &parent);
-    void parsePort(ParserContext *context, const QDomElement &parent);
+    void parseBinding(ParserContext *context, const QDomElement &parent) override;
+    void parseOperation(ParserContext *context, const QString &name, const QDomElement &parent) override;
+    void parseOperationInput(ParserContext *context, const QString &name, const QDomElement &parent) override;
+    void parseOperationOutput(ParserContext *context, const QString &name, const QDomElement &parent) override;
+    void parseOperationFault(ParserContext *context, const QString &name, const QDomElement &parent) override;
+    void parsePort(ParserContext *context, const QDomElement &parent) override;
 
-    void synthesizeBinding(ParserContext *context, QDomDocument &document, QDomElement &parent) const;
-    void synthesizeOperation(ParserContext *context, const QString &name, QDomDocument &document, QDomElement &parent) const;
-    void synthesizeOperationInput(ParserContext *context, const QString &name, QDomDocument &document, QDomElement &parent) const;
-    void synthesizeOperationOutput(ParserContext *context, const QString &name, QDomDocument &document, QDomElement &parent) const;
-    void synthesizeOperationFault(ParserContext *context, const QString &name, QDomDocument &document, QDomElement &parent) const;
-    void synthesizePort(ParserContext *context, QDomDocument &document, QDomElement &parent) const;
+    void synthesizeBinding(ParserContext *context, QDomDocument &document, QDomElement &parent) const override;
+    void synthesizeOperation(ParserContext *context, const QString &name, QDomDocument &document, QDomElement &parent) const override;
+    void synthesizeOperationInput(ParserContext *context, const QString &name, QDomDocument &document, QDomElement &parent) const override;
+    void synthesizeOperationOutput(ParserContext *context, const QString &name, QDomDocument &document, QDomElement &parent) const override;
+    void synthesizeOperationFault(ParserContext *context, const QString &name, QDomDocument &document, QDomElement &parent) const override;
+    void synthesizePort(ParserContext *context, QDomDocument &document, QDomElement &parent) const override;
 
 private:
     Binding mBinding;

@@ -58,7 +58,7 @@ public:
     void setDocumentation(const QString &documentation);
     QString documentation() const;
 
-    bool isSimple() const;
+    bool isSimple() const override;
 
     // True if this is the base class for other (derived) complex types
     bool isPolymorphicBaseClass() const;

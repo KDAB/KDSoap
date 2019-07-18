@@ -24,7 +24,7 @@ QString ServerObject::sayHello(const QString& msg)
 
 class Server : public KDSoapServer {
 public:
-    QObject* createServerObject() {
+    QObject* createServerObject() override {
         return new ServerObject;
     }
 };

@@ -39,7 +39,7 @@ class TransformMediaBindingServerObject : public TransformMediaBindingServerBase
 {
     Q_OBJECT
 public:
-    virtual TFMS__TransformResponseType transform(const TFMS__TransformRequestType &in)
+    virtual TFMS__TransformResponseType transform(const TFMS__TransformRequestType &in) override
     {
         TFMS__TransformJobType copyJob = in.transformJob();
         Q_ASSERT(copyJob.operationName() == "operation");
@@ -61,7 +61,7 @@ public:
     {
         setPath(QLatin1String("/xml"));
     }
-    virtual QObject *createServerObject()
+    virtual QObject *createServerObject() override
     {
         m_lastServerObject = new TransformMediaBindingServerObject;
         return m_lastServerObject;
@@ -81,7 +81,7 @@ class TransformMediaStatusBindingServerObject : public TransformMediaStatusBindi
 {
     Q_OBJECT
 public:
-    virtual BMS__ManageJobResponseType manageJob(const BMS__ManageJobRequestType &in)
+    virtual BMS__ManageJobResponseType manageJob(const BMS__ManageJobRequestType &in) override
     {
         // check what was sent
         Q_UNUSED(in);
@@ -98,13 +98,13 @@ public:
         Q_ASSERT(response.job().status().type() == BMS__JobStatusType::Running);
         return response;
     }
-    virtual BMS__ManageQueueResponseType manageQueue(const BMS__ManageQueueRequestType &in)
+    virtual BMS__ManageQueueResponseType manageQueue(const BMS__ManageQueueRequestType &in) override
     {
         Q_UNUSED(in);
         BMS__ManageQueueResponseType qrt;
         return qrt;
     }
-    virtual BMS__QueryJobResponseType queryJob(const BMS__QueryJobRequestType &in)
+    virtual BMS__QueryJobResponseType queryJob(const BMS__QueryJobRequestType &in) override
     {
         Q_UNUSED(in);
         BMS__QueryJobResponseType jrt;
@@ -120,7 +120,7 @@ public:
     {
         setPath(QLatin1String("/xml"));
     }
-    virtual QObject *createServerObject()
+    virtual QObject *createServerObject() override
     {
         m_lastServerObject = new TransformMediaStatusBindingServerObject;
         return m_lastServerObject;

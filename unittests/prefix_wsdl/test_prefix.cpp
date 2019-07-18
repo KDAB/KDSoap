@@ -39,12 +39,12 @@ class GuestServerObject : public GuestServerBase /* generated from wsdl */
 {
     Q_OBJECT
 public:
-    virtual TNS__AddPersonResponse addPerson(const TNS__AddPersonRequest &parameters)
+    virtual TNS__AddPersonResponse addPerson(const TNS__AddPersonRequest &parameters) override
     {
         Q_UNUSED(parameters);
         return TNS__AddPersonResponse();
     }
-    virtual TNS__AuthenticateResponse authenticate(const TNS__AuthenticateRequest &parameters)
+    virtual TNS__AuthenticateResponse authenticate(const TNS__AuthenticateRequest &parameters) override
     {
         if (parameters.serijskiBrojSertifikata() == "cert") {
             TNS__AuthenticateResponse response;
@@ -56,52 +56,52 @@ public:
         }
         return TNS__AuthenticateResponse();
     }
-    virtual TNS__SearchPersonResponse searchPerson(const TNS__SearchPersonRequest &parameters)
+    virtual TNS__SearchPersonResponse searchPerson(const TNS__SearchPersonRequest &parameters) override
     {
         Q_UNUSED(parameters);
         return TNS__SearchPersonResponse();
     }
-    virtual TNS__EditPersonResponse editPerson(const TNS__EditPersonRequest &parameters)
+    virtual TNS__EditPersonResponse editPerson(const TNS__EditPersonRequest &parameters) override
     {
         Q_UNUSED(parameters);
         return TNS__EditPersonResponse();
     }
-    virtual TNS__CityListResponse cityList(const TNS__CityListRequest &parameters)
+    virtual TNS__CityListResponse cityList(const TNS__CityListRequest &parameters) override
     {
         Q_UNUSED(parameters);
         return TNS__CityListResponse();
     }
-    virtual TNS__PlaceListResponse placeList(const TNS__PlaceListRequest &parameters)
+    virtual TNS__PlaceListResponse placeList(const TNS__PlaceListRequest &parameters) override
     {
         Q_UNUSED(parameters);
         return TNS__PlaceListResponse();
     }
-    virtual TNS__DocumentListResponse documentList(const TNS__DocumentListRequest &parameters)
+    virtual TNS__DocumentListResponse documentList(const TNS__DocumentListRequest &parameters) override
     {
         Q_UNUSED(parameters);
         return TNS__DocumentListResponse();
     }
-    virtual TNS__GuestTypeListResponse guestTypeList(const TNS__GuestTypeListRequest &parameters)
+    virtual TNS__GuestTypeListResponse guestTypeList(const TNS__GuestTypeListRequest &parameters) override
     {
         Q_UNUSED(parameters);
         return TNS__GuestTypeListResponse();
     }
-    virtual TNS__CountrytListResponse countrytList(const TNS__CountrytListRequest &parameters)
+    virtual TNS__CountrytListResponse countrytList(const TNS__CountrytListRequest &parameters) override
     {
         Q_UNUSED(parameters);
         return TNS__CountrytListResponse();
     }
-    virtual TNS__BuildingListResponse buildingList(const TNS__BuildingListRequest &parameters)
+    virtual TNS__BuildingListResponse buildingList(const TNS__BuildingListRequest &parameters) override
     {
         Q_UNUSED(parameters);
         return TNS__BuildingListResponse();
     }
-    virtual TNS__EntranceListResponse entranceList(const TNS__EntranceListRequest &parameters)
+    virtual TNS__EntranceListResponse entranceList(const TNS__EntranceListRequest &parameters) override
     {
         Q_UNUSED(parameters);
         return TNS__EntranceListResponse();
     }
-    virtual TNS__ServiceResponse service(const TNS__ServiceRequest &parameters)
+    virtual TNS__ServiceResponse service(const TNS__ServiceRequest &parameters) override
     {
         Q_UNUSED(parameters);
         return TNS__ServiceResponse();
@@ -116,7 +116,7 @@ public:
     {
         setPath(QLatin1String("/xml"));
     }
-    virtual QObject *createServerObject()
+    virtual QObject *createServerObject() override
     {
         m_lastServerObject = new GuestServerObject;
         return m_lastServerObject;

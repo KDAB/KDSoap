@@ -38,19 +38,19 @@ class IHCServerObject : public ResourceInteractionServiceServiceServerBase
 {
 public:
 
-    virtual TNS__WSResourceValueEnvelope getRuntimeValue(int)
+    virtual TNS__WSResourceValueEnvelope getRuntimeValue(int) override
     {
         return TNS__WSResourceValueEnvelope();
     }
-    virtual TNS__ArrayOfWSResourceValueEnvelope getRuntimeValues(const XSD__ArrayOfint &)
+    virtual TNS__ArrayOfWSResourceValueEnvelope getRuntimeValues(const XSD__ArrayOfint &) override
     {
         return TNS__ArrayOfWSResourceValueEnvelope();
     }
-    virtual TNS__ArrayOfWSResourceValueEnvelope getInitialValues(const XSD__ArrayOfint &)
+    virtual TNS__ArrayOfWSResourceValueEnvelope getInitialValues(const XSD__ArrayOfint &) override
     {
         return TNS__ArrayOfWSResourceValueEnvelope();
     }
-    virtual bool setResourceValue(const TNS__WSResourceValueEnvelope &parameter4)
+    virtual bool setResourceValue(const TNS__WSResourceValueEnvelope &parameter4) override
     {
         Q_ASSERT(parameter4.typeString() == "enum");
 #ifdef __clang__
@@ -86,63 +86,63 @@ public:
         return (parameter4.typeString() == "enum" && inputValue->enumValueID() == 42);
         */
     }
-    virtual bool setResourceValues(const TNS__ArrayOfWSResourceValueEnvelope &)
+    virtual bool setResourceValues(const TNS__ArrayOfWSResourceValueEnvelope &) override
     {
         return false;
     }
-    virtual TNS__ArrayOfWSResourceValueEnvelope enableRuntimeValueNotifications(const XSD__ArrayOfint &)
+    virtual TNS__ArrayOfWSResourceValueEnvelope enableRuntimeValueNotifications(const XSD__ArrayOfint &) override
     {
         return TNS__ArrayOfWSResourceValueEnvelope();
     }
-    virtual bool disableRuntimeValueNotifactions(const XSD__ArrayOfint &)
+    virtual bool disableRuntimeValueNotifactions(const XSD__ArrayOfint &) override
     {
         return false;
     }
-    virtual TNS__ArrayOfWSResourceValueEnvelope enableInitialValueNotifications(const XSD__ArrayOfint &)
+    virtual TNS__ArrayOfWSResourceValueEnvelope enableInitialValueNotifications(const XSD__ArrayOfint &) override
     {
         return TNS__ArrayOfWSResourceValueEnvelope();
     }
-    virtual bool disableInitialValueNotifactions(const XSD__ArrayOfint &)
+    virtual bool disableInitialValueNotifactions(const XSD__ArrayOfint &) override
     {
         return false;
     }
-    virtual TNS__ArrayOfWSResourceValueEnvelope waitForResourceValueChanges(int)
+    virtual TNS__ArrayOfWSResourceValueEnvelope waitForResourceValueChanges(int) override
     {
         return TNS__ArrayOfWSResourceValueEnvelope();
     }
-    virtual TNS__ArrayOfWSSceneResourceIdAndLocationURLs getSceneGroupResourceIdAndPositions(int)
+    virtual TNS__ArrayOfWSSceneResourceIdAndLocationURLs getSceneGroupResourceIdAndPositions(int) override
     {
         return TNS__ArrayOfWSSceneResourceIdAndLocationURLs();
     }
-    virtual TNS__WSSceneResourceIdAndLocationURLs getScenePositionsForSceneValueResource(int)
+    virtual TNS__WSSceneResourceIdAndLocationURLs getScenePositionsForSceneValueResource(int) override
     {
         return TNS__WSSceneResourceIdAndLocationURLs();
     }
-    virtual WPNS1__ArrayOfWSEnumDefinition getEnumeratorDefinitions()
+    virtual WPNS1__ArrayOfWSEnumDefinition getEnumeratorDefinitions() override
     {
         return WPNS1__ArrayOfWSEnumDefinition();
     }
-    virtual QString getResourceType(int)
+    virtual QString getResourceType(int) override
     {
         return QString();
     }
-    virtual TNS__ArrayOfWSDatalineResource getExtraDatalineInputs()
+    virtual TNS__ArrayOfWSDatalineResource getExtraDatalineInputs() override
     {
         return TNS__ArrayOfWSDatalineResource();
     }
-    virtual TNS__ArrayOfWSDatalineResource getExtraDatalineOutputs()
+    virtual TNS__ArrayOfWSDatalineResource getExtraDatalineOutputs() override
     {
         return TNS__ArrayOfWSDatalineResource();
     }
-    virtual TNS__ArrayOfWSDatalineResource getAllDatalineInputs()
+    virtual TNS__ArrayOfWSDatalineResource getAllDatalineInputs() override
     {
         return TNS__ArrayOfWSDatalineResource();
     }
-    virtual TNS__ArrayOfWSDatalineResource getAllDatalineOutputs()
+    virtual TNS__ArrayOfWSDatalineResource getAllDatalineOutputs() override
     {
         return TNS__ArrayOfWSDatalineResource();
     }
-    virtual TNS__WSResourceValueEnvelope getInitialValue(int)
+    virtual TNS__WSResourceValueEnvelope getInitialValue(int) override
     {
         return TNS__WSResourceValueEnvelope();
     }
@@ -155,7 +155,7 @@ public:
     IHCServer() : KDSoapServer(), m_lastServerObject(0)
     {
     }
-    virtual QObject *createServerObject()
+    virtual QObject *createServerObject() override
     {
         m_lastServerObject = new IHCServerObject;
         return m_lastServerObject;
