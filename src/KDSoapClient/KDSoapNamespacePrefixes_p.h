@@ -27,13 +27,16 @@
 #include <QtCore/QXmlStreamWriter>
 
 #include "KDSoapClientInterface.h"
+#include "KDSoapMessageAddressingProperties.h"
 
 class KDSoapNamespacePrefixes : public QMap<QString /*ns*/, QString /*prefix*/>
 {
 public:
     void writeStandardNamespaces(QXmlStreamWriter &writer,
                                  KDSoap::SoapVersion version = KDSoap::SOAP1_1,
-                                 bool messageAddressingEnabled = false);
+                                 bool messageAddressingEnabled = false,
+                                 KDSoapMessageAddressingProperties::KDSoapAddressingNamespace messageAddressingNamespace = KDSoapMessageAddressingProperties::Addressing200508
+                                );
 
     void writeNamespace(QXmlStreamWriter &writer, const QString &ns, const QString &prefix)
     {

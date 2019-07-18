@@ -3,6 +3,7 @@ General:
 
 Client-side:
 ============
+* Add support for selecting WS-Addressing namespace for send messages
 
 Server-side:
 ============
