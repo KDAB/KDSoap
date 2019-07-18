@@ -44,7 +44,7 @@ using namespace KDSoapUnitTestHelpers;
 class HelloServerObject : public Hello_ServiceServerBase
 {
 public:
-    virtual QString sayHello(const QString &firstName, const QString &lastName)
+    virtual QString sayHello(const QString &firstName, const QString &lastName) override
     {
         m_receivedFirstName = firstName;
         m_receivedLastName = lastName;
@@ -71,7 +71,7 @@ public:
     {
         setPath(QLatin1String("/hello"));
     }
-    virtual QObject *createServerObject()
+    virtual QObject *createServerObject() override
     {
         m_lastServerObject = new HelloServerObject;
         return m_lastServerObject;
@@ -90,7 +90,7 @@ public:
     RpcExampleServerObject()
         : m_heartbeatCalled(false)
     {}
-    virtual RPCEXAMPLE__ListKeysResult listKeys(const RPCEXAMPLE__ListKeysParams &params)
+    virtual RPCEXAMPLE__ListKeysResult listKeys(const RPCEXAMPLE__ListKeysParams &params) override
     {
         Q_UNUSED(params)
         RPCEXAMPLE__ListKeysResult result;
@@ -98,71 +98,71 @@ public:
         return result;
     }
 
-    virtual bool pullFile(const RPCEXAMPLE__PullFileParams &params)
+    virtual bool pullFile(const RPCEXAMPLE__PullFileParams &params) override
     {
         Q_UNUSED(params)
         return false;
     }
 
-    virtual bool putFile(const RPCEXAMPLE__PutFileParams &params)
+    virtual bool putFile(const RPCEXAMPLE__PutFileParams &params) override
     {
         Q_UNUSED(params)
         return false;
     }
 
-    virtual QString getFile(const RPCEXAMPLE__GetFileParams &params)
+    virtual QString getFile(const RPCEXAMPLE__GetFileParams &params) override
     {
         Q_UNUSED(params)
         return QString();
     }
 
-    virtual RPCEXAMPLE__ExecFileResult execFile(const RPCEXAMPLE__ExecFileParams &params)
+    virtual RPCEXAMPLE__ExecFileResult execFile(const RPCEXAMPLE__ExecFileParams &params) override
     {
         Q_UNUSED(params)
         return RPCEXAMPLE__ExecFileResult();
     }
 
-    virtual RPCEXAMPLE__ListFilesResult listFiles()
+    virtual RPCEXAMPLE__ListFilesResult listFiles() override
     {
         return RPCEXAMPLE__ListFilesResult();
     }
 
-    virtual bool setKey(const RPCEXAMPLE__SetKeyParams &params)
+    virtual bool setKey(const RPCEXAMPLE__SetKeyParams &params) override
     {
         Q_UNUSED(params)
         return false;
     }
 
-    virtual QString getKey(const RPCEXAMPLE__GetKeyParams &params)
+    virtual QString getKey(const RPCEXAMPLE__GetKeyParams &params) override
     {
         Q_UNUSED(params)
         return QString();
     }
 
-    virtual bool clearKey(const RPCEXAMPLE__ClearKeyParams &params)
+    virtual bool clearKey(const RPCEXAMPLE__ClearKeyParams &params) override
     {
         Q_UNUSED(params)
         return false;
     }
 
-    virtual QString execAction(const RPCEXAMPLE__ExecActionParams &params)
+    virtual QString execAction(const RPCEXAMPLE__ExecActionParams &params) override
     {
         Q_UNUSED(params)
         return QString();
     }
 
-    virtual void heartbeat(const RPCEXAMPLE__HeartbeatParams &params)
+    virtual void heartbeat(const RPCEXAMPLE__HeartbeatParams &params) override
     {
         Q_UNUSED(params);
         m_heartbeatCalled = true;
     }
 
-    virtual void legacyHeartbeat(const RPCEXAMPLE__LegacyHeartbeatParams &params)
+    virtual void legacyHeartbeat(const RPCEXAMPLE__LegacyHeartbeatParams &params) override
     {
         Q_UNUSED(params)
     }
 
-    virtual void message(const RPCEXAMPLE__MessageParams &params)
+    virtual void message(const RPCEXAMPLE__MessageParams &params) override
     {
         Q_UNUSED(params)
     }
@@ -182,7 +182,7 @@ public:
     {
         setPath(QLatin1String("/rpcexample"));
     }
-    virtual QObject *createServerObject()
+    virtual QObject *createServerObject() override
     {
         m_lastServerObject = new RpcExampleServerObject;
         return m_lastServerObject;

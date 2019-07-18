@@ -98,9 +98,9 @@ public:
         s_serverObjects.remove(QThread::currentThread());
     }
 
-    virtual void processRequest(const KDSoapMessage &request, KDSoapMessage &response, const QByteArray &soapAction);
+    virtual void processRequest(const KDSoapMessage &request, KDSoapMessage &response, const QByteArray &soapAction) override;
 
-    virtual QIODevice *processFileRequest(const QString &path, QByteArray &contentType)
+    virtual QIODevice *processFileRequest(const QString &path, QByteArray &contentType) override
     {
         if (path == QLatin1String("/path/to/file_download.txt")) {
             QFile *file = new QFile(QLatin1String("file_download.txt")); // local file, created by the unittest
@@ -110,7 +110,7 @@ public:
         return 0;
     }
 
-    virtual bool validateAuthentication(const KDSoapAuthentication &auth, const QString &path)
+    virtual bool validateAuthentication(const KDSoapAuthentication &auth, const QString &path) override
     {
         if (!m_requireAuth) {
             return true;
@@ -123,7 +123,7 @@ public:
     }
 
     // KDSoapServerRawXMLInterface interface
-    bool newRequest(const QByteArray &requestType, const QMap<QByteArray, QByteArray> &httpHeaders)
+    bool newRequest(const QByteArray &requestType, const QMap<QByteArray, QByteArray> &httpHeaders) override
     {
         if (m_useRawXML && requestType == "POST") {
             if (!httpHeaders.contains("content-type")
@@ -137,7 +137,7 @@ public:
         }
         return false;
     }
-    void processXML(const QByteArray &xmlChunk)
+    void processXML(const QByteArray &xmlChunk) override
     {
         if (!m_useRawXML) { // should never happen
             Q_ASSERT(m_useRawXML);
@@ -145,7 +145,7 @@ public:
         }
         m_assembledXML += xmlChunk;
     }
-    void endRequest()
+    void endRequest() override
     {
         if (m_assembledXML != rawCountryMessage(s_longEmployeeName)) {
             qWarning() << "Expected" << rawCountryMessage(s_longEmployeeName) << "\nGot" << m_assembledXML;
@@ -161,7 +161,7 @@ public:
 
     // KDSoapServerCustomVerbRequestInterface
     virtual bool processCustomVerbRequest(const QByteArray &requestType, const QByteArray &requestData,
-                                          const QMap<QByteArray, QByteArray> &httpHeaders, QByteArray &customAnswer)
+                                          const QMap<QByteArray, QByteArray> &httpHeaders, QByteArray &customAnswer) override
     {
         Q_UNUSED(requestData);
         Q_UNUSED(httpHeaders);
@@ -177,7 +177,7 @@ public:
         return false;
     }
 
-    virtual HttpResponseHeaderItems additionalHttpResponseHeaderItems() const
+    virtual HttpResponseHeaderItems additionalHttpResponseHeaderItems() const override
     {
         static KDSoapServerObjectInterface::HttpResponseHeaderItems result = KDSoapServerObjectInterface::HttpResponseHeaderItems()
                 <<  KDSoapServerObjectInterface::HttpResponseHeaderItem("Access-Control-Allow-Origin", "*")
@@ -246,7 +246,7 @@ class CountryServer : public KDSoapServer
 public:
     CountryServer() : KDSoapServer(), m_requireAuth(false), m_useRawXML(false) {}
 
-    virtual QObject *createServerObject()
+    virtual QObject *createServerObject() override
     {
         return new CountryServerObject(m_requireAuth, m_useRawXML);
     }
@@ -321,7 +321,7 @@ public:
     }
 
 protected:
-    void run()
+    void run() override
     {
         CountryServer server;
         if (m_threadPool) {

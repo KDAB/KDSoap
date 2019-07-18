@@ -119,7 +119,7 @@ public:
     }
 
 protected:
-    /* \reimp */ void run();
+    /* \reimp */ void run() override;
 
 private:
 

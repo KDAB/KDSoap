@@ -12,7 +12,7 @@ public:
     ServerObject();
     ~ServerObject();
 
-    QString sayHello(const QString& msg);
+    QString sayHello(const QString& msg) override;
 };
 
 #endif // HELLOWORLD_SERVER_H
