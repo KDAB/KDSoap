@@ -93,6 +93,10 @@ if(MSVC)
   add_definitions(-D_SCL_SECURE_NO_WARNINGS)
 endif()
 
+if (NOT MSVC)
+  add_compile_options(-Wsuggest-override)
+endif()
+
 if(${PROJECT_NAME}_STATIC)
   set(${PROJECT_NAME}_LIBRARY_MODE "STATIC")
 else()
