@@ -82,6 +82,9 @@ if(Qt5Core_FOUND)
 
 else()
   find_package(Qt4 4.7 QUIET REQUIRED QtCore QtMain)
+
+  # Workaround qt4 moc bug, see https://bugzilla.redhat.com/show_bug.cgi?id=1396755
+  add_definitions(-D_SYS_SYSMACROS_H_OUTER)
 endif()
 
 set(CMAKE_INCLUDE_CURRENT_DIR TRUE)
