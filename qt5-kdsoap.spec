@@ -80,7 +80,7 @@ cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_SKIP_RPATH=True -DCMAKE_BUILD_TYPE=R
 %{_libdir}/libkdsoap-server.so
 
 %changelog
-* Fri May 17 2019 Allen Winter <allen.winter@kdab.com> 1.8.0
+* Fri May 17 2019 Allen Winter <allen.winter@kdab.com> 1.8.0-1
   1.8.0
 * Thu Mar 01 2018 Allen Winter <allen.winter@kdab.com> 1.7.0
   1.7.0
