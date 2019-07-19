@@ -46,7 +46,7 @@ This package contains header files and associated tools and libraries to
 develop programs which need to access web services using the SOAP protocol.
 
 %prep
-%setup -q
+%autosetup
 
 %build
 touch .license.accepted
