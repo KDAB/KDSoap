@@ -52,7 +52,7 @@ QByteArray KDSoapMessageWriter::messageToXml(const KDSoapMessage &message, const
     writer.writeStartDocument();
 
     KDSoapNamespacePrefixes namespacePrefixes;
-    namespacePrefixes.writeStandardNamespaces(writer, m_version, message.hasMessageAddressingProperties());
+    namespacePrefixes.writeStandardNamespaces(writer, m_version, message.hasMessageAddressingProperties(), message.messageAddressingProperties().addressingNamespace());
 
     QString soapEnvelope;
     QString soapEncoding;
