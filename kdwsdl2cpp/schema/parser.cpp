@@ -136,38 +136,6 @@ void Parser::init(ParserContext *context)
         langAttr.setType(QName(XMLSchemaURI, QLatin1String("string")));
         d->mAttributes.append(langAttr);
     }
-
-    // From http://schemas.xmlsoap.org/wsdl/soap/encoding
-    {
-        ComplexType array(soapEncNs);
-        array.setArrayType(QName(XMLSchemaURI, QString::fromLatin1("any")));
-        array.setName(QLatin1String("Array"));
-        d->mComplexTypes.append(array);
-    }
-
-    // From http://schemas.xmlsoap.org/soap/encoding/, so that <attribute ref="soap-enc:arrayType" arrayType="kdab:EmployeeAchievement[]"/>
-    // can be resolved.
-    {
-        Attribute arrayTypeAttr(soapEncNs);
-        arrayTypeAttr.setName(QLatin1String("arrayType"));
-        arrayTypeAttr.setType(QName(XMLSchemaURI, QLatin1String("string")));
-        d->mAttributes.append(arrayTypeAttr);
-    }
-
-    // Same thing, but for SOAP-1.2: from http://www.w3.org/2003/05/soap-encoding
-    {
-        ComplexType array(soap12EncNs);
-        array.setArrayType(QName(XMLSchemaURI, QString::fromLatin1("any")));
-        array.setName(QLatin1String("Array"));
-        d->mComplexTypes.append(array);
-    }
-    {
-        Attribute arrayTypeAttr(soap12EncNs);
-        arrayTypeAttr.setName(QLatin1String("arrayType"));
-        arrayTypeAttr.setType(QName(XMLSchemaURI, QLatin1String("string")));
-        d->mAttributes.append(arrayTypeAttr);
-    }
-    d->mImportedSchemas.append(NSManager::soapEncNamespaces());
 }
 
 bool Parser::parseSchemaTag(ParserContext *context, const QDomElement &root)
@@ -800,10 +768,6 @@ void Parser::parseComplexContent(ParserContext *context, const QDomElement &elem
             typeName = childElement.attribute(QLatin1String("base"));
             typeName.setNameSpace(context->namespaceManager()->uri(typeName.prefix()));
 
-            if (typeName != QName(XMLSchemaURI, QString::fromLatin1("anyType"))) { // ignore this
-                complexType.setBaseTypeName(typeName);
-            }
-
             // if the base soapenc:Array, then read the arrayType attribute, and possibly the desired name for the child elements
             // TODO check namespace is really soap-encoding
             if (typeName.localName() == QLatin1String("Array")) {
@@ -860,6 +824,11 @@ void Parser::parseComplexContent(ParserContext *context, const QDomElement &elem
                 }
 
             } else {
+
+                if (typeName != QName(XMLSchemaURI, QString::fromLatin1("anyType"))) { // don't do this for anyType or Array
+                    complexType.setBaseTypeName(typeName);
+                }
+
                 QDomElement ctElement = childElement.firstChildElement();
                 while (!ctElement.isNull()) {
                     NSManager namespaceManager(context, ctElement);
@@ -1068,11 +1037,7 @@ static QUrl urlForLocation(ParserContext *context, const QString &location)
 // "schemaLocation is only a hint"
 void Parser::importSchema(ParserContext *context, const QString &location)
 {
-    // Ignore this one, we have it built into the typemap
-    if (location == soapEncNs) {
-        return;
-    }
-    // Ignore this one, we don't need it, and it relies on soap/encoding
+    // Ignore this one, we don't need it
     if (location == QLatin1String("http://schemas.xmlsoap.org/wsdl/")) {
         return;
     }

@@ -96,3 +96,4 @@ add_subdirectory(list_restriction)
 add_subdirectory(kddatetime)
 
 add_subdirectory(QSharedPointer_include)
+add_subdirectory(pki.pca.dfn.de)

@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="https://pki.pca.dfn.de/DFNCERT/Public" xmlns:impl="https://pki.pca.dfn.de/DFNCERT/Public" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns1="https://pki.pca.dfn.de/DFNCERT/Public">
+  <wsdl:types>
+    <schema targetNamespace="https://pki.pca.dfn.de/DFNCERT/Public" xmlns="http://www.w3.org/2001/XMLSchema">
+      <import namespace="http://schemas.xmlsoap.org/soap/encoding/" />
+      
+      <complexType name="ArrayOfInteger">
+                <complexContent>
+                    <restriction base="soapenc:Array">
+                        <attribute ref="soapenc:arrayType" wsdl:arrayType="soapenc:integer[]"/>
+                    </restriction>
+                </complexContent>
+      </complexType>
+      <complexType name="ArrayOfString">
+        <complexContent>
+          <restriction base="soapenc:Array">
+            <attribute ref="soapenc:arrayType" wsdl:arrayType="soapenc:string[]" />
+          </restriction>
+        </complexContent>
+      </complexType>
+      
+      <complexType name="DFNCERTTypesRAInfo">
+        <sequence>
+          <element name="ID" nillable="true" type="xsd:int">
+          </element>
+          <element name="Name" nillable="true" type="xsd:string">
+          </element>
+          <element name="DNPrefixes" nillable="true" type="tns1:ArrayOfString">
+          </element>
+        </sequence>
+      </complexType>
+      
+      <complexType name="ArrayOfDFNCERTTypesRAInfo">
+        <complexContent>
+          <restriction base="soapenc:Array">
+            <attribute ref="soapenc:arrayType" wsdl:arrayType="tns1:DFNCERTTypesRAInfo[]" />
+          </restriction>
+        </complexContent>
+      </complexType>
+      
+      <complexType name="DFNCERTTypesCAInfo">
+        <sequence>
+          <element name="RALoginID" nillable="true" type="xsd:int">
+          </element>
+          <element name="RAInfos" nillable="true" type="tns1:ArrayOfDFNCERTTypesRAInfo">
+          </element>
+          <element name="CAChain" nillable="true" type="tns1:ArrayOfString">
+          </element>
+          <element name="Roles" nillable="true" type="tns1:ArrayOfString">
+          </element>
+        </sequence>
+      </complexType>
+      
+      <complexType name="DFNCERTTypesValidDomain">
+        <sequence>
+          <element name="Name" nillable="true" type="xsd:string">
+          </element>
+          <element name="Type" nillable="true" type="xsd:string">
+          </element>
+        </sequence>
+      </complexType>
+  
+      <complexType name="ArrayOfDFNCERTTypesValidDomain">
+        <complexContent>
+          <restriction base="soapenc:Array">
+            <attribute ref="soapenc:arrayType" wsdl:arrayType="tns1:DFNCERTTypesValidDomain[]" />
+          </restriction>
+        </complexContent>
+      </complexType>
+
+      <complexType name="DFNCERTTypesRequestInfo">
+          <sequence>
+              <element name="Serial" nillable="true" type="xsd:int">
+              </element>
+              <element name="SameDNSerials" nillable="true" type="tns1:ArrayOfInteger">
+              </element>
+              <element name="Status" nillable="true" type="xsd:string">
+              </element>
+              <element name="Parameters" nillable="true" type="tns1:DFNCERTTypesRequestParameters">
+              </element>
+              <element name="PublicKey" nillable="true" type="xsd:string">
+              </element>
+              <element name="PublicKeyAlgorithm" nillable="true" type="xsd:string">
+              </element>
+              <element name="PublicKeyDigest" nillable="true" type="xsd:string">
+              </element>
+              <element name="PublicKeyLength" nillable="true" type="xsd:int">
+              </element>
+              <element name="Publish" nillable="true" type="xsd:boolean">
+              </element>
+              <element name="SignatureAlgorithm" nillable="true" type="xsd:string">
+              </element>
+              <element name="DateSubmitted" nillable="true" type="xsd:string">
+              </element>
+              <element name="DateApproved" nillable="true" type="xsd:string">
+              </element>
+              <element name="DateDeleted" nillable="true" type="xsd:string">
+              </element>
+          </sequence>
+      </complexType>
+
+      <complexType name="DFNCERTTypesRequestParameters">
+          <sequence>
+              <element name="RaID" nillable="true" type="xsd:int">
+              </element>
+              <element name="Subject" nillable="true" type="xsd:string">
+              </element>
+              <element name="SubjectAltNames" nillable="true" type="tns1:ArrayOfString">
+              </element>
+              <element name="Role" nillable="true" type="xsd:string">
+              </element>
+              <element name="NotBefore" nillable="true" type="xsd:dateTime">
+              </element>
+              <element name="NotAfter" nillable="true" type="xsd:dateTime">
+              </element>
+              <element name="AdditionalName" nillable="true" type="xsd:string">
+              </element>
+              <element name="AdditionalEMail" nillable="true" type="xsd:string">
+              </element>
+              <element name="AdditionalUnit" nillable="true" type="xsd:string">
+              </element>
+          </sequence>
+      </complexType>
+
+    </schema>
+  </wsdl:types>
+  
+  <wsdl:message name="newRequestRequest">
+    <wsdl:part name="RaID" type="xsd:int" />
+    <wsdl:part name="PKCS10" type="xsd:string" />
+    <wsdl:part name="AltNames" type="tns1:ArrayOfString" />
+    <wsdl:part name="Role" type="xsd:string" />
+    <wsdl:part name="Pin" type="xsd:string" />
+    <wsdl:part name="AddName" type="xsd:string" />
+    <wsdl:part name="AddEMail" type="xsd:string" />
+    <wsdl:part name="AddOrgUnit" type="xsd:string" />
+    <wsdl:part name="Publish" type="xsd:boolean" />
+  </wsdl:message>
+  
+  <wsdl:message name="newRequestResponse">
+    <wsdl:part name="newRequestReturn" type="xsd:int" />
+  </wsdl:message>
+  
+  <wsdl:message name="newRevocationRequestRequest">
+    <wsdl:part name="RaID" type="xsd:int" />
+    <wsdl:part name="Serial" type="xsd:integer" />
+    <wsdl:part name="Reason" type="xsd:string" />
+    <wsdl:part name="Pin" type="xsd:string" />
+  </wsdl:message>
+  
+  <wsdl:message name="newRevocationRequestResponse">
+    <wsdl:part name="newRevocationRequestReturn" type="xsd:int" />
+  </wsdl:message>
+  
+  <wsdl:message name="getRequestPrintoutRequest">
+    <wsdl:part name="RaID" type="xsd:int" />
+    <wsdl:part name="Serial" type="xsd:int" />
+    <wsdl:part name="Format" type="xsd:string" />
+    <wsdl:part name="Pin" type="xsd:string" />
+  </wsdl:message>
+  
+  <wsdl:message name="getRequestPrintoutResponse">
+    <wsdl:part name="getRequestPrintoutReturn" type="xsd:base64Binary" />
+  </wsdl:message>
+  
+  <wsdl:message name="getRequestInfoRequest">
+    <wsdl:part name="RaID" type="xsd:int" />
+    <wsdl:part name="Serial" type="xsd:int"/>
+    <wsdl:part name="Pin" type="xsd:string" />
+  </wsdl:message>
+
+  <wsdl:message name="getRequestInfoResponse">
+        <wsdl:part name="getRequestInfoReturn" type="tns1:DFNCERTTypesRequestInfo"/>
+    </wsdl:message>
+
+
+  <wsdl:message name="getCertificateByRequestSerialRequest">
+    <wsdl:part name="RaID" type="xsd:int" />
+    <wsdl:part name="Serial" type="xsd:int" />
+    <wsdl:part name="Pin" type="xsd:string" />
+  </wsdl:message>
+
+  <wsdl:message name="getCertificateByRequestSerialResponse">
+    <wsdl:part name="getCertificateByRequestSerialReturn" type="xsd:string" />
+  </wsdl:message>
+
+  <wsdl:message name="getCAInfoRequest">
+    <wsdl:part name="RaID" type="xsd:int" />
+  </wsdl:message>
+
+  <wsdl:message name="getCAInfoResponse">
+    <wsdl:part name="getCAInfoReturn" type="tns1:DFNCERTTypesCAInfo" />
+  </wsdl:message>
+
+  <wsdl:message name="getValidDomainsRequest">
+    <wsdl:part name="RaID" type="xsd:int" />
+    <wsdl:part name="Type" type="xsd:string" />
+  </wsdl:message>
+
+  <wsdl:message name="getValidDomainsResponse">
+    <wsdl:part name="getValidDomainsReturn" type="tns1:ArrayOfDFNCERTTypesValidDomain" />
+  </wsdl:message>
+
+  <wsdl:portType name="DFNCERTPublicHandler">
+    <wsdl:operation name="newRequest" parameterOrder="RaID PKCS10 AltNames Role Pin AddName AddEMail AddOrgUnit Publish">
+      <wsdl:input message="impl:newRequestRequest" name="newRequestRequest" />
+      <wsdl:output message="impl:newRequestResponse" name="newRequestResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="newRevocationRequest" parameterOrder="RaID Serial Reason Pin">
+      <wsdl:input message="impl:newRevocationRequestRequest" name="newRevocationRequestRequest" />
+      <wsdl:output message="impl:newRevocationRequestResponse" name="newRevocationRequestResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="getRequestPrintout" parameterOrder="RaID Serial Format Pin">
+      <wsdl:input message="impl:getRequestPrintoutRequest" name="getRequestPrintoutRequest" />
+      <wsdl:output message="impl:getRequestPrintoutResponse" name="getRequestPrintoutResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="getCertificateByRequestSerial" parameterOrder="RaID Serial Pin">
+      <wsdl:input message="impl:getCertificateByRequestSerialRequest" name="getCertificateByRequestSerialRequest" />
+      <wsdl:output message="impl:getCertificateByRequestSerialResponse" name="getCertificateByRequestSerialResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="getCAInfo" parameterOrder="RaID">
+      <wsdl:input message="impl:getCAInfoRequest" name="getCAInfoRequest" />
+      <wsdl:output message="impl:getCAInfoResponse" name="getCAInfoResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="getValidDomains" parameterOrder="RaID Type">
+      <wsdl:input message="impl:getValidDomainsRequest" name="getValidDomainsRequest" />
+      <wsdl:output message="impl:getValidDomainsResponse" name="getValidDomainsResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="getRequestInfo" parameterOrder="RaID Serial Pin">
+        <wsdl:input message="impl:getRequestInfoRequest" name="getRequestInfoRequest"/>
+            <wsdl:output message="impl:getRequestInfoResponse" name="getRequestInfoResponse"/>
+    </wsdl:operation>
+
+  </wsdl:portType>
+  <wsdl:binding name="DFNCERTPublicSoapBinding" type="impl:DFNCERTPublicHandler">
+    <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="newRequest">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="newRequestRequest">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://pki.pca.dfn.de/DFNCERT/Public" use="encoded" />
+      </wsdl:input>
+      <wsdl:output name="newRequestResponse">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://pki.pca.dfn.de/DFNCERT/Public" use="encoded" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="newRevocationRequest">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="newRevocationRequestRequest">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://pki.pca.dfn.de/DFNCERT/Public" use="encoded" />
+      </wsdl:input>
+      <wsdl:output name="newRevocationRequestResponse">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://pki.pca.dfn.de/DFNCERT/Public" use="encoded" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getRequestPrintout">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="getRequestPrintoutRequest">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://pki.pca.dfn.de/DFNCERT/Public" use="encoded" />
+      </wsdl:input>
+      <wsdl:output name="getRequestPrintoutResponse">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://pki.pca.dfn.de/DFNCERT/Public" use="encoded" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getRequestInfo">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="getRequestInfoRequest">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://pki.pca.dfn.de/DFNCERT/Public" use="encoded" />
+      </wsdl:input>
+      <wsdl:output name="getRequestInfoResponse">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://pki.pca.dfn.de/DFNCERT/Public" use="encoded" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getCertificateByRequestSerial">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="getCertificateByRequestSerialRequest">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://pki.pca.dfn.de/DFNCERT/Public" use="encoded" />
+      </wsdl:input>
+      <wsdl:output name="getCertificateByRequestSerialResponse">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://pki.pca.dfn.de/DFNCERT/Public" use="encoded" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getCAInfo">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="getCAInfoRequest">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://pki.pca.dfn.de/DFNCERT/Public" use="encoded" />
+      </wsdl:input>
+      <wsdl:output name="getCAInfoResponse">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://pki.pca.dfn.de/DFNCERT/Public" use="encoded" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getValidDomains">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="getValidDomainsRequest">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://pki.pca.dfn.de/DFNCERT/Public" use="encoded" />
+      </wsdl:input>
+      <wsdl:output name="getValidDomainsResponse">
+        <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="https://pki.pca.dfn.de/DFNCERT/Public" use="encoded" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="DFNCERTPublicHandlerService">
+    <wsdl:port binding="impl:DFNCERTPublicSoapBinding" name="DFNCERTPublic">
+      <wsdlsoap:address location="https://pki.pca.dfn.de/dfn-ca-global-g2/cgi-bin/pub/soap/DFNCERT/Public" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

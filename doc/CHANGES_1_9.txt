@@ -11,3 +11,4 @@ Server-side:
 WSDL parser / code generator changes, applying to both client and server side:
 ================================================================
 * Add override indicator to generated files. This requires c++11 for users of generated files.
+* Remove all special handling of soap/encoding namespace, which fixes the use of soapenc:string and soapenc:integer for instance (#179).

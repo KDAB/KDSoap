@@ -92,11 +92,6 @@ void Converter::convertComplexType(const XSD::ComplexType *type)
     //if ( type->isEmpty() )
     //    return;
 
-    // Skip the Array types we added in Parser::init...
-    if (NSManager::soapEncNamespaces().contains(type->nameSpace())) {
-        return;
-    }
-
     const QString className(mTypeMap.localType(type->qualifiedName()));
     KODE::Class newClass;
     newClass.setNamespaceAndName(className);

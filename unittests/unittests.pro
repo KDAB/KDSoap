@@ -37,6 +37,7 @@ SUBDIRS = \
   encapsecurity \
   prefix_wsdl \
   vidyo \
+  pki.pca.dfn.de \
   kddatetime \
   empty_list_wsdl \
   onvif_org_event \
