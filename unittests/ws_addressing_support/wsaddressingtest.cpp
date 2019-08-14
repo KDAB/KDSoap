@@ -53,9 +53,15 @@ private Q_SLOTS:
 
         QString unspecified = KDSoapMessageAddressingProperties::predefinedAddressToString(KDSoapMessageAddressingProperties::Unspecified);
         QCOMPARE(unspecified, QString("http://www.w3.org/2005/08/addressing/unspecified"));
-        
-        QString none200303 = KDSoapMessageAddressingProperties::predefinedAddressToString(KDSoapMessageAddressingProperties::None, KDSoapMessageAddressingProperties::Addressing200303);
-        QCOMPARE(none200303, QString("http://schemas.xmlsoap.org/ws/2003/03/addressing/none"));
+
+        QString reply200303 = KDSoapMessageAddressingProperties::predefinedAddressToString(KDSoapMessageAddressingProperties::Reply, KDSoapMessageAddressingProperties::Addressing200303);
+        QCOMPARE(reply200303, QString()); // Reply is not a thing in older than 2005/08
+
+        QString anon200303 = KDSoapMessageAddressingProperties::predefinedAddressToString(KDSoapMessageAddressingProperties::Anonymous, KDSoapMessageAddressingProperties::Addressing200303);
+        QCOMPARE(anon200303, QString("http://schemas.xmlsoap.org/ws/2003/03/addressing/role/anonymous"));
+
+        QString unspecified200303 = KDSoapMessageAddressingProperties::predefinedAddressToString(KDSoapMessageAddressingProperties::Unspecified, KDSoapMessageAddressingProperties::Addressing200303);
+        QCOMPARE(unspecified200303, QString("http://schemas.xmlsoap.org/ws/2003/03/addressing/id/unspecified"));
     }
 
     void shouldWriteAProperSoapMessageWithRightsAddressingProperties()

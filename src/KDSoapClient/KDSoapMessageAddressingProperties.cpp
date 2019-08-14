@@ -217,20 +217,41 @@ KDSoapMessageAddressingProperties::~KDSoapMessageAddressingProperties()
 
 QString KDSoapMessageAddressingProperties::predefinedAddressToString(KDSoapMessageAddressingProperties::KDSoapAddressingPredefinedAddress address, KDSoapAddressingNamespace addressingNamespace)
 {
-    const QString addressingNS = addressingNamespaceToString(addressingNamespace);
+    QString prefix = addressingNamespaceToString(addressingNamespace);
+    switch (addressingNamespace) {
+    case Addressing200303:
+    case Addressing200403:
+    case Addressing200408: {
+        switch (address) {
+        case Anonymous:
+            prefix += QLatin1String("/role");
+            break;
+        case Unspecified:
+            prefix += QLatin1String("/id");
+            break;
+        default:
+            qWarning("Anything but Anonymous or Unspecified has no meaning in ws-addressing 2004/08 and earlier");
+            return QString();
+        }
+        break;
+    }
+    default:
+        break;
+    }
+
     switch (address) {
     case Anonymous:
-        return addressingNS + QLatin1String("/anonymous");
+        return prefix + QLatin1String("/anonymous");
     case None:
-        return addressingNS + QLatin1String("/none");
+        return prefix + QLatin1String("/none");
     case Reply:
-        return addressingNS + QLatin1String("/reply");
+        return prefix + QLatin1String("/reply");
     case Unspecified:
-        return addressingNS + QLatin1String("/unspecified");
-    default:
-        Q_ASSERT(false); // should never happen
-        return QString();
+        return prefix + QLatin1String("/unspecified");
     }
+
+    Q_ASSERT(false); // should never happen
+    return QString();
 }
 
 bool KDSoapMessageAddressingProperties::isWSAddressingNamespace(const QString &namespaceUri)
@@ -296,7 +317,19 @@ void KDSoapMessageAddressingProperties::writeMessageAddressingProperties(KDSoapN
     Q_UNUSED(messageNamespace);
     Q_UNUSED(forceQualified);
 
-    if (d->destination == predefinedAddressToString(None, d->addressingNamespace)) {
+    bool supportsNoneAddressing = false;
+    switch (d->addressingNamespace) {
+    case Addressing200303:
+    case Addressing200403:
+    case Addressing200408:
+        supportsNoneAddressing = false;
+        break;
+    case Addressing200508:
+        supportsNoneAddressing = true;
+        break;
+    }
+
+    if (supportsNoneAddressing && d->destination == predefinedAddressToString(None, d->addressingNamespace)) {
         return;
     }
 
