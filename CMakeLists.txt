@@ -11,6 +11,10 @@
 #  Build the test harness.
 #  Default=false
 #
+# -DKDSoap_EXAMPLES=[true|false]
+#  Build the examples.
+#  Default=true
+#
 cmake_minimum_required(VERSION 2.8.7)
 cmake_policy(SET CMP0020 NEW)
 
@@ -40,6 +44,7 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/ ${CMAKE_MODULE_PATH}")
 
 option(${PROJECT_NAME}_STATIC "Build statically" OFF)
 option(${PROJECT_NAME}_TESTS "Build the tests" OFF)
+option(${PROJECT_NAME}_EXAMPLES "Build the examples" ON)
 
 set(${PROJECT_NAME}_VERSION_MAJOR 1)
 set(${PROJECT_NAME}_VERSION_MINOR 8)
@@ -186,5 +191,7 @@ if(${PROJECT_NAME}_IS_ROOT_PROJECT)
     add_subdirectory(testtools)
     add_subdirectory(unittests)
   endif()
-  add_subdirectory(examples)
+  if(${PROJECT_NAME}_EXAMPLES)
+    add_subdirectory(examples)
+  endif()
 endif()
