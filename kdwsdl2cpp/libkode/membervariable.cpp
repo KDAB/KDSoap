@@ -30,19 +30,19 @@ class MemberVariable::Private
 };
 
 MemberVariable::MemberVariable()
-  : Variable(), d( 0 )
+  : Variable(), d( nullptr )
 {
 }
 
 MemberVariable::MemberVariable( const MemberVariable &other )
-  : Variable( other ), d( 0 )
+  : Variable( other ), d( nullptr )
 {
   // *d = *other.d;
 }
 
 MemberVariable::MemberVariable( const QString &name, const QString &type,
                                 bool isStatic )
-  : Variable( name, type, isStatic ), d( 0 )
+  : Variable( name, type, isStatic ), d( nullptr )
 {
     setName( memberVariableName( name ) );
 }

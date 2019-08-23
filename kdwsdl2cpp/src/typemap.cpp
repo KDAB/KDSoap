@@ -59,7 +59,7 @@ static QString correctSyntaxCpp(const QString &str)
 }
 
 TypeMap::TypeMap()
-    : mNSManager(0)
+    : mNSManager(nullptr)
 {
     // see http://www.w3.org/TR/xmlschema-2
     // or http://www.datypic.com/sc/xsd/s-datatypes.xsd.html

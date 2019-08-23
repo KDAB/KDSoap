@@ -664,7 +664,7 @@ bool Converter::convertClientCall(const Operation &operation, const Binding &bin
     const int numReturnValues = outParts.count();
 
     if (numReturnValues == 1) {
-        const Part retPart = outParts.first();
+        const Part &retPart = outParts.first();
         const QString retType = mTypeMap.localType(retPart.type(), retPart.element());
         if (retType.isEmpty()) {
             qWarning("Could not generate operation '%s'", qPrintable(operation.name()));
@@ -773,7 +773,7 @@ void Converter::convertClientOutputMessage(const Operation &operation,
 {
     // result signal
     const QString operationName = lowerlize(operation.name());
-    const QString signalBase = operationName;
+    const QString &signalBase = operationName;
     const QString callName = QLatin1String("async") + upperlize(operation.name());
     KODE::Function doneSignal(signalBase + QLatin1String("Done"), QLatin1String("void"), KODE::Function::Signal);
     doneSignal.setDocs(QLatin1String("This signal is emitted whenever the asynchronous call ") + callName + QLatin1String("() has succeeded."));

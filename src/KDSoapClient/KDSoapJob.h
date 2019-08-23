@@ -71,7 +71,7 @@ public:
      *
      * \param parent optional parent object
      */
-    explicit KDSoapJob(QObject *parent = 0);
+    explicit KDSoapJob(QObject *parent = nullptr);
 
     /**
      * Destructor.

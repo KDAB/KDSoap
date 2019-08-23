@@ -24,8 +24,8 @@
 #include <QDebug>
 
 ParserContext::ParserContext()
-  : mNamespaceManager( 0 ),
-    mMessageHandler( 0 )
+  : mNamespaceManager( nullptr ),
+    mMessageHandler( nullptr )
 {
 }
 

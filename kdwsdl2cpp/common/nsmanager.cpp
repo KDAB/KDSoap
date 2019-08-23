@@ -28,7 +28,7 @@
 // maybe port to QXmlNamespaceSupport?
 
 NSManager::NSManager()
-    : mContext(NULL), mParentManager(NULL)
+    : mContext(nullptr), mParentManager(nullptr)
 {
 }
 
@@ -120,8 +120,8 @@ QMap<QString, QString> NSManager::prefixMap() const
 void NSManager::addPrefixes(const QMap<QString, QString> &prefixes)
 {
     for (QMap<QString, QString>::const_iterator it = prefixes.constBegin() ; it != prefixes.constEnd() ; ++it) {
-        const QString prefix = it.key();
-        const QString ns = it.value();
+        const QString &prefix = it.key();
+        const QString &ns = it.value();
         // Only write down this prefix if we don't have it yet
         // and if we don't have another prefix for this NS (this is mostly for backwards compat,
         // so that msexchange still uses TNS rather than 'M' or 'T'...)

@@ -41,7 +41,7 @@ static QHash<QUrl, QByteArray> fileProviderCache;
 
 
 FileProvider::FileProvider()
-  : QObject( 0 )
+  : QObject( nullptr )
 {
 }
 

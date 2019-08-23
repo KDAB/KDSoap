@@ -100,7 +100,7 @@ private:
      * Constructs a KDSoapSslHandler.
      * Used internally
      */
-    explicit KDSoapSslHandler(QObject *parent = 0);
+    explicit KDSoapSslHandler(QObject *parent = nullptr);
     virtual ~KDSoapSslHandler();
 
     QNetworkReply *m_reply;

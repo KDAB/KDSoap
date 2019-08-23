@@ -54,7 +54,7 @@ public:
      * asynchronous pending call \p call and sets this object's parent to
      * \p parent.
      */
-    explicit KDSoapPendingCallWatcher(const KDSoapPendingCall &call, QObject *parent = 0);
+    explicit KDSoapPendingCallWatcher(const KDSoapPendingCall &call, QObject *parent = nullptr);
     /**
      * Destroys this object. If this KDSoapPendingCallWatcher object was the last reference to the unfinished pending call, the call will be canceled.
      */
