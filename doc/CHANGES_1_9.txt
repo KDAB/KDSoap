@@ -4,6 +4,7 @@ General:
 Client-side:
 ============
 * Add support for selecting WS-Addressing namespace for send messages
+* Add support for implementing SOAP-over-UDP clients (see KDSoapUdpClient)
 
 Server-side:
 ============
