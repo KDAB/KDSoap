@@ -118,7 +118,7 @@ void Converter::generateServerMethod(KODE::Code &code, const Binding &binding, c
     QStringList inputVars;
     const Part::List parts = message.parts();
     for (int partNum = 0; partNum < parts.count(); ++partNum) {
-        const Part part = parts.at(partNum);
+        const Part &part = parts.at(partNum);
         const QString lowerName = lowerlize(part.name());
         const QString argType = mTypeMap.localType(part.type(), part.element());
         //qDebug() << "localInputType" << part.type().qname() << part.element().qname() << "->" << argType;

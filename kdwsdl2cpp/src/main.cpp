@@ -74,7 +74,7 @@ int main(int argc, char **argv)
 {
     QCoreApplication app(argc, argv);
 
-    const char *fileName = 0;
+    const char *fileName = nullptr;
     QFileInfo outputFile;
     bool both = false;
     bool impl = false;

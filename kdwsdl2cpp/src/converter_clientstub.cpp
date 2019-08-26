@@ -130,7 +130,7 @@ bool Converter::convertClientService()
             // Ctor and dtor
             {
                 KODE::Function ctor(newClass.name());
-                ctor.addArgument(KODE::Function::Argument(QLatin1String("QObject* _parent"), QLatin1String("0")));
+                ctor.addArgument(KODE::Function::Argument(QLatin1String("QObject* _parent"), QLatin1String("nullptr")));
                 ctor.addInitializer(QLatin1String("QObject(_parent)"));
                 KODE::Function dtor(QLatin1Char('~') + newClass.name());
                 KODE::Code ctorCode, dtorCode;
@@ -369,7 +369,7 @@ bool Converter::convertClientService()
 
                 KODE::Function ctor(jobClass.name());
                 ctor.addArgument(KODE::Function::Argument(QString::fromLatin1("%1* service").arg(fullyQualified(newClass))));
-                ctor.addArgument(KODE::Function::Argument(QLatin1String("QObject* _parent"), QLatin1String("0")));
+                ctor.addArgument(KODE::Function::Argument(QLatin1String("QObject* _parent"), QLatin1String("nullptr")));
                 ctor.addInitializer(QLatin1String("KDSoapJob(_parent)"));
                 ctor.addInitializer(QLatin1String("mService(service)"));
 
@@ -664,7 +664,7 @@ bool Converter::convertClientCall(const Operation &operation, const Binding &bin
     const int numReturnValues = outParts.count();
 
     if (numReturnValues == 1) {
-        const Part retPart = outParts.first();
+        const Part &retPart = outParts.first();
         const QString retType = mTypeMap.localType(retPart.type(), retPart.element());
         if (retType.isEmpty()) {
             qWarning("Could not generate operation '%s'", qPrintable(operation.name()));
@@ -773,7 +773,7 @@ void Converter::convertClientOutputMessage(const Operation &operation,
 {
     // result signal
     const QString operationName = lowerlize(operation.name());
-    const QString signalBase = operationName;
+    const QString &signalBase = operationName;
     const QString callName = QLatin1String("async") + upperlize(operation.name());
     KODE::Function doneSignal(signalBase + QLatin1String("Done"), QLatin1String("void"), KODE::Function::Signal);
     doneSignal.setDocs(QLatin1String("This signal is emitted whenever the asynchronous call ") + callName + QLatin1String("() has succeeded."));

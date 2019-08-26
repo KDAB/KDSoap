@@ -93,7 +93,7 @@ class KDSoapClientThread : public QThread
 {
     Q_OBJECT
 public:
-    explicit KDSoapClientThread(QObject *parent = 0);
+    explicit KDSoapClientThread(QObject *parent = nullptr);
 
     void enqueue(KDSoapThreadTaskData *taskData);
 

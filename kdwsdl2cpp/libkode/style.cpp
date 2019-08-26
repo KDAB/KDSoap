@@ -29,12 +29,12 @@ class Style::Private
 };
 
 Style::Style()
-  : d( 0 )
+  : d( nullptr )
 {
 }
 
 Style::Style( const Style &/*other*/ )
-  : d( 0 )
+  : d( nullptr )
 {
 //  *d = *other.d;
 }

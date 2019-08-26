@@ -998,7 +998,7 @@ Group Parser::parseGroup(ParserContext *context, const QDomElement &element, con
         const QString localName = childName.localName();
         // can contain all, choice or sequence
         if (localName == QLatin1String("sequence") || localName == QLatin1String("choice")) {
-            parseCompositor(context, e, nameSpace, &elements, NULL /*can't nest groups*/);
+            parseCompositor(context, e, nameSpace, &elements, nullptr /*can't nest groups*/);
         } else if (localName == QLatin1String("all")) {
             qWarning() << "Unsupported element in group:" << localName; // TODO
         } else {
