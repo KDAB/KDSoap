@@ -21,6 +21,8 @@
 #define SETTINGS_H
 
 #include <QMap>
+#include <QSslCertificate>
+#include <QSslKey>
 #include <QStringList>
 #include <QUrl>
 
@@ -85,6 +87,14 @@ public:
     bool helpOnMissing() const;
     void setHelpOnMissing(bool b);
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 4, 0)
+    bool loadCertificate(const QString & certPath, const QString &password = QString());
+    bool certificateLoaded() const;
+    QSslKey sslKey() const;
+    QSslCertificate certificate() const;
+    QList<QSslCertificate> caCertificates() const;
+#endif
+
 private:
     friend class SettingsSingleton;
     Settings();
@@ -105,6 +115,12 @@ private:
     bool mKeepUnusedTypes;
     bool mUseLocalFilesOnly;
     bool mHelpOnMissing;
+#if QT_VERSION >= QT_VERSION_CHECK(5, 4, 0)
+    QSslKey mSslKey;
+    QSslCertificate mCertificate;
+    QList<QSslCertificate> mCaCertificates;
+    bool mCertificateLoaded = false;
+#endif
 };
 
 #endif

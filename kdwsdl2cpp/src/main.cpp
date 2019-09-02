@@ -67,6 +67,15 @@ static void showHelp(const char *appName)
             "                            use of the import-path option\n"
             "  -help-on-missing          When groups or basic types could not be found, display\n"
             "                            available types (helps with wrong namespaces)\n"
+#if QT_VERSION >= QT_VERSION_CHECK(5, 4, 0)
+            "  -pkcs12file               Load a certificate from a PKCS12 file. You can use this option\n"
+            "                            if the WSDL file (or files refering to it) is served from a \n"
+            "                            location which require certificate based authentication\n"
+            "  -pkcs12password           Pass the password for the certificate file if required.\n"
+            "                            This option is not secure and should be used with caution\n"
+            "                            if other users of the machine are capable to see the running "
+            "                            processes ran by the current user.\n"
+#endif
             "\n", appName, appName, appName);
 }
 
@@ -90,6 +99,7 @@ int main(int argc, char **argv)
     QStringList importPathList;
     bool useLocalFilesOnly = false;
     bool helpOnMissing = false;
+    QString pkcs12File, pkcs12Password;
 
     int arg = 1;
     while (arg < argc) {
@@ -207,6 +217,22 @@ int main(int argc, char **argv)
             useLocalFilesOnly = true;
         } else if (opt == QLatin1String("-help-on-missing")) {
             helpOnMissing = true;
+#if QT_VERSION >= QT_VERSION_CHECK(5, 4, 0)
+        } else if (opt == QLatin1String("-pkcs12file")) {
+            ++arg;
+            if (!argv[arg]) {
+                showHelp(argv[0]);
+                return 1;
+            }
+            pkcs12File = QLatin1String(argv[arg]);
+        } else if (opt == QLatin1String("-pkcs12password")) {
+            ++arg;
+            if (!argv[arg]) {
+                showHelp(argv[0]);
+                return 1;
+            }
+            pkcs12Password = QLatin1String(argv[arg]);
+#endif
         } else if (!fileName) {
             fileName = argv[arg];
         } else {
@@ -262,6 +288,12 @@ int main(int argc, char **argv)
     Settings::self()->setHelpOnMissing(helpOnMissing);
 
     KWSDL::Compiler compiler;
+#if QT_VERSION >= QT_VERSION_CHECK(5, 4, 0)
+    if (!pkcs12File.isEmpty()) {
+        if (!Settings::self()->loadCertificate(pkcs12File, pkcs12Password))
+            return -1;
+    }
+#endif
 
     // so that we have an event loop, for downloads
     QTimer::singleShot(0, &compiler, SLOT(run()));
