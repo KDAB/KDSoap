@@ -16,8 +16,8 @@ The same source code compiles with either Qt 4 or Qt 5.
 2) Now run 'cmake' depending on the kind of build one of the following:
      cmake -DCMAKE_BUILD_TYPE=Debug ..
      cmake -DCMAKE_BUILD_TYPE=Release ..
-     cmake -DKDSOAP_STATIC=True -DCMAKE_BUILD_TYPE=Debug ..
-     cmake -DKDSOAP_STATIC=True -DCMAKE_BUILD_TYPE=Release ..
+     cmake -DKDSoap_STATIC=True -DCMAKE_BUILD_TYPE=Debug ..
+     cmake -DKDSoap_STATIC=True -DCMAKE_BUILD_TYPE=Release ..
 
    To define the install-location use for example:
      cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=C:/kdsoap ..

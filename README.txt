@@ -35,7 +35,9 @@ Contact
 Get Involved
 ============
 KDAB will happily accept external contributions, but substantial
-contributions will require a signed Copyright Assignment Agreement.
+contributions will require a signed Copyright Assignment Agreement
+(see doc/KDSoap-CopyrightAssignmentForm.docx).
+
 Contact info@kdab.com for more information.
 
 Please submit your contributions or issue reports from our GitHub space at
@@ -66,7 +68,6 @@ to the Qt Project. We can give advanced or standard trainings anywhere
 around the globe on Qt as well as C++, OpenGL, 3D and more.
 
 Please visit http://www.kdab.com to meet the people who write code like this.
-
 
 KD SOAP and the KD SOAP logo are registered trademarks of Klaralvdalens Datakonsult AB
 in the European Union, the United States, and/or other countries.  Other product and

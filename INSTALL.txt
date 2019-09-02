@@ -25,7 +25,7 @@ to section 1-bis). Commercial users, start at section 1).
 
    If this succeeded, jump to step 2.
 
-1-bis) If you are building KD Soap from a github clone rather than a release tarball,
+1-bis) If you are building KD SOAP from a github clone rather than a release tarball,
 the configure.bat/configure.sh script doesn't exist (it's generated at release time),
 you need to do this instead:
 
