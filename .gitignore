@@ -1,4 +1,11 @@
 Makefile
+Makefile.*
+*.pro.user
+*.pro.user*
+*.so
+*.so.*
+*.exe
+moc_*
 *.moc
 *.obj
 *.directory
@@ -10,11 +17,13 @@ generated
 CMakeLists.txt.user
 _moc
 _obj
+*.o
 .license.accepted
 CPackConfig.cmake
 autogen.pyc
 configure.bat
 configure.sh
+.qmake.stash
 
 /include
 
@@ -56,4 +65,3 @@ configure.sh
 /unittests/enum_escape/enum_escape
 /unittests/literal_true_false/literal_true_false
 /unittests/msexchange_noservice_wsdl/msexchange_noservice_wsdl
-
