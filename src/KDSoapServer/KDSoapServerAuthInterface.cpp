@@ -25,7 +25,7 @@
 #include <KDSoapClient/KDSoapAuthentication.h>
 
 KDSoapServerAuthInterface::KDSoapServerAuthInterface()
-    : d(0)
+    : d(nullptr)
 {
 
 }

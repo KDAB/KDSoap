@@ -24,7 +24,7 @@
 #include "KDSoapServerRawXMLInterface.h"
 
 KDSoapServerRawXMLInterface::KDSoapServerRawXMLInterface()
-    : d(0)
+    : d(nullptr)
 {
 
 }

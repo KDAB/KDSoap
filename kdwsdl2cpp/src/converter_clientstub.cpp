@@ -118,7 +118,7 @@ bool Converter::convertClientService()
 
             // Variables (which will go into the d pointer)
             KODE::MemberVariable clientInterfaceVar(QLatin1String("m_clientInterface"), QLatin1String("KDSoapClientInterface*"));
-            clientInterfaceVar.setInitializer(QLatin1String("NULL"));
+            clientInterfaceVar.setInitializer(QLatin1String("nullptr"));
             newClass.addMemberVariable(clientInterfaceVar);
 
             KODE::MemberVariable lastReply(QLatin1String("m_lastReply"), QLatin1String("KDSoapMessage"));

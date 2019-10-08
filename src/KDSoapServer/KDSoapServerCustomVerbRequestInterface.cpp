@@ -24,7 +24,7 @@
 #include "KDSoapServerCustomVerbRequestInterface.h"
 
 KDSoapServerCustomVerbRequestInterface::KDSoapServerCustomVerbRequestInterface()
-    : d(0)
+    : d(nullptr)
 {
 
 }

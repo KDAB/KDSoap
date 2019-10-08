@@ -36,7 +36,8 @@ public:
     QPointer<KDSoapServerSocket> socket;
 };
 
-KDSoapDelayedResponseHandle::KDSoapDelayedResponseHandle() : data(new KDSoapDelayedResponseHandleData(0))
+KDSoapDelayedResponseHandle::KDSoapDelayedResponseHandle()
+    : data(new KDSoapDelayedResponseHandleData(nullptr))
 {
 }
 

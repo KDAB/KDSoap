@@ -36,8 +36,8 @@ class KDSoapServer::Private
 {
 public:
     Private()
-        : m_threadPool(0),
-          m_mainThreadSocketList(0),
+        : m_threadPool(nullptr),
+          m_mainThreadSocketList(nullptr),
           m_use(KDSoapMessage::LiteralUse),
           m_logLevel(KDSoapServer::LogNothing),
           m_path(QString::fromLatin1("/")),

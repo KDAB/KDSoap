@@ -30,7 +30,7 @@ class KDSoapServerObjectInterface::Private
 {
 public:
     Private() :
-        m_serverSocket(0)
+        m_serverSocket(nullptr)
     {
     }
 
@@ -78,7 +78,7 @@ QIODevice *KDSoapServerObjectInterface::processFileRequest(const QString &path, 
 {
     Q_UNUSED(path);
     Q_UNUSED(contentType);
-    return 0;
+    return nullptr;
 }
 
 void KDSoapServerObjectInterface::processRequestWithPath(const KDSoapMessage &request, KDSoapMessage &response, const QByteArray &soapAction, const QString &path)
