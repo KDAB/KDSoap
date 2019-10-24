@@ -1,4 +1,5 @@
 include( $${TOP_SOURCE_DIR}/unittests/unittests.pri )
+TARGET = pki.pca.dfn.de
 QT += network xml
 SOURCES = test_pki.cpp
 test.target = test
