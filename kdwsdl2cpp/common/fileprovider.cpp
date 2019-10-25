@@ -106,6 +106,15 @@ bool FileProvider::get( const QUrl &url, QString &target )
 
     QNetworkAccessManager manager;
     QNetworkRequest request(url);
+#if QT_VERSION >= QT_VERSION_CHECK(5, 4, 0)
+    if (Settings::self()->certificateLoaded()) {
+        QSslConfiguration sslConfig = request.sslConfiguration();
+        sslConfig.setPrivateKey(Settings::self()->sslKey());
+        sslConfig.setLocalCertificate(Settings::self()->certificate());
+        sslConfig.setCaCertificates(Settings::self()->caCertificates());
+        request.setSslConfiguration(sslConfig);
+    }
+#endif
     QNetworkReply* job = manager.get(request);
 
     QEventLoop loop;
