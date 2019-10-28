@@ -50,7 +50,8 @@ SUBDIRS = \
   ws_addressing_support \
   ws_usernametoken_support \
   list_restriction \
-  QSharedPointer_include
+  QSharedPointer_include \
+  soap_over_udp
 
 # These need internet access
 SUBDIRS += webcalls webcalls_wsdl
