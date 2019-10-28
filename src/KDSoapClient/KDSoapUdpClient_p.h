@@ -21,6 +21,8 @@
 #include <QObject>
 #include <QUdpSocket>
 
+#include "KDSoapUdpClient.h"
+
 class KDSoapUdpClientPrivate : public QObject
 {
     Q_OBJECT
