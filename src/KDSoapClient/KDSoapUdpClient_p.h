@@ -21,6 +21,8 @@
 #include <QObject>
 #include <QUdpSocket>
 
+#include "KDSoapUdpClient.h"
+
 class KDSoapUdpClientPrivate : public QObject
 {
     Q_OBJECT
@@ -28,12 +30,12 @@ public:
     KDSoapUdpClientPrivate(KDSoapUdpClient *q) 
         : q_ptr(q)
     {}
-    
+
     void receivedDatagram(const QByteArray &messageData, const QHostAddress &senderAddress, quint16 senderPort);
-    
+
 public Q_SLOTS:
     void readyRead();
-    
+
 public:
     QUdpSocket *socketIPv4;
     QUdpSocket *socketIPv6;
