@@ -49,6 +49,8 @@ private Q_SLOTS:
         
         auto soapUdpClient = new KDSoapUdpClient(this);
         connect(soapUdpClient, &KDSoapUdpClient::receivedMessage, [=](const KDSoapMessage& message, const KDSoapHeaders& headers, const QHostAddress& address, quint16 port) { 
+            Q_UNUSED(headers);
+            Q_UNUSED(port);
             if(message.messageAddressingProperties().action() == QStringLiteral("http://docs.oasis-open.org/ws-dd/ns/discovery/2009/01/ProbeMatches")) {
                 TNS__ProbeMatchesType probeMatches;
                 probeMatches.deserialize(message);
@@ -66,7 +68,11 @@ private Q_SLOTS:
 
         KDSoapMessageAddressingProperties addressing;
         addressing.setAction(QStringLiteral("http://docs.oasis-open.org/ws-dd/ns/discovery/2009/01/Probe"));
+#if QT_VERSION >= QT_VERSION_CHECK(5, 11, 0)
         addressing.setMessageID(QStringLiteral("urn:uuid:") + QUuid::createUuid().toString(QUuid::WithoutBraces));
+#else
+        addressing.setMessageID(QStringLiteral("urn:uuid:") + QUuid::createUuid().toString());
+#endif
         addressing.setDestination(QStringLiteral("urn:docs-oasis-open-org:ws-dd:ns:discovery:2009:01"));
         addressing.setReplyEndpointAddress(KDSoapMessageAddressingProperties::predefinedAddressToString(KDSoapMessageAddressingProperties::Anonymous));
         message.setMessageAddressingProperties(addressing);
