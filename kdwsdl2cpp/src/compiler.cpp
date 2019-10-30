@@ -36,7 +36,7 @@
 using namespace KWSDL;
 
 Compiler::Compiler()
-    : QObject(0)
+    : QObject(nullptr)
 {
 }
 

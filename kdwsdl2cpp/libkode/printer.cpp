@@ -377,7 +377,7 @@ QString Printer::Private::classImplementation( const Class &classObject, bool ne
       code.newLine();
       code.indent();
       code += "delete " + classObject.dPointerName() + ";";
-      code += classObject.dPointerName() + " = 0;";
+      code += classObject.dPointerName() + " = nullptr;";
       code.unindent();
     }
     code += '}';
@@ -600,7 +600,7 @@ QString Printer::functionSignature( const Function &function,
 
   if ( function.isConst() )
     s += " const";
-  
+
   if ( function.virtualMode() == Function::Override && !forImplementation ) {
     s += " override";
   }
