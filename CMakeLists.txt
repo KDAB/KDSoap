@@ -102,7 +102,7 @@ if(MSVC)
   add_definitions(-D_SCL_SECURE_NO_WARNINGS)
 endif()
 
-if (NOT MSVC)
+if(CMAKE_COMPILER_IS_GNUCXX)
   add_compile_options(-Wsuggest-override)
 endif()
 
