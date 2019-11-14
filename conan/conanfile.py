@@ -48,3 +48,6 @@ class KdsoapConan(ConanFile):
 
     def package(self):
         self.cmake.install()
+
+    def package_info(self):
+        self.env_info.CMAKE_PREFIX_PATH.append(self.package_folder)
