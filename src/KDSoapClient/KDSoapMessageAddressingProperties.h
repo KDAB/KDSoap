@@ -56,7 +56,7 @@ struct Relationship {
      * Relationship constructor
      * @param URI is supposed to represent a message ID of a previous message you want to make reference to
      * @param type represents the nature of the relation between messages, if none is provided, the following
-     * predefined address will be used wsa:Reply (which is dependent on the selected namespace, for example 
+     * predefined address will be used wsa:Reply (which is dependent on the selected namespace, for example
      * http://www.w3.org/2005/08/addressing/reply)
      */
     Relationship(const QString &URI, const QString &type = QString())
@@ -97,9 +97,9 @@ public:
         Reply,
         Unspecified
     };
-    
+
     /**
-     * This enum contains all the namespaces that can be used to send out WS-Addressing messages. 
+     * This enum contains all the namespaces that can be used to send out WS-Addressing messages.
      * This allows the application to select the WS-Addressing revision to be used.
      * \since 1.9
      * \see setAddressingNamespace
@@ -279,7 +279,7 @@ public:
      * Add one metadata, if not null, to the list of metadata that will appear within soap header
      */
     void addMetadata(const KDSoapValue &metadata);
-    
+
     /**
      * Returns the selected WS-Addressing namespace
      * \since 1.9
@@ -287,13 +287,13 @@ public:
     KDSoapAddressingNamespace addressingNamespace() const;
 
     /**
-     * Sets the WS-Addressing namespace to be used for sending out messages.This allows the 
+     * Sets the WS-Addressing namespace to be used for sending out messages.This allows the
      * application to select the WS-Addressing revision to be used.
      * \since 1.9
      * \see KDSoapAddressingNamespace
      */
     void setAddressingNamespace(KDSoapAddressingNamespace addressingNamespace);
-  
+
     /**
      * Helper function that takes the \p address enum and \p addressingNamespace to provide the QString equivalent
      */
@@ -303,7 +303,7 @@ public:
      * Helper function that compares \p namespaceUri with the known WS-Addressing namespaces
      */
     static bool isWSAddressingNamespace(const QString& namespaceUri);
-    
+
     /**
      * Helper function that takes the \p addressingNamespace enum to provide the QString equivalent
      * \since 1.9

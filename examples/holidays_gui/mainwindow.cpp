@@ -11,42 +11,42 @@
 
 MainWindow::MainWindow( QWidget *parent ) : QWidget( parent )
 {
-   
+
   mBtnSync = new QPushButton(tr("Sync Call"), this);
   mBtnAsync = new QPushButton(tr("Async Call"), this);
   mLblResult = new QLabel(tr("Result: "), this);
   mLblAnim = new QLabel(this);
-  
+
   mMovAnim = new QMovie(QString::fromLatin1(":/animations/anim.mng"));
-  
+
   QVBoxLayout *centralLayout = new QVBoxLayout(this);
   QHBoxLayout *btnsLayout = new QHBoxLayout();
   QHBoxLayout *lblsLayout = new QHBoxLayout();
-  
+
   btnsLayout->addWidget( mBtnSync  );
   btnsLayout->addWidget( mBtnAsync );
-  
+
   lblsLayout->addWidget( mLblAnim  );
   lblsLayout->addWidget( mLblResult );
-  
+
   centralLayout->addLayout( btnsLayout );
   centralLayout->addLayout( lblsLayout );
-  
+
   mLblAnim->setMovie(mMovAnim);
   mMovAnim->start();
-  
+
   connect(mBtnSync, SIGNAL(clicked()), this, SLOT(syncCall()));
   connect(mBtnAsync, SIGNAL(clicked()), this, SLOT(asyncCall()));
-  
+
   mHolidayDates = new USHolidayDates();
-  connect(mHolidayDates, SIGNAL(getValentinesDayDone(const TNS__GetValentinesDayResponse&)), 
+  connect(mHolidayDates, SIGNAL(getValentinesDayDone(const TNS__GetValentinesDayResponse&)),
           this,          SLOT(  done    (const TNS__GetValentinesDayResponse&)));
-  
+
   connect(mHolidayDates, SIGNAL(getValentinesDayError(const KDSoapMessage&)),
           this,          SLOT  (doneError(const KDSoapMessage&)));
-  
+
   mYear = 1960;
-  mParameters.setYear(mYear++);                 
+  mParameters.setYear(mYear++);
 }
 
 void MainWindow::done(const TNS__GetValentinesDayResponse& response)
@@ -58,7 +58,7 @@ void MainWindow::doneError(const KDSoapMessage& error)
 {
     QMessageBox::warning(this, tr("Error retrieving valentines day"), error.faultAsString());
 }
-  
+
 void MainWindow::syncCall()
 {
     TNS__GetValentinesDayResponse response = mHolidayDates->getValentinesDay(mParameters);

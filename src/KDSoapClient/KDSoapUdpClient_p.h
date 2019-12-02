@@ -27,7 +27,7 @@ class KDSoapUdpClientPrivate : public QObject
 {
     Q_OBJECT
 public:
-    KDSoapUdpClientPrivate(KDSoapUdpClient *q) 
+    KDSoapUdpClientPrivate(KDSoapUdpClient *q)
         : q_ptr(q)
     {}
 

@@ -338,7 +338,7 @@ void KDSoapMessageAddressingProperties::writeMessageAddressingProperties(KDSoapN
     }
 
     const QString addressingNS = addressingNamespaceToString(d->addressingNamespace);
-    
+
     if (!d->destination.isEmpty()) {
         writer.writeStartElement(addressingNS, QLatin1String("To"));
         writer.writeCharacters(d->destination);
@@ -406,7 +406,7 @@ void KDSoapMessageAddressingProperties::writeMessageAddressingProperties(KDSoapN
 void KDSoapMessageAddressingProperties::readMessageAddressingProperty(const KDSoapValue &value)
 {
     const QString addressingNS = addressingNamespaceToString(d->addressingNamespace);
-    
+
     if (value.name() == QLatin1String("Action")) {
         d->action = value.value().toString();
     } else if (value.name() == QLatin1String("MessageID")) {

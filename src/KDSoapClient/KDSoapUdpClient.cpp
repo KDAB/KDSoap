@@ -34,7 +34,7 @@ static bool isMulticastAddress(const QHostAddress &address) {
     return false;
 }
 
-KDSoapUdpClient::KDSoapUdpClient(QObject *parent) : 
+KDSoapUdpClient::KDSoapUdpClient(QObject *parent) :
     QObject(parent),
     d_ptr(new KDSoapUdpClientPrivate(this))
 {
@@ -84,7 +84,7 @@ bool KDSoapUdpClient::sendMessage(const KDSoapMessage &message, const KDSoapHead
     KDSoapMessageWriter msgWriter;
     msgWriter.setVersion(d->soapVersion);
     const QByteArray data = msgWriter.messageToXml(message, QString(), headers, QMap<QString, KDSoapMessage>());
-    
+
     if (isMulticastAddress(address)) {
         bool anySuccess = false;
         const auto& allInterfaces = QNetworkInterface::allInterfaces();
@@ -122,13 +122,13 @@ void KDSoapUdpClientPrivate::readyRead()
     QUdpSocket *socket = qobject_cast<QUdpSocket *>(sender());
     while (socket->hasPendingDatagrams()) {
         qint64 size = socket->pendingDatagramSize();
-        
+
         QByteArray buffer;
         buffer.resize(size);
         QHostAddress senderAddress;
         quint16 senderPort;
         socket->readDatagram(buffer.data(), buffer.size(), &senderAddress, &senderPort);
-        
+
         receivedDatagram(buffer, senderAddress, senderPort);
     }
 }

@@ -83,7 +83,7 @@ private Q_SLOTS:
         // THEN
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedSoapMessage200508()));
     }
-    
+
     void shouldWriteAProperSoapMessageWithAlternativeNamespace()
     {
         // GIVEN
@@ -188,24 +188,24 @@ private:
 
         return map;
     }
-    
+
     static KDSoapMessageAddressingProperties addressingProperties200408()
     {
         KDSoapMessageAddressingProperties map = addressingProperties();
         map.setAddressingNamespace(KDSoapMessageAddressingProperties::Addressing200408);
         return map;
     }
-    
+
     static QByteArray expectedSoapMessage200408()
     {
-        return QByteArray(xmlEnvBegin11()) + 
+        return QByteArray(xmlEnvBegin11()) +
                " xmlns:wsa=\"http://schemas.xmlsoap.org/ws/2004/08/addressing\"" +
                expectedSoapMessagePartial();
     }
-        
+
     static QByteArray expectedSoapMessage200508()
     {
-        return QByteArray(xmlEnvBegin11()) + 
+        return QByteArray(xmlEnvBegin11()) +
                " xmlns:wsa=\"http://www.w3.org/2005/08/addressing\"" +
                expectedSoapMessagePartial();
     }

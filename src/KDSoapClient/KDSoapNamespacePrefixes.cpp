@@ -26,7 +26,7 @@
 
 void KDSoapNamespacePrefixes::writeStandardNamespaces(QXmlStreamWriter &writer,
         KDSoap::SoapVersion version,
-        bool messageAddressingEnabled, 
+        bool messageAddressingEnabled,
         KDSoapMessageAddressingProperties::KDSoapAddressingNamespace messageAddressingNamespace)
 {
     if (version == KDSoap::SOAP1_1) {

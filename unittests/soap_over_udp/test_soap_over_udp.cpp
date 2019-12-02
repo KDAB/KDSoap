@@ -42,13 +42,13 @@ private Q_SLOTS:
         qRegisterMetaType<KDSoapHeaders>("KDSoapHeaders");
         qRegisterMetaType<QHostAddress>("QHostAddress");
     }
-    
+
     void testExample() {
-        // This is the example from the KDSoapUdpClient documentation. It is 
+        // This is the example from the KDSoapUdpClient documentation. It is
         //   here for compile testing.
-        
+
         auto soapUdpClient = new KDSoapUdpClient(this);
-        connect(soapUdpClient, &KDSoapUdpClient::receivedMessage, [=](const KDSoapMessage& message, const KDSoapHeaders& headers, const QHostAddress& address, quint16 port) { 
+        connect(soapUdpClient, &KDSoapUdpClient::receivedMessage, [=](const KDSoapMessage& message, const KDSoapHeaders& headers, const QHostAddress& address, quint16 port) {
             Q_UNUSED(headers);
             Q_UNUSED(port);
             if(message.messageAddressingProperties().action() == QStringLiteral("http://docs.oasis-open.org/ws-dd/ns/discovery/2009/01/ProbeMatches")) {
@@ -58,7 +58,7 @@ private Q_SLOTS:
             }
         });
         soapUdpClient->bind(3702);
-        
+
         TNS__ProbeType probe;
 
         KDSoapMessage message;
@@ -79,46 +79,46 @@ private Q_SLOTS:
 
         soapUdpClient->sendMessage(message, KDSoapHeaders(), QHostAddress("239.255.255.250"), 3702);
     }
-    
+
     void testSendMessage() {
         QUdpSocket testSocket;
         bool rc = testSocket.bind();
         QVERIFY(rc);
-        
+
         KDSoapUdpClient udpClient;
-        
+
         udpClient.sendMessage(exampleMessage(), KDSoapHeaders(), QHostAddress::LocalHost, testSocket.localPort());
-        
+
         QVERIFY(testSocket.hasPendingDatagrams());
         auto datagram = testSocket.receiveDatagram();
-        
+
         QVERIFY(KDSoapUnitTestHelpers::xmlBufferCompare(datagram.data(), exampleTextData()));
     }
-    
+
     void testReceiveMessage() {
         QUdpSocket testSocket;
-        
+
         KDSoapUdpClient udpClient;
         bool rc = udpClient.bind(12345);
         QVERIFY(rc);
-        
+
         QSignalSpy spy(&udpClient, SIGNAL(receivedMessage(KDSoapMessage, KDSoapHeaders, QHostAddress, quint16)));
-        
+
         auto data = exampleTextData();
         qint64 size = testSocket.writeDatagram(data, QHostAddress::LocalHost, 12345);
         QCOMPARE(size, data.size());
-        
+
         QVERIFY(spy.wait(1000));
         QList<QVariant> arguments = spy.takeFirst();
         QVERIFY(KDSoapUnitTestHelpers::xmlBufferCompare(arguments.at(0).value<KDSoapMessage>().toXml(), exampleMessage().toXml()));
         QCOMPARE(arguments.at(1).value<KDSoapHeaders>().size(), 0);
         QCOMPARE(arguments.at(2).value<QHostAddress>(), QHostAddress::LocalHost);
     }
-    
+
 private:
     QByteArray exampleTextData() {
         return QByteArray(
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" 
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
             "<soap:Envelope"
             "  xmlns:soap=\"http://www.w3.org/2003/05/soap-envelope\""
             "  xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\""
@@ -141,12 +141,12 @@ private:
             "  </soap:Body>"
             "</soap:Envelope>");
     }
-    
+
     KDSoapMessage exampleMessage() {
         TNS__ProbeType probe;
-        
+
         KDQName type("i:PrintBasic");
-        type.setNameSpace("http://printer.example.org/2003/imaging");        
+        type.setNameSpace("http://printer.example.org/2003/imaging");
         TNS__QNameListType types;
         types.setEntries(QList<KDQName>() << type);
         probe.setTypes(types);
@@ -157,7 +157,7 @@ private:
         scopes.setValue(scopeValues);
         scopes.setMatchBy("http://docs.oasis-open.org/ws-dd/ns/discovery/2009/01/ldap");
         probe.setScopes(scopes);
-        
+
         KDSoapMessage message;
         message = probe.serialize(QStringLiteral("Probe"));
         message.setUse(KDSoapMessage::LiteralUse);
@@ -169,7 +169,7 @@ private:
         addressing.setMessageID(QStringLiteral("urn:uuid:0a6dc791-2be6-4991-9af1-454778a1917a"));
         addressing.setDestination(QStringLiteral("urn:docs-oasis-open-org:ws-dd:ns:discovery:2009:01"));
         message.setMessageAddressingProperties(addressing);
-        
+
         return message;
     }
 };

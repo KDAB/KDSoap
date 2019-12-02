@@ -16,22 +16,22 @@ class MainWindow : public QWidget{
   Q_OBJECT
 public:
   MainWindow(QWidget *parent = 0);
-  
+
 private slots:
   void syncCall();
   void asyncCall();
   void done(const TNS__GetValentinesDayResponse& r);
   void doneError(const KDSoapMessage& error);
-  
+
 private:
   QPushButton *mBtnAsync;
   QPushButton *mBtnSync;
   QLabel      *mLblResult;
   QLabel      *mLblAnim;
   QMovie      *mMovAnim;
-  
+
   unsigned int mYear;
-  
+
   USHolidayDates *mHolidayDates;
   TNS__GetValentinesDay mParameters;
 };
