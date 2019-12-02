@@ -28,6 +28,7 @@
 #include <QNetworkDatagram>
 #include <QTest>
 #include <QSignalSpy>
+#include <QUuid>
 #include "wsdl_wsdd-discovery-200901.h"
 
 Q_DECLARE_METATYPE(QHostAddress)
