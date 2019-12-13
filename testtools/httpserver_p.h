@@ -39,7 +39,9 @@ bool xmlBufferCompare(const QByteArray &source, const QByteArray &dest);
 void httpGet(const QUrl &url);
 bool setSslConfiguration();
 const char *xmlEnvBegin11();
+const char *xmlEnvBegin11WithWSAddressing();
 const char *xmlEnvBegin12();
+const char *xmlEnvBegin12WithWSAddressing();
 const char *xmlEnvEnd();
 }
 
@@ -111,6 +113,44 @@ public:
         return m_headers.value(value);
     }
 
+    /**
+     * @brief clientUseWSAddressing
+     * @return
+     * Returns true if the server expects clients to use WS-Addressing.
+     */
+    bool clientSendsActionInHttpHeader() const;
+
+    /**
+     * @brief setClientSendsActionInHttpHeader
+     * @param clientSendsActionInHttpHeader
+     * If this function is called with clientSendsActionInHttpHeader set to false then
+     * (in the case of SOAP 1.2 requests) the Content-type HTTP header will not checked
+     * for containing the proper SOAP action. In this case the client should send the SOAP action
+     * embedded to the SOAP envelope's header section).
+     */
+    void setClientSendsActionInHttpHeader(bool clientSendsActionInHttpHeader);
+
+    /**
+     * @brief setExpectedSoapAction
+     * @param expectedSoapAction
+     * This function could be used to specify the expected SOAP action in the incoming request's header.
+     * In the case of SOAP 1.1 requests the SOAP action should be in the SoapAction HTTP header,
+     * in the case of SOAP 1.2 requests the SOAP action is sent in the Content-Type HTTP header's
+     * action parameter. Please note if setClientSendsActionInHttpHeader is called with false argument
+     * then this check is skipped. (In this case the SOAP action should be passed in the envelope's
+     * header). To disable the SOAP action checking call this function with an empty expectedSoapAction
+     * parameter. (This is the default behaviour of the HttpServerThread).
+     */
+    void setExpectedSoapAction(const QByteArray &expectedSoapAction);
+
+    /**
+     * @brief expectedSoapAction
+     * @return the expected SOAP action against which the request's headers will be checked.
+     * If the function returns an empty string then the SOAP actions of the incoming requests
+     * will not be checked.
+     */
+    QByteArray expectedSoapAction() const;
+
 protected:
     /* \reimp */ void run() override;
 
@@ -180,6 +220,8 @@ private:
 
     Features m_features;
     BlockingHttpServer *m_server;
+    bool m_clientSendsActionInHttpHeader = true;
+    QByteArray m_expectedSoapAction;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(HttpServerThread::Features)

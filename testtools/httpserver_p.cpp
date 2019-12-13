@@ -357,14 +357,41 @@ void HttpServerThread::run()
             break; // normal exit
         }
 
-        // TODO compared with expected SoapAction
         QList<QByteArray> contentTypes = m_headers.value("Content-Type").split(';');
-        if (contentTypes[0] == "text/xml" && m_headers.value("SoapAction").isEmpty()) {
-            qDebug() << "ERROR: no SoapAction set for Soap 1.1";
-            break;
-        } else if (contentTypes[0] == "application/soap+xml" && !contentTypes[2].startsWith("action")) {
-            qDebug() << "ERROR: no SoapAction set for Soap 1.2";
-            break;
+        if (contentTypes[0] == "text/xml") {
+            if (m_headers.value("SoapAction").isEmpty()) {
+                qDebug() << "ERROR: no SoapAction set for Soap 1.1";
+                break;
+            }
+
+            if (!m_expectedSoapAction.isEmpty() && m_headers.value("SoapAction") != m_expectedSoapAction) {
+                qDebug("ERROR: Client sent SoapAction HTTP header (\"%s\") which does not match the expected (\"%s\")",
+                       m_headers.value("SoapAction").constData(), m_expectedSoapAction.constData());
+                break;
+            }
+        } else if (m_clientSendsActionInHttpHeader
+                   && contentTypes[0] == "application/soap+xml") {
+            if (!contentTypes[2].startsWith("action")) {
+                qDebug() << "ERROR: no SoapAction set for Soap 1.2";
+                break;
+            }
+
+            QList<QByteArray> actionParts = contentTypes[2].split('=');
+            if (actionParts.length() < 2) {
+                qDebug("ERROR: The action parameter is malformed in the HTTP Content-type header: \"%s\"",
+                       contentTypes[2].constData());
+                break;
+            }
+
+            if (!m_expectedSoapAction.isEmpty()) {
+                actionParts = actionParts[1].split(';');
+                if (actionParts[0] != m_expectedSoapAction) {
+                    qDebug("ERROR: The 'action' parameter which was sent in the HTTP Content-type header (\"%s\") "
+                           "does not match the expected SOAP action: \"%s\"",
+                           m_headers.value("SoapAction").constData(), m_expectedSoapAction.constData());
+                    break;
+                }
+            }
         }
         lock.unlock();
 
@@ -431,6 +458,26 @@ void HttpServerThread::run()
     }
 }
 
+QByteArray HttpServerThread::expectedSoapAction() const
+{
+    return m_expectedSoapAction;
+}
+
+void HttpServerThread::setExpectedSoapAction(const QByteArray &expectedSoapAction)
+{
+    m_expectedSoapAction = expectedSoapAction;
+}
+
+bool HttpServerThread::clientSendsActionInHttpHeader() const
+{
+    return m_clientSendsActionInHttpHeader;
+}
+
+void HttpServerThread::setClientSendsActionInHttpHeader(bool clientUseWSAddressing)
+{
+    m_clientSendsActionInHttpHeader = clientUseWSAddressing;
+}
+
 const char *KDSoapUnitTestHelpers::xmlEnvBegin11()
 {
     return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
@@ -441,6 +488,18 @@ const char *KDSoapUnitTestHelpers::xmlEnvBegin11()
            " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"";
 }
 
+const char *KDSoapUnitTestHelpers::xmlEnvBegin11WithWSAddressing()
+{
+    return  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+            "<soap:Envelope"
+            " xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\""
+            " xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\""
+            " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\""
+            " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+            " xmlns:wsa=\"http://www.w3.org/2005/08/addressing\"";
+}
+
+
 const char *KDSoapUnitTestHelpers::xmlEnvBegin12()
 {
     return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
@@ -449,6 +508,18 @@ const char *KDSoapUnitTestHelpers::xmlEnvBegin12()
            " xmlns:soap-enc=\"http://www.w3.org/2003/05/soap-encoding\""
            " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\""
            " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"";
+}
+
+const char *KDSoapUnitTestHelpers::xmlEnvBegin12WithWSAddressing()
+{
+    return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+           "<soap:Envelope"
+           " xmlns:soap=\"http://www.w3.org/2003/05/soap-envelope\""
+           " xmlns:soap-enc=\"http://www.w3.org/2003/05/soap-encoding\""
+           " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\""
+           " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+           " xmlns:wsa=\"http://www.w3.org/2005/08/addressing\""
+           " xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\"";
 }
 
 const char *KDSoapUnitTestHelpers::xmlEnvEnd()

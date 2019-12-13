@@ -338,9 +338,49 @@ public:
      */
     void setTimeout(int msecs);
 
+    /**
+     * \brief setSendSoapActionInHttpHeader
+     * \param sendInHttpHeader
+     * This option can be used to enable/disable the sending of the SOAP action parameter
+     * in the Content-Type HTTP header (in the case of SOAP 1.2 requests).
+     * It might be necessary to disable it for certain  SOAP server implementations
+     * in the case if the action is passed in the SOAP envelope's header with WS-Addressing.
+     * \since 1.11
+     */
+    void setSendSoapActionInHttpHeader(bool sendInHttpHeader);
+
+    /**
+     * \brief sendActionInHTTP_Header
+     * \return true if the SOAP action is passed in the HTTP Content-Type of the request.
+     * This parameter is used only in the case of SOAP 1.2 requests.
+     * This option is enabled by default.
+     * \since 1.11
+     */
+    bool sendSoapActionInHttpHeader() const;
+
+    /**
+     * \brief setSendSoapActionInWsAddressingHeader
+     * \param sendInWsAddressingHeader
+     * This function can be used to enable/disable the sending of the SOAP action embedded to
+     * the request's SOAP envelope header. See the headers of the WS-Addressing:
+     * https://docs.microsoft.com/en-us/dotnet/framework/wcf/feature-details/messaging-protocols#message-addressing-headers
+     * \since 1.11
+     */
+    void setSendSoapActionInWsAddressingHeader(bool sendInWsAddressingHeader);
+
+    /**
+     * \brief sendSoapActionInWsAddressingHeader
+     * \return true if the SOAP action is embedded to the request's SOAP envelope
+     * header. See the headers of the WS-Addressing:
+     * https://docs.microsoft.com/en-us/dotnet/framework/wcf/feature-details/messaging-protocols#message-addressing-headers
+     * This option is disabled by default, the SOAP action is sent in the Conten-Type HTTP header.
+     * See setSendHTTPActionParameter for more details.
+     * \since 1.11
+     */
+    bool sendSoapActionInWsAddressingHeader() const;
+
 private:
     friend class KDSoapThreadTask;
-
     KDSoapClientInterfacePrivate *const d;
 };
 
