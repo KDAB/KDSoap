@@ -1,4 +1,4 @@
-# <a name="title"></a> KD Soap [![Logo](https://github.com/KDAB/KDSoap/blob/master/images/kdsoap-medium.png)](http://www.kdab.com/products/kd-soap)
+# <a name="title"></a> KD Soap [![Logo](https://github.com/KDAB/KDSoap/blob/master/images/kdsoap-medium.png)](https://www.kdab.com/products/kd-soap)
 Introduction
 ============
 KD Soap is a Qt-based client-side and server-side SOAP component.
@@ -9,7 +9,7 @@ as a dedicated web server.
 
 KD Soap targets C++ programmers who use Qt in their applications.
 
-For more information, see http://www.kdab.com/kdab-products/kd-soap
+For more information, see https://www.kdab.com/kdab-products/kd-soap
 
 Using KD Soap
 =============
@@ -22,20 +22,22 @@ After reading the introductory overview files in doc/
 you will find more information at three places:
 
   detailed browsable API reference:   doc/refman/index.html
-                                or:   http://docs.kdab.com/kdsoap
+                                or:   https://docs.kdab.com/kdsoap
   programmers manual with examples:   doc/manual/kdsoap.pdf
   our sorted example programs:        examples/
 
 Contact
 =======
 * Join our mailing list: https://mail.kdab.com/mailman/listinfo/kdsoap-interest
-* See our official home page: http://www.kdab.com/products/kd-soap
+* See our official home page: https://www.kdab.com/products/kd-soap
 * Visit us on GitHub: https://github.com/KDAB/KDSoap
 
 Get Involved
 ============
 KDAB will happily accept external contributions, but substantial
-contributions will require a signed Copyright Assignment Agreement.
+contributions will require a signed Copyright Assignment Agreement
+(see doc/KDSoap-CopyrightAssignmentForm.docx).
+
 Contact info@kdab.com for more information.
 
 Please submit your contributions or issue reports from our GitHub space at
@@ -50,7 +52,9 @@ under the terms of:
 * the GPL (see LICENSE.GPL.txt for details)
     (except libkdsoap-server, see LICENSE.AGPL3-modified.txt)
 * the KDAB commercial license, provided that you buy a license.
-  please contact sales@kdab.com if you are interested in buying commercial licenses.
+  please contact info@kdab.com if you are interested in buying commercial licenses.
+
+Commercial licensing terms are available in the included file LICENSE.txt.
 
 About KDAB
 ==========
@@ -65,7 +69,7 @@ We continue to help develop parts of Qt and are one of the major contributors
 to the Qt Project. We can give advanced or standard trainings anywhere
 around the globe on Qt as well as C++, OpenGL, 3D and more.
 
-Please visit http://www.kdab.com to meet the people who write code like this.
+Please visit https://www.kdab.com to meet the people who write code like this.
 
 
 KD SOAP and the KD SOAP logo are registered trademarks of Klaralvdalens Datakonsult AB
