@@ -83,7 +83,7 @@ public:
     ~KDSoapUdpClient();
 
     /**
-     * Bind UDP socket to port. This is needed to recieve messages. Both the
+     * Bind UDP socket to port. This is needed to receive messages. Both the
      * IPv4 and IPv6 port will be bound.
      * \param port The UDP port to bind to. When port is 0, a random port is chosen.
      * \param mode This is passed directly to QUdpSocket::bind().

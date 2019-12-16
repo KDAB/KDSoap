@@ -1,5 +1,6 @@
 /****************************************************************************
-** Copyright (C) 2019 Casper Meijn  <casper@meijn.net>
+** Copyright (C) 2019 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com.
+**
 ** All rights reserved.
 **
 ** This file is part of the KD Soap library.
@@ -103,7 +104,7 @@ private Q_SLOTS:
         bool rc = udpClient.bind(12345);
         QVERIFY(rc);
 
-        QSignalSpy spy(&udpClient, SIGNAL(receivedMessage(KDSoapMessage, KDSoapHeaders, QHostAddress, quint16)));
+        QSignalSpy spy(&udpClient, SIGNAL(receivedMessage(KDSoapMessage,KDSoapHeaders,QHostAddress,quint16)));
 
         auto data = exampleTextData();
         qint64 size = testSocket.writeDatagram(data, QHostAddress::LocalHost, 12345);
@@ -134,7 +135,7 @@ private:
             "  </soap:Header>"
             "  <soap:Body>"
             "    <n1:Probe>"
-            "      <n1:Types xmlns:i=\"http://printer.example.org/2003/imaging\">i:PrintBasic</n1:Types>"
+            "      <n1:Types xmlns:i=\"https://printer.example.org/2003/imaging\">i:PrintBasic</n1:Types>"
             "      <n1:Scopes"
             "        MatchBy=\"http://docs.oasis-open.org/ws-dd/ns/discovery/2009/01/ldap\""
             "        >ldap:///ou=engineering,o=examplecom,c=us</n1:Scopes>"
@@ -147,7 +148,7 @@ private:
         TNS__ProbeType probe;
 
         KDQName type("i:PrintBasic");
-        type.setNameSpace("http://printer.example.org/2003/imaging");
+        type.setNameSpace("https://printer.example.org/2003/imaging");
         TNS__QNameListType types;
         types.setEntries(QList<KDQName>() << type);
         probe.setTypes(types);

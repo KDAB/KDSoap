@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019  Casper Meijn <casper@meijn.net>
+ * Copyright (C) 2019 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ class KDSoapUdpClientPrivate : public QObject
 {
     Q_OBJECT
 public:
-    KDSoapUdpClientPrivate(KDSoapUdpClient *q)
+    explicit KDSoapUdpClientPrivate(KDSoapUdpClient *q)
         : q_ptr(q)
     {}
 
