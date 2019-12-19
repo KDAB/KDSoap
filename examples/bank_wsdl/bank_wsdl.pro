@@ -1,7 +1,7 @@
 include( $${TOP_SOURCE_DIR}/examples/examples.pri )
 
 HEADERS =
-SOURCES = holidays.cpp
+SOURCES = bank_wsdl.cpp
 
-KDWSDL = holidays.wsdl
+KDWSDL = BLZService.wsdl
 

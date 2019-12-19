@@ -13,3 +13,7 @@ WSDL parser / code generator changes, applying to both client and server side:
 ================================================================
 * Add override indicator to generated files. This requires c++11 for users of generated files.
 * Remove all special handling of soap/encoding namespace, which fixes the use of soapenc:string and soapenc:integer for instance (#179).
+
+Examples:
+========
+* The holidays examples have been replaced with bank-lookup examples. Less fun, but the holidays web service no longer exists...
