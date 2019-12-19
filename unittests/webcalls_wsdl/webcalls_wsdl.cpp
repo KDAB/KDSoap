@@ -23,7 +23,7 @@
 
 #include "KDSoapClientInterface.h"
 #include "wsdl_soapresponder.h"
-#include "wsdl_holidays.h"
+#include "wsdl_BLZService.h"
 #include "wsdl_BFGlobalService.h"
 #include "wsdl_OrteLookup.h"
 #include <QTest>
@@ -63,32 +63,32 @@ private slots:
 
     // Soap in Document mode.
 
-    void testHolidays_wsdl_soap()
+    void testBLZService_wsdl_soap()
     {
-        const int year = 2009;
-        USHolidayDates holidays;
-        TNS__GetValentinesDay parameters;
-        parameters.setYear(year);
-        TNS__GetValentinesDayResponse response = holidays.getValentinesDay(parameters);
-        qDebug() << response.getValentinesDayResult();
-        const QString dateString = response.getValentinesDayResult().date().toString(Qt::ISODate);
-        QCOMPARE(dateString, QString::fromLatin1("2009-02-14"));
+        BLZService::BLZServiceSOAP11Binding service;
+        TNS__GetBankType getBankType;
+        getBankType.setBlz("20130600"); // found on http://www.thebankcodes.com/blz/bybankname.php
+        TNS__GetBankResponseType response = service.getBank(getBankType);
+        QCOMPARE(response.details().bic(), QString::fromLatin1("BARCDEH1XXX"));
+        QCOMPARE(response.details().bezeichnung(), QString::fromLatin1("Barclaycard Barclays Bank"));
+        QCOMPARE(response.details().ort(), QString::fromLatin1("Hamburg"));
+        QCOMPARE(response.details().plz(), QString::fromLatin1("22702"));
     }
 
     void testParallelAsyncRequests()
     {
-        USHolidayDates holidays;
-        QStringList expectedResults;
-        for (int year = 2007; year < 2010; ++year) {
-            TNS__GetValentinesDay parameters;
-            parameters.setYear(year);
-            holidays.asyncGetValentinesDay(parameters);
-            expectedResults += QString::fromLatin1("%1-02-14T00:00:00").arg(year);
+        BLZService::BLZServiceSOAP11Binding service;
+        const QStringList expectedResults = {"BARCDEH1XXX", "BEBEDEBBXXX", "BEVODEBBXXX"};
+
+        for (const char* blz : { "10020000", "20130600", "10090000" }) {
+            TNS__GetBankType getBankType;
+            getBankType.setBlz(QString::fromLatin1(blz));
+            service.asyncGetBank(getBankType);
         }
-        connect(&holidays, SIGNAL(getValentinesDayDone(TNS__GetValentinesDayResponse)),
-                this, SLOT(slotGetValentinesDayDone(TNS__GetValentinesDayResponse)));
-        connect(&holidays, SIGNAL(getValentinesDayError(KDSoapMessage)),
-                this, SLOT(slotGetValentinesDayError(KDSoapMessage)));
+        connect(&service, SIGNAL(getBankDone(TNS__GetBankResponseType)),
+                this, SLOT(slotGetBankDone(TNS__GetBankResponseType)));
+        connect(&service, SIGNAL(getBankError(KDSoapMessage)),
+                this, SLOT(slotGetBankError(KDSoapMessage)));
         m_eventLoop.exec();
 
         //qDebug() << m_resultsReceived;
@@ -135,19 +135,16 @@ private slots:
         QCOMPARE(resp.orteStartWithResult(), QString::fromLatin1("Berlin;Berlstedt"));
     }
 
-    // TODO: a great example for complex returned structures:
-    // http://www.holidaywebservice.com/Holidays/HolidayService.asmx?op=GetHolidaysForYear
-
 protected slots:
-    void slotGetValentinesDayDone(const TNS__GetValentinesDayResponse &response)
+    void slotGetBankDone(const TNS__GetBankResponseType &response)
     {
-        m_resultsReceived << response.getValentinesDayResult().toString(Qt::ISODate);
+        m_resultsReceived << response.details().bic();
         if (m_resultsReceived.count() == 3) {
             m_eventLoop.quit();
         }
     }
 
-    void slotGetValentinesDayError(const KDSoapMessage &msg)
+    void slotGetBankError(const KDSoapMessage &msg)
     {
         m_resultsReceived << msg.faultAsString();
         if (m_resultsReceived.count() == 3) {
