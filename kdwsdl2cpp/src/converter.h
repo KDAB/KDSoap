@@ -44,7 +44,7 @@ public:
 
   struct DefaultAttributeValue
   {
-    DefaultAttributeValue(bool isBuiltin = false, const QString& value = QString::null):
+    DefaultAttributeValue(bool isBuiltin = false, const QString& value = QString()):
         mIsBuiltin(isBuiltin),
         mValue(value) { }
 
