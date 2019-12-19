@@ -64,7 +64,7 @@ void MainWindow::nextBank()
     static const char* blzList[] = { "10020000", "20130600", "10090000" };
     static const int numEntries = sizeof(blzList) / sizeof(*blzList);
     mIndex = (mIndex + 1) % numEntries;
-    mParameters.setBlz(blzList[mIndex]);
+    mParameters.setBlz(QString::fromLatin1(blzList[mIndex]));
 }
 
 void MainWindow::syncCall()
