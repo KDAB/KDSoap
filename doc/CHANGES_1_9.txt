@@ -1,10 +1,14 @@
 General:
 ========
+* C++11 is now required. Qt4 is still supported, but this is the last release with support for Qt4.
+* Fix rpath for Unix/Linux/macOS (#181).
+* Improve cmake usage by setting the install interface directories on the library targets (#196). You can just link to KDSoap::kdsoap and you'll get the correct include paths now.
 
 Client-side:
 ============
-* Add support for selecting WS-Addressing namespace for send messages
-* Add support for implementing SOAP-over-UDP clients (see KDSoapUdpClient)
+* Add support for selecting WS-Addressing namespace for send messages (#176).
+* Fix WS-Addressing spec compliance (#193)
+* Add support for implementing SOAP-over-UDP clients (see KDSoapUdpClient).
 
 Server-side:
 ============
@@ -12,7 +16,9 @@ Server-side:
 WSDL parser / code generator changes, applying to both client and server side:
 ================================================================
 * Add override indicator to generated files. This requires c++11 for users of generated files.
+* Add option for loading PKCS12 certificates (#190).
 * Remove all special handling of soap/encoding namespace, which fixes the use of soapenc:string and soapenc:integer for instance (#179).
+* Fix compilation error due to missing QSharedPointer include in generated code (#170).
 
 Examples:
 ========
