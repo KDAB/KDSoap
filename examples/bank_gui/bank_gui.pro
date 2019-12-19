@@ -1,9 +1,9 @@
 include( $${TOP_SOURCE_DIR}/examples/examples.pri )
 
 HEADERS = mainwindow.h
-SOURCES = holidays_gui.cpp mainwindow.cpp
+SOURCES = bank_gui.cpp mainwindow.cpp
 RESOURCES = resources.qrc
-KDWSDL = holidays.wsdl
+KDWSDL = BLZService.wsdl
 
 # This is our only GUI program :)
 greaterThan(QT_MAJOR_VERSION, 4) {

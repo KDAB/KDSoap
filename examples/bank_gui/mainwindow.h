@@ -4,7 +4,7 @@
 #include <QWidget>
 #include "KDSoapClientInterface.h"
 #include "KDSoapMessage.h"
-#include "wsdl_holidays.h"
+#include "wsdl_BLZService.h"
 
 QT_BEGIN_NAMESPACE
 class QPushButton;
@@ -20,20 +20,22 @@ public:
 private slots:
   void syncCall();
   void asyncCall();
-  void done(const TNS__GetValentinesDayResponse& r);
+  void done(const TNS__GetBankResponseType& response);
   void doneError(const KDSoapMessage& error);
 
 private:
+  void nextBank();
+
   QPushButton *mBtnAsync;
   QPushButton *mBtnSync;
   QLabel      *mLblResult;
   QLabel      *mLblAnim;
   QMovie      *mMovAnim;
 
-  unsigned int mYear;
+  int mIndex = 0;
 
-  USHolidayDates *mHolidayDates;
-  TNS__GetValentinesDay mParameters;
+  BLZService::BLZServiceSOAP11Binding *mService;
+  TNS__GetBankType mParameters;
 };
 
 #endif

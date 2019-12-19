@@ -11,7 +11,6 @@
 
 MainWindow::MainWindow( QWidget *parent ) : QWidget( parent )
 {
-
   mBtnSync = new QPushButton(tr("Sync Call"), this);
   mBtnAsync = new QPushButton(tr("Async Call"), this);
   mLblResult = new QLabel(tr("Result: "), this);
@@ -38,37 +37,46 @@ MainWindow::MainWindow( QWidget *parent ) : QWidget( parent )
   connect(mBtnSync, SIGNAL(clicked()), this, SLOT(syncCall()));
   connect(mBtnAsync, SIGNAL(clicked()), this, SLOT(asyncCall()));
 
-  mHolidayDates = new USHolidayDates();
-  connect(mHolidayDates, SIGNAL(getValentinesDayDone(const TNS__GetValentinesDayResponse&)),
-          this,          SLOT(  done    (const TNS__GetValentinesDayResponse&)));
+  mService = new BLZService::BLZServiceSOAP11Binding(this);
 
-  connect(mHolidayDates, SIGNAL(getValentinesDayError(const KDSoapMessage&)),
+  connect(mService, SIGNAL(getBankDone(TNS__GetBankResponseType)),
+          this,     SLOT(done(const TNS__GetBankResponseType&)));
+
+  connect(mService, SIGNAL(getBankError(const KDSoapMessage&)),
           this,          SLOT  (doneError(const KDSoapMessage&)));
 
-  mYear = 1960;
-  mParameters.setYear(mYear++);
+  nextBank();
 }
 
-void MainWindow::done(const TNS__GetValentinesDayResponse& response)
+void MainWindow::done(const TNS__GetBankResponseType &response)
 {
-    mLblResult->setText(tr("Valentine's day: %1").arg(response.getValentinesDayResult().toString()));
+    mLblResult->setText(tr("Bank found: \"%1\"").arg(response.details().bezeichnung()));
 }
 
 void MainWindow::doneError(const KDSoapMessage& error)
 {
-    QMessageBox::warning(this, tr("Error retrieving valentines day"), error.faultAsString());
+    QMessageBox::warning(this, tr("Error making the SOAP call"), error.faultAsString());
+}
+
+void MainWindow::nextBank()
+{
+    // found on http://www.thebankcodes.com/blz/bybankname.php
+    static const char* blzList[] = { "10020000", "20130600", "10090000" };
+    static const int numEntries = sizeof(blzList) / sizeof(*blzList);
+    mIndex = (mIndex + 1) % numEntries;
+    mParameters.setBlz(blzList[mIndex]);
 }
 
 void MainWindow::syncCall()
 {
-    TNS__GetValentinesDayResponse response = mHolidayDates->getValentinesDay(mParameters);
-    mLblResult->setText( tr("Valentine's day: %1").arg(response.getValentinesDayResult().toString()));
-    mParameters.setYear( mYear++ );
+    auto response = mService->getBank(mParameters);
+    mLblResult->setText( tr("Bank found: %1").arg(response.details().bezeichnung()));
+    nextBank();
 }
 
 void MainWindow::asyncCall()
 {
-  mHolidayDates->asyncGetValentinesDay(mParameters);
-  mParameters.setYear( mYear++ );
+    mService->asyncGetBank(mParameters);
+    nextBank();
 }
 
