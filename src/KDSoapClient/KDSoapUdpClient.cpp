@@ -23,8 +23,6 @@
 #include "KDSoapMessageWriter_p.h"
 #include <QNetworkInterface>
 
-static const QHostAddress AnyIPv4(QLatin1String("0.0.0.0"));
-
 static bool isMulticastAddress(const QHostAddress &address) {
     if (address.protocol() == QAbstractSocket::IPv4Protocol) {
         return address.isInSubnet(QHostAddress (QLatin1String("224.0.0.0")), 4);
@@ -54,6 +52,7 @@ KDSoapUdpClient::~KDSoapUdpClient()
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 bool KDSoapUdpClient::bind(quint16 port, QAbstractSocket::BindMode mode) {
     Q_D(KDSoapUdpClient);
+    const QHostAddress AnyIPv4(QLatin1String("0.0.0.0"));
     bool rc = true;
     // Workaround for lack of dual stack sockets in Qt4
     // Qt5 supports binding to QHostAddress::Any, which will listen on both IPv4 and IPv6 interfaces.
@@ -65,6 +64,7 @@ bool KDSoapUdpClient::bind(quint16 port, QAbstractSocket::BindMode mode) {
 #else
 bool KDSoapUdpClient::bind(quint16 port) {
     Q_D(KDSoapUdpClient);
+    const QHostAddress AnyIPv4(QLatin1String("0.0.0.0"));
     bool rc = true;
     // Workaround for lack of dual stack sockets in Qt4
     // Qt5 supports binding to QHostAddress::Any, which will listen on both IPv4 and IPv6 interfaces.
