@@ -3,7 +3,7 @@ Version:        1.8.0
 Release:        1
 Summary:        A Qt5-based client-side and server-side SOAP component
 Source0:        %{name}-%{version}.tar.gz
-Source1:	%{name}-%{version}.tar.gz.asc
+Source1:        %{name}-%{version}.tar.gz.asc
 Url:            http://github.com/KDAB/KDSoap
 Group:          System/Libraries
 License:        GPL-2.0+
