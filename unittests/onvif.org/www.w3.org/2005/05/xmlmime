@@ -2,7 +2,7 @@
 <!-- 
    W3C XML Schema defined in the Describing Media Content of Binary Data in XML
    specification
-     http://www.w3.org/TR/xml-media-types
+     https://www.w3.org/TR/xml-media-types
 
    Copyright © 2005 World Wide Web Consortium,
   
@@ -12,7 +12,7 @@
    it will be useful, but WITHOUT ANY WARRANTY; without even the implied
    warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
   
-   [1] http://www.w3.org/Consortium/Legal/2002/copyright-software-20021231
+   [1] https://www.w3.org/Consortium/Legal/2002/copyright-software-20021231
 
    $Id: xmlmime.xsd,v 1.1 2005/04/25 17:08:35 hugo Exp $
 -->

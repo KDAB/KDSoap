@@ -125,7 +125,7 @@ bool Attribute::isQualified() const
     return d->mQualified;
 }
 
-// http://www.w3.org/TR/xmlschema-0/#ref36
+// https://www.w3.org/TR/xmlschema-0/#ref36
 void Attribute::setAttributeUse(AttributeUse use)
 {
     d->mUse = use;

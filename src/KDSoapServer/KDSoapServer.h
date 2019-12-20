@@ -227,7 +227,7 @@ public:
      * Sets the .wsdl file that users can download from the soap server.
      * \param file relative or absolute path to the .wsdl file (including the filename), on disk
      * \param pathInUrl that clients can use in order to download the file:
-     *                  for instance "/files/myservice.wsdl" for "http://myserver.example.com/files/myservice.wsdl" as final URL.
+     *                  for instance "/files/myservice.wsdl" for "https://myserver.example.com/files/myservice.wsdl" as final URL.
      */
     void setWsdlFile(const QString &file, const QString &pathInUrl);
 

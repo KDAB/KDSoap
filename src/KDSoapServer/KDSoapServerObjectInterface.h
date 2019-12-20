@@ -120,7 +120,7 @@ public:
      *
      * Note that a GET request with Accept="application/soap+xml" will trigger a call to this method with an empty
      * incoming soap request, in order to make it possible to return SOAP responses. This is as documented in
-     * http://www.ibm.com/developerworks/xml/library/x-tipgetr/.
+     * https://www.ibm.com/developerworks/xml/library/x-tipgetr/.
      *
      * The default implementation in this base class is to simply return
      * a fault "method not found". Subclasses must implement the dispatching
@@ -190,7 +190,7 @@ public:
      * \param faultActor Information about who caused the fault to happen
      * \param detail Holds application-specific error information related to the Body element
      *
-     * See http://www.w3.org/TR/2000/NOTE-SOAP-20000508/#_Toc478383507 for more details.
+     * See https://www.w3.org/TR/2000/NOTE-SOAP-20000508/#_Toc478383507 for more details.
      */
     void setFault(const QString &faultCode, const QString &faultString, const QString &faultActor = QString(), const QString &detail = QString());
 
@@ -203,7 +203,7 @@ public:
      * \param faultActor Information about who caused the fault to happen
      * \param detail Holds application-specific error information related to the Body element, it is given as a KDSoapValue and hence can be parsed
      *
-     * See http://www.w3.org/TR/2000/NOTE-SOAP-20000508/#_Toc478383507 for more details.
+     * See https://www.w3.org/TR/2000/NOTE-SOAP-20000508/#_Toc478383507 for more details.
      */
     void setFault(const QString &faultCode, const QString &faultString, const QString &faultActor, const KDSoapValue &detail);
 

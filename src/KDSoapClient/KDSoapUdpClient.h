@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #ifndef KDSOAPUDPCLIENT_H
@@ -46,7 +46,7 @@ QT_END_NAMESPACE
  * \code
  * auto soapUdpClient = new KDSoapUdpClient(this);
  * connect(soapUdpClient, &KDSoapUdpClient::receivedMessage, [=](const KDSoapMessage &message, const KDSoapHeaders &headers, const QHostAddress &address, quint16 port) {
- *   if(message.messageAddressingProperties().action() == QStringLiteral("http://docs.oasis-open.org/ws-dd/ns/discovery/2009/01/ProbeMatches")) {
+ *   if(message.messageAddressingProperties().action() == QStringLiteral("https://docs.oasis-open.org/ws-dd/ns/discovery/2009/01/ProbeMatches")) {
  *     TNS__ProbeMatchesType probeMatches;
  *     probeMatches.deserialize(message);
  *     qDebug() << "Received probe match from" << address;

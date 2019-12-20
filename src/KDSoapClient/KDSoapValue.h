@@ -149,7 +149,7 @@ public:
 
     /**
      * Write out xsi:nil if the KDSoapValue has no content.
-     * See http://www.w3.org/TR/xmlschema-1/#xsi_nil
+     * See https://www.w3.org/TR/xmlschema-1/#xsi_nil
      */
     void setNillable(bool nillable);
 
@@ -222,7 +222,7 @@ public:
      *
      * For instance
      * \code
-     * setType("http://www.w3.org/2001/XMLSchema-instance", "string")
+     * setType("https://www.w3.org/2001/XMLSchema-instance", "string")
      * \endcode
      * will send \c xsi:type="xsd:string" in the message XML.
      *
@@ -232,7 +232,7 @@ public:
     void setType(const QString &nameSpace, const QString &type);
     /**
      * Returns the namespace of the type.
-     * Example: "http://www.w3.org/2001/XMLSchema-instance".
+     * Example: "https://www.w3.org/2001/XMLSchema-instance".
      */
     QString typeNs() const;
     /**

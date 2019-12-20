@@ -101,7 +101,6 @@ void Operation::loadXML(ParserContext *context, const QDomElement &element)
         context->messageHandler()->warning(QLatin1String("Operation: 'name' required"));
     }
 
-    //http://www.roguewave.com/portals/0/products/hydraexpress/docs/4.6.0/html/rwsfwsdevug/9-2.html
     // input only = OneWayOperation
     // output only = NotificationOperation
     // input+output = RequestResponseOperation

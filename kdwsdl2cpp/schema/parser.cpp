@@ -212,7 +212,7 @@ bool Parser::parseSchemaTag(ParserContext *context, const QDomElement &root)
 
 void Parser::parseImport(ParserContext *context, const QDomElement &element)
 {
-    // http://www.w3.org/TR/2004/REC-xmlschema-1-20041028/structures.html#layer2
+    // https://www.w3.org/TR/2004/REC-xmlschema-1-20041028/structures.html#layer2
     // The actual value of its namespace [attribute] indicates that the containing schema document may contain qualified references to schema components in that namespace (via one or more prefixes declared with namespace declarations in the normal way).
     QString expectedNamespace = element.attribute(QLatin1String("namespace"));
 
@@ -435,7 +435,7 @@ Element Parser::parseElement(ParserContext *context,
         qDebug() << "newElement namespace=" << nameSpace << "name=" << newElement.name() << "defaultQualified=" << d->mDefaultQualifiedElements;
     }
 
-    // http://www.w3.org/TR/xmlschema-0/#NS
+    // https://www.w3.org/TR/xmlschema-0/#NS
     if (element.hasAttribute(QLatin1String("form"))) {
         newElement.setIsQualified(element.attribute(QLatin1String("form")) == QLatin1String("qualified"));
     } else {
@@ -534,7 +534,6 @@ void Parser::setSubstitutionElementName(const QName &typeName, const QName &elem
     XSD::ComplexType::List::iterator ctit = d->mComplexTypes.findComplexType(typeName);
     if (ctit != d->mComplexTypes.end()) {
         // If this type already has an element name associated, they are aliases, any one will do.
-        // (see http://www.w3schools.com/schema/schema_complex_subst.asp)
         (*ctit).setSubstitutionElementName(elemName);
     } else {
         XSD::SimpleType::List::iterator stit = d->mSimpleTypes.findSimpleType(typeName);
@@ -592,7 +591,7 @@ Attribute Parser::parseAttribute(ParserContext *context,
         newAttribute.setType(typeName);
     }
 
-    // http://www.w3.org/TR/xmlschema-0/#NS
+    // https://www.w3.org/TR/xmlschema-0/#NS
     if (element.hasAttribute(QLatin1String("form"))) {
         newAttribute.setIsQualified(element.attribute(QLatin1String("form")) == QLatin1String("qualified"));
     } else {
@@ -641,7 +640,7 @@ Attribute Parser::parseAttribute(ParserContext *context,
     }
 
     if (newAttribute.type().isEmpty() && !element.hasAttribute(QLatin1String("ref"))) {
-        // http://www.w3.org/TR/2004/REC-xmlschema-1-20041028/structures.html#element-attribute
+        // https://www.w3.org/TR/2004/REC-xmlschema-1-20041028/structures.html#element-attribute
         // says "otherwise the simple ur-type definition", which is anySimpleType
         newAttribute.setType(QName(XMLSchemaURI, QLatin1String("anySimpleType")));
         qDebug() << "found attribute" << newAttribute.name() << "without type and without ref, set to default" << newAttribute.type();
@@ -980,7 +979,7 @@ AttributeGroup Parser::parseAttributeGroup(ParserContext *context, const QDomEle
     return group;
 }
 
-// <group> http://www.w3.org/TR/xmlschema-0/#ref17
+// <group> https://www.w3.org/TR/xmlschema-0/#ref17
 Group Parser::parseGroup(ParserContext *context, const QDomElement &element, const QString &nameSpace)
 {
     Element::List elements;
@@ -1033,7 +1032,7 @@ static QUrl urlForLocation(ParserContext *context, const QString &location)
     return url;
 }
 
-// Note: http://www.w3.org/TR/xmlschema-0/#schemaLocation paragraph 3 (for <import>) says
+// Note: https://www.w3.org/TR/xmlschema-0/#schemaLocation paragraph 3 (for <import>) says
 // "schemaLocation is only a hint"
 void Parser::importSchema(ParserContext *context, const QString &location)
 {

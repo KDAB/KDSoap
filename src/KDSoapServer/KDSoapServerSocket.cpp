@@ -127,7 +127,7 @@ static QByteArray httpResponseHeaders(bool fault, const QByteArray &contentType,
     QByteArray httpResponse;
     httpResponse.reserve(50);
     if (fault) {
-        // http://www.w3.org/TR/2007/REC-soap12-part0-20070427 and look for 500
+        // https://www.w3.org/TR/2007/REC-soap12-part0-20070427 and look for 500
         httpResponse += "HTTP/1.1 500 Internal Server Error\r\n";
     } else if (responseDataSize == 0) {
         httpResponse += "HTTP/1.1 204 No Content\r\n";
@@ -329,7 +329,7 @@ void KDSoapServerSocket::handleRequest(const QMap<QByteArray, QByteArray> &httpH
             return;
         }
 
-        // See http://www.ibm.com/developerworks/xml/library/x-tipgetr/
+        // See https://www.ibm.com/developerworks/xml/library/x-tipgetr/
         // We could implement it, but there's no SOAP request, just a query in the URL,
         // which we'd have to pass to a different virtual than processRequest.
         handleError(replyMsg, "Client.Data", QString::fromLatin1("Support for GET requests not implemented yet."));

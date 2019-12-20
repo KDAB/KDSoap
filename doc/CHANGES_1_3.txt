@@ -20,7 +20,7 @@ Client-side:
 * Fix namespace of the main element in messages being sent, the NS from the schema
   must be used rather than the NS from the WSDL, when both exist (github issue4).
 * Fix assert when the response message is empty (github issue1).
-* Set attribute xsi:nil="true" in empty elements, as per http://www.w3.org/TR/xmlschema-1/#xsi_nil
+* Set attribute xsi:nil="true" in empty elements, as per https://www.w3.org/TR/xmlschema-1/#xsi_nil
 * Fix missing setters for headers, when generating multiple classes
 * Fix job classes to be per-binding, when multiple bindings are generated.
 
@@ -41,7 +41,7 @@ Server-side:
 
 Code generator changes, applying to both client and server side:
 ================================================================
-* Support for SOAP-1.2 encoding namespace (http://www.w3.org/2003/05/soap-encoding)
+* Support for SOAP-1.2 encoding namespace (https://www.w3.org/2003/05/soap-encoding)
 * Improve parsing of soap-enc:array restrictions, to use the correct element names, when specified
 * Fix parsing of <soap:body use="encoded">, which sometimes didn't encode the parameters.
 * Fix generation of classes with nested namespaces (A::B::C)

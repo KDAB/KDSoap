@@ -40,7 +40,7 @@ class KDSoapMessageAddressingPropertiesData;
  * Relationship between two soap messages.
  * This class is composed of two QStrings: one represents the type of the relation, the other represents the message ID of the message it refers to.
  *
- * \see http://www.w3.org/TR/ws-addr-core/#msgaddrpropsinfoset
+ * \see https://www.w3.org/TR/ws-addr-core/#msgaddrpropsinfoset
  * \since 1.5
  */
 namespace KDSoapMessageRelationship
@@ -57,7 +57,7 @@ struct Relationship {
      * @param URI is supposed to represent a message ID of a previous message you want to make reference to
      * @param type represents the nature of the relation between messages, if none is provided, the following
      * predefined address will be used wsa:Reply (which is dependent on the selected namespace, for example
-     * http://www.w3.org/2005/08/addressing/reply)
+     * https://www.w3.org/TR/2006/REC-ws-addr-core-20060509)
      */
     Relationship(const QString &URI, const QString &type = QString())
         : uri(URI), relationshipType(type) {}
@@ -75,7 +75,7 @@ struct Relationship {
  * to have in the soap header and associate to a given message using
  * \see KDSoapMessage::setMessageAddressingProperties
  *
- * \see http://www.w3.org/TR/ws-addr-core/#abstractmaps
+ * \see https://www.w3.org/TR/ws-addr-core/#abstractmaps
  * Important: This class does not ensure any kind of validation to the data being passed to it
  * \since 1.5
  */

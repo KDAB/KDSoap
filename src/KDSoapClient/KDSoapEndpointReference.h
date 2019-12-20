@@ -34,7 +34,7 @@ class KDSoapEndpointReferenceData;
  * KDSoapEndpointReference is the abstraction class to hold
  * an Endpoint Reference properties.
  *
- * \see: http://www.w3.org/TR/ws-addr-core/#eprinfoset
+ * \see: https://www.w3.org/TR/ws-addr-core/#eprinfoset
  * \since 1.5
  */
 class KDSOAP_EXPORT KDSoapEndpointReference

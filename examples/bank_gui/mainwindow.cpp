@@ -60,7 +60,7 @@ void MainWindow::doneError(const KDSoapMessage& error)
 
 void MainWindow::nextBank()
 {
-    // found on http://www.thebankcodes.com/blz/bybankname.php
+    // found on https://www.thebankcodes.com/blz/bybankname.php
     static const char* blzList[] = { "10020000", "20130600", "10090000" };
     static const int numEntries = sizeof(blzList) / sizeof(*blzList);
     mIndex = (mIndex + 1) % numEntries;

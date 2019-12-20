@@ -61,8 +61,7 @@ static QString correctSyntaxCpp(const QString &str)
 TypeMap::TypeMap()
     : mNSManager(nullptr)
 {
-    // see http://www.w3.org/TR/xmlschema-2
-    // or http://www.datypic.com/sc/xsd/s-datatypes.xsd.html
+    // see https://www.w3.org/TR/xmlschema-2
     addBuiltinType("any", "KDSoapValue");
     addBuiltinType("anySimpleType", "QVariant");
     addBuiltinType("anyType", "KDSoapValue");
@@ -87,7 +86,7 @@ TypeMap::TypeMap()
     addBuiltinType("Name", "QString");
     addBuiltinType("NCName", "QString");
     addBuiltinType("negativeInteger", "qint64"); // unbounded (-inf to -1)
-    addBuiltinType("NMTOKEN", "QString"); // http://www.w3.org/TR/2004/REC-xmlschema-2-20041028/datatypes.html#NMTOKEN
+    addBuiltinType("NMTOKEN", "QString"); // https://www.w3.org/TR/2004/REC-xmlschema-2-20041028/datatypes.html#NMTOKEN
     addBuiltinType("NOTATION", "QString");
     addBuiltinType("nonNegativeInteger", "quint64"); // unbounded (0 to inf)
     addBuiltinType("nonPositiveInteger", "qint64"); // unbounded (-inf to 0)

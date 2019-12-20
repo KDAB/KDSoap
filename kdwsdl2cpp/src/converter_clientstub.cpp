@@ -572,7 +572,7 @@ void Converter::addMessageArgument(KODE::Code &code, const SoapBinding::Style &b
 {
     const QString partname = varIsMember ? QLatin1Char('m') + upperlize(localVariableName) : mNameMapper.escape(lowerlize(localVariableName));
     // In document style, the "part" is directly added as arguments
-    // See http://www.ibm.com/developerworks/webservices/library/ws-whichwsdl/
+    // See https://www.ibm.com/developerworks/webservices/library/ws-whichwsdl/
     if (bindingStyle == SoapBinding::DocumentStyle) {
         code.addBlock(serializePart(part, partname, messageName, false));
     } else {

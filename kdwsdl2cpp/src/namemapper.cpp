@@ -24,7 +24,7 @@ using namespace KWSDL;
 
 NameMapper::NameMapper()
 {
-    // From http://www.cppreference.com/wiki/keywords/start
+    // From https://en.cppreference.com/w/cpp/keyword
     mKeyWords << "and" << "and_eq" << "asm" << "auto" << "bitand" << "bitor"
               << "bool" << "break" << "case" << "catch" << "char" << "class"
               << "compl" << "const" << "const_cast" << "continue" << "default"
