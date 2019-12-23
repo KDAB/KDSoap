@@ -135,7 +135,7 @@ private:
             "  </soap:Header>"
             "  <soap:Body>"
             "    <n1:Probe>"
-            "      <n1:Types xmlns:i=\"https://printer.example.org/2003/imaging\">i:PrintBasic</n1:Types>"
+            "      <n1:Types xmlns:i=\"http://printer.example.org/2003/imaging\">i:PrintBasic</n1:Types>"
             "      <n1:Scopes"
             "        MatchBy=\"http://docs.oasis-open.org/ws-dd/ns/discovery/2009/01/ldap\""
             "        >ldap:///ou=engineering,o=examplecom,c=us</n1:Scopes>"
@@ -148,7 +148,7 @@ private:
         TNS__ProbeType probe;
 
         KDQName type("i:PrintBasic");
-        type.setNameSpace("https://printer.example.org/2003/imaging");
+        type.setNameSpace("http://printer.example.org/2003/imaging");
         TNS__QNameListType types;
         types.setEntries(QList<KDQName>() << type);
         probe.setTypes(types);

@@ -46,8 +46,8 @@ QT_END_NAMESPACE
  * \code
  *  const int year = 2009;
  *
- *  const QString endPoint = QLatin1String("https://www.27seconds.com/Holidays/US/Dates/USHolidayDates.asmx");
- *  const QString messageNamespace = QLatin1String("https://www.27seconds.com/Holidays/US/Dates/");
+ *  const QString endPoint = QLatin1String("http://www.27seconds.com/Holidays/US/Dates/USHolidayDates.asmx");
+ *  const QString messageNamespace = QLatin1String("http://www.27seconds.com/Holidays/US/Dates/");
  *  KDSoapClientInterface client(endPoint, messageNamespace);
  *
  *  KDSoapMessage message;
@@ -78,9 +78,9 @@ public:
      * Creates a KDSoapClientInterface object associated with the end point \p endPoint.
      * \note No connection is done yet at this point, the parameters are simply stored for later use.
      * \param endPoint the URL of the SOAP service, including http or https scheme, port number
-     *                 if needed, and path. Example: https://server/path/soap.php
+     *                 if needed, and path. Example: http://server/path/soap.php
      * \param messageNamespace the namespace URI used for the message and its arguments.
-     *                 Example: https://server/path, but could be any URI, it doesn't have to exist
+     *                 Example: http://server/path, but could be any URI, it doesn't have to exist
      *                 or even to be http, this is really just a namespace, which is part of the
      *                 specification of the SOAP service.
      */
@@ -112,8 +112,8 @@ public:
      * \code
      *  const int year = 2009;
      *
-     *  const QString endPoint = QLatin1String("https://www.27seconds.com/Holidays/US/Dates/USHolidayDates.asmx");
-     *  const QString messageNamespace = QLatin1String("https://www.27seconds.com/Holidays/US/Dates/");
+     *  const QString endPoint = QLatin1String("http://www.27seconds.com/Holidays/US/Dates/USHolidayDates.asmx");
+     *  const QString messageNamespace = QLatin1String("http://www.27seconds.com/Holidays/US/Dates/");
      *  KDSoapClientInterface* client= new KDSoapClientInterface(endPoint, messageNamespace);
      *
      *  KDSoapMessage message;
@@ -208,7 +208,7 @@ public:
     /**
      * Sets the end point of the SOAP service.
      * \param endPoint the URL of the SOAP service, including http or https scheme, port number
-     *                 if needed, and path. Example: https://server/path/soap.php
+     *                 if needed, and path. Example: http://server/path/soap.php
      * \since 1.2
      */
     void setEndPoint(const QString &endPoint);

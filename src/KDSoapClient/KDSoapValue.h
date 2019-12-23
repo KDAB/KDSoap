@@ -222,7 +222,7 @@ public:
      *
      * For instance
      * \code
-     * setType("https://www.w3.org/2001/XMLSchema-instance", "string")
+     * setType("http://www.w3.org/2001/XMLSchema-instance", "string")
      * \endcode
      * will send \c xsi:type="xsd:string" in the message XML.
      *
@@ -232,7 +232,7 @@ public:
     void setType(const QString &nameSpace, const QString &type);
     /**
      * Returns the namespace of the type.
-     * Example: "https://www.w3.org/2001/XMLSchema-instance".
+     * Example: "http://www.w3.org/2001/XMLSchema-instance".
      */
     QString typeNs() const;
     /**
