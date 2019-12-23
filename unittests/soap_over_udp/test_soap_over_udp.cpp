@@ -91,7 +91,7 @@ private Q_SLOTS:
 
         udpClient.sendMessage(exampleMessage(), KDSoapHeaders(), QHostAddress::LocalHost, testSocket.localPort());
 
-        QVERIFY(testSocket.hasPendingDatagrams());
+        QTRY_VERIFY(testSocket.hasPendingDatagrams());
         auto datagram = testSocket.receiveDatagram();
 
         QVERIFY(KDSoapUnitTestHelpers::xmlBufferCompare(datagram.data(), exampleTextData()));
