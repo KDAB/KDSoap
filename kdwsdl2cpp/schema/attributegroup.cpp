@@ -77,4 +77,15 @@ Attribute::List AttributeGroup::attributes() const
     return d->mAttributes;
 }
 
+bool operator==(const AttributeGroup& lhs, const AttributeGroup& rhs)
+{
+    return (// XmlElement:
+            lhs.isNull() == rhs.isNull()
+            && lhs.name() == rhs.name()
+            && lhs.nameSpace() == rhs.nameSpace()
+            // AttributeGroup:
+            && lhs.reference() == rhs.reference()
+            && lhs.attributes() == rhs.attributes());
+}
+
 }

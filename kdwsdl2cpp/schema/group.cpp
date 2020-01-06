@@ -82,6 +82,12 @@ bool Group::isResolved() const
     return !d->mElements.isEmpty() || d->mReference.isEmpty();
 }
 
+bool operator==(const Group& lhs, const Group& rhs)
+{
+    return (lhs.reference() == rhs.reference()
+            && lhs.elements() == rhs.elements());  // FIXME:
+}
+
 }
 
 QDebug operator<<(QDebug dbg, const XSD::Group &group)

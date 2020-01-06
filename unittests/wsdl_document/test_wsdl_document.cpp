@@ -476,6 +476,33 @@ private Q_SLOTS:
         params.setRepeatedChildren(children);
     }
 
+    // Test repeated names in nested complex types
+    void testRepeatedNames()
+    {
+        // Just test the generated code, two different classes should have been
+        // created for two structurally different nested complex types of the
+        // same name:
+        KDAB__TelegramRequest req;
+        KDAB__RepeatedName repeatedName;
+        repeatedName.setIntparam1(0);
+        req.setRepeatedName(repeatedName);
+
+        KDAB__TelegramResponse resp;
+        KDAB__RepeatedName1 repeatedName1;
+        repeatedName1.setStringparam1("test1");
+        resp.setRepeatedName(repeatedName1);
+
+        KDAB__EmployeeNameParams params;
+        class KDAB__RepeatedName repeatedName_sameStructure;
+        repeatedName_sameStructure.setIntparam1(1);
+        params.setRepeatedName(repeatedName_sameStructure);
+
+        KDAB__EmployeeCountryResponse resp2;
+        KDAB__RepeatedName1 repeatedName1_sameStructure;
+        repeatedName1_sameStructure.setStringparam1("test2");
+        resp2.setRepeatedName(repeatedName1_sameStructure);
+    }
+
     void testSoapVersion()
     {
         // Prepare response
@@ -724,6 +751,7 @@ private:
                "David Ä Faure"
                "</n1:employeeName>"
                "<n1:repeatedChildren><n1:low>0</n1:low><n1:width>0</n1:width><n1:center>0</n1:center></n1:repeatedChildren>"
+               "<n1:repeatedName><n1:intparam1>0</n1:intparam1></n1:repeatedName>"
                "</n1:EmployeeNameParams>"
                "</soap:Body>" + xmlEnvEnd()
                + '\n'; // added by QXmlStreamWriter::writeEndDocument
@@ -1007,6 +1035,7 @@ void WsdlDocumentTest::testServerPostByHand()
                                 "<soap:Body>"
                                 "<n1:EmployeeCountryResponse xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
                                 "<n1:employeeCountry>France</n1:employeeCountry>"
+                                "<n1:repeatedName><n1:stringparam1/></n1:repeatedName>"
                                 "</n1:EmployeeCountryResponse>"
                                 "</soap:Body></soap:Envelope>\n";
     QVERIFY(xmlBufferCompare(response, expected));
@@ -1088,6 +1117,7 @@ void WsdlDocumentTest::testSendTelegram()
         QByteArray(xmlBegin) + "<TelegramRequest " + xmlNamespaces + " xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
         "<TelegramHex>48656c6c6f</TelegramHex>"
         "<TelegramBase64>SGVsbG8=</TelegramBase64>"
+        "<repeatedName><intparam1>0</intparam1></repeatedName>"
         "</TelegramRequest>";
     const QString msgNS = QString::fromLatin1("http://www.kdab.com/xml/MyWsdl/");
     // Note that "qualified" is false in m_request, since it was created dynamically by the server -> no namespaces
@@ -1097,6 +1127,7 @@ void WsdlDocumentTest::testSendTelegram()
         QByteArray(xmlBegin) + "<n1:TelegramResponse " + xmlNamespaces + " xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
         "<n1:TelegramHex>52656365697665642048656c6c6f</n1:TelegramHex>"
         "<n1:TelegramBase64>UmVjZWl2ZWQgSGVsbG8=</n1:TelegramBase64>"
+        "<n1:repeatedName><n1:stringparam1></n1:stringparam1></n1:repeatedName>"
         "</n1:TelegramResponse>";
     // m_response, however, has qualified = true (set by the generated code).
     QVERIFY(xmlBufferCompare(server->lastServerObject()->m_response.toXml(KDSoapValue::LiteralUse, msgNS), expectedResponseXml));
