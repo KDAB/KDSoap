@@ -9,4 +9,4 @@ test.commands = ./$(TARGET)
 test.depends = $(TARGET)
 QMAKE_EXTRA_TARGETS += test
 
-KDWSDL = soapresponder.wsdl BLZService.wsdl BFGlobalService.wsdl OrteLookup.wsdl
+KDWSDL = BLZService.wsdl BFGlobalService.wsdl OrteLookup.wsdl
