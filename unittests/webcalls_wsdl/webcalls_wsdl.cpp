@@ -22,11 +22,12 @@
 **********************************************************************/
 
 #include "KDSoapClientInterface.h"
-#include "wsdl_soapresponder.h"
+#include "wsdl_soapclient.h"
 #include "wsdl_BLZService.h"
 #include "wsdl_BFGlobalService.h"
 #include "wsdl_OrteLookup.h"
 #include <QTest>
+#include <QSignalSpy>
 #include <QEventLoop>
 #include <QDebug>
 
@@ -37,24 +38,24 @@ public:
 
 private slots:
 
-#if 0 // www.soapclient.com is down...
+#if 0 // 2020-12-02 bad example, it's returning malformed XML!
     // Soap in RPC mode; using WSDL-generated class
     // http://www.soapclient.com/soapclient?fn=soapform&template=/clientform.html&soaptemplate=/soapresult.html&soapwsdl=http://soapclient.com/xml/soapresponder.wsdl
     void testSoapResponder_sync()
     {
-        SoapResponder responder;
+        EmptySA responder;
         responder.setSoapVersion(KDSoapClientInterface::SOAP1_2);
-        QString ret = responder.method1(QLatin1String("abc"), QLatin1String("def"));
+        QString ret = responder.echoString(QLatin1String("abc"));
         QCOMPARE(ret, QString::fromLatin1("Your input parameters are abc and def"));
     }
 
     void testSoapResponder_async()
     {
-        SoapResponder responder;
-        QSignalSpy spyDone(&responder, SIGNAL(method1Done(QString)));
+        EmptySA responder;
+        QSignalSpy spyDone(&responder, SIGNAL(echoStringDone(QString)));
         QEventLoop eventLoop;
-        connect(&responder, SIGNAL(method1Done(QString)), &eventLoop, SLOT(quit()));
-        responder.asyncMethod1(QLatin1String("abc"), QLatin1String("def"));
+        connect(&responder, SIGNAL(echoStringDone(QString)), &eventLoop, SLOT(quit()));
+        responder.asyncEchoString(QLatin1String("abc"));
         eventLoop.exec();
         QCOMPARE(spyDone.count(), 1);
         QCOMPARE(spyDone[0][0].toString(), QString::fromLatin1("Your input parameters are abc and def"));
@@ -63,6 +64,7 @@ private slots:
 
     // Soap in Document mode.
 
+#if 0 // 2020-02-12: http://www.thomas-bayer.com/axis2/services/BLZService?wsdl is down
     void testBLZService_wsdl_soap()
     {
         BLZService::BLZServiceSOAP11Binding service;
@@ -97,6 +99,7 @@ private slots:
         m_resultsReceived.sort();
         QCOMPARE(m_resultsReceived, expectedResults);
     }
+#endif
 
     void testBetFair() // SOAP-14
     {

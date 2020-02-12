@@ -83,6 +83,7 @@ private slots:
         QCOMPARE(ret.arguments().first().value().toInt(), 85);
     }
 
+#if 0 // 2020-02-12: service unavailable
     void testAsyncLiteralUse()
     {
         const QString endPoint = QString::fromLatin1("http://www.thomas-bayer.com/axis2/services/BLZService");
@@ -105,6 +106,7 @@ private slots:
         KDSoapValue response = m_returnMessage.arguments().first();
         QCOMPARE(response.childValues().child("ort").value().toString(), QString::fromLatin1("Hamburg"));
     }
+#endif
 
     void testConnectionError()
     {
