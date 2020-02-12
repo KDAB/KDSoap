@@ -22,7 +22,6 @@
 **********************************************************************/
 
 #include "KDSoapClientInterface.h"
-#include "wsdl_soapclient.h"
 #include "wsdl_BLZService.h"
 #include "wsdl_BFGlobalService.h"
 #include "wsdl_OrteLookup.h"
