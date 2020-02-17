@@ -5,7 +5,8 @@ The same source code compiles with either Qt 4 or Qt 5.
 If you are using sources from github (via a git clone or a generated zip file), jump
 to section 1-bis). Commercial users, start at section 1).
 
-1) From the top directory of your KD SOAP installation run the "configure" scripts.
+1) From the top directory of your KD SOAP installation
+   run the "configure" scripts.
 
    On Windows use depending on the kind of build one of the following;
      configure.bat -shared -debug
@@ -26,8 +27,8 @@ to section 1-bis). Commercial users, start at section 1).
    If this succeeded, jump to step 2.
 
 1-bis) If you are building KD SOAP from a github clone rather than a release tarball,
-the configure.bat/configure.sh script doesn't exist (it's generated at release time),
-you need to do this instead:
+   the configure.bat/configure.sh script doesn't exist (it's generated at release time),
+   you need to do this instead:
 
    First, a working Python (version2) is required and must be found in your
    execute path.  Either a 32-bit or 64-bit version of Python is fine, but run
@@ -36,104 +37,62 @@ you need to do this instead:
    Now run autogen.py to create the configure tool.
 
    On Windows:
-     python autogen.py [options]
+     c:\python27\python2 autogen.py [options]
    On Linux:
-     ./autogen.py [options]
+     python2 autogen.py [options]
 
-Pass the same options to autogen.py as you would for configure.sh/configure.bat
-as shown above in step 1).
+   Pass the same options to autogen.py as you would for configure.sh/configure.bat
+   as shown above in step 1).
 
-After running autogen.py, a configure.sh/configure.bat script will exist and
-you can use that to re-configure later, as needed.  Then you can continue on
-to the platform-specific setup instructions in step 2, 3 or 4.
+   After running autogen.py, a configure.sh/configure.bat script will exist and
+   you can use that to re-configure later, as needed.  Then you can continue on
+   to the platform-specific setup instructions in step 2, 3 or 4.
 
 2) Unix
 
-set your LD_LIBRARY_PATH to point to your KD SOAP installation lib directory.
+   set your LD_LIBRARY_PATH to point to your KD SOAP installation lib directory.
 
-If you do not have LD_LIBRARY_PATH set already then use this line:
-LD_LIBRARY_PATH=/path/to/kdsoap/lib:$LD_LIBRARY_PATH
-export LD_LIBRARY_PATH
+   If you do not have LD_LIBRARY_PATH set already, then in your terminal run:
+    % LD_LIBRARY_PATH=/path/to/kdsoap/lib:$LD_LIBRARY_PATH
+    % export LD_LIBRARY_PATH
 
-The above has to be added into your .bashrc or similar to remain. It may also of course be run from a shell just before building software using KD SOAP, but in this case your settings will only be available for this shell.
+   The above must be added into your .bashrc or similar to remain. It may also of course
+   be run from a shell just before building software using KD SOAP, but in this case your
+   settings will only be available for this shell.
 
-If you want to install the libraries under the "lib64" folder then
-set the QMAKE_ARGS environment variable to "LIB_SUFFIX=64" like so:
-QMAKE_ARGS="LIB_SUFFIX=64"
-export QMAKE_ARGS
+   If you want to install the libraries under the "lib64" folder then
+   set the QMAKE_ARGS environment variable to "LIB_SUFFIX=64" like so:
+    % QMAKE_ARGS="LIB_SUFFIX=64"
+    % export QMAKE_ARGS
 
 3) MacOS
 
-Proceed as described above, but using DYLD_LIBRARY_PATH instead
-of LD_LIBRARY_PATH
+   Proceed as described above, but using DYLD_LIBRARY_PATH instead of LD_LIBRARY_PATH
 
 4) Windows
 
-Add the path to KD SOAP lib into your LIB environment variable and the path
-to KD SOAP bin into your PATH environment variable.
+   For running executables, add the path to the KD Soap dll (kdsoap\bin) into your PATH.
+   eg. set PATH=\path\to\kdsoap\bin;%PATH%
 
-Or run:
-set PATH=\path\to\kdsoap\bin;%PATH%
-set LIB=\path\to\kdsoap\lib;%LIB%
-
+   For development, add the path to the KD Soap lib (kdsoaplib) into your LIB environment.
+   eg. set LIB=\path\to\kdsoap\lib;%LIB%
 
 5) Build everything by typing:
 
-make    # Unix,
-nmake   # Windows
+   From your top-level KD SOAP directory run:
 
+   % make    # Unix, Mac
+   % nmake   # Windows
 
 6) (optionally:) Install KD SOAP:
 
-   From your top-level KD SOAP directory just type
+   From your top-level KD SOAP directory run:
 
-make install   # Unix,
-nmake install  # Windows
+   % make install   # Unix, Mac
+   % nmake install  # Windows
 
-   This will copy the necessary files into the sub-directories of
-   your installation path:
-   For Unix/Linux, Mac: /usr/local/KDAB/KDSoap-VERSION/
-   For Windows that is: C:\KDAB\KDSoap-VERSION\
+   This will copy the necessary files into the sub-directories of your installation path:
+   For Unix/Linux, Mac this is /usr/local/KDAB/KDSoap-VERSION/
+   For Windows this is: C:\KDAB\KDSoap-VERSION\
 
-
-7) Symbian (Qt4 only)
-
-Here is a step by step introduction how to compile KD Soap with the Symbian-Toolchain on Windows.
-
-1. Open a command prompt.
-2. Setup environment
-   set QTDIR=c:\Qt\NokiaQtSDK_1_0_2\Symbian\SDK\
-   set PATH=c:\Qt\NokiaQtSDK_1_0_2\Symbian\SDK\bin\;%PATH%
-   set QMAKESPEC=symbian-abld
-3. Change to your KD Soap source-directory
-   cd c:\src\kdsoap\
-4. Run configuration
-   configure.bat -static -debug
-5. Compile with
-   make release-gcce
-   make installer_sis
-6. Depending on the Qt and Symbian^3 version you are using you maybe
-   get an error like
-   BLDMAKE ERROR: Can't find any RVCT installation.
-   This is a known qmake@Symbian^3 bug. You can workaround that bug
-   by installing python, saving following script in a file like e.g.
-   c:\fix.py and executing that script using "c:\fix.py c:\src\kdsoap\"
-
-import os, sys, re
-for root, subFolders, files in os.walk(sys.argv[1]):
-    for file in files:
-        if file == 'bld.inf':
-            path = os.path.join(root,file)
-            i = open(path).read()
-            o = open(path,"w")
-            o.write( re.sub("WINSCW GCCE ARMV5 ARMV6","WINSCW GCCE",i) )
-            o.close()
-
-   This will replace in all generated bld.inf files the line
-     WINSCW GCCE ARMV5 ARMV6
-   with
-     WINSCW GCCE
-   to workaround that known qmake+Symbian^3 bug.
-
-
-8) Have a look at the examples applications. They will get you started with KD SOAP.
+7) Have a look at the examples applications. They will get you started with KD SOAP.
