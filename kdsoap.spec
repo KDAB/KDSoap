@@ -1,5 +1,5 @@
 Name:           kdsoap
-Version:        1.8.0
+Version:        1.9.0
 Release:        1
 Summary:        A Qt4-based client-side and server-side SOAP component
 Source0:        %{name}-%{version}.tar.gz
@@ -81,6 +81,8 @@ QMAKE_ARGS="LIB_SUFFIX=64" ./configure.sh -shared -release -prefix %{buildroot}/
 %{_libdir}/libkdsoap-server.so
 
 %changelog
+* Mon Feb 17 2020 Allen Winter <allen.winter@kdab.com> 1.9.0
+  1.9.0
 * Fri May 17 2019 Allen Winter <allen.winter@kdab.com> 1.8.0
   1.8.0
 * Thu Mar 01 2018 Allen Winter <allen.winter@kdab.com> 1.7.0
