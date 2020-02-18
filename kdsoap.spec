@@ -1,7 +1,7 @@
 Name:           kdsoap
 Version:        1.9.0
 Release:        1
-Summary:        A Qt4-based client-side and server-side SOAP component
+Summary:        A Qt5-based client-side and server-side SOAP component
 Source0:        %{name}-%{version}.tar.gz
 Source1:        %{name}-%{version}.tar.gz.asc
 Url:            https://github.com/KDAB/KDSoap
