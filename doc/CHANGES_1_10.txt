@@ -1,3 +1,5 @@
 General:
 ========
 * Qt 5 is now required (min version 5.6)
+* CMake >= 3.0.2 is now required
+
