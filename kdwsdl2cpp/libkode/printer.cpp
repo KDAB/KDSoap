@@ -965,12 +965,23 @@ void Printer::Private::printCodeIntoFile( const Code &code, QFile *file )
 
     QTextStream codeStream( outText.toUtf8() );
     QString fileLine, outLine;
+#if QT_VERSION >= QT_VERSION_CHECK(5, 5, 0)
     while ( fileReaderStream.readLineInto( &fileLine ) && codeStream.readLineInto(&outLine) ) {
       if ( fileLine != outLine ) {
         identical = false;
         break;
       }
     }
+#else
+    while ( !fileReaderStream.atEnd() && !codeStream.atEnd() ) {
+      fileLine = fileReaderStream.readLine();
+      outLine = codeStream.readLine();
+      if ( fileLine != outLine ) {
+        identical = false;
+        break;
+      }
+    }
+#endif
 
     if ( identical )
       identical = fileReaderStream.atEnd() && codeStream.atEnd();
