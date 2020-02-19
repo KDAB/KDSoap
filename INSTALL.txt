@@ -1,6 +1,5 @@
-KD SOAP 1.x requires a Qt version >= 4.6 with Network and XML support enabled.
-
-The same source code compiles with either Qt 4 or Qt 5.
+KD SOAP 1.9 or below requires Qt version >= 4.6 with Network and XML support enabled.
+KD SOAP 1.10 or above requires Qt version >= 5.6 with Network and XML support enabled.
 
 If you are using sources from github (via a git clone or a generated zip file), jump
 to section 1-bis). Commercial users, start at section 1).
