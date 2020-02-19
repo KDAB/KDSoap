@@ -3,6 +3,10 @@
 # Pass the following variables to cmake to control the build:
 # (See INSTALL-cmake.txt for more information)
 #
+# -DKDSoap_STATIC=[true|false]
+#  Build static libraries
+#  Default=false
+#
 # -DKDSoap_TESTS=[true|false]
 #  Build the test harness.
 #  Default=false
@@ -12,8 +16,12 @@
 #  Default=true
 #
 cmake_minimum_required(VERSION 3.0.2)
-cmake_policy(SET CMP0020 NEW)
-cmake_policy(SET CMP0025 NEW)
+if(POLICY CMP0020)
+  cmake_policy(SET CMP0020 NEW)
+endif()
+if(POLICY CMP0025)
+  cmake_policy(SET CMP0025 NEW)
+endif()
 
 if("${CMAKE_INSTALL_PREFIX}" STREQUAL "")
   set(USE_DEFAULT_INSTALL_LOCATION True)
