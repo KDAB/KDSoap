@@ -7,6 +7,10 @@
 #  Force building against Qt4, even if Qt5 is found.
 #  Default=false
 #
+# -DKDSoap_STATIC=[true|false]
+#  Build static libraries
+#  Default=false
+#
 # -DKDSoap_TESTS=[true|false]
 #  Build the test harness.
 #  Default=false
@@ -16,8 +20,12 @@
 #  Default=true
 #
 cmake_minimum_required(VERSION 2.8.7)
-cmake_policy(SET CMP0020 NEW)
-cmake_policy(SET CMP0025 NEW)
+if(POLICY CMP0020)
+  cmake_policy(SET CMP0020 NEW)
+endif()
+if(POLICY CMP0025)
+  cmake_policy(SET CMP0025 NEW)
+endif()
 
 if("${CMAKE_INSTALL_PREFIX}" STREQUAL "")
   set(USE_DEFAULT_INSTALL_LOCATION True)
@@ -103,7 +111,11 @@ if(MSVC)
 endif()
 
 if(CMAKE_COMPILER_IS_GNUCXX)
-  add_compile_options(-Wsuggest-override)
+  if(CMAKE_VERSION VERSION_LESS "3.0")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wsuggest-override")
+  else()
+    add_compile_options(-Wsuggest-override)
+  endif()
 endif()
 
 if(${PROJECT_NAME}_STATIC)
