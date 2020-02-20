@@ -30,7 +30,7 @@ set_source_files_properties(KDSoapServerObjectInterface.cpp PROPERTIES SKIP_AUTO
 add_library(kdsoap-server ${KDSoap_LIBRARY_MODE} ${SOURCES})
 target_link_libraries(kdsoap-server kdsoap ${QT_LIBRARIES})
 set_target_properties(kdsoap-server PROPERTIES VERSION ${${PROJECT_NAME}_VERSION})
-target_include_directories(kdsoap-server INTERFACE "$<INSTALL_INTERFACE:${CMAKE_INSTALL_PREFIX}/${INSTALL_INCLUDE_DIR}>")
+target_include_directories(kdsoap-server INTERFACE "$<INSTALL_INTERFACE:${INSTALL_INCLUDE_DIR}>")
 
 # append d to debug libraries for windows builds
 if(WIN32)
