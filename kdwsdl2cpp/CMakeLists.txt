@@ -1,40 +1,41 @@
 set(QT_USE_QTNETWORK TRUE)
 set(QT_USE_QTXML TRUE)
 include(${QT_USE_FILE})
+include_directories(libkode)
 
 remove_definitions(-DQT_NO_CAST_TO_ASCII -DQT_NO_CAST_FROM_ASCII -DQT_NO_CAST_FROM_BYTEARRAY)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(SOURCES_LIB
-  common/fileprovider.cpp
-  common/messagehandler.cpp
-  common/nsmanager.cpp
-  common/parsercontext.cpp
-  common/qname.cpp
-  libkode/code.cpp
-  libkode/enum.cpp
-  libkode/style.cpp
-  libkode/printer.cpp
-  libkode/license.cpp
-  libkode/file.cpp
-  libkode/class.cpp
-  libkode/function.cpp
-  libkode/variable.cpp
-  libkode/membervariable.cpp
-  libkode/typedef.cpp
-  libkode/statemachine.cpp
-  schema/annotation.cpp
-  schema/attribute.cpp
-  schema/complextype.cpp
-  schema/element.cpp
-  schema/parser.cpp
-  schema/simpletype.cpp
-  schema/types.cpp
-  schema/xmlelement.cpp
-  schema/xsdtype.cpp
-  schema/attributegroup.cpp
-  schema/compositor.cpp
-  schema/group.cpp
+  libkode/common/fileprovider.cpp
+  libkode/common/messagehandler.cpp
+  libkode/common/nsmanager.cpp
+  libkode/common/parsercontext.cpp
+  libkode/common/qname.cpp
+  libkode/libkode/code.cpp
+  libkode/libkode/enum.cpp
+  libkode/libkode/style.cpp
+  libkode/libkode/printer.cpp
+  libkode/libkode/license.cpp
+  libkode/libkode/file.cpp
+  libkode/libkode/class.cpp
+  libkode/libkode/function.cpp
+  libkode/libkode/variable.cpp
+  libkode/libkode/membervariable.cpp
+  libkode/libkode/typedef.cpp
+  libkode/libkode/statemachine.cpp
+  libkode/schema/annotation.cpp
+  libkode/schema/attribute.cpp
+  libkode/schema/complextype.cpp
+  libkode/schema/element.cpp
+  libkode/schema/parser.cpp
+  libkode/schema/simpletype.cpp
+  libkode/schema/types.cpp
+  libkode/schema/xmlelement.cpp
+  libkode/schema/xsdtype.cpp
+  libkode/schema/attributegroup.cpp
+  libkode/schema/compositor.cpp
+  libkode/schema/group.cpp
   wsdl/binding.cpp
   wsdl/bindingoperation.cpp
   wsdl/definitions.cpp

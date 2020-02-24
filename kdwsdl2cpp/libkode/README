@@ -1,5 +1,0 @@
-This is a copy of libkode from https://github.com/cornelius/kode.git, last updated 18 August 2010
-Changes:
-* Removed automakefile.*
-* Ported to qmake
-* Many contributions to the code, applied upstream as well.
