@@ -15,16 +15,15 @@ Using KD Soap
 =============
 KD Soap requires Qt 4.7.0 or newer, and a compiler with C++11 support.
 
-See INSTALL.txt or INSTALL-cmake.txt for installation instructions.
-(Note that the qmake and CMake buildsystems are fully supported)
+See [INSTALL.txt](INSTALL.txt) or [INSTALL-cmake.txt](INSTALL-cmake.txt)
+for installation instructions. (CMake and qmake and buildsystems supported)
 
 After reading the introductory overview files in doc/
-you will find more information at three places:
+you will find more information at these places:
 
-  detailed browsable API reference:   doc/refman/index.html
-                                or:   https://docs.kdab.com/kdsoap
-  programmers manual with examples:   doc/manual/kdsoap.pdf
-  our sorted example programs:        examples/
+ * [detailed browsable API reference](https://docs.kdab.com/kdsoap)
+ * [programmers manual with examples](doc/manual/kdsoap.pdf)
+ * [our sorted example programs](examples/)
 
 Contact
 =======
@@ -34,9 +33,8 @@ Contact
 
 Get Involved
 ============
-KDAB will happily accept external contributions, but substantial
-contributions will require a signed Copyright Assignment Agreement
-(see doc/KDSoap-CopyrightAssignmentForm.docx).
+KDAB will happily accept external contributions, but substantial contributions require
+a signed [Copyright Assignment Agreement](doc/KDSoap-CopyrightAssignmentForm.docx).
 
 Contact info@kdab.com for more information.
 
@@ -47,14 +45,15 @@ License
 =======
 KD Soap is (C) 2010-2020, Klaralvdalens Datakonsult AB, and is available
 under the terms of:
-* the LGPL (see LICENSE.LGPL.txt for details)
-    (except libkdsoap-server, see LICENSE.AGPL3-modified.txt)
-* the GPL (see LICENSE.GPL.txt for details)
-    (except libkdsoap-server, see LICENSE.AGPL3-modified.txt)
+
+* the [LGPL](LICENSE.LGPL.txt)
+    (except libkdsoap-server, see [LICENSE.AGPL3-modified.txt](LICENSE.AGPL3-modified.txt))
+* the [GPL](LICENSE.GPL.txt)
+    (except libkdsoap-server, see [LICENSE.AGPL3-modified.txt](LICENSE.AGPL3-modified.txt))
 * the KDAB commercial license, provided that you buy a license.
   please contact info@kdab.com if you are interested in buying commercial licenses.
 
-Commercial licensing terms are available in the included file LICENSE.txt.
+Commercial licensing terms are available in the included file [LICENSE.txt](LICENSE.txt).
 
 About KDAB
 ==========
