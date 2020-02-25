@@ -23,8 +23,8 @@
 
 #include <wsdl.h>
 
-#include <messagehandler.h>
-#include <parsercontext.h>
+#include <common/messagehandler.h>
+#include <common/parsercontext.h>
 
 #include <converter.h>
 #include <creator.h>
