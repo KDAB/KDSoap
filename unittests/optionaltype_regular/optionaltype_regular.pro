@@ -1,4 +1,5 @@
 QT       -= gui
+KDWSDL_OPTIONS = -namespace KDAB
 
 include(../unittests.pri)
 
@@ -12,7 +13,6 @@ SOURCES += \
 HEADERS += \
     testregularapi.h
 
-KDWSDL_OPTIONS = -namespace KDAB
 KDWSDL = test.wsdl
 
 OTHER_FILES += \

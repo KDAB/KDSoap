@@ -361,8 +361,24 @@
       </output>
     </operation>
   </binding>
+  <binding name='AnotherBinding' type='kdab:MyWsdlPortType' > <!-- for issue #139 -->
+    <soap:binding style='document' transport='http://schemas.xmlsoap.org/soap/http' />
+    <operation name='addEmployee' >
+      <input>
+        <soap:body use='literal'/>
+      </input>
+      <output>
+        <soap:body use='literal'/>
+      </output>
+    </operation>
+  </binding>
   <service name='MyWsdlDocument' >
     <port name='MyWsdlPortType' binding='kdab:MyWsdlBinding' >
+      <soap:address location='http://127.0.0.1:4242/xml/mywsdl.wsdl' />
+    </port>
+  </service>
+  <service name='AnotherService' >
+    <port name='MyWsdlPortType' binding='kdab:AnotherBinding' >
       <soap:address location='http://127.0.0.1:4242/xml/mywsdl.wsdl' />
     </port>
   </service>
