@@ -30,7 +30,6 @@ SUBDIRS = \
   literal_true_false \
   import_definition \
   unqualified_formdefault \
-  onvif.org \
   onvif_ptz \
   uitapi \
   encapsecurity \
