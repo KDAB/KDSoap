@@ -24,7 +24,7 @@ QT -= gui
 QT += xml
 LIBS += kxmlcommon schema
 
-INCLUDEPATH += $${TOP_SOURCE_DIR}/kdwsdl2cpp
+INCLUDEPATH += $${TOP_SOURCE_DIR}/kdwsdl2cpp $${TOP_SOURCE_DIR}/kdwsdl2cpp/libkode
 
 include($${TOP_SOURCE_DIR}/variables.pri)
 DEFINES -= QT_NO_CAST_TO_ASCII QBA_NO_CAST_TO_VOID QBA_NO_CAST_TO_ASCII QT_NO_CAST_FROM_ASCII
