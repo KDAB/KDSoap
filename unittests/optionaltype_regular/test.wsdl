@@ -2,12 +2,6 @@
 <wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://www.example.org/test/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="test" targetNamespace="http://www.example.org/test/">
   <wsdl:types>
     <xsd:schema targetNamespace="http://www.example.org/test/">
-      <xsd:element name="TestOperation">
-        <xsd:complexType>
-          <xsd:sequence>
-          </xsd:sequence>
-        </xsd:complexType>
-      </xsd:element>
 
       <xsd:complexType name="PolymorphicClass">
         <xsd:sequence>
@@ -24,6 +18,15 @@
         </xsd:complexContent>
       </xsd:complexType>
 
+      <complexType name="RecursiveType">
+        <sequence>
+            <element name="name" type="xsd:string">
+            </element>
+            <element name="Child" type="tns:RecursiveType" minOccurs="0">
+            </element>
+        </sequence>
+      </complexType>
+
       <xsd:element name="NewOperationResponse">
         <xsd:complexType>
           <xsd:sequence>
@@ -31,30 +34,37 @@
           </xsd:sequence>
         </xsd:complexType>
       </xsd:element>
+      <xsd:element name="TestOperation">
+        <xsd:complexType>
+          <xsd:sequence>
+             <xsd:element name="in" type="tns:RecursiveType"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
       <xsd:element name="TestOperationResponse1">
-      	<xsd:complexType>
-      		<xsd:sequence>
-      			<xsd:element name="out" type="xsd:string" maxOccurs="1" minOccurs="0"></xsd:element>
-                        <xsd:element name="out2" type="tns:PolymorphicClass" minOccurs="0"></xsd:element>
-                        <xsd:element name="out3" type="tns:PolymorphicClass" minOccurs="1" maxOccurs="1"></xsd:element>
-      		</xsd:sequence>
-      	</xsd:complexType>
+          <xsd:complexType>
+              <xsd:sequence>
+                  <xsd:element name="out" type="xsd:string" maxOccurs="1" minOccurs="0"></xsd:element>
+                  <xsd:element name="out2" type="tns:PolymorphicClass" minOccurs="0"></xsd:element>
+                  <xsd:element name="out3" type="tns:PolymorphicClass" minOccurs="1" maxOccurs="1"></xsd:element>
+              </xsd:sequence>
+          </xsd:complexType>
       </xsd:element>
     </xsd:schema>
   </wsdl:types>
   <wsdl:message name="TestOperationRequest">
-  	<wsdl:part element="tns:TestOperation" name="parameters" />
+      <wsdl:part element="tns:TestOperation" name="parameters" />
   </wsdl:message>
   <wsdl:message name="NewOperationResponse">
     <wsdl:part element="tns:NewOperationResponse" name="parameters"/>
   </wsdl:message>
   <wsdl:message name="TestOperationResponse1">
-  	<wsdl:part name="parameters" element="tns:TestOperationResponse1"></wsdl:part>
+      <wsdl:part name="parameters" element="tns:TestOperationResponse1"></wsdl:part>
   </wsdl:message>
   <wsdl:portType name="test">
         <wsdl:operation name="TestOperation">
-        	<wsdl:input message="tns:TestOperationRequest"></wsdl:input>
-        	<wsdl:output message="tns:TestOperationResponse1"></wsdl:output>
+            <wsdl:input message="tns:TestOperationRequest"></wsdl:input>
+            <wsdl:output message="tns:TestOperationResponse1"></wsdl:output>
         </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="testSOAP" type="tns:test">
