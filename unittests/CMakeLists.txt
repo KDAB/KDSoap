@@ -89,7 +89,6 @@ add_subdirectory(dv_terminalauth)
 add_subdirectory(date_example)
 add_subdirectory(enzo)
 add_subdirectory(fault_namespace)
-add_subdirectory(onvif_org_event)
 add_subdirectory(empty_list_wsdl)
 add_subdirectory(list_restriction)
 
