@@ -38,6 +38,7 @@ private slots:
     void test();
     void testPolymorphic();
     void testSerialize();
+    void testRecursiveType();
 
 private:
 };
