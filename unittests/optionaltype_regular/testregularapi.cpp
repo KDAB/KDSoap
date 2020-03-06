@@ -84,7 +84,7 @@ void TestRegularApi::testRecursiveType() // https://github.com/KDAB/KDSoap/issue
     child.setName("child");
     in.setChild(child);
     op.setIn(in);
-    QCOMPARE(op.in().child()->name(), "child");
+    QCOMPARE(op.in().child()->name(), QString("child"));
 }
 
 QTEST_MAIN(TestRegularApi)
