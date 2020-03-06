@@ -18,8 +18,8 @@ unix:PRE_TARGETDEPS += $${TOP_BUILD_DIR}/kdwsdl2cpp/libkode/libkode/libkode.a \
 
 win32-msvc*:PRE_TARGETDEPS += $${TOP_BUILD_DIR}/lib/kode.lib \
     $${TOP_BUILD_DIR}/lib/wsdl.lib \
-    $${TOP_BUILD_DIR}/kdwsdl2cpp/libkode/schema/xmlschema.lib \
-    $${TOP_BUILD_DIR}/kdwsdl2cpp/libkode/common/xmlcommon.lib
+    $${TOP_BUILD_DIR}/lib/xmlschema.lib \
+    $${TOP_BUILD_DIR}/lib/xmlcommon.lib
 LIBS += -L$${TOP_BUILD_DIR}/lib \
         -L$${TOP_BUILD_DIR}/kdwsdl2cpp/libkode/libkode \
         -L$${TOP_BUILD_DIR}/kdwsdl2cpp/libkode/schema \
