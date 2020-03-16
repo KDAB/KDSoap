@@ -1,3 +1,7 @@
+!exists($$PWD/kdwsdl2cpp/libkode/common) {
+    error("Please do git submodule update --init --recursive")
+}
+
 TEMPLATE = subdirs
 crosscompiling {
     module_kdwsdl2cpp.commands =
