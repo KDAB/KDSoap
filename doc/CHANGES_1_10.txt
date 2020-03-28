@@ -7,3 +7,7 @@ CMake buildsystem:
 ==================
 * Generates .pri files for qmake users
 * Installs library pdb files with MSVC builds
+
+WSDL parser / code generator changes, applying to both client and server side:
+================================================================
+* Add commandline options to turn off generation of the sync/async/asyncjobs APIs. This improves compilation times. (#225)
