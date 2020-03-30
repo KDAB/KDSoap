@@ -4,6 +4,7 @@ SOURCES = main.cpp
 INCLUDEPATH += $${TOP_SOURCE_DIR}/kdwsdl2cpp $${TOP_SOURCE_DIR}/kdwsdl2cpp/libkode
 QT -= gui
 QT += xml
+QT += network
 
 CONFIG += console
 macx:CONFIG -= app_bundle

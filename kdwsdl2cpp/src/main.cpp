@@ -20,12 +20,15 @@
 #include "compiler.h"
 #include "settings.h"
 
+#include <QCoreApplication>
+#include <QDebug>
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QNetworkAccessManager>
+#include <QSslCertificate>
+#include <QSslKey>
 #include <QTimer>
-#include <QCoreApplication>
-#include <QDebug>
 
 static const char *WSDL2CPP_DESCRIPTION = "KDAB's WSDL to C++ compiler";
 static const char *WSDL2CPP_VERSION_STR = "2.1";
@@ -290,8 +293,38 @@ int main(int argc, char **argv)
     KWSDL::Compiler compiler;
 #if QT_VERSION >= QT_VERSION_CHECK(5, 4, 0)
     if (!pkcs12File.isEmpty()) {
-        if (!Settings::self()->loadCertificate(pkcs12File, pkcs12Password))
-            return -1;
+        QFile certFile(pkcs12File);
+        if (certFile.open(QFile::ReadOnly)) {
+            QSslKey key;
+            QSslCertificate certificate;
+            QList<QSslCertificate> caCertificates;
+            const bool certificateLoaded = QSslCertificate::importPkcs12(&certFile,
+                                                         &key,
+                                                         &certificate,
+                                                         &caCertificates,
+                                                         pkcs12Password.toLocal8Bit());
+            certFile.close();
+            if (!certificateLoaded) {
+                fprintf(stderr, "Unable to load the %s certificate file\n",
+                        pkcs12File.toLocal8Bit().constData());
+                if (!pkcs12Password.isEmpty())
+                    fprintf(stderr, "Please make sure that you have passed the correct password\n");
+                else
+                    fprintf(stderr, "Maybe it is password protected?\n");
+                return 1;
+            }
+
+            // set the loaded certificate info as default SSL config
+            QSslConfiguration sslConfig;
+            sslConfig.setPrivateKey(key);
+            sslConfig.setLocalCertificate(certificate);
+            sslConfig.setCaCertificates(caCertificates);
+            QSslConfiguration::setDefaultConfiguration(sslConfig);
+        } else {
+            fprintf(stderr, "Failed to open the %s certificate file for reading\n",
+                    pkcs12File.toLocal8Bit().constData());
+            return 1;
+        }
     }
 #endif
 

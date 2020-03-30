@@ -25,6 +25,8 @@
 
 #include <schema/parser.h>
 
+#include "../src/settings.h"
+
 #include <QDebug>
 
 #include "type.h"
@@ -56,7 +58,8 @@ XSD::Types Type::types() const
 
 bool Type::loadXML(ParserContext *context, const QDomElement &element)
 {
-    XSD::Parser parser(context, nameSpace());
+    XSD::Parser parser(context, nameSpace(),
+                       Settings::self()->useLocalFilesOnly(), Settings::self()->importPathList());
     QDomElement child = element.firstChildElement();
     while (!child.isNull()) {
         NSManager namespaceManager(context, child);
