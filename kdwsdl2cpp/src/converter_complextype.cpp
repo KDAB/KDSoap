@@ -1,7 +1,7 @@
 #include "converter.h"
 #include "settings.h"
 #include "elementargumentserializer.h"
-#include <libkode/style.h>
+#include <code_generation/style.h>
 
 #include <QDebug>
 

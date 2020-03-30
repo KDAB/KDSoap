@@ -12,18 +12,18 @@ set(SOURCES_LIB
   libkode/common/nsmanager.cpp
   libkode/common/parsercontext.cpp
   libkode/common/qname.cpp
-  libkode/libkode/code.cpp
-  libkode/libkode/enum.cpp
-  libkode/libkode/style.cpp
-  libkode/libkode/printer.cpp
-  libkode/libkode/license.cpp
-  libkode/libkode/file.cpp
-  libkode/libkode/class.cpp
-  libkode/libkode/function.cpp
-  libkode/libkode/variable.cpp
-  libkode/libkode/membervariable.cpp
-  libkode/libkode/typedef.cpp
-  libkode/libkode/statemachine.cpp
+  libkode/code_generation/code.cpp
+  libkode/code_generation/enum.cpp
+  libkode/code_generation/style.cpp
+  libkode/code_generation/printer.cpp
+  libkode/code_generation/license.cpp
+  libkode/code_generation/file.cpp
+  libkode/code_generation/class.cpp
+  libkode/code_generation/function.cpp
+  libkode/code_generation/variable.cpp
+  libkode/code_generation/membervariable.cpp
+  libkode/code_generation/typedef.cpp
+  libkode/code_generation/statemachine.cpp
   libkode/schema/annotation.cpp
   libkode/schema/attribute.cpp
   libkode/schema/complextype.cpp

@@ -21,7 +21,7 @@
 #define KWSDL_CONVERTER_H
 
 #include <common/nsmanager.h>
-#include <libkode/class.h>
+#include <code_generation/class.h>
 #include <schema/parser.h>
 #include <wsdl/wsdl.h>
 #include <QSet>

@@ -20,10 +20,10 @@
 #ifndef KWSDL_CREATOR_H
 #define KWSDL_CREATOR_H
 
-#include <libkode/class.h>
-#include <libkode/file.h>
-#include <libkode/license.h>
-#include <libkode/printer.h>
+#include <code_generation/class.h>
+#include <code_generation/file.h>
+#include <code_generation/license.h>
+#include <code_generation/printer.h>
 
 namespace KWSDL
 {

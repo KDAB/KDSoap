@@ -1,6 +1,6 @@
 #include "elementargumentserializer.h"
 #include "converter.h" // upperlize(), COMMENT
-#include <libkode/style.h>
+#include <code_generation/style.h>
 
 using namespace KWSDL;
 

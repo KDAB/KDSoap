@@ -1,7 +1,7 @@
 #include "settings.h"
 #include "elementargumentserializer.h"
 #include "converter.h"
-#include <libkode/style.h>
+#include <code_generation/style.h>
 #include <QDebug>
 
 using namespace KWSDL;

@@ -1,6 +1,6 @@
 #include "converter.h"
 #include "settings.h"
-#include <libkode/style.h>
+#include <code_generation/style.h>
 #include <QSet>
 #include <QDebug>
 
