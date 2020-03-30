@@ -307,7 +307,7 @@ QString TypeMap::localTypeForElement(const QName &elementName) const
 {
     QList<Entry>::ConstIterator it = elementEntry(elementName);
     if (it != mElementMap.constEnd()) {
-        return correctSyntaxCpp((*it).localType);
+        return (*it).localType;
     }
 
     qDebug() << "TypeMap::localTypeForElement: unknown type" << elementName;
