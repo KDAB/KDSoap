@@ -79,6 +79,15 @@ public:
     QString password() const;
 
     /**
+     * Sets whether #PasswordDigest (default) or #PasswordText is used for authentication
+     */
+    void setUsePasswordDigest(const bool usePasswordDigest);
+    /**
+     * \return whether #PasswordDigest is used for authentication
+     */
+    bool usePasswordDigest() const;
+
+    /**
      * Sets whether WS-UsernameToken is used for authentication. When
      * set, the WS-UsernameToken headers are included in each request.
      * See https://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0.pdf
