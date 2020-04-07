@@ -38,6 +38,7 @@ public:
 
     QString user;
     QString password;
+    bool usePasswordDigest;
     bool useWSUsernameToken;
     QDateTime overrideWSUsernameCreatedTime;
     QByteArray overrideWSUsernameNonce;
@@ -46,6 +47,7 @@ public:
 KDSoapAuthentication::KDSoapAuthentication()
     : d(new Private)
 {
+    d->usePasswordDigest = true;
 }
 
 KDSoapAuthentication::KDSoapAuthentication(const KDSoapAuthentication &other)
@@ -75,6 +77,11 @@ void KDSoapAuthentication::setPassword(const QString &password)
     d->password = password;
 }
 
+void KDSoapAuthentication::setUsePasswordDigest(const bool usePasswordDigest)
+{
+    d->usePasswordDigest = usePasswordDigest;
+}
+
 void KDSoapAuthentication::setUseWSUsernameToken(bool useWSUsernameToken)
 {
     d->useWSUsernameToken = useWSUsernameToken;
@@ -98,6 +105,11 @@ QString KDSoapAuthentication::user() const
 QString KDSoapAuthentication::password() const
 {
     return d->password;
+}
+
+bool KDSoapAuthentication::usePasswordDigest() const
+{
+    return d->usePasswordDigest;
 }
 
 bool KDSoapAuthentication::useWSUsernameToken() const
@@ -156,8 +168,6 @@ void KDSoapAuthentication::writeWSUsernameTokenHeader(QXmlStreamWriter &writer) 
         time = d->overrideWSUsernameCreatedTime;
     }
     QString timestamp = time.toString(QLatin1String("yyyy-MM-ddTHH:mm:ssZ"));
-    QByteArray passwordConcat = nonce + timestamp.toUtf8() + d->password.toUtf8();
-    QByteArray passwordHash = QCryptographicHash::hash(passwordConcat, QCryptographicHash::Sha1);
 
     writer.writeStartElement(securityExtentionNS, QLatin1String("Security"));
     writer.writeStartElement(securityExtentionNS, QLatin1String("UsernameToken"));
@@ -171,8 +181,15 @@ void KDSoapAuthentication::writeWSUsernameTokenHeader(QXmlStreamWriter &writer) 
     writer.writeEndElement();
 
     writer.writeStartElement(securityExtentionNS, QLatin1String("Password"));
-    writer.writeAttribute(QLatin1String("Type"), QLatin1String("http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordDigest"));
-    writer.writeCharacters(QString::fromLatin1(passwordHash.toBase64().constData()));
+    if (d->usePasswordDigest) {
+        writer.writeAttribute(QLatin1String("Type"), QLatin1String("http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordDigest"));
+        QByteArray passwordConcat = nonce + timestamp.toUtf8() + d->password.toUtf8();
+        QByteArray passwordHash = QCryptographicHash::hash(passwordConcat, QCryptographicHash::Sha1);
+        writer.writeCharacters(QString::fromLatin1(passwordHash.toBase64().constData()));
+    } else {
+        writer.writeAttribute(QLatin1String("Type"), QLatin1String("http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText"));
+        writer.writeCharacters(d->password);
+    }
     writer.writeEndElement();
 
     writer.writeStartElement(securityExtentionNS, QLatin1String("Username"));
