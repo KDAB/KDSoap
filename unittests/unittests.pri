@@ -11,9 +11,9 @@ macx:CONFIG -= app_bundle
 static:macx:QMAKE_LFLAGS += -Wl,-rpath,$$[QT_INSTALL_LIBS]
 
 INCLUDEPATH += $${TOP_SOURCE_DIR}/testtools \
-    $${TOP_SOURCE_DIR}/kdwsdl2cpp/ $${TOP_SOURCE_DIR}/kdwsdl2cpp/src/ $${TOP_SOURCE_DIR}/kdwsdl2cpp/libkode/ $${TOP_SOURCE_DIR}/kdwsdl2cpp/common/ $${TOP_SOURCE_DIR}/kdwsdl2cpp/schema/ $${TOP_SOURCE_DIR}/kdwsdl2cpp/wsdl/
+    $${TOP_SOURCE_DIR}/kdwsdl2cpp/ $${TOP_SOURCE_DIR}/kdwsdl2cpp/src/ $${TOP_SOURCE_DIR}/kdwsdl2cpp/libkode/code_generation/ $${TOP_SOURCE_DIR}/kdwsdl2cpp/libkode/common/ $${TOP_SOURCE_DIR}/kdwsdl2cpp/libkode/schema/ $${TOP_SOURCE_DIR}/kdwsdl2cpp/wsdl/
 DEPENDPATH += $${TOP_SOURCE_DIR}/testtools \
-    $${TOP_SOURCE_DIR}/kdwsdl2cpp/ $${TOP_SOURCE_DIR}/kdwsdl2cpp/src/ $${TOP_SOURCE_DIR}/kdwsdl2cpp/libkode/ $${TOP_SOURCE_DIR}/kdwsdl2cpp/common/ $${TOP_SOURCE_DIR}/kdwsdl2cpp/schema/ $${TOP_SOURCE_DIR}/kdwsdl2cpp/wsdl/
+    $${TOP_SOURCE_DIR}/kdwsdl2cpp/ $${TOP_SOURCE_DIR}/kdwsdl2cpp/src/ $${TOP_SOURCE_DIR}/kdwsdl2cpp/libkode/code_generation/ $${TOP_SOURCE_DIR}/kdwsdl2cpp/libkode/common/ $${TOP_SOURCE_DIR}/kdwsdl2cpp/libkode/schema/ $${TOP_SOURCE_DIR}/kdwsdl2cpp/wsdl/
 
 DEBUG_SUFFIX=""
 CONFIG(debug, debug|release):!unix: DEBUG_SUFFIX = d

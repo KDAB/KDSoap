@@ -2,7 +2,7 @@
 #define ELEMENTARGUMENTSERIALIZER_H
 
 #include "typemap.h"
-#include <libkode/code.h>
+#include <code_generation/code.h>
 
 /**
  * The ElementArgumentSerializer class is used to generate the code that serializes one XML element
