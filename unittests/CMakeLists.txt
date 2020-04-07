@@ -5,7 +5,7 @@ set(QT_USE_QTTEST TRUE)
 
 include(${QT_USE_FILE})
 
-include_directories(../src/ ../src/KDSoapClient/ ../src/KDSoapServer/ ../testtools/ ../kdwsdl2cpp/ ../kdwsdl2cpp/src/ ../kdwsdl2cpp/libkode/code_generation/ ../kdwsdl2cpp/libkode/common/ ../kdwsdl2cpp/libkode/schema/ ../kdwsdl2cpp/wsdl/)
+include_directories(../src/ ../src/KDSoapClient/ ../src/KDSoapServer/ ../testtools/ ../kdwsdl2cpp/ ../kdwsdl2cpp/src/ ../kdwsdl2cpp/libkode/code_generation/ ../kdwsdl2cpp/libkode/ ../kdwsdl2cpp/libkode/schema/ ../kdwsdl2cpp/wsdl/)
 include(../KDSoapMacros.cmake)
 
 remove_definitions(-DQT_NO_CAST_FROM_ASCII)
