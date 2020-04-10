@@ -30,51 +30,38 @@ if exist .license.accepted goto :CheckLicenseComplete
 set license_file=
 
 if exist %SOURCE_DIR%\LICENSE.@PRODUCT_LICENSE_FREE@.txt (
-    if exist %SOURCE_DIR%\LICENSE.US.txt (
-        if exist %SOURCE_DIR%\LICENSE.txt (
-            echo.
-            echo Please choose your license.
-            echo.
-            echo Type 1 for the @PRODUCT_LICENSE_FREE_NAME@ ^(@PRODUCT_LICENSE_FREE@^).
-            echo Type 2 for the %Product_Space% Commercial License for USA/Canada.
-            echo Type 3 for the %Product_Space% Commercial License for anywhere outside USA/Canada.
-            echo Anything else cancels.
-            echo.
-            set /p license=Select:
-	)
+    if exist %SOURCE_DIR%\LICENSE.txt (
+        echo.
+        echo Please choose your license.
+        echo.
+        echo Type 1 for the @PRODUCT_LICENSE_FREE_NAME@ ^(@PRODUCT_LICENSE_FREE@^).
+        echo Type 2 for the %Product_Space% Commercial License.
+        echo Anything else cancels.
+        echo.
+        set /p license="Select: "
     ) else (
-        license=1
+        set license=1
     )
 ) else (
-    if exist %SOURCE_DIR%\LICENSE.US.txt (
-        license=2
+    if exist %SOURCE_DIR%\LICENSE.txt (
+        set license=2
     ) else (
-        if exist %SOURCE_DIR%\LICENSE.txt (
-            license=3
-        ) else (
-            echo "Couldn't find license file, aborting"
-            exit /B 1
-        )
+        echo "Couldn't find license file, aborting"
+        exit /B 1
     )
 )
 
 if "%license%" == "1" (
     set license_name="@PRODUCT_LICENSE_FREE_NAME@ (@PRODUCT_LICENSE_FREE@)"
     set license_file=LICENSE.@PRODUCT_LICENSE_FREE@.txt
-	goto :CheckLicense
+    goto :CheckLicense
 ) else (
     if "%license%" == "2" (
-        set license_name="%Product_Space% USA/Canada Commercial License"
-        set license_file=LICENSE.US.txt
+        set license_name="%Product_Space% Commercial License"
+        set license_file=LICENSE.txt
         goto :CheckLicense
     ) else (
-        if "%license%" == "3" (
-            set license_name="%Product_Space% Commercial License"
-            set license_file=LICENSE.txt
-            goto :CheckLicense
-        ) else (
-            exit /B 1
-        )
+        exit /B 1
     )
 )
 
@@ -89,7 +76,7 @@ echo Type '?' to view the %license_name%.
 echo Type 'yes' to accept this license offer.
 echo Type 'no' to decline this license offer.
 echo.
-set /p answer=Do you accept the terms of this license?
+set /p answer="Do you accept the terms of this license? "
 
 if "%answer%" == "no" goto :CheckLicenseFailed
 if "%answer%" == "yes" (
@@ -109,8 +96,8 @@ rem This is the batch equivalent of KDAB_QT_PATH=`qmake -query QT_INSTALL_PREFIX
 for /f "tokens=*" %%V in ('qmake -query QT_INSTALL_PREFIX') do set KDAB_QT_PATH=%%V
 
 if "%KDAB_QT_PATH%" == "" (
-  echo You need to add qmake to the PATH
-  exit /B 1
+    echo You need to add qmake to the PATH
+    exit /B 1
 )
 
 echo Qt found: %KDAB_QT_PATH%
@@ -144,7 +131,7 @@ if "%1" == "-static"   goto :Static
 if "%1" == "/static"   goto :Static
 
 if "%1" == "-qt_static"   goto :QT_Static
-if "%1" == "/qt_static"   goto :QT_Static	
+if "%1" == "/qt_static"   goto :QT_Static
 
 if "%1" == "-release"  goto :Release
 if "%1" == "/release"  goto :Release
@@ -176,11 +163,11 @@ shift
 goto :Options
 
 :Prefix
-      set prefix="%2"
-      goto :OptionWithArg
-      echo Installation not supported, -prefix option ignored
-      goto :OptionWithArg
-rem   goto :usage
+    set prefix="%2"
+    goto :OptionWithArg
+    echo Installation not supported, -prefix option ignored
+    goto :OptionWithArg
+    rem goto :usage
 :OverrideVersion
     set VERSION=%2
     goto :OptionWithArg
@@ -199,26 +186,26 @@ rem   goto :usage
 :Release
     set release=yes
     set debug=no
-	set debug_and_release=no
+    set debug_and_release=no
     goto :OptionNoArg
-	
+
 :Debug_And_Release
-	set release=no
+    set release=no
     set debug=no
-	set debug_and_release=yes
+    set debug_and_release=yes
     goto :OptionNoArg
 :Debug
     set debug=yes
     set release=no
-	set debug_and_release=no
+    set debug_and_release=no
     goto :OptionNoArg
 :QT_Static
 if "%STATIC_BUILD_SUPPORTED%" == "true" (
     set qt_static=yes
     goto :OptionNoArg
 ) else (
-  echo Static build not supported, -static option not allowed
-  goto :usage
+    echo Static build not supported, -static option not allowed
+    goto :usage
 )
 :HostQMake
     set host_qmake=%2
@@ -233,24 +220,24 @@ if "%STATIC_BUILD_SUPPORTED%" == "true" (
 :EndOfOptions
 
 if "%debug_and_release%" == "yes" (
-	set QMAKE_ARGS=%QMAKE_ARGS% CONFIG+=debug_and_release CONFIG+=build_all
-	goto :END_BUILDTYPE
+    set QMAKE_ARGS=%QMAKE_ARGS% CONFIG+=debug_and_release CONFIG+=build_all
+    goto :END_BUILDTYPE
 )
 
 if "%release%" == "yes" (
     if "%debug%" == "yes" (
-		set QMAKE_ARGS=%QMAKE_ARGS% CONFIG+=debug_and_release CONFIG+=build_all
-	set release="yes (combined)"
-	set debug="yes (combined)"
+        set QMAKE_ARGS=%QMAKE_ARGS% CONFIG+=debug_and_release CONFIG+=build_all
+        set release="yes (combined)"
+        set debug="yes (combined)"
     ) else (
-		set QMAKE_ARGS=%QMAKE_ARGS% CONFIG+=release CONFIG-=debug CONFIG-=debug_and_release
+        set QMAKE_ARGS=%QMAKE_ARGS% CONFIG+=release CONFIG-=debug CONFIG-=debug_and_release
     )
 ) else (
     if "%debug%" == "yes" (
         set QMAKE_ARGS=%QMAKE_ARGS% CONFIG-=release CONFIG+=debug CONFIG-=debug_and_release
     ) else (
-	echo "Internal error. At least one of debug and release must be set"
-	goto :CleanEnd
+        echo "Internal error. At least one of debug and release must be set"
+        goto :EOF
     )
 )
 :END_BUILDTYPE
@@ -306,7 +293,7 @@ if "%target_qmake%" == "" set target_qmake=%KDAB_QT_PATH%\bin\qmake
 
 if errorlevel 1 (
     echo qmake failed
-    goto :CleanEnd
+    goto :EOF
 )
 
 if not "%host_qmake%" == "" (
@@ -316,10 +303,10 @@ if not "%host_qmake%" == "" (
 )
 
 echo Ok, now run nmake (for Visual Studio) or mingw32-make (for mingw) to build the framework.
-goto :end
+goto :EOF
 
 :usage
-IF "%1" NEQ "" echo %0: unknown option "%1"
+if "%1" NEQ "" echo %0: unknown option "%1"
 echo usage: %0 [options]
 echo where options include:
 echo.
@@ -334,7 +321,7 @@ echo       build static/shared libraries (default shared)
 echo.
 echo   -unittests / -no-unittests
 echo       enable/disable compiled-in unittests (default is disabled)
-echo 
+echo.
 echo   -qmake ^<path^>
 echo       explicitly sets the qmake location, instead of using the
 echo       qmake in the path.
@@ -344,7 +331,3 @@ echo       when cross-compiling, the qmake in the path will be used for
 echo       compiling the product's code, but the host qmake will be used
 echo       to compile the host tools (code generators).
 echo.
-
-:CleanEnd
-
-:end
