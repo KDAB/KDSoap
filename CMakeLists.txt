@@ -158,6 +158,18 @@ if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
   install(EXPORT KDSoapTargets NAMESPACE KDSoap::
     DESTINATION "${INSTALL_LIBRARY_DIR}/cmake/KDSoap"
   )
+
+  # Generate .pri file for qmake users
+  include(ECMGeneratePriFile)
+  set(PROJECT_VERSION_STRING ${${PROJECT_NAME}_VERSION})
+  ecm_generate_pri_file(BASE_NAME KDSoapClient
+                        LIB_NAME kdsoap
+                        FILENAME_VAR pri_client_filename)
+  ecm_generate_pri_file(BASE_NAME KDSoapServer
+                        LIB_NAME kdsoap-server
+                        FILENAME_VAR pri_server_filename)
+  install(FILES ${pri_client_filename} ${pri_server_filename} DESTINATION ${ECM_MKSPECS_INSTALL_DIR})
+
 endif()
 
 add_subdirectory(src)
