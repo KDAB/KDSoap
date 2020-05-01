@@ -18,7 +18,7 @@ DEPENDPATH += $${TOP_SOURCE_DIR}/testtools \
 DEBUG_SUFFIX=""
 CONFIG(debug, debug|release):!unix: DEBUG_SUFFIX = d
 LIBS += -L$${TOP_BUILD_DIR}/lib \
-        -L$${TOP_BUILD_DIR}/kdwsdl2cpp/libkode/libkode \
+        -L$${TOP_BUILD_DIR}/kdwsdl2cpp/libkode/code_generation \
         -L$${TOP_BUILD_DIR}/kdwsdl2cpp/libkode/schema \
         -L$${TOP_BUILD_DIR}/kdwsdl2cpp/libkode/common \
         -ltesttools$$DEBUG_SUFFIX
