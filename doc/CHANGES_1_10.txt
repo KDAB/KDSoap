@@ -6,3 +6,4 @@ General:
 CMake buildsystem:
 ==================
 * Generates .pri files for qmake users
+* Installs library pdb files with MSVC builds
