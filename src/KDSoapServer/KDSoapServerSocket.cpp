@@ -40,7 +40,7 @@
 #include <QVarLengthArray>
 
 KDSoapServerSocket::KDSoapServerSocket(KDSoapSocketList *owner, QObject *serverObject)
-#ifndef QT_NO_OPENSSL
+#ifndef QT_NO_SSL
     : QSslSocket(),
 #else
     : QTcpSocket(),

@@ -25,8 +25,8 @@
 
 #include <QtGlobal>
 
-#include <QTcpSocket> //may define QT_NO_OPENSSL
-#ifndef QT_NO_OPENSSL
+#include <QTcpSocket> //may define QT_NO_SSL
+#ifndef QT_NO_SSL
 #include <QSslSocket>
 #endif
 
@@ -40,7 +40,7 @@ class KDSoapMessage;
 class KDSoapHeaders;
 
 class KDSoapServerSocket
-#ifndef QT_NO_OPENSSL
+#ifndef QT_NO_SSL
     : public QSslSocket
 #else
     : public QTcpSocket

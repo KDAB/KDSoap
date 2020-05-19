@@ -42,7 +42,7 @@ KDSoapServerSocket *KDSoapSocketList::handleIncomingConnection(int socketDescrip
     KDSoapServerSocket *socket = new KDSoapServerSocket(this, m_serverObject);
     socket->setSocketDescriptor(socketDescriptor);
 
-#ifndef QT_NO_OPENSSL
+#ifndef QT_NO_SSL
     if (m_server->features() & KDSoapServer::Ssl) {
         // We could call a virtual "m_server->setSslConfiguration(socket)" here,
         // if more control is needed (e.g. due to SNI)
