@@ -241,7 +241,7 @@ public:
      */
     QString wsdlPathInUrl() const;
 
-#ifndef QT_NO_OPENSSL
+#ifndef QT_NO_SSL
     /**
      * \returns the ssl configuration for this server
      */

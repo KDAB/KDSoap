@@ -32,7 +32,7 @@ QT_BEGIN_NAMESPACE
 class QNetworkReply;
 QT_END_NAMESPACE
 
-#ifndef QT_NO_OPENSSL
+#ifndef QT_NO_SSL
 
 class KDSoapReplySslHandler;
 /**
@@ -110,6 +110,6 @@ private:
 Q_DECLARE_METATYPE(KDSoapSslHandler *)
 #endif
 
-#endif // QT_NO_OPENSSL
+#endif // QT_NO_SSL
 
 #endif // KDSOAPSSLHANDLER_H

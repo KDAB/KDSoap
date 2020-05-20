@@ -293,7 +293,7 @@ public:
      */
     void ignoreSslErrors();
 
-#ifndef QT_NO_OPENSSL
+#ifndef QT_NO_SSL
     /**
      * \brief ignoreSslErrors
      * If this function is called, the SSL errors given in \p errors will be ignored.
@@ -318,7 +318,7 @@ public:
      */
     KDSoapSslHandler *sslHandler() const;
 
-#ifndef QT_NO_OPENSSL
+#ifndef QT_NO_SSL
     /**
      * Returns the ssl configuration used for outgoing connections
      * \since 1.3

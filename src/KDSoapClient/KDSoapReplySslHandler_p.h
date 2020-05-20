@@ -32,7 +32,7 @@ QT_END_NAMESPACE
 
 class KDSoapSslHandler;
 
-#ifndef QT_NO_OPENSSL
+#ifndef QT_NO_SSL
 
 class KDSoapReplySslHandler : public QObject
 {

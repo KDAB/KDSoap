@@ -24,7 +24,7 @@
 #include "KDSoapClientInterface_p.h"
 #include "KDSoapNamespaceManager.h"
 #include "KDSoapMessageWriter_p.h"
-#ifndef QT_NO_OPENSSL
+#ifndef QT_NO_SSL
 #include "KDSoapSslHandler.h"
 #include "KDSoapReplySslHandler_p.h"
 #endif
@@ -71,14 +71,14 @@ KDSoapClientInterfacePrivate::KDSoapClientInterfacePrivate()
       m_ignoreSslErrors(false),
       m_timeout(30 * 60 * 1000) // 30 minutes, as documented
 {
-#ifndef QT_NO_OPENSSL
+#ifndef QT_NO_SSL
     m_sslHandler = nullptr;
 #endif
 }
 
 KDSoapClientInterfacePrivate::~KDSoapClientInterfacePrivate()
 {
-#ifndef QT_NO_OPENSSL
+#ifndef QT_NO_SSL
     delete m_sslHandler;
 #endif
 }
@@ -133,7 +133,7 @@ QNetworkRequest KDSoapClientInterfacePrivate::prepareRequest(const QString &meth
         request.setRawHeader(it.key(), it.value());
     }
 
-#ifndef QT_NO_OPENSSL
+#ifndef QT_NO_SSL
     if (!m_sslConfiguration.isNull()) {
         request.setSslConfiguration(m_sslConfiguration);
     }
@@ -227,7 +227,7 @@ void KDSoapClientInterface::ignoreSslErrors()
     d->m_ignoreSslErrors = true;
 }
 
-#ifndef QT_NO_OPENSSL
+#ifndef QT_NO_SSL
 void KDSoapClientInterface::ignoreSslErrors(const QList<QSslError> &errors)
 {
     d->m_ignoreErrorsList = errors;
@@ -267,7 +267,7 @@ void KDSoapClientInterfacePrivate::setupReply(QNetworkReply *reply)
     if (m_ignoreSslErrors) {
         QObject::connect(reply, SIGNAL(sslErrors(QList<QSslError>)), reply, SLOT(ignoreSslErrors()));
     } else {
-#ifndef QT_NO_OPENSSL
+#ifndef QT_NO_SSL
         reply->ignoreSslErrors(m_ignoreErrorsList);
         if (m_sslHandler) {
             // create a child object of the reply, which will forward to m_sslHandler.
@@ -336,7 +336,7 @@ void KDSoapClientInterface::setTimeout(int msecs)
     d->m_timeout = msecs;
 }
 
-#ifndef QT_NO_OPENSSL
+#ifndef QT_NO_SSL
 QSslConfiguration KDSoapClientInterface::sslConfiguration() const
 {
     return d->m_sslConfiguration;

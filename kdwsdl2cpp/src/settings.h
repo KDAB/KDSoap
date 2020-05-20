@@ -21,8 +21,6 @@
 #define SETTINGS_H
 
 #include <QMap>
-#include <QSslCertificate>
-#include <QSslKey>
 #include <QStringList>
 #include <QUrl>
 

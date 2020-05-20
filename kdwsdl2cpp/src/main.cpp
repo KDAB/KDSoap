@@ -70,7 +70,7 @@ static void showHelp(const char *appName)
             "                            use of the import-path option\n"
             "  -help-on-missing          When groups or basic types could not be found, display\n"
             "                            available types (helps with wrong namespaces)\n"
-#if QT_VERSION >= QT_VERSION_CHECK(5, 4, 0)
+#if QT_VERSION >= QT_VERSION_CHECK(5, 4, 0) && !defined(QT_NO_SSL)
             "  -pkcs12file               Load a certificate from a PKCS12 file. You can use this option\n"
             "                            if the WSDL file (or files refering to it) is served from a \n"
             "                            location which require certificate based authentication\n"
@@ -220,7 +220,7 @@ int main(int argc, char **argv)
             useLocalFilesOnly = true;
         } else if (opt == QLatin1String("-help-on-missing")) {
             helpOnMissing = true;
-#if QT_VERSION >= QT_VERSION_CHECK(5, 4, 0)
+#if QT_VERSION >= QT_VERSION_CHECK(5, 4, 0) && !defined(QT_NO_SSL)
         } else if (opt == QLatin1String("-pkcs12file")) {
             ++arg;
             if (!argv[arg]) {
@@ -291,7 +291,7 @@ int main(int argc, char **argv)
     Settings::self()->setHelpOnMissing(helpOnMissing);
 
     KWSDL::Compiler compiler;
-#if QT_VERSION >= QT_VERSION_CHECK(5, 4, 0)
+#if QT_VERSION >= QT_VERSION_CHECK(5, 4, 0) && !defined(QT_NO_SSL)
     if (!pkcs12File.isEmpty()) {
         QFile certFile(pkcs12File);
         if (certFile.open(QFile::ReadOnly)) {
