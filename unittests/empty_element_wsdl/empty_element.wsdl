@@ -19,7 +19,6 @@
       xmlns:nic="http://recetu.com/AIPSchema"
       xmlns:xsd="http://www.w3.org/2001/XMLSchema"
     >
-    <xsd:import namespace="http://schemas.xmlsoap.org/soap/envelope/" schemaLocation="http://schemas.xmlsoap.org/soap/envelope/"/>
       <xsd:complexType name="state">
         <xsd:sequence>
           <xsd:choice>
