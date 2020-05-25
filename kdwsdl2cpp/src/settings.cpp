@@ -41,9 +41,6 @@ Settings::Settings()
     mOutputDirectory = QDir::current().path();
     mHeaderFileName = QString::fromLatin1("kwsdl_generated");
     mImplementationFileName = QString::fromLatin1("kwsdl_generated");
-    mImpl = false;
-    mServer = false;
-    mKeepUnusedTypes = false;
     mOptionalElementType = Settings::ENone;
 }
 

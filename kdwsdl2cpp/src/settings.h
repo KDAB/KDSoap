@@ -98,13 +98,13 @@ private:
     QString mNameSpace;
     QStringList mImportPathList;
     NSMapping mNamespaceMapping;
-    bool mHeader;
-    bool mImpl;
-    bool mServer;
     OptionalElementType mOptionalElementType;
-    bool mKeepUnusedTypes;
-    bool mUseLocalFilesOnly;
-    bool mHelpOnMissing;
+    bool mHeader = false;
+    bool mImpl = false;
+    bool mServer = false;
+    bool mKeepUnusedTypes = false;
+    bool mUseLocalFilesOnly = false;
+    bool mHelpOnMissing = false;
 };
 
 #endif
