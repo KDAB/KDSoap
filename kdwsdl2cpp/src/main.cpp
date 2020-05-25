@@ -102,7 +102,9 @@ int main(int argc, char **argv)
     QStringList importPathList;
     bool useLocalFilesOnly = false;
     bool helpOnMissing = false;
+#if QT_VERSION >= QT_VERSION_CHECK(5, 4, 0) && !defined(QT_NO_SSL)
     QString pkcs12File, pkcs12Password;
+#endif
 
     int arg = 1;
     while (arg < argc) {
