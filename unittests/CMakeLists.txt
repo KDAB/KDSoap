@@ -15,6 +15,7 @@ macro(add_unittest _source)
   get_filename_component(_name ${_source} NAME_WE)
 
   if(WSDL_FILES)
+    set(KSWSDL2CPP_OPTION ${KSWSDL2CPP_OPTION} -use-local-files-only)
     kdsoap_generate_wsdl(_test ${WSDL_FILES})
   endif()
 

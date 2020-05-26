@@ -14,6 +14,9 @@ SOURCES = compiler.cpp \
 HEADERS = compiler.h \
     converter.h \
     elementargumentserializer.h
+
+RESOURCES += ../schemas/schemas.qrc
+
 INCLUDEPATH += $${TOP_SOURCE_DIR}/kdwsdl2cpp $${TOP_SOURCE_DIR}/kdwsdl2cpp/libkode
 QT -= gui
 QT += xml

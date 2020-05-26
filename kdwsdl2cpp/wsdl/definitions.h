@@ -48,6 +48,8 @@ public:
 
     void setWantedService(const QString &name);
 
+    void setUseLocalFilesOnly(bool localFilesOnly);
+
     void setName(const QString &name);
     QString name() const;
 
@@ -90,7 +92,10 @@ private:
     QString mTargetNamespace;
     QString mName;
     QString mWantedService;
+
+    bool mUseLocalFilesOnly = false;
 };
+
 
 }
 

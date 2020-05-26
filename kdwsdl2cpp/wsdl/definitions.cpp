@@ -248,7 +248,7 @@ void Definitions::importDefinition(ParserContext *context, const QString &locati
         context->messageHandler()->warning(QString::fromLatin1("Definitions import: location tag required: %1").arg(location));
         return;
     }
-    FileProvider provider;
+    FileProvider provider(mUseLocalFilesOnly);
     QString fileName;
     const QUrl locationUrl = urlForLocation(context, location);
     qDebug("Importing wsdl definition at %s", locationUrl.toEncoded().constData());
@@ -353,4 +353,9 @@ void Definitions::saveXML(ParserContext *context, QDomDocument &document) const
 void Definitions::setWantedService(const QString &name)
 {
     mWantedService = name;
+}
+
+void Definitions::setUseLocalFilesOnly(bool localFilesOnly)
+{
+    mUseLocalFilesOnly = localFilesOnly;
 }

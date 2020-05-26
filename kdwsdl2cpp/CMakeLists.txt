@@ -66,6 +66,8 @@ set(SOURCES_LIB
   src/typemap.cpp
 )
 
+qt4_add_resources(SOURCES_LIB schemas/schemas.qrc)
+
 set(SOURCES_EXE src/main.cpp)
 
 add_library(kdwsdl2cpp_lib STATIC ${SOURCES_LIB})

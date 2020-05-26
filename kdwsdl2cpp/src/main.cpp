@@ -86,6 +86,8 @@ int main(int argc, char **argv)
 {
     QCoreApplication app(argc, argv);
 
+    Q_INIT_RESOURCE(schemas);
+
     const char *fileName = nullptr;
     QFileInfo outputFile;
     bool both = false;
