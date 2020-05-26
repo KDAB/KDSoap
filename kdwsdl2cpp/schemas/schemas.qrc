@@ -1,0 +1,6 @@
+ <!DOCTYPE RCC><RCC version="1.0">
+ <qresource prefix="/libkode">
+     <file alias="soapenc-1.1.xsd">soapenc-1.1.xsd</file>
+     <file alias="soapenc-1.2.xsd">soapenc-1.2.xsd</file>
+ </qresource>
+ </RCC>
