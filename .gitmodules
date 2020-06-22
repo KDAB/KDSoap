@@ -1,6 +1,3 @@
-[submodule "autogen"]
-	path = autogen
-	url = https://github.com/KDAB/autogen.git
 [submodule "kdwsdl2cpp/libkode"]
 	path = kdwsdl2cpp/libkode
 	url = https://github.com/cornelius/libkode
