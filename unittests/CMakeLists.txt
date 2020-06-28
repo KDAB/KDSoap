@@ -9,7 +9,7 @@ include_directories(../src/ ../src/KDSoapClient/ ../src/KDSoapServer/ ../testtoo
 include(../KDSoapMacros.cmake)
 
 if(${PROJECT_NAME}_STATIC)
-  add_definitions(-DKDSOAP_STATICLIB)
+  add_definitions(-DKDSOAP_STATICLIB -DKDSOAPSERVER_STATICLIB)
 endif()
 
 remove_definitions(-DQT_NO_CAST_FROM_ASCII)
