@@ -2,7 +2,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 include(${QT_USE_FILE})
 
 if(${PROJECT_NAME}_STATIC)
-  add_definitions(-DKDSOAP_STATICLIB)
+  add_definitions(-DKDSOAPSERVER_STATICLIB -DKDSOAP_STATICLIB)
 endif()
 
 if(Qt5Core_FOUND)
