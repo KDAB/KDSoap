@@ -68,7 +68,7 @@ endif()
 # setup default install locations
 include(InstallLocation)
 
-find_package(Qt5 5.6.0 COMPONENTS Core Network Widgets CONFIG REQUIRED)
+find_package(Qt5 5.7.0 COMPONENTS Core Network Widgets CONFIG REQUIRED)
 set(QT_LIBRARIES Qt5::Core)
 set(QT_USE_FILE "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Qt5Portability.cmake")
 
