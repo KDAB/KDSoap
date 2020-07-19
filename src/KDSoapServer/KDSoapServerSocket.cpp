@@ -101,7 +101,7 @@ static HeadersMap parseHeaders(const QByteArray &headerData)
 }
 
 // We could parse headers as we go along looking for \r\n, and stop at empty header line, to avoid all this memory copying
-// But in practice XML parsing (and writing) is far far slower anyway.
+// But in practice XML parsing (and writing) is far, far slower anyway.
 static bool splitHeadersAndData(const QByteArray &request, QByteArray &header, QByteArray &data)
 {
     const int sep = request.indexOf("\r\n\r\n");

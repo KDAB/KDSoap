@@ -115,7 +115,7 @@ public Q_SLOTS:
      * properties of the message.
      * \param headers can be used to add additional SOAP headers.
      * \param address The address to send to message to. Messages send to a
-     * multicast address will be send to to all interfaces.
+     * multicast address will be send to all interfaces.
      * \param port The UDP port to send the message to
      * \since 1.9
      */

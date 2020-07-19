@@ -94,7 +94,7 @@ public:
     /**
      * Calls the method \p method on this interface and passes the arguments specified in \p message
      * to the method.
-     * \param method method name, without arguments. For instance \c "addContact". Only used in RPC style.
+     * \param method the method name, without arguments. For instance \c "addContact". Only used in RPC style.
      * \param message arguments for the method call
      * \param soapAction optional \c "SoapAction" header, see the specification of the SOAP service.
      *        You are strongly encouraged to pass a value here, even if it's just "", given that by default
@@ -142,7 +142,7 @@ public:
     /**
      * Calls the method \p method on this interface and passes the parameters specified in \p message
      * to the method.
-     * \param method method name, without arguments. For instance \c "addContact". Only used in RPC style.
+     * \param method the method name, without arguments. For instance \c "addContact". Only used in RPC style.
      * \param message arguments for the method call
      * \param soapAction optional \c "SoapAction" header, see the specification of the SOAP service.
      *        You are strongly encouraged to pass a value here, even if it's just "", given that by default
@@ -160,7 +160,7 @@ public:
     /**
      * Calls the method \p method on this interface and passes the parameters specified in \p message
      * to the method.
-     * \param method method name, without arguments. For instance \c "addContact". Only used in RPC style.
+     * \param method the method name, without arguments. For instance \c "addContact". Only used in RPC style.
      * \param message arguments for the method call
      * \param soapAction optional \c "SoapAction" header, see the specification of the SOAP service.
      *        You are strongly encouraged to pass a value here, even if it's just "", given that by default
