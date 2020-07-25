@@ -9,7 +9,7 @@ as a dedicated web server.
 
 KD Soap targets C++ programmers who use Qt in their applications.
 
-For more information, see https://www.kdab.com/kdab-products/kd-soap
+For more information, see https://www.kdab.com/products/kd-soap
 
 Using KD Soap
 =============
