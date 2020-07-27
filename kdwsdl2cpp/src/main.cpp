@@ -76,8 +76,11 @@ static void showHelp(const char *appName)
             "                            location which require certificate based authentication\n"
             "  -pkcs12password           Pass the password for the certificate file if required.\n"
             "                            This option is not secure and should be used with caution\n"
-            "                            if other users of the machine are capable to see the running "
+            "                            if other users of the machine are capable to see the running\n"
             "                            processes ran by the current user.\n"
+            "  -no-sync                  Do not generate synchronous API methods to the client code\n"
+            "  -no-async                 Do not generate asynchronous API methods to the client code\n"
+            "  -no-async-jobs            Do not generate asynchronous job API classes to the client code\n"
 #endif
             "\n", appName, appName, appName);
 }
@@ -104,6 +107,7 @@ int main(int argc, char **argv)
     QStringList importPathList;
     bool useLocalFilesOnly = false;
     bool helpOnMissing = false;
+    bool skipAsync = false, skipSync = false, skipAsyncJobs = false;
 #if QT_VERSION >= QT_VERSION_CHECK(5, 4, 0) && !defined(QT_NO_SSL)
     QString pkcs12File, pkcs12Password;
 #endif
@@ -240,6 +244,12 @@ int main(int argc, char **argv)
             }
             pkcs12Password = QLatin1String(argv[arg]);
 #endif
+        } else if (opt == QLatin1String("-no-sync")) {
+            skipSync = true;
+        } else if (opt == QLatin1String("-no-async")) {
+            skipAsync = true;
+        } else if (opt == QLatin1String("-no-async-jobs")) {
+            skipAsyncJobs = true;
         } else if (!fileName) {
             fileName = argv[arg];
         } else {
@@ -293,6 +303,9 @@ int main(int argc, char **argv)
     Settings::self()->setImportPathList(importPathList);
     Settings::self()->setUseLocalFilesOnly(useLocalFilesOnly);
     Settings::self()->setHelpOnMissing(helpOnMissing);
+    Settings::self()->setSkipSync(skipSync);
+    Settings::self()->setSkipAsync(skipAsync);
+    Settings::self()->setSkipAsyncJobs(skipAsyncJobs);
 
     KWSDL::Compiler compiler;
 #if QT_VERSION >= QT_VERSION_CHECK(5, 4, 0) && !defined(QT_NO_SSL)

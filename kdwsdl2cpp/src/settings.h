@@ -85,6 +85,15 @@ public:
     bool helpOnMissing() const;
     void setHelpOnMissing(bool b);
 
+    bool skipSync() const;
+    void setSkipSync(bool skipSync);
+
+    bool skipAsync() const;
+    void setSkipAsync(bool skipAsync);
+
+    bool skipAsyncJobs() const;
+    void setSkipAsyncJobs(bool skipAsyncJobs);
+
 private:
     friend class SettingsSingleton;
     Settings();
@@ -105,6 +114,9 @@ private:
     bool mKeepUnusedTypes = false;
     bool mUseLocalFilesOnly = false;
     bool mHelpOnMissing = false;
+    bool mSkipSync = false;
+    bool mSkipAsync = false;
+    bool mSkipAsyncJobs = false;
 };
 
 #endif

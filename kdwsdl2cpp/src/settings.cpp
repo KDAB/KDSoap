@@ -44,6 +44,36 @@ Settings::Settings()
     mOptionalElementType = Settings::ENone;
 }
 
+bool Settings::skipAsyncJobs() const
+{
+    return mSkipAsyncJobs;
+}
+
+void Settings::setSkipAsyncJobs(bool skipAsyncJobs)
+{
+    mSkipAsyncJobs = skipAsyncJobs;
+}
+
+bool Settings::skipAsync() const
+{
+    return mSkipAsync;
+}
+
+void Settings::setSkipAsync(bool skipAsync)
+{
+    mSkipAsync = skipAsync;
+}
+
+bool Settings::skipSync() const
+{
+    return mSkipSync;
+}
+
+void Settings::setSkipSync(bool skipSync)
+{
+    mSkipSync = skipSync;
+}
+
 bool Settings::useLocalFilesOnly() const
 {
     return mUseLocalFilesOnly;
