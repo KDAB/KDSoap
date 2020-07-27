@@ -319,7 +319,7 @@ int main(int argc, char **argv)
             }
 
             // set the loaded certificate info as default SSL config
-            QSslConfiguration sslConfig;
+            QSslConfiguration sslConfig = QSslConfiguration::defaultConfiguration();
             sslConfig.setPrivateKey(key);
             sslConfig.setLocalCertificate(certificate);
             sslConfig.setCaCertificates(caCertificates);
