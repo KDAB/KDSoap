@@ -305,22 +305,31 @@ bool Converter::convertClientService()
                 switch (opType) {
                 case Operation::OneWayOperation:
                 case Operation::RequestResponseOperation: // the standard case
-                    // sync method
-                    if (!convertClientCall(operation, binding, newClass)) {
-                        return false;
+                    if (!Settings::self()->skipSync()) {
+                        // sync method
+                        if (!convertClientCall(operation, binding, newClass)) {
+                            return false;
+                        }
                     }
-                    // async method
-                    convertClientInputMessage(operation, binding, newClass);
-                    convertClientOutputMessage(operation, binding, newClass);
-                    // TODO fault
+
+                    if (!Settings::self()->skipAsync()) {
+                        // async method
+                        convertClientInputMessage(operation, binding, newClass);
+                        convertClientOutputMessage(operation, binding, newClass);
+                        // TODO fault
+                    }
                     break;
                 case Operation::SolicitResponseOperation:
-                    convertClientOutputMessage(operation, binding, newClass);
-                    convertClientInputMessage(operation, binding, newClass);
-                    // TODO fault
+                    if (!Settings::self()->skipAsync()) {
+                        convertClientOutputMessage(operation, binding, newClass);
+                        convertClientInputMessage(operation, binding, newClass);
+                        // TODO fault
+                    }
                     break;
                 case Operation::NotificationOperation:
-                    convertClientOutputMessage(operation, binding, newClass);
+                    if (!Settings::self()->skipAsync()) {
+                        convertClientOutputMessage(operation, binding, newClass);
+                    }
                     break;
                 }
 
@@ -338,157 +347,159 @@ bool Converter::convertClientService()
             bindingClasses.append(newClass);
             mHeaderMethods.clear();
 
-            QString jobsNamespace = nameSpace;
-            if (uniqueBindings.count() > 1) {
-                // Multiple bindings: use <Service>::<Binding>Jobs as namespace for the job classes
-                jobsNamespace += "::" + KODE::Style::className(bindingName.localName()) + "Jobs";
-            }
-
-            // for each operation, create a job class
-            Q_FOREACH (const Operation &operation, operations) {
-                Operation::OperationType opType = operation.operationType();
-                if (opType != Operation::SolicitResponseOperation && opType != Operation::RequestResponseOperation) {
-                    continue;
+            if (!Settings::self()->skipAsyncJobs()) {
+                QString jobsNamespace = nameSpace;
+                if (uniqueBindings.count() > 1) {
+                    // Multiple bindings: use <Service>::<Binding>Jobs as namespace for the job classes
+                    jobsNamespace += "::" + KODE::Style::className(bindingName.localName()) + "Jobs";
                 }
 
-                const QString operationName = operation.name();
-                KODE::Class jobClass(KODE::Style::className(operation.name()) + QLatin1String("Job"), jobsNamespace);
-                if (mClasses.findClass(jobClass.qualifiedName()) != mClasses.constEnd()) {
-                    jobClass.setName(KODE::Style::className(className /*binding name*/ + jobClass.name()));
-                }
-                jobClass.addInclude(QString(), fullyQualified(newClass));
-                jobClass.addHeaderInclude(QLatin1String("KDSoapClient/KDSoapJob.h"));
-                if (!Settings::self()->exportDeclaration().isEmpty()) {
-                    jobClass.setExportDeclaration(Settings::self()->exportDeclaration());
-                }
+                // for each operation, create a job class
+                Q_FOREACH (const Operation &operation, operations) {
+                    Operation::OperationType opType = operation.operationType();
+                    if (opType != Operation::SolicitResponseOperation && opType != Operation::RequestResponseOperation) {
+                        continue;
+                    }
 
-                jobClass.addBaseClass(KODE::Class(QLatin1String("KDSoapJob")));
+                    const QString operationName = operation.name();
+                    KODE::Class jobClass(KODE::Style::className(operation.name()) + QLatin1String("Job"), jobsNamespace);
+                    if (mClasses.findClass(jobClass.qualifiedName()) != mClasses.constEnd()) {
+                        jobClass.setName(KODE::Style::className(className /*binding name*/ + jobClass.name()));
+                    }
+                    jobClass.addInclude(QString(), fullyQualified(newClass));
+                    jobClass.addHeaderInclude(QLatin1String("KDSoapClient/KDSoapJob.h"));
+                    if (!Settings::self()->exportDeclaration().isEmpty()) {
+                        jobClass.setExportDeclaration(Settings::self()->exportDeclaration());
+                    }
 
-                KODE::MemberVariable serviceVar(QLatin1String("service"), fullyQualified(newClass) + QLatin1Char('*'));
-                jobClass.addMemberVariable(serviceVar);
+                    jobClass.addBaseClass(KODE::Class(QLatin1String("KDSoapJob")));
 
-                KODE::Function ctor(jobClass.name());
-                ctor.addArgument(KODE::Function::Argument(QString::fromLatin1("%1* service").arg(fullyQualified(newClass))));
-                ctor.addArgument(KODE::Function::Argument(QLatin1String("QObject* _parent"), QLatin1String("nullptr")));
-                ctor.addInitializer(QLatin1String("KDSoapJob(_parent)"));
-                ctor.addInitializer(QLatin1String("mService(service)"));
+                    KODE::MemberVariable serviceVar(QLatin1String("service"), fullyQualified(newClass) + QLatin1Char('*'));
+                    jobClass.addMemberVariable(serviceVar);
 
-                const Message message = mWSDL.findMessage(operation.input().message());
-                Q_FOREACH (const Part &part, selectedParts(binding, message, operation, true /*input*/)) {
-                    const QString partName = part.name();
-                    ctor.addInitializer(KODE::MemberVariable::memberVariableName(partName) + "()");
-                }
+                    KODE::Function ctor(jobClass.name());
+                    ctor.addArgument(KODE::Function::Argument(QString::fromLatin1("%1* service").arg(fullyQualified(newClass))));
+                    ctor.addArgument(KODE::Function::Argument(QLatin1String("QObject* _parent"), QLatin1String("nullptr")));
+                    ctor.addInitializer(QLatin1String("KDSoapJob(_parent)"));
+                    ctor.addInitializer(QLatin1String("mService(service)"));
 
-                const Message outputMsg = mWSDL.findMessage(operation.output().message());
+                    const Message message = mWSDL.findMessage(operation.input().message());
+                    Q_FOREACH (const Part &part, selectedParts(binding, message, operation, true /*input*/)) {
+                        const QString partName = part.name();
+                        ctor.addInitializer(KODE::MemberVariable::memberVariableName(partName) + "()");
+                    }
 
-                Q_FOREACH (const Part &part, selectedParts(binding, outputMsg, operation, false /*output*/)) {
-                    const QString varName = mNameMapper.escape(QLatin1String("result") + upperlize(part.name()));
-                    ctor.addInitializer(KODE::MemberVariable::memberVariableName(varName) + "()");
-                }
+                    const Message outputMsg = mWSDL.findMessage(operation.output().message());
 
-                jobClass.addFunction(ctor);
+                    Q_FOREACH (const Part &part, selectedParts(binding, outputMsg, operation, false /*output*/)) {
+                        const QString varName = mNameMapper.escape(QLatin1String("result") + upperlize(part.name()));
+                        ctor.addInitializer(KODE::MemberVariable::memberVariableName(varName) + "()");
+                    }
 
-                QStringList inputGetters;
+                    jobClass.addFunction(ctor);
 
-                Q_FOREACH (const Part &part, selectedParts(binding, message, operation, true /*input*/)) {
-                    const QString varType = mTypeMap.localType(part.type(), part.element());
-                    const KODE::MemberVariable member(part.name(), varType);
-                    jobClass.addMemberVariable(member);
+                    QStringList inputGetters;
 
-                    KODE::Function setter(QLatin1String("set") + mNameMapper.escape(upperlize(part.name())), QLatin1String("void"));
-                    setter.addArgument(mTypeMap.localInputType(part.type(), part.element()) + QLatin1String(" arg0"));
-                    KODE::Code sc;
-                    sc += QString::fromLatin1("%1 = arg0;").arg(member.name());
-                    setter.setBody(sc);
-                    jobClass.addFunction(setter);
+                    Q_FOREACH (const Part &part, selectedParts(binding, message, operation, true /*input*/)) {
+                        const QString varType = mTypeMap.localType(part.type(), part.element());
+                        const KODE::MemberVariable member(part.name(), varType);
+                        jobClass.addMemberVariable(member);
 
-                    const QString getterName = mNameMapper.escape(lowerlize(part.name()));
-                    inputGetters.append(getterName);
-                    KODE::Function getter(getterName, varType);
-                    getter.setConst(true);
-                    KODE::Code gc;
-                    gc += QString::fromLatin1("return %1;").arg(member.name());
-                    getter.setBody(gc);
-                    jobClass.addFunction(getter);
-                }
+                        KODE::Function setter(QLatin1String("set") + mNameMapper.escape(upperlize(part.name())), QLatin1String("void"));
+                        setter.addArgument(mTypeMap.localInputType(part.type(), part.element()) + QLatin1String(" arg0"));
+                        KODE::Code sc;
+                        sc += QString::fromLatin1("%1 = arg0;").arg(member.name());
+                        setter.setBody(sc);
+                        jobClass.addFunction(setter);
 
-                KODE::Function doStart(QLatin1String("doStart"), QLatin1String("void"), KODE::Function::Protected);
-                doStart.setVirtualMode(KODE::Function::Override);
-                KODE::Code doStartCode;
-                const bool hasAction = clientAddAction(doStartCode, binding, operationName);
-                clientGenerateMessage(doStartCode, binding, message, operation, /*use members=*/true);
+                        const QString getterName = mNameMapper.escape(lowerlize(part.name()));
+                        inputGetters.append(getterName);
+                        KODE::Function getter(getterName, varType);
+                        getter.setConst(true);
+                        KODE::Code gc;
+                        gc += QString::fromLatin1("return %1;").arg(member.name());
+                        getter.setBody(gc);
+                        jobClass.addFunction(getter);
+                    }
 
-                QString callLine = QString::fromLatin1("KDSoapPendingCall pendingCall = mService->clientInterface()->asyncCall(QLatin1String(\"%1\"), message").arg(operationName);
-                if (hasAction) {
-                    callLine += QLatin1String(", action");
-                }
-                callLine += QLatin1String(", requestHeaders()");
-                callLine += QLatin1String(");");
-                doStartCode += callLine;
+                    KODE::Function doStart(QLatin1String("doStart"), QLatin1String("void"), KODE::Function::Protected);
+                    doStart.setVirtualMode(KODE::Function::Override);
+                    KODE::Code doStartCode;
+                    const bool hasAction = clientAddAction(doStartCode, binding, operationName);
+                    clientGenerateMessage(doStartCode, binding, message, operation, /*use members=*/true);
 
-                doStartCode += "KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);";
-                doStartCode += "QObject::connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher*)),\n"
-                               "                 this, SLOT(slotFinished(KDSoapPendingCallWatcher*)));";
-                doStart.setBody(doStartCode);
-                jobClass.addFunction(doStart);
+                    QString callLine = QString::fromLatin1("KDSoapPendingCall pendingCall = mService->clientInterface()->asyncCall(QLatin1String(\"%1\"), message").arg(operationName);
+                    if (hasAction) {
+                        callLine += QLatin1String(", action");
+                    }
+                    callLine += QLatin1String(", requestHeaders()");
+                    callLine += QLatin1String(");");
+                    doStartCode += callLine;
 
-                KODE::Function slot(QLatin1String("slotFinished"), QLatin1String("void"), KODE::Function::Private | KODE::Function::Slot);
-                slot.addArgument(QLatin1String("KDSoapPendingCallWatcher* watcher"));
-                KODE::Code slotCode;
-                slotCode += QLatin1String("watcher->deleteLater();");
-                slotCode += QLatin1String("KDSoapMessage _reply = watcher->returnMessage();");
-                const Part::List outputParts = selectedParts(binding, outputMsg, operation, false /*input*/);
-                const SoapBinding::Headers outputHeaders = getOutputHeaders(binding, operationName);
+                    doStartCode += "KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);";
+                    doStartCode += "QObject::connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher*)),\n"
+                                   "                 this, SLOT(slotFinished(KDSoapPendingCallWatcher*)));";
+                    doStart.setBody(doStartCode);
+                    jobClass.addFunction(doStart);
 
-                if (!outputParts.isEmpty() || !outputHeaders.isEmpty()) {
-                    slotCode += QLatin1String("if (!_reply.isFault()) {") + COMMENT;
-                    slotCode.indent();
+                    KODE::Function slot(QLatin1String("slotFinished"), QLatin1String("void"), KODE::Function::Private | KODE::Function::Slot);
+                    slot.addArgument(QLatin1String("KDSoapPendingCallWatcher* watcher"));
+                    KODE::Code slotCode;
+                    slotCode += QLatin1String("watcher->deleteLater();");
+                    slotCode += QLatin1String("KDSoapMessage _reply = watcher->returnMessage();");
+                    const Part::List outputParts = selectedParts(binding, outputMsg, operation, false /*input*/);
+                    const SoapBinding::Headers outputHeaders = getOutputHeaders(binding, operationName);
 
-                    if (!outputParts.isEmpty()) {
-                        if (soapStyle(binding) == SoapBinding::RPCStyle /*adds a wrapper*/) {
-                            Q_ASSERT(outputParts.count() == 1);
-                            // Protect the call to .at(0) below
-                            slotCode += "if (_reply.childValues().isEmpty()) {";
-                            slotCode.indent();
-                            slotCode += "_reply.setFault(true);" + COMMENT;
-                            slotCode += "_reply.addArgument(QString::fromLatin1(\"faultcode\"), QString::fromLatin1(\"Server.EmptyResponse\"));";
-                            slotCode += QLatin1String("return;");
-                            slotCode.unindent();
-                            slotCode += "}";
+                    if (!outputParts.isEmpty() || !outputHeaders.isEmpty()) {
+                        slotCode += QLatin1String("if (!_reply.isFault()) {") + COMMENT;
+                        slotCode.indent();
 
-                            slotCode += QLatin1String("_reply = _reply.childValues().at(0);") + COMMENT;
+                        if (!outputParts.isEmpty()) {
+                            if (soapStyle(binding) == SoapBinding::RPCStyle /*adds a wrapper*/) {
+                                Q_ASSERT(outputParts.count() == 1);
+                                // Protect the call to .at(0) below
+                                slotCode += "if (_reply.childValues().isEmpty()) {";
+                                slotCode.indent();
+                                slotCode += "_reply.setFault(true);" + COMMENT;
+                                slotCode += "_reply.addArgument(QString::fromLatin1(\"faultcode\"), QString::fromLatin1(\"Server.EmptyResponse\"));";
+                                slotCode += QLatin1String("return;");
+                                slotCode.unindent();
+                                slotCode += "}";
+
+                                slotCode += QLatin1String("_reply = _reply.childValues().at(0);") + COMMENT;
+                            }
+
+                            Q_FOREACH (const Part &part, outputParts) {
+                                const QString varName = mNameMapper.escape(QLatin1String("result") + upperlize(part.name()));
+                                const KODE::MemberVariable member(varName, QString());
+                                slotCode.addBlock(deserializeRetVal(part, QLatin1String("_reply"), mTypeMap.localType(part.type(), part.element()), member.name()));
+
+                                addJobResultMember(jobClass, part, varName, inputGetters);
+                            }
                         }
+                        Q_FOREACH (const SoapBinding::Header &header, outputHeaders) {
+                            const QName messageName = header.message();
+                            const QString partName = header.part();
+                            const Message message = mWSDL.findMessage(messageName);
+                            const Part part = message.partByName(partName);
 
-                        Q_FOREACH (const Part &part, outputParts) {
-                            const QString varName = mNameMapper.escape(QLatin1String("result") + upperlize(part.name()));
+                            const QString varName = QLatin1String("resultHeader") + upperlize(part.name());
                             const KODE::MemberVariable member(varName, QString());
-                            slotCode.addBlock(deserializeRetVal(part, QLatin1String("_reply"), mTypeMap.localType(part.type(), part.element()), member.name()));
-
+                            const QString getHeader = QString::fromLatin1("watcher->returnHeaders().header(QLatin1String(\"%1\"), QLatin1String(\"%2\"))").arg(part.element().localName(), part.element().nameSpace());
+                            slotCode.addBlock(deserializeRetVal(part, getHeader, mTypeMap.localType(part.type(), part.element()), member.name()));
                             addJobResultMember(jobClass, part, varName, inputGetters);
                         }
+
+                        slotCode.unindent();
+                        slotCode += QLatin1String("}");
                     }
-                    Q_FOREACH (const SoapBinding::Header &header, outputHeaders) {
-                        const QName messageName = header.message();
-                        const QString partName = header.part();
-                        const Message message = mWSDL.findMessage(messageName);
-                        const Part part = message.partByName(partName);
+                    slotCode += QLatin1String("emitFinished(_reply, watcher->returnHeaders());");
+                    slot.setBody(slotCode);
+                    jobClass.addFunction(slot);
 
-                        const QString varName = QLatin1String("resultHeader") + upperlize(part.name());
-                        const KODE::MemberVariable member(varName, QString());
-                        const QString getHeader = QString::fromLatin1("watcher->returnHeaders().header(QLatin1String(\"%1\"), QLatin1String(\"%2\"))").arg(part.element().localName(), part.element().nameSpace());
-                        slotCode.addBlock(deserializeRetVal(part, getHeader, mTypeMap.localType(part.type(), part.element()), member.name()));
-                        addJobResultMember(jobClass, part, varName, inputGetters);
-                    }
-
-                    slotCode.unindent();
-                    slotCode += QLatin1String("}");
-                }
-                slotCode += QLatin1String("emitFinished(_reply, watcher->returnHeaders());");
-                slot.setBody(slotCode);
-                jobClass.addFunction(slot);
-
-                mClasses.addClass(jobClass);
-            } // end of for each operation (job creation)
+                    mClasses.addClass(jobClass);
+                } // end of for each operation (job creation)
+            } // end if async job API creation is not skipped
         } // end of for each port
     } // end of for each service
 
