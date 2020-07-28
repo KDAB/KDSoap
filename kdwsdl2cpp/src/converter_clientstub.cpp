@@ -387,6 +387,7 @@ bool Converter::convertClientService()
                     Q_FOREACH (const Part &part, selectedParts(binding, message, operation, true /*input*/)) {
                         const QString partName = part.name();
                         ctor.addInitializer(KODE::MemberVariable::memberVariableName(partName) + "()");
+                        jobClass.addHeaderIncludes(mTypeMap.headerIncludes(part.type()));
                     }
 
                     const Message outputMsg = mWSDL.findMessage(operation.output().message());
@@ -394,6 +395,7 @@ bool Converter::convertClientService()
                     Q_FOREACH (const Part &part, selectedParts(binding, outputMsg, operation, false /*output*/)) {
                         const QString varName = mNameMapper.escape(QLatin1String("result") + upperlize(part.name()));
                         ctor.addInitializer(KODE::MemberVariable::memberVariableName(varName) + "()");
+                        jobClass.addHeaderIncludes(mTypeMap.headerIncludes(part.type()));
                     }
 
                     jobClass.addFunction(ctor);
