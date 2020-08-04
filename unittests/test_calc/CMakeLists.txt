@@ -12,5 +12,6 @@
 ##
 
 set(calc_SRCS test_calc.cpp)
+set(KSWSDL2CPP_OPTION -no-async -no-async-jobs)
 set(WSDL_FILES calc.wsdl)
 add_unittest(${calc_SRCS})

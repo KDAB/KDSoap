@@ -12,6 +12,7 @@
 ##
 
 set(uitapi_SRCS test_uitapi.cpp)
+set(KSWSDL2CPP_OPTION -no-sync -no-async)
 set(WSDL_FILES uitapi.wsdl)
 add_unittest(${uitapi_SRCS})
 

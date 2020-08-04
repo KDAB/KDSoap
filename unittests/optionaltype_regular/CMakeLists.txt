@@ -13,6 +13,6 @@
 
 set(optionaltype_regular_SRCS testregularapi.cpp)
 set(WSDL_FILES test.wsdl)
-set(KSWSDL2CPP_OPTION -namespace KDAB)
+set(KSWSDL2CPP_OPTION -namespace KDAB -no-sync -no-async -no-async-jobs)
 add_unittest(${optionaltype_regular_SRCS})
 

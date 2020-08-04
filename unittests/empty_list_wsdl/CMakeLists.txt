@@ -12,5 +12,6 @@
 ##
 
 set(empty_list_wsdl_SRCS empty_list_wsdl.cpp)
+set(KSWSDL2CPP_OPTION -no-async -no-async-jobs -no-sync)
 set(WSDL_FILES empty_list.wsdl)
 add_unittest(${empty_list_wsdl_SRCS})

@@ -13,7 +13,7 @@
 
 project(dwservice_12_wsdl)
 
-set(KSWSDL2CPP_OPTION -namespace KDAB)
+set(KSWSDL2CPP_OPTION -namespace KDAB -no-async -no-async-jobs)
 
 set(WSDL_FILES DWService_12.wsdl)
 set(dwservice_12_wsdl_SRCS test_dwservice_12_wsdl.cpp)
