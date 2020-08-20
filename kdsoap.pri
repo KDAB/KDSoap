@@ -1,7 +1,7 @@
 # Not used by KDSoap itself. This is for use in other projects.
 # Copy the file there, but backport any changes here.
 
-:  # copy from environment:
+  # copy from environment:
   isEmpty( KDSOAPDIR ):KDSOAPDIR="$$(KDSOAPDIR)"
   !isEmpty( KDSOAPDIR ) {
     unix {
