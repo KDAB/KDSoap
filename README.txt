@@ -1,4 +1,4 @@
-# <a name="title"></a> KD Soap [![Logo](https://github.com/KDAB/KDSoap/blob/master/images/kdsoap-medium.png)](https://www.kdab.com/products/kd-soap)
+# <a name="title"></a> KD Soap [![Logo](https://github.com/KDAB/KDSoap/blob/master/images/kdsoap-medium.png)](https://www.kdab.com/development-resources/qt-tools/kd-soap)
 Introduction
 ============
 KD Soap is a Qt-based client-side and server-side SOAP component.
@@ -9,7 +9,7 @@ as a dedicated web server.
 
 KD Soap targets C++ programmers who use Qt in their applications.
 
-For more information, see https://www.kdab.com/products/kd-soap
+For more information, see https://www.kdab.com/development-resources/qt-tools/kd-soap
 
 Using KD Soap
 =============
@@ -28,7 +28,7 @@ you will find more information at these places:
 Contact
 =======
 * Join our mailing list: https://mail.kdab.com/mailman/listinfo/kdsoap-interest
-* See our official home page: https://www.kdab.com/products/kd-soap
+* See our official home page: https://www.kdab.com/development-resources/qt-tools/kd-soap
 * Visit us on GitHub: https://github.com/KDAB/KDSoap
 * Email info@kdab.com for questions about copyright, licensing or commercial support.
 
