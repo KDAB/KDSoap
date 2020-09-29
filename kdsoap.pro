@@ -102,7 +102,7 @@ QMAKE_EXTRA_TARGETS += test
 
 INSTALL_DOC_DIR = $$INSTALL_PREFIX/share/doc/KDSoap
 # install licenses:
-licenses.files = LICENSE.GPL.txt LICENSE.txt
+licenses.files = LICENSE.GPL.txt LICENSE.US.txt LICENSE.txt
 licenses.path = $$INSTALL_DOC_DIR
 INSTALLS += licenses
 
