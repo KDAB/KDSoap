@@ -32,7 +32,10 @@ else()
   target_compile_definitions(kdsoap PRIVATE KDSOAP_BUILD_KDSOAP_LIB)
 endif()
 target_link_libraries(kdsoap ${QT_LIBRARIES})
-set_target_properties(kdsoap PROPERTIES VERSION ${${PROJECT_NAME}_VERSION})
+set_target_properties(kdsoap PROPERTIES
+  SOVERSION ${${PROJECT_NAME}_SOVERSION}
+  VERSION ${${PROJECT_NAME}_VERSION}
+)
 target_include_directories(kdsoap INTERFACE "$<INSTALL_INTERFACE:${CMAKE_INSTALL_PREFIX}/${INSTALL_INCLUDE_DIR}>")
 
 # append d to debug libraries for windows builds
