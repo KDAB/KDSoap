@@ -33,16 +33,15 @@ set_target_properties(kdsoap-server PROPERTIES
 )
 target_include_directories(kdsoap-server INTERFACE "$<INSTALL_INTERFACE:${CMAKE_INSTALL_PREFIX}/${INSTALL_INCLUDE_DIR}>")
 
-# append d to debug libraries for windows builds
+#version libraries on Windows
 if(WIN32)
-  set(postfix ${${PROJECT_NAME}_VERSION_MAJOR})
-  string(TOUPPER ${CMAKE_BUILD_TYPE} UPPER_BUILD_TYPE)
-  if(${UPPER_BUILD_TYPE} MATCHES "^DEBUG")
-    string(CONCAT postfix ${postfix} "d")
-    set_target_properties(kdsoap-server PROPERTIES DEBUG_POSTFIX ${postfix})
-  else()
-    set_target_properties(kdsoap-server PROPERTIES ${UPPER_BUILD_TYPE}_POSTFIX ${postfix})
-  endif()
+  set(postfix ${${PROJECT_NAME}_SOVERSION})
+  set(CMAKE_RELEASE_POSTFIX ${postfix})
+  set_target_properties(kdsoap-server PROPERTIES RELEASE_POSTFIX ${CMAKE_RELEASE_POSTFIX})
+  #append 'd' to debug libraries
+  string(CONCAT postfix ${postfix} "d")
+  set(CMAKE_DEBUG_POSTFIX ${postfix})
+  set_target_properties(kdsoap-server PROPERTIES DEBUG_POSTFIX ${CMAKE_DEBUG_POSTFIX})
 endif()
 
 if(KDSoap_IS_ROOT_PROJECT)
