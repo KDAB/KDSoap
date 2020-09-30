@@ -1,12 +1,5 @@
 set(QT_USE_QTNETWORK TRUE)
 include(${QT_USE_FILE})
-
-if(KDSoap_STATIC)
-  add_definitions(-DKDSOAPSERVER_STATICLIB -DKDSOAP_STATICLIB)
-else()
-  add_definitions(-DKDSOAP_BUILD_KDSOAPSERVER_LIB -DKDSOAP_BUILD_KDSOAP_LIB)
-endif()
-
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 include_directories(.. ../KDSoapClient)
@@ -28,6 +21,11 @@ set(SOURCES
 
 set_source_files_properties(KDSoapServerObjectInterface.cpp PROPERTIES SKIP_AUTOMOC TRUE)
 add_library(kdsoap-server ${KDSoap_LIBRARY_MODE} ${SOURCES})
+if(${PROJECT_NAME}_STATIC)
+  target_compile_definitions(kdsoap-server PUBLIC KDSOAPSERVER_STATICLIB)
+else()
+  target_compile_definitions(kdsoap-server PRIVATE KDSOAP_BUILD_KDSOAPSERVER_LIB)
+endif()
 target_link_libraries(kdsoap-server kdsoap ${QT_LIBRARIES})
 set_target_properties(kdsoap-server PROPERTIES VERSION ${${PROJECT_NAME}_VERSION})
 target_include_directories(kdsoap-server INTERFACE "$<INSTALL_INTERFACE:${CMAKE_INSTALL_PREFIX}/${INSTALL_INCLUDE_DIR}>")

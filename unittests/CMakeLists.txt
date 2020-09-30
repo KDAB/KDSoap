@@ -8,10 +8,6 @@ include(${QT_USE_FILE})
 include_directories(../src/ ../src/KDSoapClient/ ../src/KDSoapServer/ ../testtools/ ../kdwsdl2cpp/ ../kdwsdl2cpp/src/ ../kdwsdl2cpp/libkode/ ../kdwsdl2cpp/common/ ../kdwsdl2cpp/schema/ ../kdwsdl2cpp/wsdl/)
 include(../KDSoapMacros.cmake)
 
-if(${PROJECT_NAME}_STATIC)
-  add_definitions(-DKDSOAP_STATICLIB -DKDSOAPSERVER_STATICLIB)
-endif()
-
 remove_definitions(-DQT_NO_CAST_FROM_ASCII)
 
 macro(add_unittest _source)

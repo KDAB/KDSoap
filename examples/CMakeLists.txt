@@ -1,10 +1,6 @@
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 include(${QT_USE_FILE})
 
-if(${PROJECT_NAME}_STATIC)
-  add_definitions(-DKDSOAPSERVER_STATICLIB -DKDSOAP_STATICLIB)
-endif()
-
 if(Qt5Core_FOUND)
   find_package(Qt5Widgets REQUIRED)
   set(QT_QTWIDGETS_LIBRARY Qt5::Widgets)
