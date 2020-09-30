@@ -1,12 +1,12 @@
 Name:           kdsoap
-Version:        1.9.0
+Version:        1.9.1
 Release:        1
 Summary:        A Qt4-based client-side and server-side SOAP component
 Source0:        %{name}-%{version}.tar.gz
 Source1:        %{name}-%{version}.tar.gz.asc
 Url:            https://github.com/KDAB/KDSoap
 Group:          System/Libraries
-License:        GPL-2.0+
+License:        LGPL-2.1-only AND (GPL-2.0-only OR GPL-3.0-only)
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 Vendor:         Klaralvdalens Datakonsult AB (KDAB)
 Packager:       Klaralvdalens Datakonsult AB (KDAB) <info@kdab.com>
@@ -81,6 +81,8 @@ QMAKE_ARGS="LIB_SUFFIX=64" ./configure.sh -shared -release -prefix %{buildroot}/
 %{_libdir}/libkdsoap-server.so
 
 %changelog
+* Wed Sep 30 2020 Allen Winter <allen.winter@kdab.com> 1.9.1
+  1.9.1
 * Mon Feb 17 2020 Allen Winter <allen.winter@kdab.com> 1.9.0
   1.9.0
 * Fri May 17 2019 Allen Winter <allen.winter@kdab.com> 1.8.0
