@@ -2,6 +2,8 @@ CHECKSETS qt4,c++,foss
 
 #exclude intrusive checks to investigate later
 EXCLUDE constref,dpointer,inline,null,doublequote_chars
+#too many http: references in the unittests
+EXCLUDE insecurenet
 EXCLUDE style
 
 #KDAB-specific checks
