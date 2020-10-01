@@ -2,8 +2,16 @@ General:
 ========
 * C++11 is now required. Qt4 is still supported, but this is the last release with support for Qt4.
 * Fix rpath for Unix/Linux/macOS (#181).
-* Improve cmake usage by setting the install interface directories on the library targets (#196). You can just link to KDSoap::kdsoap and you'll get the correct include paths now.
- * New installing file for Conan (WIP - see conan folder)
+* Improve cmake usage by setting the install interface directories on the library targets (#196).
+  You can just link to KDSoap::kdsoap and you'll get the correct include paths now.
+* New installing file for Conan (WIP - see conan folder)
+
+In release 1.9.1:
+-----------------
+* Restore previous EULA (LICENSE.txt and LICENSE.US.txt)
+* remove unittests: onvif_org_event, onvif_ptz, onvif.org WSDL
+* Fix static linking examples and unittests in the CMake buildsystem
+* small buildsystem improvements
 
 Client-side:
 ============
