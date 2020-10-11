@@ -33,7 +33,7 @@ class KDSoapAuthentication::Private
 {
 public:
     Private() :
-        useWSUsernameToken(false)
+        useWSUsernameToken(false), usePasswordDigest(false)
     {}
 
     QString user;
