@@ -38,7 +38,8 @@ location by passing the option -DCMAKE_INSTALL_PREFIX=/install/path to cmake.
     % export LD_LIBRARY_PATH
 
    The above must be added into your .bashrc or similar to remain. It may also of course
-   be run from a shell just before building software using KD SOAP, but in this case your settings will only be available for this shell.
+   be run from a shell just before building software using KD SOAP, but in this case
+   your settings will only be available for this shell.
 
 4) MacOS
 
@@ -72,3 +73,8 @@ location by passing the option -DCMAKE_INSTALL_PREFIX=/install/path to cmake.
 
 8) Have a look at the examples applications. They will get you started with KD SOAP.
 
+== Testing ==
+To build the testing harness, pass -DKDSoap_TESTS=true to CMake, like so:
+  % cmake -DKDSoap_TESTS=true
+
+Then run 'make test' to run the unit tests.

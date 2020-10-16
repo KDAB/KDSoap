@@ -13,7 +13,7 @@ to section 1-bis). Commercial users, start at section 1).
      configure.bat -static -debug
      configure.bat -static -release
 
-   On Unix use depending on the kind of build one of the following;
+   On Unix or Mac use depending on the kind of build one of the following;
      ./configure.sh -shared -debug
      ./configure.sh -shared -release
      ./configure.sh -static -debug
@@ -22,6 +22,8 @@ to section 1-bis). Commercial users, start at section 1).
    To define the install-location use for example;
      configure.bat -shared -debug -prefix c:/kdsoap
      ./configure.sh -shared -debug -prefix /opt/kdsoap
+
+   NOTE: Don't use relative paths for the prefix, they will not work.
 
    If this succeeded, jump to step 2.
 
@@ -33,10 +35,10 @@ to section 1-bis). Commercial users, start at section 1).
    execute path.  Either a 32-bit or 64-bit version of Python is fine, but run
    python --version to make sure it is found and is python2 before continuing.
 
-   Now run autogen.py to create the configure tool.
+   Now run autogen.py to create the configure tool:
 
    On Windows:
-     c:\python27\python2 autogen.py [options]
+     c:\python27\python autogen.py [options]
    On Linux:
      python2 autogen.py [options]
 
@@ -83,6 +85,10 @@ to section 1-bis). Commercial users, start at section 1).
    % make    # Unix, Mac
    % nmake   # Windows
 
+   On Windows you can also use the Qt integration into Visual Studio:
+   open the toplevel kdsoap.pro with "Qt / Open Solution from .pro file".
+   You still need to adjust the PATH environment variable in order to run the examples.
+
 6) (optionally:) Install KD SOAP:
 
    From your top-level KD SOAP directory run:
@@ -94,4 +100,7 @@ to section 1-bis). Commercial users, start at section 1).
    For Unix/Linux, Mac this is /usr/local/KDAB/KDSoap-VERSION/
    For Windows this is: C:\KDAB\KDSoap-VERSION\
 
-7) Have a look at the examples applications. They will get you started with KD SOAP.
+   UNIX,Mac Note): Admin rights may be required for installing to /usr/local.
+         Run "sudo make install", to install with admin rights.
+
+7) Have a look at the examples applications to get you started with KD SOAP.

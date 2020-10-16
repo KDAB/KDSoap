@@ -16,7 +16,7 @@ Using KD Soap
 KD Soap requires Qt 4.7.0 or newer, and a compiler with C++11 support.
 
 See [INSTALL.txt](INSTALL.txt) or [INSTALL-cmake.txt](INSTALL-cmake.txt)
-for installation instructions. (CMake and qmake and buildsystems supported)
+for installation instructions (CMake and qmake and buildsystems supported).
 
 After reading the introductory overview files in doc/
 you will find more information at these places:
@@ -27,10 +27,14 @@ you will find more information at these places:
 
 Contact
 =======
-* Join our mailing list: https://mail.kdab.com/mailman/listinfo/kdsoap-interest
 * See our official home page: https://www.kdab.com/development-resources/qt-tools/kd-soap
 * Visit us on GitHub: https://github.com/KDAB/KDSoap
 * Email info@kdab.com for questions about copyright, licensing or commercial support.
+
+Stay up-to-date with KDAB product announcements:
+
+* [KDAB Newsletter](https://news.kdab.com)
+* [KDAB Blogs](https://www.kdab.com/category/blogs)
 
 Get Involved
 ============
@@ -44,8 +48,8 @@ https://github.com/KDAB/KDSoap
 
 License
 =======
-KD Soap is (C) 2010-2020, Klaralvdalens Datakonsult AB, and is available
-under the terms of:
+The KD Soap Software is Copyright (C) 2010-2020, Klaralvdalens Datakonsult AB,
+and is available under the terms of:
 
 * the [LGPL](LICENSE.LGPL.txt)
     (except libkdsoap-server, see [LICENSE.AGPL3-modified.txt](LICENSE.AGPL3-modified.txt))
@@ -54,7 +58,8 @@ under the terms of:
 * the KDAB commercial license, provided that you buy a license.
   please contact info@kdab.com if you are interested in buying commercial licenses.
 
-Commercial licensing terms are available in the included file [LICENSE.txt](LICENSE.txt).
+Commercial licensing terms are available in the included files [LICENSE.txt](LICENSE.txt),
+[LICENSE.US.txt](LICENSE.US.txt) and [README-commercial.txt](README-commercial.txt).
 
 About KDAB
 ==========
