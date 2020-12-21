@@ -1,6 +1,6 @@
 project(groupwise_wsdl)
 
 set(WSDL_FILES groupwise.wsdl)
-set(groupwise_wsdl_SRCS  test_groupwise_wsdl.cpp wsdl_groupwise.cpp )
+set(groupwise_wsdl_SRCS test_groupwise_wsdl.cpp wsdl_groupwise.cpp)
 
-add_unittest(${groupwise_wsdl_SRCS} )
+add_unittest(${groupwise_wsdl_SRCS})

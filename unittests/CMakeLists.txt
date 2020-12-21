@@ -74,9 +74,9 @@ add_subdirectory(soap_over_udp)
 add_subdirectory(webcalls)
 add_subdirectory(webcalls_wsdl)
 
-if (BOOST_OPTIONAL_DIR)
-add_subdirectory(optionaltype_boost_optional)
-add_subdirectory(default_attribute_value_wsdl)
+if(BOOST_OPTIONAL_DIR)
+  add_subdirectory(optionaltype_boost_optional)
+  add_subdirectory(default_attribute_value_wsdl)
 endif()
 
 add_subdirectory(test_calc)

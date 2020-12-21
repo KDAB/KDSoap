@@ -27,7 +27,7 @@ if(POLICY CMP0054)
 endif()
 
 if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/kdwsdl2cpp/libkode/common")
-    message(FATAL_ERROR "Please do git submodule update --init --recursive")
+  message(FATAL_ERROR "Please do git submodule update --init --recursive")
 endif()
 
 if("${CMAKE_INSTALL_PREFIX}" STREQUAL "")
@@ -39,11 +39,11 @@ endif()
 project(KDSoap CXX)
 
 if(CMAKE_VERSION VERSION_LESS "3.1")
-    if(CMAKE_COMPILER_IS_GNUCXX)
-        set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-    endif ()
+  if(CMAKE_COMPILER_IS_GNUCXX)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+  endif()
 else()
-    set(CMAKE_CXX_STANDARD 11)
+  set(CMAKE_CXX_STANDARD 11)
 endif()
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/ ${CMAKE_MODULE_PATH}")
@@ -61,10 +61,10 @@ set(${PROJECT_NAME}_SOVERSION ${${PROJECT_NAME}_VERSION_MAJOR})
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 find_path(BOOST_OPTIONAL_DIR NAMES boost/optional.hpp)
-if (BOOST_OPTIONAL_DIR)
-    message(STATUS "Found boost/optional.hpp in ${BOOST_OPTIONAL_DIR}")
-    include_directories(${BOOST_OPTIONAL_DIR})
-    add_definitions(-DBOOST_OPTIONAL_FOUND) # I'd really prefer using configure_file but this is more compatible with qmake
+if(BOOST_OPTIONAL_DIR)
+  message(STATUS "Found boost/optional.hpp in ${BOOST_OPTIONAL_DIR}")
+  include_directories(${BOOST_OPTIONAL_DIR})
+  add_definitions(-DBOOST_OPTIONAL_FOUND) # I'd really prefer using configure_file but this is more compatible with qmake
 endif()
 
 # setup default install locations
@@ -171,7 +171,6 @@ if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
                         LIB_NAME kdsoap-server
                         FILENAME_VAR pri_server_filename)
   install(FILES ${pri_client_filename} ${pri_server_filename} DESTINATION ${ECM_MKSPECS_INSTALL_DIR})
-
 endif()
 
 add_subdirectory(src)
