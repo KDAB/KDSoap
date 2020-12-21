@@ -1,3 +1,14 @@
+system('echo ==================================================================================')
+system('echo The QMake Buildsystem is deprecated and will be removed in the next major release.')
+system('echo Please consider migrating to the CMake Buildsystem at your earliest opportunity.')
+system('echo Instructions can be found in INSTALL-cmake.txt')
+system('echo ==================================================================================')
+system('echo')
+
+equals(QT_MAJOR_VERSION, 5):lessThan(QT_MINOR_VERSION, 7) {
+    error("Qt $$QT_VERSION not supported. Please use Qt 5.7 or higher")
+}
+
 !exists($$PWD/kdwsdl2cpp/libkode/common) {
     error("Please do git submodule update --init --recursive")
 }
