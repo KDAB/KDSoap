@@ -1,6 +1,6 @@
 General:
 ========
-* Qt 5 is now required (min version 5.7)
+* No longer supporting Qt 4 (min version 5.7)
 * CMake >= 3.0.2 is now required
 
 CMake buildsystem:
