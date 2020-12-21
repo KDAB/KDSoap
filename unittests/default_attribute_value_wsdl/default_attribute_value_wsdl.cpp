@@ -24,7 +24,7 @@
 #include "KDSoapValue.h"
 #include "wsdl_default_attribute_value.h"
 
-#include <QtTest>
+#include <QTest>
 
 class DefaultAttributeValueTest : public QObject
 {

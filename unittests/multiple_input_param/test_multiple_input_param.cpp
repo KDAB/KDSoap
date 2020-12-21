@@ -26,7 +26,7 @@
 #include "KDSoapValue.h"
 #include "wsdl_helloworldextended.h"
 #include "httpserver_p.h"
-#include <QtTest>
+#include <QTest>
 #include <QDebug>
 
 using namespace KDSoapUnitTestHelpers;

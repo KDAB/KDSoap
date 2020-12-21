@@ -24,7 +24,7 @@
 #include "KDSoapValue.h"
 #include "wsdl_empty_element.h"
 
-#include <QtTest>
+#include <QTest>
 
 class EmptyElementTest : public QObject
 {

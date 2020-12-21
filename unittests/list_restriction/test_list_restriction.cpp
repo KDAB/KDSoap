@@ -33,7 +33,7 @@
 #include <compiler.h>
 #include "httpserver_p.h"
 
-#include <QtTest>
+#include <QTest>
 
 
 using namespace KDSoapUnitTestHelpers;

@@ -23,7 +23,7 @@
 
 #include "wsdl_empty_list.h"
 
-#include <QtTest>
+#include <QTest>
 
 class EmptyListTest:
   public QObject

@@ -22,7 +22,7 @@
 **********************************************************************/
 
 #include "KDSoapMessageWriter_p.h"
-#include <QtTest>
+#include <QTest>
 
 class FaultNamespace:
   public QObject
