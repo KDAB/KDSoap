@@ -1,16 +1,18 @@
 CHECKSETS qt5,c++,foss
 
+#KDAB-specific checks
+EXTRA kdabcopyright-reuse,kdabcontactus,fosslicense-reuse
+EXCLUDE copyright,license
+
+#additional checks
+EXTRA defines,null
+
+##checks to exclude for now
 #exclude intrusive checks to investigate later
 EXCLUDE constref,dpointer,inline,null,doublequote_chars
 #too many http: references in the unittests
 EXCLUDE insecurenet
 EXCLUDE style
-
-#KDAB-specific checks
-EXTRA kdabcopyright
-
-#additional checks
-EXTRA defines,null
 
 #if you have a build subdir, skip it
 SKIP /build-
@@ -27,6 +29,8 @@ SKIP /testtools/
 SKIP /include/
 #skip generated cmake
 SKIP KDSoapConfig\.cmake\.in
+#skip other cmake
+SKIP FindKDSoap\.cmake|KDSoapMacros\.cmake
 
 #skip the borrowed code in the cmake subdir
 SKIP /cmake/WriteBasicConfigVersionFile.cmake|/cmake/CMakePackageConfigHelpers.cmake|/cmake/InstallLocation.cmake|/cmake/InstallLocation.cmake|/cmake/Qt5Portability.cmake|/cmake/ECMGenerateHeaders.cmake|/cmake/ECMGeneratePriFile.cmake|/cmake/ECMQueryQmake.cmake

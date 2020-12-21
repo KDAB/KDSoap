@@ -1,4 +1,4 @@
-# - Find KDSoap
+#
 # This module finds if KDSoap is installed.
 #
 # KDSoap_FOUND         - Set to TRUE if KDSoap was found.
@@ -6,9 +6,10 @@
 # KDSoap_INCLUDE_DIR   - Path to the KDSoap include directory.
 # KDSoap_CODEGENERATOR - Path to the KDSoap code generator.
 #
-# Copyright (C) 2011-2020 Klaralvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
-
-# Redistribution and use is allowed according to the terms of the BSD license
+# SPDX-FileCopyrightText: 2011-2020 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
 
 include(FindPackageHandleStandardArgs)
 

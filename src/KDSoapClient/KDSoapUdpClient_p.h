@@ -1,19 +1,18 @@
-/*
- * Copyright (C) 2019-2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
+/****************************************************************************
+**
+** This file is part of the KD Soap library.
+**
+** SPDX-FileCopyrightText: 2019-2020 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
+**
+** SPDX-License-Identifier: LGPL-2.1-only OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDAB-KDSoap OR LicenseRef-KDAB-KDSoap-US
+**
+** Licensees holding valid commercial KD Soap licenses may use this file in
+** accordance with the KD Soap Commercial License Agreement provided with
+** the Software.
+**
+** Contact info@kdab.com if any conditions of this licensing are not clear to you.
+**
+****************************************************************************/
 
 #ifndef KDSOAPUDPCLIENT_P_H
 #define KDSOAPUDPCLIENT_P_H

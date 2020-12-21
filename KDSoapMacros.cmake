@@ -1,6 +1,7 @@
-# Copyright (c) 2011-2020 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
-
-# Redistribution and use is allowed according to the terms of the BSD license.
+#
+# SPDX-FileCopyrightText: 2011-2020 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
+#
+# SPDX-License-Identifier: BSD-3-Clause
 
 macro(KDSOAP_GENERATE_WSDL _sources)
   set(KDWSDL2CPP kdwsdl2cpp)
