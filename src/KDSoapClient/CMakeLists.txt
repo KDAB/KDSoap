@@ -1,7 +1,3 @@
-set(QT_USE_QTNETWORK TRUE)
-include(${QT_USE_FILE})
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
 set(SOURCES
   KDSoapMessage.cpp
   KDSoapClientInterface.cpp

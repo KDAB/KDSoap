@@ -1,4 +1,4 @@
-CHECKSETS qt4,c++,foss
+CHECKSETS qt5,c++,foss
 
 #exclude intrusive checks to investigate later
 EXCLUDE constref,dpointer,inline,null,doublequote_chars

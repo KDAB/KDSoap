@@ -2,7 +2,7 @@
 
 # Redistribution and use is allowed according to the terms of the BSD license.
 
-macro( KDSOAP_GENERATE_WSDL _sources )
+macro(KDSOAP_GENERATE_WSDL _sources)
   set(KDWSDL2CPP kdwsdl2cpp)
   if (KDSOAP_KDWSDL2CPP_COMPILER)
     set(KDWSDL2CPP ${KDSOAP_KDWSDL2CPP_COMPILER})
@@ -13,7 +13,7 @@ macro( KDSOAP_GENERATE_WSDL _sources )
   if(KSWSDL2CPP_OPTION)
      set(_KSWSDL2CPP_OPTION ${KSWSDL2CPP_OPTION})
   endif()
-  foreach (_source_FILE ${ARGN})
+  foreach(_source_FILE ${ARGN})
     get_filename_component(_tmp_FILE ${_source_FILE} ABSOLUTE)
     get_filename_component(_basename ${_tmp_FILE} NAME_WE)
     set(_header_wsdl_FILE ${CMAKE_CURRENT_BINARY_DIR}/wsdl_${_basename}.h)
@@ -31,12 +31,7 @@ macro( KDSOAP_GENERATE_WSDL _sources )
        DEPENDS ${_tmp_FILE} ${KDWSDL2CPP} )
 
     set_source_files_properties(${_header_wsdl_FILE} ${_source_wsdl_FILE} PROPERTIES SKIP_AUTOMOC ON)
-
-    if (Qt5Core_FOUND)
-       qt5_wrap_cpp(_sources_MOCS ${_header_wsdl_FILE})
-    else()
-       qt4_wrap_cpp(_sources_MOCS ${_header_wsdl_FILE})
-    endif()
+    qt5_wrap_cpp(_sources_MOCS ${_header_wsdl_FILE})
     list(APPEND ${_sources} ${_header_wsdl_FILE} ${_source_wsdl_FILE} ${_sources_MOCS})
   endforeach ()
 endmacro()

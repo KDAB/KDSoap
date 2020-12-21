@@ -1,9 +1,5 @@
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-set(QT_USE_QTNETWORK TRUE)
-set(QT_USE_QTXML TRUE)
-set(QT_USE_QTTEST TRUE)
-
-include(${QT_USE_FILE})
+find_package(Qt5 ${QT_MIN_VERSION} COMPONENTS Test CONFIG REQUIRED)
+list(APPEND QT_LIBRARIES Qt5::Test)
 
 include_directories(../src/ ../src/KDSoapClient/ ../src/KDSoapServer/ ../testtools/ ../kdwsdl2cpp/ ../kdwsdl2cpp/src/ ../kdwsdl2cpp/libkode/code_generation/ ../kdwsdl2cpp/libkode/ ../kdwsdl2cpp/libkode/schema/ ../kdwsdl2cpp/wsdl/)
 include(../KDSoapMacros.cmake)
@@ -22,7 +18,7 @@ macro(add_unittest _source)
   add_executable(${_name} ${_source} ${_test})
 
   add_test(NAME kdsoap-${_name} COMMAND ${_name})
-  target_link_libraries(${_name} ${QT_QTCORE_LIBRARY} ${QT_LIBRARIES} kdsoap testtools)
+  target_link_libraries(${_name} ${QT_LIBRARIES} kdsoap testtools)
   if(EXTRA_LIBS)
     target_link_libraries(${_name} ${EXTRA_LIBS})
   endif()
@@ -72,9 +68,7 @@ add_subdirectory(ws_addressing_support)
 add_subdirectory(ws_usernametoken_support)
 add_subdirectory(empty_element_wsdl)
 add_subdirectory(ws_discovery_wsdl)
-if (Qt5Core_FOUND)
 add_subdirectory(soap_over_udp)
-endif()
 
 # These need internet access
 add_subdirectory(webcalls)

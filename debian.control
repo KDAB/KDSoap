@@ -2,11 +2,10 @@ Source: kdsoap
 Section: Miscellaneous
 Priority: optional
 Maintainer: Allen Winter <allen.winter@kdab.com>
-Build-Depends: debhelper (>=9), cdbs, cmake, libqt4-dev
 Standards-Version: 3.9.6
 Homepage: https://github.com/KDAB/KDSoap
 
-Package: kdsoap
+Package: qt5-kdsoap
 Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}, ${misc:Depends}
 Description: A Qt-based client-side and server-side SOAP component

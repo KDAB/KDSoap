@@ -1,10 +1,9 @@
-set(QT_USE_QTNETWORK TRUE)
-set(QT_USE_QTXML TRUE)
-include(${QT_USE_FILE})
+find_package(Qt5 ${QT_MIN_VERSION} COMPONENTS Xml CONFIG REQUIRED) #libkode requires Xml
+list(APPEND QT_LIBRARIES Qt5::Xml)
+
 include_directories(libkode)
 
 remove_definitions(-DQT_NO_CAST_TO_ASCII -DQT_NO_CAST_FROM_ASCII -DQT_NO_CAST_FROM_BYTEARRAY)
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(SOURCES_LIB
   libkode/common/fileprovider.cpp
@@ -66,11 +65,9 @@ set(SOURCES_LIB
   src/typemap.cpp
 )
 
-qt4_add_resources(SOURCES_LIB schemas/schemas.qrc)
-
 set(SOURCES_EXE src/main.cpp)
 
-add_library(kdwsdl2cpp_lib STATIC ${SOURCES_LIB})
+add_library(kdwsdl2cpp_lib STATIC ${SOURCES_LIB} schemas/schemas.qrc)
 target_link_libraries(kdwsdl2cpp_lib ${QT_LIBRARIES})
 
 add_executable(kdwsdl2cpp ${SOURCES_EXE})

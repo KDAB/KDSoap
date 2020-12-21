@@ -70,18 +70,15 @@ endif()
 # setup default install locations
 include(InstallLocation)
 
-find_package(Qt5 5.7.0 COMPONENTS Core Network Widgets CONFIG REQUIRED)
-set(QT_LIBRARIES Qt5::Core)
-set(QT_USE_FILE "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Qt5Portability.cmake")
-
-if(Qt5_POSITION_INDEPENDENT_CODE)
-  if(Qt5Core_VERSION VERSION_LESS 5.1)
-    set_property(TARGET Qt5::Core PROPERTY INTERFACE_POSITION_INDEPENDENT_CODE ON)
-  endif()
-endif()
+set(QT_MIN_VERSION "5.7.0")
+find_package(Qt5 ${QT_MIN_VERSION} COMPONENTS Core Network CONFIG REQUIRED)
+list(APPEND QT_LIBRARIES Qt5::Core Qt5::Network)
 
 set(CMAKE_INCLUDE_CURRENT_DIR TRUE)
 set(CMAKE_AUTOMOC TRUE)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED 11)
 
 add_definitions(-DQT_NO_CAST_TO_ASCII -DQT_NO_CAST_FROM_ASCII -DQT_NO_CAST_FROM_BYTEARRAY)
 add_definitions(-DUSE_EXCEPTIONS -DQT_FATAL_ASSERT)
