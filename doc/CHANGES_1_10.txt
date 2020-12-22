@@ -1,7 +1,11 @@
 General:
 ========
-* No longer supporting Qt 4 (min version 5.7)
-* CMake >= 3.0.2 is now required
+* No longer supporting Qt 4
+* Minimum Qt version is 5.7
+* Minimum CMake version is 3.0.2
+* qmake buildsystem -- no longer prompt for license choice.
+   users should carefully consider their choice of license
+* The qmake buildsystem is deprecated
 
 CMake buildsystem:
 ==================
