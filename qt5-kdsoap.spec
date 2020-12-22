@@ -71,13 +71,24 @@ cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_SKIP_RPATH=True -DCMAKE_BUILD_TYPE=R
 %files devel
 %defattr(-,root,root)
 %{_bindir}/kdwsdl2cpp
-%{_prefix}/share/mkspecs
 %{_includedir}/KDSoapClient
 %{_includedir}/KDSoapServer
 %dir %{_libdir}/cmake/KDSoap
 %{_libdir}/cmake/KDSoap/*
 %{_libdir}/libkdsoap.so
 %{_libdir}/libkdsoap-server.so
+%{_prefix}/share/mkspecs/
+%if %{defined fedora}
+%if 0%{?fedora} > 28
+%{_libdir}/qt5/mkspecs/modules/*
+%else
+%dir %{_prefix}/mkspecs/
+%dir %{_prefix}/mkspecs/modules/
+%{_prefix}/mkspecs/modules/*.pri
+%endif
+%else
+%{_libdir}/qt5/mkspecs/modules/*
+%endif
 
 %changelog
 * Tue Dec 22 2020 Allen Winter <allen.winter@kdab.com> 1.10.0
