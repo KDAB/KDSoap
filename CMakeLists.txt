@@ -61,8 +61,6 @@ else()
   set(CMAKE_CXX_STANDARD 11)
 endif()
 
-set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/ ${CMAKE_MODULE_PATH}")
-
 option(${PROJECT_NAME}_STATIC "Build statically" OFF)
 option(${PROJECT_NAME}_TESTS "Build the tests" OFF)
 option(${PROJECT_NAME}_EXAMPLES "Build the examples" ON)
@@ -75,15 +73,15 @@ set(${PROJECT_NAME}_SOVERSION ${${PROJECT_NAME}_VERSION_MAJOR})
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
+# setup default install locations
+include(InstallLocation)
+
 find_path(BOOST_OPTIONAL_DIR NAMES boost/optional.hpp)
 if(BOOST_OPTIONAL_DIR)
   message(STATUS "Found boost/optional.hpp in ${BOOST_OPTIONAL_DIR}")
   include_directories(${BOOST_OPTIONAL_DIR})
   add_definitions(-DBOOST_OPTIONAL_FOUND) # I'd really prefer using configure_file but this is more compatible with qmake
 endif()
-
-# setup default install locations
-include(InstallLocation)
 
 set(QT_MIN_VERSION "5.7.0")
 find_package(Qt5 ${QT_MIN_VERSION} COMPONENTS Core Network CONFIG REQUIRED)
@@ -92,8 +90,6 @@ list(APPEND QT_LIBRARIES Qt5::Core Qt5::Network)
 set(CMAKE_INCLUDE_CURRENT_DIR TRUE)
 set(CMAKE_AUTOMOC TRUE)
 set(CMAKE_AUTORCC ON)
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED 11)
 
 add_definitions(-DQT_NO_CAST_TO_ASCII -DQT_NO_CAST_FROM_ASCII -DQT_NO_CAST_FROM_BYTEARRAY)
 add_definitions(-DUSE_EXCEPTIONS -DQT_FATAL_ASSERT)
