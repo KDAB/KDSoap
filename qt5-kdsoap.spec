@@ -1,12 +1,12 @@
 Name:           qt5-kdsoap
-Version:        1.9.1
+Version:        1.10.0
 Release:        1
 Summary:        A Qt5-based client-side and server-side SOAP component
 Source0:        %{name}-%{version}.tar.gz
 Source1:        %{name}-%{version}.tar.gz.asc
 Url:            https://github.com/KDAB/KDSoap
 Group:          System/Libraries
-License:        LGPL-2.1-only AND (GPL-2.0-only OR GPL-3.0-only)
+License:        LGPL-2.1-only OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 Vendor:         Klaralvdalens Datakonsult AB (KDAB)
 Packager:       Klaralvdalens Datakonsult AB (KDAB) <info@kdab.com>
@@ -80,6 +80,8 @@ cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_SKIP_RPATH=True -DCMAKE_BUILD_TYPE=R
 %{_libdir}/libkdsoap-server.so
 
 %changelog
+* Tue Dec 22 2020 Allen Winter <allen.winter@kdab.com> 1.10.0
+  1.10.0
 * Wed Sep 30 2020 Allen Winter <allen.winter@kdab.com> 1.9.1
   1.9.1
 * Mon Feb 17 2020 Allen Winter <allen.winter@kdab.com> 1.9.0
