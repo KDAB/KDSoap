@@ -19,9 +19,9 @@ Licensing
 Copyright (C) 2010-2020 Klarälvdalens Datakonsult AB, a KDAB Group company, <info@kdab.com>
 
 Commercial licensing terms are available in the included file
-        LICENSE.txt (for non-US customers)
+        LICENSES/LicenseRef-KDAB-KDSoap.txt (for non-US customers)
 or
-        LICENSE.US.txt (for US customers)
+        LICENSES/LicenseRef-KDAB-KDSoap-US.txt (for US customers)
 , respectively.
 
 For terms of redistribution, refer to the license agreement.

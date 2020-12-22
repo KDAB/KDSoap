@@ -129,13 +129,14 @@ test.depends = first
 QMAKE_EXTRA_TARGETS += test
 
 INSTALL_DOC_DIR = $$INSTALL_PREFIX/share/doc/KDSoap
+
 # install licenses:
-licenses.files = LICENSE.GPL.txt LICENSE.US.txt LICENSE.txt
-licenses.path = $$INSTALL_DOC_DIR
+licenses.files = LICENSES/*
+licenses.path = $$INSTALL_DOC_DIR/LICENSES
 INSTALLS += licenses
 
 # install readme:
-readme.files = README.txt
+readme.files = README.txt README-commercial.txt
 readme.path = $$INSTALL_DOC_DIR
 INSTALLS += readme
 

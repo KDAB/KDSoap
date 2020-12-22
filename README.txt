@@ -52,15 +52,18 @@ License
 The KD Soap Software is Copyright (C) 2010-2020, Klaralvdalens Datakonsult AB,
 and is available under the terms of:
 
-* the [LGPL](LICENSE.LGPL.txt)
-    (except libkdsoap-server, see [LICENSE.AGPL3-modified.txt](LICENSE.AGPL3-modified.txt))
-* the [GPL](LICENSE.GPL.txt)
-    (except libkdsoap-server, see [LICENSE.AGPL3-modified.txt](LICENSE.AGPL3-modified.txt))
+* [LGPL-2.1](LICENSES/LGPL-2.1-only.txt) or [LGPL-3.0](LICENSES/LGPL-3.0-only.txt)
+    (except libkdsoap-server, see [LicenseRef-KDAB-KDSoap-AGPL3-Modified.txt](LICENSES/LicenseRef-KDAB-KDSoap-AGPL3-Modified.txt))
+* [GPL-2.0](LICENSES/GPL-2.0-only.txt) or [GPL-3.0](LICENSES/GPL-3.0-only.txt)
+    (except libkdsoap-server, see [LicenseRef-KDAB-KDSoap-AGPL3-Modified.txt](LICENSES/LicenseRef-KDAB-KDSoap-AGPL3-Modified.txt))
 * the KDAB commercial license, provided that you buy a license.
   please contact info@kdab.com if you are interested in buying commercial licenses.
 
-Commercial licensing terms are available in the included files [LICENSE.txt](LICENSE.txt),
-[LICENSE.US.txt](LICENSE.US.txt) and [README-commercial.txt](README-commercial.txt).
+Commercial licensing terms are available in
+[LicenseRef-KDAB-KDSoap.txt](LICENSES/LicenseRef-KDAB-KDSoap.txt),
+[LicenseRef-KDAB-KDSoap-US.txt](LICENSES/LicenseRef-KDAB-KDSoap-US.txt).
+
+See [README-commercial.txt](README-commercial.txt) for more details.
 
 About KDAB
 ==========
