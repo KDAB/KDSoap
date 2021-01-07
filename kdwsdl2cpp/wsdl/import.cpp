@@ -66,7 +66,7 @@ void Import::loadXML(ParserContext *context, const QDomElement &element)
         context->messageHandler()->warning(QLatin1String("Import: 'namespace' required"));
     }
 
-    mLocation = element.attribute(QLatin1String("schemaLocation"));
+    mLocation = QUrl(element.attribute(QLatin1String("schemaLocation")));
     if (!mLocation.isValid()) {
         context->messageHandler()->warning(QLatin1String("Import: 'schemaLocation' required"));
     }

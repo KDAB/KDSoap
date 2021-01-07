@@ -891,7 +891,7 @@ private Q_SLOTS:
         url.chop(1) /*trailing slash*/;
         url += pathInUrl;
         QNetworkAccessManager manager;
-        QNetworkRequest request(url);
+        QNetworkRequest request(QUrl{url});
         QNetworkReply *reply = manager.get(request);
         QEventLoop loop;
         connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
@@ -948,7 +948,7 @@ private Q_SLOTS:
         url += pathInUrl;
 
         QNetworkAccessManager manager;
-        QNetworkRequest request(url);
+        QNetworkRequest request(QUrl{url});
         QNetworkReply *reply = manager.get(request);
         QEventLoop loop;
         connect(&download_timeout, SIGNAL(timeout()), &loop, SLOT(quit()));
@@ -1014,7 +1014,7 @@ private Q_SLOTS:
         QNetworkAccessManager manager;
         connect(&manager, SIGNAL(authenticationRequired(QNetworkReply*,QAuthenticator*)),
                 this, SLOT(slotAuthRequired(QNetworkReply*,QAuthenticator*)));
-        QNetworkRequest request(url);
+        QNetworkRequest request(QUrl{url});
         QNetworkReply *reply = manager.get(request);
         QEventLoop loop;
         connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
@@ -1066,7 +1066,7 @@ private Q_SLOTS:
         QNetworkAccessManager manager;
         connect(&manager, SIGNAL(authenticationRequired(QNetworkReply*,QAuthenticator*)),
                 this, SLOT(slotAuthRequired(QNetworkReply*,QAuthenticator*)));
-        QNetworkRequest request(url);
+        QNetworkRequest request(QUrl{url});
         QNetworkReply *reply;
         reply = manager.sendCustomRequest(request, customHttpVerb);
         QEventLoop loop;

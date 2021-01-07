@@ -738,7 +738,7 @@ SoapBinding::Operation::Map SoapBinding::operations() const
 
 void SoapBinding::Address::loadXML(ParserContext *context, const QDomElement &element)
 {
-    mLocation = element.attribute(QLatin1String("location"));
+    mLocation = QUrl(element.attribute(QLatin1String("location")));
     if (!mLocation.isValid()) {
         context->messageHandler()->warning(QLatin1String("SoapBinding::Address: 'location' required"));
     }

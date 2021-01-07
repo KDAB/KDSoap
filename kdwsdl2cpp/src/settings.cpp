@@ -19,7 +19,6 @@
 
 #define QT_NO_CAST_TO_ASCII
 #define QT_NO_CAST_FROM_ASCII
-#define QT_NO_URL_CAST_FROM_STRING
 
 #include <QDir>
 #include <QDomDocument>

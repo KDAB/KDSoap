@@ -85,7 +85,7 @@ public:
 
     inline void finish()
     {
-        KDSoapUnitTestHelpers::httpGet(endPoint() + QLatin1String("/terminateThread"));
+        KDSoapUnitTestHelpers::httpGet(QUrl(endPoint() + QLatin1String("/terminateThread")));
     }
 
     QByteArray receivedData() const
