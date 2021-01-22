@@ -11,6 +11,7 @@ CMake buildsystem:
 ==================
 * Generates .pri files for qmake users
 * Installs library pdb files with MSVC builds
+* fix library versioning for RelWithDebInfo on Windows (Version 1.10.1)
 
 WSDL parser / code generator changes, applying to both client and server side:
 ================================================================
