@@ -1,9 +1,14 @@
+kdsoap (1.10.0) final; urgency=low
+
+  * 1.10.0 final release
+
+ -- Allen Winter <allen.winter@kdab.com>  Tue, 22 Dec 2020 10:30:00 -0500
+
 kdsoap (1.9.1) final; urgency=low
 
   * 1.9.1 final release
 
  -- Allen Winter <allen.winter@kdab.com>  Wed, 30 Sep 2020 15:30:00 -0500
-
 
 kdsoap (1.9.0) final; urgency=low
 

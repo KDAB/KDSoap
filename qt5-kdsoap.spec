@@ -1,12 +1,12 @@
 Name:           qt5-kdsoap
-Version:        1.9.1
+Version:        1.10.0
 Release:        1
 Summary:        A Qt5-based client-side and server-side SOAP component
 Source0:        %{name}-%{version}.tar.gz
 Source1:        %{name}-%{version}.tar.gz.asc
 Url:            https://github.com/KDAB/KDSoap
 Group:          System/Libraries
-License:        LGPL-2.1-only AND (GPL-2.0-only OR GPL-3.0-only)
+License:        LGPL-2.1-only OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 Vendor:         Klaralvdalens Datakonsult AB (KDAB)
 Packager:       Klaralvdalens Datakonsult AB (KDAB) <info@kdab.com>
@@ -71,15 +71,28 @@ cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_SKIP_RPATH=True -DCMAKE_BUILD_TYPE=R
 %files devel
 %defattr(-,root,root)
 %{_bindir}/kdwsdl2cpp
-%{_prefix}/share/mkspecs
 %{_includedir}/KDSoapClient
 %{_includedir}/KDSoapServer
 %dir %{_libdir}/cmake/KDSoap
 %{_libdir}/cmake/KDSoap/*
 %{_libdir}/libkdsoap.so
 %{_libdir}/libkdsoap-server.so
+%{_prefix}/share/mkspecs/
+%if %{defined fedora}
+%if 0%{?fedora} > 28
+%{_libdir}/qt5/mkspecs/modules/*
+%else
+%dir %{_prefix}/mkspecs/
+%dir %{_prefix}/mkspecs/modules/
+%{_prefix}/mkspecs/modules/*.pri
+%endif
+%else
+%{_libdir}/qt5/mkspecs/modules/*
+%endif
 
 %changelog
+* Tue Dec 22 2020 Allen Winter <allen.winter@kdab.com> 1.10.0
+  1.10.0
 * Wed Sep 30 2020 Allen Winter <allen.winter@kdab.com> 1.9.1
   1.9.1
 * Mon Feb 17 2020 Allen Winter <allen.winter@kdab.com> 1.9.0
