@@ -41,7 +41,7 @@ private Q_SLOTS:
             sforce.logout();
 
             // Test for the describeLayout-anonymous-complex-type vs DescribeLayout-complex-type conflict
-            TNS__DescribeLayoutElement describeParams;
+            TNS__DescribeLayoutType describeParams;
             (void)describeParams.sObjectType();
             TNS__DescribeLayoutResponse describeResponse;
             (void)describeResponse.result().layouts().first().id();
