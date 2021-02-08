@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://www.example.org/test/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="test" targetNamespace="http://www.example.org/test/" xmlns:ns1="urn:fr:agri:elevage:codelist:CategorieBovinIPG:1">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://www.example.org/test/">
+        <xsd:import namespace="urn:fr:agri:elevage:codelist:CategorieBovinIPG:1" schemaLocation="CategorieBovinIPG.XSD"/>
+      <xsd:element name="TestOperation">
+        <xsd:complexType>
+          <xsd:sequence>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="TestOperationResponse">
+          <xsd:simpleType>
+              <xsd:restriction base="ns1:CategorieBovinIPGType">
+                  <xsd:length value="2" fixed="true"/>
+              </xsd:restriction>
+          </xsd:simpleType>
+      </xsd:element>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="TestOperationRequest">
+  	<wsdl:part element="tns:TestOperation" name="parameters" />
+  </wsdl:message>
+  <wsdl:message name="TestOperationResponse">
+  	<wsdl:part name="parameters" element="tns:TestOperationResponse"></wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="test">
+        <wsdl:operation name="TestOperation">
+        	<wsdl:input message="tns:TestOperationRequest"></wsdl:input>
+        	<wsdl:output message="tns:TestOperationResponse"></wsdl:output>
+        </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="testSOAP" type="tns:test">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="TestOperation">
+      <soap:operation soapAction="http://www.example.org/test/TestOperation"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="test">
+    <wsdl:port binding="tns:testSOAP" name="testSOAP">
+      <soap:address location="http://www.example.org/"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
