@@ -1,0 +1,9 @@
+General:
+========
+
+CMake buildsystem:
+==================
+
+WSDL parser / code generator changes, applying to both client and server side:
+================================================================
+* Fix generated code for an enumeration type with a length restriction (#234)

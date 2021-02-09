@@ -300,14 +300,17 @@ void Converter::createSimpleTypeSerializer(KODE::Class &newClass, const XSD::Sim
 
             const QString variableName = KODE::MemberVariable::memberVariableName("type");
 
+            // Generate a stringValue() function, also useful to implement restrictions on the string representation (issue 234)
             {
+                KODE::Function stringValueFunc(QLatin1String("stringValue"), QLatin1String("QString"));
+                stringValueFunc.setConst(true);
                 KODE::Code code;
-                code += "switch ( " + variableName + " ) {";
+                code += "switch ( " + variableName + " ) {" + COMMENT;
                 code.indent();
                 for (int i = 0; i < enums.count(); ++i) {
                     code += "case " + typeName + "::" + escapedEnums[ i ] + ':';
                     code.indent();
-                    code += "return KDSoapValue(valueName, \"" + enums[i] + "\", " + namespaceString(type->nameSpace()) + ", QString::fromLatin1(\"" + type->name() + "\"));";
+                    code += "return QStringLiteral(\"" + enums[i] + "\");";
                     code.unindent();
                     /* add a hack for msvc because that one cannot parse switch statements
                        longer than a certain length, so start a new switch statement */
@@ -328,8 +331,15 @@ void Converter::createSimpleTypeSerializer(KODE::Class &newClass, const XSD::Sim
                 code.unindent();
                 code.unindent();
                 code += '}';
-                code.newLine();
-                code += "return KDSoapValue();";
+                code += "return QString();";
+                stringValueFunc.setBody(code);
+                newClass.addFunction(stringValueFunc);
+            }
+
+            {
+                KODE::Code code;
+                code += COMMENT;
+                code += "return KDSoapValue(valueName, stringValue(), " + namespaceString(type->nameSpace()) + ", QString::fromLatin1(\"" + type->name() + "\"));";
                 serializeFunc.setBody(code);
             }
             {
@@ -377,7 +387,6 @@ void Converter::createSimpleTypeSerializer(KODE::Class &newClass, const XSD::Sim
                 serializeFunc.addBodyLine("return value;" + COMMENT);
                 deserializeFunc.addBodyLine(variableName + ".deserialize( mainValue );" + COMMENT);
             }
-
         }
         break;
     case XSD::SimpleType::TypeList: {
@@ -473,7 +482,9 @@ static KODE::Code createRangeCheckCode(const XSD::SimpleType *type, const QStrin
     QString extendedVariableName = variableName;
 
     if (!baseSimpleType.isNull()) {
-        if (baseSimpleType.subType() == XSD::SimpleType::SubType::TypeList) {
+        if (baseSimpleType.subType() == XSD::SimpleType::SubType::TypeRestriction) {
+            extendedVariableName += ".stringValue()";
+        } else if (baseSimpleType.subType() == XSD::SimpleType::SubType::TypeList) {
             extendedVariableName += ".entries()";
         } else {
             extendedVariableName += ".value()";
@@ -481,7 +492,7 @@ static KODE::Code createRangeCheckCode(const XSD::SimpleType *type, const QStrin
     }
 
     KODE::Code code;
-    code += "bool rangeOk = true;";
+    code += "bool rangeOk = true;" + COMMENT;
     code.newLine();
 
     // TODO range-check code for facetWhiteSpace, facetTotalDigits, facetFractionDigits

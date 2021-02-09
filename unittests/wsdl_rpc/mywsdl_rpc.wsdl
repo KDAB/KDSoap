@@ -33,8 +33,13 @@
       <simpleType name="EmployeeTypeEnumList">
         <list itemType="kdab:EmployeeTypeEnum"/> <!-- space-separated list of enum values -->
       </simpleType>
-      <simpleType name="LottoNumbers">
+      <simpleType name="Numbers">
         <list itemType="xsd:int"/> <!-- space-separated list of ints -->
+      </simpleType>
+      <simpleType name="LottoNumbers">
+        <restriction base="kdab:Numbers">
+           <xsd:length value="10"/>
+        </restriction>
       </simpleType>
       <element name="EmployeeType">
         <complexType>

@@ -10,12 +10,31 @@
         </xsd:complexType>
       </xsd:element>
       <xsd:element name="TestOperationResponse">
-          <xsd:simpleType>
-              <xsd:restriction base="ns1:CategorieBovinIPGType">
-                  <xsd:length value="2" fixed="true"/>
-              </xsd:restriction>
-          </xsd:simpleType>
+          <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="category" type="tns:CategorieBovin"/>
+                <xsd:element name="string" type="tns:LimitedString"/>
+                <xsd:element name="URI" type="tns:LimitedURI"/>
+            </xsd:sequence>
+          </xsd:complexType>
       </xsd:element>
+      <xsd:simpleType name="CategorieBovin">
+        <xsd:restriction base="ns1:CategorieBovinIPGType">
+          <xsd:length value="2" fixed="true"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="LimitedString">
+          <xsd:restriction base="xsd:string">
+              <xsd:length value="3"/>
+          </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="LimitedURI">
+        <xsd:restriction base="xsd:anyURI">
+          <xsd:minLength value="15"/>
+          <xsd:maxlength value="255"/>"
+        </xsd:restriction>
+      </xsd:simpleType>
+
     </xsd:schema>
   </wsdl:types>
   <wsdl:message name="TestOperationRequest">

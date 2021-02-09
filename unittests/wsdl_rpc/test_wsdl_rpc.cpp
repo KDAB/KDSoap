@@ -61,7 +61,9 @@ private Q_SLOTS:
         KDAB__EmployeeTypeEnumList otherRoles;
         otherRoles.setEntries(QList<KDAB__EmployeeTypeEnum>() << KDAB__EmployeeTypeEnum::TeamLeader << KDAB__EmployeeTypeEnum::Developer);
         employeeType.setOtherRolesAsList(otherRoles);
-        KDAB__LottoNumbers lottoNumbers;
+        KDAB__Numbers lottoNumbers;
+        // Ensure that the range-checking code works
+        QTest::ignoreMessage(QtDebugMsg, "Invalid range in KDAB__LottoNumbers::setValue()");
         lottoNumbers.setEntries(QList<int>() << 7 << 21 << 30 << 42);
         employeeType.setLottoNumbers(lottoNumbers);
         employeeType.setTeam(QList<KDAB__TeamName>() << QString::fromLatin1("Minitel"));
@@ -170,7 +172,7 @@ private Q_SLOTS:
         QCOMPARE(employeeType.type().type(), KDAB__EmployeeTypeEnum::Developer);
         QCOMPARE(employeeType.otherRoles(), QList<KDAB__EmployeeTypeEnum>() << KDAB__EmployeeTypeEnum::TeamLeader);
         QCOMPARE(employeeType.otherRolesAsList().entries(), QList<KDAB__EmployeeTypeEnum>() << KDAB__EmployeeTypeEnum::TeamLeader << KDAB__EmployeeTypeEnum::Developer);
-        QCOMPARE(employeeType.lottoNumbers().entries(), QList<int>() << 7 << 21 << 30 << 42);
+        QCOMPARE(KDAB__Numbers(employeeType.lottoNumbers()).entries(), QList<int>() << 7 << 21 << 30 << 42);
         QCOMPARE(employee.employeeName().value().value(), QString::fromLatin1("David Faure"));
         QCOMPARE(employee.employeeCountry().value(), QString::fromLatin1("France"));
         QCOMPARE(employee.employeeJeansSize().value().toInt(), 24);

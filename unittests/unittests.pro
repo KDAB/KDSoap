@@ -58,7 +58,6 @@ SUBDIRS = \
   test_calc \
   ws_addressing_support \
   ws_usernametoken_support \
-  list_restriction \
   QSharedPointer_include
 
 greaterThan(QT_MAJOR_VERSION, 4): SUBDIRS += soap_over_udp

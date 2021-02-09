@@ -51,7 +51,7 @@ private Q_SLOTS:
     void testStringBaseType()
     {
         TYPES__ContainerRef cref(QString::fromLatin1("str"));
-        cref.setDeleted(QDateTime(QDate(2010, 12, 31))); // implicit conversion from QDateTime to KDDateTime
+        cref.setDeleted(QDateTime(QDate(2010, 12, 31), QTime(1, 2, 3))); // implicit conversion from QDateTime to KDDateTime
         const KDSoapValue v = cref.serialize(QLatin1String("container"));
 
         //qDebug() << v.toXml();
