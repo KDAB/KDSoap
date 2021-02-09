@@ -38,6 +38,9 @@ endif()
 if(POLICY CMP0054)
   cmake_policy(SET CMP0054 NEW)
 endif()
+if(POLICY CMP0063)
+    cmake_policy(SET CMP0063 NEW) # silence warning due to CMAKE_CXX_VISIBILITY_PRESET
+endif()
 
 if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/kdwsdl2cpp/libkode/common")
   message(FATAL_ERROR "Please do git submodule update --init --recursive")
@@ -90,6 +93,11 @@ list(APPEND QT_LIBRARIES Qt5::Core Qt5::Network)
 set(CMAKE_INCLUDE_CURRENT_DIR TRUE)
 set(CMAKE_AUTOMOC TRUE)
 set(CMAKE_AUTORCC ON)
+
+# Default to hidden visibility for symbols
+set(CMAKE_C_VISIBILITY_PRESET hidden)
+set(CMAKE_CXX_VISIBILITY_PRESET hidden)
+set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 
 add_definitions(-DQT_NO_CAST_TO_ASCII -DQT_NO_CAST_FROM_ASCII -DQT_NO_CAST_FROM_BYTEARRAY -DQURL_NO_CAST_FROM_STRING)
 add_definitions(-DUSE_EXCEPTIONS -DQT_FATAL_ASSERT)
