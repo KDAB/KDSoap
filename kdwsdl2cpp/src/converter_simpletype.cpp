@@ -482,7 +482,7 @@ static KODE::Code createRangeCheckCode(const XSD::SimpleType *type, const QStrin
     QString extendedVariableName = variableName;
 
     if (!baseSimpleType.isNull()) {
-        if (baseSimpleType.subType() == XSD::SimpleType::SubType::TypeRestriction) {
+        if (baseSimpleType.subType() == XSD::SimpleType::SubType::TypeRestriction && (baseSimpleType.facetType() & XSD::SimpleType::ENUM)) {
             extendedVariableName += ".stringValue()";
         } else if (baseSimpleType.subType() == XSD::SimpleType::SubType::TypeList) {
             extendedVariableName += ".entries()";
