@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://www.example.org/test/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="test" targetNamespace="http://www.example.org/test/" xmlns:ns1="urn:fr:agri:elevage:codelist:CategorieBovinIPG:1">
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://www.example.org/test/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="test" targetNamespace="http://www.example.org/test/" xmlns:ns1="urn:fr:agri:elevage:codelist:CategorieBovinIPG:1" xmlns:ns2="urn:fr:agri:elevage:codelist:AtelierBovinIPG:1">
   <wsdl:types>
     <xsd:schema targetNamespace="http://www.example.org/test/">
         <xsd:import namespace="urn:fr:agri:elevage:codelist:CategorieBovinIPG:1" schemaLocation="CategorieBovinIPG.XSD"/>
+        <xsd:import namespace="urn:fr:agri:elevage:codelist:AtelierBovinIPG:1" schemaLocation="AtelierBovinIPG.XSD"/>
       <xsd:element name="TestOperation">
         <xsd:complexType>
           <xsd:sequence>
@@ -13,6 +14,7 @@
           <xsd:complexType>
             <xsd:sequence>
                 <xsd:element name="category" type="tns:CategorieBovin"/>
+                <xsd:element name="atelier" type="tns:AtelierBovin"/>
                 <xsd:element name="string" type="tns:LimitedString"/>
                 <xsd:element name="URI" type="tns:LimitedURI"/>
             </xsd:sequence>
@@ -20,6 +22,11 @@
       </xsd:element>
       <xsd:simpleType name="CategorieBovin">
         <xsd:restriction base="ns1:CategorieBovinIPGType">
+          <xsd:length value="2" fixed="true"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="AtelierBovin">
+        <xsd:restriction base="ns2:AtelierBovinIPGType">
           <xsd:length value="2" fixed="true"/>
         </xsd:restriction>
       </xsd:simpleType>
