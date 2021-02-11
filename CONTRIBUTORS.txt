@@ -1,0 +1,7 @@
+Casper Meijn <casper@meijn.net>
+Matt Broadstone <mbroadst@gmail.com>
+Raphaël Cotty <raphael.cotty@gmail.com>
+Rok Mandeljc <rok.mandeljc@gmail.com>
+Ryan van der Bijl <ryan@enzosystems.com>
+Miklós Márton <martonmiklosqdev@gmail.com>
+Research & Engineering Center of St. Petersburg Electro-Technical University <info@nicetu.spb.ru>

@@ -47,6 +47,8 @@ Contact info@kdab.com for more information about the Copyright Assignment Agreem
 Please submit your contributions or issue reports from our GitHub space at
 https://github.com/KDAB/KDSoap
 
+Thanks to our [contributors](CONTRIBUTORS.txt).
+
 License
 =======
 The KD Soap Software is Copyright (C) 2010-2021, Klaralvdalens Datakonsult AB,
