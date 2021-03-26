@@ -314,7 +314,10 @@ QString Converter::generateMemberVariable(const QString &rawName, const QString 
     }
     newClass.addMemberVariable(variable);
 
+    KODE::MemberVariable nilVariable(rawName + "_nil", "bool");
+
     const QString variableName = QLatin1String("d_ptr->") + variable.name();
+    const QString nilVariableName = QLatin1String("d_ptr->") + nilVariable.name();
     const QString upperName = upperlize(rawName);
     const QString lowerName = lowerlize(rawName);
     const QString memberName = mNameMapper.escape(lowerName);
@@ -330,7 +333,6 @@ QString Converter::generateMemberVariable(const QString &rawName, const QString 
         getterSoapValue.setConst(true);
         newClass.addFunction(getterSoapValue);
     } else if (optional || prohibited) {
-        KODE::MemberVariable nilVariable(rawName + "_nil", "bool");
         nilVariable.setInitializer("true");
         newClass.addMemberVariable(nilVariable);
     }
@@ -349,7 +351,7 @@ QString Converter::generateMemberVariable(const QString &rawName, const QString 
         }
     } else {
         if (optional) {
-            code += variableName + "_nil = false;" + COMMENT;
+            code += nilVariableName + " = false;" + COMMENT;
         }
         code += variableName + QLatin1String(" = ") + argName + QLatin1Char(';');
     }
@@ -400,7 +402,7 @@ QString Converter::generateMemberVariable(const QString &rawName, const QString 
     } else if (optional) {
         if (Settings::self()->optionalElementType() == Settings::ERawPointer) {
             KODE::Code getterCode;
-            getterCode += QLatin1String("if (!") + variableName + QLatin1String("_nil)");
+            getterCode += QLatin1String("if (!") + nilVariableName + QLatin1Char(')');
             getterCode.indent();
             if (defaultValue.isNull()) {
                 getterCode += QLatin1String("return &") + variableName + QLatin1Char(';');
@@ -420,7 +422,7 @@ QString Converter::generateMemberVariable(const QString &rawName, const QString 
             getter.setDocs("Ownership is not transferred, clients shall not delete the pointer.");
         } else if (Settings::self()->optionalElementType() == Settings::EBoostOptional) {
             KODE::Code getterCode;
-            getterCode += QLatin1String("if (!") + variableName + QLatin1String("_nil)");
+            getterCode += QLatin1String("if (!") + nilVariableName + QLatin1Char(')');
             getterCode.indent();
             getterCode += QLatin1String("return ") + variableName + QLatin1Char(';');
             getterCode.unindent();
@@ -437,7 +439,7 @@ QString Converter::generateMemberVariable(const QString &rawName, const QString 
             getter.setBody(getterCode);
         } else if (Settings::self()->optionalElementType() == Settings::EStdOptional) {
             KODE::Code getterCode;
-            getterCode += QLatin1String("if (!") + variableName + QLatin1String("_nil)");
+            getterCode += QLatin1String("if (!") + nilVariableName + QLatin1Char(')');
             getterCode.indent();
             getterCode += QLatin1String("return ") + variableName + QLatin1Char(';');
             getterCode.unindent();
@@ -461,7 +463,7 @@ QString Converter::generateMemberVariable(const QString &rawName, const QString 
         if (usePointer) {
             checkerCode += QLatin1String("return ") + variableName + QLatin1String(".isNull() == false;");
         } else {
-            checkerCode += QLatin1String("return ") + variableName + QLatin1String("_nil == false;");
+            checkerCode += QLatin1String("return ") + nilVariableName + QLatin1String(" == false;");
         }
 
         KODE::Function checker(QLatin1String("hasValueFor") + upperName, QLatin1String("bool"), access);
@@ -487,68 +489,69 @@ static KODE::Code demarshalNameTest(const QName &type, const QString &tagName, b
 }
 
 // Low-level helper for demarshalVar, doesn't handle the polymorphic case (so it can be called for lists of polymorphics)
-KODE::Code Converter::demarshalVarHelper(const QName &type, const QName &elementType, const QString &variableName, const QString &qtTypeName, const QString &soapValueVarName, bool optional) const
+KODE::Code Converter::demarshalVarHelper(const VariableInfo &varInfo, const QString &soapValueVarName, bool optional) const
 {
     KODE::Code code;
-    if (mTypeMap.isTypeAny(type)) {
-        code += variableName + QLatin1String(" = ") + soapValueVarName + QLatin1String(";") + COMMENT;
-    } else if (mTypeMap.isBuiltinType(type, elementType)) {
-        code += variableName + QLatin1String(" = ") + mTypeMap.deserializeBuiltin(type, elementType, soapValueVarName, qtTypeName) + QLatin1String(";") + COMMENT;
-    } else if (mTypeMap.isComplexType(type, elementType)) {
-        code += variableName + QLatin1String(".deserialize(") + soapValueVarName + QLatin1String(");") + COMMENT;
+    if (mTypeMap.isTypeAny(varInfo.type)) {
+        code += varInfo.variableName + QLatin1String(" = ") + soapValueVarName + QLatin1String(";") + COMMENT;
+    } else if (mTypeMap.isBuiltinType(varInfo.type, varInfo.elementType)) {
+        code += varInfo.variableName + QLatin1String(" = ") +
+                mTypeMap.deserializeBuiltin(varInfo.type, varInfo.elementType, soapValueVarName, varInfo.qtTypeName) + QLatin1String(";") + COMMENT;
+    } else if (mTypeMap.isComplexType(varInfo.type, varInfo.elementType)) {
+        code += varInfo.variableName + QLatin1String(".deserialize(") + soapValueVarName + QLatin1String(");") + COMMENT;
     } else {
-        code += variableName + QLatin1String(".deserialize(") + soapValueVarName + QLatin1String(");") + COMMENT;
+        code += varInfo.variableName + QLatin1String(".deserialize(") + soapValueVarName + QLatin1String(");") + COMMENT;
     }
     if (optional) {
-        code += variableName + QLatin1String("_nil = false;") + COMMENT;
+        code += varInfo.nilVariableName + QLatin1String(" = false;") + COMMENT;
     }
     return code;
 }
 
 // Helper method for the generation of the deserialize() method, also used by convertClientCall
-KODE::Code Converter::demarshalVar(const QName &type, const QName &elementType, const QString &variableName, const QString &qtTypeName, const QString &soapValueVarName, bool optional, bool usePointer) const
+KODE::Code Converter::demarshalVar(const VariableInfo &varInfo, const QString &soapValueVarName, bool optional, bool usePointer) const
 {
-    const bool isPolymorphic = mTypeMap.isPolymorphic(type, elementType);
+    const bool isPolymorphic = mTypeMap.isPolymorphic(varInfo.type, varInfo.elementType);
     if (usePointer || isPolymorphic) {
-        const QString storageType = pointerStorageType(qtTypeName);
+        const QString storageType = pointerStorageType(varInfo.qtTypeName);
         KODE::Code code;
-        code += variableName + "_as_kdsoap_value = " + soapValueVarName + ";" + COMMENT;
-        code += "if (!" + variableName + ")";
+        code += varInfo.variableName + "_as_kdsoap_value = " + soapValueVarName + ";" + COMMENT;
+        code += "if (!" + varInfo.variableName + ")";
         code.indent();
-        code += variableName + " = " + storageType + "(new " + qtTypeName + ");" + COMMENT;
+        code += varInfo.variableName + " = " + storageType + "(new " + varInfo.qtTypeName + ");" + COMMENT;
         code.unindent();
-        code += variableName + QLatin1String("->deserialize(") + soapValueVarName + QLatin1String(");") + COMMENT;
+        code += varInfo.variableName + QLatin1String("->deserialize(") + soapValueVarName + QLatin1String(");") + COMMENT;
         return code;
     } else {
-        return demarshalVarHelper(type, elementType, variableName, qtTypeName, soapValueVarName, optional);
+        return demarshalVarHelper(varInfo, soapValueVarName, optional);
     }
 }
 
-KODE::Code Converter::demarshalArrayVar(const QName &type, const QString &variableName, const QString &qtTypeName, bool optional) const
+KODE::Code Converter::demarshalArrayVar(const VariableInfo &varInfo, bool optional) const
 {
     KODE::Code code;
-    if (mTypeMap.isTypeAny(type)) {     // KDSoapValue doesn't support temp vars [still true?]. This special-casing is ugly though.
-        code += variableName + QLatin1String(".append(val);");
+    if (mTypeMap.isTypeAny(varInfo.type)) {     // KDSoapValue doesn't support temp vars [still true?]. This special-casing is ugly though.
+        code += varInfo.variableName + QLatin1String(".append(val);");
     } else {
         // we need a temp var in case of deserialize()
         // [TODO: we could merge demarshalVar into this code, to avoid the temp var in other cases]
         QString tempVar;
-        if (variableName.startsWith(QLatin1String("d_ptr->"))) {
-            tempVar = variableName.mid(7) + QLatin1String("Temp");
+        if (varInfo.variableName.startsWith(QLatin1String("d_ptr->"))) {
+            tempVar = varInfo.variableName.mid(7) + QLatin1String("Temp");
         } else {
-            tempVar = variableName + QLatin1String("Temp");
+            tempVar = varInfo.variableName + QLatin1String("Temp");
         }
-        code += qtTypeName + QLatin1String(" ") + tempVar + QLatin1String(";") + COMMENT;
-        code.addBlock(demarshalVarHelper(type, QName(), tempVar, qtTypeName, "val", false));
+        code += varInfo.qtTypeName + QLatin1String(" ") + tempVar + QLatin1String(";") + COMMENT;
+        code.addBlock(demarshalVarHelper(VariableInfo{varInfo.type, QName(), tempVar, QString(), varInfo.qtTypeName}, "val", false));
         QString toAppend = tempVar;
-        const bool isPolymorphic = mTypeMap.isPolymorphic(type);
+        const bool isPolymorphic = mTypeMap.isPolymorphic(varInfo.type);
         if (isPolymorphic) {
-            const QString storageType = pointerStorageType(qtTypeName);
-            toAppend = storageType + "(new " + qtTypeName + "(" + tempVar + "))";
+            const QString storageType = pointerStorageType(varInfo.qtTypeName);
+            toAppend = storageType + "(new " + varInfo.qtTypeName + "(" + tempVar + "))";
         }
-        code += variableName + QLatin1String(".append(") + toAppend + QLatin1String(");") + COMMENT;
+        code += varInfo.variableName + QLatin1String(".append(") + toAppend + QLatin1String(");") + COMMENT;
         if (optional) {
-            code += variableName + QLatin1String("_nil = false;") + COMMENT;
+            code += varInfo.nilVariableName + QLatin1String(" = false;") + COMMENT;
         }
     }
     return code;
@@ -587,6 +590,7 @@ void Converter::createComplexTypeSerializer(KODE::Class &newClass, const XSD::Co
         const QString typeName = mTypeMap.localType(baseName);
         KODE::MemberVariable variable(QLatin1String("value"), typeName);
         const QString variableName = QLatin1String("d_ptr->") + variable.name();
+        const QString nilVariableName = QLatin1String("d_ptr->") + variable.name() + "_nil";
 
         if (mTypeMap.isComplexType(baseName)) {
             marshalCode += QLatin1String("KDSoapValue mainValue = ") + typeName + QLatin1String("::serialize(valueName);") + COMMENT;
@@ -599,7 +603,7 @@ void Converter::createComplexTypeSerializer(KODE::Class &newClass, const XSD::Co
                 marshalCode += QLatin1String("KDSoapValue mainValue = ") + variableName + QLatin1String(".serialize(valueName);") + COMMENT;
                 marshalCode += QLatin1String("mainValue.setType(") + typeArgs + QLatin1String(");");
             }
-            demarshalCode += demarshalVar(baseName, QName(), variableName, typeName, QLatin1String("mainValue"), false, false);
+            demarshalCode += demarshalVar(VariableInfo{baseName, QName(), variableName, nilVariableName, typeName}, QLatin1String("mainValue"), false, false);
         }
 
     } else {
@@ -644,6 +648,7 @@ void Converter::createComplexTypeSerializer(KODE::Class &newClass, const XSD::Co
         Q_ASSERT(elements.count() == 1);
         const XSD::Element elem = elements.first();
         const QString variableName = QLatin1String("d_ptr->") + KODE::MemberVariable::memberVariableName(elem.name());   // always d_ptr->mEntries, actually
+        const QString nilVariableName = QLatin1String("d_ptr->") + KODE::MemberVariable::memberVariableName(elem.name() + "_nil");
         const QName arrayType = type->arrayType();
         const QString typeName = mTypeMap.localType(arrayType);
 
@@ -652,7 +657,7 @@ void Converter::createComplexTypeSerializer(KODE::Class &newClass, const XSD::Co
         marshalCode.indent();
         const QString nameSpace = elem.nameSpace();
 
-        ElementArgumentSerializer serializer(mTypeMap, arrayType, QName(), variableName + QLatin1String(".at(i)"));
+        ElementArgumentSerializer serializer(mTypeMap, arrayType, QName(), variableName + QLatin1String(".at(i)"), QString());
         serializer.setElementName(QName(nameSpace, QLatin1String("item")));
         serializer.setOutputVariable("args", true);
         serializer.setIsQualified(elem.isQualified());
@@ -663,7 +668,8 @@ void Converter::createComplexTypeSerializer(KODE::Class &newClass, const XSD::Co
         marshalCode.unindent();
         marshalCode += '}';
 
-        demarshalCode.addBlock(demarshalArrayVar(arrayType, variableName, typeName, isElementOptional(elem)));
+        const VariableInfo varInfo{arrayType, QName(), variableName, nilVariableName, typeName};
+        demarshalCode.addBlock(demarshalArrayVar(varInfo, isElementOptional(elem)));
     } else {
         bool first = true;
         Q_FOREACH (const XSD::Element &elem, elements) {
@@ -674,14 +680,14 @@ void Converter::createComplexTypeSerializer(KODE::Class &newClass, const XSD::Co
             Q_ASSERT(typeName != QLatin1String("void")); // removed earlier in this file
 
             const QString variableName = QLatin1String("d_ptr->") + KODE::MemberVariable::memberVariableName(elemName);
+            const QString nilVariableName = QLatin1String("d_ptr->") + KODE::MemberVariable::memberVariableName(elemName + "_nil");
 
             demarshalCode.addBlock(demarshalNameTest(elem.type(), elemName, &first));
             demarshalCode.indent();
 
-            ElementArgumentSerializer serializer(mTypeMap, elem.type(), QName(), variableName);
+            ElementArgumentSerializer serializer(mTypeMap, elem.type(), QName(), variableName, nilVariableName);
             serializer.setOutputVariable("args", true);
             serializer.setIsQualified(elem.isQualified());
-            serializer.setNillable(elem.nillable());
             const QName qualName = elem.qualifiedName();
 
             if (elem.maxOccurs() > 1 || elem.compositor().maxOccurs() > 1) {
@@ -706,7 +712,8 @@ void Converter::createComplexTypeSerializer(KODE::Class &newClass, const XSD::Co
                 marshalCode.unindent();
                 marshalCode += '}';
 
-                demarshalCode.addBlock(demarshalArrayVar(elem.type(), variableName, typeName, isElementOptional(elem)));
+                const VariableInfo varInfo{elem.type(), QName(), variableName, nilVariableName, typeName};
+                demarshalCode.addBlock(demarshalArrayVar(varInfo, isElementOptional(elem)));
             } else {
                 const bool optional = isElementOptional(elem);
                 if (elem.hasSubstitutions())
@@ -719,9 +726,11 @@ void Converter::createComplexTypeSerializer(KODE::Class &newClass, const XSD::Co
                 serializer.setOmitIfEmpty(optional);
                 const bool usePointer = usePointerForElement(elem, newClass, mTypeMap, false);
                 serializer.setUsePointer(usePointer);
+                serializer.setNillable(elem.nillable());
                 marshalCode.addBlock(serializer.generate());
 
-                demarshalCode.addBlock(demarshalVar(elem.type(), QName(), variableName, typeName, "val", optional, usePointer));
+                const VariableInfo varInfo{elem.type(), QName(), variableName, nilVariableName, typeName};
+                demarshalCode.addBlock(demarshalVar(varInfo, "val", optional, usePointer));
             }
 
             demarshalCode.unindent();
@@ -751,11 +760,12 @@ void Converter::createComplexTypeSerializer(KODE::Class &newClass, const XSD::Co
                 continue;
             }
             const QString variableName = QLatin1String("d_ptr->") + KODE::MemberVariable::memberVariableName(attrName);
+            const QString nilVariableName = QLatin1String("d_ptr->") + KODE::MemberVariable::memberVariableName(attrName + "_nil");
 
             demarshalCode.addBlock(demarshalNameTest(attribute.type(), attrName, &first));
             demarshalCode.indent();
 
-            ElementArgumentSerializer serializer(mTypeMap, attribute.type(), QName(), variableName);
+            ElementArgumentSerializer serializer(mTypeMap, attribute.type(), QName(), variableName, nilVariableName);
             serializer.setElementName(attribute.qualifiedName());
             serializer.setOutputVariable("attribs", true);
             serializer.setIsQualified(attribute.isQualified());
@@ -765,7 +775,8 @@ void Converter::createComplexTypeSerializer(KODE::Class &newClass, const XSD::Co
 
             const QString typeName = mTypeMap.localType(attribute.type());
             Q_ASSERT(!typeName.isEmpty());
-            demarshalCode.addBlock(demarshalVar(attribute.type(), QName(), variableName, typeName, "val", attribute.attributeUse() == XSD::Attribute::Optional, false));
+            const VariableInfo varInfo{attribute.type(), QName(), variableName, nilVariableName, typeName};
+            demarshalCode.addBlock(demarshalVar(varInfo, "val", attribute.attributeUse() == XSD::Attribute::Optional, false));
 
             demarshalCode.unindent();
             demarshalCode += "}";

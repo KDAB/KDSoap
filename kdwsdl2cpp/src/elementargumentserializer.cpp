@@ -4,11 +4,12 @@
 
 using namespace KWSDL;
 
-ElementArgumentSerializer::ElementArgumentSerializer(const TypeMap &typeMap, const QName &type, const QName &elementType, const QString &localVarName)
+ElementArgumentSerializer::ElementArgumentSerializer(const TypeMap &typeMap, const QName &type, const QName &elementType, const QString &localVarName, const QString &nilLocalVarName)
     : mTypeMap(typeMap),
       mType(type),
       mElementType(elementType),
       mLocalVarName(localVarName),
+      mNilLocalVarName(nilLocalVarName),
       mAppend(false),
       mIsQualified(false),
       mNillable(false),
@@ -21,6 +22,7 @@ ElementArgumentSerializer::ElementArgumentSerializer(const TypeMap &typeMap, con
 void ElementArgumentSerializer::setLocalVariableName(const QString &localVarName)
 {
     mLocalVarName = localVarName;
+    Q_ASSERT(!mNillable); // if nillable, we're missing mNilLocalVarName here
 }
 
 void ElementArgumentSerializer::setElementName(const QName &name)
@@ -92,7 +94,7 @@ KODE::Code ElementArgumentSerializer::generate() const
             if (mUsePointer) {
                 block += "if (" + mLocalVarName + ") {";
             } else {
-                block += "if (!" + mLocalVarName + "_nil) {";
+                block += "if (!" + mNilLocalVarName + ") {" + COMMENT;
             }
             block.indent();
         }

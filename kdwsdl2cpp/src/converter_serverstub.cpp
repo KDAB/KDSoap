@@ -138,7 +138,8 @@ void Converter::generateServerMethod(KODE::Code &code, const Binding &binding, c
             }
 
             // what if there's more than one?
-            code.addBlock(demarshalVar(part.type(), part.element(), varName, argType, soapValueVarName, false, false));
+            const VariableInfo varInfo{part.type(), part.element(), varName, varName + "_nil", argType};
+            code.addBlock(demarshalVar(varInfo, soapValueVarName, false, false));
 
             inputVars += varName;
             newClass.addIncludes(mTypeMap.headerIncludes(part.type()), mTypeMap.forwardDeclarationsForElement(part.element()));
@@ -178,10 +179,10 @@ void Converter::generateServerMethod(KODE::Code &code, const Binding &binding, c
 
         // TODO factorize with same code in next method
         if (soapStyle(binding) == SoapBinding::DocumentStyle) {
-            code.addBlock(serializePart(retPart, "ret", responseVarName, false));
+            code.addBlock(serializePart(retPart, "ret", "ret_nil", responseVarName, false));
         } else {
             code += QString("KDSoapValue wrapper(\"%1\", QVariant(), \"%2\");").arg(outputMessage.name()).arg(outputMessage.nameSpace());
-            code.addBlock(serializePart(retPart, "ret", "wrapper.childValues()", true));
+            code.addBlock(serializePart(retPart, "ret", "ret_nil", "wrapper.childValues()", true));
             code += responseVarName + " = wrapper;";
         }
 
@@ -213,10 +214,10 @@ void Converter::generateDelayedReponseMethod(const QString &methodName, const QS
     code.addLine("KDSoapMessage _response;");
 
     if (soapStyle(binding) == SoapBinding::DocumentStyle) {
-        code.addBlock(serializePart(retPart, "ret", "_response", false));
+        code.addBlock(serializePart(retPart, "ret", "ret_nil", "_response", false));
     } else {
         code += QString("KDSoapValue wrapper(\"%1\", QVariant(), \"%2\");").arg(outputMessage.name()).arg(outputMessage.nameSpace());
-        code.addBlock(serializePart(retPart, "ret", "wrapper.childValues()", true));
+        code.addBlock(serializePart(retPart, "ret", "ret_nil", "wrapper.childValues()", true));
         code += "_response = wrapper;";
     }
 

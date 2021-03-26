@@ -19,8 +19,9 @@ public:
      * @param elementType the name of the XSD element type. Exclusive with type.
      * @param localVarName the name of the variable containing the type to send, in the generated C++ code
      * If it's not a builtin type, .serialize() will be called on this variable.
+     * @param nilLocalVarName name of the _nil variable, if any
      */
-    ElementArgumentSerializer(const KWSDL::TypeMap &typeMap, const QName &type, const QName &elementType, const QString &localVarName);
+    ElementArgumentSerializer(const KWSDL::TypeMap &typeMap, const QName &type, const QName &elementType, const QString &localVarName, const QString &nilLocalVarName);
 
     /**
      * Modifies the localVarName set in the constructor.
@@ -91,6 +92,7 @@ private:
     QString mNameArg;
     QString mNameNamespace;
     QString mLocalVarName;
+    QString mNilLocalVarName;
     QString mOutputVarName;
     QString mValueVarName;
     bool mAppend;

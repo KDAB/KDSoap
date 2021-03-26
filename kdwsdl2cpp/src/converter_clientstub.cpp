@@ -583,15 +583,16 @@ QName Converter::elementNameForPart(const Part &part, bool *qualified, bool *nil
 
 void Converter::addMessageArgument(KODE::Code &code, const SoapBinding::Style &bindingStyle, const Part &part, const QString &localVariableName, const QByteArray &messageName, bool varIsMember)
 {
-    const QString partname = varIsMember ? QLatin1Char('m') + upperlize(localVariableName) : mNameMapper.escape(lowerlize(localVariableName));
+    const QString partname = varIsMember ? KODE::MemberVariable::memberVariableName(localVariableName) : mNameMapper.escape(lowerlize(localVariableName));
+    const QString nilPartname = varIsMember ? KODE::MemberVariable::memberVariableName(localVariableName + "_nil") : partname + "_nil";
     // In document style, the "part" is directly added as arguments
     // See https://www.ibm.com/developerworks/webservices/library/ws-whichwsdl/
     if (bindingStyle == SoapBinding::DocumentStyle) {
-        code.addBlock(serializePart(part, partname, messageName, false));
+        code.addBlock(serializePart(part, partname, nilPartname, messageName, false));
     } else {
         const QString argType = mTypeMap.localType(part.type(), part.element());
         if (argType != QLatin1String("void")) {
-            code.addBlock(serializePart(part, partname, messageName + ".childValues()", true));
+            code.addBlock(serializePart(part, partname, nilPartname, messageName + ".childValues()", true));
         }
     }
 }
@@ -710,7 +711,7 @@ bool Converter::convertClientCall(const Operation &operation, const Binding &bin
 
                 code += retType + QLatin1String(" ret;"); // local var
                 code += QLatin1String("const KDSoapValue val = d_ptr->m_lastReply.childValues().at(0);") + COMMENT;
-                code += demarshalVar(retPart.type(), retPart.element(), QLatin1String("ret"), retType, "val", false, false);
+                code += demarshalVar(VariableInfo{retPart.type(), retPart.element(), QLatin1String("ret"), QString(), retType}, "val", false, false);
                 code += "return ret;";
             }
         }

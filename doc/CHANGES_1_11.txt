@@ -6,4 +6,5 @@ CMake buildsystem:
 
 WSDL parser / code generator changes, applying to both client and server side:
 ================================================================
+* Fix generated code in case a variable is called "d" or "q" (#118)
 * Fix generated code for an enumeration type with a length restriction (#234)

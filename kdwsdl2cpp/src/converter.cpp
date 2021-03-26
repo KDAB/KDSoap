@@ -392,11 +392,11 @@ void Converter::convertTypes()
 }
 
 // Helper for clientstub and serverstub
-KODE::Code Converter::serializePart(const Part &part, const QString &localVariableName, const QString &varName, bool append)
+KODE::Code Converter::serializePart(const Part &part, const QString &localVariableName, const QString &nilVariableName, const QString &varName, bool append)
 {
     bool qualified, nillable;
     const QName elemName = elementNameForPart(part, &qualified, &nillable);
-    ElementArgumentSerializer serializer(mTypeMap, part.type(), part.element(), localVariableName);
+    ElementArgumentSerializer serializer(mTypeMap, part.type(), part.element(), localVariableName, nilVariableName);
     serializer.setElementName(elemName);
     serializer.setOutputVariable(varName, append);
     serializer.setIsQualified(qualified);

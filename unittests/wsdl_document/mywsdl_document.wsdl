@@ -69,6 +69,8 @@
             </sequence>
           </sequence>
           <attribute name="type" type="kdab:EmployeeTypeEnum"/>
+          <attribute name="d" type="xsd:double"/> <!-- issue #118 -->
+          <attribute name="q" type="xsd:int"/> <!-- issue #118 -->
           <attribute name="weakType"/> <!-- test for attribute without type -->
         </complexType>
       </element>
