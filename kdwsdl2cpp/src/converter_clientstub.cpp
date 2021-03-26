@@ -1,5 +1,6 @@
 #include "converter.h"
 #include <code_generation/style.h>
+#include "elementargumentserializer.h"
 #include "settings.h"
 #include <QDebug>
 #include <QCoreApplication>
@@ -711,7 +712,8 @@ bool Converter::convertClientCall(const Operation &operation, const Binding &bin
 
                 code += retType + QLatin1String(" ret;"); // local var
                 code += QLatin1String("const KDSoapValue val = d_ptr->m_lastReply.childValues().at(0);") + COMMENT;
-                code += demarshalVar(VariableInfo{retPart.type(), retPart.element(), QLatin1String("ret"), QString(), retType}, "val", false, false);
+                ElementArgumentSerializer serializer(mTypeMap, retPart.type(), retPart.element(), QLatin1String("ret"), QString());
+                code += serializer.demarshalVariable("val");
                 code += "return ret;";
             }
         }

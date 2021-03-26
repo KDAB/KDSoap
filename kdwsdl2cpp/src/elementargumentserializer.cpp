@@ -13,7 +13,7 @@ ElementArgumentSerializer::ElementArgumentSerializer(const TypeMap &typeMap, con
       mAppend(false),
       mIsQualified(false),
       mNillable(false),
-      mOmitIfEmpty(false),
+      mOptional(false),
       mUsePointer(false)
 {
 
@@ -45,14 +45,14 @@ void ElementArgumentSerializer::setOutputVariable(const QString &outputVarName, 
     mAppend = append;
 }
 
-void ElementArgumentSerializer::setOmitIfEmpty(bool omit)
-{
-    mOmitIfEmpty = omit;
-}
-
 void ElementArgumentSerializer::setNillable(bool nillable)
 {
     mNillable = nillable;
+}
+
+void ElementArgumentSerializer::setOptional(bool optional)
+{
+    mOptional = optional;
 }
 
 void ElementArgumentSerializer::setIsQualified(bool qualified)
@@ -65,7 +65,7 @@ void ElementArgumentSerializer::setUsePointer(bool usePointer)
     mUsePointer = usePointer;
 }
 
-KODE::Code ElementArgumentSerializer::generate() const
+KODE::Code ElementArgumentSerializer::generateSerializationCode() const
 {
     Q_ASSERT(!mLocalVarName.isEmpty());
     Q_ASSERT(!mOutputVarName.isEmpty());
@@ -90,7 +90,7 @@ KODE::Code ElementArgumentSerializer::generate() const
         const bool isComplex = mTypeMap.isComplexType(mType, mElementType);
         const bool isPolymorphic = mTypeMap.isPolymorphic(mType, mElementType);
 
-        if (mAppend && mOmitIfEmpty) {
+        if (mAppend && mOptional) {
             if (mUsePointer) {
                 block += "if (" + mLocalVarName + ") {";
             } else {
@@ -121,11 +121,95 @@ KODE::Code ElementArgumentSerializer::generate() const
         }
         block += varAndMethodBefore + mValueVarName + varAndMethodAfter + QLatin1String(";") + COMMENT;
 
-        if (mAppend && mOmitIfEmpty) {
+        if (mAppend && mOptional) {
             block.unindent();
             block += "}";
         }
     }
     return block;
+}
+
+QString ElementArgumentSerializer::pointerStorageType(const QString &typeName)
+{
+    if (typeName == "QString" || typeName == "bool") {
+        qWarning() << "Should not happen: polymorphic" << typeName;
+        Q_ASSERT(0);
+    }
+
+    return "QSharedPointer<" + typeName + '>';
+}
+
+KODE::Code ElementArgumentSerializer::demarshalArray(const QString &soapValueVarName) const
+{
+    KODE::Code code;
+    const QString qtTypeName = mTypeMap.localType(mType, mElementType);
+
+    if (mTypeMap.isTypeAny(mType)) {
+        code += mLocalVarName + QLatin1String(".append(val);");
+    } else if ( mTypeMap.isBuiltinType(mType, mElementType)) {
+        code += mLocalVarName + QLatin1String(".append(") +
+                mTypeMap.deserializeBuiltin(mType, mElementType, "val", qtTypeName) + QLatin1String(");") + COMMENT;
+    } else {
+        // we need a temp var because of deserialize()
+        QString tempVar;
+        if (mLocalVarName.startsWith(QLatin1String("d_ptr->"))) {
+            tempVar = mLocalVarName.mid(7) + QLatin1String("Temp");
+        } else {
+            tempVar = mLocalVarName + QLatin1String("Temp");
+        }
+        code += qtTypeName + QLatin1String(" ") + tempVar + QLatin1String(";") + COMMENT;
+        const ElementArgumentSerializer tempDeserializer(mTypeMap, mType, mElementType, tempVar, QString());
+        code.addBlock(tempDeserializer.demarshalVarHelper("val"));
+        QString toAppend = tempVar;
+        const bool isPolymorphic = mTypeMap.isPolymorphic(mType);
+        if (isPolymorphic) {
+            const QString storageType = pointerStorageType(qtTypeName);
+            toAppend = storageType + "(new " + qtTypeName + "(" + tempVar + "))";
+        }
+        code += mLocalVarName + QLatin1String(".append(") + toAppend + QLatin1String(");") + COMMENT;
+    }
+    if (mOptional) {
+        code += mNilLocalVarName + QLatin1String(" = false;") + COMMENT;
+    }
+    return code;
+}
+
+KODE::Code ElementArgumentSerializer::demarshalVariable(const QString &soapValueVarName) const
+{
+    const bool isPolymorphic = mTypeMap.isPolymorphic(mType, mElementType);
+    if (mUsePointer || isPolymorphic) {
+        const QString qtTypeName = mTypeMap.localType(mType, mElementType);
+        const QString storageType = pointerStorageType(qtTypeName);
+        KODE::Code code;
+        code += mLocalVarName + "_as_kdsoap_value = " + soapValueVarName + ";" + COMMENT;
+        code += "if (!" + mLocalVarName + ")";
+        code.indent();
+        code += mLocalVarName + " = " + storageType + "(new " + qtTypeName + ");" + COMMENT;
+        code.unindent();
+        code += mLocalVarName + QLatin1String("->deserialize(") + soapValueVarName + QLatin1String(");") + COMMENT;
+        return code;
+    } else {
+        return demarshalVarHelper(soapValueVarName);
+    }
+}
+
+KODE::Code ElementArgumentSerializer::demarshalVarHelper(const QString &soapValueVarName) const
+{
+    KODE::Code code;
+    if (mTypeMap.isTypeAny(mType)) {
+        code += mLocalVarName + QLatin1String(" = ") + soapValueVarName + QLatin1String(";") + COMMENT;
+    } else if (mTypeMap.isBuiltinType(mType, mElementType)) {
+        const QString qtTypeName = mTypeMap.localType(mType, mElementType);
+        code += mLocalVarName + QLatin1String(" = ") +
+                mTypeMap.deserializeBuiltin(mType, mElementType, soapValueVarName, qtTypeName) + QLatin1String(";") + COMMENT;
+    } else if (mTypeMap.isComplexType(mType, mElementType)) {
+        code += mLocalVarName + QLatin1String(".deserialize(") + soapValueVarName + QLatin1String(");") + COMMENT;
+    } else {
+        code += mLocalVarName + QLatin1String(".deserialize(") + soapValueVarName + QLatin1String(");") + COMMENT;
+    }
+    if (mOptional) {
+        code += mNilLocalVarName + QLatin1String(" = false;") + COMMENT;
+    }
+    return code;
 }
 

@@ -39,16 +39,6 @@ static bool usePointerForElement(const XSD::Element &elem, const KODE::Class &ne
     return polymorphic;
 }
 
-static QString pointerStorageType(const QString &typeName)
-{
-    if (typeName == "QString" || typeName == "bool") {
-        qWarning() << "Should not happen: polymorphic" << typeName;
-        Q_ASSERT(0);
-    }
-
-    return "QSharedPointer<" + typeName + '>';
-}
-
 static void generateDefaultAttributeValueCode(KODE::Code& result, const QString& typeName, const Converter::DefaultAttributeValue& defaultValue)
 {
   result += "{";
@@ -182,7 +172,7 @@ void Converter::convertComplexType(const XSD::ComplexType *type)
 
             bool isList = false;
             if (elemIt.maxOccurs() > 1 || elemIt.compositor().maxOccurs() > 1) {
-                QString itemType = mTypeMap.isPolymorphic(elemIt.type()) ? pointerStorageType(typeName) : typeName;
+                QString itemType = mTypeMap.isPolymorphic(elemIt.type()) ? ElementArgumentSerializer::pointerStorageType(typeName) : typeName;
                 typeName = listTypeFor(itemType, newClass);
                 inputTypeName = QLatin1String("const ") + typeName + QLatin1String("&");
                 isList = true;
@@ -191,7 +181,7 @@ void Converter::convertComplexType(const XSD::ComplexType *type)
                 QString arrayTypeName = mTypeMap.localType(type->arrayType());
                 Q_ASSERT(!arrayTypeName.isEmpty());
                 if (mTypeMap.isPolymorphic(type->arrayType())) {
-                    arrayTypeName = pointerStorageType(arrayTypeName);
+                    arrayTypeName = ElementArgumentSerializer::pointerStorageType(arrayTypeName);
                 }
                 //qDebug() << "array of" << attribute.arrayType() << "->" << arrayTypeName;
                 typeName = listTypeFor(arrayTypeName, newClass);
@@ -305,7 +295,7 @@ QString Converter::generateMemberVariable(const QString &rawName, const QString 
     const KODE::Function::AccessSpecifier access = (prohibited) ? KODE::Function::Private : KODE::Function::Public;
 
     // member variable
-    const QString storageType = usePointer ? pointerStorageType(typeName) : typeName;
+    const QString storageType = usePointer ? ElementArgumentSerializer::pointerStorageType(typeName) : typeName;
     KODE::MemberVariable variable(rawName, storageType);
     if (usePointer && !optional) {
         variable.setInitializer("new " + typeName);
@@ -488,75 +478,6 @@ static KODE::Code demarshalNameTest(const QName &type, const QString &tagName, b
     return demarshalCode;
 }
 
-// Low-level helper for demarshalVar, doesn't handle the polymorphic case (so it can be called for lists of polymorphics)
-KODE::Code Converter::demarshalVarHelper(const VariableInfo &varInfo, const QString &soapValueVarName, bool optional) const
-{
-    KODE::Code code;
-    if (mTypeMap.isTypeAny(varInfo.type)) {
-        code += varInfo.variableName + QLatin1String(" = ") + soapValueVarName + QLatin1String(";") + COMMENT;
-    } else if (mTypeMap.isBuiltinType(varInfo.type, varInfo.elementType)) {
-        code += varInfo.variableName + QLatin1String(" = ") +
-                mTypeMap.deserializeBuiltin(varInfo.type, varInfo.elementType, soapValueVarName, varInfo.qtTypeName) + QLatin1String(";") + COMMENT;
-    } else if (mTypeMap.isComplexType(varInfo.type, varInfo.elementType)) {
-        code += varInfo.variableName + QLatin1String(".deserialize(") + soapValueVarName + QLatin1String(");") + COMMENT;
-    } else {
-        code += varInfo.variableName + QLatin1String(".deserialize(") + soapValueVarName + QLatin1String(");") + COMMENT;
-    }
-    if (optional) {
-        code += varInfo.nilVariableName + QLatin1String(" = false;") + COMMENT;
-    }
-    return code;
-}
-
-// Helper method for the generation of the deserialize() method, also used by convertClientCall
-KODE::Code Converter::demarshalVar(const VariableInfo &varInfo, const QString &soapValueVarName, bool optional, bool usePointer) const
-{
-    const bool isPolymorphic = mTypeMap.isPolymorphic(varInfo.type, varInfo.elementType);
-    if (usePointer || isPolymorphic) {
-        const QString storageType = pointerStorageType(varInfo.qtTypeName);
-        KODE::Code code;
-        code += varInfo.variableName + "_as_kdsoap_value = " + soapValueVarName + ";" + COMMENT;
-        code += "if (!" + varInfo.variableName + ")";
-        code.indent();
-        code += varInfo.variableName + " = " + storageType + "(new " + varInfo.qtTypeName + ");" + COMMENT;
-        code.unindent();
-        code += varInfo.variableName + QLatin1String("->deserialize(") + soapValueVarName + QLatin1String(");") + COMMENT;
-        return code;
-    } else {
-        return demarshalVarHelper(varInfo, soapValueVarName, optional);
-    }
-}
-
-KODE::Code Converter::demarshalArrayVar(const VariableInfo &varInfo, bool optional) const
-{
-    KODE::Code code;
-    if (mTypeMap.isTypeAny(varInfo.type)) {     // KDSoapValue doesn't support temp vars [still true?]. This special-casing is ugly though.
-        code += varInfo.variableName + QLatin1String(".append(val);");
-    } else {
-        // we need a temp var in case of deserialize()
-        // [TODO: we could merge demarshalVar into this code, to avoid the temp var in other cases]
-        QString tempVar;
-        if (varInfo.variableName.startsWith(QLatin1String("d_ptr->"))) {
-            tempVar = varInfo.variableName.mid(7) + QLatin1String("Temp");
-        } else {
-            tempVar = varInfo.variableName + QLatin1String("Temp");
-        }
-        code += varInfo.qtTypeName + QLatin1String(" ") + tempVar + QLatin1String(";") + COMMENT;
-        code.addBlock(demarshalVarHelper(VariableInfo{varInfo.type, QName(), tempVar, QString(), varInfo.qtTypeName}, "val", false));
-        QString toAppend = tempVar;
-        const bool isPolymorphic = mTypeMap.isPolymorphic(varInfo.type);
-        if (isPolymorphic) {
-            const QString storageType = pointerStorageType(varInfo.qtTypeName);
-            toAppend = storageType + "(new " + varInfo.qtTypeName + "(" + tempVar + "))";
-        }
-        code += varInfo.variableName + QLatin1String(".append(") + toAppend + QLatin1String(");") + COMMENT;
-        if (optional) {
-            code += varInfo.nilVariableName + QLatin1String(" = false;") + COMMENT;
-        }
-    }
-    return code;
-}
-
 void Converter::createComplexTypeSerializer(KODE::Class &newClass, const XSD::ComplexType *type)
 {
     newClass.addInclude(QLatin1String("KDSoapClient/KDSoapNamespaceManager.h"));
@@ -587,25 +508,30 @@ void Converter::createComplexTypeSerializer(KODE::Class &newClass, const XSD::Co
     if (type->baseTypeName() != XmlAnyType && !type->baseTypeName().isEmpty() && !type->isArray()) {
 
         const QName baseName = type->baseTypeName();
+
         const QString typeName = mTypeMap.localType(baseName);
         KODE::MemberVariable variable(QLatin1String("value"), typeName);
         const QString variableName = QLatin1String("d_ptr->") + variable.name();
         const QString nilVariableName = QLatin1String("d_ptr->") + variable.name() + "_nil";
 
+        ElementArgumentSerializer serializer(mTypeMap, baseName, QName(), variableName, nilVariableName);
+
         if (mTypeMap.isComplexType(baseName)) {
+            // This is different from ElementArgumentSerializer because we're calling BaseClass::serialize
             marshalCode += QLatin1String("KDSoapValue mainValue = ") + typeName + QLatin1String("::serialize(valueName);") + COMMENT;
-            marshalCode += QLatin1String("mainValue.setType(") + typeArgs + QLatin1String(");");
             demarshalCode += typeName + "::deserialize(mainValue);";
         } else {
             if (mTypeMap.isBuiltinType(baseName)) {
                 marshalCode += QLatin1String("KDSoapValue mainValue = ") + mTypeMap.serializeBuiltin(baseName, QName(), variableName, "valueName", type->nameSpace(), type->name()) + QLatin1String(";") + COMMENT;
             } else {
                 marshalCode += QLatin1String("KDSoapValue mainValue = ") + variableName + QLatin1String(".serialize(valueName);") + COMMENT;
-                marshalCode += QLatin1String("mainValue.setType(") + typeArgs + QLatin1String(");");
             }
-            demarshalCode += demarshalVar(VariableInfo{baseName, QName(), variableName, nilVariableName, typeName}, QLatin1String("mainValue"), false, false);
+            demarshalCode += serializer.demarshalVariable(QLatin1String("mainValue"));
         }
 
+        if (!mTypeMap.isBuiltinType(baseName)) {
+            marshalCode += QLatin1String("mainValue.setType(") + typeArgs + QLatin1String(");");
+        }
     } else {
         marshalCode += QLatin1String("KDSoapValue mainValue(valueName, QVariant(), ") + typeArgs + QLatin1String(");") + COMMENT;
     }
@@ -662,14 +588,15 @@ void Converter::createComplexTypeSerializer(KODE::Class &newClass, const XSD::Co
         serializer.setOutputVariable("args", true);
         serializer.setIsQualified(elem.isQualified());
         serializer.setNillable(elem.nillable());
-        serializer.setOmitIfEmpty(false);   // if not set, not in array
-        marshalCode.addBlock(serializer.generate());
+        serializer.setOptional(false);   // if not set, not in array
+        marshalCode.addBlock(serializer.generateSerializationCode());
 
         marshalCode.unindent();
         marshalCode += '}';
 
-        const VariableInfo varInfo{arrayType, QName(), variableName, nilVariableName, typeName};
-        demarshalCode.addBlock(demarshalArrayVar(varInfo, isElementOptional(elem)));
+        ElementArgumentSerializer deserializer(mTypeMap, arrayType, QName(), variableName, nilVariableName);
+        deserializer.setOptional(isElementOptional(elem));
+        demarshalCode.addBlock(deserializer.demarshalArray("val"));
     } else {
         bool first = true;
         Q_FOREACH (const XSD::Element &elem, elements) {
@@ -706,14 +633,15 @@ void Converter::createComplexTypeSerializer(KODE::Class &newClass, const XSD::Co
                 else {
                     serializer.setElementName(qualName);
                 }
-                serializer.setOmitIfEmpty(false);   // if not set, not in array
+                serializer.setOptional(false);   // if not set, not in array
 
-                marshalCode.addBlock(serializer.generate());
+                marshalCode.addBlock(serializer.generateSerializationCode());
                 marshalCode.unindent();
                 marshalCode += '}';
 
-                const VariableInfo varInfo{elem.type(), QName(), variableName, nilVariableName, typeName};
-                demarshalCode.addBlock(demarshalArrayVar(varInfo, isElementOptional(elem)));
+                ElementArgumentSerializer deserializer(mTypeMap, elem.type(), QName(), variableName, nilVariableName);
+                deserializer.setOptional(isElementOptional(elem));
+                demarshalCode.addBlock(deserializer.demarshalArray("val"));
             } else {
                 const bool optional = isElementOptional(elem);
                 if (elem.hasSubstitutions())
@@ -723,14 +651,13 @@ void Converter::createComplexTypeSerializer(KODE::Class &newClass, const XSD::Co
                 else {
                     serializer.setElementName(qualName);
                 }
-                serializer.setOmitIfEmpty(optional);
+                serializer.setOptional(optional);
                 const bool usePointer = usePointerForElement(elem, newClass, mTypeMap, false);
                 serializer.setUsePointer(usePointer);
                 serializer.setNillable(elem.nillable());
-                marshalCode.addBlock(serializer.generate());
+                marshalCode.addBlock(serializer.generateSerializationCode());
 
-                const VariableInfo varInfo{elem.type(), QName(), variableName, nilVariableName, typeName};
-                demarshalCode.addBlock(demarshalVar(varInfo, "val", optional, usePointer));
+                demarshalCode.addBlock(serializer.demarshalVariable("val"));
             }
 
             demarshalCode.unindent();
@@ -770,13 +697,10 @@ void Converter::createComplexTypeSerializer(KODE::Class &newClass, const XSD::Co
             serializer.setOutputVariable("attribs", true);
             serializer.setIsQualified(attribute.isQualified());
             serializer.setNillable(false);
-            serializer.setOmitIfEmpty(attribute.attributeUse() == XSD::Attribute::Optional || attribute.attributeUse() == XSD::Attribute::Prohibited);
-            marshalCode.addBlock(serializer.generate());
+            serializer.setOptional(attribute.attributeUse() == XSD::Attribute::Optional || attribute.attributeUse() == XSD::Attribute::Prohibited);
+            marshalCode.addBlock(serializer.generateSerializationCode());
 
-            const QString typeName = mTypeMap.localType(attribute.type());
-            Q_ASSERT(!typeName.isEmpty());
-            const VariableInfo varInfo{attribute.type(), QName(), variableName, nilVariableName, typeName};
-            demarshalCode.addBlock(demarshalVar(varInfo, "val", attribute.attributeUse() == XSD::Attribute::Optional, false));
+            demarshalCode.addBlock(serializer.demarshalVariable("val"));
 
             demarshalCode.unindent();
             demarshalCode += "}";

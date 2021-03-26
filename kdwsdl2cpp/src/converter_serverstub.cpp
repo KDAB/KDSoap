@@ -1,4 +1,5 @@
 #include "converter.h"
+#include "elementargumentserializer.h"
 #include "settings.h"
 #include <code_generation/style.h>
 #include <QSet>
@@ -138,8 +139,8 @@ void Converter::generateServerMethod(KODE::Code &code, const Binding &binding, c
             }
 
             // what if there's more than one?
-            const VariableInfo varInfo{part.type(), part.element(), varName, varName + "_nil", argType};
-            code.addBlock(demarshalVar(varInfo, soapValueVarName, false, false));
+            ElementArgumentSerializer serializer(mTypeMap, part.type(), part.element(), varName, varName + "_nil");
+            code.addBlock(serializer.demarshalVariable(soapValueVarName));
 
             inputVars += varName;
             newClass.addIncludes(mTypeMap.headerIncludes(part.type()), mTypeMap.forwardDeclarationsForElement(part.element()));

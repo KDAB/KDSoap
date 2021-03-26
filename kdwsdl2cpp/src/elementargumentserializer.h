@@ -52,11 +52,12 @@ public:
     void setOutputVariable(const QString &outputVarName, bool append);
 
     /**
-     * @brief sets whether to omit empty child elements
-     * @param omit if true, omit this element if it's empty
+     * @brief sets whether the element is optional.
+     * For serialization, this means it will be omitted if it's empty.
+     * For deserialization, it means setting _nil to false if present.
      * The default is false.
      */
-    void setOmitIfEmpty(bool omit);
+    void setOptional(bool optional);
 
     /**
      * @brief sets whether the element can be nil (xsi:nil)
@@ -80,12 +81,30 @@ public:
     void setUsePointer(bool usePointer);
 
     /**
-     * The main method: generate!
+     * The main method: generate the serialization code.
      * @return the generated code
      */
-    KODE::Code generate() const;
+    KODE::Code generateSerializationCode() const;
+
+    /**
+     * Generate code to deserialize an entire array
+     * @return the generated code
+     */
+    KODE::Code demarshalArray(const QString &soapValueVarName) const;
+
+    /**
+     * Generate code to deserialize the variable
+     * @param the name of the variable containing the KDSoapValue to read from
+     * @return the generated code
+     */
+    KODE::Code demarshalVariable(const QString &soapValueVarName) const;
+
+    static QString pointerStorageType(const QString &typeName);
 
 private:
+    // Low-level helper for demarshalVariable, doesn't handle the polymorphic case (so it can be called for lists of polymorphics)
+    KODE::Code demarshalVarHelper(const QString &soapValueVarName) const;
+
     const KWSDL::TypeMap &mTypeMap;
     QName mType;
     QName mElementType;
@@ -98,7 +117,7 @@ private:
     bool mAppend;
     bool mIsQualified;
     bool mNillable;
-    bool mOmitIfEmpty;
+    bool mOptional;
     bool mUsePointer;
 };
 

@@ -401,6 +401,6 @@ KODE::Code Converter::serializePart(const Part &part, const QString &localVariab
     serializer.setOutputVariable(varName, append);
     serializer.setIsQualified(qualified);
     serializer.setNillable(nillable);
-    serializer.setOmitIfEmpty(false);   // Don't omit entire parts, this especially breaks the wrappers for RPC messages
-    return serializer.generate();
+    serializer.setOptional(false);   // Don't omit entire parts, this especially breaks the wrappers for RPC messages
+    return serializer.generateSerializationCode();
 }
