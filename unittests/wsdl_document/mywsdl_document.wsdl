@@ -49,6 +49,13 @@
           <sequence>
             <element name="TelegramHex" type="kdab:TelegramType"/>
             <element name="TelegramBase64" type="xsd:base64Binary"/>
+            <xsd:element name="repeatedName">
+              <complexType>
+                <sequence>
+                  <element name='intparam1' type='xsd:int'/>
+                </sequence>
+              </complexType>
+            </xsd:element>
           </sequence>
         </complexType>
       </element>
@@ -57,6 +64,13 @@
           <sequence>
             <element name="TelegramHex" type="kdab:TelegramType"/>
             <element name="TelegramBase64" type="xsd:base64Binary"/>
+            <xsd:element name="repeatedName">
+              <complexType>
+                <sequence>
+                  <element name='stringparam1' type='xsd:string'/>
+                </sequence>
+              </complexType>
+            </xsd:element>
           </sequence>
         </complexType>
       </element>
@@ -139,6 +153,13 @@
           <sequence>
             <element name='employeeName' type='kdab:EmployeeName'/>
             <element name='repeatedChildren' type='kdab:TestRepeatedChildren'/>
+            <xsd:element name="repeatedName">
+              <complexType>
+                <sequence>
+                  <element name='intparam1' type='xsd:int'/>
+                </sequence>
+              </complexType>
+            </xsd:element>
           </sequence>
         </complexType>
       </element>
@@ -147,6 +168,13 @@
         <complexType>
           <sequence>
             <element name='employeeCountry' type='kdab:LimitedString'/>
+            <xsd:element name="repeatedName">
+              <complexType>
+                <sequence>
+                  <element name='stringparam1' type='xsd:string'/>
+                </sequence>
+              </complexType>
+            </xsd:element>
           </sequence>
         </complexType>
       </element>
