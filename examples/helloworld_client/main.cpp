@@ -38,10 +38,10 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
                    "<p>Clicking &quot;Send&quot; will make a sayHello() soap call. To trigger an error, leave the input field empty and click &quot;Send&quot;.</p>"));
     layout->addWidget(label);
     layout->addWidget(m_browser);
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
     QWidget* w1 = new QWidget;
     QHBoxLayout* l1 = new QHBoxLayout(w1);
-    l1->setMargin(0);
+    l1->setContentsMargins(0, 0, 0, 0);
     m_input = new QLineEdit;
     l1->addWidget(m_input);
     QPushButton* pb1 = new QPushButton(tr("Send"));
