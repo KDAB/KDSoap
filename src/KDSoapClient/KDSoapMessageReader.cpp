@@ -22,23 +22,6 @@
 #include <QDebug>
 #include <QXmlStreamReader>
 
-// Wrapper for compatibility with Qt < 4.6.
-static bool readNextStartElement(QXmlStreamReader &reader)
-{
-#if QT_VERSION >= 0x040600
-    return reader.readNextStartElement();
-#else
-    while (reader.readNext() != QXmlStreamReader::Invalid) {
-        if (reader.isEndElement()) {
-            return false;
-        } else if (reader.isStartElement()) {
-            return true;
-        }
-    }
-    return false;
-#endif
-}
-
 static QStringRef namespaceForPrefix(const QXmlStreamNamespaceDeclarations &decls, const QString &prefix)
 {
     for (int i = 0; i < decls.count(); ++i) {
@@ -203,15 +186,15 @@ KDSoapMessageReader::XmlError KDSoapMessageReader::xmlToMessage(const QByteArray
 {
     Q_ASSERT(pMsg);
     QXmlStreamReader reader(data);
-    if (readNextStartElement(reader)) {
+    if (reader.readNextStartElement()) {
         if (reader.name() == QLatin1String("Envelope") && (reader.namespaceUri() == KDSoapNamespaceManager::soapEnvelope() ||
                 reader.namespaceUri() == KDSoapNamespaceManager::soapEnvelope200305())) {
             const QXmlStreamNamespaceDeclarations envNsDecls = reader.namespaceDeclarations();
-            if (readNextStartElement(reader)) {
+            if (reader.readNextStartElement()) {
                 if (reader.name() == QLatin1String("Header") && (reader.namespaceUri() == KDSoapNamespaceManager::soapEnvelope() ||
                         reader.namespaceUri() == KDSoapNamespaceManager::soapEnvelope200305())) {
                     KDSoapMessageAddressingProperties messageAddressingProperties;
-                    while (readNextStartElement(reader)) {
+                    while (reader.readNextStartElement()) {
                         if (KDSoapMessageAddressingProperties::isWSAddressingNamespace(reader.namespaceUri().toString())) {
                             KDSoapValue value = parseElement(reader, envNsDecls);
                             messageAddressingProperties.readMessageAddressingProperty(value);
@@ -222,11 +205,11 @@ KDSoapMessageReader::XmlError KDSoapMessageReader::xmlToMessage(const QByteArray
                         }
                     }
                     pMsg->setMessageAddressingProperties(messageAddressingProperties);
-                    readNextStartElement(reader); // read <Body>
+                    reader.readNextStartElement(); // read <Body>
                 }
                 if (reader.name() == QLatin1String("Body") && (reader.namespaceUri() == KDSoapNamespaceManager::soapEnvelope() ||
                         reader.namespaceUri() == KDSoapNamespaceManager::soapEnvelope200305())) {
-                    if (readNextStartElement(reader)) {
+                    if (reader.readNextStartElement()) {
                         *pMsg = parseElement(reader, envNsDecls);
                         if (pMessageNamespace) {
                             *pMessageNamespace = pMsg->namespaceUri();
