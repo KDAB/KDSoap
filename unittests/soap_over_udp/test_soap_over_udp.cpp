@@ -93,13 +93,13 @@ private Q_SLOTS:
         QUdpSocket testSocket;
 
         KDSoapUdpClient udpClient;
-        bool rc = udpClient.bind(12345);
+        bool rc = udpClient.bind(14951);
         QVERIFY(rc);
 
         QSignalSpy spy(&udpClient, SIGNAL(receivedMessage(KDSoapMessage,KDSoapHeaders,QHostAddress,quint16)));
 
         auto data = exampleTextData();
-        qint64 size = testSocket.writeDatagram(data, QHostAddress::LocalHost, 12345);
+        qint64 size = testSocket.writeDatagram(data, QHostAddress::LocalHost, 14951);
         QCOMPARE(size, data.size());
 
         QVERIFY(spy.wait(1000));
