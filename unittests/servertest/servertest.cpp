@@ -41,9 +41,6 @@
 using namespace KDSoapUnitTestHelpers;
 
 Q_DECLARE_METATYPE(QFile::Permissions)
-#if QT_VERSION < QT_VERSION_CHECK(5,0,0)
-Q_DECLARE_METATYPE(QNetworkReply::NetworkError)
-#endif
 
 static const char *myWsdlNamespace = "http://www.kdab.com/xml/MyWsdl/";
 
@@ -625,16 +622,11 @@ private Q_SLOTS:
         const int expectedConnectedSockets = numClients * numRequests;
         // the *2 is because in this unittest, we have both the client and the server socket, in the same process
         int numFileDescriptors = expectedConnectedSockets * 2;
-#if QT_VERSION >= 0x040800 // Qt-4.8 uses threads so it needs pipes -- more fds
+        // Qt (since 4.8) uses threads so it needs pipes -- more fds
         numFileDescriptors += numClients;
-#endif
         if (!KDSoapServer::setExpectedSocketCount(numFileDescriptors)) {
             if (expectedConnectedSockets > 500) {
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
                 QSKIP("needs root");
-#else
-                QSKIP("needs root", SkipSingle);
-#endif
             } else {
                 QVERIFY(false);    // should not happen
             }
@@ -763,11 +755,7 @@ private Q_SLOTS:
     void testSuspendUnderLoad()
     {
 #ifdef Q_OS_MAC
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
         QSKIP("fails with 'select: Invalid argument' on mac, to be investigated");
-#else
-        QSKIP("fails with 'select: Invalid argument' on mac, to be investigated", SkipSingle);
-#endif
 #endif
         const int numRequests = 5;
         const int numClients = 80;

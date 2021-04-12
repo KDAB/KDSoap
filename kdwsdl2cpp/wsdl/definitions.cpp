@@ -25,7 +25,6 @@
 #include <QFile>
 #include <QUrl>
 
-#include <QXmlSimpleReader>
 #include <common/nsmanager.h>
 #include <common/fileprovider.h>
 #include <common/messagehandler.h>

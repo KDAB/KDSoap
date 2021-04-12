@@ -64,14 +64,9 @@ static void debugHelper(const QByteArray &data, const QList<QNetworkReply::RawHe
     }
 
     if (optEscape) {
-        // no support for escaping with Qt4
         qDebug() << toOutput;
     } else {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 4, 0)
         qDebug().noquote() << toOutput;
-#else
-        qDebug() << toOutput;
-#endif
     }
 }
 
@@ -105,7 +100,7 @@ void maybeDebugRequest(const QByteArray &data, const QNetworkRequest &request, Q
             case QNetworkAccessManager::DeleteOperation: method = "DELETE"; break;
         }
         if (!method.isEmpty()) {
-            headerList << qMakePair<QByteArray,QByteArray>("", method + " " + qPrintable(reply->url().toString()));
+            headerList << qMakePair<QByteArray,QByteArray>("", method + " " + reply->url().toString().toUtf8());
         }
     }
     Q_FOREACH( const QByteArray &h, request.rawHeaderList() ) {

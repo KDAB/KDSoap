@@ -81,11 +81,7 @@ KDSoapServer::~KDSoapServer()
     delete d;
 }
 
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
 void KDSoapServer::incomingConnection(qintptr socketDescriptor)
-#else
-void KDSoapServer::incomingConnection(int socketDescriptor)
-#endif
 {
     const int max = maxConnections();
     const int numSockets = numConnectedSockets();

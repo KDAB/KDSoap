@@ -267,11 +267,7 @@ Q_SIGNALS:
     void connectionRejected();
 
 protected:
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     /*! \reimp \internal */ void incomingConnection(qintptr socketDescriptor) override;
-#else
-    /*! \reimp \internal */ void incomingConnection(int socketDescriptor) override;
-#endif
 
 private:
     friend class KDSoapServerSocket;

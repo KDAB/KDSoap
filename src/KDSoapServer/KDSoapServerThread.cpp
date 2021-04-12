@@ -116,11 +116,7 @@ int KDSoapServerThreadImpl::socketCount()
     for (; it != m_socketLists.constEnd(); ++it) {
         sc += it.value()->socketCount();
     }
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     sc += m_incomingConnectionCount.loadAcquire();
-#else
-    sc += m_incomingConnectionCount;
-#endif
     return sc;
 }
 

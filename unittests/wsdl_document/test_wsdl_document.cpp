@@ -354,11 +354,7 @@ private Q_SLOTS:
         return;
 #else
         if (!QSslSocket::supportsSsl()) {
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
             QSKIP("No SSL support on this machine, check that ssleay.so/ssleay32.dll is installed");
-#else
-            QSKIP("No SSL support on this machine, check that ssleay.so/ssleay32.dll is installed", SkipAll);
-#endif
         }
 
         QVERIFY(KDSoapUnitTestHelpers::setSslConfiguration());
