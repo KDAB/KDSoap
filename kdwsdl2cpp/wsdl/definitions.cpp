@@ -260,14 +260,10 @@ void Definitions::importDefinition(ParserContext *context, const QString &locati
             return;
         }
 
-        QXmlInputSource source(&file);
-        QXmlSimpleReader reader;
-        reader.setFeature(QLatin1String("http://xml.org/sax/features/namespace-prefixes"), true);
-
         QDomDocument doc(QLatin1String("kwsdl"));
         QString errorMsg;
         int errorLine, errorColumn;
-        bool ok = doc.setContent(&source, &reader, &errorMsg, &errorLine, &errorColumn);
+        bool ok = doc.setContent(&file, false, &errorMsg, &errorLine, &errorColumn);
         if (!ok) {
             qDebug("Error[%d:%d] %s", errorLine, errorColumn, qPrintable(errorMsg));
             return;

@@ -60,14 +60,10 @@ void Compiler::download()
         }
 
         //qDebug() << "parsing" << fileName;
-        QXmlInputSource source(&file);
-        QXmlSimpleReader reader;
-        reader.setFeature(QLatin1String("http://xml.org/sax/features/namespace-prefixes"), true);
-
         QString errorMsg;
         int errorLine, errorCol;
         QDomDocument doc;
-        if (!doc.setContent(&source, &reader, &errorMsg, &errorLine, &errorCol)) {
+        if (!doc.setContent(&file, false, &errorMsg, &errorLine, &errorCol)) {
             qDebug("%s at (%d,%d)", qPrintable(errorMsg), errorLine, errorCol);
             QCoreApplication::exit(2);
             return;
