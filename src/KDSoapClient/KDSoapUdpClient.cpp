@@ -48,30 +48,17 @@ KDSoapUdpClient::~KDSoapUdpClient()
 }
 
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 bool KDSoapUdpClient::bind(quint16 port, QAbstractSocket::BindMode mode) {
     Q_D(KDSoapUdpClient);
     const QHostAddress AnyIPv4(QLatin1String("0.0.0.0"));
     bool rc = true;
     // Workaround for lack of dual stack sockets in Qt4
     // Qt5 supports binding to QHostAddress::Any, which will listen on both IPv4 and IPv6 interfaces.
-    // TODO: use a single socket once we drop Qt4 support
+    // TODO: use a single socket now that we dropped Qt4 support
     rc = d->socketIPv4->bind(AnyIPv4, port, mode) && rc;
     rc = d->socketIPv6->bind(QHostAddress::AnyIPv6, port, mode) && rc;
     return rc;
 }
-#else
-bool KDSoapUdpClient::bind(quint16 port) {
-    Q_D(KDSoapUdpClient);
-    const QHostAddress AnyIPv4(QLatin1String("0.0.0.0"));
-    bool rc = true;
-    // Workaround for lack of dual stack sockets in Qt4
-    // Qt5 supports binding to QHostAddress::Any, which will listen on both IPv4 and IPv6 interfaces.
-    rc = d->socketIPv4->bind(AnyIPv4, port) && rc;
-    rc = d->socketIPv6->bind(QHostAddress::AnyIPv6, port) && rc;
-    return rc;
-}
-#endif
 
 void KDSoapUdpClient::setSoapVersion(KDSoap::SoapVersion version) {
     Q_D(KDSoapUdpClient);

@@ -1222,14 +1222,8 @@ void WsdlDocumentTest::testDisconnectDuringDelayedCall()
         job->setParameters(addEmployeeParameters());
         job->start();
         // Wait until the server method is called
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
         QTRY_VERIFY(server->lastServerObject());
         QTRY_COMPARE(server->lastServerObject()->m_lastMethodCalled, QString::fromLatin1("delayedAddEmployee"));
-#else
-        do {
-            QTest::qWait(100);
-        } while (!server->lastServerObject() || server->lastServerObject()->m_lastMethodCalled != QLatin1String("delayedAddEmployee"));
-#endif
 
         /* connect(job, SIGNAL(finished(KDSoapJob*)), this, SLOT(slotAddEmployeeJobFinished(KDSoapJob*)));
         m_eventLoop.exec();
@@ -1241,13 +1235,7 @@ void WsdlDocumentTest::testDisconnectDuringDelayedCall()
 
     // Let the server continue
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
     QTRY_COMPARE(server->lastServerObject()->m_lastMethodCalled, QString::fromLatin1("slotDelayedResponse"));
-#else
-    do {
-        QTest::qWait(100);
-    } while (server->lastServerObject()->m_lastMethodCalled != QLatin1String("slotDelayedResponse"));
-#endif
 }
 
 // Same as testSequenceInResponse (thomas-bayer.wsdl), but as a server test, by calling DocServer on a different path

@@ -89,11 +89,7 @@ public:
      * \see receivedMessage()
      * \since 1.9
      */
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
     bool bind(quint16 port = 0, QAbstractSocket::BindMode mode = QAbstractSocket::DefaultForPlatform);
-#else
-    bool bind(quint16 port = 0);
-#endif
     /**
      * Sets the SOAP version to be used for any subsequent send message.
      * \param version #SOAP1_1 or #SOAP1_2

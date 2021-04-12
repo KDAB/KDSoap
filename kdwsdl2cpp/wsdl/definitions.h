@@ -24,7 +24,6 @@
 
 #include <qdom.h>
 #include <qurl.h>
-#include <qxml.h>
 
 #include <wsdl/binding.h>
 #include <wsdl/import.h>
