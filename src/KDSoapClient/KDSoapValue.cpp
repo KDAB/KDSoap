@@ -394,7 +394,11 @@ QString KDSoapValue::type() const
 KDSoapValueList KDSoapValue::split() const
 {
     KDSoapValueList valueList;
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+    const QStringList list = value().toString().split(QLatin1Char(' '), Qt::SkipEmptyParts);
+#else
     const QStringList list = value().toString().split(QLatin1Char(' '), QString::SkipEmptyParts);
+#endif
     valueList.reserve(list.count());
     for (int i = 0; i < list.count(); ++i) {
         KDSoapValue value(*this);

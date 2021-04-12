@@ -22,7 +22,11 @@
 #include <QDebug>
 #include <QXmlStreamReader>
 
-static QStringRef namespaceForPrefix(const QXmlStreamNamespaceDeclarations &decls, const QString &prefix)
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#define QStringView QStringRef
+#endif
+
+static QStringView namespaceForPrefix(const QXmlStreamNamespaceDeclarations &decls, const QString &prefix)
 {
     for (int i = 0; i < decls.count(); ++i) {
         const QXmlStreamNamespaceDeclaration &decl = decls.at(i);
@@ -30,7 +34,7 @@ static QStringRef namespaceForPrefix(const QXmlStreamNamespaceDeclarations &decl
             return decl.namespaceUri();
         }
     }
-    return QStringRef();
+    return QStringView();
 }
 
 static int xmlTypeToMetaType(const QString &xmlType)
@@ -79,9 +83,9 @@ static KDSoapValue parseElement(QXmlStreamReader &reader, const QXmlStreamNamesp
 
     const QXmlStreamAttributes attributes = reader.attributes();
     Q_FOREACH (const QXmlStreamAttribute &attribute, attributes) {
-        const QStringRef name = attribute.name();
-        const QStringRef ns = attribute.namespaceUri();
-        const QStringRef attrValue = attribute.value();
+        const QStringView name = attribute.name();
+        const QStringView ns = attribute.namespaceUri();
+        const QStringView attrValue = attribute.value();
         // Parse xsi:type and soap-enc:arrayType
         // and ignore anything else from the xsi or soap-enc namespaces until someone needs it...
         if (ns == KDSoapNamespaceManager::xmlSchemaInstance1999() ||

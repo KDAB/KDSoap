@@ -100,11 +100,12 @@ void maybeDebugRequest(const QByteArray &data, const QNetworkRequest &request, Q
             case QNetworkAccessManager::DeleteOperation: method = "DELETE"; break;
         }
         if (!method.isEmpty()) {
-            headerList << qMakePair<QByteArray,QByteArray>("", method + " " + reply->url().toString().toUtf8());
+            QByteArray output = method + " " + reply->url().toString().toUtf8();
+            headerList << QNetworkReply::RawHeaderPair{{}, std::move(output)};
         }
     }
     Q_FOREACH( const QByteArray &h, request.rawHeaderList() ) {
-        headerList << qMakePair<QByteArray,QByteArray>(h, request.rawHeader(h));
+        headerList << QNetworkReply::RawHeaderPair{h, request.rawHeader(h)};
     }
     debugHelper(data, headerList);
 }

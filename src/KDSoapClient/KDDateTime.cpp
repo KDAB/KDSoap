@@ -77,7 +77,7 @@ void KDDateTime::setTimeZone(const QString &timeZone)
             const int hours = timeZone.left(pos).toInt();
             const int minutes = timeZone.mid(pos + 1).toInt();
             const int offset = hours * 3600 + minutes * 60;
-            setUtcOffset(offset);
+            setOffsetFromUtc(offset);
         }
     }
 }

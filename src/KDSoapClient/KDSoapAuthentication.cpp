@@ -21,18 +21,18 @@
 #include <QNetworkReply>
 #include "KDSoapNamespacePrefixes_p.h"
 #include "KDSoapNamespaceManager.h"
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
+#include <QRandomGenerator>
+#endif
+
 
 class KDSoapAuthentication::Private
 {
 public:
-    Private() :
-        useWSUsernameToken(false), usePasswordDigest(false)
-    {}
-
     QString user;
     QString password;
-    bool usePasswordDigest;
-    bool useWSUsernameToken;
+    bool usePasswordDigest = false;
+    bool useWSUsernameToken = false;
     QDateTime overrideWSUsernameCreatedTime;
     QByteArray overrideWSUsernameNonce;
 };
@@ -151,8 +151,12 @@ void KDSoapAuthentication::writeWSUsernameTokenHeader(QXmlStreamWriter &writer) 
 
     const QString securityExtentionNS = KDSoapNamespaceManager::soapSecurityExtention();
     const QString securityUtilityNS = KDSoapNamespaceManager::soapSecurityUtility();
-
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
+    static QRandomGenerator generator;
+    QByteArray nonce = "kdsoap" + QByteArray::number(generator.generate64());
+#else
     QByteArray nonce = "kdsoap" + QByteArray::number(qrand());
+#endif
     if (!d->overrideWSUsernameNonce.isEmpty()) {
         nonce = d->overrideWSUsernameNonce;
     }
