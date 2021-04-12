@@ -11,8 +11,8 @@
 ## Contact info@kdab.com if any conditions of this licensing are not clear to you.
 ##
 
-find_package(Qt5 ${QT_MIN_VERSION} COMPONENTS Widgets CONFIG REQUIRED)
-list(APPEND QT_LIBRARIES Qt5::Widgets)
+find_package(Qt${QT_MAJOR_VERSION} ${QT_MIN_VERSION} COMPONENTS Widgets CONFIG REQUIRED)
+list(APPEND QT_LIBRARIES Qt${QT_MAJOR_VERSION}::Widgets)
 
 include(../KDSoapMacros.cmake)
 include_directories(../src/ ../src/KDSoapClient/ ../src/KDSoapServer/)

@@ -16,6 +16,10 @@
 # Pass the following variables to cmake to control the build:
 # (See INSTALL-cmake.txt for more information)
 #
+# -DKDSoap_QT6=[true|false]
+#  Build against Qt6 rather than Qt5
+#  Default=false (Qt5 will be used even if Qt6 is available)
+#
 # -DKDSoap_STATIC=[true|false]
 #  Build static libraries
 #  Default=false
@@ -67,6 +71,7 @@ endif()
 option(${PROJECT_NAME}_STATIC "Build statically" OFF)
 option(${PROJECT_NAME}_TESTS "Build the tests" OFF)
 option(${PROJECT_NAME}_EXAMPLES "Build the examples" ON)
+option(${PROJECT_NAME}_QT6 "Build against Qt 6" OFF)
 
 set(${PROJECT_NAME}_VERSION_MAJOR 1)
 set(${PROJECT_NAME}_VERSION_MINOR 99)
@@ -86,9 +91,20 @@ if(BOOST_OPTIONAL_DIR)
   add_definitions(-DBOOST_OPTIONAL_FOUND) # I'd really prefer using configure_file but this is more compatible with qmake
 endif()
 
-set(QT_MIN_VERSION "5.7.0")
-find_package(Qt5 ${QT_MIN_VERSION} COMPONENTS Core Network CONFIG REQUIRED)
-list(APPEND QT_LIBRARIES Qt5::Core Qt5::Network)
+if(${PROJECT_NAME}_QT6)
+  find_package(Qt6 6.0.0 CONFIG REQUIRED COMPONENTS Core Network)
+  set(QT_MAJOR_VERSION 6)
+  list(APPEND QT_LIBRARIES Qt6::Core Qt6::Network)
+  set(${PROJECT_NAME}_LIBRARY_QTID "-qt6")
+  set(libkode_QT6 ON)
+else()
+  # Qt 5.9 required for QNetworkRequest::NoLessSafeRedirectPolicy
+  set(QT_MIN_VERSION "5.9.0")
+  find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS Core Network)
+  set(QT_MAJOR_VERSION 5)
+  list(APPEND QT_LIBRARIES Qt5::Core Qt5::Network)
+  set(${PROJECT_NAME}_LIBRARY_QTID "")
+endif()
 
 set(CMAKE_INCLUDE_CURRENT_DIR TRUE)
 set(CMAKE_AUTOMOC TRUE)
