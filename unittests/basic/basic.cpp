@@ -46,7 +46,7 @@ private Q_SLOTS:
 
     void testDateTime()
     {
-        QDateTime qdt(QDate(2010, 12, 31));
+        QDateTime qdt(QDate(2010, 12, 31), QTime(0, 0, 0));
         QVERIFY(qdt.isValid());
         KDDateTime kdt(qdt);
         QVERIFY(kdt.isValid());
