@@ -160,22 +160,7 @@ bool KDSoapUnitTestHelpers::setSslConfiguration()
 
     // To make SSL work, we need to tell Qt about our local certificate
 
-    // Both ways work:
-#if 0
     QSslConfiguration defaultConfig = QSslConfiguration::defaultConfiguration();
-    QFile certFile(QString::fromLatin1(":/certs/cacert.pem"));
-    if (!certFile.open(QIODevice::ReadOnly)) {
-        qDebug() << "Could not open cacert.pem";
-        return false;
-    }
-    QSslCertificate cert(&certFile);
-    if (!cert.isValid()) {
-        return false;
-    }
-    defaultConfig.setCaCertificates(QList<QSslCertificate>() << cert);
-    QSslConfiguration::setDefaultConfiguration(defaultConfig);
-#endif
-
     QFile certFile(QString::fromLatin1(":/certs/cacert.pem"));
     if (!certFile.open(QIODevice::ReadOnly)) {
         qDebug() << "Could not open cacert.pem";
@@ -189,7 +174,8 @@ bool KDSoapUnitTestHelpers::setSslConfiguration()
         qDebug() << "It is valid from" << cert.effectiveDate() << "to" << cert.expiryDate();
         return false;
     }
-    QSslSocket::addDefaultCaCertificate(cert);
+    defaultConfig.setCaCertificates({cert});
+    QSslConfiguration::setDefaultConfiguration(defaultConfig);
 
     return true;
 }

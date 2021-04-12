@@ -1393,7 +1393,7 @@ private:
     {
         KDSoapClientInterface client(endPoint, countryMessageNamespace());
         const KDSoapMessage response = client.call(QLatin1String("getEmployeeCountry"), countryMessage());
-        QVERIFY(!response.isFault());
+        QVERIFY2(!response.isFault(), qPrintable(response.toXml()));
         QCOMPARE(response.childValues().first().value().toString(), expectedCountry());
     }
 
