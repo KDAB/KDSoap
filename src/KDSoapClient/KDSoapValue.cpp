@@ -325,7 +325,10 @@ void KDSoapValue::writeElementContents(KDSoapNamespacePrefixes &namespacePrefixe
     writeChildren(namespacePrefixes, writer, use, messageNamespace, false);
 
     if (!value.isNull()) {
-        writer.writeCharacters(variantToTextValue(value, this->typeNs(), this->type()));
+        const QString txt = variantToTextValue(value, this->typeNs(), this->type());
+        if (!txt.isEmpty()) { // In Qt6, a null string doesn't lead to a null variant anymore
+            writer.writeCharacters(txt);
+        }
     }
 }
 

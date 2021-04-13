@@ -229,7 +229,7 @@ private:
                "<n1:listKeys xmlns:n1=\"urn:RpcExample\">"
                "<params xsi:type=\"n1:listKeysParams\">"
                "<module xsi:type=\"xsd:string\">Firefox</module>"
-               "<base xsi:type=\"xsd:string\"></base>"
+               "<base xsi:type=\"xsd:string\"/>"
                "</params>"
                "</n1:listKeys>"
                "</soap:Body>" + xmlEnvEnd()
