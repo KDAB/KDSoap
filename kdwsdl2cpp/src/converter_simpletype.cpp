@@ -3,6 +3,7 @@
 #include <code_generation/style.h>
 
 #include <QDebug>
+#include <QRegularExpression>
 
 using namespace KWSDL;
 
@@ -470,6 +471,7 @@ static QString escapeEnum(const QString &str)
     return upperlize(KODE::Style::makeIdentifier(str));
 }
 
+// Escape because we are generating a C++ literal
 static QString escapeRegExp(const QString &str)
 {
     QString reg = str;
@@ -529,11 +531,11 @@ static KODE::Code createRangeCheckCode(const XSD::SimpleType *type, const QStrin
     }
     if (type->facetType() & XSD::SimpleType::PATTERN) {
         if (baseTypeName == "QString") {
-            code += "QRegExp exp( QString::fromLatin1(\"" + escapeRegExp(type->facetPattern()) + "\") );";
-            code += "rangeOk = rangeOk && exp.exactMatch( " + variableName + " );";
+            code += "QRegularExpression exp( QStringLiteral(\"" + escapeRegExp(QRegularExpression::anchoredPattern(type->facetPattern())) + "\") );";
+            code += "rangeOk = rangeOk && exp.match(" + variableName + ").hasMatch();";
         }
 
-        parentClass.addInclude("QtCore/QRegExp");
+        parentClass.addInclude("QtCore/QRegularExpression");
     }
 
     return code;
