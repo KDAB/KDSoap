@@ -540,8 +540,8 @@ private Q_SLOTS:
         // Something related to pipelining? For 5 requests, QNAM opens 4 connections.
 
         QTest::newRow("5_parallel_requests") << 5 << 5 << 1 << 5 << 4;
-        QTest::newRow("5_requests_in_3_threads") << 3 << 5 << 1 << 3 << 2;
-        QTest::newRow("3_requests_in_3_threads_from_2_clients") << 3 << 3 << 2 << 3 << 3; // this one reuses the idle threads
+        QTest::newRow("5_requests_in_3_threads") << 3 << 5 << 1 << 3 << 3;
+        QTest::newRow("3_requests_in_3_threads_from_2_clients") << 3 << 3 << 2 << 3 << 2; // this one reuses the idle threads
     }
 
     void testMultipleThreads()
