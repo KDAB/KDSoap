@@ -177,13 +177,7 @@ public:
         if (!waitForNewConnection(20000)) { // 2000 would be enough, except in valgrind
             return 0;
         }
-        if (doSsl) {
-            Q_ASSERT(sslSocket);
-            return sslSocket;
-        } else {
-            //qDebug() << "returning nextPendingConnection";
-            return nextPendingConnection();
-        }
+        return nextPendingConnection();
     }
 
     virtual void incomingConnection(qintptr socketDescriptor) override
@@ -198,13 +192,12 @@ public:
             //qDebug() << "Created QSslSocket, starting server encryption";
             serverSocket->startServerEncryption();
             sslSocket = serverSocket;
-            // If startServerEncryption fails internally [and waitForEncrypted hangs],
+            // If startServerEncryption fails internally,
             // then this is how to debug it.
             // A way to catch such errors is really missing in Qt..
             //qDebug() << "startServerEncryption said:" << sslSocket->errorString();
-            bool ok = serverSocket->waitForEncrypted();
-            Q_ASSERT(ok);
-            Q_UNUSED(ok);
+            serverSocket->waitForEncrypted();
+            addPendingConnection(serverSocket);
         } else
 #endif
             QTcpServer::incomingConnection(socketDescriptor);
