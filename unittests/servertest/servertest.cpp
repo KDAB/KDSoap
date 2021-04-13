@@ -212,7 +212,7 @@ public: // SOAP-accessible methods
             headers.append(header2);
             setResponseHeaders(headers);
         }
-        return double(foo) + bar + double(dateTime.toTime_t()) + double(dateTime.time().msec() / 1000.0);
+        return double(foo) + bar + double(dateTime.toMSecsSinceEpoch() / 1000.0);
     }
     QByteArray hexBinaryTest(const QByteArray &input1, const QByteArray &input2) const
     {
@@ -1435,8 +1435,7 @@ private:
         KDSoapMessage message;
         message.addArgument(QLatin1String("foo"), 4);
         message.addArgument(QLatin1String("bar"), float(3.2));
-        QDateTime dt = QDateTime::fromTime_t(123456);
-        dt.setTime(dt.time().addMSecs(789));
+        const QDateTime dt = QDateTime::fromMSecsSinceEpoch(123456789);
         message.addArgument(QLatin1String("dateTime"), dt);
         return message;
     }
