@@ -14,7 +14,7 @@
 find_package(Qt${QT_MAJOR_VERSION} ${QT_MIN_VERSION} COMPONENTS Widgets CONFIG REQUIRED)
 list(APPEND QT_LIBRARIES Qt${QT_MAJOR_VERSION}::Widgets)
 
-include(../KDSoapMacros.cmake)
+include(${CMAKE_BINARY_DIR}/KDSoap/KDSoapMacros.cmake)
 include_directories(../src/ ../src/KDSoapClient/ ../src/KDSoapServer/)
 
 add_subdirectory(helloworld_client)

@@ -175,10 +175,10 @@ if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
     "${CMAKE_CURRENT_BINARY_DIR}/KDSoap/KDSoapConfig.cmake"
     @ONLY
   )
-  file(COPY
-    "${CMAKE_CURRENT_SOURCE_DIR}/KDSoapMacros.cmake"
-    DESTINATION
-    "${CMAKE_CURRENT_BINARY_DIR}/KDSoap/"
+  configure_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/KDSoapMacros.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/KDSoap/KDSoapMacros.cmake"
+    @ONLY
   )
   configure_package_config_file(
     "${CMAKE_CURRENT_SOURCE_DIR}/KDSoapConfig.cmake.in"
@@ -190,7 +190,7 @@ if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
   install(FILES
       "${CMAKE_CURRENT_BINARY_DIR}/install/KDSoapConfig.cmake"
       "${CMAKE_CURRENT_BINARY_DIR}/KDSoap/KDSoapConfigVersion.cmake"
-      KDSoapMacros.cmake
+      "${CMAKE_CURRENT_BINARY_DIR}/KDSoap/KDSoapMacros.cmake"
     DESTINATION "${INSTALL_LIBRARY_DIR}/cmake/KDSoap"
   )
   install(EXPORT KDSoapTargets NAMESPACE KDSoap::
