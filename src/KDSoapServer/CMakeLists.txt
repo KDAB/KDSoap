@@ -30,6 +30,7 @@ set(SOURCES
 
 set_source_files_properties(KDSoapServerObjectInterface.cpp PROPERTIES SKIP_AUTOMOC TRUE)
 add_library(kdsoap-server ${KDSoap_LIBRARY_MODE} ${SOURCES})
+set_target_properties(kdsoap-server PROPERTIES OUTPUT_NAME "kdsoap-server${${PROJECT_NAME}_LIBRARY_QTID}")
 if(${PROJECT_NAME}_STATIC)
   target_compile_definitions(kdsoap-server PUBLIC KDSOAPSERVER_STATICLIB)
 else()
