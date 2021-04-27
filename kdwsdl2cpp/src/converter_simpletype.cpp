@@ -531,11 +531,20 @@ static KODE::Code createRangeCheckCode(const XSD::SimpleType *type, const QStrin
     }
     if (type->facetType() & XSD::SimpleType::PATTERN) {
         if (baseTypeName == "QString") {
+#if QT_VERSION >- QT_VERSION_CHECK(5, 12, 0)
             code += "QRegularExpression exp( QStringLiteral(\"" + escapeRegExp(QRegularExpression::anchoredPattern(type->facetPattern())) + "\") );";
             code += "rangeOk = rangeOk && exp.match(" + variableName + ").hasMatch();";
+#else
+            code += "QRegExp exp( QString::fromLatin1(\"" + escapeRegExp(type->facetPattern()) + "\") );";
+            code += "rangeOk = rangeOk && exp.exactMatch( " + variableName + " );";
+#endif
         }
 
+#if QT_VERSION >- QT_VERSION_CHECK(5, 12, 0)
         parentClass.addInclude("QtCore/QRegularExpression");
+#else
+        parentClass.addInclude("QtCore/QRegExp");
+#endif
     }
 
     return code;
