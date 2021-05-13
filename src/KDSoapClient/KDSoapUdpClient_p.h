@@ -27,7 +27,7 @@ class KDSoapUdpClientPrivate : public QObject
     Q_OBJECT
 public:
     explicit KDSoapUdpClientPrivate(KDSoapUdpClient *q)
-        : q_ptr(q), socketIPv4(0), socketIPv6(0)
+        : socketIPv4(0), socketIPv6(0), q_ptr(q)
     {}
 
     void receivedDatagram(const QByteArray &messageData, const QHostAddress &senderAddress, quint16 senderPort);
