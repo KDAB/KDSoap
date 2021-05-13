@@ -1,0 +1,17 @@
+
+Planned:
+* (support Qt6)
+* (qmake buildsystem (via autogen.py) removed)
+* (buildsystem: generate and install kdsoap-version.h)
+* (buildsystem: uninstall target)
+* (buildsystem: docs target)
+
+General:
+========
+
+Client-side:
+============
+
+Server-side:
+============
+
