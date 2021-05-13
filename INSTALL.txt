@@ -1,55 +1,37 @@
+These are the instructions for installing KD SOAP using the CMake buildsystem.
+CMake version 3.0.2 or higher is required.
+
+Starting with version 2.0, KD Soap no longer supports the qmake (via autogen.py) buildsystem.
+
 KD SOAP 1.9 or below requires Qt version >= 4.6 with Network and XML support enabled.
 KD SOAP 1.10 or above requires Qt version >= 5.7 with Network and XML support enabled.
 
-If you are using sources from github (via a git clone or a generated zip file), jump
-to section 1-bis). Commercial users, start at section 1).
+Please see the comments at the top of CMakeLists.txt for
+the available configuration options you can pass to cmake.
 
-1) From the top directory of your KD SOAP installation
-   run the "configure" scripts.
+The installation directory defaults to c:\KDAB\KDSoap-<version> on Windows
+and /usr/local/KDAB/KDSoap-<version> on non-Windows.  You can change this
+location by passing the option -DCMAKE_INSTALL_PREFIX=/install/path to cmake.
 
-   On Windows use depending on the kind of build one of the following;
-     configure.bat -shared -debug
-     configure.bat -shared -release
-     configure.bat -static -debug
-     configure.bat -static -release
+1) From the top directory of your KD SOAP installation create a build directory:
 
-   On Unix or Mac use depending on the kind of build one of the following;
-     ./configure.sh -shared -debug
-     ./configure.sh -shared -release
-     ./configure.sh -static -debug
-     ./configure.sh -static -release
+     mkdir build
 
-   To define the install-location use for example;
-     configure.bat -shared -debug -prefix c:/kdsoap
-     ./configure.sh -shared -debug -prefix /opt/kdsoap
+   and change directory into that build directory:
 
-   NOTE: Don't use relative paths for the prefix, they will not work.
+     cd build
 
-   If this succeeded, jump to step 2.
+2) Now run 'cmake' depending on the kind of build one of the following:
+     cmake -DCMAKE_BUILD_TYPE=Debug ..
+     cmake -DCMAKE_BUILD_TYPE=Release ..
+     cmake -DKDSoap_STATIC=True -DCMAKE_BUILD_TYPE=Debug ..
+     cmake -DKDSoap_STATIC=True -DCMAKE_BUILD_TYPE=Release ..
 
-1-bis) If you are building KD SOAP from a github clone rather than a release tarball,
-   the configure.bat/configure.sh script doesn't exist (it's generated at release time),
-   you need to do this instead:
+   To define the install-location use for example:
+     cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=C:/kdsoap ..
+     cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=/opt/kdsoap ..
 
-   First, a working Python (version2) is required and must be found in your
-   execute path.  Either a 32-bit or 64-bit version of Python is fine, but run
-   python --version to make sure it is found and is python2 before continuing.
-
-   Now run autogen.py to create the configure tool:
-
-   On Windows:
-     c:\python27\python autogen.py [options]
-   On Linux:
-     python2 autogen.py [options]
-
-   Pass the same options to autogen.py as you would for configure.sh/configure.bat
-   as shown above in step 1).
-
-   After running autogen.py, a configure.sh/configure.bat script will exist and
-   you can use that to re-configure later, as needed.  Then you can continue on
-   to the platform-specific setup instructions in step 2, 3 or 4.
-
-2) Unix
+3) Unix
 
    set your LD_LIBRARY_PATH to point to your KD SOAP installation lib directory.
 
@@ -58,19 +40,14 @@ to section 1-bis). Commercial users, start at section 1).
     % export LD_LIBRARY_PATH
 
    The above must be added into your .bashrc or similar to remain. It may also of course
-   be run from a shell just before building software using KD SOAP, but in this case your
-   settings will only be available for this shell.
+   be run from a shell just before building software using KD SOAP, but in this case
+   your settings will only be available for this shell.
 
-   If you want to install the libraries under the "lib64" folder then
-   set the QMAKE_ARGS environment variable to "LIB_SUFFIX=64" like so:
-    % QMAKE_ARGS="LIB_SUFFIX=64"
-    % export QMAKE_ARGS
-
-3) MacOS
+4) MacOS
 
    Proceed as described above, but using DYLD_LIBRARY_PATH instead of LD_LIBRARY_PATH
 
-4) Windows
+5) Windows
 
    For running executables, add the path to the KD Soap dll (kdsoap\bin) into your PATH.
    eg. set PATH=\path\to\kdsoap\bin;%PATH%
@@ -78,18 +55,14 @@ to section 1-bis). Commercial users, start at section 1).
    For development, add the path to the KD Soap lib (kdsoaplib) into your LIB environment.
    eg. set LIB=\path\to\kdsoap\lib;%LIB%
 
-5) Build everything by typing:
+6) Build everything by typing:
 
    From your top-level KD SOAP directory run:
 
    % make    # Unix, Mac
    % nmake   # Windows
 
-   On Windows you can also use the Qt integration into Visual Studio:
-   open the toplevel kdsoap.pro with "Qt / Open Solution from .pro file".
-   You still need to adjust the PATH environment variable in order to run the examples.
-
-6) (optionally:) Install KD SOAP:
+7) (optionally:) Install KD SOAP:
 
    From your top-level KD SOAP directory run:
 
@@ -100,7 +73,21 @@ to section 1-bis). Commercial users, start at section 1).
    For Unix/Linux, Mac this is /usr/local/KDAB/KDSoap-VERSION/
    For Windows this is: C:\KDAB\KDSoap-VERSION\
 
-   UNIX,Mac Note): Admin rights may be required for installing to /usr/local.
-         Run "sudo make install", to install with admin rights.
+8) Have a look at the examples applications. They will get you started with KD SOAP.
 
-7) Have a look at the examples applications to get you started with KD SOAP.
+== Testing ==
+To build the testing harness, pass -DKDSoap_TESTS=true to CMake, like so:
+  % cmake -DKDSoap_TESTS=true
+
+Then run 'make test' to run the unit tests.
+
+== Using ==
+From your CMake project, add
+
+    find_package(KDSoap CONFIG REQUIRED)
+
+and link to the imported target KDSoap::kdsoap.
+That's all you need to do (the imported target also brings in the include directories)
+
+You may also need to point the CMAKE_PREFIX_PATH environment variable depending
+on where you installed KDSoap.
