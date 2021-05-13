@@ -33,4 +33,4 @@ SKIP KDSoapConfig\.cmake\.in
 SKIP FindKDSoap\.cmake|KDSoapMacros\.cmake
 
 #skip the borrowed code in the cmake subdir
-SKIP /cmake/WriteBasicConfigVersionFile.cmake|/cmake/CMakePackageConfigHelpers.cmake|/cmake/InstallLocation.cmake|/cmake/InstallLocation.cmake|/cmake/Qt5Portability.cmake|/cmake/ECMGenerateHeaders.cmake|/cmake/ECMGeneratePriFile.cmake|/cmake/ECMQueryQmake.cmake
+SKIP /cmake/InstallLocation.cmake|/cmake/ECM/
