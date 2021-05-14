@@ -145,10 +145,10 @@ KODE::Code ElementArgumentSerializer::demarshalArray(const QString &soapValueVar
     const QString qtTypeName = mTypeMap.localType(mType, mElementType);
 
     if (mTypeMap.isTypeAny(mType)) {
-        code += mLocalVarName + QLatin1String(".append(val);");
+        code += mLocalVarName + QLatin1String(".append(") + soapValueVarName + QLatin1String(");");
     } else if ( mTypeMap.isBuiltinType(mType, mElementType)) {
         code += mLocalVarName + QLatin1String(".append(") +
-                mTypeMap.deserializeBuiltin(mType, mElementType, "val", qtTypeName) + QLatin1String(");") + COMMENT;
+                mTypeMap.deserializeBuiltin(mType, mElementType, soapValueVarName, qtTypeName) + QLatin1String(");") + COMMENT;
     } else {
         // we need a temp var because of deserialize()
         QString tempVar;
@@ -159,7 +159,7 @@ KODE::Code ElementArgumentSerializer::demarshalArray(const QString &soapValueVar
         }
         code += qtTypeName + QLatin1String(" ") + tempVar + QLatin1String(";") + COMMENT;
         const ElementArgumentSerializer tempDeserializer(mTypeMap, mType, mElementType, tempVar, QString());
-        code.addBlock(tempDeserializer.demarshalVarHelper("val"));
+        code.addBlock(tempDeserializer.demarshalVarHelper(soapValueVarName));
         QString toAppend = tempVar;
         const bool isPolymorphic = mTypeMap.isPolymorphic(mType);
         if (isPolymorphic) {
