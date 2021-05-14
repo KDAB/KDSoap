@@ -32,6 +32,11 @@
 #  Build the examples.
 #  Default=true
 #
+# -DKDSoap_DOCS=[true|false]
+#  Build the API documentation. Enables the 'docs' build target.
+#  Default=false
+#
+
 cmake_minimum_required(VERSION 3.0.2)
 if(POLICY CMP0020)
   cmake_policy(SET CMP0020 NEW)
@@ -71,9 +76,12 @@ else()
   set(CMAKE_CXX_STANDARD 11)
 endif()
 
+include(FeatureSummary)
+
 option(${PROJECT_NAME}_STATIC "Build statically" OFF)
 option(${PROJECT_NAME}_TESTS "Build the tests" OFF)
 option(${PROJECT_NAME}_EXAMPLES "Build the examples" ON)
+option(${PROJECT_NAME}_DOCS "Build the API documentation" OFF)
 option(${PROJECT_NAME}_QT6 "Build against Qt 6" OFF)
 
 set(${PROJECT_NAME}_VERSION_MAJOR 1)
@@ -226,5 +234,13 @@ if(${PROJECT_NAME}_IS_ROOT_PROJECT)
   endif()
   if(${PROJECT_NAME}_EXAMPLES)
     add_subdirectory(examples)
+  endif()
+
+  if(${PROJECT_NAME}_DOCS)
+    add_subdirectory(doc) # needs to go last, in case there are build source files
+  else()
+    add_custom_target(docs
+      COMMAND ${CMAKE_COMMAND} -E echo "Sorry, there is no docs target since KDSoap_DOCS=OFF."
+      "Re-run cmake with the -DKSoap_DOCS=True option if you want to generate the documentation.")
   endif()
 endif()
