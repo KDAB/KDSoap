@@ -15,8 +15,7 @@ Using KD Soap
 =============
 KD Soap requires Qt 5.7.0 or newer, and a compiler with C++11 support.
 
-See [INSTALL.txt](INSTALL.txt) or [INSTALL-cmake.txt](INSTALL-cmake.txt)
-for installation instructions (CMake and qmake and buildsystems supported).
+See [INSTALL.txt](INSTALL.txt) for installation instructions using CMake.
 
 After reading the introductory overview files in doc/
 you will find more information at these places:
