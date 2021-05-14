@@ -1,10 +1,13 @@
 These are the instructions for installing KD SOAP using the CMake buildsystem.
 CMake version 3.0.2 or higher is required.
 
-Starting with version 2.0, KD Soap no longer supports the qmake (via autogen.py) buildsystem.
+The qmake (via autogen.py) buildsystem is removed starting with KDSoap version 2.0.
 
-KD SOAP 1.9 or below requires Qt version >= 4.6 with Network and XML support enabled.
-KD SOAP 1.10 or above requires Qt version >= 5.7 with Network and XML support enabled.
+KD SOAP requires Qt with Network and XML support enabled.
+Qt Version support:
+ * KD SOAP 1.9 or below requires Qt4.6 up to Qt5.15
+ * KD SOAP 1.10 requires Qt5.7 up to Qt5.15
+ * KD SOAP 2.0 or above requires Qt5.7 up to Qt6.x
 
 Please see the comments at the top of CMakeLists.txt for
 the available configuration options you can pass to cmake.
