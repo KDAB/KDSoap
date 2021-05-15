@@ -237,7 +237,7 @@ if(${PROJECT_NAME}_IS_ROOT_PROJECT)
   endif()
 
   if(${PROJECT_NAME}_DOCS)
-    add_subdirectory(doc) # needs to go last, in case there are build source files
+    add_subdirectory(docs) # needs to go last, in case there are build source files
   else()
     add_custom_target(docs
       COMMAND ${CMAKE_COMMAND} -E echo "Sorry, there is no docs target since KDSoap_DOCS=OFF."
