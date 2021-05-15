@@ -2,12 +2,14 @@
 Planned:
 * (buildsystem: generate and install kdsoap-version.h)
 * (buildsystem: uninstall target)
-* (buildsystem: docs target)
 
 General:
 ========
 * Supports Qt6
-* qmake buildsystem (via autogen.py) is removed
+* The qmake buildsystem (via autogen.py) is removed.
+* buildsystem: a new 'docs' target is created when CMake -DKDSoap_DOCS=True.
+* buildsystem: the API manual is now generated in build/docs vice source/docs.
+* The API manual is generated+installed in qch format for Qt assistant.
 
 Client-side:
 ============
