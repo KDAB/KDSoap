@@ -244,3 +244,5 @@ if(${PROJECT_NAME}_IS_ROOT_PROJECT)
       "Re-run cmake with the -DKSoap_DOCS=True option if you want to generate the documentation.")
   endif()
 endif()
+
+feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES FATAL_ON_MISSING_REQUIRED_PACKAGES)
