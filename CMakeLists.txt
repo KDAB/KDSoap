@@ -67,6 +67,7 @@ project(KDSoap CXX)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/ECM/modules")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/KDAB/modules")
 
 if(CMAKE_VERSION VERSION_LESS "3.1")
   if(CMAKE_COMPILER_IS_GNUCXX)
@@ -90,9 +91,6 @@ set(${PROJECT_NAME}_VERSION_PATCH 50)
 set(${PROJECT_NAME}_VERSION ${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR}.${${PROJECT_NAME}_VERSION_PATCH})
 set(${PROJECT_NAME}_SOVERSION ${${PROJECT_NAME}_VERSION_MAJOR})
 
-# setup default install locations
-include(InstallLocation)
-
 find_path(BOOST_OPTIONAL_DIR NAMES boost/optional.hpp)
 if(BOOST_OPTIONAL_DIR)
   message(STATUS "Found boost/optional.hpp in ${BOOST_OPTIONAL_DIR}")
@@ -114,6 +112,10 @@ else()
   list(APPEND QT_LIBRARIES Qt5::Core Qt5::Network)
   set(${PROJECT_NAME}_LIBRARY_QTID "")
 endif()
+
+# setup default install locations
+include(InstallLocation)
+include(KDQtInstallPaths) #to set QT_INSTALL_FOO variables
 
 set(CMAKE_INCLUDE_CURRENT_DIR TRUE)
 set(CMAKE_AUTOMOC TRUE)
