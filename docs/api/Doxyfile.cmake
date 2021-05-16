@@ -1243,7 +1243,7 @@ HTML_EXTRA_STYLESHEET  =
 # files will be copied as-is; there are no commands or markers available.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-HTML_EXTRA_FILES       = "@CMAKE_SOURCE_DIR@/images/kdab-small.png" \
+HTML_EXTRA_FILES       = "@CMAKE_CURRENT_SOURCE_DIR@/kdab-logo-22x22.png" \
                          "@CMAKE_SOURCE_DIR@/images/kdsoap-small.png" \
                          "@CMAKE_SOURCE_DIR@/images/kdsoap-medium.png"
 
