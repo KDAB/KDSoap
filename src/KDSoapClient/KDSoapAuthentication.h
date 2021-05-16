@@ -72,11 +72,11 @@ public:
     QString password() const;
 
     /**
-     * Sets whether #PasswordDigest (default) or #PasswordText is used for authentication
+     * Sets whether \a PasswordDigest (default) or \a PasswordText is used for authentication
      */
     void setUsePasswordDigest(const bool usePasswordDigest);
     /**
-     * \return whether #PasswordDigest is used for authentication
+     * \return whether \a PasswordDigest is used for authentication
      */
     bool usePasswordDigest() const;
 

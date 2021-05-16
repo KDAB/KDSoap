@@ -92,7 +92,7 @@ public:
     bool bind(quint16 port = 0, QAbstractSocket::BindMode mode = QAbstractSocket::DefaultForPlatform);
     /**
      * Sets the SOAP version to be used for any subsequent send message.
-     * \param version #SOAP1_1 or #SOAP1_2
+     * \param version \a SOAP1_1 or \a SOAP1_2
      * The default version is SOAP 1.2.
      */
     void setSoapVersion(KDSoap::SoapVersion version);
