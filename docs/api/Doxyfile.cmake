@@ -953,7 +953,8 @@ EXAMPLE_RECURSIVE      = YES
 # that contain images that are to be included in the documentation (see the
 # \image command).
 
-IMAGE_PATH             = "@CMAKE_SOURCE_DIR@/images"
+IMAGE_PATH             = "@CMAKE_SOURCE_DIR@/images" \
+                         "@CMAKE_CURRENT_SOURCE_DIR@"
 
 # The INPUT_FILTER tag can be used to specify a program that doxygen should
 # invoke to filter for each input file. Doxygen will invoke the filter program
