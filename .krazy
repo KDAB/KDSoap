@@ -29,7 +29,7 @@ SKIP /include/
 SKIP KDSoapConfig\.cmake\.in
 #skip other cmake
 SKIP FindKDSoap\.cmake|KDSoapMacros\.cmake
-SKIP Doxyfile.cmake
+SKIP Doxyfile.cmake|/genignore.py
 
 #skip the borrowed code in the cmake subdir
 SKIP /cmake/InstallLocation.cmake|/cmake/ECM/
