@@ -174,12 +174,16 @@ if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
   install(FILES README.txt README-commercial.txt kdsoap.pri kdwsdl2cpp.pri DESTINATION ${INSTALL_DOC_DIR})
   install(DIRECTORY LICENSES DESTINATION ${INSTALL_DOC_DIR})
 
-  include(CMakePackageConfigHelpers)
-
-  write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/KDSoap/KDSoapConfigVersion.cmake"
-    VERSION ${${PROJECT_NAME}_VERSION}
-    COMPATIBILITY AnyNewerVersion
-  )
+  # Generate library version files
+  include(ECMSetupVersion)
+  ecm_setup_version(
+    ${${PROJECT_NAME}_VERSION}
+    VARIABLE_PREFIX KDSOAP
+    VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/kdsoap_version.h"
+    PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/KDSoap/KDSoapConfigVersion.cmake"
+    SOVERSION ${${PROJECT_NAME}_SOVERSION}
+    COMPATIBILITY AnyNewerVersion)
+  install(FILES "${CMAKE_CURRENT_BINARY_DIR}/kdsoap_version.h" DESTINATION ${INSTALL_INCLUDE_DIR}/KDSoapClient)
 
   configure_file(
     "${CMAKE_CURRENT_SOURCE_DIR}/KDSoapConfig-buildtree.cmake.in"

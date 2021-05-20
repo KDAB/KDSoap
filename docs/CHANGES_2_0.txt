@@ -1,7 +1,4 @@
 
-Planned:
-* (buildsystem: generate and install kdsoap-version.h)
-
 General:
 ========
 * Supports Qt6
@@ -9,6 +6,7 @@ General:
 * buildsystem: a new 'docs' target is created when CMake -DKDSoap_DOCS=True.
 * buildsystem: the API manual is now generated in build/docs vice source/docs.
 * buildsystem: added an uninstall target
+* buildsystem: generate and install kdsoap-version.h
 * The API manual is generated+installed in qch format for Qt assistant.
 
 Client-side:
