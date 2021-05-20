@@ -245,6 +245,9 @@ if(${PROJECT_NAME}_IS_ROOT_PROJECT)
       COMMAND ${CMAKE_COMMAND} -E echo "Sorry, there is no docs target since KDSoap_DOCS=OFF."
       "Re-run cmake with the -DKSoap_DOCS=True option if you want to generate the documentation.")
   endif()
+
+  # Add uninstall target
+  include(ECMUninstallTarget)
 endif()
 
 feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES FATAL_ON_MISSING_REQUIRED_PACKAGES)
