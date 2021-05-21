@@ -25,9 +25,20 @@
 class KDSoapValue::Private : public QSharedData
 {
 public:
-    Private(): m_qualified(false), m_nillable(false) {}
+    Private()
+        : m_qualified(false)
+        , m_nillable(false)
+    {
+    }
     Private(const QString &n, const QVariant &v, const QString &typeNameSpace, const QString &typeName)
-        : m_name(n), m_value(v), m_typeNamespace(typeNameSpace), m_typeName(typeName), m_qualified(false), m_nillable(false) {}
+        : m_name(n)
+        , m_value(v)
+        , m_typeNamespace(typeNameSpace)
+        , m_typeName(typeName)
+        , m_qualified(false)
+        , m_nillable(false)
+    {
+    }
 
     QString m_name;
     QString m_nameNamespace;
@@ -147,12 +158,12 @@ KDSoapValueList &KDSoapValue::childValues() const
     return const_cast<KDSoapValueList &>(d->m_childValues);
 }
 
-bool KDSoapValue::operator ==(const KDSoapValue &other) const
+bool KDSoapValue::operator==(const KDSoapValue &other) const
 {
     return d == other.d;
 }
 
-bool KDSoapValue::operator !=(const KDSoapValue &other) const
+bool KDSoapValue::operator!=(const KDSoapValue &other) const
 {
     return d != other.d;
 }
@@ -217,7 +228,8 @@ static QString variantToTextValue(const QVariant &value, const QString &typeNs, 
         }
 
         qDebug() << QString::fromLatin1("QVariants of type %1 are not supported in "
-                                        "KDSoap, see the documentation").arg(QLatin1String(value.typeName()));
+                                        "KDSoap, see the documentation")
+                        .arg(QLatin1String(value.typeName()));
         return value.toString();
     }
 }
@@ -265,12 +277,14 @@ static QString variantToXMLType(const QVariant &value)
         qDebug() << value;
 
         qDebug() << QString::fromLatin1("variantToXmlType: QVariants of type %1 are not supported in "
-                                        "KDSoap, see the documentation").arg(QLatin1String(value.typeName()));
+                                        "KDSoap, see the documentation")
+                        .arg(QLatin1String(value.typeName()));
         return QString();
     }
 }
 
-void KDSoapValue::writeElement(KDSoapNamespacePrefixes &namespacePrefixes, QXmlStreamWriter &writer, KDSoapValue::Use use, const QString &messageNamespace, bool forceQualified) const
+void KDSoapValue::writeElement(KDSoapNamespacePrefixes &namespacePrefixes, QXmlStreamWriter &writer, KDSoapValue::Use use,
+                               const QString &messageNamespace, bool forceQualified) const
 {
     Q_ASSERT(!name().isEmpty());
     if (!d->m_nameNamespace.isEmpty() && d->m_nameNamespace != messageNamespace) {
@@ -291,11 +305,12 @@ void KDSoapValue::writeElement(KDSoapNamespacePrefixes &namespacePrefixes, QXmlS
     writer.writeEndElement();
 }
 
-void KDSoapValue::writeElementContents(KDSoapNamespacePrefixes &namespacePrefixes, QXmlStreamWriter &writer, KDSoapValue::Use use, const QString &messageNamespace) const
+void KDSoapValue::writeElementContents(KDSoapNamespacePrefixes &namespacePrefixes, QXmlStreamWriter &writer, KDSoapValue::Use use,
+                                       const QString &messageNamespace) const
 {
     const QVariant value = this->value();
 
-    foreach (const QXmlStreamNamespaceDeclaration& decl, d->m_localNamespaceDeclarations) {
+    foreach (const QXmlStreamNamespaceDeclaration &decl, d->m_localNamespaceDeclarations) {
         writer.writeNamespace(decl.namespaceUri().toString(), decl.prefix().toString());
     }
 
@@ -310,7 +325,7 @@ void KDSoapValue::writeElementContents(KDSoapNamespacePrefixes &namespacePrefixe
             type = namespacePrefixes.resolve(this->typeNs(), this->type());
         }
         if (type.isEmpty() && !value.isNull()) {
-            type = variantToXMLType(value);    // fallback
+            type = variantToXMLType(value); // fallback
         }
         if (!type.isEmpty()) {
             writer.writeAttribute(KDSoapNamespaceManager::xmlSchemaInstance2001(), QLatin1String("type"), type);
@@ -319,7 +334,9 @@ void KDSoapValue::writeElementContents(KDSoapNamespacePrefixes &namespacePrefixe
         const KDSoapValueList list = this->childValues();
         const bool isArray = !list.arrayType().isEmpty();
         if (isArray) {
-            writer.writeAttribute(KDSoapNamespaceManager::soapEncoding(), QLatin1String("arrayType"), namespacePrefixes.resolve(list.arrayTypeNs(), list.arrayType()) + QLatin1Char('[') + QString::number(list.count()) + QLatin1Char(']'));
+            writer.writeAttribute(KDSoapNamespaceManager::soapEncoding(), QLatin1String("arrayType"),
+                                  namespacePrefixes.resolve(list.arrayTypeNs(), list.arrayType()) + QLatin1Char('[') + QString::number(list.count())
+                                      + QLatin1Char(']'));
         }
     }
     writeChildren(namespacePrefixes, writer, use, messageNamespace, false);
@@ -332,11 +349,12 @@ void KDSoapValue::writeElementContents(KDSoapNamespacePrefixes &namespacePrefixe
     }
 }
 
-void KDSoapValue::writeChildren(KDSoapNamespacePrefixes &namespacePrefixes, QXmlStreamWriter &writer, KDSoapValue::Use use, const QString &messageNamespace, bool forceQualified) const
+void KDSoapValue::writeChildren(KDSoapNamespacePrefixes &namespacePrefixes, QXmlStreamWriter &writer, KDSoapValue::Use use,
+                                const QString &messageNamespace, bool forceQualified) const
 {
     const KDSoapValueList &args = childValues();
     Q_FOREACH (const KDSoapValue &attr, args.attributes()) {
-        //Q_ASSERT(!attr.value().isNull());
+        // Q_ASSERT(!attr.value().isNull());
 
         const QString attributeNamespace = attr.namespaceUri();
         if (attr.isQualified() || forceQualified) {
@@ -354,7 +372,7 @@ void KDSoapValue::writeChildren(KDSoapNamespacePrefixes &namespacePrefixes, QXml
 
 ////
 
-QDebug operator <<(QDebug dbg, const KDSoapValue &value)
+QDebug operator<<(QDebug dbg, const KDSoapValue &value)
 {
     dbg.space() << value.name() << value.value();
     if (!value.childValues().isEmpty()) {

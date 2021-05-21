@@ -63,4 +63,3 @@ private Q_SLOTS:
 QTEST_MAIN(Basic)
 
 #include "basic.moc"
-

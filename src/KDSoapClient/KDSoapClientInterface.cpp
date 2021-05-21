@@ -57,12 +57,12 @@ KDSoapClientInterface::SoapVersion KDSoapClientInterface::soapVersion() const
 }
 
 KDSoapClientInterfacePrivate::KDSoapClientInterfacePrivate()
-    : m_accessManager(nullptr),
-      m_authentication(),
-      m_version(KDSoap::SOAP1_1),
-      m_style(KDSoapClientInterface::RPCStyle),
-      m_ignoreSslErrors(false),
-      m_timeout(30 * 60 * 1000) // 30 minutes, as documented
+    : m_accessManager(nullptr)
+    , m_authentication()
+    , m_version(KDSoap::SOAP1_1)
+    , m_style(KDSoapClientInterface::RPCStyle)
+    , m_ignoreSslErrors(false)
+    , m_timeout(30 * 60 * 1000) // 30 minutes, as documented
 {
 #ifndef QT_NO_SSL
     m_sslHandler = nullptr;
@@ -80,8 +80,8 @@ QNetworkAccessManager *KDSoapClientInterfacePrivate::accessManager()
 {
     if (!m_accessManager) {
         m_accessManager = new QNetworkAccessManager(this);
-        connect(m_accessManager, SIGNAL(authenticationRequired(QNetworkReply*,QAuthenticator*)),
-                this, SLOT(_kd_slotAuthenticationRequired(QNetworkReply*,QAuthenticator*)));
+        connect(m_accessManager, SIGNAL(authenticationRequired(QNetworkReply *, QAuthenticator *)), this,
+                SLOT(_kd_slotAuthenticationRequired(QNetworkReply *, QAuthenticator *)));
     }
     return m_accessManager;
 }
@@ -102,7 +102,7 @@ QNetworkRequest KDSoapClientInterfacePrivate::prepareRequest(const QString &meth
         }
         soapAction += method;
     }
-    //qDebug() << "soapAction=" << soapAction;
+    // qDebug() << "soapAction=" << soapAction;
 
     QString soapHeader;
     if (m_version == KDSoap::SOAP1_1) {
@@ -140,14 +140,16 @@ QBuffer *KDSoapClientInterfacePrivate::prepareRequestBuffer(const QString &metho
     KDSoapMessageWriter msgWriter;
     msgWriter.setMessageNamespace(m_messageNamespace);
     msgWriter.setVersion(m_version);
-    const QByteArray data = msgWriter.messageToXml(message, (m_style == KDSoapClientInterface::RPCStyle) ? method : QString(), headers, m_persistentHeaders, m_authentication);
+    const QByteArray data = msgWriter.messageToXml(message, (m_style == KDSoapClientInterface::RPCStyle) ? method : QString(), headers,
+                                                   m_persistentHeaders, m_authentication);
     QBuffer *buffer = new QBuffer;
     buffer->setData(data);
     buffer->open(QIODevice::ReadOnly);
     return buffer;
 }
 
-KDSoapPendingCall KDSoapClientInterface::asyncCall(const QString &method, const KDSoapMessage &message, const QString &soapAction, const KDSoapHeaders &headers)
+KDSoapPendingCall KDSoapClientInterface::asyncCall(const QString &method, const KDSoapMessage &message, const QString &soapAction,
+                                                   const KDSoapHeaders &headers)
 {
     QBuffer *buffer = d->prepareRequestBuffer(method, message, headers);
     QNetworkRequest request = d->prepareRequest(method, soapAction);
@@ -159,7 +161,8 @@ KDSoapPendingCall KDSoapClientInterface::asyncCall(const QString &method, const 
     return call;
 }
 
-KDSoapMessage KDSoapClientInterface::call(const QString &method, const KDSoapMessage &message, const QString &soapAction, const KDSoapHeaders &headers)
+KDSoapMessage KDSoapClientInterface::call(const QString &method, const KDSoapMessage &message, const QString &soapAction,
+                                          const KDSoapHeaders &headers)
 {
     d->accessManager()->cookieJar(); // create it in the right thread, the secondary thread will use it
     // Problem is: I don't want a nested event loop here. Too dangerous for GUI programs.

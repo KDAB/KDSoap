@@ -33,9 +33,12 @@ private Q_SLOTS:
     void testEmptyRPCResponse()
     {
         // Prepare response
-        QByteArray responseData = QByteArray(xmlEnvBegin11()) + "><soap:Body>"
-                                  "<ns1:createDirectoryResponse soap:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:ns1=\"https://www.uit.hpc.mil/UITAPIv3/uitapi.jws\"/>"
-                                  " </soap:Body>" + xmlEnvEnd();
+        QByteArray responseData = QByteArray(xmlEnvBegin11())
+            + "><soap:Body>"
+              "<ns1:createDirectoryResponse soap:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\" "
+              "xmlns:ns1=\"https://www.uit.hpc.mil/UITAPIv3/uitapi.jws\"/>"
+              " </soap:Body>"
+            + xmlEnvEnd();
         HttpServerThread server(responseData, HttpServerThread::Public);
 
         UitapiService service;
@@ -48,7 +51,7 @@ private Q_SLOTS:
         job->setDirectory("dir");
 
         QEventLoop loop;
-        QObject::connect(job, SIGNAL(finished(KDSoapJob*)), &loop, SLOT(quit()));
+        QObject::connect(job, SIGNAL(finished(KDSoapJob *)), &loop, SLOT(quit()));
         job->start();
         loop.exec();
     }
@@ -57,9 +60,13 @@ private Q_SLOTS:
     void testReturnRPCResponse()
     {
         // Prepare response
-        QByteArray responseData = QByteArray(xmlEnvBegin11()) + "><soap:Body>"
-            "<ns1:getAllocationInfoResponse soap:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:ns1=\"https://www.uit.hpc.mil/UITAPIv3/uitapi.jws\"><ns1:getAllocationInfoReturn>The response</ns1:getAllocationInfoReturn></ns1:getAllocationInfoResponse>"
-                                              " </soap:Body>" + xmlEnvEnd();
+        QByteArray responseData = QByteArray(xmlEnvBegin11())
+            + "><soap:Body>"
+              "<ns1:getAllocationInfoResponse soap:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\" "
+              "xmlns:ns1=\"https://www.uit.hpc.mil/UITAPIv3/uitapi.jws\"><ns1:getAllocationInfoReturn>The "
+              "response</ns1:getAllocationInfoReturn></ns1:getAllocationInfoResponse>"
+              " </soap:Body>"
+            + xmlEnvEnd();
         HttpServerThread server(responseData, HttpServerThread::Public);
 
         UitapiService service;
@@ -71,7 +78,7 @@ private Q_SLOTS:
         job->setUsername("me");
 
         QEventLoop loop;
-        QObject::connect(job, SIGNAL(finished(KDSoapJob*)), &loop, SLOT(quit()));
+        QObject::connect(job, SIGNAL(finished(KDSoapJob *)), &loop, SLOT(quit()));
         job->start();
         loop.exec();
 
@@ -83,6 +90,3 @@ private Q_SLOTS:
 QTEST_MAIN(UitapiRPCTest)
 
 #include "test_uitapi.moc"
-
-
-

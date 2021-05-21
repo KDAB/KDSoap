@@ -21,7 +21,8 @@ class KDSoapPendingCallWatcher::Private
 public:
     Private(KDSoapPendingCallWatcher *qq)
         : q(qq)
-    {}
+    {
+    }
     void _kd_slotReplyFinished();
 
     KDSoapPendingCallWatcher *q;

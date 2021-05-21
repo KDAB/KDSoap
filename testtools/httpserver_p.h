@@ -34,8 +34,7 @@
 
 class BlockingHttpServer;
 
-namespace KDSoapUnitTestHelpers
-{
+namespace KDSoapUnitTestHelpers {
 bool xmlBufferCompare(const QByteArray &source, const QByteArray &dest);
 void httpGet(const QUrl &url);
 bool setSslConfiguration();
@@ -48,21 +47,24 @@ class HttpServerThread : public QThread
 {
     Q_OBJECT
 public:
-    enum Feature {
-        Public = 0,    // HTTP with no ssl and no authentication needed
-        Ssl = 1,       // HTTPS
-        BasicAuth = 2,  // Requires authentication
-        Error404 = 4   // Return "404 not found"
-                   // bitfield, next item is 8
+    enum Feature
+    {
+        Public = 0, // HTTP with no ssl and no authentication needed
+        Ssl = 1, // HTTPS
+        BasicAuth = 2, // Requires authentication
+        Error404 = 4 // Return "404 not found"
+                     // bitfield, next item is 8
     };
     Q_DECLARE_FLAGS(Features, Feature)
 
     HttpServerThread(const QByteArray &dataToSend, Features features)
-        : m_dataToSend(dataToSend), m_port(0), m_features(features), m_server(0)
+        : m_dataToSend(dataToSend)
+        , m_port(0)
+        , m_features(features)
+        , m_server(0)
     {
         start();
         m_ready.acquire();
-
     }
     ~HttpServerThread()
     {
@@ -78,9 +80,7 @@ public:
     }
     QString endPoint() const
     {
-        return QString::fromLatin1("%1://127.0.0.1:%2/path")
-               .arg(QString::fromLatin1((m_features & Ssl) ? "https" : "http"))
-               .arg(serverPort());
+        return QString::fromLatin1("%1://127.0.0.1:%2/path").arg(QString::fromLatin1((m_features & Ssl) ? "https" : "http")).arg(serverPort());
     }
 
     inline void finish()
@@ -115,8 +115,16 @@ protected:
     /* \reimp */ void run() override;
 
 private:
-
-    enum Method { None, Basic, Plain, Login, Ntlm, CramMd5, DigestMd5 };
+    enum Method
+    {
+        None,
+        Basic,
+        Plain,
+        Login,
+        Ntlm,
+        CramMd5,
+        DigestMd5
+    };
     static void parseAuthLine(const QString &str, Method *method, QString *headerVal)
     {
         *method = None;
@@ -124,7 +132,7 @@ private:
         // is supposed to be run in a loop, apparently
         // (multiple WWW-Authenticate lines? multiple values in the line?)
 
-        //qDebug() << "parseAuthLine() " << str;
+        // qDebug() << "parseAuthLine() " << str;
         if (*method < Basic && str.startsWith(QLatin1String("Basic"), Qt::CaseInsensitive)) {
             *method = Basic;
             *headerVal = str.mid(6);
@@ -181,11 +189,15 @@ Q_DECLARE_OPERATORS_FOR_FLAGS(HttpServerThread::Features)
 // so that the main thread can use synchronous calls. Note that this is
 // really specific to unit tests and doesn't need to be done in a real
 // KDSoap-based server.
-template <class ServerObjectType>
+template<class ServerObjectType>
 class TestServerThread
 {
 public:
-    TestServerThread() : m_thread(0), m_pServer(0) {}
+    TestServerThread()
+        : m_thread(0)
+        , m_pServer(0)
+    {
+    }
     ~TestServerThread()
     {
         if (m_thread) {

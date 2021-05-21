@@ -27,7 +27,7 @@
 #include "KDSoapGlobal.h"
 
 #ifndef QT_NO_STL
-# include <algorithm>
+#include <algorithm>
 #endif
 
 // Qt-4.7 errors on QVariant::fromValue<signed char>(), but later versions support it.
@@ -47,7 +47,8 @@ namespace KDSoap {
  * This enum value is used in KDSoapMessage.
  * For historical reasons, KDSoapClientInterface uses its own version enum.
  */
-enum SoapVersion {
+enum SoapVersion
+{
     /** Use format version 1.1 of the SOAP specification */
     SOAP1_1 = 1,
     /** Use format version 1.2 of the SOAP specification */
@@ -96,7 +97,8 @@ public:
      * \param typeNameSpace namespace of the type of this value; this is only useful if using KDSoapMessage::EncodedUse
      * \param typeName localname of the type of this value; this is only useful if using KDSoapMessage::EncodedUse
      */
-    KDSoapValue(const QString &name, const KDSoapValueList &childValues, const QString &typeNameSpace = QString(), const QString &typeName = QString());
+    KDSoapValue(const QString &name, const KDSoapValueList &childValues, const QString &typeNameSpace = QString(),
+                const QString &typeName = QString());
 
     /**
      * Copy constructor
@@ -238,13 +240,13 @@ public:
      * Sets the \p namespaceDeclarations of this value.
      * \since 1.8
      */
-    void setNamespaceDeclarations(const QXmlStreamNamespaceDeclarations& namespaceDeclarations);
+    void setNamespaceDeclarations(const QXmlStreamNamespaceDeclarations &namespaceDeclarations);
 
     /**
      * Adds a \p namespaceDeclaration to the existing list of namespaceDeclarations.
      * \since 1.8
      */
-    void addNamespaceDeclaration(const QXmlStreamNamespaceDeclaration& namespaceDeclaration);
+    void addNamespaceDeclaration(const QXmlStreamNamespaceDeclaration &namespaceDeclaration);
 
     /**
      * Returns the namespaceDeclarations of this value as it was during parsing of the message
@@ -256,7 +258,7 @@ public:
      * Sets the \p environmentNamespaceDeclarations of this value.
      * \since 1.8
      */
-    void setEnvironmentNamespaceDeclarations(const QXmlStreamNamespaceDeclarations& environmentNamespaceDeclarations);
+    void setEnvironmentNamespaceDeclarations(const QXmlStreamNamespaceDeclarations &environmentNamespaceDeclarations);
 
     /**
      * Returns the namespaceDeclarations of this value and its parents combined as it was during parsing of the message
@@ -275,15 +277,15 @@ public:
      * Defines the way the message should be serialized.
      * See the "use" attribute for soap:body, in the WSDL file.
      */
-    enum Use {
+    enum Use
+    {
         LiteralUse, ///< data is serialized according to a given schema, no \c xsi:type attributes are written out
-        EncodedUse  ///< each message part references an abstract type using the \c xsi:type attribute
+        EncodedUse ///< each message part references an abstract type using the \c xsi:type attribute
     };
 
     QByteArray toXml(Use use = LiteralUse, const QString &messageNamespace = QString()) const;
 
 protected: // for KDSoapMessage
-
     void setName(const QString &name);
 
 private:
@@ -291,9 +293,12 @@ private:
     KDSoapValue(QString, QString, QString);
 
     friend class KDSoapMessageWriter;
-    void writeElement(KDSoapNamespacePrefixes &namespacePrefixes, QXmlStreamWriter &writer, KDSoapValue::Use use, const QString &messageNamespace, bool forceQualified) const;
-    void writeElementContents(KDSoapNamespacePrefixes &namespacePrefixes, QXmlStreamWriter &writer, KDSoapValue::Use use, const QString &messageNamespace) const;
-    void writeChildren(KDSoapNamespacePrefixes &namespacePrefixes, QXmlStreamWriter &writer, KDSoapValue::Use use, const QString &messageNamespace, bool forceQualified) const;
+    void writeElement(KDSoapNamespacePrefixes &namespacePrefixes, QXmlStreamWriter &writer, KDSoapValue::Use use, const QString &messageNamespace,
+                      bool forceQualified) const;
+    void writeElementContents(KDSoapNamespacePrefixes &namespacePrefixes, QXmlStreamWriter &writer, KDSoapValue::Use use,
+                              const QString &messageNamespace) const;
+    void writeChildren(KDSoapNamespacePrefixes &namespacePrefixes, QXmlStreamWriter &writer, KDSoapValue::Use use, const QString &messageNamespace,
+                       bool forceQualified) const;
 
     class Private;
     QSharedDataPointer<Private> d;
@@ -303,7 +308,7 @@ QT_BEGIN_NAMESPACE
 Q_DECLARE_TYPEINFO(KDSoapValue, Q_MOVABLE_TYPE);
 QT_END_NAMESPACE
 
-KDSOAP_EXPORT QDebug operator <<(QDebug dbg, const KDSoapValue &value);
+KDSOAP_EXPORT QDebug operator<<(QDebug dbg, const KDSoapValue &value);
 
 KDSOAP_EXPORT uint qHash(const KDSoapValue &value);
 inline void qSwap(KDSoapValue &lhs, KDSoapValue &rhs)
@@ -312,9 +317,9 @@ inline void qSwap(KDSoapValue &lhs, KDSoapValue &rhs)
 }
 
 #ifndef QT_NO_STL
-namespace std
-{
-template <> inline void swap<KDSoapValue>(KDSoapValue &lhs, KDSoapValue &rhs)
+namespace std {
+template<>
+inline void swap<KDSoapValue>(KDSoapValue &lhs, KDSoapValue &rhs)
 {
     lhs.swap(rhs);
 }
@@ -327,7 +332,7 @@ template <> inline void swap<KDSoapValue>(KDSoapValue &lhs, KDSoapValue &rhs)
  * In other words, it corresponds to a list of XML elements in a SOAP
  * message. It also supports XML attributes.
  */
-class KDSOAP_EXPORT KDSoapValueList : public QList<KDSoapValue> //krazy:exclude=dpointer
+class KDSOAP_EXPORT KDSoapValueList : public QList<KDSoapValue> // krazy:exclude=dpointer
 {
 public:
     /**
@@ -345,7 +350,8 @@ public:
      * append(KDSoapValue(argumentName, argumentValue [, typeNameSpace, typeName] ));
      * \endcode
      */
-    void addArgument(const QString &argumentName, const QVariant &argumentValue, const QString &typeNameSpace = QString(), const QString &typeName = QString());
+    void addArgument(const QString &argumentName, const QVariant &argumentValue, const QString &typeNameSpace = QString(),
+                     const QString &typeName = QString());
 
     /**
      * Convenience method for extracting a child argument by \p name.
@@ -402,6 +408,6 @@ private:
 
 typedef QListIterator<KDSoapValue> KDSoapValueListIterator;
 
-//Q_DECLARE_METATYPE(KDSoapValueList)
+// Q_DECLARE_METATYPE(KDSoapValueList)
 
 #endif // KDSOAPVALUE_H

@@ -64,14 +64,19 @@ private Q_SLOTS:
         KDSoapMessage message;
         KDSoapMessage ret = client.call(QLatin1String("Method1"), message);
         QVERIFY(ret.isFault());
-        QCOMPARE(ret.faultAsString(), QString::fromLatin1(
-                     "Fault code 203: Error transferring %1 - server replied: Not Found").arg(server.endPoint()));
-        QCOMPARE(QString::fromLatin1(ret.toXml().constData()), QLatin1String(
-                     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-                     "<soap:Fault xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
-                      "<faultcode>203</faultcode>"
-                      "<faultstring>Error transferring ") + server.endPoint() + QLatin1String(" - server replied: Not Found</faultstring>"
-                     "</soap:Fault>\n"));
+        QCOMPARE(ret.faultAsString(),
+                 QString::fromLatin1("Fault code 203: Error transferring %1 - server replied: Not Found").arg(server.endPoint()));
+        QCOMPARE(
+            QString::fromLatin1(ret.toXml().constData()),
+            QLatin1String(
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+                "<soap:Fault xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\" "
+                "xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
+                "<faultcode>203</faultcode>"
+                "<faultstring>Error transferring ")
+                + server.endPoint()
+                + QLatin1String(" - server replied: Not Found</faultstring>"
+                                "</soap:Fault>\n"));
     }
 
     void testFaultSoap12() // HTTP error, creates fault on client side
@@ -82,8 +87,7 @@ private Q_SLOTS:
         KDSoapMessage message;
         KDSoapMessage ret = client.call(QLatin1String("Method1"), message);
         QVERIFY(ret.isFault());
-        QCOMPARE(ret.faultAsString(), QString::fromLatin1(
-                     "Fault 203: Error transferring %1 - server replied: Not Found").arg(server.endPoint()));
+        QCOMPARE(ret.faultAsString(), QString::fromLatin1("Fault 203: Error transferring %1 - server replied: Not Found").arg(server.endPoint()));
     }
 
     void testInvalidXML()
@@ -93,19 +97,18 @@ private Q_SLOTS:
         KDSoapMessage message;
         KDSoapMessage ret = client.call(QLatin1String("Method1"), message);
         QVERIFY(ret.isFault());
-        QCOMPARE(ret.faultAsString(), QString::fromLatin1(
-                     "Fault code 3: XML error: [1:291] Opening and ending tag mismatch."));
+        QCOMPARE(ret.faultAsString(), QString::fromLatin1("Fault code 3: XML error: [1:291] Opening and ending tag mismatch."));
     }
 
     void testInvalidUndefinedEntityXML()
     {
-        HttpServerThread server(QByteArray(xmlEnvBegin11()) + "><soap:Body>&doesnotexist;</soap:Body>" + xmlEnvEnd() + '\n', HttpServerThread::Public);
+        HttpServerThread server(QByteArray(xmlEnvBegin11()) + "><soap:Body>&doesnotexist;</soap:Body>" + xmlEnvEnd() + '\n',
+                                HttpServerThread::Public);
         KDSoapClientInterface client(server.endPoint(), QString::fromLatin1("urn:msg"));
         KDSoapMessage message;
         KDSoapMessage ret = client.call(QLatin1String("Method1"), message);
         QVERIFY(ret.isFault());
-        QCOMPARE(ret.faultAsString(), QString::fromLatin1(
-                     "Fault code 3: XML error: [1:291] Entity 'doesnotexist' not declared."));
+        QCOMPARE(ret.faultAsString(), QString::fromLatin1("Fault code 3: XML error: [1:291] Entity 'doesnotexist' not declared."));
     }
 
     // Test for basic auth, with async call
@@ -181,7 +184,8 @@ private Q_SLOTS:
         QByteArray expectedRequestXml = expectedCountryRequest();
         client.setSoapVersion(KDSoapClientInterface::SOAP1_1);
         {
-            KDSoapMessage ret = client.call(QLatin1String("getEmployeeCountry"), countryMessage(), "http://www.kdab.com/xml/MyWsdl/getEmployeeCountry");
+            KDSoapMessage ret =
+                client.call(QLatin1String("getEmployeeCountry"), countryMessage(), "http://www.kdab.com/xml/MyWsdl/getEmployeeCountry");
             // Check what we sent
             QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
             QVERIFY(!ret.isFault());
@@ -197,14 +201,16 @@ private Q_SLOTS:
         }
         client.setSoapVersion(KDSoapClientInterface::SOAP1_2);
         {
-            KDSoapMessage ret = client.call(QLatin1String("getEmployeeCountry"), countryMessage(), "http://www.kdab.com/xml/MyWsdl/getEmployeeCountry");
+            KDSoapMessage ret =
+                client.call(QLatin1String("getEmployeeCountry"), countryMessage(), "http://www.kdab.com/xml/MyWsdl/getEmployeeCountry");
             // Check what we sent
             QByteArray expectedRequestXml12 = expectedRequestXml;
             expectedRequestXml12.replace("http://schemas.xmlsoap.org/soap/envelope/", "http://www.w3.org/2003/05/soap-envelope");
             expectedRequestXml12.replace("http://schemas.xmlsoap.org/soap/encoding/", "http://www.w3.org/2003/05/soap-encoding");
             QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml12));
             QVERIFY(!ret.isFault());
-            QCOMPARE(server.header("Content-Type").constData(), "application/soap+xml;charset=utf-8;action=http://www.kdab.com/xml/MyWsdl/getEmployeeCountry");
+            QCOMPARE(server.header("Content-Type").constData(),
+                     "application/soap+xml;charset=utf-8;action=http://www.kdab.com/xml/MyWsdl/getEmployeeCountry");
             QCOMPARE(ret.arguments().child(QLatin1String("employeeCountry")).value().toString(), QString::fromLatin1("France"));
 #if QT_VERSION >= 0x040800
             QCOMPARE(server.header("Cookie").constData(), "biscuits=are good");
@@ -237,7 +243,7 @@ private Q_SLOTS:
 
         // Now make the call again, but async, and don't wait for response.
         server.resetReceivedBuffers();
-        //qDebug() << "== now calling callNoReply ==";
+        // qDebug() << "== now calling callNoReply ==";
         client.callNoReply(QLatin1String("getEmployeeCountry"), countryMessage());
         QTest::qWait(200);
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
@@ -272,7 +278,8 @@ private Q_SLOTS:
 
         // Test complextype with child elements and attributes
         KDSoapValueList valueList;
-        KDSoapValue orderperson(QString::fromLatin1("orderperson"), QString::fromLatin1("someone"), countryMessageNamespace(), QString::fromLatin1("Person"));
+        KDSoapValue orderperson(QString::fromLatin1("orderperson"), QString::fromLatin1("someone"), countryMessageNamespace(),
+                                QString::fromLatin1("Person"));
         valueList.append(orderperson);
         valueList.attributes().append(KDSoapValue(QString::fromLatin1("attr"), QString::fromLatin1("attrValue")));
         message.addArgument(QString::fromLatin1("order"), valueList, countryMessageNamespace(), QString::fromLatin1("MyOrder"));
@@ -293,7 +300,8 @@ private Q_SLOTS:
         arrayContents.setArrayType(XMLSchemaNS, QString::fromLatin1("string"));
         arrayContents.append(KDSoapValue(QString::fromLatin1("item"), QString::fromLatin1("kdab"), XMLSchemaNS, QString::fromLatin1("string")));
         arrayContents.append(KDSoapValue(QString::fromLatin1("item"), QString::fromLatin1("rocks"), XMLSchemaNS, QString::fromLatin1("string")));
-        message.addArgument(QString::fromLatin1("testArray"), arrayContents, QString::fromLatin1("http://schemas.xmlsoap.org/soap/encoding/"), QString::fromLatin1("Array"));
+        message.addArgument(QString::fromLatin1("testArray"), arrayContents, QString::fromLatin1("http://schemas.xmlsoap.org/soap/encoding/"),
+                            QString::fromLatin1("Array"));
 
         // Add a header
         KDSoapMessage header1;
@@ -304,26 +312,26 @@ private Q_SLOTS:
 
         client.call(QLatin1String("test"), message, QString::fromLatin1("MySoapAction"), headers);
         // Check what we sent
-        QByteArray expectedRequestXml =
-            QByteArray(xmlEnvBegin11()) +
-            " xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\""
-            "><soap:Header>"
-            "<n1:header1 xsi:type=\"xsd:string\">headerValue</n1:header1>"
-            "</soap:Header>";
+        QByteArray expectedRequestXml = QByteArray(xmlEnvBegin11())
+            + " xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\""
+              "><soap:Header>"
+              "<n1:header1 xsi:type=\"xsd:string\">headerValue</n1:header1>"
+              "</soap:Header>";
         const QByteArray expectedRequestBody =
             QByteArray("<soap:Body>"
                        "<n1:test>"
                        "<testString xsi:type=\"xsd:string\">Hello Klarälvdalens</testString>"
                        "<val xsi:type=\"n1:MyVal\" attr=\"attrValue\">5</val>"
                        "<order xsi:type=\"n1:MyOrder\" attr=\"attrValue\"><orderperson xsi:type=\"n1:Person\">someone</orderperson></order>"
-                       "<rect><x xsi:type=\"xsd:int\">0</x><y xsi:type=\"xsd:int\">0</y><width xsi:type=\"xsd:int\">100</width><height xsi:type=\"xsd:int\">200</height></rect>"
+                       "<rect><x xsi:type=\"xsd:int\">0</x><y xsi:type=\"xsd:int\">0</y><width xsi:type=\"xsd:int\">100</width><height "
+                       "xsi:type=\"xsd:int\">200</height></rect>"
                        "<testArray xsi:type=\"soap-enc:Array\" soap-enc:arrayType=\"xsd:string[2]\">"
                        "<item xsi:type=\"xsd:string\">kdab</item>"
                        "<item xsi:type=\"xsd:string\">rocks</item>"
                        "</testArray>"
                        "</n1:test>"
-                       "</soap:Body>") + xmlEnvEnd()
-            + '\n'; // added by QXmlStreamWriter::writeEndDocument
+                       "</soap:Body>")
+            + xmlEnvEnd() + '\n'; // added by QXmlStreamWriter::writeEndDocument
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml + expectedRequestBody));
 
         // Now using persistent headers
@@ -336,10 +344,9 @@ private Q_SLOTS:
         server.resetReceivedBuffers();
         client.setHeader(QLatin1String("header1"), KDSoapMessage());
         client.call(QLatin1String("test"), message, QString::fromLatin1("MySoapAction"));
-        const QByteArray expectedRequestXmlNoHeader =
-            QByteArray(xmlEnvBegin11()) +
-            " xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\""
-            "><soap:Header/>"; // the empty element does not matter
+        const QByteArray expectedRequestXmlNoHeader = QByteArray(xmlEnvBegin11())
+            + " xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\""
+              "><soap:Header/>"; // the empty element does not matter
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXmlNoHeader + expectedRequestBody));
     }
 
@@ -371,7 +378,7 @@ private Q_SLOTS:
         QCOMPARE(description.value().toString(), QString::fromLatin1("No Error"));
         const KDSoapValue array = lst.at(2);
         QCOMPARE(array.name(), QString::fromLatin1("testArray"));
-        //qDebug() << array;
+        // qDebug() << array;
 
         // Code from documentation
         const QString sessionId = response.arguments()[0].value().toString();
@@ -403,18 +410,22 @@ private Q_SLOTS:
 private:
     static QByteArray countryResponse()
     {
-        return QByteArray(xmlEnvBegin11()) + "><soap:Body>"
-               "<kdab:getEmployeeCountryResponse xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl/\"><kdab:employeeCountry>France</kdab:employeeCountry></kdab:getEmployeeCountryResponse>"
-               " </soap:Body>" + xmlEnvEnd();
+        return QByteArray(xmlEnvBegin11())
+            + "><soap:Body>"
+              "<kdab:getEmployeeCountryResponse "
+              "xmlns:kdab=\"http://www.kdab.com/xml/MyWsdl/\"><kdab:employeeCountry>France</kdab:employeeCountry></kdab:getEmployeeCountryResponse>"
+              " </soap:Body>"
+            + xmlEnvEnd();
     }
     static QByteArray expectedCountryRequest()
     {
-        return QByteArray(xmlEnvBegin11()) +
-               "><soap:Body>"
-               "<n1:getEmployeeCountry xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
-               "<employeeName>David Ä Faure</employeeName>"
-               "</n1:getEmployeeCountry>"
-               "</soap:Body>" + xmlEnvEnd();
+        return QByteArray(xmlEnvBegin11())
+            + "><soap:Body>"
+              "<n1:getEmployeeCountry xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
+              "<employeeName>David Ä Faure</employeeName>"
+              "</n1:getEmployeeCountry>"
+              "</soap:Body>"
+            + xmlEnvEnd();
     }
     static QString countryMessageNamespace()
     {
@@ -430,8 +441,7 @@ private:
     {
         KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);
         QEventLoop loop;
-        connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher*)),
-                &loop, SLOT(quit()));
+        connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher *)), &loop, SLOT(quit()));
         loop.exec();
     }
 
@@ -442,20 +452,22 @@ private:
 
     static QByteArray complexTypeResponse()
     {
-        return QByteArray(xmlEnvBegin11()) + "><soap:Body xmlns:tns=\"http://www.sugarcrm.com/sugarcrm\">"
-               "<ns1:loginResponse xmlns:ns1=\"http://www.sugarcrm.com/sugarcrm\">"
-               "  <return xsi:type=\"tns:set_entry_result\">"
-               "    <id xsi:type=\"xsd:string\">12345</id>"
-               "    <error xsi:type=\"tns:error_value\">"
-               "       <number xsi:type=\"xsd:string\">0</number>"
-               "       <name xsi:type=\"xsd:string\">No Error</name>"
-               "       <description xsi:type=\"xsd:string\">No Error</description>"
-               "    </error>"
-               "    <testArray ns1:attr=\"aValue\" xsi:type=\"soap-enc:Array\" soap-enc:arrayType=\"xsi:string\">"
-               "    </testArray>"
-               "  </return>"
-               "</ns1:loginResponse>"
-               "</soap:Body>" + xmlEnvEnd();
+        return QByteArray(xmlEnvBegin11())
+            + "><soap:Body xmlns:tns=\"http://www.sugarcrm.com/sugarcrm\">"
+              "<ns1:loginResponse xmlns:ns1=\"http://www.sugarcrm.com/sugarcrm\">"
+              "  <return xsi:type=\"tns:set_entry_result\">"
+              "    <id xsi:type=\"xsd:string\">12345</id>"
+              "    <error xsi:type=\"tns:error_value\">"
+              "       <number xsi:type=\"xsd:string\">0</number>"
+              "       <name xsi:type=\"xsd:string\">No Error</name>"
+              "       <description xsi:type=\"xsd:string\">No Error</description>"
+              "    </error>"
+              "    <testArray ns1:attr=\"aValue\" xsi:type=\"soap-enc:Array\" soap-enc:arrayType=\"xsi:string\">"
+              "    </testArray>"
+              "  </return>"
+              "</ns1:loginResponse>"
+              "</soap:Body>"
+            + xmlEnvEnd();
     }
 };
 

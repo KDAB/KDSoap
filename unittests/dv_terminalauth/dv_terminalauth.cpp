@@ -31,24 +31,28 @@ class TestDVTerminalAuth : public QObject
     Q_OBJECT
 
 private:
-
     static QByteArray expectedGetCACertRequest()
     {
-        return QByteArray(xmlEnvBegin11()) + ">"
-               "<soap:Body>"
-               "<n1:GetCACertificates xmlns:n1=\"uri:EAC-PKI-DV-Protocol/1.1\">"
-               "<callbackIndicator>callback_not_possible</callbackIndicator>"
-                "<n1:messageID/>"
-                "<n1:responseURL/>"
-               "</n1:GetCACertificates>"
-               "</soap:Body>" + xmlEnvEnd()
-               + '\n'; // added by QXmlStreamWriter::writeEndDocument;
+        return QByteArray(xmlEnvBegin11())
+            + ">"
+              "<soap:Body>"
+              "<n1:GetCACertificates xmlns:n1=\"uri:EAC-PKI-DV-Protocol/1.1\">"
+              "<callbackIndicator>callback_not_possible</callbackIndicator>"
+              "<n1:messageID/>"
+              "<n1:responseURL/>"
+              "</n1:GetCACertificates>"
+              "</soap:Body>"
+            + xmlEnvEnd() + '\n'; // added by QXmlStreamWriter::writeEndDocument;
     }
 
     static QByteArray getCACertResponse()
     {
         return "<?xml version='1.0' encoding='UTF-8'?>"
-"<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\"><soap:Body><ns1:GetCACertificatesResponse xmlns:ns1=\"uri:EAC-PKI-DV-Protocol/1.1\"><Result xmlns:ns2=\"uri:eacBT/1.1\"><ns2:returnCode>ok_cert_available</ns2:returnCode><ns2:certificateSeq><ns2:certificate>" + QByteArray("XXXYYYZZZ").toBase64() + "</ns2:certificate></ns2:certificateSeq></Result></ns1:GetCACertificatesResponse></soap:Body></soap:Envelope>";
+               "<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\"><soap:Body><ns1:GetCACertificatesResponse "
+               "xmlns:ns1=\"uri:EAC-PKI-DV-Protocol/1.1\"><Result "
+               "xmlns:ns2=\"uri:eacBT/1.1\"><ns2:returnCode>ok_cert_available</ns2:returnCode><ns2:certificateSeq><ns2:certificate>"
+            + QByteArray("XXXYYYZZZ").toBase64()
+            + "</ns2:certificate></ns2:certificateSeq></Result></ns1:GetCACertificatesResponse></soap:Body></soap:Envelope>";
     }
 
 private Q_SLOTS:

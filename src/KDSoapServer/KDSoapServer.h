@@ -49,11 +49,12 @@ public:
      */
     ~KDSoapServer();
 
-    enum Feature {
-        Public = 0,       ///< HTTP with no ssl and no authentication needed (default)
-        Ssl = 1,          ///< HTTPS
-        AuthRequired = 2  ///< Requires authentication. Currently not implemented, patches welcome.
-                       // bitfield, next item is 4
+    enum Feature
+    {
+        Public = 0, ///< HTTP with no ssl and no authentication needed (default)
+        Ssl = 1, ///< HTTPS
+        AuthRequired = 2 ///< Requires authentication. Currently not implemented, patches welcome.
+                         // bitfield, next item is 4
     };
     Q_DECLARE_FLAGS(Features, Feature)
 
@@ -126,7 +127,12 @@ public:
      */
     KDSoapMessage::Use use() const;
 
-    enum LogLevel { LogNothing, LogFaults, LogEveryCall };
+    enum LogLevel
+    {
+        LogNothing,
+        LogFaults,
+        LogEveryCall
+    };
     /**
      * Sets the level of logging to be used by this SOAP server:
      * <ul>

@@ -105,7 +105,9 @@ class GuestServer : public KDSoapServer
 {
     Q_OBJECT
 public:
-    GuestServer() : KDSoapServer(), m_lastServerObject(0)
+    GuestServer()
+        : KDSoapServer()
+        , m_lastServerObject(0)
     {
         setPath(QLatin1String("/xml"));
     }
@@ -142,7 +144,7 @@ private slots:
         TNS__AuthenticateRequest req;
         req.setSerijskiBrojSertifikata("cert");
         job->setParameters(req);
-        connect(job, SIGNAL(finished(KDSoapJob*)), this, SLOT(slotAuthenticateJobFinished(KDSoapJob*)));
+        connect(job, SIGNAL(finished(KDSoapJob *)), this, SLOT(slotAuthenticateJobFinished(KDSoapJob *)));
         job->start();
         m_eventLoop.exec();
 
@@ -157,6 +159,7 @@ protected slots: // the really private ones
     {
         m_eventLoop.quit();
     }
+
 private:
     QEventLoop m_eventLoop;
 };

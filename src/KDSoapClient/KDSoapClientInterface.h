@@ -60,7 +60,8 @@ public:
      * Version of the SOAP protocol to use when sending requests.
      * \see setSoapVersion()
      */
-    enum SoapVersion {
+    enum SoapVersion
+    {
         /** Use format version 1.1 of the SOAP specification */
         SOAP1_1 = 1,
         /** Use format version 1.2 of the SOAP specification */
@@ -128,8 +129,7 @@ public:
      *  }
      * \endcode
      */
-    KDSoapPendingCall asyncCall(const QString &method, const KDSoapMessage &message,
-                                const QString &soapAction = QString(),
+    KDSoapPendingCall asyncCall(const QString &method, const KDSoapMessage &message, const QString &soapAction = QString(),
                                 const KDSoapHeaders &headers = KDSoapHeaders());
 
     /**
@@ -146,8 +146,7 @@ public:
      * graphical applications, since it will block the event loop for the duration of the call.
      * Use this only in threads, or in non-GUI programs.
      */
-    KDSoapMessage call(const QString &method, const KDSoapMessage &message,
-                       const QString &soapAction = QString(),
+    KDSoapMessage call(const QString &method, const KDSoapMessage &message, const QString &soapAction = QString(),
                        const KDSoapHeaders &headers = KDSoapHeaders());
 
     /**
@@ -163,8 +162,7 @@ public:
      * This is an asynchronous call, where the caller does not want to wait for a response.
      * The method returns immediately, the call is performed later. No error handling is possible.
      */
-    void callNoReply(const QString &method, const KDSoapMessage &message,
-                     const QString &soapAction = QString(),
+    void callNoReply(const QString &method, const KDSoapMessage &message, const QString &soapAction = QString(),
                      const KDSoapHeaders &headers = KDSoapHeaders());
 
     /**
@@ -223,24 +221,24 @@ public:
     void setCookieJar(QNetworkCookieJar *jar);
 
     /**
-      * Returns the network proxy used for the HTTP requests.
-      * \since 1.2
-      * \sa QNetworkAccessManager::proxy()
-      */
+     * Returns the network proxy used for the HTTP requests.
+     * \since 1.2
+     * \sa QNetworkAccessManager::proxy()
+     */
     QNetworkProxy proxy() const;
 
     /**
-      * Sets the network proxy used for the HTTP requests.
-      * \since 1.2
-      * \sa QNetworkAccessManager::setProxy()
-      */
+     * Sets the network proxy used for the HTTP requests.
+     * \since 1.2
+     * \sa QNetworkAccessManager::setProxy()
+     */
     void setProxy(const QNetworkProxy &proxy);
 
     /**
-      * Sets additional HTTP headers in the requests
-      * \since 1.4
-      * \sa QNetworkAccessManager::setRawHeader()
-      */
+     * Sets additional HTTP headers in the requests
+     * \since 1.4
+     * \sa QNetworkAccessManager::setRawHeader()
+     */
     void setRawHTTPHeaders(const QMap<QByteArray, QByteArray> &headers);
 
     /**
@@ -256,9 +254,10 @@ public:
      * is used as the main xml element name. This difference is mostly useful in the case of
      * generated code, so that it can serialize existing complex types, and send them as messages.
      */
-    enum Style {
-        RPCStyle,       ///< the method name is sent as an xml element wrapping the message parameters
-        DocumentStyle   ///< the message is sent as is, the method name is usually the name of the message
+    enum Style
+    {
+        RPCStyle, ///< the method name is sent as an xml element wrapping the message parameters
+        DocumentStyle ///< the message is sent as is, the method name is usually the name of the message
     };
 
     /**
@@ -326,17 +325,17 @@ public:
 #endif
 
     /**
-      * Returns the timeout used for requests, in milliseconds.
-      * The default timeout is 30 minutes.
-      * \since 1.8
-      */
+     * Returns the timeout used for requests, in milliseconds.
+     * The default timeout is 30 minutes.
+     * \since 1.8
+     */
     int timeout() const;
 
     /**
-      * Sets the timeout used for future requests, in milliseconds.
-      * A negative value disables the timeout feature.
-      * \since 1.8
-      */
+     * Sets the timeout used for future requests, in milliseconds.
+     * A negative value disables the timeout feature.
+     * \since 1.8
+     */
     void setTimeout(int msecs);
 
 private:

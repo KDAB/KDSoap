@@ -31,23 +31,25 @@
 
 #include <kode_export.h>
 
-namespace KWSDL
-{
+namespace KWSDL {
 
 class KWSDL_EXPORT SoapBinding : public AbstractBinding
 {
 public:
-    enum Style {
+    enum Style
+    {
         RPCStyle,
         DocumentStyle
     };
 
-    enum Use {
+    enum Use
+    {
         LiteralUse,
         EncodedUse
     };
 
-    enum Transport {
+    enum Transport
+    {
         HTTPTransport
     };
 
@@ -82,13 +84,13 @@ public:
         QString encodingStyle() const;
 #endif
 
-        //void setPart( const QString &part );
+        // void setPart( const QString &part );
         QString part() const;
 
-        //void setUse( Use use );
+        // void setUse( Use use );
         Use use() const;
 
-        //void setNameSpace( const QString &nameSpace );
+        // void setNameSpace( const QString &nameSpace );
         QString nameSpace() const;
 
         void loadXML(ParserContext *context, const QDomElement &element);
@@ -319,4 +321,3 @@ private:
 }
 
 #endif // KWSDL_SOAPBINDING_H
-

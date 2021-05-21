@@ -59,7 +59,7 @@ void Compiler::download()
             return;
         }
 
-        //qDebug() << "parsing" << fileName;
+        // qDebug() << "parsing" << fileName;
         QString errorMsg;
         int errorLine, errorCol;
         QDomDocument doc;

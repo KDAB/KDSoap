@@ -60,7 +60,8 @@ public:
      * Called when starting to receive a new request.
      * @param requestType GET or POST
      * @param httpHeaders the map of http headers (keys have been lowercased since they are case insensitive)
-     * @return true if you want this interface to handle the request, otherwise the usual processing via KDSoapServerObjectInterface::processRequest will happen.
+     * @return true if you want this interface to handle the request, otherwise the usual processing via KDSoapServerObjectInterface::processRequest
+     * will happen.
      */
     virtual bool newRequest(const QByteArray &requestType, const QMap<QByteArray, QByteArray> &httpHeaders)
     {
@@ -90,8 +91,7 @@ private:
 };
 
 QT_BEGIN_NAMESPACE
-Q_DECLARE_INTERFACE(KDSoapServerRawXMLInterface,
-                    "com.kdab.KDSoap.ServerRawXMLInterface/1.0")
+Q_DECLARE_INTERFACE(KDSoapServerRawXMLInterface, "com.kdab.KDSoap.ServerRawXMLInterface/1.0")
 QT_END_NAMESPACE
 
 #endif /* KDSOAPSERVERRAWXMLINTERFACE_H */

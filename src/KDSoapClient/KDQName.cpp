@@ -16,20 +16,21 @@ KDQName::KDQName()
 {
 }
 
-KDQName::KDQName( const QString &name )
+KDQName::KDQName(const QString &name)
 {
-    parse( name );
+    parse(name);
 }
 
-KDQName::KDQName( const QString &nameSpace, const QString &localName )
-    : mNameSpace( nameSpace ), mLocalName( localName )
+KDQName::KDQName(const QString &nameSpace, const QString &localName)
+    : mNameSpace(nameSpace)
+    , mLocalName(localName)
 {
     Q_ASSERT(!localName.contains(QLatin1Char(':')));
 }
 
-void KDQName::operator=( const QString &name )
+void KDQName::operator=(const QString &name)
 {
-    parse( name );
+    parse(name);
 }
 
 QString KDQName::localName() const
@@ -44,13 +45,13 @@ QString KDQName::prefix() const
 
 QString KDQName::qname() const
 {
-    if ( mPrefix.isEmpty() )
+    if (mPrefix.isEmpty())
         return mLocalName;
     else
         return mPrefix + QLatin1Char(':') + mLocalName;
 }
 
-void KDQName::setNameSpace( const QString &nameSpace )
+void KDQName::setNameSpace(const QString &nameSpace)
 {
     mNameSpace = nameSpace;
 }
@@ -60,14 +61,14 @@ QString KDQName::nameSpace() const
     return mNameSpace;
 }
 
-bool KDQName::operator==( const KDQName &qname ) const
+bool KDQName::operator==(const KDQName &qname) const
 {
     return (qname.nameSpace() == mNameSpace && qname.localName() == mLocalName);
 }
 
-bool KDQName::operator!=( const KDQName &qname ) const
+bool KDQName::operator!=(const KDQName &qname) const
 {
-    return !operator==( qname );
+    return !operator==(qname);
 }
 
 bool KDQName::isEmpty() const
@@ -94,26 +95,26 @@ KDQName KDQName::fromSoapValue(const KDSoapValue &value)
 KDSoapValue KDQName::toSoapValue(const QString &name, const QString &typeNameSpace, const QString &typeName) const
 {
     KDSoapValue value = KDSoapValue(name, qname(), typeNameSpace, typeName);
-    if ( !mPrefix.isEmpty() && !mNameSpace.isEmpty() ) {
+    if (!mPrefix.isEmpty() && !mNameSpace.isEmpty()) {
         QXmlStreamNamespaceDeclaration decl(mPrefix, mNameSpace);
         value.addNamespaceDeclaration(decl);
     }
     return value;
 }
 
-void KDQName::parse( const QString &str )
+void KDQName::parse(const QString &str)
 {
-    int pos = str.indexOf( QLatin1Char(':') );
-    if ( pos != -1 ) {
-        mPrefix = str.left( pos );
-        mLocalName = str.mid( pos + 1 );
+    int pos = str.indexOf(QLatin1Char(':'));
+    if (pos != -1) {
+        mPrefix = str.left(pos);
+        mLocalName = str.mid(pos + 1);
     } else {
         mLocalName = str;
     }
     Q_ASSERT(!mLocalName.contains(QLatin1Char(':')));
 }
 
-QDebug operator <<(QDebug dbg, const KDQName &qn)
+QDebug operator<<(QDebug dbg, const KDQName &qn)
 {
     if (!qn.nameSpace().isEmpty())
         dbg << "(" << qn.nameSpace() << "," << qn.localName() << ")";

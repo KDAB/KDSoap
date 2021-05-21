@@ -25,33 +25,35 @@ ServerObject::ServerObject()
 {
 }
 
-ServerObject::~ServerObject() {
+ServerObject::~ServerObject()
+{
 }
 
-QString ServerObject::sayHello(const QString& msg)
+QString ServerObject::sayHello(const QString &msg)
 {
     if (msg.isEmpty()) {
-        setFault(QLatin1String("Client.Data"), QLatin1String("Empty message"),
-                 QLatin1String("ServerObject"), tr("You must say something."));
+        setFault(QLatin1String("Client.Data"), QLatin1String("Empty message"), QLatin1String("ServerObject"), tr("You must say something."));
         return QString();
     }
     return tr("I'm helloworld_server and you said: %1").arg(msg);
 }
 
-class Server : public KDSoapServer {
+class Server : public KDSoapServer
+{
 public:
-    QObject* createServerObject() override {
+    QObject *createServerObject() override
+    {
         return new ServerObject;
     }
 };
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
     QCoreApplication app(argc, argv);
     Server server;
     server.setLogLevel(Server::LogEveryCall);
     const bool listening = server.listen(QHostAddress::Any, 8081);
-    if ( !listening ) {
+    if (!listening) {
         std::cerr << "Cannot start server: " << qPrintable(server.errorString()) << std::endl;
         return 1;
     } else {

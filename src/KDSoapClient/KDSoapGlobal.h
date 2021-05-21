@@ -18,16 +18,15 @@
 
 #include <QtCore/QtGlobal>
 
-# ifdef KDSOAP_STATICLIB
-#  undef KDSOAP_SHARED
-#  define KDSOAP_EXPORT
-# else
-#  ifdef KDSOAP_BUILD_KDSOAP_LIB
-#   define KDSOAP_EXPORT Q_DECL_EXPORT
-#  else
-#   define KDSOAP_EXPORT Q_DECL_IMPORT
-#  endif
-# endif
+#ifdef KDSOAP_STATICLIB
+#undef KDSOAP_SHARED
+#define KDSOAP_EXPORT
+#else
+#ifdef KDSOAP_BUILD_KDSOAP_LIB
+#define KDSOAP_EXPORT Q_DECL_EXPORT
+#else
+#define KDSOAP_EXPORT Q_DECL_IMPORT
+#endif
+#endif
 
 #endif /* KDSOAPGLOBAL_H */
-

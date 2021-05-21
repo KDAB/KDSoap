@@ -24,7 +24,6 @@ class DateExampleWSDL : public QObject
 {
     Q_OBJECT
 public:
-
 private slots:
     void slotCheckCompilation()
     {
@@ -33,10 +32,8 @@ private slots:
         QDate result = job.dateObject();
         QCOMPARE(result, QDate());
     }
-
 };
 
 QTEST_MAIN(DateExampleWSDL)
 
 #include "date_example.moc"
-

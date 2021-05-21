@@ -46,4 +46,3 @@ private Q_SLOTS:
 QTEST_MAIN(KDDateTimeTest)
 
 #include "kddatetime.moc"
-

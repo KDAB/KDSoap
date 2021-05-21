@@ -33,12 +33,15 @@ static QString soap12StandardNamespace = QLatin1String("http://schemas.xmlsoap.o
 static QString httpStandardNamespace = QLatin1String("http://schemas.xmlsoap.org/wsdl/http/");
 
 Binding::Binding()
-    : mType(UnknownBinding), mVersion(SOAP_1_1)
+    : mType(UnknownBinding)
+    , mVersion(SOAP_1_1)
 {
 }
 
 Binding::Binding(const QString &nameSpace)
-    : Element(nameSpace), mType(UnknownBinding), mVersion(SOAP_1_1)
+    : Element(nameSpace)
+    , mType(UnknownBinding)
+    , mVersion(SOAP_1_1)
 {
 }
 

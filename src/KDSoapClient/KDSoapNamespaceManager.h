@@ -22,7 +22,7 @@
 /**
  * Repository of namespaces
  */
-class KDSOAP_EXPORT KDSoapNamespaceManager //krazy:exclude=dpointer
+class KDSOAP_EXPORT KDSoapNamespaceManager // krazy:exclude=dpointer
 {
 public:
     static QString xmlSchema1999();

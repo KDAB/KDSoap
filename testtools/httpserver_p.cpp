@@ -27,9 +27,8 @@
 #endif
 
 // Helper for xmlBufferCompare
-static bool textBufferCompare(
-    const QByteArray &source, const QByteArray &dest,  // for the qDebug only
-    QIODevice &sourceFile, QIODevice &destFile)
+static bool textBufferCompare(const QByteArray &source, const QByteArray &dest, // for the qDebug only
+                              QIODevice &sourceFile, QIODevice &destFile)
 {
     int lineNumber = 1;
     while (!sourceFile.atEnd()) {
@@ -106,16 +105,16 @@ void KDSoapUnitTestHelpers::httpGet(const QUrl &url)
     QNetworkRequest request(url);
     QNetworkAccessManager manager;
     QNetworkReply *reply = manager.get(request);
-    //QObject::connect(reply, SIGNAL(sslErrors(QList<QSslError>)), reply, SLOT(ignoreSslErrors()));
+    // QObject::connect(reply, SIGNAL(sslErrors(QList<QSslError>)), reply, SLOT(ignoreSslErrors()));
 
     QEventLoop ev;
     QObject::connect(reply, SIGNAL(finished()), &ev, SLOT(quit()));
     ev.exec();
 
-    //QObject::connect(reply, SIGNAL(finished()), &QTestEventLoop::instance(), SLOT(exitLoop()));
-    //QTestEventLoop::instance().enterLoop(11);
+    // QObject::connect(reply, SIGNAL(finished()), &QTestEventLoop::instance(), SLOT(exitLoop()));
+    // QTestEventLoop::instance().enterLoop(11);
 
-    //qDebug() << "httpGet:" << reply->readAll();
+    // qDebug() << "httpGet:" << reply->readAll();
     delete reply;
 }
 
@@ -126,7 +125,7 @@ void KDSoapUnitTestHelpers::httpGet(const QUrl &url)
 static void setupSslServer(QSslSocket *serverSocket)
 {
     Q_INIT_RESOURCE(testtools);
-    //qDebug() << "setupSslServer";
+    // qDebug() << "setupSslServer";
     serverSocket->setProtocol(QSsl::AnyProtocol);
     serverSocket->setLocalCertificate(QString::fromLatin1(":/certs/test-127.0.0.1-cert.pem"));
     serverSocket->setPrivateKey(QString::fromLatin1(":/certs/test-127.0.0.1-key.pem"));
@@ -151,13 +150,12 @@ bool KDSoapUnitTestHelpers::setSslConfiguration()
     }
     QSslCertificate cert(&certFile);
     const QDateTime currentTime = QDateTime::currentDateTime();
-    if (cert.effectiveDate() > currentTime
-            || cert.expiryDate() < currentTime) {
+    if (cert.effectiveDate() > currentTime || cert.expiryDate() < currentTime) {
         qDebug() << "Certificate" << certFile.fileName() << "is not valid";
         qDebug() << "It is valid from" << cert.effectiveDate() << "to" << cert.expiryDate();
         return false;
     }
-    defaultConfig.setCaCertificates({cert});
+    defaultConfig.setCaCertificates({ cert });
     QSslConfiguration::setDefaultConfiguration(defaultConfig);
 
     return true;
@@ -169,8 +167,14 @@ class BlockingHttpServer : public QTcpServer
 {
     Q_OBJECT
 public:
-    BlockingHttpServer(bool ssl) : doSsl(ssl), sslSocket(0) {}
-    ~BlockingHttpServer() {}
+    BlockingHttpServer(bool ssl)
+        : doSsl(ssl)
+        , sslSocket(0)
+    {
+    }
+    ~BlockingHttpServer()
+    {
+    }
 
     QTcpSocket *waitForNextConnectionSocket()
     {
@@ -189,13 +193,13 @@ public:
             serverSocket->setSocketDescriptor(socketDescriptor);
             connect(serverSocket, SIGNAL(sslErrors(QList<QSslError>)), this, SLOT(slotSslErrors(QList<QSslError>)));
             setupSslServer(serverSocket);
-            //qDebug() << "Created QSslSocket, starting server encryption";
+            // qDebug() << "Created QSslSocket, starting server encryption";
             serverSocket->startServerEncryption();
             sslSocket = serverSocket;
             // If startServerEncryption fails internally,
             // then this is how to debug it.
             // A way to catch such errors is really missing in Qt..
-            //qDebug() << "startServerEncryption said:" << sslSocket->errorString();
+            // qDebug() << "startServerEncryption said:" << sslSocket->errorString();
             serverSocket->waitForEncrypted();
             addPendingConnection(serverSocket);
         } else
@@ -216,6 +220,7 @@ private slots:
         Q_UNUSED(errors);
 #endif
     }
+
 private:
     bool doSsl;
     QTcpSocket *sslSocket;
@@ -263,7 +268,7 @@ static HeadersMap parseHeaders(const QByteArray &headerData)
         }
         const QByteArray header = line.left(pos);
         const QByteArray value = line.mid(pos + 1).trimmed(); // remove space before and \r\n after
-        //qDebug() << "HEADER" << header << "VALUE" << value;
+        // qDebug() << "HEADER" << header << "VALUE" << value;
         headersMap.insert(header, value);
     }
     return headersMap;
@@ -302,13 +307,13 @@ void HttpServerThread::run()
         return;
     }
 
-    Q_FOREVER {
+    Q_FOREVER
+    {
         // get the "request" packet
         if (doDebug) {
             qDebug() << "HttpServerThread: waiting for read";
         }
-        if (clientSocket->state() == QAbstractSocket::UnconnectedState ||
-                !clientSocket->waitForReadyRead(2000)) {
+        if (clientSocket->state() == QAbstractSocket::UnconnectedState || !clientSocket->waitForReadyRead(2000)) {
             if (clientSocket->state() == QAbstractSocket::UnconnectedState) {
                 delete clientSocket;
                 if (doDebug) {
@@ -331,7 +336,7 @@ void HttpServerThread::run()
         lock.relock();
         const bool splitOK = splitHeadersAndData(request, m_receivedHeaders, m_receivedData);
         if (!splitOK) {
-            //if (doDebug)
+            // if (doDebug)
             //    qDebug() << "Storing partial request" << request;
             m_partialRequest = request;
             continue;
@@ -340,7 +345,7 @@ void HttpServerThread::run()
         m_headers = parseHeaders(m_receivedHeaders);
 
         if (m_headers.value("Content-Length").toInt() > m_receivedData.size()) {
-            //if (doDebug)
+            // if (doDebug)
             //    qDebug() << "Storing partial request" << request;
             m_partialRequest = request;
             continue;
@@ -349,7 +354,7 @@ void HttpServerThread::run()
         m_partialRequest.clear();
 
         if (m_headers.value("_path").endsWith("terminateThread")) { // we're asked to exit
-            break;    // normal exit
+            break; // normal exit
         }
 
         // TODO compared with expected SoapAction
@@ -363,28 +368,28 @@ void HttpServerThread::run()
         }
         lock.unlock();
 
-        //qDebug() << "headers received:" << m_receivedHeaders;
-        //qDebug() << headers;
-        //qDebug() << "data received:" << m_receivedData;
+        // qDebug() << "headers received:" << m_receivedHeaders;
+        // qDebug() << headers;
+        // qDebug() << "data received:" << m_receivedData;
 
         if (m_features & BasicAuth) {
             QByteArray authValue = m_headers.value("Authorization");
             if (authValue.isEmpty()) {
-                authValue = m_headers.value("authorization");    // as sent by Qt-4.5
+                authValue = m_headers.value("authorization"); // as sent by Qt-4.5
             }
             bool authOk = false;
             if (!authValue.isEmpty()) {
-                //qDebug() << "got authValue=" << authValue; // looks like "Basic <base64 of user:pass>"
+                // qDebug() << "got authValue=" << authValue; // looks like "Basic <base64 of user:pass>"
                 Method method;
                 QString headerVal;
                 parseAuthLine(QString::fromLatin1(authValue.data(), authValue.size()), &method, &headerVal);
-                //qDebug() << "method=" << method << "headerVal=" << headerVal;
+                // qDebug() << "method=" << method << "headerVal=" << headerVal;
                 switch (method) {
                 case None: // we want auth, so reject "None"
                     break;
                 case Basic: {
                     const QByteArray userPass = QByteArray::fromBase64(headerVal.toLatin1());
-                    //qDebug() << userPass;
+                    // qDebug() << userPass;
                     // TODO if (validateAuth(userPass)) {
                     if (userPass == ("kdab:testpass")) {
                         authOk = true;
@@ -398,7 +403,8 @@ void HttpServerThread::run()
 
             if (!authOk) {
                 // send auth request (Qt supports basic, ntlm and digest)
-                const QByteArray unauthorized = "HTTP/1.1 401 Authorization Required\r\nWWW-Authenticate: Basic realm=\"example\"\r\nContent-Length: 0\r\n\r\n";
+                const QByteArray unauthorized =
+                    "HTTP/1.1 401 Authorization Required\r\nWWW-Authenticate: Basic realm=\"example\"\r\nContent-Length: 0\r\n\r\n";
                 clientSocket->write(unauthorized);
                 if (!clientSocket->waitForBytesWritten(2000)) {
                     qDebug() << "HttpServerThread:" << clientSocket->error() << "writing auth request";
@@ -427,12 +433,12 @@ void HttpServerThread::run()
 
 const char *KDSoapUnitTestHelpers::xmlEnvBegin11()
 {
-    return  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-            "<soap:Envelope"
-            " xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\""
-            " xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\""
-            " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\""
-            " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"";
+    return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+           "<soap:Envelope"
+           " xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\""
+           " xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\""
+           " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\""
+           " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"";
 }
 
 const char *KDSoapUnitTestHelpers::xmlEnvBegin12()

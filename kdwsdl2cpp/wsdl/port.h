@@ -33,8 +33,7 @@
 
 class ParserContext;
 
-namespace KWSDL
-{
+namespace KWSDL {
 
 class KWSDL_EXPORT Port : public Element
 {
@@ -62,4 +61,3 @@ private:
 }
 
 #endif // KWSDL_PORT_H
-

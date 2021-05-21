@@ -50,25 +50,27 @@ private Q_SLOTS:
 private:
     static QByteArray queryResponse()
     {
-        return QByteArray(xmlEnvBegin11()) + " xmlns:sf=\"urn:sobject.partner.soap.sforce.com\"><soap:Body>"
-               "<queryResponse>" // TODO
-               "</queryResponse>"
-               "</soap:Body>" + xmlEnvEnd();
+        return QByteArray(xmlEnvBegin11())
+            + " xmlns:sf=\"urn:sobject.partner.soap.sforce.com\"><soap:Body>"
+              "<queryResponse>" // TODO
+              "</queryResponse>"
+              "</soap:Body>"
+            + xmlEnvEnd();
     }
 
     QByteArray expectedRequestXML()
     {
-        return QByteArray(xmlEnvBegin11()) + "><soap:Body>"
-               "<n1:SayHello xmlns:n1=\"http://www.ecerami.com/wsdl/HelloService.wsdl\" xsi:type=\"n1:SayHello\">"
-               "<msgElement xsi:type=\"xsd:string\">Hello !</msgElement>"
-               "<secondpartElement xsi:type=\"xsd:int\">42</secondpartElement>"
-               "</n1:SayHello>"
-               "</soap:Body>" + xmlEnvEnd()
-               + '\n'; // added by QXmlStreamWriter::writeEndDocument
+        return QByteArray(xmlEnvBegin11())
+            + "><soap:Body>"
+              "<n1:SayHello xmlns:n1=\"http://www.ecerami.com/wsdl/HelloService.wsdl\" xsi:type=\"n1:SayHello\">"
+              "<msgElement xsi:type=\"xsd:string\">Hello !</msgElement>"
+              "<secondpartElement xsi:type=\"xsd:int\">42</secondpartElement>"
+              "</n1:SayHello>"
+              "</soap:Body>"
+            + xmlEnvEnd() + '\n'; // added by QXmlStreamWriter::writeEndDocument
     }
 };
 
 QTEST_MAIN(MultipleInputParamTest)
 
 #include "test_multiple_input_param.moc"
-

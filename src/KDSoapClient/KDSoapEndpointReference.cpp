@@ -21,7 +21,9 @@
 class KDSoapEndpointReferenceData : public QSharedData
 {
 public:
-    KDSoapEndpointReferenceData() {}
+    KDSoapEndpointReferenceData()
+    {
+    }
 
     QString m_address;
     KDSoapValueList m_metadata;
@@ -39,7 +41,7 @@ KDSoapEndpointReference::KDSoapEndpointReference(const KDSoapEndpointReference &
 {
 }
 
-KDSoapEndpointReference &KDSoapEndpointReference::operator =(const KDSoapEndpointReference &other)
+KDSoapEndpointReference &KDSoapEndpointReference::operator=(const KDSoapEndpointReference &other)
 {
     d = other.d;
     return *this;
@@ -83,4 +85,3 @@ void KDSoapEndpointReference::setReferenceParameters(const KDSoapValueList &refe
 {
     d->m_referenceParameters = referenceParameters;
 }
-

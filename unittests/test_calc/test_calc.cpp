@@ -53,33 +53,35 @@ private Q_SLOTS:
 
         // Check what we sent
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedAddRequestXml()));
-
     }
 
 private:
-    static QByteArray addResponseXml() {
+    static QByteArray addResponseXml()
+    {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-               "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:SOAP-ENC=\"http://schemas.xmlsoap.org/soap/encoding/\" "
-                "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" "
-                "xmlns:ns=\"urn:calc\"><SOAP-ENV:Body SOAP-ENV:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\">"
-                "<ns:addResponse>"
-                "<result>10</result>"
-                "</ns:addResponse>"
+               "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" "
+               "xmlns:SOAP-ENC=\"http://schemas.xmlsoap.org/soap/encoding/\" "
+               "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" "
+               "xmlns:ns=\"urn:calc\"><SOAP-ENV:Body SOAP-ENV:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\">"
+               "<ns:addResponse>"
+               "<result>10</result>"
+               "</ns:addResponse>"
                "</SOAP-ENV:Body>"
                "</SOAP-ENV:Envelope>";
     }
-    static QByteArray expectedAddRequestXml() {
+    static QByteArray expectedAddRequestXml()
+    {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-               "<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" "
-                  "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
-                "<soap:Body>"
-                 "<n1:add xmlns:n1=\"urn:calc\">"
-                  "<a xsi:type=\"xsd:double\">5</a><b xsi:type=\"xsd:double\">5</b>"
-                 "</n1:add>"
-                "</soap:Body>"
+               "<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\" "
+               "xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" "
+               "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
+               "<soap:Body>"
+               "<n1:add xmlns:n1=\"urn:calc\">"
+               "<a xsi:type=\"xsd:double\">5</a><b xsi:type=\"xsd:double\">5</b>"
+               "</n1:add>"
+               "</soap:Body>"
                "</soap:Envelope>";
     }
-
 };
 
 QTEST_MAIN(CalcTest)

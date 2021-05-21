@@ -36,16 +36,16 @@ void KDSoapMessageWriter::setMessageNamespace(const QString &ns)
     m_messageNamespace = ns;
 }
 
-QByteArray KDSoapMessageWriter::messageToXml(const KDSoapMessage &message, const QString &method,
-        const KDSoapHeaders &headers, const QMap<QString, KDSoapMessage> &persistentHeaders,
-        const KDSoapAuthentication &authentication) const
+QByteArray KDSoapMessageWriter::messageToXml(const KDSoapMessage &message, const QString &method, const KDSoapHeaders &headers,
+                                             const QMap<QString, KDSoapMessage> &persistentHeaders, const KDSoapAuthentication &authentication) const
 {
     QByteArray data;
     QXmlStreamWriter writer(&data);
     writer.writeStartDocument();
 
     KDSoapNamespacePrefixes namespacePrefixes;
-    namespacePrefixes.writeStandardNamespaces(writer, m_version, message.hasMessageAddressingProperties(), message.messageAddressingProperties().addressingNamespace());
+    namespacePrefixes.writeStandardNamespaces(writer, m_version, message.hasMessageAddressingProperties(),
+                                              message.messageAddressingProperties().addressingNamespace());
 
     QString soapEnvelope;
     QString soapEncoding;
@@ -60,7 +60,7 @@ QByteArray KDSoapMessageWriter::messageToXml(const KDSoapMessage &message, const
     writer.writeStartElement(soapEnvelope, QLatin1String("Envelope"));
 
     // This has been removed, see https://msdn.microsoft.com/en-us/library/ms995710.aspx for details
-    //writer.writeAttribute(soapEnvelope, QLatin1String("encodingStyle"), soapEncoding);
+    // writer.writeAttribute(soapEnvelope, QLatin1String("encodingStyle"), soapEncoding);
 
     QString messageNamespace = m_messageNamespace;
     if (!message.namespaceUri().isEmpty() && messageNamespace != message.namespaceUri()) {

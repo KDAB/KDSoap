@@ -35,26 +35,27 @@
 #define COMMENT QLatin1String("// ") + Converter::shortenFilename(QLatin1String(__FILE__)) + QLatin1String(":") + QString::number(__LINE__)
 #endif
 
-namespace KWSDL
-{
+namespace KWSDL {
 
 class Converter
 {
 public:
+    struct DefaultAttributeValue
+    {
+        DefaultAttributeValue(bool isBuiltin = false, const QString &value = QString())
+            : mIsBuiltin(isBuiltin)
+            , mValue(value)
+        {
+        }
 
-  struct DefaultAttributeValue
-  {
-    DefaultAttributeValue(bool isBuiltin = false, const QString& value = QString()):
-        mIsBuiltin(isBuiltin),
-        mValue(value) { }
+        bool mIsBuiltin;
+        QString mValue;
 
-    bool mIsBuiltin;
-    QString mValue;
-
-    bool isNull() const {
-        return mValue.isNull();
-    }
-  };
+        bool isNull() const
+        {
+            return mValue.isNull();
+        }
+    };
 
     Converter();
 
@@ -67,7 +68,6 @@ public:
     static QString shortenFilename(const QString &path);
 
 private:
-
     void cleanupUnusedTypes();
     void convertTypes();
 
@@ -83,10 +83,13 @@ private:
     void convertClientInputMessage(const Operation &, const Binding &, KODE::Class &);
     void convertClientOutputMessage(const Operation &, const Binding &, KODE::Class &);
     void clientAddOneArgument(KODE::Function &callFunc, const Part &part, KODE::Class &newClass);
-    void clientAddArguments(KODE::Function &callFunc, const Message &message, KODE::Class &newClass, const Operation &operation, const Binding &binding);
+    void clientAddArguments(KODE::Function &callFunc, const Message &message, KODE::Class &newClass, const Operation &operation,
+                            const Binding &binding);
     bool clientAddAction(KODE::Code &code, const Binding &binding, const QString &operationName);
-    void clientGenerateMessage(KODE::Code &code, const Binding &binding, const Message &message, const Operation &operation, bool varsAreMembers = false);
-    void addMessageArgument(KODE::Code &code, const SoapBinding::Style &bindingStyle, const Part &part, const QString &localVariableName, const QByteArray &messageName, bool varIsMember = false);
+    void clientGenerateMessage(KODE::Code &code, const Binding &binding, const Message &message, const Operation &operation,
+                               bool varsAreMembers = false);
+    void addMessageArgument(KODE::Code &code, const SoapBinding::Style &bindingStyle, const Part &part, const QString &localVariableName,
+                            const QByteArray &messageName, bool varIsMember = false);
     void createHeader(const SoapBinding::Header &header, KODE::Class &newClass);
     void addJobResultMember(KODE::Class &jobClass, const Part &part, const QString &varName, const QStringList &inputGetters);
     KODE::Code serializePart(const Part &part, const QString &localVariableName, const QString &nilVariableName, const QString &varName, bool append);
@@ -94,7 +97,9 @@ private:
     void addVariableInitializer(KODE::MemberVariable &variable) const;
 
     // Implements default values processing ONLY for attributes
-    QString generateMemberVariable(const QString &rawName, const QString &typeName, const QString &inputTypeName, KODE::Class &newClass, XSD::Attribute::AttributeUse, bool usePointer, bool polymorphic, const DefaultAttributeValue& defaultValue = DefaultAttributeValue());
+    QString generateMemberVariable(const QString &rawName, const QString &typeName, const QString &inputTypeName, KODE::Class &newClass,
+                                   XSD::Attribute::AttributeUse, bool usePointer, bool polymorphic,
+                                   const DefaultAttributeValue &defaultValue = DefaultAttributeValue());
 
     QString listTypeFor(const QString &itemTypeName, KODE::Class &newClass);
     KODE::Code deserializeRetVal(const KWSDL::Part &part, const QString &replyMsgName, const QString &qtRetType, const QString &varName) const;
@@ -103,10 +108,9 @@ private:
 
     // Server Stub
     void convertServerService();
-    void generateServerMethod(KODE::Code &code, const Binding &binding, const Operation &operation,
-                              KODE::Class &newClass, bool first);
-    void generateDelayedReponseMethod(const QString &methodName, const QString &retInputType,
-                                      const Part &retPart, KODE::Class &newClass, const Binding &binding, const Message &outputMessage);
+    void generateServerMethod(KODE::Code &code, const Binding &binding, const Operation &operation, KODE::Class &newClass, bool first);
+    void generateDelayedReponseMethod(const QString &methodName, const QString &retInputType, const Part &retPart, KODE::Class &newClass,
+                                      const Binding &binding, const Message &outputMessage);
 
     SoapBinding::Style soapStyle(const Binding &binding) const;
 

@@ -32,8 +32,7 @@
 
 class ParserContext;
 
-namespace KWSDL
-{
+namespace KWSDL {
 
 class AbstractBinding;
 
@@ -49,7 +48,7 @@ public:
     void setName(const QString &name);
     QString name() const;
 
-    void loadXML(AbstractBinding *binding, ParserContext *context,  const QDomElement &element);
+    void loadXML(AbstractBinding *binding, ParserContext *context, const QDomElement &element);
     void saveXML(const AbstractBinding *binding, ParserContext *context, QDomDocument &document, QDomElement &parent) const;
 
 private:
@@ -59,4 +58,3 @@ private:
 }
 
 #endif
-

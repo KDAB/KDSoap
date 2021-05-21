@@ -17,10 +17,8 @@
 #include "KDSoapClientInterface_p.h"
 #include "KDSoapNamespaceManager.h"
 
-void KDSoapNamespacePrefixes::writeStandardNamespaces(QXmlStreamWriter &writer,
-        KDSoap::SoapVersion version,
-        bool messageAddressingEnabled,
-        KDSoapMessageAddressingProperties::KDSoapAddressingNamespace messageAddressingNamespace)
+void KDSoapNamespacePrefixes::writeStandardNamespaces(QXmlStreamWriter &writer, KDSoap::SoapVersion version, bool messageAddressingEnabled,
+                                                      KDSoapMessageAddressingProperties::KDSoapAddressingNamespace messageAddressingNamespace)
 {
     if (version == KDSoap::SOAP1_1) {
         writeNamespace(writer, KDSoapNamespaceManager::soapEnvelope(), QLatin1String("soap"));

@@ -24,7 +24,8 @@ class KDSoapDelayedResponseHandleData : public QSharedData
 public:
     KDSoapDelayedResponseHandleData(KDSoapServerSocket *s)
         : socket(s)
-    {}
+    {
+    }
     // QPointer in case the client disconnects during a delayed response
     QPointer<KDSoapServerSocket> socket;
 };
@@ -34,14 +35,15 @@ KDSoapDelayedResponseHandle::KDSoapDelayedResponseHandle()
 {
 }
 
-KDSoapDelayedResponseHandle::KDSoapDelayedResponseHandle(const KDSoapDelayedResponseHandle &rhs) : data(rhs.data)
+KDSoapDelayedResponseHandle::KDSoapDelayedResponseHandle(const KDSoapDelayedResponseHandle &rhs)
+    : data(rhs.data)
 {
 }
 
 KDSoapDelayedResponseHandle &KDSoapDelayedResponseHandle::operator=(const KDSoapDelayedResponseHandle &rhs)
 {
     if (this != &rhs) {
-        data.operator = (rhs.data);
+        data.operator=(rhs.data);
     }
     return *this;
 }

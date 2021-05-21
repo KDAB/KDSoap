@@ -25,8 +25,7 @@
 #include <code_generation/license.h>
 #include <code_generation/printer.h>
 
-namespace KWSDL
-{
+namespace KWSDL {
 
 class Creator
 {

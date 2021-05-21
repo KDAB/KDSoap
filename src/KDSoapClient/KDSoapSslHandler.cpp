@@ -20,7 +20,8 @@
 #include "KDSoapSslHandler.h"
 
 KDSoapSslHandler::KDSoapSslHandler(QObject *parent)
-    : QObject(parent), m_reply(nullptr)
+    : QObject(parent)
+    , m_reply(nullptr)
 {
 }
 

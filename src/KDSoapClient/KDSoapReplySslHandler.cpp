@@ -21,8 +21,9 @@
 #include "KDSoapReplySslHandler_p.h"
 #include "KDSoapSslHandler.h"
 
-KDSoapReplySslHandler::KDSoapReplySslHandler(QNetworkReply *reply, KDSoapSslHandler *handler) :
-    QObject(reply), m_handler(handler)
+KDSoapReplySslHandler::KDSoapReplySslHandler(QNetworkReply *reply, KDSoapSslHandler *handler)
+    : QObject(reply)
+    , m_handler(handler)
 {
     Q_ASSERT(reply);
     Q_ASSERT(handler);

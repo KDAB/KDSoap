@@ -4,19 +4,19 @@
 
 using namespace KWSDL;
 
-ElementArgumentSerializer::ElementArgumentSerializer(const TypeMap &typeMap, const QName &type, const QName &elementType, const QString &localVarName, const QString &nilLocalVarName)
-    : mTypeMap(typeMap),
-      mType(type),
-      mElementType(elementType),
-      mLocalVarName(localVarName),
-      mNilLocalVarName(nilLocalVarName),
-      mAppend(false),
-      mIsQualified(false),
-      mNillable(false),
-      mOptional(false),
-      mUsePointer(false)
+ElementArgumentSerializer::ElementArgumentSerializer(const TypeMap &typeMap, const QName &type, const QName &elementType, const QString &localVarName,
+                                                     const QString &nilLocalVarName)
+    : mTypeMap(typeMap)
+    , mType(type)
+    , mElementType(elementType)
+    , mLocalVarName(localVarName)
+    , mNilLocalVarName(nilLocalVarName)
+    , mAppend(false)
+    , mIsQualified(false)
+    , mNillable(false)
+    , mOptional(false)
+    , mUsePointer(false)
 {
-
 }
 
 void ElementArgumentSerializer::setLocalVariableName(const QString &localVarName)
@@ -74,9 +74,9 @@ KODE::Code ElementArgumentSerializer::generateSerializationCode() const
 
     KODE::Code block;
     // for debugging, add this:
-    //block += "// type: " + type.qname() + " element:" + elementType.qname();
+    // block += "// type: " + type.qname() + " element:" + elementType.qname();
 
-    //if ( name.localName() == "..." )
+    // if ( name.localName() == "..." )
     //    qDebug() << "appendElementArg:" << name << "type=" << type << "isBuiltin=" << mTypeMap.isBuiltinType(type) << "isQualified=" << isQualified;
     if (mTypeMap.isTypeAny(mType)) {
         block += QLatin1String("if (!") + mLocalVarName + QLatin1String(".isNull()) {");
@@ -86,7 +86,8 @@ KODE::Code ElementArgumentSerializer::generateSerializationCode() const
         block += "}";
     } else {
         const QName actualType = mType.isEmpty() ? mElementType : mType;
-        //UNUSED const QString typeArgs = namespaceString(actualType.nameSpace()) + QLatin1String(", QString::fromLatin1(\"") + actualType.localName() + QLatin1String("\")");
+        // UNUSED const QString typeArgs = namespaceString(actualType.nameSpace()) + QLatin1String(", QString::fromLatin1(\"") +
+        // actualType.localName() + QLatin1String("\")");
         const bool isComplex = mTypeMap.isComplexType(mType, mElementType);
         const bool isPolymorphic = mTypeMap.isPolymorphic(mType, mElementType);
 
@@ -101,13 +102,16 @@ KODE::Code ElementArgumentSerializer::generateSerializationCode() const
 
         if (isComplex) {
             const QString op = (isPolymorphic || mUsePointer) ? "->" : ".";
-            block += QLatin1String("KDSoapValue ") + mValueVarName + QLatin1Char('(') + mLocalVarName + op + QLatin1String("serialize(") + mNameArg + QLatin1String("));") + COMMENT;
+            block += QLatin1String("KDSoapValue ") + mValueVarName + QLatin1Char('(') + mLocalVarName + op + QLatin1String("serialize(") + mNameArg
+                + QLatin1String("));") + COMMENT;
         } else {
             if (mTypeMap.isBuiltinType(mType, mElementType)) {
-                const QString value = mTypeMap.serializeBuiltin(mType, mElementType, mLocalVarName, mNameArg, actualType.nameSpace(), actualType.localName());
+                const QString value =
+                    mTypeMap.serializeBuiltin(mType, mElementType, mLocalVarName, mNameArg, actualType.nameSpace(), actualType.localName());
                 block += QLatin1String("KDSoapValue ") + mValueVarName + QLatin1String(" = ") + value + QLatin1String(";") + COMMENT;
             } else {
-                block += QLatin1String("KDSoapValue ") + mValueVarName + QLatin1String(" = ") + mLocalVarName + QLatin1String(".serialize(") + mNameArg + QLatin1String(");") + COMMENT;
+                block += QLatin1String("KDSoapValue ") + mValueVarName + QLatin1String(" = ") + mLocalVarName + QLatin1String(".serialize(")
+                    + mNameArg + QLatin1String(");") + COMMENT;
             }
         }
         if (!mNameNamespace.isEmpty()) {
@@ -146,9 +150,9 @@ KODE::Code ElementArgumentSerializer::demarshalArray(const QString &soapValueVar
 
     if (mTypeMap.isTypeAny(mType)) {
         code += mLocalVarName + QLatin1String(".append(") + soapValueVarName + QLatin1String(");");
-    } else if ( mTypeMap.isBuiltinType(mType, mElementType)) {
-        code += mLocalVarName + QLatin1String(".append(") +
-                mTypeMap.deserializeBuiltin(mType, mElementType, soapValueVarName, qtTypeName) + QLatin1String(");") + COMMENT;
+    } else if (mTypeMap.isBuiltinType(mType, mElementType)) {
+        code += mLocalVarName + QLatin1String(".append(") + mTypeMap.deserializeBuiltin(mType, mElementType, soapValueVarName, qtTypeName)
+            + QLatin1String(");") + COMMENT;
     } else {
         // we need a temp var because of deserialize()
         QString tempVar;
@@ -200,8 +204,8 @@ KODE::Code ElementArgumentSerializer::demarshalVarHelper(const QString &soapValu
         code += mLocalVarName + QLatin1String(" = ") + soapValueVarName + QLatin1String(";") + COMMENT;
     } else if (mTypeMap.isBuiltinType(mType, mElementType)) {
         const QString qtTypeName = mTypeMap.localType(mType, mElementType);
-        code += mLocalVarName + QLatin1String(" = ") +
-                mTypeMap.deserializeBuiltin(mType, mElementType, soapValueVarName, qtTypeName) + QLatin1String(";") + COMMENT;
+        code += mLocalVarName + QLatin1String(" = ") + mTypeMap.deserializeBuiltin(mType, mElementType, soapValueVarName, qtTypeName)
+            + QLatin1String(";") + COMMENT;
     } else if (mTypeMap.isComplexType(mType, mElementType)) {
         code += mLocalVarName + QLatin1String(".deserialize(") + soapValueVarName + QLatin1String(");") + COMMENT;
     } else {
@@ -212,4 +216,3 @@ KODE::Code ElementArgumentSerializer::demarshalVarHelper(const QString &soapValu
     }
     return code;
 }
-

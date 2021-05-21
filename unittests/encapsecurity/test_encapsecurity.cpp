@@ -45,7 +45,6 @@ private Q_SLOTS:
         Q_UNUSED(request);
         Q_UNUSED(response);
     }
-
 };
 
 QTEST_MAIN(EncapSecurityTest)

@@ -31,7 +31,8 @@ class QHostAddress;
 QT_END_NAMESPACE
 
 /**
- * \brief KDSoapUdpClient provides an interface for implementing a [SOAP-over-UDP](https://docs.oasis-open.org/ws-dd/soapoverudp/1.1/os/wsdd-soapoverudp-1.1-spec-os.html) client.
+ * \brief KDSoapUdpClient provides an interface for implementing a
+ * [SOAP-over-UDP](https://docs.oasis-open.org/ws-dd/soapoverudp/1.1/os/wsdd-soapoverudp-1.1-spec-os.html) client.
  *
  * One-way SOAP-over-UDP can be send by simply using sendMessage().
  *
@@ -44,9 +45,9 @@ QT_END_NAMESPACE
  *
  * \code
  * auto soapUdpClient = new KDSoapUdpClient(this);
- * connect(soapUdpClient, &KDSoapUdpClient::receivedMessage, [=](const KDSoapMessage &message, const KDSoapHeaders &headers, const QHostAddress &address, quint16 port) {
- *   if(message.messageAddressingProperties().action() == QStringLiteral("http://docs.oasis-open.org/ws-dd/ns/discovery/2009/01/ProbeMatches")) {
- *     TNS__ProbeMatchesType probeMatches;
+ * connect(soapUdpClient, &KDSoapUdpClient::receivedMessage, [=](const KDSoapMessage &message, const KDSoapHeaders &headers, const QHostAddress
+ * &address, quint16 port) { if(message.messageAddressingProperties().action() ==
+ * QStringLiteral("http://docs.oasis-open.org/ws-dd/ns/discovery/2009/01/ProbeMatches")) { TNS__ProbeMatchesType probeMatches;
  *     probeMatches.deserialize(message);
  *     qDebug() << "Received probe match from" << address;
  *   }
@@ -77,7 +78,7 @@ class KDSOAP_EXPORT KDSoapUdpClient : public QObject
     Q_OBJECT
 
 public:
-    explicit KDSoapUdpClient(QObject *parent=nullptr);
+    explicit KDSoapUdpClient(QObject *parent = nullptr);
 
     ~KDSoapUdpClient();
 

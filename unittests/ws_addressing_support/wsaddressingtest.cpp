@@ -47,13 +47,16 @@ private Q_SLOTS:
         QString unspecified = KDSoapMessageAddressingProperties::predefinedAddressToString(KDSoapMessageAddressingProperties::Unspecified);
         QCOMPARE(unspecified, QString("http://www.w3.org/2005/08/addressing/unspecified"));
 
-        QString reply200303 = KDSoapMessageAddressingProperties::predefinedAddressToString(KDSoapMessageAddressingProperties::Reply, KDSoapMessageAddressingProperties::Addressing200303);
+        QString reply200303 = KDSoapMessageAddressingProperties::predefinedAddressToString(KDSoapMessageAddressingProperties::Reply,
+                                                                                           KDSoapMessageAddressingProperties::Addressing200303);
         QCOMPARE(reply200303, QString()); // Reply is not a thing in older than 2005/08
 
-        QString anon200303 = KDSoapMessageAddressingProperties::predefinedAddressToString(KDSoapMessageAddressingProperties::Anonymous, KDSoapMessageAddressingProperties::Addressing200303);
+        QString anon200303 = KDSoapMessageAddressingProperties::predefinedAddressToString(KDSoapMessageAddressingProperties::Anonymous,
+                                                                                          KDSoapMessageAddressingProperties::Addressing200303);
         QCOMPARE(anon200303, QString("http://schemas.xmlsoap.org/ws/2003/03/addressing/role/anonymous"));
 
-        QString unspecified200303 = KDSoapMessageAddressingProperties::predefinedAddressToString(KDSoapMessageAddressingProperties::Unspecified, KDSoapMessageAddressingProperties::Addressing200303);
+        QString unspecified200303 = KDSoapMessageAddressingProperties::predefinedAddressToString(KDSoapMessageAddressingProperties::Unspecified,
+                                                                                                 KDSoapMessageAddressingProperties::Addressing200303);
         QCOMPARE(unspecified200303, QString("http://schemas.xmlsoap.org/ws/2003/03/addressing/id/unspecified"));
     }
 
@@ -66,7 +69,8 @@ private Q_SLOTS:
         KDSoapMessage message;
         const QString action = QString::fromLatin1("sayHello");
         message.setUse(KDSoapMessage::EncodedUse);
-        message.addArgument(QString::fromLatin1("msg"), QVariant::fromValue(QString("HelloContentMessage")), KDSoapNamespaceManager::xmlSchema2001(), QString::fromLatin1("string"));
+        message.addArgument(QString::fromLatin1("msg"), QVariant::fromValue(QString("HelloContentMessage")), KDSoapNamespaceManager::xmlSchema2001(),
+                            QString::fromLatin1("string"));
         message.setNamespaceUri(QString::fromLatin1("http://www.ecerami.com/wsdl/HelloService.wsdl"));
 
         // WHEN
@@ -86,7 +90,8 @@ private Q_SLOTS:
         KDSoapMessage message;
         const QString action = QString::fromLatin1("sayHello");
         message.setUse(KDSoapMessage::EncodedUse);
-        message.addArgument(QString::fromLatin1("msg"), QVariant::fromValue(QString("HelloContentMessage")), KDSoapNamespaceManager::xmlSchema2001(), QString::fromLatin1("string"));
+        message.addArgument(QString::fromLatin1("msg"), QVariant::fromValue(QString("HelloContentMessage")), KDSoapNamespaceManager::xmlSchema2001(),
+                            QString::fromLatin1("string"));
         message.setNamespaceUri(QString::fromLatin1("http://www.ecerami.com/wsdl/HelloService.wsdl"));
 
         // WHEN
@@ -173,7 +178,8 @@ private:
         metadataContainer << metadata;
 
         KDSoapValue child("myMetadataBisChild", "MetadataBisChildContent");
-        KDSoapValueList childList; childList << child;
+        KDSoapValueList childList;
+        childList << child;
         KDSoapValue metadataBis("myMetadataBis", childList);
 
         map.setMetadata(metadataContainer);
@@ -191,53 +197,50 @@ private:
 
     static QByteArray expectedSoapMessage200408()
     {
-        return QByteArray(xmlEnvBegin11()) +
-               " xmlns:wsa=\"http://schemas.xmlsoap.org/ws/2004/08/addressing\"" +
-               expectedSoapMessagePartial();
+        return QByteArray(xmlEnvBegin11()) + " xmlns:wsa=\"http://schemas.xmlsoap.org/ws/2004/08/addressing\"" + expectedSoapMessagePartial();
     }
 
     static QByteArray expectedSoapMessage200508()
     {
-        return QByteArray(xmlEnvBegin11()) +
-               " xmlns:wsa=\"http://www.w3.org/2005/08/addressing\"" +
-               expectedSoapMessagePartial();
+        return QByteArray(xmlEnvBegin11()) + " xmlns:wsa=\"http://www.w3.org/2005/08/addressing\"" + expectedSoapMessagePartial();
     }
 
     static QByteArray expectedSoapMessagePartial()
     {
-        return QByteArray(" xmlns:n1=\"http://www.ecerami.com/wsdl/HelloService.wsdl\">") +
-               "<soap:Header>"
-               "<wsa:To>http://www.ecerami.com/wsdl/HelloService</wsa:To>"
-               "<wsa:From>"
-               "<wsa:Address>http://www.ecerami.com/wsdl/source</wsa:Address>"
-               "</wsa:From>"
-               "<wsa:ReplyTo>"
-               "<wsa:Address>http://www.w3.org/2005/08/addressing/anonymous</wsa:Address>"
-               "</wsa:ReplyTo>"
-               "<wsa:FaultTo>"
-               "<wsa:Address>http://www.ecerami.com/wsdl/fault</wsa:Address>"
-               "</wsa:FaultTo>"
-               "<wsa:Action>sayHello</wsa:Action>"
-               "<wsa:MessageID>uuid:e197db59-0982-4c9c-9702-4234d204f7f4</wsa:MessageID>"
-               "<wsa:RelatesTo>uuid:http://www.ecerami.com/wsdl/someUniqueString</wsa:RelatesTo>"
-               "<wsa:RelatesTo RelationshipType=\"CustomTypeReply\">uuid:http://www.ecerami.com/wsdl/someUniqueStringBis</wsa:RelatesTo>"
-               "<wsa:ReferenceParameters>"
-               "<wsa:myReferenceParameter>ReferencParameterContent</wsa:myReferenceParameter>"
-               "<wsa:myReferenceParameterWithChildren>"
-               "<wsa:myReferenceParameterChildOne>ChildOneContent</wsa:myReferenceParameterChildOne>"
-               "<wsa:myReferenceParameterChildTwo>ChildTwoContent</wsa:myReferenceParameterChildTwo>"
-               "</wsa:myReferenceParameterWithChildren>"
-               "</wsa:ReferenceParameters>"
-               "<wsa:Metadata>"
-               "<wsa:myMetadata>MetadataContent</wsa:myMetadata>"
-               "<wsa:myMetadataBis>"
-               "<wsa:myMetadataBisChild>MetadataBisChildContent</wsa:myMetadataBisChild>"
-               "</wsa:myMetadataBis>"
-               "</wsa:Metadata>"
-               "</soap:Header>"
-               "<soap:Body>"
-               "<n1:sayHello><msg xsi:type=\"xsd:string\">HelloContentMessage</msg></n1:sayHello>"
-               "</soap:Body>" + xmlEnvEnd();
+        return QByteArray(" xmlns:n1=\"http://www.ecerami.com/wsdl/HelloService.wsdl\">")
+            + "<soap:Header>"
+              "<wsa:To>http://www.ecerami.com/wsdl/HelloService</wsa:To>"
+              "<wsa:From>"
+              "<wsa:Address>http://www.ecerami.com/wsdl/source</wsa:Address>"
+              "</wsa:From>"
+              "<wsa:ReplyTo>"
+              "<wsa:Address>http://www.w3.org/2005/08/addressing/anonymous</wsa:Address>"
+              "</wsa:ReplyTo>"
+              "<wsa:FaultTo>"
+              "<wsa:Address>http://www.ecerami.com/wsdl/fault</wsa:Address>"
+              "</wsa:FaultTo>"
+              "<wsa:Action>sayHello</wsa:Action>"
+              "<wsa:MessageID>uuid:e197db59-0982-4c9c-9702-4234d204f7f4</wsa:MessageID>"
+              "<wsa:RelatesTo>uuid:http://www.ecerami.com/wsdl/someUniqueString</wsa:RelatesTo>"
+              "<wsa:RelatesTo RelationshipType=\"CustomTypeReply\">uuid:http://www.ecerami.com/wsdl/someUniqueStringBis</wsa:RelatesTo>"
+              "<wsa:ReferenceParameters>"
+              "<wsa:myReferenceParameter>ReferencParameterContent</wsa:myReferenceParameter>"
+              "<wsa:myReferenceParameterWithChildren>"
+              "<wsa:myReferenceParameterChildOne>ChildOneContent</wsa:myReferenceParameterChildOne>"
+              "<wsa:myReferenceParameterChildTwo>ChildTwoContent</wsa:myReferenceParameterChildTwo>"
+              "</wsa:myReferenceParameterWithChildren>"
+              "</wsa:ReferenceParameters>"
+              "<wsa:Metadata>"
+              "<wsa:myMetadata>MetadataContent</wsa:myMetadata>"
+              "<wsa:myMetadataBis>"
+              "<wsa:myMetadataBisChild>MetadataBisChildContent</wsa:myMetadataBisChild>"
+              "</wsa:myMetadataBis>"
+              "</wsa:Metadata>"
+              "</soap:Header>"
+              "<soap:Body>"
+              "<n1:sayHello><msg xsi:type=\"xsd:string\">HelloContentMessage</msg></n1:sayHello>"
+              "</soap:Body>"
+            + xmlEnvEnd();
     }
 
     static QByteArray emptyResponse()

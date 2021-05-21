@@ -82,7 +82,8 @@ static void showHelp(const char *appName)
             "  -no-async                 Do not generate asynchronous API methods to the client code\n"
             "  -no-async-jobs            Do not generate asynchronous job API classes to the client code\n"
 #endif
-            "\n", appName, appName, appName);
+            "\n",
+            appName, appName, appName);
 }
 
 int main(int argc, char **argv)
@@ -315,15 +316,11 @@ int main(int argc, char **argv)
             QSslKey key;
             QSslCertificate certificate;
             QList<QSslCertificate> caCertificates;
-            const bool certificateLoaded = QSslCertificate::importPkcs12(&certFile,
-                                                         &key,
-                                                         &certificate,
-                                                         &caCertificates,
-                                                         pkcs12Password.toLocal8Bit());
+            const bool certificateLoaded =
+                QSslCertificate::importPkcs12(&certFile, &key, &certificate, &caCertificates, pkcs12Password.toLocal8Bit());
             certFile.close();
             if (!certificateLoaded) {
-                fprintf(stderr, "Unable to load the %s certificate file\n",
-                        pkcs12File.toLocal8Bit().constData());
+                fprintf(stderr, "Unable to load the %s certificate file\n", pkcs12File.toLocal8Bit().constData());
                 if (!pkcs12Password.isEmpty())
                     fprintf(stderr, "Please make sure that you have passed the correct password\n");
                 else
@@ -338,8 +335,7 @@ int main(int argc, char **argv)
             sslConfig.setCaCertificates(caCertificates);
             QSslConfiguration::setDefaultConfiguration(sslConfig);
         } else {
-            fprintf(stderr, "Failed to open the %s certificate file for reading\n",
-                    pkcs12File.toLocal8Bit().constData());
+            fprintf(stderr, "Failed to open the %s certificate file for reading\n", pkcs12File.toLocal8Bit().constData());
             return 1;
         }
     }

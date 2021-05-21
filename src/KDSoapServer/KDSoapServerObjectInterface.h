@@ -123,7 +123,8 @@ public:
      */
     virtual void processRequestWithPath(const KDSoapMessage &request, KDSoapMessage &response, const QByteArray &soapAction, const QString &path);
 
-    struct KDSOAPSERVER_EXPORT HttpResponseHeaderItem {
+    struct KDSOAPSERVER_EXPORT HttpResponseHeaderItem
+    {
         HttpResponseHeaderItem();
         HttpResponseHeaderItem(const QByteArray &name, const QByteArray &value);
         QByteArray m_value;
@@ -266,8 +267,7 @@ private:
 };
 
 QT_BEGIN_NAMESPACE
-Q_DECLARE_INTERFACE(KDSoapServerObjectInterface,
-                    "com.kdab.KDSoap.ServerObjectInterface/1.0")
+Q_DECLARE_INTERFACE(KDSoapServerObjectInterface, "com.kdab.KDSoap.ServerObjectInterface/1.0")
 QT_END_NAMESPACE
 
 #endif // KDSOAPSERVEROBJECTINTERFACE_H

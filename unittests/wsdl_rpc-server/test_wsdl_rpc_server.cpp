@@ -51,6 +51,7 @@ public:
     {
         return m_receivedLastName;
     }
+
 private:
     QString m_receivedFirstName;
     QString m_receivedLastName;
@@ -60,7 +61,9 @@ class HelloServer : public KDSoapServer
 {
     Q_OBJECT
 public:
-    HelloServer() : KDSoapServer(), m_lastServerObject(0)
+    HelloServer()
+        : KDSoapServer()
+        , m_lastServerObject(0)
     {
         setPath(QLatin1String("/hello"));
     }
@@ -73,6 +76,7 @@ public:
     {
         return m_lastServerObject;
     }
+
 private:
     HelloServerObject *m_lastServerObject;
 };
@@ -82,12 +86,15 @@ class RpcExampleServerObject : public RpcExampleServerBase
 public:
     RpcExampleServerObject()
         : m_heartbeatCalled(false)
-    {}
+    {
+    }
     virtual RPCEXAMPLE__ListKeysResult listKeys(const RPCEXAMPLE__ListKeysParams &params) override
     {
         Q_UNUSED(params)
         RPCEXAMPLE__ListKeysResult result;
-        result.setKeys(QStringList() << "test1" << "test2" << "test3");
+        result.setKeys(QStringList() << "test1"
+                                     << "test2"
+                                     << "test3");
         return result;
     }
 
@@ -163,6 +170,7 @@ public:
     {
         return m_heartbeatCalled;
     }
+
 private:
     bool m_heartbeatCalled;
 };
@@ -171,7 +179,9 @@ class RpcExampleServer : public KDSoapServer
 {
     Q_OBJECT
 public:
-    RpcExampleServer() : KDSoapServer(), m_lastServerObject(0)
+    RpcExampleServer()
+        : KDSoapServer()
+        , m_lastServerObject(0)
     {
         setPath(QLatin1String("/rpcexample"));
     }
@@ -184,6 +194,7 @@ public:
     {
         return m_lastServerObject;
     }
+
 private:
     RpcExampleServerObject *m_lastServerObject;
 };
@@ -193,17 +204,17 @@ class RPCServerTest : public QObject
     Q_OBJECT
 
 private:
-
     static QByteArray expectedHelloRequest() // http://oreilly.com/catalog/webservess/chapter/ch06.html
     {
-        return QByteArray(xmlEnvBegin11()) + ">"
-               "<soap:Body>"
-               "<n1:sayHello xmlns:n1=\"urn:examples:helloservice\">"
-               "<firstName xsi:type=\"xsd:string\">Hello</firstName>"
-               "<lastName xsi:type=\"xsd:string\">World</lastName>"
-               "</n1:sayHello>"
-               "</soap:Body>" + xmlEnvEnd()
-               + '\n'; // added by QXmlStreamWriter::writeEndDocument
+        return QByteArray(xmlEnvBegin11())
+            + ">"
+              "<soap:Body>"
+              "<n1:sayHello xmlns:n1=\"urn:examples:helloservice\">"
+              "<firstName xsi:type=\"xsd:string\">Hello</firstName>"
+              "<lastName xsi:type=\"xsd:string\">World</lastName>"
+              "</n1:sayHello>"
+              "</soap:Body>"
+            + xmlEnvEnd() + '\n'; // added by QXmlStreamWriter::writeEndDocument
     }
     static QByteArray helloResponse()
     {
@@ -224,21 +235,24 @@ private:
 
     static QByteArray expectedListKeysRequest()
     {
-        return QByteArray(xmlEnvBegin12()) + ">"
-               "<soap:Body>"
-               "<n1:listKeys xmlns:n1=\"urn:RpcExample\">"
-               "<params xsi:type=\"n1:listKeysParams\">"
-               "<module xsi:type=\"xsd:string\">Firefox</module>"
-               "<base xsi:type=\"xsd:string\"/>"
-               "</params>"
-               "</n1:listKeys>"
-               "</soap:Body>" + xmlEnvEnd()
-               + '\n'; // added by QXmlStreamWriter::writeEndDocument
+        return QByteArray(xmlEnvBegin12())
+            + ">"
+              "<soap:Body>"
+              "<n1:listKeys xmlns:n1=\"urn:RpcExample\">"
+              "<params xsi:type=\"n1:listKeysParams\">"
+              "<module xsi:type=\"xsd:string\">Firefox</module>"
+              "<base xsi:type=\"xsd:string\"/>"
+              "</params>"
+              "</n1:listKeys>"
+              "</soap:Body>"
+            + xmlEnvEnd() + '\n'; // added by QXmlStreamWriter::writeEndDocument
     }
     static QByteArray listKeysResponse()
     {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-               "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://www.w3.org/2003/05/soap-envelope\" xmlns:SOAP-ENC=\"http://www.w3.org/2003/05/soap-encoding\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:RpcExample=\"urn:RpcExample\">"
+               "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://www.w3.org/2003/05/soap-envelope\" "
+               "xmlns:SOAP-ENC=\"http://www.w3.org/2003/05/soap-encoding\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+               "xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:RpcExample=\"urn:RpcExample\">"
                "<SOAP-ENV:Body>"
                "<RpcExample:listKeysResponse SOAP-ENV:encodingStyle=\"http://www.w3.org/2003/05/soap-encoding\">"
                "<result>"
@@ -311,14 +325,16 @@ private Q_SLOTS:
         RPCEXAMPLE__HeartbeatParams params;
         KDSoapMessage message;
         message.setUse(KDSoapMessage::EncodedUse);
-        KDSoapValue _valueParams(params.serialize(QString::fromLatin1("params")));// /Users/mbroadst/Development/devonit/echosupport/KDSoap/kdwsdl2cpp/src/converter_complextype.cpp:209
+        KDSoapValue _valueParams(params.serialize(
+            QString::fromLatin1("params"))); // /Users/mbroadst/Development/devonit/echosupport/KDSoap/kdwsdl2cpp/src/converter_complextype.cpp:209
         _valueParams.setNamespaceUri(QString::fromLatin1("urn:RpcExample"));
-        message.childValues().append(_valueParams);// /Users/mbroadst/Development/devonit/echosupport/KDSoap/kdwsdl2cpp/src/converter_complextype.cpp:223
+        message.childValues().append(
+            _valueParams); // /Users/mbroadst/Development/devonit/echosupport/KDSoap/kdwsdl2cpp/src/converter_complextype.cpp:223
 
         QEventLoop eventLoop;
         KDSoapPendingCall pendingCall = service.clientInterface()->asyncCall(QLatin1String("heartbeat"), message);
         KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);
-        connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher*)), &eventLoop, SLOT(quit()));
+        connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher *)), &eventLoop, SLOT(quit()));
         eventLoop.exec();
 
         KDSoapMessage returnMessage = watcher->returnMessage();

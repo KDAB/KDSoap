@@ -34,7 +34,7 @@ void TestRegularApi::test()
 void TestRegularApi::testPolymorphic()
 {
     KDAB::TNS__TestOperationResponse1 resp;
-    QCOMPARE(resp.out2(), (KDAB::TNS__PolymorphicClass*)0);
+    QCOMPARE(resp.out2(), ( KDAB::TNS__PolymorphicClass * )0);
     QCOMPARE(resp.hasValueForOut2(), false);
     KDAB::TNS__PolymorphicClass value;
     value.setValue(QString("newvalue"));
@@ -50,7 +50,7 @@ void TestRegularApi::testPolymorphic()
     resp.setOut2(derivedValue);
     QVERIFY(resp.out2());
     QCOMPARE(resp.out2()->value(), QString("derived"));
-    QCOMPARE(dynamic_cast<const KDAB::TNS__DerivedClass*>(resp.out2())->value2(), QString("derived"));
+    QCOMPARE(dynamic_cast<const KDAB::TNS__DerivedClass *>(resp.out2())->value2(), QString("derived"));
 }
 
 void TestRegularApi::testSerialize()

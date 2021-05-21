@@ -27,8 +27,9 @@
 #include <QEventLoop>
 #include <QAuthenticator>
 
-KDSoapClientThread::KDSoapClientThread(QObject *parent) :
-    QThread(parent), m_stopThread(false)
+KDSoapClientThread::KDSoapClientThread(QObject *parent)
+    : QThread(parent)
+    , m_stopThread(false)
 {
 }
 
@@ -65,8 +66,8 @@ void KDSoapClientThread::run()
 
         KDSoapThreadTask task(taskData); // must be created here, so that it's in the right thread
         connect(&task, SIGNAL(taskDone()), &eventLoop, SLOT(quit()));
-        connect(&accessManager, SIGNAL(authenticationRequired(QNetworkReply*,QAuthenticator*)),
-                &task, SLOT(slotAuthenticationRequired(QNetworkReply*,QAuthenticator*)));
+        connect(&accessManager, SIGNAL(authenticationRequired(QNetworkReply *, QAuthenticator *)), &task,
+                SLOT(slotAuthenticationRequired(QNetworkReply *, QAuthenticator *)));
         task.process(accessManager);
 
         // Process events until the task tells us the handling of that task is finished
@@ -77,9 +78,9 @@ void KDSoapClientThread::run()
 void KDSoapThreadTask::process(QNetworkAccessManager &accessManager)
 {
     // Can't use m_iface->asyncCall, it would use the accessmanager from the main thread
-    //KDSoapPendingCall pendingCall = m_iface->asyncCall(m_method, m_message, m_action);
+    // KDSoapPendingCall pendingCall = m_iface->asyncCall(m_method, m_message, m_action);
 
-    //Headers should be always qualified
+    // Headers should be always qualified
     for (KDSoapHeaders::Iterator it = m_data->m_headers.begin(); it != m_data->m_headers.end(); ++it) {
         it->setQualified(true);
     }
@@ -101,8 +102,7 @@ void KDSoapThreadTask::process(QNetworkAccessManager &accessManager)
     pendingCall.d->soapVersion = m_data->m_iface->d->m_version;
 
     KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);
-    connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher*)),
-            this, SLOT(slotFinished(KDSoapPendingCallWatcher*)));
+    connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher *)), this, SLOT(slotFinished(KDSoapPendingCallWatcher *)));
 }
 
 void KDSoapThreadTask::slotFinished(KDSoapPendingCallWatcher *watcher)
@@ -111,7 +111,7 @@ void KDSoapThreadTask::slotFinished(KDSoapPendingCallWatcher *watcher)
     m_data->m_responseHeaders = watcher->returnHeaders();
     m_data->m_semaphore.release();
     // Helgrind bug: says this races with main thread. Looks like it's confused by QSharedDataPointer
-    //qDebug() << m_data->m_returnArguments.value();
+    // qDebug() << m_data->m_returnArguments.value();
     watcher->deleteLater();
 
     emit taskDone();

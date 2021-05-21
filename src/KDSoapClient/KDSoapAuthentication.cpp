@@ -127,7 +127,7 @@ bool KDSoapAuthentication::hasAuth() const
 
 void KDSoapAuthentication::handleAuthenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator)
 {
-    //qDebug() << "handleAuthenticationRequired" << reply << reply->url() << "realm=" << authenticator->realm();
+    // qDebug() << "handleAuthenticationRequired" << reply << reply->url() << "realm=" << authenticator->realm();
     // Only proceed if
     // 1) we have some authentication to offer
     // 2) we didn't try once already (unittest: BuiltinHttpTest::testAsyncCallRefusedAuth)
@@ -179,12 +179,14 @@ void KDSoapAuthentication::writeWSUsernameTokenHeader(QXmlStreamWriter &writer) 
 
     writer.writeStartElement(securityExtentionNS, QLatin1String("Password"));
     if (d->usePasswordDigest) {
-        writer.writeAttribute(QLatin1String("Type"), QLatin1String("http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordDigest"));
+        writer.writeAttribute(QLatin1String("Type"),
+                              QLatin1String("http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordDigest"));
         QByteArray passwordConcat = nonce + timestamp.toUtf8() + d->password.toUtf8();
         QByteArray passwordHash = QCryptographicHash::hash(passwordConcat, QCryptographicHash::Sha1);
         writer.writeCharacters(QString::fromLatin1(passwordHash.toBase64().constData()));
     } else {
-        writer.writeAttribute(QLatin1String("Type"), QLatin1String("http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText"));
+        writer.writeAttribute(QLatin1String("Type"),
+                              QLatin1String("http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText"));
         writer.writeCharacters(d->password);
     }
     writer.writeEndElement();

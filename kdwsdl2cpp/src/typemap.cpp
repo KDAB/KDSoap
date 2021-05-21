@@ -30,7 +30,7 @@ using namespace KWSDL;
 static QString adaptLocalTypeName(const QString &str)
 {
     QString result(str);
-    result[ 0 ] = result[ 0 ].toUpper();
+    result[0] = result[0].toUpper();
 
     if (result.endsWith("[]")) {
         result.truncate(result.length() - 2);
@@ -373,8 +373,8 @@ void TypeMap::addSchemaTypes(const XSD::Types &types, const QString &ns)
         entry.typeName = (*simpleIt).name();
         entry.localType = prefixNamespace(mNSManager->prefix(entry.nameSpace).toUpper() + "__" + adaptLocalTypeName((*simpleIt).name()), ns);
         entry.baseType = (*simpleIt).baseTypeName();
-        //qDebug() << entry.baseType.nameSpace() << entry.baseType.localName() << entry.baseType;
-        //entry.headers << (*simpleIt).name().toLower() + ".h";
+        // qDebug() << entry.baseType.nameSpace() << entry.baseType.localName() << entry.baseType;
+        // entry.headers << (*simpleIt).name().toLower() + ".h";
         entry.forwardDeclarations << entry.localType;
 
         mTypeMap.append(entry);
@@ -389,17 +389,18 @@ void TypeMap::addSchemaTypes(const XSD::Types &types, const QString &ns)
         entry.typeName = complex.name();
         entry.isPolymorphic = complex.isPolymorphicBaseClass();
 
-        //qDebug() << "TypeMap: adding complex type" << entry.nameSpace << entry.typeName << "derived types:" << complex.derivedTypes();
+        // qDebug() << "TypeMap: adding complex type" << entry.nameSpace << entry.typeName << "derived types:" << complex.derivedTypes();
 
         // Keep empty complex types, useful for document mode.
         /*if ( (*complexIt).isEmpty() )
             entry.localType = "void";
-        else*/ {
+        else*/
+        {
             entry.localType = prefixNamespace(mNSManager->prefix(entry.nameSpace).toUpper() + "__" + adaptLocalTypeName(complex.name()), ns);
             if (complex.isConflicting()) {
                 entry.localType += complex.isAnonymous() ? "Element" : "Type";
             }
-            //entry.headers << (*complexIt).name().toLower() + ".h";
+            // entry.headers << (*complexIt).name().toLower() + ".h";
             entry.forwardDeclarations << entry.localType;
         }
 
@@ -417,7 +418,8 @@ void TypeMap::addSchemaTypes(const XSD::Types &types, const QString &ns)
         entry.builtinType = false;
         entry.nameSpace = (*attrIt).nameSpace();
         entry.typeName = (*attrIt).name();
-        entry.localType = prefixNamespace(mNSManager->prefix(entry.nameSpace).toUpper() + "__" + adaptLocalTypeName((*attrIt).name() + "Attribute"), ns);
+        entry.localType =
+            prefixNamespace(mNSManager->prefix(entry.nameSpace).toUpper() + "__" + adaptLocalTypeName((*attrIt).name() + "Attribute"), ns);
         entry.headers << (*attrIt).name().toLower() + "attribute.h";
         entry.forwardDeclarations << entry.localType;
 
@@ -464,7 +466,7 @@ void TypeMap::addSchemaTypes(const XSD::Types &types, const QString &ns)
         /*} else {
           entry.localType = mNSManager->prefix( entry.nameSpace ).toUpper() + "__" + adaptLocalTypeName( elemIt.name() + "Element" );
         }*/
-        //qDebug() << "Adding TypeMap entry for element" << entry.typeName << resolvedType;
+        // qDebug() << "Adding TypeMap entry for element" << entry.typeName << resolvedType;
         mElementMap.append(entry);
     }
 }
@@ -474,37 +476,24 @@ void TypeMap::dump() const
     qDebug("--------------------------------");
     qDebug("Types:");
     for (int i = 0; i < mTypeMap.count(); ++i) {
-        qDebug("%s\t%s\t%s\t%s\t%s\t%s",
-               qPrintable(mTypeMap[ i ].nameSpace),
-               qPrintable(mTypeMap[ i ].typeName),
-               qPrintable(mTypeMap[ i ].localType),
-               qPrintable(mTypeMap[ i ].headers.join(",")),
-               qPrintable(mTypeMap[ i ].headerIncludes.join(",")),
-               qPrintable(mTypeMap[ i ].dumpBools()));
+        qDebug("%s\t%s\t%s\t%s\t%s\t%s", qPrintable(mTypeMap[i].nameSpace), qPrintable(mTypeMap[i].typeName), qPrintable(mTypeMap[i].localType),
+               qPrintable(mTypeMap[i].headers.join(",")), qPrintable(mTypeMap[i].headerIncludes.join(",")), qPrintable(mTypeMap[i].dumpBools()));
     }
 
     qDebug("--------------------------------");
     qDebug("Attributes:");
     for (int i = 0; i < mAttributeMap.count(); ++i) {
-        qDebug("%s\t%s\t%s\t%s\t%s\t%s",
-               qPrintable(mAttributeMap[ i ].nameSpace),
-               qPrintable(mAttributeMap[ i ].typeName),
-               qPrintable(mAttributeMap[ i ].localType),
-               qPrintable(mAttributeMap[ i ].headers.join(",")),
-               qPrintable(mAttributeMap[ i ].headerIncludes.join(",")),
-               qPrintable(mAttributeMap[ i ].dumpBools()));
+        qDebug("%s\t%s\t%s\t%s\t%s\t%s", qPrintable(mAttributeMap[i].nameSpace), qPrintable(mAttributeMap[i].typeName),
+               qPrintable(mAttributeMap[i].localType), qPrintable(mAttributeMap[i].headers.join(",")),
+               qPrintable(mAttributeMap[i].headerIncludes.join(",")), qPrintable(mAttributeMap[i].dumpBools()));
     }
 
     qDebug("--------------------------------");
     qDebug("Elements:");
     for (int i = 0; i < mElementMap.count(); ++i) {
-        qDebug("%s\t%s\t%s\t%s\t%s\t%s",
-               qPrintable(mElementMap[ i ].nameSpace),
-               qPrintable(mElementMap[ i ].typeName),
-               qPrintable(mElementMap[ i ].localType),
-               qPrintable(mElementMap[ i ].headers.join(",")),
-               qPrintable(mElementMap[ i ].headerIncludes.join(",")),
-               qPrintable(mElementMap[ i ].dumpBools()));
+        qDebug("%s\t%s\t%s\t%s\t%s\t%s", qPrintable(mElementMap[i].nameSpace), qPrintable(mElementMap[i].typeName),
+               qPrintable(mElementMap[i].localType), qPrintable(mElementMap[i].headers.join(",")),
+               qPrintable(mElementMap[i].headerIncludes.join(",")), qPrintable(mElementMap[i].dumpBools()));
     }
 }
 
@@ -549,8 +538,7 @@ QString TypeMap::localInputType(const QName &typeName, const QName &elementName)
 // If the type is represented as a KDSoapValue already, no need to serialize/deserialize it
 bool KWSDL::TypeMap::isTypeAny(const QName &typeName) const
 {
-    return (typeName.nameSpace() == XMLSchemaURI &&
-            (typeName.localName() == "any" || typeName.localName() == "anyType"));
+    return (typeName.nameSpace() == XMLSchemaURI && (typeName.localName() == "any" || typeName.localName() == "anyType"));
 }
 
 QString KWSDL::TypeMap::Entry::dumpBools() const
@@ -588,7 +576,8 @@ QString KWSDL::TypeMap::deserializeBuiltin(const QName &typeName, const QName &e
     }
 }
 
-QString KWSDL::TypeMap::serializeBuiltin(const QName &baseTypeName, const QName &elementName, const QString &var, const QString &name, const QString &typeNameSpace, const QString &typeName) const
+QString KWSDL::TypeMap::serializeBuiltin(const QName &baseTypeName, const QName &elementName, const QString &var, const QString &name,
+                                         const QString &typeNameSpace, const QString &typeName) const
 {
     QString value;
     const QName baseType = baseTypeName.isEmpty() ? baseTypeForElement(elementName) : baseTypeName;

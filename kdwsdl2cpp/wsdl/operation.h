@@ -33,8 +33,7 @@
 
 class ParserContext;
 
-namespace KWSDL
-{
+namespace KWSDL {
 
 /**
  * <operation> as defined inside <portType>.
@@ -45,7 +44,8 @@ class KWSDL_EXPORT Operation : public Element
 public:
     typedef QList<Operation> List;
 
-    enum OperationType {
+    enum OperationType
+    {
         OneWayOperation,
         RequestResponseOperation,
         SolicitResponseOperation,
@@ -87,4 +87,3 @@ private:
 }
 
 #endif // KWSDL_OPERATION_H
-

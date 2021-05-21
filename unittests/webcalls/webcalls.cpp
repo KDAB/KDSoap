@@ -27,7 +27,6 @@ class WebCalls : public QObject
 {
     Q_OBJECT
 public:
-
 public slots:
     void slotFinished(KDSoapPendingCallWatcher *watcher)
     {
@@ -42,7 +41,8 @@ private slots:
 
     void testAddIntegers_async()
     {
-        qDebug() << Q_FUNC_INFO << "this=" << this << "thread()=" << thread() << "currentThread=" << QThread::currentThread() << "main thread=" << qApp->thread();
+        qDebug() << Q_FUNC_INFO << "this=" << this << "thread()=" << thread() << "currentThread=" << QThread::currentThread()
+                 << "main thread=" << qApp->thread();
         const QString endPoint = QString::fromLatin1("http://www.mathertel.de/AJAXEngine/S02_AJAXCoreSamples/CalcService.asmx");
         const QString messageNamespace = QString::fromLatin1("http://www.mathertel.de/CalcFactors/");
         KDSoapClientInterface client(endPoint, messageNamespace);
@@ -50,12 +50,11 @@ private slots:
         message.setQualified(true);
         message.addArgument(QLatin1String("number1"), 42);
         message.addArgument(QLatin1String("number2"), 43);
-        KDSoapPendingCall pendingCall = client.asyncCall(QLatin1String("AddInteger"), message/*, action*/);
+        KDSoapPendingCall pendingCall = client.asyncCall(QLatin1String("AddInteger"), message /*, action*/);
         qDebug() << "pendingCall created";
         KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);
         qDebug() << "Created watcher" << watcher;
-        connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher*)),
-                this, SLOT(slotFinished(KDSoapPendingCallWatcher*)));
+        connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher *)), this, SLOT(slotFinished(KDSoapPendingCallWatcher *)));
         m_eventLoop.exec();
         QVERIFY2(!m_returnMessage.isFault(), qPrintable(m_returnMessage.faultAsString()));
         QCOMPARE(m_returnMessage.arguments().first().value().toInt(), 85);
@@ -124,10 +123,9 @@ private slots:
         message.addArgument(QLatin1String("prefix"), QLatin1String("Berl"));
         KDSoapPendingCall pendingCall = client.asyncCall(QLatin1String("OrteStartWith"), message);
         KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);
-        connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher*)),
-                this, SLOT(slotFinished(KDSoapPendingCallWatcher*)));
+        connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher *)), this, SLOT(slotFinished(KDSoapPendingCallWatcher *)));
         m_eventLoop.exec();
-        //qDebug() << m_returnMessage;
+        // qDebug() << m_returnMessage;
 
         QVERIFY2(!m_returnMessage.isFault(), qPrintable(m_returnMessage.faultAsString()));
         const QString retVal = m_returnMessage.arguments()[0].value().toString();
@@ -142,4 +140,3 @@ private:
 QTEST_MAIN(WebCalls)
 
 #include "webcalls.moc"
-

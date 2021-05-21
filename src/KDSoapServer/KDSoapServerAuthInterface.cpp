@@ -20,15 +20,22 @@
 KDSoapServerAuthInterface::KDSoapServerAuthInterface()
     : d(nullptr)
 {
-
 }
 
 KDSoapServerAuthInterface::~KDSoapServerAuthInterface()
 {
-
 }
 
-enum Method { None, Basic, Plain, Login, Ntlm, CramMd5, DigestMd5 };
+enum Method
+{
+    None,
+    Basic,
+    Plain,
+    Login,
+    Ntlm,
+    CramMd5,
+    DigestMd5
+};
 static void parseAuthLine(const QString &str, Method *method, QString *headerVal)
 {
     *method = None;
@@ -36,7 +43,7 @@ static void parseAuthLine(const QString &str, Method *method, QString *headerVal
     // is supposed to be run in a loop, apparently
     // (multiple WWW-Authenticate lines? multiple values in the line?)
 
-    //qDebug() << "parseAuthLine() " << str;
+    // qDebug() << "parseAuthLine() " << str;
     if (*method < Basic && str.startsWith(QLatin1String("Basic"), Qt::CaseInsensitive)) {
         *method = Basic;
         *headerVal = str.mid(6);
@@ -57,11 +64,11 @@ bool KDSoapServerAuthInterface::handleHttpAuth(const QByteArray &authValue, cons
         // Let the implementation decide whether it accepts "no auth".
         authOk = validateAuthentication(authSettings, path);
     } else {
-        //qDebug() << "got authValue=" << authValue; // looks like "Basic <base64 of user:pass>"
+        // qDebug() << "got authValue=" << authValue; // looks like "Basic <base64 of user:pass>"
         Method method;
         QString headerVal;
         parseAuthLine(QString::fromLatin1(authValue.constData(), authValue.size()), &method, &headerVal);
-        //qDebug() << "method=" << method << "headerVal=" << headerVal;
+        // qDebug() << "method=" << method << "headerVal=" << headerVal;
         switch (method) {
         case None:
             // Let the implementation decide whether it accepts "no auth".

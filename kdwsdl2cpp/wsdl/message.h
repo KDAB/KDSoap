@@ -32,8 +32,7 @@
 
 class ParserContext;
 
-namespace KWSDL
-{
+namespace KWSDL {
 
 class KWSDL_EXPORT Message : public Element
 {
@@ -62,4 +61,3 @@ private:
 }
 
 #endif // KWSDL_MESSAGE_H
-

@@ -20,7 +20,7 @@
 #include <QTest>
 #include <QDebug>
 
-class KeepUnusedTypesArgumentKDWSDL2CPP: public QObject
+class KeepUnusedTypesArgumentKDWSDL2CPP : public QObject
 {
     Q_OBJECT
 
@@ -38,4 +38,3 @@ private slots:
 QTEST_MAIN(KeepUnusedTypesArgumentKDWSDL2CPP)
 
 #include "keep_unused_types.moc"
-

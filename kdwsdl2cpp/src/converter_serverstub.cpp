@@ -15,7 +15,7 @@ void Converter::convertServerService()
         QSet<QName> uniqueBindings = mWSDL.uniqueBindings(service);
 
         Q_FOREACH (const QName &bindingName, uniqueBindings) {
-            //qDebug() << "binding" << bindingName;
+            // qDebug() << "binding" << bindingName;
             const Binding binding = mWSDL.findBinding(bindingName);
 
             QString className = KODE::Style::className(service.name());
@@ -54,7 +54,7 @@ void Converter::convertServerService()
             body.addLine("const QByteArray method = _request.name().toLatin1();");
 
             PortType portType = mWSDL.findPortType(binding.portTypeName());
-            //qDebug() << portType.name();
+            // qDebug() << portType.name();
             bool first = true;
             const Operation::List operations = portType.operations();
             Q_FOREACH (const Operation &operation, operations) {
@@ -74,7 +74,7 @@ void Converter::convertServerService()
                 body += "else {";
                 body.indent();
             }
-            body += "KDSoapServerObjectInterface::processRequest(_request, _response, _soapAction);"  + COMMENT;
+            body += "KDSoapServerObjectInterface::processRequest(_request, _response, _soapAction);" + COMMENT;
             if (!first) {
                 body.unindent();
                 body += "}";
@@ -122,7 +122,7 @@ void Converter::generateServerMethod(KODE::Code &code, const Binding &binding, c
         const Part &part = parts.at(partNum);
         const QString lowerName = lowerlize(part.name());
         const QString argType = mTypeMap.localType(part.type(), part.element());
-        //qDebug() << "localInputType" << part.type().qname() << part.element().qname() << "->" << argType;
+        // qDebug() << "localInputType" << part.type().qname() << part.element().qname() << "->" << argType;
         if (argType != "void") {
             const QString varName = mNameMapper.escape(lowerName);
 
@@ -135,7 +135,8 @@ void Converter::generateServerMethod(KODE::Code &code, const Binding &binding, c
                 if (partNum > 0) {
                     soapValueVarName += QString::number(partNum + 1);
                 }
-                code += QString::fromLatin1("const KDSoapValue %1 = %2.childValues().at(%3);").arg(soapValueVarName, requestVarName).arg(partNum) + COMMENT;
+                code += QString::fromLatin1("const KDSoapValue %1 = %2.childValues().at(%3);").arg(soapValueVarName, requestVarName).arg(partNum)
+                    + COMMENT;
             }
 
             // what if there's more than one?
@@ -151,7 +152,8 @@ void Converter::generateServerMethod(KODE::Code &code, const Binding &binding, c
     const Part::List outParts = outputMessage.parts();
     if (outParts.count() > 1) {
         qWarning("ERROR: multiple output parameters are not supported (operation %s) - please file"
-                 "an issue on github with your wsdl file", qPrintable(operation.name()));
+                 "an issue on github with your wsdl file",
+                 qPrintable(operation.name()));
         virtualMethod.setReturnType("void /*UNSUPPORTED*/");
     } else if (outParts.isEmpty()) {
         code += "this->" + lowerlize(operationName) + '(' + inputVars.join(", ") + ");" + COMMENT;
@@ -159,14 +161,14 @@ void Converter::generateServerMethod(KODE::Code &code, const Binding &binding, c
     } else {
         QString retType;
         QString retInputType;
-        //bool isBuiltin = false;
-        //bool isComplex = false;
+        // bool isBuiltin = false;
+        // bool isComplex = false;
         Part retPart;
         Q_FOREACH (const Part &outPart, outParts /* only one */) {
             retType = mTypeMap.localType(outPart.type(), outPart.element());
             retInputType = mTypeMap.localInputType(outPart.type(), outPart.element());
-            //isBuiltin = mTypeMap.isBuiltinType( outPart.type(), outPart.element() );
-            //isComplex = mTypeMap.isComplexType( outPart.type(), outPart.element() );
+            // isBuiltin = mTypeMap.isBuiltinType( outPart.type(), outPart.element() );
+            // isComplex = mTypeMap.isComplexType( outPart.type(), outPart.element() );
             retPart = outPart;
         }
         const QString methodCall = methodName + '(' + inputVars.join(", ") + ')';
@@ -203,7 +205,7 @@ void Converter::generateServerMethod(KODE::Code &code, const Binding &binding, c
 }
 
 void Converter::generateDelayedReponseMethod(const QString &methodName, const QString &retInputType, const Part &retPart, KODE::Class &newClass,
-        const Binding &binding, const Message &outputMessage)
+                                             const Binding &binding, const Message &outputMessage)
 {
     const QString delayedMethodName = methodName + "Response";
     KODE::Function delayedMethod(delayedMethodName);

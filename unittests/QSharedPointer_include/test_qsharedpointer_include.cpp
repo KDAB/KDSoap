@@ -18,17 +18,16 @@
 
 #include <QTest>
 
-class RightInclude:
-  public QObject
+class RightInclude : public QObject
 {
-Q_OBJECT
+    Q_OBJECT
 
 private Q_SLOTS:
 
-  void testCompiled()
-  {
-    Hello_Service service;
-  }
+    void testCompiled()
+    {
+        Hello_Service service;
+    }
 };
 
 QTEST_MAIN(RightInclude)

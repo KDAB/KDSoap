@@ -31,13 +31,11 @@ static const QString XMLSchemaInstanceURI(QLatin1String("http://www.w3.org/2001/
 
 class NSManager;
 
-namespace KWSDL
-{
+namespace KWSDL {
 
 class TypeMap
 {
 public:
-
     TypeMap();
     ~TypeMap();
 
@@ -72,9 +70,9 @@ public:
     QStringList headers(const QName &typeName) const;
     QStringList forwardDeclarations(const QName &typeName) const;
     QStringList headerIncludes(const QName &typeName) const;
-    //QString localNameSpace( const QName &typeName ) const;
+    // QString localNameSpace( const QName &typeName ) const;
 
-    //QStringList headersForElement( const QName &typeName ) const;
+    // QStringList headersForElement( const QName &typeName ) const;
     QStringList forwardDeclarationsForElement(const QName &typeName) const;
 
     /// Convenience methods:
@@ -108,7 +106,8 @@ public:
      * Return C++ code for converting the variant in "var" into the right type.
      */
     QString deserializeBuiltin(const QName &typeName, const QName &elementName, const QString &var, const QString &qtTypeName) const;
-    QString serializeBuiltin(const QName &baseTypeName, const QName &elementName, const QString &var, const QString &name, const QString &typeNameSpace, const QString &typeName) const;
+    QString serializeBuiltin(const QName &baseTypeName, const QName &elementName, const QString &var, const QString &name,
+                             const QString &typeNameSpace, const QString &typeName) const;
 
     QString localTypeForAttribute(const QName &typeName) const;
     QStringList headersForAttribute(const QName &typeName) const;
@@ -129,8 +128,14 @@ private:
     class Entry
     {
     public:
-        Entry() : basicType(false), builtinType(false), complexType(false), isPolymorphic(false) {}
-        bool basicType;   // POD (int, bool, etc.)
+        Entry()
+            : basicType(false)
+            , builtinType(false)
+            , complexType(false)
+            , isPolymorphic(false)
+        {
+        }
+        bool basicType; // POD (int, bool, etc.)
         bool builtinType; // types defined in xmlschema
         bool complexType;
         bool isPolymorphic; // has derived classes -> store as shared pointer

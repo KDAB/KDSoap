@@ -57,10 +57,8 @@ private:
     void handleRequest(const QMap<QByteArray, QByteArray> &headers, const QByteArray &receivedData);
     bool handleWsdlDownload();
     bool handleFileDownload(KDSoapServerObjectInterface *serverObjectInterface, const QString &path);
-    void makeCall(KDSoapServerObjectInterface *serverObjectInterface,
-                  const KDSoapMessage &requestMsg, KDSoapMessage &replyMsg,
-                  const KDSoapHeaders &requestHeaders,
-                  const QByteArray &soapAction, const QString &path);
+    void makeCall(KDSoapServerObjectInterface *serverObjectInterface, const KDSoapMessage &requestMsg, KDSoapMessage &replyMsg,
+                  const KDSoapHeaders &requestHeaders, const QByteArray &soapAction, const QString &path);
     void handleError(KDSoapMessage &replyMsg, const char *errorCode, const QString &error);
     void setSocketEnabled(bool enabled);
     void writeXML(const QByteArray &xmlResponse, bool isFault);

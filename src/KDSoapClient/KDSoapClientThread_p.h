@@ -35,8 +35,15 @@ QT_END_NAMESPACE
 class KDSoapThreadTaskData
 {
 public:
-    KDSoapThreadTaskData(KDSoapClientInterface *iface, const QString &method, const KDSoapMessage &message, const QString &action, const KDSoapHeaders &headers)
-        : m_iface(iface), m_method(method), m_message(message), m_action(action), m_headers(headers) {}
+    KDSoapThreadTaskData(KDSoapClientInterface *iface, const QString &method, const KDSoapMessage &message, const QString &action,
+                         const KDSoapHeaders &headers)
+        : m_iface(iface)
+        , m_method(method)
+        , m_message(message)
+        , m_action(action)
+        , m_headers(headers)
+    {
+    }
 
     void waitForCompletion()
     {
@@ -67,7 +74,9 @@ class KDSoapThreadTask : public QObject
     Q_OBJECT
 public:
     explicit KDSoapThreadTask(KDSoapThreadTaskData *data)
-        : m_data(data) {}
+        : m_data(data)
+    {
+    }
 
     void process(QNetworkAccessManager &accessManager);
 

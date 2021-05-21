@@ -34,15 +34,15 @@
 
 class ParserContext;
 
-namespace KWSDL
-{
+namespace KWSDL {
 
 class KWSDL_EXPORT Binding : public Element
 {
 public:
     typedef QList<Binding> List;
 
-    enum Type {
+    enum Type
+    {
         SOAPBinding,
         HTTPBinding,
         MIMEBinding,
@@ -62,7 +62,8 @@ public:
     void setType(Type type);
     Type type() const;
 
-    enum Version {
+    enum Version
+    {
         SOAP_1_1,
         SOAP_1_2
     };
@@ -72,7 +73,7 @@ public:
     void setOperations(const BindingOperation::List &operations);
     BindingOperation::List operations() const;
 
-    //void setSoapBinding( const SoapBinding &soapBinding );
+    // void setSoapBinding( const SoapBinding &soapBinding );
     SoapBinding soapBinding() const;
 
     const AbstractBinding *binding() const;
@@ -93,4 +94,3 @@ private:
 }
 
 #endif // KWSDL_BINDING_H
-

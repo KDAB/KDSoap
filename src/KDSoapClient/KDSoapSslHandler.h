@@ -37,7 +37,6 @@ class KDSOAP_EXPORT KDSoapSslHandler : public QObject
 {
     Q_OBJECT
 public:
-
 Q_SIGNALS:
     /**
      * @brief Notification of SSL errors

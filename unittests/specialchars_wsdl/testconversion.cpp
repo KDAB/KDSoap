@@ -28,11 +28,10 @@ private slots:
     void test();
 };
 
-//using namespace KDSoapUnitTestHelpers;
+// using namespace KDSoapUnitTestHelpers;
 
 TestConversion::TestConversion()
 {
-
 }
 
 void TestConversion::test()

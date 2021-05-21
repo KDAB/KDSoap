@@ -21,7 +21,8 @@
 #include <QMetaType>
 
 KDSoapServerThread::KDSoapServerThread(QObject *parent)
-    : QThread(parent), d(nullptr)
+    : QThread(parent)
+    , d(nullptr)
 {
     qRegisterMetaType<KDSoapServer *>("KDSoapServer*");
     qRegisterMetaType<QSemaphore *>("QSemaphore*");
@@ -98,7 +99,8 @@ void KDSoapServerThread::handleIncomingConnection(int socketDescriptor, KDSoapSe
 ////
 
 KDSoapServerThreadImpl::KDSoapServerThreadImpl()
-    : QObject(nullptr), m_incomingConnectionCount(0)
+    : QObject(nullptr)
+    , m_incomingConnectionCount(0)
 {
 }
 

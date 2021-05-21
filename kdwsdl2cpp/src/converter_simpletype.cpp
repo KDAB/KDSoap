@@ -13,11 +13,8 @@ static KODE::Code createRangeCheckCode(const XSD::SimpleType *, const QString &b
 void Converter::addVariableInitializer(KODE::MemberVariable &variable) const
 {
     const QByteArray type = variable.type().toLatin1();
-    static const char *s_numericTypes[] = {
-        "int", "unsigned int", "quint64", "qint64",
-        "char", "signed char", "unsigned char", "short", "unsigned short",
-        "float", "double"
-    };
+    static const char *s_numericTypes[] = { "int",           "unsigned int", "quint64",        "qint64", "char",  "signed char",
+                                            "unsigned char", "short",        "unsigned short", "float",  "double" };
     for (uint i = 0; i < sizeof(s_numericTypes) / sizeof(*s_numericTypes); ++i) {
         if (type == s_numericTypes[i]) {
             variable.setInitializer("0");
@@ -46,7 +43,7 @@ QString Converter::listTypeFor(const QString &itemTypeName, KODE::Class &newClas
 void Converter::convertSimpleType(const XSD::SimpleType *type, const XSD::SimpleType::List &simpleTypeList)
 {
     const QString typeName(mTypeMap.localType(type->qualifiedName()));
-    //qDebug() << "convertSimpleType:" << type->qualifiedName() << typeName;
+    // qDebug() << "convertSimpleType:" << type->qualifiedName() << typeName;
     KODE::Class newClass;
     newClass.setNamespaceAndName(typeName);
     if (!Settings::self()->exportDeclaration().isEmpty()) {
@@ -66,14 +63,13 @@ void Converter::convertSimpleType(const XSD::SimpleType *type, const XSD::Simple
             NameMapper nameMapper;
             QStringList enums = type->facetEnums();
             for (int i = 0; i < enums.count(); ++i) {
-                enums[ i ] = nameMapper.escape(escapeEnum(enums[ i ]));
+                enums[i] = nameMapper.escape(escapeEnum(enums[i]));
             }
 
             newClass.addEnum(KODE::Enum("Type", enums));
 
-            classDocumentation += "Whenever you have to pass an object of type " + newClass.name() +
-                                  " you can also pass the enum directly. Example:\n" +
-                                  "someMethod(" + newClass.name() + "::" + enums.first() + ").";
+            classDocumentation += "Whenever you have to pass an object of type " + newClass.name()
+                + " you can also pass the enum directly. Example:\n" + "someMethod(" + newClass.name() + "::" + enums.first() + ").";
 
             // member variables
             KODE::MemberVariable variable("type", "Type");
@@ -112,9 +108,7 @@ void Converter::convertSimpleType(const XSD::SimpleType *type, const XSD::Simple
           A class can't derive from basic types (e.g. int or unsigned char), so
           we add setter and getter methods to set the value of this class.
          */
-        if (type->baseTypeName() != XmlAnyType
-                && !type->baseTypeName().isEmpty()
-                && !(type->facetType() & XSD::SimpleType::ENUM)) {
+        if (type->baseTypeName() != XmlAnyType && !type->baseTypeName().isEmpty() && !(type->facetType() & XSD::SimpleType::ENUM)) {
             classDocumentation = "This class encapsulates a simple type.\n";
 
             const QName baseName = type->baseTypeName();
@@ -124,7 +118,8 @@ void Converter::convertSimpleType(const XSD::SimpleType *type, const XSD::Simple
             QList<QName> parentBasicTypes;
             parentBasicTypes.append(baseName);
             QName currentType = baseName;
-            Q_FOREVER {
+            Q_FOREVER
+            {
                 const XSD::SimpleType simpleType = simpleTypeList.simpleType(currentType);
                 if (!simpleType.isNull() && simpleType.isRestriction()) {
                     currentType = simpleType.baseTypeName();
@@ -134,8 +129,8 @@ void Converter::convertSimpleType(const XSD::SimpleType *type, const XSD::Simple
                 break;
             }
 
-            classDocumentation += "Whenever you have to pass an object of type " + newClass.name() +
-                                  " you can also pass the value directly as a " + mTypeMap.localType(currentType) + '.';
+            classDocumentation += "Whenever you have to pass an object of type " + newClass.name() + " you can also pass the value directly as a "
+                + mTypeMap.localType(currentType) + '.';
             // include header
             newClass.addIncludes(QStringList(), mTypeMap.forwardDeclarations(baseName));
             newClass.addHeaderIncludes(mTypeMap.headerIncludes(baseName));
@@ -177,7 +172,7 @@ void Converter::convertSimpleType(const XSD::SimpleType *type, const XSD::Simple
             newClass.addFunction(conctor);
 
             // even more convenient constructor, for the case of multiple-level simple-type restrictions
-            //qDebug() << typeName << ": baseName=" << baseName << "further up:" << parentBasicTypes;
+            // qDebug() << typeName << ": baseName=" << baseName << "further up:" << parentBasicTypes;
             if (parentBasicTypes.count() > 1) {
                 parentBasicTypes.removeLast(); // the top-most one is in "currentType", so it's the input arg.
                 KODE::Function baseCtor(conctor.name());
@@ -198,8 +193,7 @@ void Converter::convertSimpleType(const XSD::SimpleType *type, const XSD::Simple
             op.setConst(true);
             newClass.addFunction(op);
         }
-    }
-    break;
+    } break;
     case XSD::SimpleType::TypeList: {
         classDocumentation = "This class encapsulates a list type.";
 
@@ -231,8 +225,7 @@ void Converter::convertSimpleType(const XSD::SimpleType *type, const XSD::Simple
         newClass.addFunction(setter);
         newClass.addFunction(getter);
 
-    }
-    break;
+    } break;
     case XSD::SimpleType::TypeUnion:
         classDocumentation = "This class encapsulates a union type.";
         // Let's be lazy and let's just have a qvariant for storing the various
@@ -296,7 +289,7 @@ void Converter::createSimpleTypeSerializer(KODE::Class &newClass, const XSD::Sim
             NameMapper nameMapper;
             QStringList escapedEnums;
             for (int i = 0; i < enums.count(); ++i) {
-                escapedEnums.append(nameMapper.escape(escapeEnum(enums[ i ])));
+                escapedEnums.append(nameMapper.escape(escapeEnum(enums[i])));
             }
 
             const QString variableName = KODE::MemberVariable::memberVariableName("type");
@@ -309,7 +302,7 @@ void Converter::createSimpleTypeSerializer(KODE::Class &newClass, const XSD::Sim
                 code += "switch ( " + variableName + " ) {" + COMMENT;
                 code.indent();
                 for (int i = 0; i < enums.count(); ++i) {
-                    code += "case " + typeName + "::" + escapedEnums[ i ] + ':';
+                    code += "case " + typeName + "::" + escapedEnums[i] + ':';
                     code.indent();
                     code += "return QStringLiteral(\"" + enums[i] + "\");";
                     code.unindent();
@@ -340,14 +333,15 @@ void Converter::createSimpleTypeSerializer(KODE::Class &newClass, const XSD::Sim
             {
                 KODE::Code code;
                 code += COMMENT;
-                code += "return KDSoapValue(valueName, stringValue(), " + namespaceString(type->nameSpace()) + ", QString::fromLatin1(\"" + type->name() + "\"));";
+                code += "return KDSoapValue(valueName, stringValue(), " + namespaceString(type->nameSpace()) + ", QString::fromLatin1(\""
+                    + type->name() + "\"));";
                 serializeFunc.setBody(code);
             }
             {
                 KODE::Code code;
                 code += "static const struct { const char* name; Type value; } s_values[" + QString::number(enums.count()) + "] = {";
                 for (int i = 0; i < enums.count(); ++i) {
-                    code += "{ \"" + enums[ i ] + "\", " + typeName + "::" + escapedEnums[ i ] + " }" + (i < enums.count() - 1 ? "," : "");
+                    code += "{ \"" + enums[i] + "\", " + typeName + "::" + escapedEnums[i] + " }" + (i < enums.count() - 1 ? "," : "");
                 }
                 code += "};";
                 code += "const QString str = mainValue.value().toString();";
@@ -364,11 +358,8 @@ void Converter::createSimpleTypeSerializer(KODE::Class &newClass, const XSD::Sim
                 code += "qDebug(\"Unknown enum value '%s' passed to '" + newClass.name() + "'.\", qPrintable(str) );";
                 deserializeFunc.setBody(code);
             }
-
         }
-        if (type->baseTypeName() != XmlAnyType
-                && !type->baseTypeName().isEmpty()
-                && !(type->facetType() & XSD::SimpleType::ENUM)) {
+        if (type->baseTypeName() != XmlAnyType && !type->baseTypeName().isEmpty() && !(type->facetType() & XSD::SimpleType::ENUM)) {
             // 'inherits' a basic type or another simple type -> using value.
 
             const QName baseName = type->baseTypeName();
@@ -377,14 +368,18 @@ void Converter::createSimpleTypeSerializer(KODE::Class &newClass, const XSD::Sim
             const QString variableName = KODE::MemberVariable::memberVariableName("value");
             const QName baseType = type->baseTypeName();
             Q_UNUSED(simpleTypeList);
-            //const QName mostBasicTypeName = simpleTypeList.mostBasicType( baseType );
-            //Q_UNUSED(mostBasicTypeName);
-            if (mTypeMap.isBuiltinType(baseType)) {     // serialize from QString, int, etc.
-                serializeFunc.addBodyLine("return " + mTypeMap.serializeBuiltin(baseType, QName(), variableName, "valueName", type->nameSpace(), type->name()) + ";" + COMMENT);
-                deserializeFunc.addBodyLine(variableName + " = " + mTypeMap.deserializeBuiltin(baseType, QName(), "mainValue", baseTypeName) + ";" + COMMENT);
+            // const QName mostBasicTypeName = simpleTypeList.mostBasicType( baseType );
+            // Q_UNUSED(mostBasicTypeName);
+            if (mTypeMap.isBuiltinType(baseType)) { // serialize from QString, int, etc.
+                serializeFunc.addBodyLine("return "
+                                          + mTypeMap.serializeBuiltin(baseType, QName(), variableName, "valueName", type->nameSpace(), type->name())
+                                          + ";" + COMMENT);
+                deserializeFunc.addBodyLine(variableName + " = " + mTypeMap.deserializeBuiltin(baseType, QName(), "mainValue", baseTypeName) + ";"
+                                            + COMMENT);
             } else { // inherits another simple type, need to call its serialize/deserialize method
                 serializeFunc.addBodyLine("KDSoapValue value = mValue.serialize(valueName);");
-                serializeFunc.addBodyLine("value.setType(" + namespaceString(type->nameSpace()) + ", QString::fromLatin1(\"" + type->name() + "\"));");
+                serializeFunc.addBodyLine("value.setType(" + namespaceString(type->nameSpace()) + ", QString::fromLatin1(\"" + type->name()
+                                          + "\"));");
                 serializeFunc.addBodyLine("return value;" + COMMENT);
                 deserializeFunc.addBodyLine(variableName + ".deserialize( mainValue );" + COMMENT);
             }
@@ -408,7 +403,8 @@ void Converter::createSimpleTypeSerializer(KODE::Class &newClass, const XSD::Sim
                 code += "str += " + variableName + ".at(i);";
             } else {
                 if (mTypeMap.isBuiltinType(baseName)) { // serialize from int, float, bool, etc.
-                    code += "KDSoapValue subValue = " + mTypeMap.serializeBuiltin(baseName, QName(), variableName + ".at(i)", "QString()", QString(), QString()) + ";";
+                    code += "KDSoapValue subValue = "
+                        + mTypeMap.serializeBuiltin(baseName, QName(), variableName + ".at(i)", "QString()", QString(), QString()) + ";";
                 } else {
                     code += "KDSoapValue subValue =  " + variableName + ".at(i).serialize(QString());";
                 }
@@ -432,7 +428,7 @@ void Converter::createSimpleTypeSerializer(KODE::Class &newClass, const XSD::Sim
             QString val = QString::fromLatin1("list.at(i)");
             if (itemTypeName == "QString")
                 val = val + ".value().toString()";
-            else if (mTypeMap.isBuiltinType(baseName)) {     // deserialize to int, float, bool, etc.
+            else if (mTypeMap.isBuiltinType(baseName)) { // deserialize to int, float, bool, etc.
                 val = mTypeMap.deserializeBuiltin(baseName, QName(), val, itemTypeName);
             } else {
                 code += itemTypeName + " tmp;";
@@ -444,13 +440,13 @@ void Converter::createSimpleTypeSerializer(KODE::Class &newClass, const XSD::Sim
             code += "}";
             deserializeFunc.setBody(code);
         }
-    }
-    break;
+    } break;
     case XSD::SimpleType::TypeUnion: {
         const QString variableName = KODE::MemberVariable::memberVariableName("value");
         {
             KODE::Code code;
-            code += "return KDSoapValue(valueName, " + variableName + ", " + namespaceString(type->nameSpace()) + ", QString::fromLatin1(\"" + type->name() + "\"));";
+            code += "return KDSoapValue(valueName, " + variableName + ", " + namespaceString(type->nameSpace()) + ", QString::fromLatin1(\""
+                + type->name() + "\"));";
             serializeFunc.setBody(code);
         }
         {
@@ -479,7 +475,8 @@ static QString escapeRegExp(const QString &str)
     return reg;
 }
 
-static KODE::Code createRangeCheckCode(const XSD::SimpleType *type, const QString &baseTypeName, const QString &variableName, KODE::Class &parentClass, const XSD::SimpleType &baseSimpleType)
+static KODE::Code createRangeCheckCode(const XSD::SimpleType *type, const QString &baseTypeName, const QString &variableName,
+                                       KODE::Class &parentClass, const XSD::SimpleType &baseSimpleType)
 {
     QString extendedVariableName = variableName;
 

@@ -23,8 +23,7 @@
 #include <QDomElement>
 #include <QObject>
 
-namespace KWSDL
-{
+namespace KWSDL {
 
 class Compiler : public QObject
 {

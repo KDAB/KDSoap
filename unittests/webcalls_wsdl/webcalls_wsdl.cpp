@@ -27,7 +27,6 @@ class WebCallsWSDL : public QObject
 {
     Q_OBJECT
 public:
-
 private slots:
 
 #if 0 // 2020-12-02 bad example, it's returning malformed XML!
@@ -120,7 +119,7 @@ private slots:
     {
         // TODO OrteLookup::OrteLookupSoap12 lookup;
         OrteLookup::OrteLookupSoap lookup;
-        //lookup.setSoapVersion(KDSoapClientInterface::SOAP1_2);
+        // lookup.setSoapVersion(KDSoapClientInterface::SOAP1_2);
         TNS__OrteStartWith args;
         args.setPrefix(QLatin1String("Berl"));
         TNS__OrteStartWithResponse resp = lookup.orteStartWith(args);
@@ -155,4 +154,3 @@ private:
 QTEST_MAIN(WebCallsWSDL)
 
 #include "webcalls_wsdl.moc"
-

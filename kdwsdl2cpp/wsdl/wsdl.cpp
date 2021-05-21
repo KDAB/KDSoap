@@ -101,26 +101,26 @@ Message WSDL::findMessage(const QName &messageName) const
     const Message::List list = mDefinitions.messages();
     Message::List::ConstIterator it;
     for (it = list.constBegin(); it != list.constEnd(); ++it) {
-        //qDebug() << (*it).name() << (*it).nameSpace();
+        // qDebug() << (*it).name() << (*it).nameSpace();
         if ((*it).name() == messageName.localName() && (*it).nameSpace() == messageName.nameSpace()) {
             return *it;
         }
     }
-    qDebug() << "findMessage: no match found for" << messageName.qname()
-             << "(localName=" << messageName.localName() << " nameSpace=" << messageName.nameSpace() << ")";
+    qDebug() << "findMessage: no match found for" << messageName.qname() << "(localName=" << messageName.localName()
+             << " nameSpace=" << messageName.nameSpace() << ")";
 
     return Message();
 }
 
 XSD::Element WSDL::findElement(const QName &elementName) const
 {
-    //qDebug() << "findElement" << elementName.nameSpace() << elementName.localName();
+    // qDebug() << "findElement" << elementName.nameSpace() << elementName.localName();
     const XSD::Types types = mDefinitions.type().types();
     const XSD::Element::List elements = types.elements();
     for (int i = 0; i < elements.count(); ++i) {
-        //qDebug() << "    " << i << elements[ i ].nameSpace() << elements[i].name();
-        if (elements[ i ].nameSpace() == elementName.nameSpace() && elements[ i ].name() == elementName.localName()) {
-            return elements[ i ];
+        // qDebug() << "    " << i << elements[ i ].nameSpace() << elements[i].name();
+        if (elements[i].nameSpace() == elementName.nameSpace() && elements[i].name() == elementName.localName()) {
+            return elements[i];
         }
     }
 
@@ -146,4 +146,3 @@ QSet<QName> WSDL::uniqueBindings(const Service &service) const
     }
     return bindings;
 }
-

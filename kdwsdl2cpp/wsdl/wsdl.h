@@ -26,8 +26,7 @@
 #include <wsdl/definitions.h>
 #include <kode_export.h>
 
-namespace KWSDL
-{
+namespace KWSDL {
 
 class KWSDL_EXPORT WSDL
 {

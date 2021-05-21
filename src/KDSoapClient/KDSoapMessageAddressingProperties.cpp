@@ -26,14 +26,16 @@
 class KDSoapMessageAddressingPropertiesData : public QSharedData
 {
 public:
-
-    QString destination;    // Provides the address of the intended receiver of this message
-    QString action;         // Identifies the semantics implied by this message
+    QString destination; // Provides the address of the intended receiver of this message
+    QString action; // Identifies the semantics implied by this message
     KDSoapEndpointReference sourceEndpoint; // Message origin, could be included to facilitate longer running message exchanges.
-    KDSoapEndpointReference replyEndpoint;  // Intended receiver for replies to this message, could be included to facilitate longer running message exchanges.
-    KDSoapEndpointReference faultEndpoint;  // Intended receiver for faults related to this message, could be included to facilitate longer running message exchanges.
-    QString messageID;      // Unique identifier for this message, may be included to facilitate longer running message exchanges.
-    QVector<KDSoapMessageRelationship::Relationship> relationships;   // Indicates relationships to prior messages, could be included to facilitate longer running message exchanges.
+    KDSoapEndpointReference replyEndpoint; // Intended receiver for replies to this message, could be included to facilitate longer running message
+                                           // exchanges.
+    KDSoapEndpointReference faultEndpoint; // Intended receiver for faults related to this message, could be included to facilitate longer running
+                                           // message exchanges.
+    QString messageID; // Unique identifier for this message, may be included to facilitate longer running message exchanges.
+    QVector<KDSoapMessageRelationship::Relationship> relationships; // Indicates relationships to prior messages, could be included to facilitate
+                                                                    // longer running message exchanges.
     KDSoapValueList referenceParameters; // Equivalent of the reference parameters object from the endpoint reference within WSDL file
     KDSoapValueList metadata; // Holding metadata information
     KDSoapMessageAddressingProperties::KDSoapAddressingNamespace addressingNamespace = KDSoapMessageAddressingProperties::Addressing200508;
@@ -49,7 +51,7 @@ KDSoapMessageAddressingProperties::KDSoapMessageAddressingProperties(const KDSoa
 {
 }
 
-KDSoapMessageAddressingProperties &KDSoapMessageAddressingProperties::operator =(const KDSoapMessageAddressingProperties &other)
+KDSoapMessageAddressingProperties &KDSoapMessageAddressingProperties::operator=(const KDSoapMessageAddressingProperties &other)
 {
     d = other.d;
     return *this;
@@ -208,7 +210,8 @@ KDSoapMessageAddressingProperties::~KDSoapMessageAddressingProperties()
 {
 }
 
-QString KDSoapMessageAddressingProperties::predefinedAddressToString(KDSoapMessageAddressingProperties::KDSoapAddressingPredefinedAddress address, KDSoapAddressingNamespace addressingNamespace)
+QString KDSoapMessageAddressingProperties::predefinedAddressToString(KDSoapMessageAddressingProperties::KDSoapAddressingPredefinedAddress address,
+                                                                     KDSoapAddressingNamespace addressingNamespace)
 {
     QString prefix = addressingNamespaceToString(addressingNamespace);
     switch (addressingNamespace) {
@@ -249,10 +252,9 @@ QString KDSoapMessageAddressingProperties::predefinedAddressToString(KDSoapMessa
 
 bool KDSoapMessageAddressingProperties::isWSAddressingNamespace(const QString &namespaceUri)
 {
-    return namespaceUri == KDSoapNamespaceManager::soapMessageAddressing() ||
-            namespaceUri == KDSoapNamespaceManager::soapMessageAddressing200303() ||
-            namespaceUri == KDSoapNamespaceManager::soapMessageAddressing200403() ||
-            namespaceUri == KDSoapNamespaceManager::soapMessageAddressing200408();
+    return namespaceUri == KDSoapNamespaceManager::soapMessageAddressing() || namespaceUri == KDSoapNamespaceManager::soapMessageAddressing200303()
+        || namespaceUri == KDSoapNamespaceManager::soapMessageAddressing200403()
+        || namespaceUri == KDSoapNamespaceManager::soapMessageAddressing200408();
 }
 
 QString KDSoapMessageAddressingProperties::addressingNamespaceToString(KDSoapAddressingNamespace addressingNamespace)
@@ -289,9 +291,10 @@ static void writeKDSoapValueVariant(QXmlStreamWriter &writer, const KDSoapValue 
                  "value because it could not be converted into a QString");
 }
 
-static void writeKDSoapValueListHierarchy(KDSoapNamespacePrefixes &namespacePrefixes, QXmlStreamWriter &writer, const QString &addressingNS, const KDSoapValueList &values)
+static void writeKDSoapValueListHierarchy(KDSoapNamespacePrefixes &namespacePrefixes, QXmlStreamWriter &writer, const QString &addressingNS,
+                                          const KDSoapValueList &values)
 {
-    Q_FOREACH (const KDSoapValue &value, values)  {
+    Q_FOREACH (const KDSoapValue &value, values) {
         const QString topLevelName = value.name();
         writer.writeStartElement(addressingNS, topLevelName);
 
@@ -305,7 +308,8 @@ static void writeKDSoapValueListHierarchy(KDSoapNamespacePrefixes &namespacePref
     }
 }
 
-void KDSoapMessageAddressingProperties::writeMessageAddressingProperties(KDSoapNamespacePrefixes &namespacePrefixes, QXmlStreamWriter &writer, const QString &messageNamespace, bool forceQualified) const
+void KDSoapMessageAddressingProperties::writeMessageAddressingProperties(KDSoapNamespacePrefixes &namespacePrefixes, QXmlStreamWriter &writer,
+                                                                         const QString &messageNamespace, bool forceQualified) const
 {
     Q_UNUSED(messageNamespace);
     Q_UNUSED(forceQualified);
@@ -429,9 +433,10 @@ void KDSoapMessageAddressingProperties::readMessageAddressingProperty(const KDSo
     }
 }
 
-QDebug operator <<(QDebug dbg, const KDSoapMessageAddressingProperties &msg)
+QDebug operator<<(QDebug dbg, const KDSoapMessageAddressingProperties &msg)
 {
-    dbg << msg.action() << msg.destination() << msg.sourceEndpoint().address() << msg.replyEndpoint().address() << msg.faultEndpoint().address() << msg.messageID();
+    dbg << msg.action() << msg.destination() << msg.sourceEndpoint().address() << msg.replyEndpoint().address() << msg.faultEndpoint().address()
+        << msg.messageID();
 
     return dbg;
 }

@@ -27,46 +27,46 @@ private Q_SLOTS:
 
     void testMustReturnDefaultValueWhenValueNotSet()
     {
-      TNS__State state;
-      QCOMPARE(state.errorDescription(), QString("defaultError"));
+        TNS__State state;
+        QCOMPARE(state.errorDescription(), QString("defaultError"));
     }
 
     void testMustReturnActualValueWhenValueIsSet()
     {
-      TNS__State state;
-      const QString description("notDefault");
-      state.setErrorDescription(description);
-      QCOMPARE(state.errorDescription(), description);
+        TNS__State state;
+        const QString description("notDefault");
+        state.setErrorDescription(description);
+        QCOMPARE(state.errorDescription(), description);
     }
 
     void testDefaultBoolValue()
     {
-      TNS__State state;
-      QCOMPARE(state.isCancelled(), true);
+        TNS__State state;
+        QCOMPARE(state.isCancelled(), true);
     }
 
     void testDefaultIntValue()
     {
-      TNS__State state;
-      QCOMPARE(state.intValue(), 1985);
+        TNS__State state;
+        QCOMPARE(state.intValue(), 1985);
     }
 
     void testDefaultDoubleValue()
     {
-      TNS__State state;
-      QCOMPARE(state.doubleValue(), 1985.145);
+        TNS__State state;
+        QCOMPARE(state.doubleValue(), 1985.145);
     }
 
     void testDefaultByteArrayValue()
     {
-      TNS__State state;
-      QCOMPARE(state.byteArrayValue(), QByteArray("0xFFAA"));
+        TNS__State state;
+        QCOMPARE(state.byteArrayValue(), QByteArray("0xFFAA"));
     }
 
     void testDefaultEnumerationValue()
     {
-      TNS__State state;
-      QCOMPARE(state.enumerationValue(), TNS__SynchronizationType(TNS__SynchronizationType::MIDDLE));
+        TNS__State state;
+        QCOMPARE(state.enumerationValue(), TNS__SynchronizationType(TNS__SynchronizationType::MIDDLE));
     }
 
     void testDefaultTimeValue()
@@ -88,19 +88,19 @@ private Q_SLOTS:
 
     void testMustNotSerializeWhenValueNotSet()
     {
-      TNS__State state;
-      const QString description("notDefault");
-      state.setErrorDescription(description);
+        TNS__State state;
+        const QString description("notDefault");
+        state.setErrorDescription(description);
 
-      const KDSoapValue& value = state.serialize("State");
-      const QByteArray& actualXml = value.toXml();
+        const KDSoapValue &value = state.serialize("State");
+        const QByteArray &actualXml = value.toXml();
 
-      QVERIFY(actualXml.contains("errorDescription"));
-      QVERIFY(!actualXml.contains("isCancelled"));
-      QVERIFY(!actualXml.contains("intValue"));
-      QVERIFY(!actualXml.contains("doubleValue"));
-      QVERIFY(!actualXml.contains("byteArrayValue"));
-      QVERIFY(!actualXml.contains("enumerationValue"));
+        QVERIFY(actualXml.contains("errorDescription"));
+        QVERIFY(!actualXml.contains("isCancelled"));
+        QVERIFY(!actualXml.contains("intValue"));
+        QVERIFY(!actualXml.contains("doubleValue"));
+        QVERIFY(!actualXml.contains("byteArrayValue"));
+        QVERIFY(!actualXml.contains("enumerationValue"));
     }
 };
 

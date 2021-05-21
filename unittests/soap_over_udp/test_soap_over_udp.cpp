@@ -31,26 +31,30 @@ class SoapOverUdpTest : public QObject
     Q_OBJECT
 
 private Q_SLOTS:
-    void initTestCase() {
+    void initTestCase()
+    {
         qRegisterMetaType<KDSoapMessage>("KDSoapMessage");
         qRegisterMetaType<KDSoapHeaders>("KDSoapHeaders");
         qRegisterMetaType<QHostAddress>("QHostAddress");
     }
 
-    void testExample() {
+    void testExample()
+    {
         // This is the example from the KDSoapUdpClient documentation. It is
         //   here for compile testing.
 
         auto soapUdpClient = new KDSoapUdpClient(this);
-        connect(soapUdpClient, &KDSoapUdpClient::receivedMessage, [=](const KDSoapMessage& message, const KDSoapHeaders& headers, const QHostAddress& address, quint16 port) {
-            Q_UNUSED(headers);
-            Q_UNUSED(port);
-            if(message.messageAddressingProperties().action() == QStringLiteral("http://docs.oasis-open.org/ws-dd/ns/discovery/2009/01/ProbeMatches")) {
-                TNS__ProbeMatchesType probeMatches;
-                probeMatches.deserialize(message);
-                qDebug() << "Received probe match from" << address;
-            }
-        });
+        connect(soapUdpClient, &KDSoapUdpClient::receivedMessage,
+                [=](const KDSoapMessage &message, const KDSoapHeaders &headers, const QHostAddress &address, quint16 port) {
+                    Q_UNUSED(headers);
+                    Q_UNUSED(port);
+                    if (message.messageAddressingProperties().action()
+                        == QStringLiteral("http://docs.oasis-open.org/ws-dd/ns/discovery/2009/01/ProbeMatches")) {
+                        TNS__ProbeMatchesType probeMatches;
+                        probeMatches.deserialize(message);
+                        qDebug() << "Received probe match from" << address;
+                    }
+                });
         soapUdpClient->bind(3702);
 
         TNS__ProbeType probe;
@@ -68,13 +72,15 @@ private Q_SLOTS:
         addressing.setMessageID(QStringLiteral("urn:uuid:") + QUuid::createUuid().toString());
 #endif
         addressing.setDestination(QStringLiteral("urn:docs-oasis-open-org:ws-dd:ns:discovery:2009:01"));
-        addressing.setReplyEndpointAddress(KDSoapMessageAddressingProperties::predefinedAddressToString(KDSoapMessageAddressingProperties::Anonymous));
+        addressing.setReplyEndpointAddress(
+            KDSoapMessageAddressingProperties::predefinedAddressToString(KDSoapMessageAddressingProperties::Anonymous));
         message.setMessageAddressingProperties(addressing);
 
         soapUdpClient->sendMessage(message, KDSoapHeaders(), QHostAddress("239.255.255.250"), 3702);
     }
 
-    void testSendMessage() {
+    void testSendMessage()
+    {
         QUdpSocket testSocket;
         bool rc = testSocket.bind();
         QVERIFY(rc);
@@ -89,14 +95,15 @@ private Q_SLOTS:
         QVERIFY(KDSoapUnitTestHelpers::xmlBufferCompare(datagram.data(), exampleTextData()));
     }
 
-    void testReceiveMessage() {
+    void testReceiveMessage()
+    {
         QUdpSocket testSocket;
 
         KDSoapUdpClient udpClient;
         bool rc = udpClient.bind(14951);
         QVERIFY(rc);
 
-        QSignalSpy spy(&udpClient, SIGNAL(receivedMessage(KDSoapMessage,KDSoapHeaders,QHostAddress,quint16)));
+        QSignalSpy spy(&udpClient, SIGNAL(receivedMessage(KDSoapMessage, KDSoapHeaders, QHostAddress, quint16)));
 
         auto data = exampleTextData();
         qint64 size = testSocket.writeDatagram(data, QHostAddress::LocalHost, 14951);
@@ -110,33 +117,34 @@ private Q_SLOTS:
     }
 
 private:
-    QByteArray exampleTextData() {
-        return QByteArray(
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-            "<soap:Envelope"
-            "  xmlns:soap=\"http://www.w3.org/2003/05/soap-envelope\""
-            "  xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\""
-            "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
-            "  xmlns:wsa=\"http://www.w3.org/2005/08/addressing\""
-            "  xmlns:soap-enc=\"http://www.w3.org/2003/05/soap-encoding\""
-            "  xmlns:n1=\"http://docs.oasis-open.org/ws-dd/ns/discovery/2009/01\">"
-            "  <soap:Header>"
-            "    <wsa:To>urn:docs-oasis-open-org:ws-dd:ns:discovery:2009:01</wsa:To>"
-            "    <wsa:Action>http://docs.oasis-open.org/ws-dd/ns/discovery/2009/01/Probe</wsa:Action>"
-            "    <wsa:MessageID>urn:uuid:0a6dc791-2be6-4991-9af1-454778a1917a</wsa:MessageID>"
-            "  </soap:Header>"
-            "  <soap:Body>"
-            "    <n1:Probe>"
-            "      <n1:Types xmlns:i=\"http://printer.example.org/2003/imaging\">i:PrintBasic</n1:Types>"
-            "      <n1:Scopes"
-            "        MatchBy=\"http://docs.oasis-open.org/ws-dd/ns/discovery/2009/01/ldap\""
-            "        >ldap:///ou=engineering,o=examplecom,c=us</n1:Scopes>"
-            "    </n1:Probe>"
-            "  </soap:Body>"
-            "</soap:Envelope>");
+    QByteArray exampleTextData()
+    {
+        return QByteArray("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+                          "<soap:Envelope"
+                          "  xmlns:soap=\"http://www.w3.org/2003/05/soap-envelope\""
+                          "  xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\""
+                          "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+                          "  xmlns:wsa=\"http://www.w3.org/2005/08/addressing\""
+                          "  xmlns:soap-enc=\"http://www.w3.org/2003/05/soap-encoding\""
+                          "  xmlns:n1=\"http://docs.oasis-open.org/ws-dd/ns/discovery/2009/01\">"
+                          "  <soap:Header>"
+                          "    <wsa:To>urn:docs-oasis-open-org:ws-dd:ns:discovery:2009:01</wsa:To>"
+                          "    <wsa:Action>http://docs.oasis-open.org/ws-dd/ns/discovery/2009/01/Probe</wsa:Action>"
+                          "    <wsa:MessageID>urn:uuid:0a6dc791-2be6-4991-9af1-454778a1917a</wsa:MessageID>"
+                          "  </soap:Header>"
+                          "  <soap:Body>"
+                          "    <n1:Probe>"
+                          "      <n1:Types xmlns:i=\"http://printer.example.org/2003/imaging\">i:PrintBasic</n1:Types>"
+                          "      <n1:Scopes"
+                          "        MatchBy=\"http://docs.oasis-open.org/ws-dd/ns/discovery/2009/01/ldap\""
+                          "        >ldap:///ou=engineering,o=examplecom,c=us</n1:Scopes>"
+                          "    </n1:Probe>"
+                          "  </soap:Body>"
+                          "</soap:Envelope>");
     }
 
-    KDSoapMessage exampleMessage() {
+    KDSoapMessage exampleMessage()
+    {
         TNS__ProbeType probe;
 
         KDQName type("i:PrintBasic");

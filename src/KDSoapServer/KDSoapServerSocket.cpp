@@ -34,21 +34,22 @@
 
 KDSoapServerSocket::KDSoapServerSocket(KDSoapSocketList *owner, QObject *serverObject)
 #ifndef QT_NO_SSL
-    : QSslSocket(),
+    : QSslSocket()
+    ,
 #else
-    : QTcpSocket(),
+    : QTcpSocket()
+    ,
 #endif
-      m_owner(owner),
-      m_serverObject(serverObject),
-      m_delayedResponse(false),
-      m_socketEnabled(true),
-      m_receivedData(false),
-      m_useRawXML(false),
-      m_bytesReceived(0),
-      m_chunkStart(0)
+    m_owner(owner)
+    , m_serverObject(serverObject)
+    , m_delayedResponse(false)
+    , m_socketEnabled(true)
+    , m_receivedData(false)
+    , m_useRawXML(false)
+    , m_bytesReceived(0)
+    , m_chunkStart(0)
 {
-    connect(this, SIGNAL(readyRead()),
-            this, SLOT(slotReadyRead()));
+    connect(this, SIGNAL(readyRead()), this, SLOT(slotReadyRead()));
     m_doDebug = qgetenv("KDSOAP_DEBUG").toInt();
 }
 
@@ -72,9 +73,9 @@ static HeadersMap parseHeaders(const QByteArray &headerData)
         qDebug() << "Malformed HTTP request:" << firstLine;
         return headersMap;
     }
-    const QByteArray& requestType = firstLine.at(0);
+    const QByteArray &requestType = firstLine.at(0);
     const QByteArray path = QDir::cleanPath(QString::fromLatin1(firstLine.at(1).constData())).toLatin1();
-    const QByteArray& httpVersion = firstLine.at(2);
+    const QByteArray &httpVersion = firstLine.at(2);
     headersMap.insert("_requestType", requestType);
     headersMap.insert("_path", path);
     headersMap.insert("_httpVersion", httpVersion);
@@ -87,7 +88,7 @@ static HeadersMap parseHeaders(const QByteArray &headerData)
         }
         const QByteArray header = line.left(pos).toLower(); // RFC2616 section 4.2 "Field names are case-insensitive"
         const QByteArray value = line.mid(pos + 1).trimmed(); // remove space before and \r\n after
-        //qDebug() << "HEADER" << header << "VALUE" << value;
+        // qDebug() << "HEADER" << header << "VALUE" << value;
         headersMap.insert(header, value);
     }
     return headersMap;
@@ -162,7 +163,7 @@ void KDSoapServerSocket::slotReadyRead()
         m_owner->increaseConnectionCount();
     }
 
-    //qDebug() << this << QThread::currentThread() << "slotReadyRead!";
+    // qDebug() << this << QThread::currentThread() << "slotReadyRead!";
 
     QByteArray buf(2048, ' ');
     qint64 nread = -1;
@@ -183,8 +184,8 @@ void KDSoapServerSocket::slotReadyRead()
         QByteArray receivedHttpHeaders, receivedData;
         const bool splitOK = splitHeadersAndData(m_requestBuffer, receivedHttpHeaders, receivedData);
         if (!splitOK) {
-            //qDebug() << "Incomplete SOAP request, wait for more data";
-            //incomplete request, wait for more data
+            // qDebug() << "Incomplete SOAP request, wait for more data";
+            // incomplete request, wait for more data
             return;
         }
         m_httpHeaders = parseHeaders(receivedHttpHeaders);
@@ -212,7 +213,7 @@ void KDSoapServerSocket::slotReadyRead()
 
         const QByteArray contentLength = m_httpHeaders.value("content-length");
         if (m_bytesReceived < contentLength.toInt()) {
-            return;    // incomplete request, wait for more data
+            return; // incomplete request, wait for more data
         }
 
         if (m_useRawXML) {
@@ -221,14 +222,14 @@ void KDSoapServerSocket::slotReadyRead()
             handleRequest(m_httpHeaders, m_requestBuffer);
         }
     } else {
-        //qDebug() << "requestBuffer has " << m_requestBuffer.size() << "bytes, starting at" << m_chunkStart;
+        // qDebug() << "requestBuffer has " << m_requestBuffer.size() << "bytes, starting at" << m_chunkStart;
         while (m_chunkStart >= 0) {
             const int nextEOL = m_requestBuffer.indexOf("\r\n", m_chunkStart);
             if (nextEOL == -1) {
                 return;
             }
             const QByteArray chunkSizeStr = m_requestBuffer.mid(m_chunkStart, nextEOL - m_chunkStart);
-            //qDebug() << m_chunkStart << nextEOL << "chunkSizeStr=" << chunkSizeStr;
+            // qDebug() << m_chunkStart << nextEOL << "chunkSizeStr=" << chunkSizeStr;
             bool ok;
             int chunkSize = chunkSizeStr.toInt(&ok, 16);
             if (!ok) {
@@ -279,7 +280,8 @@ void KDSoapServerSocket::handleRequest(const QMap<QByteArray, QByteArray> &httpH
         const QByteArray authValue = httpHeaders.value("authorization");
         if (!serverAuthInterface->handleHttpAuth(authValue, path)) {
             // send auth request (Qt supports basic, ntlm and digest)
-            const QByteArray unauthorized = "HTTP/1.1 401 Authorization Required\r\nWWW-Authenticate: Basic realm=\"example\"\r\nContent-Length: 0\r\n\r\n";
+            const QByteArray unauthorized =
+                "HTTP/1.1 401 Authorization Required\r\nWWW-Authenticate: Basic realm=\"example\"\r\nContent-Length: 0\r\n\r\n";
             write(unauthorized);
             return;
         }
@@ -293,8 +295,8 @@ void KDSoapServerSocket::handleRequest(const QMap<QByteArray, QByteArray> &httpH
             return;
         } else {
             qWarning() << "Unknown HTTP request:" << requestType;
-            //handleError(replyMsg, "Client.Data", QString::fromLatin1("Invalid request type '%1', should be GET or POST").arg(QString::fromLatin1(requestType.constData())));
-            //sendReply(0, replyMsg);
+            // handleError(replyMsg, "Client.Data", QString::fromLatin1("Invalid request type '%1', should be GET or
+            // POST").arg(QString::fromLatin1(requestType.constData()))); sendReply(0, replyMsg);
             const QByteArray methodNotAllowed = "HTTP/1.1 405 Method Not Allowed\r\nAllow: GET POST\r\nContent-Length: 0\r\n\r\n";
             write(methodNotAllowed);
             return;
@@ -307,7 +309,8 @@ void KDSoapServerSocket::handleRequest(const QMap<QByteArray, QByteArray> &httpH
 
     KDSoapServerObjectInterface *serverObjectInterface = qobject_cast<KDSoapServerObjectInterface *>(m_serverObject);
     if (!serverObjectInterface) {
-        const QString error = QString::fromLatin1("Server object %1 does not implement KDSoapServerObjectInterface!").arg(QString::fromLatin1(m_serverObject->metaObject()->className()));
+        const QString error = QString::fromLatin1("Server object %1 does not implement KDSoapServerObjectInterface!")
+                                  .arg(QString::fromLatin1(m_serverObject->metaObject()->className()));
         handleError(replyMsg, "Server.ImplementationError", error);
         sendReply(nullptr, replyMsg);
         return;
@@ -330,32 +333,32 @@ void KDSoapServerSocket::handleRequest(const QMap<QByteArray, QByteArray> &httpH
         return;
     }
 
-    //parse message
+    // parse message
     KDSoapMessage requestMsg;
     KDSoapHeaders requestHeaders;
     KDSoapMessageReader reader;
     KDSoapMessageReader::XmlError err = reader.xmlToMessage(receivedData, &requestMsg, &m_messageNamespace, &requestHeaders, KDSoap::SOAP1_1);
     if (err == KDSoapMessageReader::PrematureEndOfDocumentError) {
-        //qDebug() << "Incomplete SOAP message, wait for more data";
+        // qDebug() << "Incomplete SOAP message, wait for more data";
         // This should never happen, since we check for content-size above.
         return;
-    } //TODO handle parse errors?
+    } // TODO handle parse errors?
 
     // check soap version and extract soapAction header
     QByteArray soapAction;
     const QByteArray contentType = httpHeaders.value("content-type");
-    if (contentType.startsWith("text/xml")) { //krazy:exclude=strings
+    if (contentType.startsWith("text/xml")) { // krazy:exclude=strings
         // SOAP 1.1
         soapAction = httpHeaders.value("soapaction");
         // The SOAP standard allows quotation marks around the SoapAction, so we have to get rid of these.
         soapAction = stripQuotes(soapAction);
 
-    } else if (contentType.startsWith("application/soap+xml")) { //krazy:exclude=strings
+    } else if (contentType.startsWith("application/soap+xml")) { // krazy:exclude=strings
         // SOAP 1.2
         // Example: application/soap+xml;charset=utf-8;action=ActionHex
         const QList<QByteArray> parts = contentType.split(';');
         Q_FOREACH (const QByteArray &part, parts) {
-            if (part.trimmed().startsWith("action=")) { //krazy:exclude=strings
+            if (part.trimmed().startsWith("action=")) { // krazy:exclude=strings
                 soapAction = stripQuotes(part.mid(part.indexOf('=') + 1));
             }
         }
@@ -381,7 +384,7 @@ bool KDSoapServerSocket::handleWsdlDownload()
     const QString wsdlFile = server->wsdlFile();
     QFile wf(wsdlFile);
     if (wf.open(QIODevice::ReadOnly)) {
-        //qDebug() << "Returning wsdl file contents";
+        // qDebug() << "Returning wsdl file contents";
         const QByteArray responseText = wf.readAll();
         const QByteArray response = httpResponseHeaders(false, "application/xml", responseText.size(), m_serverObject);
         write(response);
@@ -414,7 +417,7 @@ bool KDSoapServerSocket::handleFileDownload(KDSoapServerObjectInterface *serverO
     Q_ASSERT(written == response.size()); // Please report a bug if you hit this.
     Q_UNUSED(written);
 
-    char block[4096] = {0};
+    char block[4096] = { 0 };
     qint64 totalRead = 0;
     while (!device->atEnd()) {
         const qint64 in = device->read(block, sizeof(block));
@@ -423,11 +426,11 @@ bool KDSoapServerSocket::handleFileDownload(KDSoapServerObjectInterface *serverO
         }
         totalRead += in;
         if (in != write(block, in)) {
-            //error = true;
+            // error = true;
             break;
         }
     }
-    //if (totalRead != device->size()) {
+    // if (totalRead != device->size()) {
     //    // Unable to read from the source.
     //    error = true;
     //}
@@ -439,7 +442,8 @@ bool KDSoapServerSocket::handleFileDownload(KDSoapServerObjectInterface *serverO
 
 void KDSoapServerSocket::writeXML(const QByteArray &xmlResponse, bool isFault)
 {
-    const QByteArray httpHeaders = httpResponseHeaders(isFault, "text/xml", xmlResponse.size(), m_serverObject); // TODO return application/soap+xml;charset=utf-8 instead for SOAP 1.2
+    const QByteArray httpHeaders = httpResponseHeaders(isFault, "text/xml", xmlResponse.size(),
+                                                       m_serverObject); // TODO return application/soap+xml;charset=utf-8 instead for SOAP 1.2
     if (m_doDebug) {
         qDebug() << "KDSoapServerSocket: writing" << httpHeaders << xmlResponse;
     }
@@ -480,10 +484,10 @@ void KDSoapServerSocket::sendReply(KDSoapServerObjectInterface *serverObjectInte
 
     // All done, check if we should log this
     KDSoapServer *server = m_owner->server();
-    const KDSoapServer::LogLevel logLevel = server->logLevel(); // we do this here in order to support dynamic settings changes (at the price of a mutex)
+    const KDSoapServer::LogLevel logLevel =
+        server->logLevel(); // we do this here in order to support dynamic settings changes (at the price of a mutex)
     if (logLevel != KDSoapServer::LogNothing) {
-        if (logLevel == KDSoapServer::LogEveryCall ||
-                (logLevel == KDSoapServer::LogFaults && isFault)) {
+        if (logLevel == KDSoapServer::LogEveryCall || (logLevel == KDSoapServer::LogFaults && isFault)) {
 
             if (isFault) {
                 server->log("FAULT " + m_method.toLatin1() + " -- " + replyMsg.faultAsString().toUtf8() + '\n');
@@ -513,7 +517,8 @@ void KDSoapServerSocket::handleError(KDSoapMessage &replyMsg, const char *errorC
     replyMsg.createFaultMessage(QString::fromLatin1(errorCode), error, soapVersion);
 }
 
-void KDSoapServerSocket::makeCall(KDSoapServerObjectInterface *serverObjectInterface, const KDSoapMessage &requestMsg, KDSoapMessage &replyMsg, const KDSoapHeaders &requestHeaders, const QByteArray &soapAction, const QString &path)
+void KDSoapServerSocket::makeCall(KDSoapServerObjectInterface *serverObjectInterface, const KDSoapMessage &requestMsg, KDSoapMessage &replyMsg,
+                                  const KDSoapHeaders &requestHeaders, const QByteArray &soapAction, const QString &path)
 {
     Q_ASSERT(serverObjectInterface);
 
@@ -535,7 +540,7 @@ void KDSoapServerSocket::makeCall(KDSoapServerObjectInterface *serverObjectInter
             serverObjectInterface->processRequest(requestMsg, replyMsg, soapAction);
         }
         if (serverObjectInterface->hasFault()) {
-            //qDebug() << "Got fault!";
+            // qDebug() << "Got fault!";
             replyMsg.setFault(true);
             serverObjectInterface->storeFaultAttributes(replyMsg);
         }

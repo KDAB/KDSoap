@@ -22,8 +22,7 @@
 
 #include <QStringList>
 
-namespace KWSDL
-{
+namespace KWSDL {
 
 class NameMapper
 {

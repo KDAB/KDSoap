@@ -25,8 +25,11 @@ class KDSoapMessageData : public QSharedData
 {
 public:
     KDSoapMessageData()
-        : use(KDSoapMessage::LiteralUse), isFault(false), hasMessageAddressingProperties(false)
-    {}
+        : use(KDSoapMessage::LiteralUse)
+        , isFault(false)
+        , hasMessageAddressingProperties(false)
+    {
+    }
 
     KDSoapMessage::Use use;
     bool isFault;
@@ -40,18 +43,19 @@ KDSoapMessage::KDSoapMessage()
 }
 
 KDSoapMessage::KDSoapMessage(const KDSoapMessage &other)
-    : KDSoapValue(other), d(other.d)
+    : KDSoapValue(other)
+    , d(other.d)
 {
 }
 
-KDSoapMessage &KDSoapMessage::operator =(const KDSoapMessage &other)
+KDSoapMessage &KDSoapMessage::operator=(const KDSoapMessage &other)
 {
     KDSoapValue::operator=(other);
     d = other.d;
     return *this;
 }
 
-KDSoapMessage &KDSoapMessage::operator =(const KDSoapValue &other)
+KDSoapMessage &KDSoapMessage::operator=(const KDSoapValue &other)
 {
     KDSoapValue::operator=(other);
     return *this;
@@ -59,12 +63,10 @@ KDSoapMessage &KDSoapMessage::operator =(const KDSoapValue &other)
 
 bool KDSoapMessage::operator==(const KDSoapMessage &other) const
 {
-    return KDSoapValue::operator ==(other)
-           && d->use == other.d->use
-           && d->isFault == other.d->isFault;
+    return KDSoapValue::operator==(other) && d->use == other.d->use && d->isFault == other.d->isFault;
 }
 
-bool KDSoapMessage::operator !=(const KDSoapMessage &other) const
+bool KDSoapMessage::operator!=(const KDSoapMessage &other) const
 {
     return !(*this == other);
 }
@@ -82,7 +84,8 @@ void KDSoapMessage::addArgument(const QString &argumentName, const QVariant &arg
     childValues().append(soapValue);
 }
 
-void KDSoapMessage::addArgument(const QString &argumentName, const KDSoapValueList &argumentValueList, const QString &typeNameSpace, const QString &typeName)
+void KDSoapMessage::addArgument(const QString &argumentName, const KDSoapValueList &argumentValueList, const QString &typeNameSpace,
+                                const QString &typeName)
 {
     KDSoapValue soapValue(argumentName, argumentValueList, typeNameSpace, typeName);
     if (isQualified()) {
@@ -105,7 +108,7 @@ const KDSoapValueList &KDSoapMessage::arguments() const
     return childValues();
 }
 
-QDebug operator <<(QDebug dbg, const KDSoapMessage &msg)
+QDebug operator<<(QDebug dbg, const KDSoapMessage &msg)
 {
     return dbg << KDSoapValue(msg);
 }
@@ -127,15 +130,15 @@ QString KDSoapMessage::faultAsString() const
             faultCode = faultCode.childValues().child(QLatin1String("Subcode"));
         }
         return QObject::tr("Fault %1: %2")
-                .arg(faultCodeStr)
-                .arg(childValues().child(QLatin1String("Reason")).childValues().child(QLatin1String("Text")).value().toString());
+            .arg(faultCodeStr)
+            .arg(childValues().child(QLatin1String("Reason")).childValues().child(QLatin1String("Text")).value().toString());
     } else {
         // This better be on a single line, since it's used by server-side logging too
         const QString actor = childValues().child(QLatin1String("faultactor")).value().toString();
         QString ret = QObject::tr("Fault code %1: %2%3")
-               .arg(childValues().child(QLatin1String("faultcode")).value().toString(),
-                    childValues().child(QLatin1String("faultstring")).value().toString(),
-                    actor.isEmpty() ? QString() : QString::fromLatin1(" (%1)").arg(actor));
+                          .arg(childValues().child(QLatin1String("faultcode")).value().toString(),
+                               childValues().child(QLatin1String("faultstring")).value().toString(),
+                               actor.isEmpty() ? QString() : QString::fromLatin1(" (%1)").arg(actor));
         const QString detail = childValues().child(QLatin1String("detail")).value().toString();
         if (!detail.isEmpty()) {
             if (!ret.endsWith(QLatin1Char('.')))
@@ -214,7 +217,7 @@ KDSoapMessage KDSoapHeaders::header(const QString &name, const QString &namespac
     const_iterator it = begin();
     const const_iterator e = end();
     for (; it != e; ++it) {
-        //qDebug() << "header(" << name << "," << namespaceUri << "): Looking at" << (*it).name() << "," << (*it).namespaceUri();
+        // qDebug() << "header(" << name << "," << namespaceUri << "): Looking at" << (*it).name() << "," << (*it).namespaceUri();
         if ((*it).name() == name && (namespaceUri.isEmpty() || (*it).namespaceUri() == namespaceUri)) {
             return *it;
         }

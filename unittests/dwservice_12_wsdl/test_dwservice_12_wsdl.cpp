@@ -44,16 +44,15 @@ private Q_SLOTS:
         const KDAB::TNS__LoginResponse resp = service.login(loginParams);
 
         // Check what we sent
-        QByteArray expectedRequestXml =
-            QByteArray(xmlEnvBegin12()) +
-            "><soap:Body>"
-            "<n1:Login xmlns:n1=\"http://tempuri.org/\">"
-            "<n1:userName>Foo</n1:userName>"
-            // minoccurs=0, so we don't need this: "<n1:password xsi:nil=\"true\"></n1:password>"
-            "<n1:organization>KDAB</n1:organization>"
-            "</n1:Login>"
-            "</soap:Body>" + xmlEnvEnd()
-            + '\n'; // added by QXmlStreamWriter::writeEndDocument
+        QByteArray expectedRequestXml = QByteArray(xmlEnvBegin12())
+            + "><soap:Body>"
+              "<n1:Login xmlns:n1=\"http://tempuri.org/\">"
+              "<n1:userName>Foo</n1:userName>"
+              // minoccurs=0, so we don't need this: "<n1:password xsi:nil=\"true\"></n1:password>"
+              "<n1:organization>KDAB</n1:organization>"
+              "</n1:Login>"
+              "</soap:Body>"
+            + xmlEnvEnd() + '\n'; // added by QXmlStreamWriter::writeEndDocument
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
 
         const KDAB::Q1__ClientServiceSession session = resp.loginResult();
@@ -71,30 +70,29 @@ private Q_SLOTS:
         KDAB::Q1__ClientServiceSession session;
         session.setSessionID(KDAB::SER__Guid(QString::fromLatin1("65a65c1f-2613-47d0-89ec-1c7b1fe34777")));
         KDAB::TNS__Logoff logoffParams;
-        //logoffParams.setClientSession(session);
+        // logoffParams.setClientSession(session);
         service.logoff(logoffParams);
 
         // Check what we sent
-        QByteArray expectedRequestXml =
-            QByteArray(xmlEnvBegin12()) +
-            "><soap:Body>"
-            "<n1:Logoff xmlns:n1=\"http://tempuri.org/\"/>"
-            "</soap:Body>" + xmlEnvEnd()
-            + '\n'; // added by QXmlStreamWriter::writeEndDocument
+        QByteArray expectedRequestXml = QByteArray(xmlEnvBegin12())
+            + "><soap:Body>"
+              "<n1:Logoff xmlns:n1=\"http://tempuri.org/\"/>"
+              "</soap:Body>"
+            + xmlEnvEnd() + '\n'; // added by QXmlStreamWriter::writeEndDocument
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
-
     }
 
 private:
     static QByteArray loginResponse()
     {
-        return QByteArray(xmlEnvBegin12()) + " xmlns:dw=\"http://schemas.novell.com/2005/01/GroupWise/groupwise.wsdl\"><soap:Body>"
-               "<dw:LoginResponse>"
-               "<dw:LoginResult><dw:SessionID>65a65c1f-2613-47d0-89ec-1c7b1fe34777</dw:SessionID></dw:LoginResult>"
-               "</dw:LoginResponse>"
-               "</soap:Body>" + xmlEnvEnd();
+        return QByteArray(xmlEnvBegin12())
+            + " xmlns:dw=\"http://schemas.novell.com/2005/01/GroupWise/groupwise.wsdl\"><soap:Body>"
+              "<dw:LoginResponse>"
+              "<dw:LoginResult><dw:SessionID>65a65c1f-2613-47d0-89ec-1c7b1fe34777</dw:SessionID></dw:LoginResult>"
+              "</dw:LoginResponse>"
+              "</soap:Body>"
+            + xmlEnvEnd();
     }
-
 };
 
 QTEST_MAIN(DWServiceTest)

@@ -93,7 +93,8 @@ public:
      *
      * If the message isQualified(), the value will be set to qualified as well, for convenience.
      */
-    void addArgument(const QString &argumentName, const QVariant &argumentValue, const QString &typeNameSpace = QString(), const QString &typeName = QString());
+    void addArgument(const QString &argumentName, const QVariant &argumentValue, const QString &typeNameSpace = QString(),
+                     const QString &typeName = QString());
 
     /**
      * Adds a complex-type argument to the message.
@@ -110,7 +111,8 @@ public:
      *
      * If the message isQualified(), the value will be set to qualified as well, for convenience.
      */
-    void addArgument(const QString &argumentName, const KDSoapValueList &argumentValueList, const QString &typeNameSpace = QString(), const QString &typeName = QString());
+    void addArgument(const QString &argumentName, const KDSoapValueList &argumentValueList, const QString &typeNameSpace = QString(),
+                     const QString &typeName = QString());
 
     /**
      * Returns the arguments for the message.
@@ -173,6 +175,7 @@ public:
      * \since 1.5
      */
     KDSoapMessageAddressingProperties messageAddressingProperties() const;
+
 private:
     bool isNull() const;
     friend class KDSoapPendingCall;
@@ -185,7 +188,7 @@ private:
  * Set of headers that can be provided when making a SOAP call.
  * \see KDSoapClientInterface
  */
-class KDSOAP_EXPORT KDSoapHeaders : public QList<KDSoapMessage> //krazy:exclude=dpointer
+class KDSOAP_EXPORT KDSoapHeaders : public QList<KDSoapMessage> // krazy:exclude=dpointer
 {
 public:
     /**

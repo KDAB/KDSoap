@@ -29,13 +29,13 @@ class KDSoapServer::Private
 {
 public:
     Private()
-        : m_threadPool(nullptr),
-          m_mainThreadSocketList(nullptr),
-          m_use(KDSoapMessage::LiteralUse),
-          m_logLevel(KDSoapServer::LogNothing),
-          m_path(QString::fromLatin1("/")),
-          m_maxConnections(-1),
-          m_portBeforeSuspend(0)
+        : m_threadPool(nullptr)
+        , m_mainThreadSocketList(nullptr)
+        , m_use(KDSoapMessage::LiteralUse)
+        , m_logLevel(KDSoapServer::LogNothing)
+        , m_path(QString::fromLatin1("/"))
+        , m_maxConnections(-1)
+        , m_portBeforeSuspend(0)
     {
     }
 
@@ -69,8 +69,8 @@ public:
 };
 
 KDSoapServer::KDSoapServer(QObject *parent)
-    : QTcpServer(parent),
-      d(new KDSoapServer::Private)
+    : QTcpServer(parent)
+    , d(new KDSoapServer::Private)
 {
     // Probably not very useful since we handle them immediately, but cannot hurt.
     setMaxPendingConnections(1000);
@@ -89,10 +89,10 @@ void KDSoapServer::incomingConnection(qintptr socketDescriptor)
         emit connectionRejected();
         log(QByteArray("ERROR Too many connections (") + QByteArray::number(numSockets) + "), incoming connection rejected\n");
     } else if (d->m_threadPool) {
-        //qDebug() << "incomingConnection: using thread pool";
+        // qDebug() << "incomingConnection: using thread pool";
         d->m_threadPool->handleIncomingConnection(socketDescriptor, this);
     } else {
-        //qDebug() << "incomingConnection: using main-thread socketlist";
+        // qDebug() << "incomingConnection: using main-thread socketlist";
         if (!d->m_mainThreadSocketList) {
             d->m_mainThreadSocketList = new KDSoapSocketList(this /*server*/);
         }
@@ -150,10 +150,10 @@ QString KDSoapServer::endPoint() const
     }
     const QString addressStr = address == QHostAddress::Any ? QString::fromLatin1("127.0.0.1") : address.toString();
     return QString::fromLatin1("%1://%2:%3%4")
-           .arg(QString::fromLatin1((d->m_features & Ssl) ? "https" : "http"))
-           .arg(addressStr)
-           .arg(serverPort())
-           .arg(d->m_path);
+        .arg(QString::fromLatin1((d->m_features & Ssl) ? "https" : "http"))
+        .arg(addressStr)
+        .arg(serverPort())
+        .arg(d->m_path);
 }
 
 void KDSoapServer::setUse(KDSoapMessage::Use use)
@@ -243,7 +243,7 @@ bool KDSoapServer::setExpectedSocketCount(int sockets)
         qDebug() << "Current limit" << lim.rlim_cur << lim.rlim_max;
         sockets += 20; // we need some file descriptors too
         if (rlim_t(sockets) <= lim.rlim_cur) {
-            return true;    // nothing to do
+            return true; // nothing to do
         }
 
         if (rlim_t(sockets) > lim.rlim_max) {

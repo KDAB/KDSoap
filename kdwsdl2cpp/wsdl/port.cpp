@@ -77,12 +77,12 @@ void Port::loadXML(ParserContext *context, Binding::List *bindings, const QDomEl
     }
 
     for (int i = 0; i < bindings->count(); ++i) {
-        if ((*bindings)[ i ].name() == mBindingName.localName()) {
+        if ((*bindings)[i].name() == mBindingName.localName()) {
             AbstractBinding *binding = const_cast<AbstractBinding *>((*bindings)[i].binding());
             if (binding) {
                 binding->parsePort(context, element);
             }
-            //else // ignore unimplemented bindings
+            // else // ignore unimplemented bindings
             //  context->messageHandler()->error( "No binding set" );
         }
     }
@@ -106,13 +106,13 @@ void Port::saveXML(ParserContext *context, const Binding::List *bindings, QDomDo
     }
 
     for (int i = 0; i < bindings->count(); ++i) {
-        if ((*bindings)[ i ].name() == mBindingName.localName()) {
+        if ((*bindings)[i].name() == mBindingName.localName()) {
             const AbstractBinding *binding = (*bindings)[i].binding();
 
             if (binding) {
                 binding->synthesizePort(context, document, element);
             }
-            //else // ignore unimplemented bindings
+            // else // ignore unimplemented bindings
             //  context->messageHandler()->error( "No binding set" );
         }
     }

@@ -66,15 +66,13 @@ static QMap<QUrl, QString> localSchemas()
 
 bool Type::loadXML(ParserContext *context, const QDomElement &element)
 {
-    XSD::Parser parser(context, nameSpace(),
-                       Settings::self()->useLocalFilesOnly(), Settings::self()->importPathList());
+    XSD::Parser parser(context, nameSpace(), Settings::self()->useLocalFilesOnly(), Settings::self()->importPathList());
     parser.setLocalSchemas(localSchemas());
     QDomElement child = element.firstChildElement();
     while (!child.isNull()) {
         NSManager namespaceManager(context, child);
-        if (namespaceManager.nameSpace(child) == XSD::Parser::schemaUri() &&
-                namespaceManager.localName(child) == QLatin1String("schema")) {
-            //qDebug() << "Loading schema" << nameSpace();
+        if (namespaceManager.nameSpace(child) == XSD::Parser::schemaUri() && namespaceManager.localName(child) == QLatin1String("schema")) {
+            // qDebug() << "Loading schema" << nameSpace();
             if (!parser.parseSchemaTag(context, child)) {
                 return false;
             }

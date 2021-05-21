@@ -19,16 +19,14 @@
 KDSoapServerCustomVerbRequestInterface::KDSoapServerCustomVerbRequestInterface()
     : d(nullptr)
 {
-
 }
 
 KDSoapServerCustomVerbRequestInterface::~KDSoapServerCustomVerbRequestInterface()
 {
-
 }
 
 bool KDSoapServerCustomVerbRequestInterface::processCustomVerbRequest(const QByteArray &requestType, const QByteArray &requestData,
-        const QMap<QByteArray, QByteArray> &httpHeaders, QByteArray &customAnswer)
+                                                                      const QMap<QByteArray, QByteArray> &httpHeaders, QByteArray &customAnswer)
 {
     Q_UNUSED(requestType);
     Q_UNUSED(requestData);

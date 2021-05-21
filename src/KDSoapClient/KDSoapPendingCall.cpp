@@ -20,22 +20,23 @@
 #include <QNetworkReply>
 #include <QDebug>
 
-static void debugHelper(const QByteArray &data, const QList<QNetworkReply::RawHeaderPair> &headerList) {
+static void debugHelper(const QByteArray &data, const QList<QNetworkReply::RawHeaderPair> &headerList)
+{
     const QByteArray doDebug = qgetenv("KDSOAP_DEBUG");
     const QList<QByteArray> options = doDebug.toLower().split(',');
     const bool optEscape = options.contains("escape");
     const bool optHttp = options.contains("http") || options.contains("https");
     const bool optReformat = options.contains("reformat");
     quint8 indentation = 4;
-    Q_FOREACH( const QByteArray &opt, options ) {
-        if (opt.startsWith("indent=")) { //krazy:exclude=strings
+    Q_FOREACH (const QByteArray &opt, options) {
+        if (opt.startsWith("indent=")) { // krazy:exclude=strings
             indentation = opt.mid(7).toUShort();
         }
     }
 
     QByteArray toOutput;
     if (optHttp) {
-        Q_FOREACH( const QNetworkReply::RawHeaderPair &header, headerList ) {
+        Q_FOREACH (const QNetworkReply::RawHeaderPair &header, headerList) {
             if (!header.first.isEmpty()) {
                 toOutput += header.first + ": ";
             }
@@ -71,7 +72,8 @@ static void debugHelper(const QByteArray &data, const QList<QNetworkReply::RawHe
 }
 
 // Log the HTTP and XML of a response from the server.
-static void maybeDebugResponse(const QByteArray &data, QNetworkReply *reply) {
+static void maybeDebugResponse(const QByteArray &data, QNetworkReply *reply)
+{
     const QByteArray doDebug = qgetenv("KDSOAP_DEBUG");
     if (doDebug.trimmed().isEmpty() || doDebug == "0") {
         return;
@@ -82,7 +84,8 @@ static void maybeDebugResponse(const QByteArray &data, QNetworkReply *reply) {
 
 // Log the HTTP and XML of a request.
 // (not static, because this is used in KDSoapClientInterface)
-void maybeDebugRequest(const QByteArray &data, const QNetworkRequest &request, QNetworkReply *reply) {
+void maybeDebugRequest(const QByteArray &data, const QNetworkRequest &request, QNetworkReply *reply)
+{
     const QByteArray doDebug = qgetenv("KDSOAP_DEBUG");
     if (doDebug.trimmed().isEmpty() || doDebug == "0") {
         return;
@@ -92,20 +95,31 @@ void maybeDebugRequest(const QByteArray &data, const QNetworkRequest &request, Q
     if (reply) {
         QByteArray method;
         switch (reply->operation()) {
-            default: break; // don't try to mimic the basic HTTP command
-            case QNetworkAccessManager::GetOperation: method = "GET"; break;
-            case QNetworkAccessManager::HeadOperation: method = "HEAD"; break;
-            case QNetworkAccessManager::PutOperation: method = "PUT"; break;
-            case QNetworkAccessManager::PostOperation: method = "POST"; break;
-            case QNetworkAccessManager::DeleteOperation: method = "DELETE"; break;
+        default:
+            break; // don't try to mimic the basic HTTP command
+        case QNetworkAccessManager::GetOperation:
+            method = "GET";
+            break;
+        case QNetworkAccessManager::HeadOperation:
+            method = "HEAD";
+            break;
+        case QNetworkAccessManager::PutOperation:
+            method = "PUT";
+            break;
+        case QNetworkAccessManager::PostOperation:
+            method = "POST";
+            break;
+        case QNetworkAccessManager::DeleteOperation:
+            method = "DELETE";
+            break;
         }
         if (!method.isEmpty()) {
             QByteArray output = method + " " + reply->url().toString().toUtf8();
-            headerList << QNetworkReply::RawHeaderPair{{}, std::move(output)};
+            headerList << QNetworkReply::RawHeaderPair { {}, std::move(output) };
         }
     }
-    Q_FOREACH( const QByteArray &h, request.rawHeaderList() ) {
-        headerList << QNetworkReply::RawHeaderPair{h, request.rawHeader(h)};
+    Q_FOREACH (const QByteArray &h, request.rawHeaderList()) {
+        headerList << QNetworkReply::RawHeaderPair { h, request.rawHeader(h) };
     }
     debugHelper(data, headerList);
 }
@@ -194,7 +208,8 @@ void KDSoapPendingCall::Private::parseReply()
     if (reply->error()) {
         if (!replyMessage.isFault()) {
             replyHeaders.clear();
-            if (reply->error() == QNetworkReply::OperationCanceledError && reply->property("kdsoap_reply_timed_out").toBool()) // see KDSoapClientInterface.cpp
+            if (reply->error() == QNetworkReply::OperationCanceledError
+                && reply->property("kdsoap_reply_timed_out").toBool()) // see KDSoapClientInterface.cpp
                 replyMessage.createFaultMessage(QString::number(QNetworkReply::TimeoutError), QLatin1String("Operation timed out"), soapVersion);
             else
                 replyMessage.createFaultMessage(QString::number(reply->error()), reply->errorString(), soapVersion);

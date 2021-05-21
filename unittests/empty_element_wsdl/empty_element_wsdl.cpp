@@ -27,28 +27,28 @@ private Q_SLOTS:
 
     void testMustContainIdleState()
     {
-      TNS__State state;
-      TNS__IdleState idleState;
-      state.setIdleState(idleState);
+        TNS__State state;
+        TNS__IdleState idleState;
+        state.setIdleState(idleState);
 
-      const KDSoapValue& value = state.serialize("State");
-      const QByteArray& actualXml = value.toXml();
+        const KDSoapValue &value = state.serialize("State");
+        const QByteArray &actualXml = value.toXml();
 
-      // Serialized XML must contain "idleState"
-      QVERIFY(actualXml.contains("idleState"));
+        // Serialized XML must contain "idleState"
+        QVERIFY(actualXml.contains("idleState"));
     }
 
     void testMustContainSeanceRemovingState()
     {
-      TNS__State state;
-      TNS__SeanceRemovingState seanceRemovingState;
-      state.setSeanceRemovingState(seanceRemovingState);
+        TNS__State state;
+        TNS__SeanceRemovingState seanceRemovingState;
+        state.setSeanceRemovingState(seanceRemovingState);
 
-      const KDSoapValue& value = state.serialize("State");
-      const QByteArray& actualXml = value.toXml();
+        const KDSoapValue &value = state.serialize("State");
+        const QByteArray &actualXml = value.toXml();
 
-      // Serialized XML must contain "seanceRemovingState"
-      QVERIFY(actualXml.contains("seanceRemovingState"));
+        // Serialized XML must contain "seanceRemovingState"
+        QVERIFY(actualXml.contains("seanceRemovingState"));
     }
 };
 

@@ -44,20 +44,19 @@ private Q_SLOTS:
         const TNS__GetUpdateInfoResponse response = service.getUpdateInfo(params);
         const TNS__GetUpdateInfoResult result = response.getUpdateInfoResult();
         const KDSoapValue val = result.any();
-        //qDebug() << val;
+        // qDebug() << val;
         QCOMPARE(val.name(), QString::fromLatin1("success"));
         QCOMPARE(val.value().toString(), QString::fromLatin1("1"));
 
         // Check what we sent
-        QByteArray expectedRequestXml =
-            QByteArray(xmlEnvBegin12()) +
-            "><soap:Body>"
-            "<n1:GetUpdateInfo xmlns:n1=\"https://www.elogbook.org/elogbook\">"
-            "<n1:DBSerial>123</n1:DBSerial>"
-            "<n1:spec>spec</n1:spec>"
-            "</n1:GetUpdateInfo>"
-            "</soap:Body>" + xmlEnvEnd()
-            + '\n'; // added by QXmlStreamWriter::writeEndDocument
+        QByteArray expectedRequestXml = QByteArray(xmlEnvBegin12())
+            + "><soap:Body>"
+              "<n1:GetUpdateInfo xmlns:n1=\"https://www.elogbook.org/elogbook\">"
+              "<n1:DBSerial>123</n1:DBSerial>"
+              "<n1:spec>spec</n1:spec>"
+              "</n1:GetUpdateInfo>"
+              "</soap:Body>"
+            + xmlEnvEnd() + '\n'; // added by QXmlStreamWriter::writeEndDocument
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
     }
 
@@ -65,11 +64,13 @@ private:
     static QByteArray complexTypeResponse()
     {
         // From https://www.elogbook.org/logbookws/logbookifv3.asmx?op=GetUpdateInfo
-        return QByteArray(xmlEnvBegin12()) + "><soap:Body>"
-               "<GetUpdateInfoResponse xmlns=\"https://www.elogbook.org/elogbook\">"
-               "<GetUpdateInfoResult><success>1</success></GetUpdateInfoResult>"
-               "</GetUpdateInfoResponse>"
-               "</soap:Body>" + xmlEnvEnd();
+        return QByteArray(xmlEnvBegin12())
+            + "><soap:Body>"
+              "<GetUpdateInfoResponse xmlns=\"https://www.elogbook.org/elogbook\">"
+              "<GetUpdateInfoResult><success>1</success></GetUpdateInfoResult>"
+              "</GetUpdateInfoResponse>"
+              "</soap:Body>"
+            + xmlEnvEnd();
     }
 };
 

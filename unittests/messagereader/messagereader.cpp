@@ -36,15 +36,15 @@ private Q_SLOTS:
             "</soapenv:Body>"
             "</soapenv:Envelope>";
 
-        const QByteArray xmlWithWhitespace =
-            "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:dat=\"http://www.27seconds.com/Holidays/US/Dates/\">\n"
-            "<soapenv:Header/>\n"
-            "  <soapenv:Body>\n"
-            "    <dat:GetEaster>\n"
-            "      <dat:year>2011</dat:year>\n"
-            "    </dat:GetEaster>\n"
-            "  </soapenv:Body>\n"
-            "</soapenv:Envelope>\n";
+        const QByteArray xmlWithWhitespace = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" "
+                                             "xmlns:dat=\"http://www.27seconds.com/Holidays/US/Dates/\">\n"
+                                             "<soapenv:Header/>\n"
+                                             "  <soapenv:Body>\n"
+                                             "    <dat:GetEaster>\n"
+                                             "      <dat:year>2011</dat:year>\n"
+                                             "    </dat:GetEaster>\n"
+                                             "  </soapenv:Body>\n"
+                                             "</soapenv:Envelope>\n";
 
         const KDSoapMessageReader reader;
         QString ns;
@@ -86,8 +86,7 @@ private Q_SLOTS:
         const KDSoapMessageReader::XmlError err = reader.xmlToMessage(xmlMissingEnd, &msg, &ns, &headers, KDSoap::SOAP1_1);
         QCOMPARE(err, KDSoapMessageReader::PrematureEndOfDocumentError);
         QVERIFY(msg.isFault());
-        QCOMPARE(msg.faultAsString(), QString::fromLatin1(
-                     "Fault code 4: XML error: [1:163] Premature end of document."));
+        QCOMPARE(msg.faultAsString(), QString::fromLatin1("Fault code 4: XML error: [1:163] Premature end of document."));
     }
 
     void testFaultSoap12()
@@ -104,12 +103,10 @@ private Q_SLOTS:
         const KDSoapMessageReader::XmlError err = reader.xmlToMessage(xmlMissingEnd, &msg, &ns, &headers, KDSoap::SOAP1_2);
         QCOMPARE(err, KDSoapMessageReader::PrematureEndOfDocumentError);
         QVERIFY(msg.isFault());
-        QCOMPARE(msg.faultAsString(), QString::fromLatin1(
-                     "Fault 4: XML error: [1:163] Premature end of document."));
+        QCOMPARE(msg.faultAsString(), QString::fromLatin1("Fault 4: XML error: [1:163] Premature end of document."));
     }
 };
 
 QTEST_MAIN(TestMessageReader)
 
 #include "messagereader.moc"
-

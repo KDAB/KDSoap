@@ -45,4 +45,3 @@ private Q_SLOTS:
 QTEST_MAIN(LiteralTest)
 
 #include "test_literal.moc"
-

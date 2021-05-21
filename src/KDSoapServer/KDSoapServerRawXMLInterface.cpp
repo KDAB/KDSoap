@@ -19,7 +19,6 @@
 KDSoapServerRawXMLInterface::KDSoapServerRawXMLInterface()
     : d(nullptr)
 {
-
 }
 
 KDSoapServerRawXMLInterface::~KDSoapServerRawXMLInterface()

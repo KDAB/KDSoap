@@ -44,8 +44,8 @@ static QString soapPrefix(ParserContext *context)
 }
 
 SoapBinding::Binding::Binding()
-    : mTransport(HTTPTransport),
-      mStyle(DocumentStyle)
+    : mTransport(HTTPTransport)
+    , mStyle(DocumentStyle)
 {
 }
 
@@ -118,7 +118,8 @@ SoapBinding::Operation::Operation()
 }
 
 SoapBinding::Operation::Operation(const QString &name)
-    : mName(name), mStyle(DocumentStyle)
+    : mName(name)
+    , mStyle(DocumentStyle)
 {
 }
 
@@ -131,7 +132,7 @@ void SoapBinding::Operation::loadXML(ParserContext *context, const QDomElement &
     // read soapAction, discarding leading/trailing space (https://github.com/KDAB/KDSoap/issues/71)
     mSoapAction = element.attribute(QLatin1String("soapAction")).trimmed();
 
-    //qDebug() << "style=" << element.attribute("style");
+    // qDebug() << "style=" << element.attribute("style");
 
     if (element.hasAttribute(QLatin1String("style"))) {
         if (element.attribute(QLatin1String("style")) == QLatin1String("rpc")) {
@@ -812,15 +813,15 @@ void SoapBinding::parseOperationInput(ParserContext *context, const QString &nam
     QDomElement child = parent.firstChildElement();
     while (!child.isNull()) {
         NSManager namespaceManager(context, child);
-        //qDebug() << Q_FUNC_INFO << namespaceManager.localName(child) << namespaceManager.nameSpace(child);
+        // qDebug() << Q_FUNC_INFO << namespaceManager.localName(child) << namespaceManager.nameSpace(child);
         if (NSManager::soapNamespaces().contains(namespaceManager.nameSpace(child))) {
             if (namespaceManager.localName(child) == QLatin1String("body")) {
-                Operation &op = mOperations[ name ];
+                Operation &op = mOperations[name];
                 Body inputBody;
                 inputBody.loadXML(context, child);
                 op.setInput(inputBody);
             } else if (namespaceManager.localName(child) == QLatin1String("header")) {
-                Operation &op = mOperations[ name ];
+                Operation &op = mOperations[name];
                 Header inputHeader;
                 inputHeader.loadXML(context, child);
                 op.addInputHeader(inputHeader);
@@ -838,12 +839,12 @@ void SoapBinding::parseOperationOutput(ParserContext *context, const QString &na
         NSManager namespaceManager(context, child);
         if (NSManager::soapNamespaces().contains(namespaceManager.nameSpace(child))) {
             if (namespaceManager.localName(child) == QLatin1String("body")) {
-                Operation &op = mOperations[ name ];
+                Operation &op = mOperations[name];
                 Body outputBody;
                 outputBody.loadXML(context, child);
                 op.setOutput(outputBody);
             } else if (namespaceManager.localName(child) == QLatin1String("header")) {
-                Operation &op = mOperations[ name ];
+                Operation &op = mOperations[name];
                 Header outputHeader;
                 outputHeader.loadXML(context, child);
                 op.addOutputHeader(outputHeader);
@@ -861,7 +862,7 @@ void SoapBinding::parseOperationFault(ParserContext *context, const QString &nam
         NSManager namespaceManager(context, child);
         if (NSManager::soapNamespaces().contains(namespaceManager.nameSpace(child))) {
             if (namespaceManager.localName(child) == QLatin1String("fault")) {
-                Operation &op = mOperations[ name ];
+                Operation &op = mOperations[name];
                 Fault fault;
                 fault.loadXML(context, child);
                 op.setFault(fault);
@@ -893,13 +894,13 @@ void SoapBinding::synthesizeBinding(ParserContext *context, QDomDocument &docume
 
 void SoapBinding::synthesizeOperation(ParserContext *context, const QString &name, QDomDocument &document, QDomElement &parent) const
 {
-    const Operation &op = mOperations[ name ];
+    const Operation &op = mOperations[name];
     op.saveXML(context, document, parent);
 }
 
 void SoapBinding::synthesizeOperationInput(ParserContext *context, const QString &name, QDomDocument &document, QDomElement &parent) const
 {
-    const Operation &op = mOperations[ name ];
+    const Operation &op = mOperations[name];
     op.input().saveXML(context, document, parent);
     Q_FOREACH (const Header &header, op.inputHeaders()) {
         header.saveXML(context, document, parent);
@@ -908,7 +909,7 @@ void SoapBinding::synthesizeOperationInput(ParserContext *context, const QString
 
 void SoapBinding::synthesizeOperationOutput(ParserContext *context, const QString &name, QDomDocument &document, QDomElement &parent) const
 {
-    const Operation &op = mOperations[ name ];
+    const Operation &op = mOperations[name];
     op.output().saveXML(context, document, parent);
     Q_FOREACH (const Header &header, op.outputHeaders()) {
         header.saveXML(context, document, parent);
@@ -917,7 +918,7 @@ void SoapBinding::synthesizeOperationOutput(ParserContext *context, const QStrin
 
 void SoapBinding::synthesizeOperationFault(ParserContext *context, const QString &name, QDomDocument &document, QDomElement &parent) const
 {
-    const Operation &op = mOperations[ name ];
+    const Operation &op = mOperations[name];
     op.fault().saveXML(context, document, parent);
 }
 
@@ -929,13 +930,11 @@ void SoapBinding::synthesizePort(ParserContext *context, QDomDocument &document,
 bool SoapBinding::Headers::contains(const Header &other) const
 {
     Q_FOREACH (const Header &header, *this) {
-        if (header.mMessage == other.mMessage &&
-                header.mPart == other.mPart &&
-                header.mUse == other.mUse &&
+        if (header.mMessage == other.mMessage && header.mPart == other.mPart && header.mUse == other.mUse &&
 #if 0
                 header.mEncodingStyle == other.mEncodingStyle &&
 #endif
-                header.mNameSpace == other.mNameSpace) {
+            header.mNameSpace == other.mNameSpace) {
             return true;
         }
     }

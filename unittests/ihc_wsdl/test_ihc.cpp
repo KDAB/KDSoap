@@ -30,7 +30,6 @@ using namespace KDSoapUnitTestHelpers;
 class IHCServerObject : public ResourceInteractionServiceServiceServerBase
 {
 public:
-
     virtual TNS__WSResourceValueEnvelope getRuntimeValue(int) override
     {
         return TNS__WSResourceValueEnvelope();
@@ -144,7 +143,9 @@ class IHCServer : public KDSoapServer
 {
     Q_OBJECT
 public:
-    IHCServer() : KDSoapServer(), m_lastServerObject(0)
+    IHCServer()
+        : KDSoapServer()
+        , m_lastServerObject(0)
     {
     }
     virtual QObject *createServerObject() override
@@ -156,6 +157,7 @@ public:
     {
         return m_lastServerObject;
     }
+
 private:
     IHCServerObject *m_lastServerObject;
 };
@@ -165,7 +167,6 @@ class IHCResourceInteractionTest : public QObject
     Q_OBJECT
 
 private:
-
 private Q_SLOTS:
 
     void testInheritanceClientSide()
@@ -210,7 +211,7 @@ private Q_SLOTS:
         bool ret = service.setResourceValue(env);
 
         QVERIFY(ret);
-        //qDebug() << server->lastServerObject()-> ...;
+        // qDebug() << server->lastServerObject()-> ...;
     }
 
     void testBuiltinInitialization()
@@ -228,7 +229,6 @@ private Q_SLOTS:
     }
 
 private:
-
     static TNS__WSResourceValueEnvelope resourceValueEnvelope()
     {
         TNS__WSResourceValueEnvelope env;
@@ -245,27 +245,30 @@ private:
 
     static QByteArray expectedSetResourceValueRequest()
     {
-        return QByteArray(xmlEnvBegin11()) + ">"
-               "<soap:Body>"
-               "<n1:setResourceValue1 xmlns:n1=\"utcs\">"
-               "<n1:resourceID>54</n1:resourceID>"
-               "<n1:isValueRuntime>false</n1:isValueRuntime>"
-               "<n1:typeString>enum</n1:typeString>"
-               "<n1:value>"
-               "<n2:definitionTypeID xmlns:n2=\"utcs.values\">2</n2:definitionTypeID>"
-               "<n3:enumValueID xmlns:n3=\"utcs.values\">42</n3:enumValueID>"
-               "<n4:enumName xmlns:n4=\"utcs.values\">enum1</n4:enumName>"
-               "</n1:value>"
-               "</n1:setResourceValue1>"
-               "</soap:Body>" + xmlEnvEnd()
-               + '\n'; // added by QXmlStreamWriter::writeEndDocument
+        return QByteArray(xmlEnvBegin11())
+            + ">"
+              "<soap:Body>"
+              "<n1:setResourceValue1 xmlns:n1=\"utcs\">"
+              "<n1:resourceID>54</n1:resourceID>"
+              "<n1:isValueRuntime>false</n1:isValueRuntime>"
+              "<n1:typeString>enum</n1:typeString>"
+              "<n1:value>"
+              "<n2:definitionTypeID xmlns:n2=\"utcs.values\">2</n2:definitionTypeID>"
+              "<n3:enumValueID xmlns:n3=\"utcs.values\">42</n3:enumValueID>"
+              "<n4:enumName xmlns:n4=\"utcs.values\">enum1</n4:enumName>"
+              "</n1:value>"
+              "</n1:setResourceValue1>"
+              "</soap:Body>"
+            + xmlEnvEnd() + '\n'; // added by QXmlStreamWriter::writeEndDocument
     }
 
     static QByteArray fakeResponse()
     {
-        return QByteArray(xmlEnvBegin11()) + ">"
-               "<soap:Body>"
-               " </soap:Body>" + xmlEnvEnd();
+        return QByteArray(xmlEnvBegin11())
+            + ">"
+              "<soap:Body>"
+              " </soap:Body>"
+            + xmlEnvEnd();
     }
 };
 

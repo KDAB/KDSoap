@@ -26,7 +26,7 @@ TestPointerApi::TestPointerApi()
 void TestPointerApi::test()
 {
     TNS__TestOperationResponse1 resp;
-    QCOMPARE(resp.out(), (QString *)0);
+    QCOMPARE(resp.out(), ( QString * )0);
     QString newVal("newval");
     resp.setOut(newVal);
     QCOMPARE(*resp.out(), newVal);
@@ -49,7 +49,7 @@ void TestPointerApi::testOptionalArray()
 void TestPointerApi::testPolymorphic()
 {
     TNS__TestOperationResponse1 resp;
-    QCOMPARE(resp.out2(), (TNS__PolymorphicClass*)0);
+    QCOMPARE(resp.out2(), ( TNS__PolymorphicClass * )0);
     QCOMPARE(resp.hasValueForOut2(), false);
     TNS__PolymorphicClass value;
     value.setValue(QString("newvalue"));
@@ -65,7 +65,7 @@ void TestPointerApi::testPolymorphic()
     resp.setOut2(derivedValue);
     QVERIFY(resp.out2());
     QCOMPARE(resp.out2()->value(), QString("derived"));
-    QCOMPARE(dynamic_cast<const TNS__DerivedClass*>(resp.out2())->value2(), QString("derived"));
+    QCOMPARE(dynamic_cast<const TNS__DerivedClass *>(resp.out2())->value2(), QString("derived"));
 }
 
 void TestPointerApi::testSerialize()

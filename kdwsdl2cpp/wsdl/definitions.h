@@ -36,8 +36,7 @@
 
 class ParserContext;
 
-namespace KWSDL
-{
+namespace KWSDL {
 
 class KWSDL_EXPORT Definitions
 {
@@ -55,11 +54,11 @@ public:
     void setTargetNamespace(const QString &targetNamespace);
     QString targetNamespace() const;
 
-    //void setBindings( const Binding::List &bindings );
+    // void setBindings( const Binding::List &bindings );
     Binding::List bindings() const;
 
-    //void setImports( const Import::List &imports );
-    //Import::List imports() const;
+    // void setImports( const Import::List &imports );
+    // Import::List imports() const;
 
     void setMessages(const Message::List &messages);
     Message::List messages() const;
@@ -67,14 +66,14 @@ public:
     void setPortTypes(const PortType::List &portTypes);
     PortType::List portTypes() const;
 
-    //void setService( const Service &service );
+    // void setService( const Service &service );
     Service::List services() const;
 
     void setType(const Type &type);
     Type type() const;
 
     bool loadXML(ParserContext *context, const QDomElement &element);
-    //void saveXML( ParserContext *context, QDomDocument &document ) const;
+    // void saveXML( ParserContext *context, QDomDocument &document ) const;
 
     void fixUpDefinitions(/*ParserContext *context, const QDomElement &element*/);
 
@@ -82,7 +81,7 @@ private:
     void importDefinition(ParserContext *context, const QString &location);
 
     Binding::List mBindings;
-    //Import::List mImports;
+    // Import::List mImports;
     Message::List mMessages;
     PortType::List mPortTypes;
     Service::List mServices;
@@ -99,4 +98,3 @@ private:
 }
 
 #endif // KWSDL_DEFINITIONS_H
-

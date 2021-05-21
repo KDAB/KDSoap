@@ -37,10 +37,12 @@ AutoTestSoap12::AutoTestSoap12()
 
 static QByteArray updateObjsResponse()
 {
-    return QByteArray(xmlEnvBegin11()) + "><soap:Body>"
-           "<createDirectoryResponse xmlns=\"https://www.test.com/testapiv3/testapi.jws\">"
-           "</createDirectoryResponse>"
-           "</soap:Body>" + xmlEnvEnd();
+    return QByteArray(xmlEnvBegin11())
+        + "><soap:Body>"
+          "<createDirectoryResponse xmlns=\"https://www.test.com/testapiv3/testapi.jws\">"
+          "</createDirectoryResponse>"
+          "</soap:Body>"
+        + xmlEnvEnd();
 }
 
 void AutoTestSoap12::test()
@@ -53,9 +55,10 @@ void AutoTestSoap12::test()
 
     service12.version();
 
-    const QByteArray expectedData = QByteArray(xmlEnvBegin11()) + "><soap:Body>"
-                                    "<n1:version xmlns:n1=\"http://kdab.com/test/\"/>"
-                                    "</soap:Body></soap:Envelope>";
+    const QByteArray expectedData = QByteArray(xmlEnvBegin11())
+        + "><soap:Body>"
+          "<n1:version xmlns:n1=\"http://kdab.com/test/\"/>"
+          "</soap:Body></soap:Envelope>";
 
     QByteArray expectedData12 = expectedData;
     expectedData12.replace("http://schemas.xmlsoap.org/soap/envelope/", "http://www.w3.org/2003/05/soap-envelope");

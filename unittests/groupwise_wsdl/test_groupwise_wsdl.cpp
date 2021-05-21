@@ -40,7 +40,7 @@ private Q_SLOTS:
             METHODS__AcceptRequest acceptRequest;
             acceptRequest.setComment(QString::fromLatin1("Comment"));
             METHODS__AcceptResponse response = groupwise.acceptRequest(acceptRequest);
-            (void)response.status();
+            ( void )response.status();
 
             GroupwiseService::GroupWiseEventsBinding groupwiseEvents;
             groupwiseEvents.setGwTraceHeader(true);
@@ -54,7 +54,7 @@ private Q_SLOTS:
         cref.setDeleted(QDateTime(QDate(2010, 12, 31), QTime(1, 2, 3))); // implicit conversion from QDateTime to KDDateTime
         const KDSoapValue v = cref.serialize(QLatin1String("container"));
 
-        //qDebug() << v.toXml();
+        // qDebug() << v.toXml();
 
         TYPES__ContainerRef cref2;
         cref2.deserialize(v);
@@ -80,19 +80,18 @@ private Q_SLOTS:
         // Check what we sent
         // This WSDL (well, the XSD) uses elementFormDefault="qualified", so we get namespace definitions.
         // TODO: declare them up in the main element, to make this shorter
-        QByteArray expectedRequestXml =
-            QByteArray(xmlEnvBegin11()) +
-            "><soap:Body>"
-            "<n1:updateVersionStatusRequest xmlns:n1=\"http://schemas.novell.com/2005/01/GroupWise/methods\">"
-            "<n1:id>TheId</n1:id>"
-            "<n1:event>archive</n1:event>"
-            "<n1:part>"
-            "<n2:size xmlns:n2=\"http://schemas.novell.com/2005/01/GroupWise/types\">6</n2:size>"
-            "<n3:data xmlns:n3=\"http://schemas.novell.com/2005/01/GroupWise/types\">QUJDREVG</n3:data>"
-            "</n1:part>"
-            "</n1:updateVersionStatusRequest>"
-            "</soap:Body>" + xmlEnvEnd()
-            + '\n'; // added by QXmlStreamWriter::writeEndDocument
+        QByteArray expectedRequestXml = QByteArray(xmlEnvBegin11())
+            + "><soap:Body>"
+              "<n1:updateVersionStatusRequest xmlns:n1=\"http://schemas.novell.com/2005/01/GroupWise/methods\">"
+              "<n1:id>TheId</n1:id>"
+              "<n1:event>archive</n1:event>"
+              "<n1:part>"
+              "<n2:size xmlns:n2=\"http://schemas.novell.com/2005/01/GroupWise/types\">6</n2:size>"
+              "<n3:data xmlns:n3=\"http://schemas.novell.com/2005/01/GroupWise/types\">QUJDREVG</n3:data>"
+              "</n1:part>"
+              "</n1:updateVersionStatusRequest>"
+              "</soap:Body>"
+            + xmlEnvEnd() + '\n'; // added by QXmlStreamWriter::writeEndDocument
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
 
         // The response didn't have the expected fields. Not sure how we should handle that.
@@ -115,18 +114,17 @@ private Q_SLOTS:
         // implicit conversion from KDDateTime to QDateTime
         req.setRetention(QDateTime(QDate(2011, 01, 15), QTime(4, 3, 2, 1)));
 
-        /*METHODS__SetTimestampResponse response = */groupwise.setTimestampRequest(req);
+        /*METHODS__SetTimestampResponse response = */ groupwise.setTimestampRequest(req);
 
         // Check what we sent
-        QByteArray expectedRequestXml =
-            QByteArray(xmlEnvBegin11()) +
-            "><soap:Body>"
-            "<n1:setTimestampRequest xmlns:n1=\"http://schemas.novell.com/2005/01/GroupWise/methods\">"
-            "<n1:backup>2011-03-15T04:03:02.001+01:00</n1:backup>"
-            "<n1:retention>2011-01-15T04:03:02.001</n1:retention>"
-            "</n1:setTimestampRequest>"
-            "</soap:Body>" + xmlEnvEnd()
-            + '\n'; // added by QXmlStreamWriter::writeEndDocument
+        QByteArray expectedRequestXml = QByteArray(xmlEnvBegin11())
+            + "><soap:Body>"
+              "<n1:setTimestampRequest xmlns:n1=\"http://schemas.novell.com/2005/01/GroupWise/methods\">"
+              "<n1:backup>2011-03-15T04:03:02.001+01:00</n1:backup>"
+              "<n1:retention>2011-01-15T04:03:02.001</n1:retention>"
+              "</n1:setTimestampRequest>"
+              "</soap:Body>"
+            + xmlEnvEnd() + '\n'; // added by QXmlStreamWriter::writeEndDocument
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
     }
 
@@ -142,15 +140,14 @@ private Q_SLOTS:
         METHODS__GetTimestampResponse response = groupwise.getTimestampRequest(req);
 
         // Check what we sent
-        QByteArray expectedRequestXml =
-            QByteArray(xmlEnvBegin11()) +
-            "><soap:Body>"
-            "<n1:getTimestampRequest xmlns:n1=\"http://schemas.novell.com/2005/01/GroupWise/methods\">"
-            "<n1:backup>true</n1:backup>"
-            "<n1:retention>true</n1:retention>"
-            "</n1:getTimestampRequest>"
-            "</soap:Body>" + xmlEnvEnd()
-            + '\n'; // added by QXmlStreamWriter::writeEndDocument
+        QByteArray expectedRequestXml = QByteArray(xmlEnvBegin11())
+            + "><soap:Body>"
+              "<n1:getTimestampRequest xmlns:n1=\"http://schemas.novell.com/2005/01/GroupWise/methods\">"
+              "<n1:backup>true</n1:backup>"
+              "<n1:retention>true</n1:retention>"
+              "</n1:getTimestampRequest>"
+              "</soap:Body>"
+            + xmlEnvEnd() + '\n'; // added by QXmlStreamWriter::writeEndDocument
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedRequestXml));
 
         // Check response parsing
@@ -166,30 +163,32 @@ private Q_SLOTS:
     }
 
 private:
-
     // Bogus response
     static QByteArray updateVersionStatusResponse()
     {
-        return QByteArray(xmlEnvBegin11()) + " xmlns:gw=\"http://schemas.novell.com/2005/01/GroupWise/groupwise.wsdl\"><soap:Body>"
-               "<queryResponse>"
-               "<result>"
-               "<done>true</done>"
-               "<size>3</size>"
-               "</result>"
-               "</queryResponse>"
-               "</soap:Body>" + xmlEnvEnd();
+        return QByteArray(xmlEnvBegin11())
+            + " xmlns:gw=\"http://schemas.novell.com/2005/01/GroupWise/groupwise.wsdl\"><soap:Body>"
+              "<queryResponse>"
+              "<result>"
+              "<done>true</done>"
+              "<size>3</size>"
+              "</result>"
+              "</queryResponse>"
+              "</soap:Body>"
+            + xmlEnvEnd();
     }
 
     static QByteArray getTimestampResponse()
     {
-        return QByteArray(xmlEnvBegin11()) + " xmlns:gw=\"http://schemas.novell.com/2005/01/GroupWise/groupwise.wsdl\"><soap:Body>"
-               "<gw:getTimestampResponse>"
-               "<gw:backup>2011-03-15T04:03:02.001+01:00</gw:backup>"
-               "<gw:retention>2011-01-15T04:03:02.001Z</gw:retention>"
-               "</gw:getTimestampResponse>"
-               "</soap:Body>" + xmlEnvEnd();
+        return QByteArray(xmlEnvBegin11())
+            + " xmlns:gw=\"http://schemas.novell.com/2005/01/GroupWise/groupwise.wsdl\"><soap:Body>"
+              "<gw:getTimestampResponse>"
+              "<gw:backup>2011-03-15T04:03:02.001+01:00</gw:backup>"
+              "<gw:retention>2011-01-15T04:03:02.001Z</gw:retention>"
+              "</gw:getTimestampResponse>"
+              "</soap:Body>"
+            + xmlEnvEnd();
     }
-
 };
 
 QTEST_MAIN(GroupwiseTest)

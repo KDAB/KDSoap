@@ -64,8 +64,7 @@ private:
 };
 
 QT_BEGIN_NAMESPACE
-Q_DECLARE_INTERFACE(KDSoapServerCustomVerbRequestInterface,
-                    "com.kdab.KDSoap.ServerCustomVerbRequestInterface/1.0")
+Q_DECLARE_INTERFACE(KDSoapServerCustomVerbRequestInterface, "com.kdab.KDSoap.ServerCustomVerbRequestInterface/1.0")
 QT_END_NAMESPACE
 
 #endif /* KDSOAPSERVERCUSTOMVERBREQUESTINTERFACE_H */

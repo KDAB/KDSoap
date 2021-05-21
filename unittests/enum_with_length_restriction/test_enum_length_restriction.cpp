@@ -36,7 +36,6 @@ TestEnum::TestEnum()
 
 void TestEnum::test()
 {
-
 }
 
 QTEST_MAIN(TestEnum)

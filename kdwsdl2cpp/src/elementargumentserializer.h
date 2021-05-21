@@ -21,7 +21,8 @@ public:
      * If it's not a builtin type, .serialize() will be called on this variable.
      * @param nilLocalVarName name of the _nil variable, if any
      */
-    ElementArgumentSerializer(const KWSDL::TypeMap &typeMap, const QName &type, const QName &elementType, const QString &localVarName, const QString &nilLocalVarName);
+    ElementArgumentSerializer(const KWSDL::TypeMap &typeMap, const QName &type, const QName &elementType, const QString &localVarName,
+                              const QString &nilLocalVarName);
 
     /**
      * Modifies the localVarName set in the constructor.

@@ -36,14 +36,16 @@ class KDSoapMessageAddressingPropertiesData;
  * \see https://www.w3.org/TR/ws-addr-core/#msgaddrpropsinfoset
  * \since 1.5
  */
-namespace KDSoapMessageRelationship
-{
+namespace KDSoapMessageRelationship {
 
-struct Relationship {
+struct Relationship
+{
     /**
      * Relationship default ctor
      */
-    Relationship() {}
+    Relationship()
+    {
+    }
 
     /**
      * Relationship constructor
@@ -53,7 +55,10 @@ struct Relationship {
      * https://www.w3.org/TR/2006/REC-ws-addr-core-20060509)
      */
     Relationship(const QString &URI, const QString &type = QString())
-        : uri(URI), relationshipType(type) {}
+        : uri(URI)
+        , relationshipType(type)
+    {
+    }
 
     QString uri;
     QString relationshipType;
@@ -84,7 +89,8 @@ public:
      * It is meant to be used with the predefinedAddress helper function to retrieve the uri as a QString
      * \see predefinedAddressToString
      */
-    enum KDSoapAddressingPredefinedAddress {
+    enum KDSoapAddressingPredefinedAddress
+    {
         None,
         Anonymous,
         Reply,
@@ -97,7 +103,8 @@ public:
      * \since 1.9
      * \see setAddressingNamespace
      */
-    enum KDSoapAddressingNamespace {
+    enum KDSoapAddressingNamespace
+    {
         Addressing200303,
         Addressing200403,
         Addressing200408,
@@ -122,7 +129,7 @@ public:
     /**
      * Copies the contents of the object given by \p other.
      */
-    KDSoapMessageAddressingProperties &operator =(const KDSoapMessageAddressingProperties &other);
+    KDSoapMessageAddressingProperties &operator=(const KDSoapMessageAddressingProperties &other);
 
     /**
      * Returns the destination address, it should match the EndpointReference given from WSDL
@@ -228,7 +235,8 @@ public:
     QVector<KDSoapMessageRelationship::Relationship> relationships() const;
 
     /**
-     * Set the relationships of the message, parameter is a QVector of Relationship, the class Relationship carry the relationship type and the message ID of the related message
+     * Set the relationships of the message, parameter is a QVector of Relationship, the class Relationship carry the relationship type and the
+     * message ID of the related message
      *
      * \see Relationship
      *
@@ -290,12 +298,13 @@ public:
     /**
      * Helper function that takes the \p address enum and \p addressingNamespace to provide the QString equivalent
      */
-    static QString predefinedAddressToString(KDSoapAddressingPredefinedAddress address, KDSoapAddressingNamespace addressingNamespace = Addressing200508);
+    static QString predefinedAddressToString(KDSoapAddressingPredefinedAddress address,
+                                             KDSoapAddressingNamespace addressingNamespace = Addressing200508);
 
     /**
      * Helper function that compares \p namespaceUri with the known WS-Addressing namespaces
      */
-    static bool isWSAddressingNamespace(const QString& namespaceUri);
+    static bool isWSAddressingNamespace(const QString &namespaceUri);
 
     /**
      * Helper function that takes the \p addressingNamespace enum to provide the QString equivalent
@@ -307,12 +316,13 @@ private:
     /**
      * Private method called to write the properties to the soap header, using QXmlStreamWriter
      */
-    void writeMessageAddressingProperties(KDSoapNamespacePrefixes &namespacePrefixes, QXmlStreamWriter &writer, const QString &messageNamespace, bool forceQualified) const;
+    void writeMessageAddressingProperties(KDSoapNamespacePrefixes &namespacePrefixes, QXmlStreamWriter &writer, const QString &messageNamespace,
+                                          bool forceQualified) const;
 
     /**
      * Private method called to read a property from a soap header
      */
-    void readMessageAddressingProperty(const KDSoapValue& value);
+    void readMessageAddressingProperty(const KDSoapValue &value);
 
 private:
     QSharedDataPointer<KDSoapMessageAddressingPropertiesData> d;
@@ -321,6 +331,6 @@ private:
 /**
  * Support for debugging KDSoapMessageAddressingProperties object via qDebug() << msg;
  */
-KDSOAP_EXPORT QDebug operator <<(QDebug dbg, const KDSoapMessageAddressingProperties &msg);
+KDSOAP_EXPORT QDebug operator<<(QDebug dbg, const KDSoapMessageAddressingProperties &msg);
 
 #endif // KDSOAPMESSAGEADDRESSINGPROPERTIES_H

@@ -23,7 +23,8 @@
 class KDSOAP_EXPORT KDSoapMessageReader
 {
 public:
-    enum XmlError {
+    enum XmlError
+    {
         NoError = 0,
         ParseError,
         PrematureEndOfDocumentError
@@ -31,7 +32,8 @@ public:
 
     KDSoapMessageReader();
 
-    XmlError xmlToMessage(const QByteArray &data, KDSoapMessage *pParsedMessage, QString *pMessageNamespace, KDSoapHeaders *pRequestHeaders, KDSoap::SoapVersion soapVersion) const;
+    XmlError xmlToMessage(const QByteArray &data, KDSoapMessage *pParsedMessage, QString *pMessageNamespace, KDSoapHeaders *pRequestHeaders,
+                          KDSoap::SoapVersion soapVersion) const;
 };
 
 #endif

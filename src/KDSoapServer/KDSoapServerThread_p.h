@@ -42,6 +42,7 @@ public:
     void resetTotalConnectionCountForServer(const KDSoapServer *server);
 
     void addIncomingConnection();
+
 private:
     QMutex m_socketListMutex;
     KDSoapSocketList *socketListForServer(KDSoapServer *server);

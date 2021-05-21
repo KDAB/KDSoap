@@ -27,14 +27,14 @@ QString namespaceString(const QString &ns)
     if (ns == QLatin1String("http://www.w3.org/2001/XMLSchema")) {
         return QLatin1String("KDSoapNamespaceManager::xmlSchema2001()");
     }
-    //qDebug() << "got namespace" << ns;
+    // qDebug() << "got namespace" << ns;
     // TODO register into KDSoapNamespaceManager? This means generating code in the clientinterface ctor...
     return QLatin1String("QString::fromLatin1(\"") + ns + QLatin1String("\")");
 }
 
 Converter::Converter()
-    : mQObject(KODE::Class(QLatin1String("QObject"))),
-      mKDSoapServerObjectInterface(KODE::Class(QLatin1String("KDSoapServerObjectInterface")))
+    : mQObject(KODE::Class(QLatin1String("QObject")))
+    , mKDSoapServerObjectInterface(KODE::Class(QLatin1String("KDSoapServerObjectInterface")))
 {
 }
 
@@ -81,9 +81,10 @@ class TypeCollector
 {
 public:
     TypeCollector(XSD::Types &allTypes, const QSet<QName> &usedTypes)
-        : m_allTypes(allTypes),
-          m_allUsedTypes(usedTypes)
-    {}
+        : m_allTypes(allTypes)
+        , m_allUsedTypes(usedTypes)
+    {
+    }
 
     // In case of inheritance, the parser simply set the base class in the derived class.
     // We need to register the other way round (list of derived classes in a base class)
@@ -100,7 +101,7 @@ public:
                 for (int i = 0; i < complexTypes.count(); ++i) {
                     XSD::ComplexType &t = complexTypes[i];
                     if (base == t.qualifiedName())
-                        //qDebug() << "Adding derived type" << derivedType.name() << "to base" << base;
+                    // qDebug() << "Adding derived type" << derivedType.name() << "to base" << base;
                     {
                         t.addDerivedType(derivedType.qualifiedName());
                     }
@@ -122,7 +123,7 @@ public:
                 if (typeMap.isBuiltinType(typeName)) {
                     continue;
                 }
-                //qDebug() << "used type:" << typeName;
+                // qDebug() << "used type:" << typeName;
                 XSD::ComplexType complexType = m_allTypes.complexType(typeName);
                 if (!complexType.name().isEmpty()) { // found it as a complex type
                     fixupComplexType(complexType);
@@ -176,14 +177,14 @@ private:
             QName uppercaseType(type.nameSpace(), upperlize(type.name()));
             XSD::ComplexType upperType = usedComplexTypes.value(uppercaseType);
             if (!upperType.isNull()) {
-                //qDebug() << "FIXUP: found" << uppercaseType << "already in usedComplexTypes";
+                // qDebug() << "FIXUP: found" << uppercaseType << "already in usedComplexTypes";
                 type.setConflicting(true);
             }
         } else {
             QName lowercaseType(type.nameSpace(), lowerlize(type.name()));
             XSD::ComplexType lowerType = usedComplexTypes.value(lowercaseType);
             if (!lowerType.isNull()) {
-                //qDebug() << "FIXUP: found" << lowercaseType << "already in usedComplexTypes";
+                // qDebug() << "FIXUP: found" << lowercaseType << "already in usedComplexTypes";
                 usedComplexTypes.remove(lowercaseType);
                 lowerType.setConflicting(true);
                 usedComplexTypes.insert(lowercaseType, lowerType);
@@ -198,20 +199,22 @@ private:
 class MessageCollector
 {
 public:
-    MessageCollector() {}
+    MessageCollector()
+    {
+    }
 
     QSet<QName> collectMessages(const WSDL &wsdl)
     {
         Q_FOREACH (const Service &service, wsdl.definitions().services()) {
             Q_FOREACH (const Port &port, service.ports()) {
                 Binding binding = wsdl.findBinding(port.bindingName());
-                //portTypeNames.insert( binding.portTypeName() );
-                //qDebug() << "binding" << port.bindingName() << binding.name() << "port type" << binding.portTypeName();
+                // portTypeNames.insert( binding.portTypeName() );
+                // qDebug() << "binding" << port.bindingName() << binding.name() << "port type" << binding.portTypeName();
                 PortType portType = wsdl.findPortType(binding.portTypeName());
                 const Operation::List operations = portType.operations();
-                //qDebug() << "portType" << portType.name() << operations.count() << "operations";
+                // qDebug() << "portType" << portType.name() << operations.count() << "operations";
                 Q_FOREACH (const Operation &operation, operations) {
-                    //qDebug() << "  operation" << operation.operationType() << operation.name();
+                    // qDebug() << "  operation" << operation.operationType() << operation.name();
                     switch (operation.operationType()) {
                     case Operation::OneWayOperation:
                         addMessage(operation.input().message());
@@ -240,6 +243,7 @@ public:
         }
         return m_usedMessageNames;
     }
+
 private:
     void addMessage(const QName &messageName)
     {
@@ -248,7 +252,6 @@ private:
     }
 
     QSet<QName> m_usedMessageNames;
-
 };
 
 void Converter::cleanupUnusedTypes()
@@ -267,17 +270,17 @@ void Converter::cleanupUnusedTypes()
         qDebug() << types.simpleTypes().count() << "simple types";
         qDebug() << types.elements().count() << "elements";
 
-        //Q_FOREACH(const XSD::Element& elem, types.elements()) {
+        // Q_FOREACH(const XSD::Element& elem, types.elements()) {
         //    qDebug() << "element:" << elem.qualifiedName();
         //}
-        //Q_FOREACH(const XSD::ComplexType& complexType, types.complexTypes()) {
+        // Q_FOREACH(const XSD::ComplexType& complexType, types.complexTypes()) {
         //    qDebug() << "complex type:" << complexType.qualifiedName();
         //}
     }
 
     MessageCollector messageCollector;
     QSet<QName> usedMessageNames = messageCollector.collectMessages(mWSDL);
-    //QSet<QName> portTypeNames;
+    // QSet<QName> portTypeNames;
 
     // Keep only the messages in usedMessageNames
     QSet<QName> usedTypes;
@@ -285,7 +288,7 @@ void Converter::cleanupUnusedTypes()
     QSet<QName> usedElementNames;
     Message::List newMessages;
     Q_FOREACH (const QName &messageName, usedMessageNames) {
-        //qDebug() << "used message:" << messageName;
+        // qDebug() << "used message:" << messageName;
         Message message = mWSDL.findMessage(messageName);
         newMessages.append(message);
         Q_FOREACH (const Part &part, message.parts()) {
@@ -308,7 +311,7 @@ void Converter::cleanupUnusedTypes()
         }
     }
 
-    //qDebug() << "usedTypes:" << usedTypesStrings.toList();
+    // qDebug() << "usedTypes:" << usedTypesStrings.toList();
 
     // keep only the types used in these messages
     TypeCollector collector(types, usedTypes);
@@ -348,7 +351,7 @@ void Converter::cleanupUnusedTypes()
         qDebug() << types.complexTypes().count() << "complex types";
         qDebug() << types.simpleTypes().count() << "simple types";
         qDebug() << types.elements().count() << "elements";
-        //Q_FOREACH(const XSD::ComplexType& complexType, types.complexTypes()) {
+        // Q_FOREACH(const XSD::ComplexType& complexType, types.complexTypes()) {
         //    qDebug() << "complex type:" << complexType.qualifiedName();
         //}
     }
@@ -381,18 +384,19 @@ void Converter::convertTypes()
     XSD::SimpleType::List simpleTypes = types.simpleTypes();
     qDebug() << "Converting" << simpleTypes.count() << "simple types";
     for (int i = 0; i < simpleTypes.count(); ++i) {
-        convertSimpleType(&(simpleTypes[ i ]), simpleTypes);
+        convertSimpleType(&(simpleTypes[i]), simpleTypes);
     }
 
     XSD::ComplexType::List complexTypes = types.complexTypes();
     qDebug() << "Converting" << complexTypes.count() << "complex types";
     for (int i = 0; i < complexTypes.count(); ++i) {
-        convertComplexType(&(complexTypes[ i ]));
+        convertComplexType(&(complexTypes[i]));
     }
 }
 
 // Helper for clientstub and serverstub
-KODE::Code Converter::serializePart(const Part &part, const QString &localVariableName, const QString &nilVariableName, const QString &varName, bool append)
+KODE::Code Converter::serializePart(const Part &part, const QString &localVariableName, const QString &nilVariableName, const QString &varName,
+                                    bool append)
 {
     bool qualified, nillable;
     const QName elemName = elementNameForPart(part, &qualified, &nillable);
@@ -401,6 +405,6 @@ KODE::Code Converter::serializePart(const Part &part, const QString &localVariab
     serializer.setOutputVariable(varName, append);
     serializer.setIsQualified(qualified);
     serializer.setNillable(nillable);
-    serializer.setOptional(false);   // Don't omit entire parts, this especially breaks the wrappers for RPC messages
+    serializer.setOptional(false); // Don't omit entire parts, this especially breaks the wrappers for RPC messages
     return serializer.generateSerializationCode();
 }

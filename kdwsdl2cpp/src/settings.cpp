@@ -277,4 +277,3 @@ bool Settings::helpOnMissing() const
 {
     return mHelpOnMissing;
 }
-

@@ -156,7 +156,7 @@ bool Definitions::loadXML(ParserContext *context, const QDomElement &element)
         } else if (tagName.localName() == QLatin1String("message")) {
             Message message(mTargetNamespace);
             message.loadXML(context, child);
-            //qDebug() << "Definitions: found message" << message.name() << message.nameSpace();
+            // qDebug() << "Definitions: found message" << message.name() << message.nameSpace();
             mMessages.append(message);
         } else if (tagName.localName() == QLatin1String("portType")) {
             PortType portType(mTargetNamespace);
@@ -168,7 +168,7 @@ bool Definitions::loadXML(ParserContext *context, const QDomElement &element)
             mBindings.append(binding);
         } else if (tagName.localName() == QLatin1String("service")) {
             const QString name = child.attribute(QLatin1String("name"));
-            //qDebug() << "Service:" << name << "looking for" << mWantedService;
+            // qDebug() << "Service:" << name << "looking for" << mWantedService;
             // is this the service we want?
             if (mWantedService.isEmpty() || mWantedService == name) {
                 Service service(mTargetNamespace);

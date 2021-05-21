@@ -33,53 +33,53 @@ static bool usePointerForElement(const XSD::Element &elem, const KODE::Class &ne
             qDebug() << "Using pointer for optional type" << typeName << "used inside itself";
         }
         // Optional "Foo" in class "Foo" - can't just have a value and bool, we need a pointer, to avoid infinite recursion
-        //use == XSD::Attribute::Required;
+        // use == XSD::Attribute::Required;
         return true;
     }
     return polymorphic;
 }
 
-static void generateDefaultAttributeValueCode(KODE::Code& result, const QString& typeName, const Converter::DefaultAttributeValue& defaultValue)
+static void generateDefaultAttributeValueCode(KODE::Code &result, const QString &typeName, const Converter::DefaultAttributeValue &defaultValue)
 {
-  result += "{";
-  result.indent();
+    result += "{";
+    result.indent();
 
-  if (!defaultValue.mIsBuiltin) {
-    result += typeName  + " defaultValue;";
-    result += "defaultValue.deserialize(KDSoapValue(QString(), \"" + defaultValue.mValue + "\"));";
-    result += "return defaultValue;";
-  } else {
-    result += "const QString defaultValueFromWsdl(\"" + defaultValue.mValue + "\");";
-    if (typeName == "KDDateTime") {
-      result += "KDDateTime defaultDateTime = KDDateTime::fromDateString(defaultValueFromWsdl);";
-      result += "if (defaultDateTime.toDateString() != defaultValueFromWsdl) {";
-      result.indent();
-      result += "qDebug(\"Can't convert to " + typeName + " from " + defaultValue.mValue + "\");";
-      result += "Q_ASSERT(!\"Can't convert to " + typeName + " from " + defaultValue.mValue + "\");";
-      result.unindent();
-      result += "}";
-      result += "return defaultDateTime;";
+    if (!defaultValue.mIsBuiltin) {
+        result += typeName + " defaultValue;";
+        result += "defaultValue.deserialize(KDSoapValue(QString(), \"" + defaultValue.mValue + "\"));";
+        result += "return defaultValue;";
     } else {
-      result += "const QVariant tmp(defaultValueFromWsdl);";
-      result += "if(!tmp.canConvert<" + typeName + ">())";
-      result += "{";
-      result.indent();
-      result += "qDebug(\"Can't convert to " + typeName + " from " + defaultValue.mValue + "\");";
-      result += "Q_ASSERT(!\"Can't convert to " + typeName + " from " + defaultValue.mValue + "\");";
-      result.unindent();
-      result += "}";
-      result += "return tmp.value<" + typeName + ">();";
+        result += "const QString defaultValueFromWsdl(\"" + defaultValue.mValue + "\");";
+        if (typeName == "KDDateTime") {
+            result += "KDDateTime defaultDateTime = KDDateTime::fromDateString(defaultValueFromWsdl);";
+            result += "if (defaultDateTime.toDateString() != defaultValueFromWsdl) {";
+            result.indent();
+            result += "qDebug(\"Can't convert to " + typeName + " from " + defaultValue.mValue + "\");";
+            result += "Q_ASSERT(!\"Can't convert to " + typeName + " from " + defaultValue.mValue + "\");";
+            result.unindent();
+            result += "}";
+            result += "return defaultDateTime;";
+        } else {
+            result += "const QVariant tmp(defaultValueFromWsdl);";
+            result += "if(!tmp.canConvert<" + typeName + ">())";
+            result += "{";
+            result.indent();
+            result += "qDebug(\"Can't convert to " + typeName + " from " + defaultValue.mValue + "\");";
+            result += "Q_ASSERT(!\"Can't convert to " + typeName + " from " + defaultValue.mValue + "\");";
+            result.unindent();
+            result += "}";
+            result += "return tmp.value<" + typeName + ">();";
+        }
     }
-  }
 
-  result.unindent();
-  result += "}";
+    result.unindent();
+    result += "}";
 }
 
 void Converter::convertComplexType(const XSD::ComplexType *type)
 {
     // An empty type is still useful, in document mode: it serializes the element name
-    //if ( type->isEmpty() )
+    // if ( type->isEmpty() )
     //    return;
 
     const QString className(mTypeMap.localType(type->qualifiedName()));
@@ -97,7 +97,7 @@ void Converter::convertComplexType(const XSD::ComplexType *type)
     }
 
     // subclass handling
-    if (!type->baseTypeName().isEmpty()) {   // this class extends something
+    if (!type->baseTypeName().isEmpty()) { // this class extends something
         /**
          * A class can't subclass basic type (e.g. int, unsigned char), so we
          * add setValue() and value() methods to access the base type.
@@ -118,7 +118,8 @@ void Converter::convertComplexType(const XSD::ComplexType *type)
             if (mTypeMap.isComplexType(baseName)) {
                 newClass.addBaseClass(typeName);
             } else {
-                const QString variableName = generateMemberVariable("value", typeName, inputTypeName, newClass, XSD::Attribute::Required, false, false);
+                const QString variableName =
+                    generateMemberVariable("value", typeName, inputTypeName, newClass, XSD::Attribute::Required, false, false);
 
                 // convenience constructor
                 KODE::Function conctor(upperlize(newClass.name()));
@@ -167,7 +168,8 @@ void Converter::convertComplexType(const XSD::ComplexType *type)
         QString typeName = mTypeMap.localType(elemIt.type());
         Q_ASSERT(!typeName.isEmpty());
 
-        if (typeName != QLatin1String("void")) { // void means empty element, probably just here for later extensions (testcase: SetPasswordResult in salesforce)
+        if (typeName != QLatin1String("void")) { // void means empty element, probably just here for later extensions (testcase: SetPasswordResult in
+                                                 // salesforce)
             QString inputTypeName = mTypeMap.localInputType(elemIt.type(), QName());
 
             bool isList = false;
@@ -183,7 +185,7 @@ void Converter::convertComplexType(const XSD::ComplexType *type)
                 if (mTypeMap.isPolymorphic(type->arrayType())) {
                     arrayTypeName = ElementArgumentSerializer::pointerStorageType(arrayTypeName);
                 }
-                //qDebug() << "array of" << attribute.arrayType() << "->" << arrayTypeName;
+                // qDebug() << "array of" << attribute.arrayType() << "->" << arrayTypeName;
                 typeName = listTypeFor(arrayTypeName, newClass);
                 if (!mTypeMap.isBasicType(type->arrayType())) {
                     newClass.addInclude(QString(), arrayTypeName); // add forward declaration
@@ -218,12 +220,13 @@ void Converter::convertComplexType(const XSD::ComplexType *type)
             continue;
         }
         inputTypeName = mTypeMap.localInputType(attribute.type(), QName());
-        //qDebug() << "Attribute" << attribute.name();
+        // qDebug() << "Attribute" << attribute.name();
 
         bool isBuiltin = mTypeMap.isBuiltinType(attribute.type());
         QString value = attribute.defaultValue();
         DefaultAttributeValue defaultValue(isBuiltin, value);
-        generateMemberVariable(KODE::Style::makeIdentifier(attribute.name()), typeName, inputTypeName, newClass, attribute.attributeUse(), false, false, defaultValue);
+        generateMemberVariable(KODE::Style::makeIdentifier(attribute.name()), typeName, inputTypeName, newClass, attribute.attributeUse(), false,
+                               false, defaultValue);
 
         // include header
         newClass.addIncludes(QStringList(), mTypeMap.forwardDeclarations(attribute.type()));
@@ -234,10 +237,10 @@ void Converter::convertComplexType(const XSD::ComplexType *type)
 
     const QString newClassName = newClass.name();
 
-    KODE::Function ctor(/*upperlize*/(newClassName));
+    KODE::Function ctor(/*upperlize*/ (newClassName));
     newClass.addFunction(ctor);
 
-    KODE::Function dtor(QLatin1Char('~') + /*upperlize*/(newClassName));
+    KODE::Function dtor(QLatin1Char('~') + /*upperlize*/ (newClassName));
     if (!type->derivedTypes().isEmpty()) {
         dtor.setVirtualMode(KODE::Function::Virtual);
     }
@@ -288,7 +291,9 @@ void Converter::convertComplexType(const XSD::ComplexType *type)
 }
 
 // Called for each element and for each attribute of a complex type, as well as for the base class "value".
-QString Converter::generateMemberVariable(const QString &rawName, const QString &typeName, const QString &inputTypeName, KODE::Class &newClass, XSD::Attribute::AttributeUse use, bool usePointer, bool polymorphic, const Converter::DefaultAttributeValue& defaultValue)
+QString Converter::generateMemberVariable(const QString &rawName, const QString &typeName, const QString &inputTypeName, KODE::Class &newClass,
+                                          XSD::Attribute::AttributeUse use, bool usePointer, bool polymorphic,
+                                          const Converter::DefaultAttributeValue &defaultValue)
 {
     const bool optional = (use == XSD::Attribute::Optional);
     const bool prohibited = (use == XSD::Attribute::Prohibited);
@@ -337,7 +342,8 @@ QString Converter::generateMemberVariable(const QString &rawName, const QString 
         if (polymorphic) {
             code += variableName + QLatin1String(" = ") + storageType + QLatin1Char('(') + argName + QLatin1String("._kd_clone());");
         } else {
-            code += variableName + QLatin1String(" = ") + storageType + QLatin1String("(new ") + typeName + QLatin1Char('(') + argName + QLatin1String("));");
+            code += variableName + QLatin1String(" = ") + storageType + QLatin1String("(new ") + typeName + QLatin1Char('(') + argName
+                + QLatin1String("));");
         }
     } else {
         if (optional) {
@@ -404,9 +410,9 @@ QString Converter::generateMemberVariable(const QString &rawName, const QString 
             getterCode.indent();
 
             if (defaultValue.isNull()) {
-              getterCode += "return 0;";
+                getterCode += "return 0;";
             } else {
-              generateDefaultAttributeValueCode(getterCode, typeName, defaultValue);
+                generateDefaultAttributeValueCode(getterCode, typeName, defaultValue);
             }
             getter.setBody(getterCode);
             getter.setDocs("Ownership is not transferred, clients shall not delete the pointer.");
@@ -419,11 +425,10 @@ QString Converter::generateMemberVariable(const QString &rawName, const QString 
             getterCode += QLatin1String("else");
             getterCode.indent();
 
-            if (defaultValue.isNull())
-            {
-              getterCode += "return boost::optional<" + typeName + " >();";
+            if (defaultValue.isNull()) {
+                getterCode += "return boost::optional<" + typeName + " >();";
             } else {
-              generateDefaultAttributeValueCode(getterCode, typeName, defaultValue);
+                generateDefaultAttributeValueCode(getterCode, typeName, defaultValue);
             }
 
             getter.setBody(getterCode);
@@ -472,7 +477,8 @@ static KODE::Code demarshalNameTest(const QName &type, const QString &tagName, b
     if (type.nameSpace() == XMLSchemaURI && (type.localName() == QLatin1String("any"))) {
         demarshalCode += QString::fromLatin1(*first ? "" : "else ") + QLatin1String("{") + COMMENT;
     } else {
-        demarshalCode += QString::fromLatin1(*first ? "" : "else ") + QLatin1String("if (_name == QLatin1String(\"") + tagName + QLatin1String("\")) {") + COMMENT;
+        demarshalCode +=
+            QString::fromLatin1(*first ? "" : "else ") + QLatin1String("if (_name == QLatin1String(\"") + tagName + QLatin1String("\")) {") + COMMENT;
     }
     *first = false;
     return demarshalCode;
@@ -522,7 +528,9 @@ void Converter::createComplexTypeSerializer(KODE::Class &newClass, const XSD::Co
             demarshalCode += typeName + "::deserialize(mainValue);";
         } else {
             if (mTypeMap.isBuiltinType(baseName)) {
-                marshalCode += QLatin1String("KDSoapValue mainValue = ") + mTypeMap.serializeBuiltin(baseName, QName(), variableName, "valueName", type->nameSpace(), type->name()) + QLatin1String(";") + COMMENT;
+                marshalCode += QLatin1String("KDSoapValue mainValue = ")
+                    + mTypeMap.serializeBuiltin(baseName, QName(), variableName, "valueName", type->nameSpace(), type->name()) + QLatin1String(";")
+                    + COMMENT;
             } else {
                 marshalCode += QLatin1String("KDSoapValue mainValue = ") + variableName + QLatin1String(".serialize(valueName);") + COMMENT;
             }
@@ -573,12 +581,14 @@ void Converter::createComplexTypeSerializer(KODE::Class &newClass, const XSD::Co
         }
         Q_ASSERT(elements.count() == 1);
         const XSD::Element elem = elements.first();
-        const QString variableName = QLatin1String("d_ptr->") + KODE::MemberVariable::memberVariableName(elem.name());   // always d_ptr->mEntries, actually
+        const QString variableName =
+            QLatin1String("d_ptr->") + KODE::MemberVariable::memberVariableName(elem.name()); // always d_ptr->mEntries, actually
         const QString nilVariableName = QLatin1String("d_ptr->") + KODE::MemberVariable::memberVariableName(elem.name() + "_nil");
         const QName arrayType = type->arrayType();
         const QString typeName = mTypeMap.localType(arrayType);
 
-        marshalCode += QLatin1String("args.setArrayType(QString::fromLatin1(\"") + arrayType.nameSpace() + QLatin1String("\"), QString::fromLatin1(\"") + arrayType.localName() + QLatin1String("\"));");
+        marshalCode += QLatin1String("args.setArrayType(QString::fromLatin1(\"") + arrayType.nameSpace()
+            + QLatin1String("\"), QString::fromLatin1(\"") + arrayType.localName() + QLatin1String("\"));");
         marshalCode += QLatin1String("for (int i = 0; i < ") + variableName + QLatin1String(".count(); ++i) {") + COMMENT;
         marshalCode.indent();
         const QString nameSpace = elem.nameSpace();
@@ -588,7 +598,7 @@ void Converter::createComplexTypeSerializer(KODE::Class &newClass, const XSD::Co
         serializer.setOutputVariable("args", true);
         serializer.setIsQualified(elem.isQualified());
         serializer.setNillable(elem.nillable());
-        serializer.setOptional(false);   // if not set, not in array
+        serializer.setOptional(false); // if not set, not in array
         marshalCode.addBlock(serializer.generateSerializationCode());
 
         marshalCode.unindent();
@@ -618,7 +628,7 @@ void Converter::createComplexTypeSerializer(KODE::Class &newClass, const XSD::Co
             const QName qualName = elem.qualifiedName();
 
             if (elem.maxOccurs() > 1 || elem.compositor().maxOccurs() > 1) {
-                //const QString typePrefix = mNSManager.prefix( elem.type().nameSpace() );
+                // const QString typePrefix = mNSManager.prefix( elem.type().nameSpace() );
 
                 QString localVariableName = variableName + QLatin1String(".at(i)");
 
@@ -628,12 +638,11 @@ void Converter::createComplexTypeSerializer(KODE::Class &newClass, const XSD::Co
                 serializer.setLocalVariableName(localVariableName);
                 if (elem.hasSubstitutions())
                     serializer.setDynamicElementName(localVariableName + "->_kd_substitutionElementName()",
-                                                     localVariableName + "->_kd_substitutionElementNameSpace()",
-                                                     qualName);
+                                                     localVariableName + "->_kd_substitutionElementNameSpace()", qualName);
                 else {
                     serializer.setElementName(qualName);
                 }
-                serializer.setOptional(false);   // if not set, not in array
+                serializer.setOptional(false); // if not set, not in array
 
                 marshalCode.addBlock(serializer.generateSerializationCode());
                 marshalCode.unindent();
@@ -646,8 +655,7 @@ void Converter::createComplexTypeSerializer(KODE::Class &newClass, const XSD::Co
                 const bool optional = isElementOptional(elem);
                 if (elem.hasSubstitutions())
                     serializer.setDynamicElementName(variableName + "->_kd_substitutionElementName()",
-                                                     variableName + "->_kd_substitutionElementNameSpace()",
-                                                     qualName);
+                                                     variableName + "->_kd_substitutionElementNameSpace()", qualName);
                 else {
                     serializer.setElementName(qualName);
                 }

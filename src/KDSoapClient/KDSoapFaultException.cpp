@@ -16,10 +16,11 @@
 
 #include "KDSoapFaultException.h"
 
-class KDSoapFaultException::Private: public QSharedData
+class KDSoapFaultException::Private : public QSharedData
 {
 public:
     Private();
+
 public:
     QString m_faultCode;
     QString m_faultString;
@@ -31,19 +32,18 @@ KDSoapFaultException::Private::Private()
 {
 }
 
-KDSoapFaultException::KDSoapFaultException():
-    d(new Private())
+KDSoapFaultException::KDSoapFaultException()
+    : d(new Private())
 {
 }
 
 KDSoapFaultException::KDSoapFaultException(const KDSoapFaultException &cpy)
     : d(cpy.d)
 {
-
 }
 
-KDSoapFaultException::KDSoapFaultException(const QString &faultCode, const QString &faultString, const QString &faultActor):
-    d(new Private())
+KDSoapFaultException::KDSoapFaultException(const QString &faultCode, const QString &faultString, const QString &faultActor)
+    : d(new Private())
 {
     d->m_faultCode = faultCode;
     d->m_faultString = faultString;

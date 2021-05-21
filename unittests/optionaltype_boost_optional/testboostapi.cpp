@@ -34,7 +34,7 @@ void TestBoostApi::test()
 void TestBoostApi::testPolymorphic()
 {
     TNS__TestOperationResponse1 resp;
-    //QCOMPARE(&resp.out2().get(), (TNS__PolymorphicClass*)0); // Assertion `this->is_initialized()' failed.
+    // QCOMPARE(&resp.out2().get(), (TNS__PolymorphicClass*)0); // Assertion `this->is_initialized()' failed.
     QCOMPARE(resp.hasValueForOut2(), false);
     TNS__PolymorphicClass value;
     value.setValue(QString("newvalue"));

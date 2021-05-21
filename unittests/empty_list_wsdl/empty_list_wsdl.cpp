@@ -18,40 +18,39 @@
 
 #include <QTest>
 
-class EmptyListTest:
-  public QObject
+class EmptyListTest : public QObject
 {
-Q_OBJECT
+    Q_OBJECT
 
 private Q_SLOTS:
 
-  void testMustReturnEmptyListWhenXmlValueIsEmpty()
-  {
-    NS2__Orientation list;
-    KDSoapValue soapValue;
-    soapValue.setValue(QVariant::fromValue(QString("")));
-    list.deserialize(soapValue);
-    QVERIFY(list.entries().empty());
-  }
+    void testMustReturnEmptyListWhenXmlValueIsEmpty()
+    {
+        NS2__Orientation list;
+        KDSoapValue soapValue;
+        soapValue.setValue(QVariant::fromValue(QString("")));
+        list.deserialize(soapValue);
+        QVERIFY(list.entries().empty());
+    }
 
-  void testMustReturnEmptyListWhenQVariantIsNull()
-  {
-    NS2__Orientation list;
-    QVariant null;
-    KDSoapValue soapValue;
-    soapValue.setValue(null);
-    list.deserialize(soapValue);
-    QVERIFY(list.entries().empty());
-  }
+    void testMustReturnEmptyListWhenQVariantIsNull()
+    {
+        NS2__Orientation list;
+        QVariant null;
+        KDSoapValue soapValue;
+        soapValue.setValue(null);
+        list.deserialize(soapValue);
+        QVERIFY(list.entries().empty());
+    }
 
-  void testMustReturnEmptyListWhenXmlContainsOnlySpaces()
-  {
-    NS2__Orientation list;
-    KDSoapValue soapValue;
-    soapValue.setValue(QVariant::fromValue(QString("    \t   \t")));
-    list.deserialize(soapValue);
-    QVERIFY(list.entries().empty());
-  }
+    void testMustReturnEmptyListWhenXmlContainsOnlySpaces()
+    {
+        NS2__Orientation list;
+        KDSoapValue soapValue;
+        soapValue.setValue(QVariant::fromValue(QString("    \t   \t")));
+        list.deserialize(soapValue);
+        QVERIFY(list.entries().empty());
+    }
 };
 
 QTEST_MAIN(EmptyListTest)

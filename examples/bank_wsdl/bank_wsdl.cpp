@@ -34,8 +34,7 @@ int main(int argc, char **argv)
     getBankType.setBlz(blz);
     TNS__GetBankResponseType response = service.getBank(getBankType);
 
-    std::cout << "\"" << qPrintable(response.details().bezeichnung()) << "\" in "
-              << qPrintable(response.details().ort()) << std::endl;
+    std::cout << "\"" << qPrintable(response.details().bezeichnung()) << "\" in " << qPrintable(response.details().ort()) << std::endl;
 
     return 0;
 }

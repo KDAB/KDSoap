@@ -33,7 +33,6 @@ class KDSoapEndpointReferenceData;
 class KDSOAP_EXPORT KDSoapEndpointReference
 {
 public:
-
     /**
      * Construct a KDSoapEndpointReference object with the given \p address
      * If no address is given, then an empty QString is taken
@@ -48,11 +47,11 @@ public:
     /**
      * Copy the content of the KDSoapEndpointReference from \p other to the object
      */
-    KDSoapEndpointReference &operator =(const KDSoapEndpointReference &other);
+    KDSoapEndpointReference &operator=(const KDSoapEndpointReference &other);
 
     /**
-      * Destroys the object and frees up any resource used.
-      */
+     * Destroys the object and frees up any resource used.
+     */
     ~KDSoapEndpointReference();
 
     /**
@@ -98,4 +97,3 @@ private:
 };
 
 #endif // KDSOAPENDPOINTREFERENCE_H
-

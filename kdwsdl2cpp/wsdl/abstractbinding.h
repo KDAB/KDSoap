@@ -29,13 +29,14 @@
 
 class ParserContext;
 
-namespace KWSDL
-{
+namespace KWSDL {
 
 class AbstractBinding
 {
 public:
-    virtual ~AbstractBinding() {}
+    virtual ~AbstractBinding()
+    {
+    }
 
     virtual void parseBinding(ParserContext *context, const QDomElement &parent) = 0;
     virtual void parseOperation(ParserContext *context, const QString &name, const QDomElement &parent) = 0;

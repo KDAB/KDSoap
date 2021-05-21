@@ -33,8 +33,8 @@ public:
 };
 
 KDSoapThreadPool::KDSoapThreadPool(QObject *parent)
-    : QObject(parent),
-      d(new Private)
+    : QObject(parent)
+    , d(new Private)
 {
 }
 
@@ -79,7 +79,7 @@ KDSoapServerThread *KDSoapThreadPool::Private::chooseNextThread()
         // N seconds... but the past is no indication of the future.
         const int sc = thr->socketCount();
         if (sc == 0) { // Perfect, an idling thread
-            //qDebug() << "Picked" << thr << "since it was idling";
+            // qDebug() << "Picked" << thr << "since it was idling";
             chosenThread = thr;
             break;
         }
@@ -97,7 +97,7 @@ KDSoapServerThread *KDSoapThreadPool::Private::chooseNextThread()
     // Create new thread
     if (!chosenThread) {
         chosenThread = new KDSoapServerThread(nullptr);
-        //qDebug() << "Creating KDSoapServerThread" << chosenThread;
+        // qDebug() << "Creating KDSoapServerThread" << chosenThread;
         m_threads.append(chosenThread);
         chosenThread->startThread();
     }

@@ -21,28 +21,28 @@ class KDSoapValue;
 
 class KDSOAP_EXPORT KDQName
 {
-  public:
+public:
     typedef QList<KDQName> List;
 
     KDQName();
 
     // Create a KDQName with prefix+localname
-    explicit KDQName( const QString &name );
+    explicit KDQName(const QString &name);
 
     // Create a KDQName with namespace+localname
-    KDQName( const QString &nameSpace, const QString &localName );
+    KDQName(const QString &nameSpace, const QString &localName);
 
-    void operator=( const QString &name );
+    void operator=(const QString &name);
 
     QString localName() const;
     QString prefix() const;
     QString qname() const;
 
-    void setNameSpace( const QString &nameSpace );
+    void setNameSpace(const QString &nameSpace);
     QString nameSpace() const;
 
-    bool operator==( const KDQName& ) const;
-    bool operator!=( const KDQName& ) const;
+    bool operator==(const KDQName &) const;
+    bool operator!=(const KDQName &) const;
 
     bool isEmpty() const;
 
@@ -56,8 +56,8 @@ class KDSOAP_EXPORT KDQName
      */
     KDSoapValue toSoapValue(const QString &name, const QString &typeNameSpace = QString(), const QString &typeName = QString()) const;
 
-  private:
-    void parse( const QString& );
+private:
+    void parse(const QString &);
 
     QString mNameSpace;
     QString mLocalName;
@@ -66,7 +66,10 @@ class KDSOAP_EXPORT KDQName
 
 Q_DECLARE_METATYPE(KDQName)
 
-inline uint qHash(const KDQName& qn) { return qHash(qn.nameSpace())^qHash(qn.localName()); }
+inline uint qHash(const KDQName &qn)
+{
+    return qHash(qn.nameSpace()) ^ qHash(qn.localName());
+}
 
 QDebug operator<<(QDebug dbg, const KDQName &qn);
 

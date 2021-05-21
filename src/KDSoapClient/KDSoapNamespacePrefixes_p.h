@@ -25,15 +25,13 @@
 class KDSoapNamespacePrefixes : public QMap<QString /*ns*/, QString /*prefix*/>
 {
 public:
-    void writeStandardNamespaces(QXmlStreamWriter &writer,
-                                 KDSoap::SoapVersion version = KDSoap::SOAP1_1,
-                                 bool messageAddressingEnabled = false,
-                                 KDSoapMessageAddressingProperties::KDSoapAddressingNamespace messageAddressingNamespace = KDSoapMessageAddressingProperties::Addressing200508
-                                );
+    void writeStandardNamespaces(QXmlStreamWriter &writer, KDSoap::SoapVersion version = KDSoap::SOAP1_1, bool messageAddressingEnabled = false,
+                                 KDSoapMessageAddressingProperties::KDSoapAddressingNamespace messageAddressingNamespace =
+                                     KDSoapMessageAddressingProperties::Addressing200508);
 
     void writeNamespace(QXmlStreamWriter &writer, const QString &ns, const QString &prefix)
     {
-        //qDebug() << "writeNamespace" << ns << prefix;
+        // qDebug() << "writeNamespace" << ns << prefix;
         insert(ns, prefix);
         writer.writeNamespace(ns, prefix);
     }

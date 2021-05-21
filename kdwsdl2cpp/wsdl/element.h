@@ -26,8 +26,7 @@
 
 #include <kode_export.h>
 
-namespace KWSDL
-{
+namespace KWSDL {
 
 class KWSDL_EXPORT Element
 {
@@ -50,4 +49,3 @@ private:
 }
 
 #endif // KWSDL_ELEMENT_H
-

@@ -23,17 +23,20 @@ public:
     QString mTimeZone;
 };
 
-KDDateTime::KDDateTime() : d(new KDDateTimeData)
+KDDateTime::KDDateTime()
+    : d(new KDDateTimeData)
 {
 }
 
 KDDateTime::KDDateTime(const KDDateTime &rhs)
-    : QDateTime(rhs), d(rhs.d)
+    : QDateTime(rhs)
+    , d(rhs.d)
 {
 }
 
 KDDateTime::KDDateTime(const QDateTime &rhs)
-    : QDateTime(rhs), d(new KDDateTimeData)
+    : QDateTime(rhs)
+    , d(new KDDateTimeData)
 {
 }
 
@@ -41,7 +44,7 @@ KDDateTime &KDDateTime::operator=(const KDDateTime &rhs)
 {
     if (this != &rhs) {
         QDateTime::operator=(rhs);
-        d.operator = (rhs.d);
+        d.operator=(rhs.d);
     }
     return *this;
 }
@@ -97,7 +100,7 @@ KDDateTime KDDateTime::fromDateString(const QString &s)
             baseString.chop(6);
         }
     }
-    //qDebug() << "KDDateTime: Parsing" << baseString << "tz=" << tz;
+    // qDebug() << "KDDateTime: Parsing" << baseString << "tz=" << tz;
     kdt = QDateTime::fromString(baseString, Qt::ISODate);
     kdt.setTimeZone(tz);
     return kdt;

@@ -44,7 +44,7 @@ private Q_SLOTS:
 
         // Override the nonce and timestamp to make the test output consistent.
         auth.setOverrideWSUsernameNonce(QByteArray::fromBase64("LKqI6G/AikKCQrN0zqZFlg=="));
-        auth.setOverrideWSUsernameCreatedTime(QDateTime(QDate(2010, 9, 16), QTime(7, 50, 45), Qt::UTC));//2010-09-16T07:50:45Z
+        auth.setOverrideWSUsernameCreatedTime(QDateTime(QDate(2010, 9, 16), QTime(7, 50, 45), Qt::UTC)); // 2010-09-16T07:50:45Z
 
         client.setAuthentication(auth);
 
@@ -52,7 +52,8 @@ private Q_SLOTS:
         KDSoapMessage message;
         const QString action = QString::fromLatin1("sayHello");
         message.setUse(KDSoapMessage::EncodedUse);
-        message.addArgument(QString::fromLatin1("msg"), QVariant::fromValue(QString("HelloContentMessage")), KDSoapNamespaceManager::xmlSchema2001(), QString::fromLatin1("string"));
+        message.addArgument(QString::fromLatin1("msg"), QVariant::fromValue(QString("HelloContentMessage")), KDSoapNamespaceManager::xmlSchema2001(),
+                            QString::fromLatin1("string"));
         message.setNamespaceUri(QString::fromLatin1("http://www.ecerami.com/wsdl/HelloService.wsdl"));
 
         // WHEN
@@ -65,21 +66,25 @@ private Q_SLOTS:
 private:
     static QByteArray expectedSoapMessage()
     {
-        return QByteArray(xmlEnvBegin11()) +
-                " xmlns:n1=\"http://www.ecerami.com/wsdl/HelloService.wsdl\">"
-                "  <soap:Header> "
-                "    <n2:Security xmlns:n2=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd\"> "
-                "      <n2:UsernameToken> "
-                "        <n2:Nonce>LKqI6G/AikKCQrN0zqZFlg==</n2:Nonce> "
-                "        <n3:Created xmlns:n3=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd\">2010-09-16T07:50:45Z</n3:Created> "
-                "        <n2:Password Type=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordDigest\">tuOSpGlFlIXsozq4HFNeeGeFLEI=</n2:Password> "
-                "        <n2:Username>admin</n2:Username> "
-                "      </n2:UsernameToken> "
-                "    </n2:Security> "
-                "  </soap:Header> "
-                "  <soap:Body> "
-                "    <n1:sayHello><msg xsi:type=\"xsd:string\">HelloContentMessage</msg></n1:sayHello> "
-                "  </soap:Body> " + xmlEnvEnd();
+        return QByteArray(xmlEnvBegin11())
+            + " xmlns:n1=\"http://www.ecerami.com/wsdl/HelloService.wsdl\">"
+              "  <soap:Header> "
+              "    <n2:Security xmlns:n2=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd\"> "
+              "      <n2:UsernameToken> "
+              "        <n2:Nonce>LKqI6G/AikKCQrN0zqZFlg==</n2:Nonce> "
+              "        <n3:Created "
+              "xmlns:n3=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd\">2010-09-16T07:50:45Z</n3:Created> "
+              "        <n2:Password "
+              "Type=\"http://docs.oasis-open.org/wss/2004/01/"
+              "oasis-200401-wss-username-token-profile-1.0#PasswordDigest\">tuOSpGlFlIXsozq4HFNeeGeFLEI=</n2:Password> "
+              "        <n2:Username>admin</n2:Username> "
+              "      </n2:UsernameToken> "
+              "    </n2:Security> "
+              "  </soap:Header> "
+              "  <soap:Body> "
+              "    <n1:sayHello><msg xsi:type=\"xsd:string\">HelloContentMessage</msg></n1:sayHello> "
+              "  </soap:Body> "
+            + xmlEnvEnd();
     }
 
     static QByteArray emptyResponse()

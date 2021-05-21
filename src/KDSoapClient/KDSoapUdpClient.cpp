@@ -22,18 +22,19 @@
 #include "KDSoapMessageWriter_p.h"
 #include <QNetworkInterface>
 
-static bool isMulticastAddress(const QHostAddress &address) {
+static bool isMulticastAddress(const QHostAddress &address)
+{
     if (address.protocol() == QAbstractSocket::IPv4Protocol) {
-        return address.isInSubnet(QHostAddress (QLatin1String("224.0.0.0")), 4);
+        return address.isInSubnet(QHostAddress(QLatin1String("224.0.0.0")), 4);
     } else if (address.protocol() == QAbstractSocket::IPv6Protocol) {
-        return address.isInSubnet(QHostAddress (QLatin1String("ff00::")), 8);
+        return address.isInSubnet(QHostAddress(QLatin1String("ff00::")), 8);
     }
     return false;
 }
 
-KDSoapUdpClient::KDSoapUdpClient(QObject *parent) :
-    QObject(parent),
-    d_ptr(new KDSoapUdpClientPrivate(this))
+KDSoapUdpClient::KDSoapUdpClient(QObject *parent)
+    : QObject(parent)
+    , d_ptr(new KDSoapUdpClientPrivate(this))
 {
     Q_D(KDSoapUdpClient);
     d->socketIPv4 = new QUdpSocket(this);
@@ -48,7 +49,8 @@ KDSoapUdpClient::~KDSoapUdpClient()
 }
 
 
-bool KDSoapUdpClient::bind(quint16 port, QAbstractSocket::BindMode mode) {
+bool KDSoapUdpClient::bind(quint16 port, QAbstractSocket::BindMode mode)
+{
     Q_D(KDSoapUdpClient);
     const QHostAddress AnyIPv4(QLatin1String("0.0.0.0"));
     bool rc = true;
@@ -60,12 +62,14 @@ bool KDSoapUdpClient::bind(quint16 port, QAbstractSocket::BindMode mode) {
     return rc;
 }
 
-void KDSoapUdpClient::setSoapVersion(KDSoap::SoapVersion version) {
+void KDSoapUdpClient::setSoapVersion(KDSoap::SoapVersion version)
+{
     Q_D(KDSoapUdpClient);
     d->soapVersion = version;
 }
 
-bool KDSoapUdpClient::sendMessage(const KDSoapMessage &message, const KDSoapHeaders &headers, const QHostAddress &address, quint16 port) {
+bool KDSoapUdpClient::sendMessage(const KDSoapMessage &message, const KDSoapHeaders &headers, const QHostAddress &address, quint16 port)
+{
     Q_D(KDSoapUdpClient);
     KDSoapMessageWriter msgWriter;
     msgWriter.setVersion(d->soapVersion);
@@ -73,11 +77,10 @@ bool KDSoapUdpClient::sendMessage(const KDSoapMessage &message, const KDSoapHead
 
     if (isMulticastAddress(address)) {
         bool anySuccess = false;
-        const auto& allInterfaces = QNetworkInterface::allInterfaces();
+        const auto &allInterfaces = QNetworkInterface::allInterfaces();
         for (const auto &iface : allInterfaces) {
-            if (iface.flags().testFlag(QNetworkInterface::IsUp) &&
-                iface.flags().testFlag(QNetworkInterface::CanMulticast)) {
-                //qDebug() << "Sending multicast to" << iface.name() << address << ":" << data;
+            if (iface.flags().testFlag(QNetworkInterface::IsUp) && iface.flags().testFlag(QNetworkInterface::CanMulticast)) {
+                // qDebug() << "Sending multicast to" << iface.name() << address << ":" << data;
                 if (address.protocol() == QAbstractSocket::IPv4Protocol) {
                     d->socketIPv4->setMulticastInterface(iface);
                     qint64 writtenSize = d->socketIPv4->writeDatagram(data, address, port);
@@ -91,7 +94,7 @@ bool KDSoapUdpClient::sendMessage(const KDSoapMessage &message, const KDSoapHead
         }
         return anySuccess;
     } else {
-        //qDebug() << "Sending to" << address << ":" << data;
+        // qDebug() << "Sending to" << address << ":" << data;
         if (address.protocol() == QAbstractSocket::IPv4Protocol) {
             qint64 writtenSize = d->socketIPv4->writeDatagram(data, address, port);
             return writtenSize == data.size();
@@ -122,7 +125,7 @@ void KDSoapUdpClientPrivate::readyRead()
 void KDSoapUdpClientPrivate::receivedDatagram(const QByteArray &messageData, const QHostAddress &senderAddress, quint16 senderPort)
 {
     Q_Q(KDSoapUdpClient);
-    //qDebug() << "Received datagram from:" << senderAddress << "data:" << QString::fromUtf8(messageData);
+    // qDebug() << "Received datagram from:" << senderAddress << "data:" << QString::fromUtf8(messageData);
 
     KDSoapMessage replyMessage;
     KDSoapHeaders replyHeaders;

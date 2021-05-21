@@ -37,9 +37,11 @@ TestEnzo::TestEnzo()
 
 static QByteArray authenticateResponse()
 {
-    return QByteArray(xmlEnvBegin11()) + "><soap:Body>"
-           // TODO
-           "</soap:Body>" + xmlEnvEnd();
+    return QByteArray(xmlEnvBegin11())
+        + "><soap:Body>"
+          // TODO
+          "</soap:Body>"
+        + xmlEnvEnd();
 }
 
 void TestEnzo::test()
@@ -58,18 +60,19 @@ void TestEnzo::test()
     job->setParameters(auth);
 
     QEventLoop loop;
-    QObject::connect(job, SIGNAL(finished(KDSoapJob*)), &loop, SLOT(quit()));
+    QObject::connect(job, SIGNAL(finished(KDSoapJob *)), &loop, SLOT(quit()));
     job->start();
     loop.exec();
 
-    const QByteArray expectedData = QByteArray(xmlEnvBegin11()) + "><soap:Body>"
-                                    "<n1:Authenticate xmlns:n1=\"http://hotelconcepts.com/\">"
-                                     "<n1:request>"
-                                      "<n2:HotelCode xmlns:n2=\"http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract\">hotel</n2:HotelCode>"
-                                      "<n3:PassWord xmlns:n3=\"http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract\">passWord</n3:PassWord>"
-                                      "<n4:UserName xmlns:n4=\"http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract\">user</n4:UserName>"
-                                     "</n1:request>"
-                                    "</n1:Authenticate></soap:Body></soap:Envelope>";
+    const QByteArray expectedData = QByteArray(xmlEnvBegin11())
+        + "><soap:Body>"
+          "<n1:Authenticate xmlns:n1=\"http://hotelconcepts.com/\">"
+          "<n1:request>"
+          "<n2:HotelCode xmlns:n2=\"http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract\">hotel</n2:HotelCode>"
+          "<n3:PassWord xmlns:n3=\"http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract\">passWord</n3:PassWord>"
+          "<n4:UserName xmlns:n4=\"http://schemas.datacontract.org/2004/07/HotelConcepts.Web.Enzo.DataContract\">user</n4:UserName>"
+          "</n1:request>"
+          "</n1:Authenticate></soap:Body></soap:Envelope>";
 
     QVERIFY(xmlBufferCompare(server.receivedData(), expectedData));
 }

@@ -28,30 +28,31 @@ class QLabel;
 class QMovie;
 QT_END_NAMESPACE
 
-class MainWindow : public QWidget{
-  Q_OBJECT
+class MainWindow : public QWidget
+{
+    Q_OBJECT
 public:
-  MainWindow(QWidget *parent = 0);
+    MainWindow(QWidget *parent = 0);
 
 private slots:
-  void syncCall();
-  void asyncCall();
-  void done(const TNS__GetBankResponseType& response);
-  void doneError(const KDSoapMessage& error);
+    void syncCall();
+    void asyncCall();
+    void done(const TNS__GetBankResponseType &response);
+    void doneError(const KDSoapMessage &error);
 
 private:
-  void nextBank();
+    void nextBank();
 
-  QPushButton *mBtnAsync;
-  QPushButton *mBtnSync;
-  QLabel      *mLblResult;
-  QLabel      *mLblAnim;
-  QMovie      *mMovAnim;
+    QPushButton *mBtnAsync;
+    QPushButton *mBtnSync;
+    QLabel *mLblResult;
+    QLabel *mLblAnim;
+    QMovie *mMovAnim;
 
-  int mIndex = 0;
+    int mIndex = 0;
 
-  BLZService::BLZServiceSOAP11Binding *mService;
-  TNS__GetBankType mParameters;
+    BLZService::BLZServiceSOAP11Binding *mService;
+    TNS__GetBankType mParameters;
 };
 
 #endif

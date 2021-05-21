@@ -50,7 +50,9 @@ class TransformMediaBindingServer : public KDSoapServer
 {
     Q_OBJECT
 public:
-    TransformMediaBindingServer() : KDSoapServer(), m_lastServerObject(0)
+    TransformMediaBindingServer()
+        : KDSoapServer()
+        , m_lastServerObject(0)
     {
         setPath(QLatin1String("/xml"));
     }
@@ -109,7 +111,9 @@ class TransformMediaStatusBindingServer : public KDSoapServer
 {
     Q_OBJECT
 public:
-    TransformMediaStatusBindingServer() : KDSoapServer(), m_lastServerObject(0)
+    TransformMediaStatusBindingServer()
+        : KDSoapServer()
+        , m_lastServerObject(0)
     {
         setPath(QLatin1String("/xml"));
     }
@@ -133,17 +137,17 @@ class Tech3356Test : public QObject
     Q_OBJECT
 
 private:
-
     static QByteArray expectedQueryJobRequest()
     {
-        return QByteArray(xmlEnvBegin11()) + ">"
-               "<soap:Body>"
-               "<n1:queryJobRequest xmlns:n1=\"http://base.fims.tv\">" // MISSING: xsi:type=\"n1:QueryJobRequestByIDType\">"
-               "<n1:jobInfoSelection>all</n1:jobInfoSelection>"
-               "<n1:jobID>1</n1:jobID>"
-               "</n1:queryJobRequest>"
-               "</soap:Body>" + xmlEnvEnd()
-               + '\n'; // added by QXmlStreamWriter::writeEndDocument;
+        return QByteArray(xmlEnvBegin11())
+            + ">"
+              "<soap:Body>"
+              "<n1:queryJobRequest xmlns:n1=\"http://base.fims.tv\">" // MISSING: xsi:type=\"n1:QueryJobRequestByIDType\">"
+              "<n1:jobInfoSelection>all</n1:jobInfoSelection>"
+              "<n1:jobID>1</n1:jobID>"
+              "</n1:queryJobRequest>"
+              "</soap:Body>"
+            + xmlEnvEnd() + '\n'; // added by QXmlStreamWriter::writeEndDocument;
     }
 
     static QByteArray queryJobResponse()
@@ -179,7 +183,8 @@ private Q_SLOTS:
 
         // check that derived types are defined (i.e. don't get cleaned up as unused)
         BMS__QueryJobRequestByIDType req;
-        BMS__UID uid; uid.setValue(1);
+        BMS__UID uid;
+        uid.setValue(1);
         req.setJobID(QList<BMS__UID>() << uid);
         req.setJobInfoSelection(BMS__JobInfoSelectionType::All); // setter in base class
 
@@ -235,7 +240,8 @@ private Q_SLOTS:
 
         BMS__ManageJobRequestType requestType;
         // mandatory ID
-        BMS__UID uid; uid.setValue(1);
+        BMS__UID uid;
+        uid.setValue(1);
         requestType.setJobID(uid);
         BMS__ExtensionAttributes ext;
         // mandatory JobCommand
