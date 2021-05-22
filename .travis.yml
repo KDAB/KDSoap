@@ -9,8 +9,9 @@ branches:
 matrix:
   include:
     - os: linux
-      dist: xenial
+      dist: bionic
     - os: osx
+      osx_image: xcode11.5
       env:
         - QT_SELECT=qt5
         - CMAKE_PREFIX_PATH=/usr/local/opt/qt
@@ -23,7 +24,7 @@ compiler:
 script:
   - mkdir build
   - cd build
-  - cmake -DCMAKE_BUILD_TYPE=Release ..
+  - cmake -DCMAKE_BUILD_TYPE=Release -DKDSoap_TESTS=True -KDSoap_EXAMPLES=True ..
   - make
   #- make test
 
