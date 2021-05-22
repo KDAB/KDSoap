@@ -11,7 +11,6 @@
 ## Contact info@kdab.com if any conditions of this licensing are not clear to you.
 ##
 
-
 set(uitapi_SRCS test_uitapi.cpp)
 set(WSDL_FILES uitapi.wsdl)
 add_unittest(${uitapi_SRCS})

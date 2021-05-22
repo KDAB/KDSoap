@@ -124,8 +124,9 @@ QString KDSoapMessage::faultAsString() const
         QString faultCodeStr;
         KDSoapValue faultCode = childValues().child(QLatin1String("Code"));
         while (!faultCode.isNull()) {
-            if (!faultCodeStr.isEmpty())
+            if (!faultCodeStr.isEmpty()) {
                 faultCodeStr += QLatin1String(" ");
+            }
             faultCodeStr += faultCode.childValues().child(QLatin1String("Value")).value().toString();
             faultCode = faultCode.childValues().child(QLatin1String("Subcode"));
         }
@@ -141,8 +142,9 @@ QString KDSoapMessage::faultAsString() const
                                actor.isEmpty() ? QString() : QString::fromLatin1(" (%1)").arg(actor));
         const QString detail = childValues().child(QLatin1String("detail")).value().toString();
         if (!detail.isEmpty()) {
-            if (!ret.endsWith(QLatin1Char('.')))
+            if (!ret.endsWith(QLatin1Char('.'))) {
                 ret += QLatin1Char('.');
+            }
             ret += QLatin1String(" Error detail: ") + detail;
         }
         return ret;

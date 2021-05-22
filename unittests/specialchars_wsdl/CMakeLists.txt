@@ -11,7 +11,6 @@
 ## Contact info@kdab.com if any conditions of this licensing are not clear to you.
 ##
 
-
 set(specialchars_wsdl_SRCS testconversion.cpp)
 set(WSDL_FILES test.wsdl)
 add_unittest(${specialchars_wsdl_SRCS})

@@ -11,7 +11,6 @@
 ## Contact info@kdab.com if any conditions of this licensing are not clear to you.
 ##
 
-
 set(ihc_wsdl_SRCS test_ihc.cpp)
 set(KSWSDL2CPP_OPTION "-server")
 set(EXTRA_LIBS kdsoap-server)

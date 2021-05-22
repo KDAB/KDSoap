@@ -11,7 +11,6 @@
 ## Contact info@kdab.com if any conditions of this licensing are not clear to you.
 ##
 
-
 set(vidyo_SRCS test_vidyo.cpp)
 set(WSDL_FILES VidyoPortalGuestService.wsdl)
 add_unittest(${vidyo_SRCS})

@@ -58,7 +58,6 @@ void TestPointerApi::testPolymorphic()
     QCOMPARE(resp.out2()->value(), QString("newvalue"));
     QCOMPARE(resp.hasValueForOut2(), true);
 
-
     TNS__DerivedClass derivedValue;
     derivedValue.setValue("derived");
     derivedValue.setValue2("derived");

@@ -26,7 +26,6 @@
 
 using namespace KDSoapUnitTestHelpers;
 
-
 class CalcTest : public QObject
 {
     Q_OBJECT

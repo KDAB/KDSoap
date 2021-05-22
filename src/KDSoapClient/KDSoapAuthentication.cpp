@@ -25,7 +25,6 @@
 #include <QRandomGenerator>
 #endif
 
-
 class KDSoapAuthentication::Private
 {
 public:

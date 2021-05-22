@@ -41,7 +41,8 @@ public:
     void setVersion(KDSoap::SoapVersion version);
     void setMessageNamespace(const QString &ns);
 
-    QByteArray messageToXml(const KDSoapMessage &message, const QString &method /*empty in document style*/, const KDSoapHeaders &headers,
+    QByteArray messageToXml(const KDSoapMessage &message, const QString &method /*empty in document style*/,
+                            const KDSoapHeaders &headers,
                             const QMap<QString, KDSoapMessage> &persistentHeaders,
                             const KDSoapAuthentication &authentication = KDSoapAuthentication()) const;
 

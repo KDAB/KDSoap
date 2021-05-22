@@ -124,7 +124,6 @@ void maybeDebugRequest(const QByteArray &data, const QNetworkRequest &request, Q
     debugHelper(data, headerList);
 }
 
-
 KDSoapPendingCall::Private::~Private()
 {
     if (reply) {
@@ -209,10 +208,11 @@ void KDSoapPendingCall::Private::parseReply()
         if (!replyMessage.isFault()) {
             replyHeaders.clear();
             if (reply->error() == QNetworkReply::OperationCanceledError
-                && reply->property("kdsoap_reply_timed_out").toBool()) // see KDSoapClientInterface.cpp
+                && reply->property("kdsoap_reply_timed_out").toBool()) { // see KDSoapClientInterface.cpp
                 replyMessage.createFaultMessage(QString::number(QNetworkReply::TimeoutError), QLatin1String("Operation timed out"), soapVersion);
-            else
+            } else {
                 replyMessage.createFaultMessage(QString::number(reply->error()), reply->errorString(), soapVersion);
+            }
         }
     }
 }

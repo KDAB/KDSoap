@@ -11,7 +11,6 @@
 ## Contact info@kdab.com if any conditions of this licensing are not clear to you.
 ##
 
-
 set(soap12_SRCS test_soap12.cpp)
 set(WSDL_FILES soap12.wsdl)
 set(KSWSDL2CPP_OPTION "-server")

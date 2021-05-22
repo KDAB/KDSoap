@@ -286,9 +286,10 @@ static void writeKDSoapValueVariant(QXmlStreamWriter &writer, const KDSoapValue 
     const QVariant valueToWrite = value.value();
     if (valueToWrite.canConvert(QVariant::String)) {
         writer.writeCharacters(valueToWrite.toString());
-    } else
+    } else {
         qWarning("Warning: KDSoapMessageAddressingProperties call to writeKDSoapValueVariant could not write the given KDSoapValue "
                  "value because it could not be converted into a QString");
+    }
 }
 
 static void writeKDSoapValueListHierarchy(KDSoapNamespacePrefixes &namespacePrefixes, QXmlStreamWriter &writer, const QString &addressingNS,

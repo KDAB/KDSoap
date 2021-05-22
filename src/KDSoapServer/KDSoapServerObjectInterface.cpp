@@ -82,7 +82,7 @@ void KDSoapServerObjectInterface::processRequestWithPath(const KDSoapMessage &re
     const QString method = request.name();
     qWarning("Invalid path: \"%s\"", qPrintable(path));
     // qWarning() << "Invalid path:" << path << "[method =" << method << "; soapAction =" << soapAction << "]" /* << "in" <<
-    // metaObject()->className()*/;
+    // metaObject()->className();
     const KDSoap::SoapVersion soapVersion = KDSoap::SOAP1_1; // TODO version selection on the server side
     response.createFaultMessage(QString::fromLatin1("Client.Data"), QString::fromLatin1("Method %1 not found in path %2").arg(method, path),
                                 soapVersion);

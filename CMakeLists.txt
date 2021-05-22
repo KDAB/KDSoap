@@ -48,7 +48,7 @@ if(POLICY CMP0054)
   cmake_policy(SET CMP0054 NEW)
 endif()
 if(POLICY CMP0063)
-    cmake_policy(SET CMP0063 NEW) # silence warning due to CMAKE_CXX_VISIBILITY_PRESET
+  cmake_policy(SET CMP0063 NEW) # silence warning due to CMAKE_CXX_VISIBILITY_PRESET
 endif()
 
 if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/kdwsdl2cpp/libkode/common")
@@ -182,7 +182,8 @@ if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
     VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/kdsoap_version.h"
     PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/KDSoap/KDSoapConfigVersion.cmake"
     SOVERSION ${${PROJECT_NAME}_SOVERSION}
-    COMPATIBILITY AnyNewerVersion)
+    COMPATIBILITY AnyNewerVersion
+  )
   install(FILES "${CMAKE_CURRENT_BINARY_DIR}/kdsoap_version.h" DESTINATION ${INSTALL_INCLUDE_DIR}/KDSoapClient)
 
   configure_file(
@@ -217,10 +218,12 @@ if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
   set(PROJECT_VERSION_STRING ${${PROJECT_NAME}_VERSION})
   ecm_generate_pri_file(BASE_NAME KDSoapClient
                         LIB_NAME kdsoap
-                        FILENAME_VAR pri_client_filename)
+                        FILENAME_VAR pri_client_filename
+  )
   ecm_generate_pri_file(BASE_NAME KDSoapServer
                         LIB_NAME kdsoap-server
-                        FILENAME_VAR pri_server_filename)
+                        FILENAME_VAR pri_server_filename
+  )
   install(FILES ${pri_client_filename} ${pri_server_filename} DESTINATION ${ECM_MKSPECS_INSTALL_DIR})
 endif()
 

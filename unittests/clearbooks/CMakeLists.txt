@@ -11,7 +11,6 @@
 ## Contact info@kdab.com if any conditions of this licensing are not clear to you.
 ##
 
-
 set(clearbooks_SRCS test_clearbooks.cpp)
 set(WSDL_FILES clearbooks.wsdl)
 set(KSWSDL2CPP_OPTION -server)

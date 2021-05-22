@@ -48,7 +48,6 @@ KDSoapUdpClient::~KDSoapUdpClient()
     delete d_ptr;
 }
 
-
 bool KDSoapUdpClient::bind(quint16 port, QAbstractSocket::BindMode mode)
 {
     Q_D(KDSoapUdpClient);

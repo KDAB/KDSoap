@@ -11,7 +11,6 @@
 ## Contact info@kdab.com if any conditions of this licensing are not clear to you.
 ##
 
-
 set(enum_escape_SRCS test_enum.cpp)
 set(WSDL_FILES test_enum.wsdl)
 add_unittest(${enum_escape_SRCS})

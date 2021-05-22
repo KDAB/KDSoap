@@ -11,7 +11,6 @@
 ## Contact info@kdab.com if any conditions of this licensing are not clear to you.
 ##
 
-
 set(import_definition_SRCS test_import_definition.cpp)
 set(WSDL_FILES import_definition.wsdl
 import_definition_wsdl.wsdl)
