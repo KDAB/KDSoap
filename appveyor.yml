@@ -40,7 +40,7 @@ configuration:
 install:
   - git submodule update --init --recursive
   - call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
-  - set QTDIR=C:\Qt\5.9\msvc2019_64
+  - set QTDIR=C:\Qt\5.15\msvc2019_64
   - set PATH=%QTDIR%\bin;%PATH%
 build_script:
   - mkdir build
