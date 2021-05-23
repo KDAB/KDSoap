@@ -47,6 +47,7 @@ build_script:
   - cd build
   - cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=%CONFIGURATION% -DKDSoap_TESTS=True -DKDSoap_EXAMPLES=True ..
   - nmake
+  - nmake test
 
 # to disable automatic builds
 #build: off
