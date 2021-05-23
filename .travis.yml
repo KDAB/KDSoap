@@ -26,8 +26,9 @@ script:
   - cd build
   - cmake -DCMAKE_BUILD_TYPE=Release -DKDSoap_TESTS=True -KDSoap_EXAMPLES=True ..
   - make
-  #- make test
+  - make test
 
+dist: bionic
 addons:
   apt:
     update: true
