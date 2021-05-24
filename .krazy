@@ -18,7 +18,7 @@ STYLE_LINEMAX 150
 #if you have a build subdir, skip it
 SKIP /build-
 #no need to check 3rdparty stuff
-SKIP /kdwsdl2cpp/
+SKIP /libkode/
 SKIP /KDQName\.cpp|/KDQName\.h
 #nor examples
 SKIP /examples/
