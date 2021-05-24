@@ -1,5 +1,6 @@
 #do not report clazy results for these subdirs
-#SKIP whatever
+SKIP /libkode/
 
 #clazy checks specification
-CHECKS level2
+#currently there are more than 1000 qstring-allocation issues
+CHECKS level2,no-qstring-allocations
