@@ -15,8 +15,8 @@ void Converter::addVariableInitializer(KODE::MemberVariable &variable) const
     const QByteArray type = variable.type().toLatin1();
     static const char *s_numericTypes[] = { "int",           "unsigned int", "quint64",        "qint64", "char",  "signed char",
                                             "unsigned char", "short",        "unsigned short", "float",  "double" };
-    for (uint i = 0; i < sizeof(s_numericTypes) / sizeof(*s_numericTypes); ++i) {
-        if (type == s_numericTypes[i]) {
+    for (const char *numericType : s_numericTypes) {
+        if (type == numericType) {
             variable.setInitializer("0");
             return;
         }
@@ -179,7 +179,7 @@ void Converter::convertSimpleType(const XSD::SimpleType *type, const XSD::Simple
                 baseCtor.addArgument(mTypeMap.localInputType(currentType, QName()) + " value");
                 QString beginLine = "setValue(";
                 QString endLine = ")";
-                Q_FOREACH (const QName &base, parentBasicTypes) {
+                for (const QName &base : qAsConst(parentBasicTypes)) {
                     beginLine += mTypeMap.localType(base) + '(';
                     endLine += ')';
                 }
@@ -288,8 +288,8 @@ void Converter::createSimpleTypeSerializer(KODE::Class &newClass, const XSD::Sim
             const QStringList enums = type->facetEnums();
             NameMapper nameMapper;
             QStringList escapedEnums;
-            for (int i = 0; i < enums.count(); ++i) {
-                escapedEnums.append(nameMapper.escape(escapeEnum(enums[i])));
+            for (const QString &facetEnum : qAsConst(enums)) {
+                escapedEnums.append(nameMapper.escape(escapeEnum(facetEnum)));
             }
 
             const QString variableName = KODE::MemberVariable::memberVariableName("type");

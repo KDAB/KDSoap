@@ -63,7 +63,7 @@ Part::List Message::parts() const
 
 Part Message::partByName(const QString &name) const
 {
-    Q_FOREACH (const Part &part, mParts) {
+    for (const Part &part : qAsConst(mParts)) {
         if (part.name() == name) { // # namespace comparison needed too?
             return part;
         }
@@ -108,9 +108,7 @@ void Message::saveXML(ParserContext *context, QDomDocument &document, QDomElemen
         context->messageHandler()->warning(QLatin1String("Message: 'name' required"));
     }
 
-    Part::List::ConstIterator it(mParts.begin());
-    const Part::List::ConstIterator endIt(mParts.end());
-    for (; it != endIt; ++it) {
-        (*it).saveXML(context, document, element);
+    for (const Part &part : qAsConst(mParts)) {
+        part.saveXML(context, document, element);
     }
 }

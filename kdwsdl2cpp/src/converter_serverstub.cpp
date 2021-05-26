@@ -9,12 +9,13 @@ using namespace KWSDL;
 
 void Converter::convertServerService()
 {
-    Q_FOREACH (const Service &service, mWSDL.definitions().services()) {
+    const Service::List services = mWSDL.definitions().services();
+    for (const Service &service : services) {
         Q_ASSERT(!service.name().isEmpty());
 
         QSet<QName> uniqueBindings = mWSDL.uniqueBindings(service);
 
-        Q_FOREACH (const QName &bindingName, uniqueBindings) {
+        for (const QName &bindingName : qAsConst(uniqueBindings)) {
             // qDebug() << "binding" << bindingName;
             const Binding binding = mWSDL.findBinding(bindingName);
 
@@ -57,7 +58,7 @@ void Converter::convertServerService()
             // qDebug() << portType.name();
             bool first = true;
             const Operation::List operations = portType.operations();
-            Q_FOREACH (const Operation &operation, operations) {
+            for (const Operation &operation : operations) {
                 const Operation::OperationType opType = operation.operationType();
                 switch (opType) {
                 case Operation::OneWayOperation:
@@ -164,7 +165,7 @@ void Converter::generateServerMethod(KODE::Code &code, const Binding &binding, c
         // bool isBuiltin = false;
         // bool isComplex = false;
         Part retPart;
-        Q_FOREACH (const Part &outPart, outParts /* only one */) {
+        for (const Part &outPart : qAsConst(outParts) /* only one */) {
             retType = mTypeMap.localType(outPart.type(), outPart.element());
             retInputType = mTypeMap.localInputType(outPart.type(), outPart.element());
             // isBuiltin = mTypeMap.isBuiltinType( outPart.type(), outPart.element() );

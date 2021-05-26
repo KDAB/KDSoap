@@ -168,12 +168,8 @@ void Operation::saveXML(ParserContext *context, QDomDocument &document, QDomElem
     case SolicitResponseOperation:
         mOutput.saveXML(context, QLatin1String("output"), document, element);
         mInput.saveXML(context, QLatin1String("input"), document, element);
-        {
-            Fault::List::ConstIterator it(mFaults.begin());
-            const Fault::List::ConstIterator endIt(mFaults.end());
-            for (; it != endIt; ++it) {
-                (*it).saveXML(context, document, element);
-            }
+        for (const Fault &fault : qAsConst(mFaults)) {
+            fault.saveXML(context, document, element);
         }
         break;
     case NotificationOperation:
@@ -183,12 +179,8 @@ void Operation::saveXML(ParserContext *context, QDomDocument &document, QDomElem
     default:
         mInput.saveXML(context, QLatin1String("input"), document, element);
         mOutput.saveXML(context, QLatin1String("output"), document, element);
-        {
-            Fault::List::ConstIterator it(mFaults.begin());
-            const Fault::List::ConstIterator endIt(mFaults.end());
-            for (; it != endIt; ++it) {
-                (*it).saveXML(context, document, element);
-            }
+        for (const Fault &fault : qAsConst(mFaults)) {
+            fault.saveXML(context, document, element);
         }
         break;
     }

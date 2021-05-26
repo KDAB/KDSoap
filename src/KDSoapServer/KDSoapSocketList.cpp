@@ -67,7 +67,7 @@ int KDSoapSocketList::socketCount() const
 
 void KDSoapSocketList::disconnectAll()
 {
-    Q_FOREACH (KDSoapServerSocket *socket, m_sockets) {
+    for (KDSoapServerSocket *socket : qAsConst(m_sockets)) {
         socket->close(); // will disconnect
     }
 }

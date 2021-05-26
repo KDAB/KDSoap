@@ -96,9 +96,7 @@ void PortType::saveXML(ParserContext *context, QDomDocument &document, QDomEleme
         context->messageHandler()->warning(QLatin1String("PortType: 'name' required"));
     }
 
-    Operation::List::ConstIterator it(mOperations.begin());
-    const Operation::List::ConstIterator endIt(mOperations.end());
-    for (; it != endIt; ++it) {
-        (*it).saveXML(context, document, element);
+    for (const Operation &operation : qAsConst(mOperations)) {
+        operation.saveXML(context, document, element);
     }
 }

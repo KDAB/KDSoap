@@ -28,7 +28,7 @@ static void debugHelper(const QByteArray &data, const QList<QNetworkReply::RawHe
     const bool optHttp = options.contains("http") || options.contains("https");
     const bool optReformat = options.contains("reformat");
     quint8 indentation = 4;
-    Q_FOREACH (const QByteArray &opt, options) {
+    for (const QByteArray &opt : qAsConst(options)) {
         if (opt.startsWith("indent=")) { // krazy:exclude=strings
             indentation = opt.mid(7).toUShort();
         }
@@ -36,7 +36,7 @@ static void debugHelper(const QByteArray &data, const QList<QNetworkReply::RawHe
 
     QByteArray toOutput;
     if (optHttp) {
-        Q_FOREACH (const QNetworkReply::RawHeaderPair &header, headerList) {
+        for (const QNetworkReply::RawHeaderPair &header : qAsConst(headerList)) {
             if (!header.first.isEmpty()) {
                 toOutput += header.first + ": ";
             }
@@ -118,7 +118,8 @@ void maybeDebugRequest(const QByteArray &data, const QNetworkRequest &request, Q
             headerList << QNetworkReply::RawHeaderPair { {}, std::move(output) };
         }
     }
-    Q_FOREACH (const QByteArray &h, request.rawHeaderList()) {
+    const auto rawHeaders = request.rawHeaderList();
+    for (const QByteArray &h : rawHeaders) {
         headerList << QNetworkReply::RawHeaderPair { h, request.rawHeader(h) };
     }
     debugHelper(data, headerList);

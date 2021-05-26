@@ -204,11 +204,9 @@ void KDSoapMessage::setUse(Use use)
 
 KDSoapMessage KDSoapHeaders::header(const QString &name) const
 {
-    const_iterator it = begin();
-    const const_iterator e = end();
-    for (; it != e; ++it) {
-        if ((*it).name() == name) {
-            return *it;
+    for (const KDSoapMessage &header : qAsConst(*this)) {
+        if (header.name() == name) {
+            return header;
         }
     }
     return KDSoapMessage();
@@ -216,12 +214,10 @@ KDSoapMessage KDSoapHeaders::header(const QString &name) const
 
 KDSoapMessage KDSoapHeaders::header(const QString &name, const QString &namespaceUri) const
 {
-    const_iterator it = begin();
-    const const_iterator e = end();
-    for (; it != e; ++it) {
-        // qDebug() << "header(" << name << "," << namespaceUri << "): Looking at" << (*it).name() << "," << (*it).namespaceUri();
-        if ((*it).name() == name && (namespaceUri.isEmpty() || (*it).namespaceUri() == namespaceUri)) {
-            return *it;
+    for (const KDSoapMessage &header : qAsConst(*this)) {
+        // qDebug() << "header(" << name << "," << namespaceUri << "): Looking at" << header.name() << "," << header.namespaceUri();
+        if (header.name() == name && (namespaceUri.isEmpty() || header.namespaceUri() == namespaceUri)) {
+            return header;
         }
     }
     return KDSoapMessage();

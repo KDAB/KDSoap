@@ -99,9 +99,7 @@ void Service::saveXML(ParserContext *context, const Binding::List *bindings, QDo
         context->messageHandler()->warning(QLatin1String("Service: 'name' required"));
     }
 
-    Port::List::ConstIterator it(mPorts.begin());
-    const Port::List::ConstIterator endIt(mPorts.end());
-    for (; it != endIt; ++it) {
-        (*it).saveXML(context, bindings, document, element);
+    for (const Port &port : qAsConst(mPorts)) {
+        port.saveXML(context, bindings, document, element);
     }
 }

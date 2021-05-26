@@ -190,7 +190,7 @@ void Definitions::fixUpDefinitions(/*ParserContext *context, const QDomElement &
     if (mServices.isEmpty()) {
         if (!mBindings.isEmpty()) {
             qDebug() << "No service tag found in the wsdl file, generating one service per binding";
-            Q_FOREACH (const Binding &bind, mBindings) {
+            for (const Binding &bind : qAsConst(mBindings)) {
                 Service service(mTargetNamespace);
                 service.setName(bind.name() + "Service");
 
@@ -208,7 +208,7 @@ void Definitions::fixUpDefinitions(/*ParserContext *context, const QDomElement &
         } else {
             Q_ASSERT(!mPortTypes.isEmpty());
             qDebug() << "No service or binding tag found in the wsdl file, generating only messages";
-            Q_FOREACH (const PortType &portType, mPortTypes) {
+            for (const PortType &portType : qAsConst(mPortTypes)) {
                 Binding binding(mTargetNamespace);
                 binding.setName(portType.name() + "Binding");
                 binding.setPortTypeName(QName(portType.nameSpace(), portType.name()));
