@@ -66,9 +66,8 @@ void Creator::setImplementationFileName(const QString &implementationFileName)
 
 void Creator::setClasses(const KODE::Class::List &list)
 {
-    KODE::Class::List::ConstIterator it;
-    for (it = list.constBegin(); it != list.constEnd(); ++it) {
-        _file.insertClass(*it);
+    for (const KODE::Class &newClass : qAsConst(list)) {
+        _file.insertClass(newClass);
     }
 }
 

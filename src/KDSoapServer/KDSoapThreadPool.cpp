@@ -41,10 +41,10 @@ KDSoapThreadPool::KDSoapThreadPool(QObject *parent)
 KDSoapThreadPool::~KDSoapThreadPool()
 {
     // ask all threads to finish, then delete them all
-    Q_FOREACH (KDSoapServerThread *thread, d->m_threads) {
+    for (KDSoapServerThread *thread : qAsConst(d->m_threads)) {
         thread->quitThread();
     }
-    Q_FOREACH (KDSoapServerThread *thread, d->m_threads) {
+    for (KDSoapServerThread *thread : qAsConst(d->m_threads)) {
         thread->wait();
         delete thread;
     }
@@ -68,9 +68,7 @@ KDSoapServerThread *KDSoapThreadPool::Private::chooseNextThread()
     // Try to pick an existing thread
     int minSocketCount = 0;
     KDSoapServerThread *bestThread = nullptr;
-    ThreadCollection::const_iterator it = m_threads.constBegin();
-    for (; it != m_threads.constEnd(); ++it) {
-        KDSoapServerThread *thr = *it;
+    for (KDSoapServerThread *thr : qAsConst(m_threads)) {
         // We look at the amount of sockets connected to each thread, and pick the less busy one.
         // Note that this isn't fully accurate, due to Keep-Alive: it's possible for long-term
         // idling clients to be all on one thread, and active clients on another one, and this
@@ -116,7 +114,7 @@ void KDSoapThreadPool::handleIncomingConnection(int socketDescriptor, KDSoapServ
 int KDSoapThreadPool::numConnectedSockets(const KDSoapServer *server) const
 {
     int sc = 0;
-    Q_FOREACH (KDSoapServerThread *thread, d->m_threads) {
+    for (KDSoapServerThread *thread : qAsConst(d->m_threads)) {
         sc += thread->socketCountForServer(server);
     }
     return sc;
@@ -125,7 +123,7 @@ int KDSoapThreadPool::numConnectedSockets(const KDSoapServer *server) const
 void KDSoapThreadPool::disconnectSockets(KDSoapServer *server)
 {
     QSemaphore readyThreads;
-    Q_FOREACH (KDSoapServerThread *thread, d->m_threads) {
+    for (KDSoapServerThread *thread : qAsConst(d->m_threads)) {
         thread->disconnectSocketsForServer(server, readyThreads);
     }
     // Wait for all threads to have disconnected their sockets
@@ -135,7 +133,7 @@ void KDSoapThreadPool::disconnectSockets(KDSoapServer *server)
 int KDSoapThreadPool::totalConnectionCount(const KDSoapServer *server) const
 {
     int sc = 0;
-    Q_FOREACH (KDSoapServerThread *thread, d->m_threads) {
+    for (KDSoapServerThread *thread : qAsConst(d->m_threads)) {
         sc += thread->totalConnectionCountForServer(server);
     }
     return sc;
@@ -143,7 +141,7 @@ int KDSoapThreadPool::totalConnectionCount(const KDSoapServer *server) const
 
 void KDSoapThreadPool::resetTotalConnectionCount(const KDSoapServer *server)
 {
-    Q_FOREACH (KDSoapServerThread *thread, d->m_threads) {
+    for (KDSoapServerThread *thread : qAsConst(d->m_threads)) {
         thread->resetTotalConnectionCountForServer(server);
     }
 }

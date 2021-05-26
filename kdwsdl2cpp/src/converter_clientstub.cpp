@@ -24,7 +24,8 @@ static Part::List selectedParts(const Binding &binding, const Message &message, 
         const QString selectedPart = input ? op.input().part() : op.output().part();
         if (!selectedPart.isEmpty()) {
             Part::List selected;
-            Q_FOREACH (const Part &part, message.parts()) {
+            const Part::List parts = message.parts();
+            for (const Part &part : parts) {
                 if (part.name() == selectedPart) { // support for <soap:body parts="MoveFolderResult"/> (msexchange)
                     selected << part;
                 }
@@ -68,13 +69,14 @@ static SoapBinding::Headers getOutputHeaders(const Binding &binding, const QStri
 bool Converter::convertClientService()
 {
     KODE::Class::List bindingClasses;
-    Q_FOREACH (const Service &service, mWSDL.definitions().services()) {
+    const Service::List services = mWSDL.definitions().services();
+    for (const Service &service : services) {
         Q_ASSERT(!service.name().isEmpty());
 
         QSet<QName> uniqueBindings = mWSDL.uniqueBindings(service);
         // qDebug() << "Looking at" << service.name() << uniqueBindings;
 
-        Q_FOREACH (const QName &bindingName, uniqueBindings) {
+        for (const QName &bindingName : qAsConst(uniqueBindings)) {
             const Binding binding = mWSDL.findBinding(bindingName);
 
             QString className = KODE::Style::className(service.name());
@@ -309,7 +311,7 @@ bool Converter::convertClientService()
             PortType portType = mWSDL.findPortType(binding.portTypeName());
             // qDebug() << portType.name();
             const Operation::List operations = portType.operations();
-            Q_FOREACH (const Operation &operation, operations) {
+            for (const Operation &operation : operations) {
                 Operation::OperationType opType = operation.operationType();
                 switch (opType) {
                 case Operation::OneWayOperation:
@@ -343,14 +345,15 @@ bool Converter::convertClientService()
                 }
 
                 // Collect message parts used as headers
-                Q_FOREACH (const SoapBinding::Header &header, getInputHeaders(binding, operation.name())) {
+                const SoapBinding::Headers inputHeaders = getInputHeaders(binding, operation.name());
+                for (const SoapBinding::Header &header : inputHeaders) {
                     if (!soapHeaders.contains(header)) {
                         soapHeaders.append(header);
                     }
                 }
             } // end of for each operation
 
-            Q_FOREACH (const SoapBinding::Header &header, soapHeaders) {
+            for (const SoapBinding::Header &header : qAsConst(soapHeaders)) {
                 createHeader(header, newClass);
             }
             bindingClasses.append(newClass);
@@ -364,7 +367,7 @@ bool Converter::convertClientService()
                 }
 
                 // for each operation, create a job class
-                Q_FOREACH (const Operation &operation, operations) {
+                for (const Operation &operation : qAsConst(operations)) {
                     Operation::OperationType opType = operation.operationType();
                     if (opType != Operation::SolicitResponseOperation && opType != Operation::RequestResponseOperation) {
                         continue;
@@ -393,7 +396,7 @@ bool Converter::convertClientService()
                     ctor.addInitializer(QLatin1String("mService(service)"));
 
                     const Message message = mWSDL.findMessage(operation.input().message());
-                    Q_FOREACH (const Part &part, selectedParts(binding, message, operation, true /*input*/)) {
+                    for (const Part &part : selectedParts(binding, message, operation, true /*input*/)) {
                         const QString partName = part.name();
                         ctor.addInitializer(KODE::MemberVariable::memberVariableName(partName) + "()");
                         jobClass.addHeaderIncludes(mTypeMap.headerIncludes(part.type()));
@@ -401,7 +404,7 @@ bool Converter::convertClientService()
 
                     const Message outputMsg = mWSDL.findMessage(operation.output().message());
 
-                    Q_FOREACH (const Part &part, selectedParts(binding, outputMsg, operation, false /*output*/)) {
+                    for (const Part &part : selectedParts(binding, outputMsg, operation, false /*output*/)) {
                         const QString varName = mNameMapper.escape(QLatin1String("result") + upperlize(part.name()));
                         ctor.addInitializer(KODE::MemberVariable::memberVariableName(varName) + "()");
                         jobClass.addHeaderIncludes(mTypeMap.headerIncludes(part.type()));
@@ -411,7 +414,7 @@ bool Converter::convertClientService()
 
                     QStringList inputGetters;
 
-                    Q_FOREACH (const Part &part, selectedParts(binding, message, operation, true /*input*/)) {
+                    for (const Part &part : selectedParts(binding, message, operation, true /*input*/)) {
                         const QString varType = mTypeMap.localType(part.type(), part.element());
                         const KODE::MemberVariable member(part.name(), varType);
                         jobClass.addMemberVariable(member);
@@ -482,7 +485,7 @@ bool Converter::convertClientService()
                                 slotCode += QLatin1String("_reply = _reply.childValues().at(0);") + COMMENT;
                             }
 
-                            Q_FOREACH (const Part &part, outputParts) {
+                            for (const Part &part : qAsConst(outputParts)) {
                                 const QString varName = mNameMapper.escape(QLatin1String("result") + upperlize(part.name()));
                                 const KODE::MemberVariable member(varName, QString());
                                 slotCode.addBlock(
@@ -491,7 +494,7 @@ bool Converter::convertClientService()
                                 addJobResultMember(jobClass, part, varName, inputGetters);
                             }
                         }
-                        Q_FOREACH (const SoapBinding::Header &header, outputHeaders) {
+                        for (const SoapBinding::Header &header : qAsConst(outputHeaders)) {
                             const QName messageName = header.message();
                             const QString partName = header.part();
                             const Message message = mWSDL.findMessage(messageName);
@@ -563,7 +566,7 @@ void Converter::clientAddArguments(KODE::Function &callFunc, const Message &mess
                                    const Binding &binding)
 {
     const Part::List parts = selectedParts(binding, message, operation, true /*input*/);
-    Q_FOREACH (const Part &part, parts) {
+    for (const Part &part : parts) {
         clientAddOneArgument(callFunc, part, newClass);
     }
 }
@@ -636,7 +639,7 @@ void Converter::clientGenerateMessage(KODE::Code &code, const Binding &binding, 
 
     bool isBuiltin = false;
 
-    Q_FOREACH (const Part &part, selectedParts(binding, message, operation, true /*input*/)) {
+    for (const Part &part : selectedParts(binding, message, operation, true /*input*/)) {
         isBuiltin = isBuiltin || mTypeMap.isBuiltinType(part.type(), part.element());
         addMessageArgument(code, soapStyle(binding), part, part.name(), "message", varsAreMembers);
     }
@@ -747,7 +750,7 @@ bool Converter::convertClientCall(const Operation &operation, const Binding &bin
         code.unindent();
         Q_ASSERT(soapStyle(binding) == SoapBinding::DocumentStyle); // RPC with multiple return values? impossible, we generate a single wrapper
 
-        Q_FOREACH (const Part &part, outParts) {
+        for (const Part &part : qAsConst(outParts)) {
             const QString argType = mTypeMap.localType(part.type(), part.element());
             Q_ASSERT(!argType.isEmpty());
             const QString lowerName = lowerlize(part.name());
@@ -845,7 +848,7 @@ void Converter::convertClientOutputMessage(const Operation &operation, const Bin
         const Message message = mWSDL.findMessage(operation.output().message());
 
         const Part::List parts = selectedParts(binding, message, operation, false /*output*/);
-        Q_FOREACH (const Part &part, parts) {
+        for (const Part &part : parts) {
             const QString partType = mTypeMap.localType(part.type(), part.element());
             if (partType.isEmpty()) {
                 qWarning("Skipping part '%s'", qPrintable(part.name()));

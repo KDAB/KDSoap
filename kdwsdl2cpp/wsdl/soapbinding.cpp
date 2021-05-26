@@ -902,7 +902,8 @@ void SoapBinding::synthesizeOperationInput(ParserContext *context, const QString
 {
     const Operation &op = mOperations[name];
     op.input().saveXML(context, document, parent);
-    Q_FOREACH (const Header &header, op.inputHeaders()) {
+    const Headers inputHeaders = op.inputHeaders();
+    for (const Header &header : inputHeaders) {
         header.saveXML(context, document, parent);
     }
 }
@@ -911,7 +912,8 @@ void SoapBinding::synthesizeOperationOutput(ParserContext *context, const QStrin
 {
     const Operation &op = mOperations[name];
     op.output().saveXML(context, document, parent);
-    Q_FOREACH (const Header &header, op.outputHeaders()) {
+    const Headers outputHeaders = op.outputHeaders();
+    for (const Header &header : outputHeaders) {
         header.saveXML(context, document, parent);
     }
 }
@@ -929,7 +931,7 @@ void SoapBinding::synthesizePort(ParserContext *context, QDomDocument &document,
 
 bool SoapBinding::Headers::contains(const Header &other) const
 {
-    Q_FOREACH (const Header &header, *this) {
+    for (const Header &header : qAsConst(*this)) {
         if (header.mMessage == other.mMessage && header.mPart == other.mPart && header.mUse == other.mUse &&
 #if 0
                 header.mEncodingStyle == other.mEncodingStyle &&

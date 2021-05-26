@@ -114,9 +114,8 @@ int KDSoapServerThreadImpl::socketCount()
 {
     QMutexLocker lock(&m_socketListMutex);
     int sc = 0;
-    SocketLists::const_iterator it = m_socketLists.constBegin();
-    for (; it != m_socketLists.constEnd(); ++it) {
-        sc += it.value()->socketCount();
+    for (KDSoapSocketList *socketList : qAsConst(m_socketLists)) {
+        sc += socketList->socketCount();
     }
     sc += m_incomingConnectionCount.loadAcquire();
     return sc;

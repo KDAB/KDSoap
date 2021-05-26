@@ -295,7 +295,7 @@ static void writeKDSoapValueVariant(QXmlStreamWriter &writer, const KDSoapValue 
 static void writeKDSoapValueListHierarchy(KDSoapNamespacePrefixes &namespacePrefixes, QXmlStreamWriter &writer, const QString &addressingNS,
                                           const KDSoapValueList &values)
 {
-    Q_FOREACH (const KDSoapValue &value, values) {
+    for (const KDSoapValue &value : qAsConst(values)) {
         const QString topLevelName = value.name();
         writer.writeStartElement(addressingNS, topLevelName);
 
@@ -373,7 +373,7 @@ void KDSoapMessageAddressingProperties::writeMessageAddressingProperties(KDSoapN
         writer.writeEndElement();
     }
 
-    foreach (const KDSoapMessageRelationship::Relationship &relationship, d->relationships) {
+    for (const KDSoapMessageRelationship::Relationship &relationship : qAsConst(d->relationships)) {
         if (relationship.uri.isEmpty()) {
             continue;
         }
@@ -419,7 +419,8 @@ void KDSoapMessageAddressingProperties::readMessageAddressingProperty(const KDSo
         KDSoapMessageRelationship::Relationship relationship;
         relationship.uri = (value.value().toString());
         relationship.relationshipType = addressingNS + QLatin1String("/reply");
-        foreach (KDSoapValue attr, value.childValues().attributes()) {
+        const auto &childAttributes = value.childValues().attributes();
+        for (const KDSoapValue &attr : childAttributes) {
             if (attr.name() == QLatin1String("RelationshipType")) {
                 relationship.relationshipType = attr.value().toString();
             }

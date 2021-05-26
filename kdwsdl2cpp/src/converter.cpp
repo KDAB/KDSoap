@@ -54,8 +54,7 @@ void Converter::setWSDL(const WSDL &wsdl)
 
     // overwrite with prefixes from settings
     Settings::NSMapping mapping = Settings::self()->namespaceMapping();
-    Settings::NSMapping::Iterator it;
-    for (it = mapping.begin(); it != mapping.end(); ++it) {
+    for (auto it = mapping.begin(); it != mapping.end(); ++it) {
         mNSManager.setPrefix(it.value(), it.key());
     }
 
@@ -94,16 +93,15 @@ public:
     void registerDerivedClasses()
     {
         XSD::ComplexType::List complexTypes = m_allTypes.complexTypes();
-        Q_FOREACH (const XSD::ComplexType &derivedType, complexTypes) {
+        for (const XSD::ComplexType &derivedType : qAsConst(complexTypes)) {
             const QName base = derivedType.baseTypeName();
             if (!base.isEmpty()) {
                 // Look for the base class and register type. Linear search, maybe we should use a QHash...
-                for (int i = 0; i < complexTypes.count(); ++i) {
-                    XSD::ComplexType &t = complexTypes[i];
-                    if (base == t.qualifiedName())
+                for (XSD::ComplexType &complexType : complexTypes) {
+                    if (base == complexType.qualifiedName())
                     // qDebug() << "Adding derived type" << derivedType.name() << "to base" << base;
                     {
-                        t.addDerivedType(derivedType.qualifiedName());
+                        complexType.addDerivedType(derivedType.qualifiedName());
                     }
                 }
             }
@@ -116,7 +114,7 @@ public:
         QSet<QName> typesToProcess = m_allUsedTypes;
         do {
             m_alsoUsedTypes.clear();
-            Q_FOREACH (const QName &typeName, typesToProcess) {
+            for (const QName &typeName : qAsConst(typesToProcess)) {
                 if (typeName.isEmpty()) {
                     continue;
                 }
@@ -130,14 +128,17 @@ public:
                     usedComplexTypes.insert(typeName, complexType);
 
                     addDependency(complexType.baseTypeName());
-                    Q_FOREACH (const QName &derivedTypeName, complexType.derivedTypes()) {
+                    const auto derivedTypes = complexType.derivedTypes();
+                    for (const QName &derivedTypeName : derivedTypes) {
                         addDependency(derivedTypeName);
                     }
 
-                    Q_FOREACH (const XSD::Element &element, complexType.elements()) {
+                    const auto elements = complexType.elements();
+                    for (const XSD::Element &element : elements) {
                         addDependency(element.type());
                     }
-                    Q_FOREACH (const XSD::Attribute &attribute, complexType.attributes()) {
+                    const auto attributes = complexType.attributes();
+                    for (const XSD::Attribute &attribute : attributes) {
                         addDependency(attribute.type());
                     }
                     addDependency(complexType.arrayType());
@@ -205,15 +206,17 @@ public:
 
     QSet<QName> collectMessages(const WSDL &wsdl)
     {
-        Q_FOREACH (const Service &service, wsdl.definitions().services()) {
-            Q_FOREACH (const Port &port, service.ports()) {
+        const Service::List services = wsdl.definitions().services();
+        for (const Service &service : services) {
+            const Port::List ports = service.ports();
+            for (const Port &port : ports) {
                 Binding binding = wsdl.findBinding(port.bindingName());
                 // portTypeNames.insert( binding.portTypeName() );
                 // qDebug() << "binding" << port.bindingName() << binding.name() << "port type" << binding.portTypeName();
                 PortType portType = wsdl.findPortType(binding.portTypeName());
                 const Operation::List operations = portType.operations();
                 // qDebug() << "portType" << portType.name() << operations.count() << "operations";
-                Q_FOREACH (const Operation &operation, operations) {
+                for (const Operation &operation : qAsConst(operations)) {
                     // qDebug() << "  operation" << operation.operationType() << operation.name();
                     switch (operation.operationType()) {
                     case Operation::OneWayOperation:
@@ -231,10 +234,12 @@ public:
                     if (binding.type() == Binding::SOAPBinding) {
                         const SoapBinding soapBinding(binding.soapBinding());
                         const SoapBinding::Operation op = soapBinding.operations().value(operation.name());
-                        Q_FOREACH (const SoapBinding::Header &header, op.inputHeaders()) {
+                        const SoapBinding::Headers inputHeaders = op.inputHeaders();
+                        for (const SoapBinding::Header &header : inputHeaders) {
                             addMessage(header.message());
                         }
-                        Q_FOREACH (const SoapBinding::Header &header, op.outputHeaders()) {
+                        const SoapBinding::Headers outputHeaders = op.outputHeaders();
+                        for (const SoapBinding::Header &header : outputHeaders) {
                             addMessage(header.message());
                         }
                     }
@@ -270,10 +275,10 @@ void Converter::cleanupUnusedTypes()
         qDebug() << types.simpleTypes().count() << "simple types";
         qDebug() << types.elements().count() << "elements";
 
-        // Q_FOREACH(const XSD::Element& elem, types.elements()) {
+        // for (const XSD::Element& elem : types.elements()) {
         //    qDebug() << "element:" << elem.qualifiedName();
         //}
-        // Q_FOREACH(const XSD::ComplexType& complexType, types.complexTypes()) {
+        // for (const XSD::ComplexType& complexType : types.complexTypes()) {
         //    qDebug() << "complex type:" << complexType.qualifiedName();
         //}
     }
@@ -287,11 +292,12 @@ void Converter::cleanupUnusedTypes()
     QSet<QString> usedTypesStrings; // for debug
     QSet<QName> usedElementNames;
     Message::List newMessages;
-    Q_FOREACH (const QName &messageName, usedMessageNames) {
+    for (const QName &messageName : qAsConst(usedMessageNames)) {
         // qDebug() << "used message:" << messageName;
         Message message = mWSDL.findMessage(messageName);
         newMessages.append(message);
-        Q_FOREACH (const Part &part, message.parts()) {
+        const Part::List messageParts = message.parts();
+        for (const Part &part : messageParts) {
             if (!part.type().isEmpty()) {
                 usedTypes.insert(part.type());
                 usedTypesStrings.insert(part.type().qname());
@@ -351,7 +357,7 @@ void Converter::cleanupUnusedTypes()
         qDebug() << types.complexTypes().count() << "complex types";
         qDebug() << types.simpleTypes().count() << "simple types";
         qDebug() << types.elements().count() << "elements";
-        // Q_FOREACH(const XSD::ComplexType& complexType, types.complexTypes()) {
+        // for (const XSD::ComplexType& complexType : types.complexTypes()) {
         //    qDebug() << "complex type:" << complexType.qualifiedName();
         //}
     }
@@ -383,14 +389,14 @@ void Converter::convertTypes()
 
     XSD::SimpleType::List simpleTypes = types.simpleTypes();
     qDebug() << "Converting" << simpleTypes.count() << "simple types";
-    for (int i = 0; i < simpleTypes.count(); ++i) {
-        convertSimpleType(&(simpleTypes[i]), simpleTypes);
+    for (const XSD::SimpleType &simpleType : qAsConst(simpleTypes)) {
+        convertSimpleType(&simpleType, simpleTypes);
     }
 
     XSD::ComplexType::List complexTypes = types.complexTypes();
     qDebug() << "Converting" << complexTypes.count() << "complex types";
-    for (int i = 0; i < complexTypes.count(); ++i) {
-        convertComplexType(&(complexTypes[i]));
+    for (const XSD::ComplexType &complexType : qAsConst(complexTypes)) {
+        convertComplexType(&complexType);
     }
 }
 

@@ -244,7 +244,7 @@ QStringList TypeMap::forwardDeclarations(const QName &typeName) const
         return QStringList();
     }
     QStringList ret;
-    Q_FOREACH (const QString &str, (*it).forwardDeclarations) {
+    for (const QString &str : (*it).forwardDeclarations) {
         ret.append(correctSyntaxCpp(str));
     }
     return ret;
@@ -363,24 +363,24 @@ void TypeMap::addSchemaTypes(const XSD::Types &types, const QString &ns)
 {
     Q_ASSERT(mNSManager);
 
-    XSD::SimpleType::List simpleTypes = types.simpleTypes();
-    XSD::SimpleType::List::ConstIterator simpleIt;
-    for (simpleIt = simpleTypes.constBegin(); simpleIt != simpleTypes.constEnd(); ++simpleIt) {
+    const XSD::SimpleType::List simpleTypes = types.simpleTypes();
+    for (const XSD::SimpleType &simple : simpleTypes) {
         Entry entry;
         entry.basicType = false;
         entry.builtinType = false;
-        entry.nameSpace = (*simpleIt).nameSpace();
-        entry.typeName = (*simpleIt).name();
-        entry.localType = prefixNamespace(mNSManager->prefix(entry.nameSpace).toUpper() + "__" + adaptLocalTypeName((*simpleIt).name()), ns);
-        entry.baseType = (*simpleIt).baseTypeName();
+        entry.nameSpace = simple.nameSpace();
+        entry.typeName = simple.name();
+        entry.localType = prefixNamespace(mNSManager->prefix(entry.nameSpace).toUpper() + "__" + adaptLocalTypeName(simple.name()), ns);
+        entry.baseType = simple.baseTypeName();
         // qDebug() << entry.baseType.nameSpace() << entry.baseType.localName() << entry.baseType;
-        // entry.headers << (*simpleIt).name().toLower() + ".h";
+        // entry.headers << simple.name().toLower() + ".h";
         entry.forwardDeclarations << entry.localType;
 
         mTypeMap.append(entry);
     }
 
-    foreach (const XSD::ComplexType &complex, types.complexTypes()) {
+    const XSD::ComplexType::List complexTypes = types.complexTypes();
+    for (const XSD::ComplexType &complex : complexTypes) {
         Entry entry;
         entry.basicType = false;
         entry.builtinType = false;
@@ -392,7 +392,7 @@ void TypeMap::addSchemaTypes(const XSD::Types &types, const QString &ns)
         // qDebug() << "TypeMap: adding complex type" << entry.nameSpace << entry.typeName << "derived types:" << complex.derivedTypes();
 
         // Keep empty complex types, useful for document mode.
-        /*if ( (*complexIt).isEmpty() )
+        /*if ( complex.isEmpty() )
             entry.localType = "void";
         else*/
         {
@@ -400,41 +400,40 @@ void TypeMap::addSchemaTypes(const XSD::Types &types, const QString &ns)
             if (complex.isConflicting()) {
                 entry.localType += complex.isAnonymous() ? "Element" : "Type";
             }
-            // entry.headers << (*complexIt).name().toLower() + ".h";
+            // entry.headers << complex.name().toLower() + ".h";
             entry.forwardDeclarations << entry.localType;
         }
 
         mTypeMap.append(entry);
     }
 
-    XSD::Attribute::List attributes = types.attributes();
-    XSD::Attribute::List::ConstIterator attrIt;
-    for (attrIt = attributes.constBegin(); attrIt != attributes.constEnd(); ++attrIt) {
-        if ((*attrIt).nameSpace() == "http://www.w3.org/2003/05/soap-encoding") { // e.g. soap-enc:arrayType
+    const XSD::Attribute::List attributes = types.attributes();
+    for (const XSD::Attribute attr : attributes) {
+        if (attr.nameSpace() == "http://www.w3.org/2003/05/soap-encoding") { // e.g. soap-enc:arrayType
             continue;
         }
         Entry entry;
         entry.basicType = false;
         entry.builtinType = false;
-        entry.nameSpace = (*attrIt).nameSpace();
-        entry.typeName = (*attrIt).name();
+        entry.nameSpace = attr.nameSpace();
+        entry.typeName = attr.name();
         entry.localType =
-            prefixNamespace(mNSManager->prefix(entry.nameSpace).toUpper() + "__" + adaptLocalTypeName((*attrIt).name() + "Attribute"), ns);
-        entry.headers << (*attrIt).name().toLower() + "attribute.h";
+            prefixNamespace(mNSManager->prefix(entry.nameSpace).toUpper() + "__" + adaptLocalTypeName(attr.name() + "Attribute"), ns);
+        entry.headers << attr.name().toLower() + "attribute.h";
         entry.forwardDeclarations << entry.localType;
 
         mAttributeMap.append(entry);
     }
 
     const XSD::Element::List elements = types.elements();
-    Q_FOREACH (const XSD::Element &elemIt, elements) {
+    for (const XSD::Element &elem : elements) {
         Entry entry;
-        entry.nameSpace = elemIt.nameSpace();
-        entry.typeName = elemIt.name();
+        entry.nameSpace = elem.nameSpace();
+        entry.typeName = elem.name();
 
-        QName type = elemIt.type();
+        QName type = elem.type();
         if (type.isEmpty()) {
-            qDebug() << "ERROR: element without type" << elemIt.nameSpace() << elemIt.name();
+            qDebug() << "ERROR: element without type" << elem.nameSpace() << elem.name();
         }
 
         // Resolve to localType(type)
@@ -464,7 +463,7 @@ void TypeMap::addSchemaTypes(const XSD::Types &types, const QString &ns)
         // The "FooElement" type isn't necessary, we just point to the resolved type
         // directly, this is much simpler.
         /*} else {
-          entry.localType = mNSManager->prefix( entry.nameSpace ).toUpper() + "__" + adaptLocalTypeName( elemIt.name() + "Element" );
+          entry.localType = mNSManager->prefix( entry.nameSpace ).toUpper() + "__" + adaptLocalTypeName( elem.name() + "Element" );
         }*/
         // qDebug() << "Adding TypeMap entry for element" << entry.typeName << resolvedType;
         mElementMap.append(entry);

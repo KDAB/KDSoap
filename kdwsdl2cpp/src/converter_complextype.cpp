@@ -145,7 +145,7 @@ void Converter::convertComplexType(const XSD::ComplexType *type)
 
     // elements in the complex type
     const XSD::Element::List elements = type->elements();
-    Q_FOREACH (const XSD::Element &elemIt, elements) {
+    for (const XSD::Element &elemIt : elements) {
 
         if (elemIt.type().isEmpty()) {
             qDebug() << "ERROR: Element from" << *type << "with no type:" << elemIt << "(skipping)";
@@ -210,8 +210,8 @@ void Converter::convertComplexType(const XSD::ComplexType *type)
     }
 
     // attributes in the complex type
-    XSD::Attribute::List attributes = type->attributes();
-    Q_FOREACH (const XSD::Attribute &attribute, attributes) {
+    const XSD::Attribute::List attributes = type->attributes();
+    for (const XSD::Attribute &attribute : attributes) {
         QString typeName, inputTypeName;
 
         typeName = mTypeMap.localType(attribute.type());
@@ -566,9 +566,8 @@ void Converter::createComplexTypeSerializer(KODE::Class &newClass, const XSD::Co
         if (elements.at(0).isQualified()) {
             marshalCode += QLatin1String("mainValue.setQualified(true);") + COMMENT;
         }
-        demarshalCode += "for (int argNr = 0; argNr < args.count(); ++argNr) {";
+        demarshalCode += "for (const KDSoapValue& val : qAsConst(args)) {";
         demarshalCode.indent();
-        demarshalCode += "const KDSoapValue& val = args.at(argNr);";
         demarshalCode += "const QString _name = val.name();";
     } else {
         // The Q_UNUSED is not necessarily true in case of attributes, but who cares.
@@ -609,7 +608,7 @@ void Converter::createComplexTypeSerializer(KODE::Class &newClass, const XSD::Co
         demarshalCode.addBlock(deserializer.demarshalArray("val"));
     } else {
         bool first = true;
-        Q_FOREACH (const XSD::Element &elem, elements) {
+        for (const XSD::Element &elem : qAsConst(elements)) {
 
             const QString elemName = elem.name();
             const QString typeName = mTypeMap.localType(elem.type());
@@ -683,13 +682,12 @@ void Converter::createComplexTypeSerializer(KODE::Class &newClass, const XSD::Co
         marshalCode += "KDSoapValueList attribs;";
 
         demarshalCode += "const QList<KDSoapValue> attribs = args.attributes();";
-        demarshalCode += "for (int attrNr = 0; attrNr < attribs.count(); ++attrNr) {";
+        demarshalCode += "for (const KDSoapValue& val : qAsConst(attribs)) {";
         demarshalCode.indent();
-        demarshalCode += "const KDSoapValue& val = attribs.at(attrNr);";
         demarshalCode += "const QString _name = val.name();";
 
         bool first = true;
-        Q_FOREACH (const XSD::Attribute &attribute, attributes) {
+        for (const XSD::Attribute &attribute : qAsConst(attributes)) {
             const QString attrName = attribute.name();
             if (attrName.isEmpty()) {
                 continue;

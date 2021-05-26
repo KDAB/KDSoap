@@ -117,10 +117,8 @@ void Binding::saveXML(ParserContext *context, QDomDocument &document, QDomElemen
 
     mSoapBinding.synthesizeBinding(context, document, element);
 
-    BindingOperation::List::ConstIterator it(mOperations.begin());
-    const BindingOperation::List::ConstIterator endIt(mOperations.end());
-    for (; it != endIt; ++it) {
-        (*it).saveXML(&mSoapBinding, context, document, element);
+    for (const BindingOperation &operation : qAsConst(mOperations)) {
+        operation.saveXML(&mSoapBinding, context, document, element);
     }
 }
 

@@ -28,8 +28,7 @@
 
 static QStringView namespaceForPrefix(const QXmlStreamNamespaceDeclarations &decls, const QString &prefix)
 {
-    for (int i = 0; i < decls.count(); ++i) {
-        const QXmlStreamNamespaceDeclaration &decl = decls.at(i);
+    for (const QXmlStreamNamespaceDeclaration &decl : qAsConst(decls)) {
         if (decl.prefix() == prefix) {
             return decl.namespaceUri();
         }
@@ -49,10 +48,9 @@ static int xmlTypeToMetaType(const QString &xmlType)
                     { "unsignedInt", QVariant::ULongLong },  { "boolean", QVariant::Bool }, { "float", QMetaType::Float },
                     { "double", QVariant::Double },          { "time", QVariant::Time },    { "date", QVariant::Date } };
     // Speed: could be sorted and then we could use qBinaryFind
-    static const int s_numTypes = sizeof(s_types) / sizeof(*s_types);
-    for (int i = 0; i < s_numTypes; ++i) {
-        if (xmlType == QLatin1String(s_types[i].xml)) {
-            return s_types[i].metaTypeId;
+    for (const auto &type : s_types) {
+        if (xmlType == QLatin1String(type.xml)) {
+            return type.metaTypeId;
         }
     }
     if (xmlType == QLatin1String("dateTime")) {
@@ -76,7 +74,7 @@ static KDSoapValue parseElement(QXmlStreamReader &reader, const QXmlStreamNamesp
     QVariant::Type metaTypeId = QVariant::Invalid;
 
     const QXmlStreamAttributes attributes = reader.attributes();
-    Q_FOREACH (const QXmlStreamAttribute &attribute, attributes) {
+    for (const QXmlStreamAttribute &attribute : attributes) {
         const QStringView name = attribute.name();
         const QStringView ns = attribute.namespaceUri();
         const QStringView attrValue = attribute.value();

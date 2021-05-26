@@ -138,7 +138,7 @@ static QByteArray httpResponseHeaders(bool fault, const QByteArray &contentType,
     KDSoapServerObjectInterface *serverObjectInterface = qobject_cast<KDSoapServerObjectInterface *>(serverObject);
     if (serverObjectInterface) {
         const KDSoapServerObjectInterface::HttpResponseHeaderItems &additionalItems = serverObjectInterface->additionalHttpResponseHeaderItems();
-        Q_FOREACH (const KDSoapServerObjectInterface::HttpResponseHeaderItem &headerItem, additionalItems) {
+        for (const KDSoapServerObjectInterface::HttpResponseHeaderItem &headerItem : qAsConst(additionalItems)) {
             httpResponse += headerItem.m_name;
             httpResponse += ": ";
             httpResponse += headerItem.m_value;
@@ -357,7 +357,7 @@ void KDSoapServerSocket::handleRequest(const QMap<QByteArray, QByteArray> &httpH
         // SOAP 1.2
         // Example: application/soap+xml;charset=utf-8;action=ActionHex
         const QList<QByteArray> parts = contentType.split(';');
-        Q_FOREACH (const QByteArray &part, parts) {
+        for (const QByteArray &part : qAsConst(parts)) {
             if (part.trimmed().startsWith("action=")) { // krazy:exclude=strings
                 soapAction = stripQuotes(part.mid(part.indexOf('=') + 1));
             }

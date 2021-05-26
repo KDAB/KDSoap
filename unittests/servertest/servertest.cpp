@@ -593,7 +593,7 @@ private Q_SLOTS:
                 m_eventLoop.exec();
 
                 QCOMPARE(m_returnMessages.count(), m_expectedMessages);
-                Q_FOREACH (const KDSoapMessage &response, m_returnMessages) {
+                for (const KDSoapMessage &response : qAsConst(m_returnMessages)) {
                     QCOMPARE(response.childValues().first().value().toString(), expectedCountry());
                 }
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
@@ -709,7 +709,7 @@ private Q_SLOTS:
             slotStats();
         }
         if (server->totalConnectionCount() < expectedConnectedSockets) {
-            Q_FOREACH (const KDSoapMessage &response, m_returnMessages) {
+            for (const KDSoapMessage &response : qAsConst(m_returnMessages)) {
                 if (response.isFault()) {
                     qDebug() << response.faultAsString();
                     break;
@@ -723,7 +723,7 @@ private Q_SLOTS:
                  qPrintable(QString::number(server->totalConnectionCount())));
 
         QCOMPARE(m_returnMessages.count(), m_expectedMessages);
-        Q_FOREACH (const KDSoapMessage &response, m_returnMessages) {
+        for (const KDSoapMessage &response : qAsConst(m_returnMessages)) {
             QCOMPARE(response.childValues().first().value().toString(), expectedCountry());
         }
         //QCOMPARE(s_serverObjects.count(), expectedServerObjects);

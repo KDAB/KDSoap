@@ -55,10 +55,9 @@ const NSManager &WSDL::namespaceManager() const
 Binding WSDL::findBinding(const QName &bindingName) const
 {
     const Binding::List list = mDefinitions.bindings();
-    Binding::List::ConstIterator it;
-    for (it = list.constBegin(); it != list.constEnd(); ++it) {
-        if ((*it).name() == bindingName.localName() && (*it).nameSpace() == bindingName.nameSpace()) {
-            return *it;
+    for (const Binding &binding : list) {
+        if (binding.name() == bindingName.localName() && binding.nameSpace() == bindingName.nameSpace()) {
+            return binding;
         }
     }
 
@@ -68,11 +67,10 @@ Binding WSDL::findBinding(const QName &bindingName) const
 
 BindingOperation WSDL::findBindingOperation(const Binding &binding, const QString &operationName)
 {
-    BindingOperation::List list = binding.operations();
-    BindingOperation::List::ConstIterator it;
-    for (it = list.constBegin(); it != list.constEnd(); ++it) {
-        if ((*it).name() == operationName) {
-            return *it;
+    const BindingOperation::List list = binding.operations();
+    for (const BindingOperation &operation : list) {
+        if (operation.name() == operationName) {
+            return operation;
         }
     }
     qDebug("findBindingOperation: no match found for '%s'!", qPrintable(operationName));
@@ -84,11 +82,10 @@ PortType WSDL::findPortType(const QName &portTypeName) const
 {
     // qDebug() << "Looking for portType" << portTypeName.nameSpace() << portTypeName.localName();
     const PortType::List list = mDefinitions.portTypes();
-    PortType::List::ConstIterator it;
-    for (it = list.begin(); it != list.end(); ++it) {
-        // qDebug() << "available portType:" << (*it).nameSpace() << (*it).name();
-        if ((*it).name() == portTypeName.localName() && (*it).nameSpace() == portTypeName.nameSpace()) {
-            return *it;
+    for (const PortType &portType : list) {
+        // qDebug() << "available portType:" << portType.nameSpace() << portType.name();
+        if (portType.name() == portTypeName.localName() && portType.nameSpace() == portTypeName.nameSpace()) {
+            return portType;
         }
     }
     qDebug("findPortType: no match found for '%s'!", qPrintable(portTypeName.qname()));
@@ -99,11 +96,10 @@ PortType WSDL::findPortType(const QName &portTypeName) const
 Message WSDL::findMessage(const QName &messageName) const
 {
     const Message::List list = mDefinitions.messages();
-    Message::List::ConstIterator it;
-    for (it = list.constBegin(); it != list.constEnd(); ++it) {
-        // qDebug() << (*it).name() << (*it).nameSpace();
-        if ((*it).name() == messageName.localName() && (*it).nameSpace() == messageName.nameSpace()) {
-            return *it;
+    for (const Message &message : list) {
+        // qDebug() << message.name() << message.nameSpace();
+        if (message.name() == messageName.localName() && message.nameSpace() == messageName.nameSpace()) {
+            return message;
         }
     }
     qDebug() << "findMessage: no match found for" << messageName.qname() << "(localName=" << messageName.localName()
@@ -135,7 +131,8 @@ XSD::ComplexType WSDL::findComplexType(const QName &typeName) const
 QSet<QName> WSDL::uniqueBindings(const Service &service) const
 {
     QSet<QName> bindings;
-    Q_FOREACH (const Port &port, service.ports()) {
+    const Port::List servicePorts = service.ports();
+    for (const Port &port : servicePorts) {
         const Binding binding = findBinding(port.bindingName());
         if (binding.type() == Binding::SOAPBinding) {
             bindings.insert(port.bindingName());

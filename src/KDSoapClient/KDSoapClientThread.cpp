@@ -81,8 +81,8 @@ void KDSoapThreadTask::process(QNetworkAccessManager &accessManager)
     // KDSoapPendingCall pendingCall = m_iface->asyncCall(m_method, m_message, m_action);
 
     // Headers should be always qualified
-    for (KDSoapHeaders::Iterator it = m_data->m_headers.begin(); it != m_data->m_headers.end(); ++it) {
-        it->setQualified(true);
+    for (KDSoapMessage &header : m_data->m_headers) {
+        header.setQualified(true);
     }
 
 #if QT_VERSION >= 0x040700
