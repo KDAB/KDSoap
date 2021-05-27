@@ -25,6 +25,8 @@ configure.bat
 configure.sh
 .qmake.stash
 
+/build
+
 /include
 
 /examples/holidays_gui/qrc_resources.cpp
