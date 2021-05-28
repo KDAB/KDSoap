@@ -76,4 +76,5 @@ notifications:
   - provider: Email
     to:
       - allen.winter@kdab.com
-    on_build_status_changed: true
+      - dfaure@kdab.com
+    on_status_failure: true
