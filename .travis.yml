@@ -32,7 +32,6 @@ notifications:
   email:
     recipients:
     - allen.winter@kdab.com
-    - dfaure@kdab.com
     on_success: never
     on_failure: always
 
