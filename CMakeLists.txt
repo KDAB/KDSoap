@@ -14,7 +14,7 @@
 # This is the top-level CMakeLists.txt file for the KDSoap project.
 #
 # Pass the following variables to cmake to control the build:
-# (See INSTALL-cmake.txt for more information)
+# (See INSTALL.txt for more information)
 #
 # -DKDSoap_QT6=[true|false]
 #  Build against Qt6 rather than Qt5
