@@ -8,7 +8,7 @@ Qt Version support:
  * KD SOAP 1.9 or below requires Qt4.6 up to Qt5.15
  * KD SOAP 1.10 requires Qt5.7 up to Qt5.15
  * KD SOAP 2.0 or above requires Qt5.7 up to Qt6.x
-Also, KD SOAP requires a C++ compiler that supports the C++17 standard.
+Also, KD SOAP requires a C++ compiler that supports the C++14 standard.
 
 Please see the comments at the top of CMakeLists.txt for
 the available configuration options you can pass to cmake.
