@@ -1,6 +1,7 @@
 
 General:
 ========
+* Requires a C++ compiler that supports C++17 standards.
 * Supports Qt6
 * The qmake buildsystem (via autogen.py) is removed.
 * buildsystem: a new 'docs' target is created when CMake -DKDSoap_DOCS=True.
