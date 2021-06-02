@@ -150,7 +150,7 @@ function(ecm_setup_version _version)
         set(ESV_SOVERSION ${_major})
     endif()
 
-    if("${ECM_GLOBAL_FIND_VERSION}" VERSION_LESS "5.83.0")
+    if(DEFINED ECM_GLOBAL_FIND_VERSION AND "${ECM_GLOBAL_FIND_VERSION}" VERSION_LESS "5.83.0")
         set(_set_backward_compat_version_string_vars TRUE)
     else()
         set(_set_backward_compat_version_string_vars FALSE)
