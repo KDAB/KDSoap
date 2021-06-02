@@ -15,5 +15,6 @@ project(msexchange_wsdl)
 
 set(WSDL_FILES Services.wsdl)
 set(msexchange_wsdl_SRCS msexchange_wsdl.cpp)
+set(KSWSDL2CPP_OPTION -no-async)
 
 add_unittest(${msexchange_wsdl_SRCS})

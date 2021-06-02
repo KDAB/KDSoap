@@ -12,6 +12,7 @@
 ##
 
 set(literal_true_false_SRCS test_literal.cpp)
+set(KSWSDL2CPP_OPTION -no-sync -no-async -no-async-jobs)
 set(WSDL_FILES literal.wsdl)
 add_unittest(${literal_true_false_SRCS})
 

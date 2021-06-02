@@ -12,6 +12,7 @@
 ##
 
 set(vidyo_SRCS test_vidyo.cpp)
+set(KSWSDL2CPP_OPTION -no-sync -no-async -no-async-jobs)
 set(WSDL_FILES VidyoPortalGuestService.wsdl)
 add_unittest(${vidyo_SRCS})
 

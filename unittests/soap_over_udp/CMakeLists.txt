@@ -13,7 +13,8 @@
 
 project(soap_over_udp)
 
-set(KSWSDL2CPP_OPTION -use-local-files-only)
+set(KSWSDL2CPP_OPTION -use-local-files-only -no-sync -no-async -no-async-jobs)
+
 set(WSDL_FILES wsdd-discovery-200901.wsdl)
 set(soap_over_udp_SRCS test_soap_over_udp.cpp wsdl_wsdd-discovery-200901.cpp)
 

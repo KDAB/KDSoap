@@ -12,5 +12,6 @@
 ##
 
 set(enzo_SRCS test_enzo.cpp)
+set(KSWSDL2CPP_OPTION -no-async -no-sync)
 set(WSDL_FILES EnzoService.wsdl)
 add_unittest(${enzo_SRCS})

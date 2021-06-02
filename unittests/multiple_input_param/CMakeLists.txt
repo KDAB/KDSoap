@@ -12,6 +12,7 @@
 ##
 
 set(multiple_input_param_SRCS test_multiple_input_param.cpp)
+set(KSWSDL2CPP_OPTION -no-async -no-async-jobs)
 set(WSDL_FILES helloworldextended.wsdl)
 add_unittest(${multiple_input_param_SRCS})
 

@@ -12,7 +12,8 @@
 ##
 
 set(optionaltype_pointer_SRCS testpointerapi.cpp)
-set(KSWSDL2CPP_OPTION -optional-element-type raw-pointer)
+set(KSWSDL2CPP_OPTION -optional-element-type raw-pointer -no-sync -no-async -no-async-jobs)
+
 set(WSDL_FILES test.wsdl)
 add_unittest(${optionaltype_pointer_SRCS})
 

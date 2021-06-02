@@ -13,6 +13,7 @@
 
 project(groupwise_wsdl)
 
+set(KSWSDL2CPP_OPTION -no-async -no-async-jobs)
 set(WSDL_FILES groupwise.wsdl)
 set(groupwise_wsdl_SRCS test_groupwise_wsdl.cpp wsdl_groupwise.cpp)
 

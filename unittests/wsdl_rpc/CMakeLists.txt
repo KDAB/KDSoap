@@ -17,3 +17,4 @@ set(WSDL_FILES mywsdl_rpc.wsdl)
 set(wsdl_rpc_SRCS test_wsdl_rpc.cpp)
 
 add_unittest(${wsdl_rpc_SRCS})
+set(KSWSDL2CPP_OPTION -no-async -no-async-jobs)

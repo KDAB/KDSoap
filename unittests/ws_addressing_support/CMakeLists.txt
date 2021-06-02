@@ -15,5 +15,6 @@ project(ws_addressing_support)
 
 set(WSDL_FILES wsaddressing.wsdl)
 set(ws_addressing_support_SRCS wsaddressingtest.cpp)
+set(KSWSDL2CPP_OPTION -no-sync -no-async -no-async-jobs)
 
 add_unittest(${ws_addressing_support_SRCS})

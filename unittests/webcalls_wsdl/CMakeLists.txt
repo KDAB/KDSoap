@@ -15,5 +15,6 @@ project(webcalls_wsdl)
 
 set(WSDL_FILES BFGlobalService.wsdl BLZService.wsdl OrteLookup.wsdl)
 set(webcalls_wsdl_SRCS webcalls_wsdl.cpp)
+set(KSWSDL2CPP_OPTION -no-async -no-async-jobs)
 
 add_unittest(${webcalls_wsdl_SRCS})
