@@ -55,6 +55,15 @@ if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/kdwsdl2cpp/libkode/common")
   message(FATAL_ERROR "Please do git submodule update --init --recursive")
 endif()
 
+# Just to fix warnings with --warn-uninitialized
+if(NOT DEFINED USE_DEFAULT_INSTALL_LOCATION)
+  set(USE_DEFAULT_INSTALL_LOCATION FALSE)
+endif()
+if(NOT DEFINED CMAKE_INSTALL_PREFIX)
+  set(CMAKE_INSTALL_PREFIX "")
+endif()
+
+# Allow using a non-KDAB install location
 set(KDAB_INSTALL True)
 if((NOT DEFINED ${USE_DEFAULT_INSTALL_LOCATION}) OR (NOT ${USE_DEFAULT_INSTALL_LOCATION}))
   if(NOT "${CMAKE_INSTALL_PREFIX}" STREQUAL "")
@@ -96,6 +105,7 @@ set(${PROJECT_NAME}_VERSION_MAJOR 1)
 set(${PROJECT_NAME}_VERSION_MINOR 99)
 set(${PROJECT_NAME}_VERSION_PATCH 50)
 set(${PROJECT_NAME}_VERSION ${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR}.${${PROJECT_NAME}_VERSION_PATCH})
+set(PROJECT_VERSION ${${PROJECT_NAME}_VERSION}) #needed for ECM
 set(${PROJECT_NAME}_SOVERSION ${${PROJECT_NAME}_VERSION_MAJOR})
 
 find_path(BOOST_OPTIONAL_DIR NAMES boost/optional.hpp)
@@ -106,7 +116,8 @@ if(BOOST_OPTIONAL_DIR)
 endif()
 
 if(${PROJECT_NAME}_QT6)
-  find_package(Qt6 6.0.0 CONFIG REQUIRED COMPONENTS Core Network)
+  set(QT_MIN_VERSION "6.0.0")
+  find_package(Qt6 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS Core Network)
   set(QT_MAJOR_VERSION 6)
   list(APPEND QT_LIBRARIES Qt6::Core Qt6::Network)
   set(${PROJECT_NAME}_LIBRARY_QTID "-qt6")
@@ -223,7 +234,6 @@ if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
   # Generate .pri file for qmake users
   if(CMAKE_VERSION VERSION_GREATER "3.11.99" AND NOT CMAKE_CONFIGURATION_TYPES) # Not working with VS generator or older cmake versions
     include(ECMGeneratePriFile)
-    set(PROJECT_VERSION ${${PROJECT_NAME}_VERSION})
     ecm_generate_pri_file(BASE_NAME KDSoapClient
                           LIB_NAME kdsoap
                           FILENAME_VAR pri_client_filename
