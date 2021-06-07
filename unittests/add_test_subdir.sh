@@ -34,24 +34,3 @@ EOF
 git add $subdir/CMakeLists.txt
 echo "add_subdirectory($subdir)" >> CMakeLists.txt
 
-# QMake
-# Note: do NOT set TARGET, runTest.bat assumes exename==dirname
-
-cat > $subdir/${subdir}.pro <<EOF
-include( \$\${TOP_SOURCE_DIR}/unittests/unittests.pri )
-QT += network xml
-SOURCES = $cppfiles
-test.target = test
-test.commands = ./\$(TARGET)
-test.depends = \$(TARGET)
-QMAKE_EXTRA_TARGETS += test
-
-KDWSDL = ${wsdlfiles}
-
-OTHER_FILES = \$\$KDWSDL
-LIBS        += -L\$\${TOP_BUILD_DIR}/lib
-EOF
-
-git add $subdir/${subdir}.pro
-perl -pi -e '$_ .= "  '$subdir' \\\n" if (/vidyo/)' unittests.pro
-
