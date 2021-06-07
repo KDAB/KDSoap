@@ -63,7 +63,14 @@ if((NOT DEFINED ${USE_DEFAULT_INSTALL_LOCATION}) OR (NOT ${USE_DEFAULT_INSTALL_L
   set(USE_DEFAULT_INSTALL_LOCATION ${KDAB_INSTALL} CACHE INTERNAL "Install to default KDAB Location" FORCE)
 endif()
 
-project(KDSoap CXX)
+if(${CMAKE_VERSION} VERSION_LESS "3.12.0")
+  project(KDSoap LANGUAGES CXX)
+else()
+  project(KDSoap
+          DESCRIPTION "A Qt-based client-side and server-side SOAP component"
+          HOMEPAGE_URL "https://github.com/KDAB/KDSoap"
+          LANGUAGES CXX)
+endif()
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/ECM/modules")
@@ -214,17 +221,19 @@ if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
   )
 
   # Generate .pri file for qmake users
-  include(ECMGeneratePriFile)
-  set(PROJECT_VERSION_STRING ${${PROJECT_NAME}_VERSION})
-  ecm_generate_pri_file(BASE_NAME KDSoapClient
-                        LIB_NAME kdsoap
-                        FILENAME_VAR pri_client_filename
-  )
-  ecm_generate_pri_file(BASE_NAME KDSoapServer
-                        LIB_NAME kdsoap-server
-                        FILENAME_VAR pri_server_filename
-  )
-  install(FILES ${pri_client_filename} ${pri_server_filename} DESTINATION ${ECM_MKSPECS_INSTALL_DIR})
+  if(CMAKE_VERSION VERSION_GREATER "3.11.99" AND NOT CMAKE_CONFIGURATION_TYPES) # Not working with VS generator or older cmake versions
+    include(ECMGeneratePriFile)
+    set(PROJECT_VERSION ${${PROJECT_NAME}_VERSION})
+    ecm_generate_pri_file(BASE_NAME KDSoapClient
+                          LIB_NAME kdsoap
+                          FILENAME_VAR pri_client_filename
+    )
+    ecm_generate_pri_file(BASE_NAME KDSoapServer
+                          LIB_NAME kdsoap-server
+                          FILENAME_VAR pri_server_filename
+    )
+    install(FILES ${pri_client_filename} ${pri_server_filename} DESTINATION ${ECM_MKSPECS_INSTALL_DIR})
+  endif()
 endif()
 
 add_subdirectory(src)
