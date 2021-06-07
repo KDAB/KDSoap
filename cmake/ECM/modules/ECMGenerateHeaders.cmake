@@ -155,7 +155,7 @@ function(ECM_GENERATE_HEADERS camelcase_forwarding_headers_var)
         set(EGH_RELATIVE "${EGH_RELATIVE}/")
     endif()
 
-    set(originalprefix "")
+    set(originalprefix)
     if (EGH_PREFIX)
         if (NOT "${EGH_PREFIX}" MATCHES "^.*/$")
             set(EGH_PREFIX "${EGH_PREFIX}/")
