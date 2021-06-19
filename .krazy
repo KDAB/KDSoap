@@ -12,13 +12,14 @@ EXTRA defines,null
 EXCLUDE constref,dpointer,inline,null,doublequote_chars
 #too many http: references in the unittests
 EXCLUDE insecurenet
-EXCLUDE style
+#EXCLUDE style
 STYLE_LINEMAX 150
 
 #if you have a build subdir, skip it
 SKIP /build-
 #no need to check 3rdparty stuff
 SKIP /libkode/
+SKIP /kdwsdl2cpp/
 SKIP /KDQName\.cpp|/KDQName\.h
 #nor examples
 SKIP /examples/
