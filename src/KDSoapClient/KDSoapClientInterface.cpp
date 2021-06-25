@@ -80,8 +80,8 @@ QNetworkAccessManager *KDSoapClientInterfacePrivate::accessManager()
 {
     if (!m_accessManager) {
         m_accessManager = new QNetworkAccessManager(this);
-        connect(m_accessManager, SIGNAL(authenticationRequired(QNetworkReply *, QAuthenticator *)), this,
-                SLOT(_kd_slotAuthenticationRequired(QNetworkReply *, QAuthenticator *)));
+        connect(m_accessManager, &QNetworkAccessManager::authenticationRequired, this,
+                &KDSoapClientInterfacePrivate::_kd_slotAuthenticationRequired);
     }
     return m_accessManager;
 }

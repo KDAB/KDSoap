@@ -49,7 +49,7 @@ KDSoapServerSocket::KDSoapServerSocket(KDSoapSocketList *owner, QObject *serverO
     , m_bytesReceived(0)
     , m_chunkStart(0)
 {
-    connect(this, SIGNAL(readyRead()), this, SLOT(slotReadyRead()));
+    connect(this, &QIODevice::readyRead, this, &KDSoapServerSocket::slotReadyRead);
     m_doDebug = qgetenv("KDSOAP_DEBUG").toInt();
 }
 

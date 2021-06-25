@@ -258,7 +258,7 @@ public:
         }
 
         m_thread = new QThread;
-        QObject::connect(m_thread, SIGNAL(finished()), m_pServer, SLOT(deleteLater()));
+        QObject::connect(m_thread, &QThread::finished, m_pServer, &ServerObjectType::deleteLater);
 
         m_pServer->moveToThread(m_thread);
         m_thread->start();

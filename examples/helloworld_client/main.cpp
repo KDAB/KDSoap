@@ -28,8 +28,8 @@ MainWindow::MainWindow(QWidget *parent)
 {
     m_service.setEndPoint(QLatin1String("http://localhost:8081"));
     m_service.setSoapVersion(KDSoapClientInterface::SOAP1_2);
-    connect(&m_service, SIGNAL(sayHelloDone(QString)), this, SLOT(sayHelloDone(QString)));
-    connect(&m_service, SIGNAL(sayHelloError(KDSoapMessage)), this, SLOT(sayHelloError(KDSoapMessage)));
+    connect(&m_service, &Hello_Service::sayHelloDone, this, &MainWindow::sayHelloDone);
+    connect(&m_service, &Hello_Service::sayHelloError, this, &MainWindow::sayHelloError);
     QWidget *central = new QWidget;
     QVBoxLayout *layout = new QVBoxLayout(central);
     m_browser = new QTextBrowser;
@@ -48,8 +48,8 @@ MainWindow::MainWindow(QWidget *parent)
     l1->addWidget(m_input);
     QPushButton *pb1 = new QPushButton(tr("Send"));
     l1->addWidget(pb1);
-    connect(m_input, SIGNAL(returnPressed()), this, SLOT(sayHello()));
-    connect(pb1, SIGNAL(clicked()), this, SLOT(sayHello()));
+    connect(m_input, &QLineEdit::returnPressed, this, &MainWindow::sayHello);
+    connect(pb1, &QAbstractButton::clicked, this, &MainWindow::sayHello);
     layout->addWidget(w1);
     setCentralWidget(central);
 }

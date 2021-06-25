@@ -38,9 +38,9 @@ KDSoapUdpClient::KDSoapUdpClient(QObject *parent)
 {
     Q_D(KDSoapUdpClient);
     d->socketIPv4 = new QUdpSocket(this);
-    connect(d->socketIPv4, SIGNAL(readyRead()), d, SLOT(readyRead()));
+    connect(d->socketIPv4, &QIODevice::readyRead, d, &KDSoapUdpClientPrivate::readyRead);
     d->socketIPv6 = new QUdpSocket(this);
-    connect(d->socketIPv6, SIGNAL(readyRead()), d, SLOT(readyRead()));
+    connect(d->socketIPv6, &QIODevice::readyRead, d, &KDSoapUdpClientPrivate::readyRead);
 }
 
 KDSoapUdpClient::~KDSoapUdpClient()

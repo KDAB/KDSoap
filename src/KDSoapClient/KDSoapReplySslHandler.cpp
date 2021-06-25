@@ -27,7 +27,7 @@ KDSoapReplySslHandler::KDSoapReplySslHandler(QNetworkReply *reply, KDSoapSslHand
 {
     Q_ASSERT(reply);
     Q_ASSERT(handler);
-    QObject::connect(reply, SIGNAL(sslErrors(QList<QSslError>)), this, SLOT(slotReplySslErrors(QList<QSslError>)));
+    QObject::connect(reply, &QNetworkReply::sslErrors, this, &KDSoapReplySslHandler::slotReplySslErrors);
 }
 
 void KDSoapReplySslHandler::slotReplySslErrors(const QList<QSslError> &errors)
