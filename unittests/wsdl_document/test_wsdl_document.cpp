@@ -279,8 +279,8 @@ private Q_SLOTS:
         HttpServerThread server(addEmployeeResponse(), HttpServerThread::Ssl);
         MyWsdlDocument service;
         service.setEndPoint(server.endPoint());
-        connect(service.clientInterface()->sslHandler(), SIGNAL(sslErrors(KDSoapSslHandler *, QList<QSslError>)), this,
-                SLOT(slotSslHandlerErrors(KDSoapSslHandler *, QList<QSslError>)));
+        KDSoapSslHandler *sslHandler = service.clientInterface()->sslHandler();
+        connect(sslHandler, &KDSoapSslHandler::sslErrors, this, &WsdlDocumentTest::slotSslHandlerErrors);
         AddEmployeeJob *job = new AddEmployeeJob(&service);
         job->setParameters(addEmployeeParameters());
         connect(job, &AddEmployeeJob::finished, this, &WsdlDocumentTest::slotAddEmployeeJobFinished);
@@ -1254,11 +1254,6 @@ void WsdlDocumentTest::testDisconnectDuringDelayedCall()
         QTRY_VERIFY(server->lastServerObject());
         QTRY_COMPARE(server->lastServerObject()->m_lastMethodCalled, QString::fromLatin1("delayedAddEmployee"));
 
-        /* connect(job, SIGNAL(finished(KDSoapJob*)), this, SLOT(slotAddEmployeeJobFinished(KDSoapJob*)));
-        m_eventLoop.exec();
-        const QByteArray ret = job->resultParameters();
-        QCOMPARE(service.lastError(), QString());
-        QCOMPARE(QString::fromLatin1(ret.constData()), QString::fromLatin1("delayed reply works")); */
         delete job;
     } // Disconnect the client
 
