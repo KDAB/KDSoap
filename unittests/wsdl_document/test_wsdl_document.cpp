@@ -241,7 +241,7 @@ private Q_SLOTS:
         MyWsdlDocument service;
         service.setEndPoint(server.endPoint());
         QVERIFY(server.endPoint().startsWith(QLatin1String("https")));
-        QSignalSpy sslErrorsSpy(service.clientInterface()->sslHandler(), SIGNAL(sslErrors(KDSoapSslHandler *, QList<QSslError>)));
+        QSignalSpy sslErrorsSpy(service.clientInterface()->sslHandler(), SIGNAL(sslErrors(KDSoapSslHandler*,QList<QSslError>)));
         // We need to use async API to test sslHandler, see documentation there.
         ListEmployeesJob *job = new ListEmployeesJob(&service);
         connect(job, &ListEmployeesJob::finished, this, &WsdlDocumentTest::slotListEmployeesJobFinished);
@@ -341,7 +341,7 @@ private Q_SLOTS:
         HttpServerThread server(addEmployeeResponse(), HttpServerThread::Ssl);
         MyWsdlDocument service;
         service.setEndPoint(server.endPoint());
-        QSignalSpy sslErrorsSpy(service.clientInterface()->sslHandler(), SIGNAL(sslErrors(KDSoapSslHandler *, QList<QSslError>)));
+        QSignalSpy sslErrorsSpy(service.clientInterface()->sslHandler(), SIGNAL(sslErrors(KDSoapSslHandler*,QList<QSslError>)));
         QByteArray ret = service.addEmployee(addEmployeeParameters());
         QVERIFY(ret.isEmpty());
         QCOMPARE(service.lastErrorCode(), static_cast<int>(QNetworkReply::SslHandshakeFailedError));
@@ -1085,7 +1085,7 @@ void WsdlDocumentTest::testServerFaultSync() // test the error signals emitted o
     MyWsdlDocument service;
     service.setEndPoint(server->endPoint());
     QSignalSpy addEmployeeErrorSpy(&service, SIGNAL(addEmployeeError(KDSoapMessage)));
-    QSignalSpy soapErrorSpy(&service, SIGNAL(soapError(QString, KDSoapMessage)));
+    QSignalSpy soapErrorSpy(&service, SIGNAL(soapError(QString,KDSoapMessage)));
     service.addEmployee(KDAB__AddEmployee());
 
     QCOMPARE(service.lastFaultCode(), QString::fromLatin1("Client.Data"));
@@ -1105,7 +1105,7 @@ void WsdlDocumentTest::testServerFaultAsync() // test the error signals emitted 
     MyWsdlDocument service;
     service.setEndPoint(server->endPoint());
     QSignalSpy addEmployeeErrorSpy(&service, SIGNAL(addEmployeeError(KDSoapMessage)));
-    QSignalSpy soapErrorSpy(&service, SIGNAL(soapError(QString, KDSoapMessage)));
+    QSignalSpy soapErrorSpy(&service, SIGNAL(soapError(QString,KDSoapMessage)));
     service.asyncAddEmployee(KDAB__AddEmployee());
 
     connect(&service, &MyWsdlDocument::soapError, &m_eventLoop, &QEventLoop::quit);
