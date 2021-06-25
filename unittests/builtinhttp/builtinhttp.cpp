@@ -50,9 +50,7 @@ private Q_SLOTS:
         QVERIFY(!call.isFinished());
         QTest::qWait(1000);
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedCountryRequest()));
-#if QT_VERSION >= 0x040600
         QVERIFY(call.isFinished());
-#endif
         QCOMPARE(call.returnMessage().arguments().child(QLatin1String("employeeCountry")).value().toString(), QString::fromLatin1("France"));
     }
 
@@ -123,12 +121,8 @@ private Q_SLOTS:
         KDSoapPendingCall call = client.asyncCall(QLatin1String("getEmployeeCountry"), countryMessage());
         QVERIFY(!call.isFinished());
         waitForCallFinished(call);
-#if QT_VERSION >= 0x040600
-        // Auth is broken in Qt-4.5: QNetworkAccessManager doesn't re-send the body when it re-sends the request
-        // with an authorization header (in response to a 401). Bug in Qt-4.5?
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedCountryRequest()));
         QVERIFY(call.isFinished());
-#endif
         QCOMPARE(call.returnMessage().arguments().child(QLatin1String("employeeCountry")).value().toString(), QString::fromLatin1("France"));
     }
 
@@ -144,10 +138,8 @@ private Q_SLOTS:
         KDSoapPendingCall call = client.asyncCall(QLatin1String("getEmployeeCountry"), countryMessage());
         QVERIFY(!call.isFinished());
         waitForCallFinished(call);
-#if QT_VERSION >= 0x040600
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedCountryRequest()));
         QVERIFY(call.isFinished());
-#endif
         QVERIFY(call.returnMessage().isFault());
     }
 
@@ -192,11 +184,7 @@ private Q_SLOTS:
 
             QCOMPARE(server.header("Content-Type").constData(), "text/xml;charset=utf-8");
             QCOMPARE(server.header("SoapAction").constData(), "\"http://www.kdab.com/xml/MyWsdl/getEmployeeCountry\"");
-#if QT_VERSION >= 0x040800
             QCOMPARE(server.header("Cookie").constData(), "biscuits=are good");
-#elif QT_VERSION >= 0x040700
-            QCOMPARE(server.header("Cookie").constData(), "biscuits=\"are good\"");
-#endif
             QCOMPARE(ret.arguments().child(QLatin1String("employeeCountry")).value().toString(), QString::fromLatin1("France"));
         }
         client.setSoapVersion(KDSoapClientInterface::SOAP1_2);
@@ -212,11 +200,7 @@ private Q_SLOTS:
             QCOMPARE(server.header("Content-Type").constData(),
                      "application/soap+xml;charset=utf-8;action=http://www.kdab.com/xml/MyWsdl/getEmployeeCountry");
             QCOMPARE(ret.arguments().child(QLatin1String("employeeCountry")).value().toString(), QString::fromLatin1("France"));
-#if QT_VERSION >= 0x040800
             QCOMPARE(server.header("Cookie").constData(), "biscuits=are good");
-#elif QT_VERSION >= 0x040700
-            QCOMPARE(server.header("Cookie").constData(), "biscuits=\"are good\"");
-#endif
         }
     }
     // Using direct call(), check the xml we send, the response parsing.

@@ -629,9 +629,7 @@ private Q_SLOTS:
 
 #if 0 // disable for now, it breaks without glib, and it regularly breaks buildbot (354 messages received...)
 #ifndef Q_OS_WIN // builbot gets "Fault code 99: Unknown error" after 358 connected sockets
-#if QT_VERSION >= 0x040800
-        // Qt-4.6/4.7 socket code isn't fully threadsafe, an occasional crash in QEventDispatcherUNIXPrivate::doSelect happens
-        // Qt-4.8, on the other hand, uses more file descriptors (thread pipes) and then:
+        // Qt >= 4.8 uses many file descriptors (thread pipes) and then:
         // without glib, select() on fd > 1024, which gives "QSocketNotifier: Internal error".
         // With glib, though, it works.
         QTest::newRow("500 requests") << 5 << 125 << 4;
@@ -639,7 +637,6 @@ private Q_SLOTS:
         //QTest::newRow("1800 requests") << 5 << 300 << 6;
         QTest::newRow("3000 requests, requires >4K fd") << 5 << 500 << 6;
         QTest::newRow("10000 requests") << 5 << 1700 << 6;
-#endif
 #endif
 #endif
 

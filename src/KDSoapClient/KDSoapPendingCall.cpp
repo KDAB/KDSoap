@@ -188,12 +188,10 @@ void KDSoapPendingCall::Private::parseReply()
         return;
     }
     QNetworkReply *reply = this->reply.data();
-#if QT_VERSION >= 0x040600
     if (!reply->isFinished()) {
         qWarning("KDSoap: Parsing reply before it finished!");
         return;
     }
-#endif
     parsed = true;
 
     // Don't try to read from an aborted (closed) reply
