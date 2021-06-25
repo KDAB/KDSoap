@@ -129,7 +129,7 @@ KDSoapPendingCall::Private::~Private()
 {
     if (reply) {
         // Ensure the connection is closed, which QNetworkReply doesn't do in its destructor. This needs abort().
-        QObject::disconnect(reply.data(), SIGNAL(finished()), nullptr, nullptr);
+        QObject::disconnect(reply.data(), &QNetworkReply::finished, nullptr, nullptr);
         reply->abort();
     }
     delete reply.data();

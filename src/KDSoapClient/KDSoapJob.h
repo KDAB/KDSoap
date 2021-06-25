@@ -32,8 +32,8 @@ class KDSoapHeaders;
  *
  * For example, a call to getMothersDay (from the holidays example) using the conventional asynchronous API would look like this:
  * \code
- *  connect(client, SIGNAL(getMothersDayDone(TNS__GetMothersDayResponse)), this, SLOT(getMothersDayDone(TNS__GetMothersDayResponse)));
- *  connect(client, SIGNAL(getMothersDayError(KDSoapMessage)), this, SLOT(getMothersDayError(KDSoapMessage)));
+ *  connect(client, &ServiceClass::getMothersDayDone, this, &MyClass::getMothersDayDone);
+ *  connect(client, &ServiceClass::getMothersDayError, this, &MyClass::getMothersDayError);
  *  TNS__GetMothersDay params;
  *  params.setYear(2012);
  *  client->asyncGetMothersDay(params);
@@ -44,7 +44,7 @@ class KDSoapHeaders;
  *
  * \code
  *  GetMothersDayJob* job = new GetMothersDayJob(client);
- *  connect(job, SIGNAL(finished(KDSoapJob*)), this, SLOT(getMothersDayDone(KDSoapJob*)));
+ *  connect(job, &GetMothersDayJob::finished, this, &MyClass::getMothersDayDone);
  *  TNS__GetMothersDay params;
  *  params.setYear(2012);
  *  job->setParameters(params);

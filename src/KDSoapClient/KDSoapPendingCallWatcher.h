@@ -31,8 +31,8 @@
  *  KDSoapPendingCall pendingCall = client.asyncCall(QLatin1String("MethodName"), message);
  *  KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);
  *
- *  QObject::connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher*)),
- *                   this, SLOT(slotFinished(KDSoapPendingCallWatcher*)));
+ *  QObject::connect(watcher, &KDSoapPendingCallWatcher::finished,
+ *                   this, &MyClass::slotFinished);
  * \endcode
  *
  * \note It is not necessary to keep the original KDSoapPendingCall object
