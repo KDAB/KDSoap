@@ -244,7 +244,7 @@ private Q_SLOTS:
         QSignalSpy sslErrorsSpy(service.clientInterface()->sslHandler(), SIGNAL(sslErrors(KDSoapSslHandler *, QList<QSslError>)));
         // We need to use async API to test sslHandler, see documentation there.
         ListEmployeesJob *job = new ListEmployeesJob(&service);
-        connect(job, SIGNAL(finished(KDSoapJob *)), this, SLOT(slotListEmployeesJobFinished(KDSoapJob *)));
+        connect(job, &ListEmployeesJob::finished, this, &WsdlDocumentTest::slotListEmployeesJobFinished);
         job->start();
         m_eventLoop.exec();
         // Disable SSL so that termination can happen normally (do it asap, in case of failure below)
@@ -283,7 +283,7 @@ private Q_SLOTS:
                 SLOT(slotSslHandlerErrors(KDSoapSslHandler *, QList<QSslError>)));
         AddEmployeeJob *job = new AddEmployeeJob(&service);
         job->setParameters(addEmployeeParameters());
-        connect(job, SIGNAL(finished(KDSoapJob *)), this, SLOT(slotAddEmployeeJobFinished(KDSoapJob *)));
+        connect(job, &AddEmployeeJob::finished, this, &WsdlDocumentTest::slotAddEmployeeJobFinished);
         job->start();
         m_eventLoop.exec();
         // Disable SSL so that termination can happen normally (do it asap, in case of failure below)
@@ -315,7 +315,7 @@ private Q_SLOTS:
                                                                       << QSslError(QSslError::UnableToVerifyFirstCertificate, certs.at(0)));
         AddEmployeeJob *job = new AddEmployeeJob(&service);
         job->setParameters(addEmployeeParameters());
-        connect(job, SIGNAL(finished(KDSoapJob *)), this, SLOT(slotAddEmployeeJobFinished(KDSoapJob *)));
+        connect(job, &AddEmployeeJob::finished, this, &WsdlDocumentTest::slotAddEmployeeJobFinished);
         job->start();
         m_eventLoop.exec();
         // Disable SSL so that termination can happen normally (do it asap, in case of failure below)
@@ -491,7 +491,7 @@ private Q_SLOTS:
         resp.setRepeatedName(repeatedName1);
 
         KDAB__EmployeeNameParams params;
-        class KDAB__RepeatedName repeatedName_sameStructure;
+        KDAB__RepeatedName repeatedName_sameStructure;
         repeatedName_sameStructure.setIntparam1(1);
         params.setRepeatedName(repeatedName_sameStructure);
 
@@ -562,7 +562,7 @@ private Q_SLOTS:
             KDSoapMessage message;
             KDSoapPendingCall pendingCall = client.asyncCall(QLatin1String("getCountries"), message);
             KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);
-            connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher *)), this, SLOT(slotFinished(KDSoapPendingCallWatcher *)));
+            connect(watcher, &KDSoapPendingCallWatcher::finished, this, &WsdlDocumentTest::slotFinished);
             m_eventLoop.exec();
             // qDebug() << m_returnMessage;
 
@@ -858,7 +858,7 @@ public:
 
         KDSoapDelayedResponseHandle handle = prepareDelayedResponse();
         MyJob *job = new MyJob(handle);
-        connect(job, SIGNAL(done(MyJob *)), this, SLOT(slotDelayedResponse(MyJob *)));
+        connect(job, &MyJob::done, this, &DocServerObject::slotDelayedResponse);
         return "THIS VALUE IS IGNORED";
     }
 
@@ -1015,7 +1015,7 @@ void WsdlDocumentTest::testServerAddEmployeeJob()
     AddEmployeeJob *job = new AddEmployeeJob(&service);
     job->setParameters(addEmployeeParameters());
     job->start();
-    connect(job, SIGNAL(finished(KDSoapJob *)), this, SLOT(slotAddEmployeeJobFinished(KDSoapJob *)));
+    connect(job, &AddEmployeeJob::finished, this, &WsdlDocumentTest::slotAddEmployeeJobFinished);
     m_eventLoop.exec();
 
     QCOMPARE(service.lastError(), QString());
@@ -1218,7 +1218,7 @@ void WsdlDocumentTest::testServerTwoDelayedCalls()
     MyWsdlDocument service;
     service.setEndPoint(server->endPoint());
 
-    connect(&service, SIGNAL(delayedAddEmployeeDone(QByteArray)), this, SLOT(slotDelayedAddEmployeeDone(QByteArray)));
+    connect(&service, &MyWsdlDocument::delayedAddEmployeeDone, this, &WsdlDocumentTest::slotDelayedAddEmployeeDone);
     m_expectedDelayedCalls = 2;
 
     // Interestingly, this doesn't test what I thought it would test.

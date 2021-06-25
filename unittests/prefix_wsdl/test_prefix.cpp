@@ -144,7 +144,7 @@ private slots:
         TNS__AuthenticateRequest req;
         req.setSerijskiBrojSertifikata("cert");
         job->setParameters(req);
-        connect(job, SIGNAL(finished(KDSoapJob *)), this, SLOT(slotAuthenticateJobFinished(KDSoapJob *)));
+        connect(job, &AuthenticateJob::finished, this, &PrefixTest::slotAuthenticateJobFinished);
         job->start();
         m_eventLoop.exec();
 

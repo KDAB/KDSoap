@@ -191,8 +191,7 @@ public:
             QSslSocket *serverSocket = new QSslSocket;
             serverSocket->setParent(this);
             serverSocket->setSocketDescriptor(socketDescriptor);
-            connect(serverSocket, QOverload<const QList<QSslError> &>::of(&QSslSocket::sslErrors),
-                    this, &BlockingHttpServer::slotSslErrors);
+            connect(serverSocket, QOverload<const QList<QSslError> &>::of(&QSslSocket::sslErrors), this, &BlockingHttpServer::slotSslErrors);
             setupSslServer(serverSocket);
             // qDebug() << "Created QSslSocket, starting server encryption";
             serverSocket->startServerEncryption();

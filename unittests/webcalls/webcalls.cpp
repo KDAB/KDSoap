@@ -54,7 +54,7 @@ private slots:
         qDebug() << "pendingCall created";
         KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);
         qDebug() << "Created watcher" << watcher;
-        connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher *)), this, SLOT(slotFinished(KDSoapPendingCallWatcher *)));
+        connect(watcher, &KDSoapPendingCallWatcher::finished, this, &WebCalls::slotFinished);
         m_eventLoop.exec();
         QVERIFY2(!m_returnMessage.isFault(), qPrintable(m_returnMessage.faultAsString()));
         QCOMPARE(m_returnMessage.arguments().first().value().toInt(), 85);
@@ -88,8 +88,7 @@ private slots:
         message.addArgument("blz", "20130600");
         KDSoapPendingCall pendingCall = client.asyncCall(QLatin1String("getBank"), message/*, action*/);
         KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);
-        connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher*)),
-                this, SLOT(slotFinished(KDSoapPendingCallWatcher*)));
+        connect(watcher, &KDSoapPendingCallWatcher::finished, this, &WebCalls::slotFinished);
         m_eventLoop.exec();
         if (m_returnMessage.isFault()) {
             qDebug() << m_returnMessage.faultAsString();
@@ -123,7 +122,7 @@ private slots:
         message.addArgument(QLatin1String("prefix"), QLatin1String("Berl"));
         KDSoapPendingCall pendingCall = client.asyncCall(QLatin1String("OrteStartWith"), message);
         KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);
-        connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher *)), this, SLOT(slotFinished(KDSoapPendingCallWatcher *)));
+        connect(watcher, &KDSoapPendingCallWatcher::finished, this, &WebCalls::slotFinished);
         m_eventLoop.exec();
         // qDebug() << m_returnMessage;
 

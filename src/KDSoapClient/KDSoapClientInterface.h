@@ -119,8 +119,8 @@ public:
      *
      *  // create a watcher object that will signal the call's completion
      *  KDSoapPendingCallWatcher* watcher = new KDSoapPendingCallWatcher(pendingCall, this);
-     *  connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher*)),
-     *          this, SLOT(pendingCallFinished(KDSoapPendingCallWatcher*)));
+     *  connect(watcher, &KDSoapPendingCallWatcher::finished,
+     *          this, &MyClass::pendingCallFinished);
      *
      *  void MyClass::pendingCallFinished(KDSoapPendingCallWatcher* pendingCall)
      *  {

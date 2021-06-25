@@ -341,7 +341,7 @@ protected:
         if (server.listen()) {
             m_pServer = &server;
         }
-        connect(&server, SIGNAL(releaseSemaphore()), this, SLOT(slotReleaseSemaphore()), Qt::DirectConnection);
+        connect(&server, &CountryServer::releaseSemaphore, this, &CountryServerThread::slotReleaseSemaphore, Qt::DirectConnection);
         m_semaphore.release();
         exec();
         m_pServer = 0;
@@ -476,7 +476,7 @@ private Q_SLOTS:
         KDSoapPendingCall pendingCall =
             client.asyncCall(QLatin1String("getStuff"), getStuffMessage(), QString::fromLatin1("MySoapAction"), getStuffRequestHeaders());
         KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);
-        connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher *)), this, SLOT(slotFinished(KDSoapPendingCallWatcher *)));
+        connect(watcher, &KDSoapPendingCallWatcher::finished, this, &ServerTest::slotFinished);
         m_eventLoop.exec();
         QCOMPARE(m_returnMessages.count(), 1);
         QCOMPARE(m_returnMessages.at(0).value().toDouble(), double(4 + 3.2 + 123456.789));
@@ -681,11 +681,11 @@ private Q_SLOTS:
         }
         m_server = server;
         QTimer timer;
-        connect(&timer, SIGNAL(timeout()), this, SLOT(slotStats()));
+        connect(&timer, &QTimer::timeout, this, &ServerTest::slotStats);
         timer.start(1000);
 
         QTimer expireTimer;
-        connect(&expireTimer, SIGNAL(timeout()), this, SLOT(slotTimeout()));
+        connect(&expireTimer, &QTimer::timeout, this, &ServerTest::slotTimeout);
         m_eventLoop.quit();
         expireTimer.start(30000); // 30 s. Make this higher when running in valgrind.
 
@@ -1031,8 +1031,7 @@ private Q_SLOTS:
         m_auth.setUser(QLatin1String("kdab"));
         m_auth.setPassword(QLatin1String(provideCorrectAuth ? "pass42" : "invalid"));
         QNetworkAccessManager manager;
-        connect(&manager, SIGNAL(authenticationRequired(QNetworkReply *, QAuthenticator *)), this,
-                SLOT(slotAuthRequired(QNetworkReply *, QAuthenticator *)));
+        connect(&manager, &QNetworkAccessManager::authenticationRequired, this, &ServerTest::slotAuthRequired);
         QNetworkRequest request(QUrl { url });
         QNetworkReply *reply = manager.get(request);
         QEventLoop loop;
@@ -1087,8 +1086,7 @@ private Q_SLOTS:
         m_auth.setUser(QLatin1String("kdab"));
         m_auth.setPassword(QLatin1String(provideCorrectAuth ? "pass42" : "invalid"));
         QNetworkAccessManager manager;
-        connect(&manager, SIGNAL(authenticationRequired(QNetworkReply *, QAuthenticator *)), this,
-                SLOT(slotAuthRequired(QNetworkReply *, QAuthenticator *)));
+        connect(&manager, &QNetworkAccessManager::authenticationRequired, this, &ServerTest::slotAuthRequired);
         QNetworkRequest request(QUrl { url });
         QNetworkReply *reply;
         reply = manager.sendCustomRequest(request, customHttpVerb);
@@ -1437,7 +1435,7 @@ private:
         for (int i = 0; i < numRequests; ++i) {
             KDSoapPendingCall pendingCall = client.asyncCall(QLatin1String("getEmployeeCountry"), countryMessage(slow));
             KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);
-            connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher *)), this, SLOT(slotFinished(KDSoapPendingCallWatcher *)));
+            connect(watcher, &KDSoapPendingCallWatcher::finished, this, &ServerTest::slotFinished);
             watchers.append(watcher);
         }
         return watchers;

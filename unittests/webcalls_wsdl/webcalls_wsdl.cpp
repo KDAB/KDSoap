@@ -78,10 +78,8 @@ private slots:
             getBankType.setBlz(QString::fromLatin1(blz));
             service.asyncGetBank(getBankType);
         }
-        connect(&service, SIGNAL(getBankDone(TNS__GetBankResponseType)),
-                this, SLOT(slotGetBankDone(TNS__GetBankResponseType)));
-        connect(&service, SIGNAL(getBankError(KDSoapMessage)),
-                this, SLOT(slotGetBankError(KDSoapMessage)));
+        connect(&service, &BLZService::BLZServiceSOAP11Binding::getBankDone, this, &WebCallsWSDL::slotGetBankDone);
+        connect(&service, &BLZService::BLZServiceSOAP11Binding::getBankError, this, &WebCallsWSDL::slotGetBankError);
         m_eventLoop.exec();
 
         //qDebug() << m_resultsReceived;
