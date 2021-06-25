@@ -70,7 +70,7 @@ static void showHelp(const char *appName)
             "                            use of the import-path option\n"
             "  -help-on-missing          When groups or basic types could not be found, display\n"
             "                            available types (helps with wrong namespaces)\n"
-#if QT_VERSION >= QT_VERSION_CHECK(5, 4, 0) && !defined(QT_NO_SSL)
+#if !defined(QT_NO_SSL)
             "  -pkcs12file               Load a certificate from a PKCS12 file. You can use this option\n"
             "                            if the WSDL file (or files refering to it) is served from a \n"
             "                            location which require certificate based authentication\n"
@@ -78,10 +78,10 @@ static void showHelp(const char *appName)
             "                            This option is not secure and should be used with caution\n"
             "                            if other users of the machine are capable to see the running\n"
             "                            processes ran by the current user.\n"
+#endif
             "  -no-sync                  Do not generate synchronous API methods to the client code\n"
             "  -no-async                 Do not generate asynchronous API methods to the client code\n"
             "  -no-async-jobs            Do not generate asynchronous job API classes to the client code\n"
-#endif
             "\n",
             appName, appName, appName);
 }
@@ -109,7 +109,7 @@ int main(int argc, char **argv)
     bool useLocalFilesOnly = false;
     bool helpOnMissing = false;
     bool skipAsync = false, skipSync = false, skipAsyncJobs = false;
-#if QT_VERSION >= QT_VERSION_CHECK(5, 4, 0) && !defined(QT_NO_SSL)
+#if !defined(QT_NO_SSL)
     QString pkcs12File, pkcs12Password;
 #endif
 
@@ -229,7 +229,7 @@ int main(int argc, char **argv)
             useLocalFilesOnly = true;
         } else if (opt == QLatin1String("-help-on-missing")) {
             helpOnMissing = true;
-#if QT_VERSION >= QT_VERSION_CHECK(5, 4, 0) && !defined(QT_NO_SSL)
+#if !defined(QT_NO_SSL)
         } else if (opt == QLatin1String("-pkcs12file")) {
             ++arg;
             if (!argv[arg]) {
@@ -309,7 +309,7 @@ int main(int argc, char **argv)
     Settings::self()->setSkipAsyncJobs(skipAsyncJobs);
 
     KWSDL::Compiler compiler;
-#if QT_VERSION >= QT_VERSION_CHECK(5, 4, 0) && !defined(QT_NO_SSL)
+#if !defined(QT_NO_SSL)
     if (!pkcs12File.isEmpty()) {
         QFile certFile(pkcs12File);
         if (certFile.open(QFile::ReadOnly)) {
