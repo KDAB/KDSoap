@@ -108,7 +108,7 @@ void KDSoapUnitTestHelpers::httpGet(const QUrl &url)
     // QObject::connect(reply, SIGNAL(sslErrors(QList<QSslError>)), reply, SLOT(ignoreSslErrors()));
 
     QEventLoop ev;
-    QObject::connect(reply, SIGNAL(finished()), &ev, SLOT(quit()));
+    QObject::connect(reply, &QNetworkReply::finished, &ev, &QEventLoop::quit);
     ev.exec();
 
     // QObject::connect(reply, SIGNAL(finished()), &QTestEventLoop::instance(), SLOT(exitLoop()));
@@ -191,7 +191,8 @@ public:
             QSslSocket *serverSocket = new QSslSocket;
             serverSocket->setParent(this);
             serverSocket->setSocketDescriptor(socketDescriptor);
-            connect(serverSocket, SIGNAL(sslErrors(QList<QSslError>)), this, SLOT(slotSslErrors(QList<QSslError>)));
+            connect(serverSocket, QOverload<const QList<QSslError> &>::of(&QSslSocket::sslErrors),
+                    this, &BlockingHttpServer::slotSslErrors);
             setupSslServer(serverSocket);
             // qDebug() << "Created QSslSocket, starting server encryption";
             serverSocket->startServerEncryption();

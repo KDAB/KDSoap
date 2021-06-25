@@ -48,9 +48,9 @@ KDSoapServerSocket *KDSoapSocketList::handleIncomingConnection(int socketDescrip
     }
 #endif
 
-    QObject::connect(socket, SIGNAL(disconnected()), socket, SLOT(deleteLater()));
+    QObject::connect(socket, &KDSoapServerSocket::disconnected, socket, &KDSoapServerSocket::deleteLater);
     m_sockets.insert(socket);
-    connect(socket, SIGNAL(socketDeleted(KDSoapServerSocket *)), this, SLOT(socketDeleted(KDSoapServerSocket *)));
+    connect(socket, &KDSoapServerSocket::socketDeleted, this, &KDSoapSocketList::socketDeleted);
     return socket;
 }
 

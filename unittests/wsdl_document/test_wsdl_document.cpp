@@ -1047,7 +1047,7 @@ void WsdlDocumentTest::testServerPostByHand()
     QNetworkAccessManager accessManager;
     QNetworkReply *reply = accessManager.post(request, rawCountryMessage());
     QEventLoop loop;
-    connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
     loop.exec();
     const QByteArray response = reply->readAll();
     const QByteArray expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" "
@@ -1108,7 +1108,7 @@ void WsdlDocumentTest::testServerFaultAsync() // test the error signals emitted 
     QSignalSpy soapErrorSpy(&service, SIGNAL(soapError(QString, KDSoapMessage)));
     service.asyncAddEmployee(KDAB__AddEmployee());
 
-    connect(&service, SIGNAL(soapError(QString, KDSoapMessage)), &m_eventLoop, SLOT(quit()));
+    connect(&service, &MyWsdlDocument::soapError, &m_eventLoop, &QEventLoop::quit);
     m_eventLoop.exec();
 
     QCOMPARE(soapErrorSpy.count(), 1);

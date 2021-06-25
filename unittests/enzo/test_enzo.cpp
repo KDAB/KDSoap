@@ -60,7 +60,7 @@ void TestEnzo::test()
     job->setParameters(auth);
 
     QEventLoop loop;
-    QObject::connect(job, SIGNAL(finished(KDSoapJob *)), &loop, SLOT(quit()));
+    QObject::connect(job, &AuthenticateJob::finished, &loop, &QEventLoop::quit);
     job->start();
     loop.exec();
 

@@ -416,7 +416,7 @@ private Q_SLOTS:
         request.setFolderIds(folderIds);
 
         QEventLoop loop;
-        QObject::connect(job, SIGNAL(finished(KDSoapJob *)), &loop, SLOT(quit()));
+        QObject::connect(job, &GetFolderJob::finished, &loop, &QEventLoop::quit);
         job->setRequest(request);
         job->start();
         loop.exec();
@@ -520,7 +520,7 @@ private Q_SLOTS:
         GetFolderJob *job = new GetFolderJob(&service);
 
         QEventLoop loop;
-        QObject::connect(job, SIGNAL(finished(KDSoapJob *)), &loop, SLOT(quit()));
+        QObject::connect(job, &GetFolderJob::finished, &loop, &QEventLoop::quit);
         job->setRequest(request);
         job->start();
         loop.exec();

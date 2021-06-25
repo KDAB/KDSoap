@@ -79,13 +79,13 @@ public:
     }
 
     void process(QNetworkAccessManager &accessManager);
+    void slotAuthenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator);
 
 signals:
     void taskDone();
 
 private Q_SLOTS:
     void slotFinished(KDSoapPendingCallWatcher *watcher);
-    void slotAuthenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator);
 
 private:
     KDSoapThreadTaskData *m_data;

@@ -334,7 +334,7 @@ private Q_SLOTS:
         QEventLoop eventLoop;
         KDSoapPendingCall pendingCall = service.clientInterface()->asyncCall(QLatin1String("heartbeat"), message);
         KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);
-        connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher *)), &eventLoop, SLOT(quit()));
+        connect(watcher, &KDSoapPendingCallWatcher::finished, &eventLoop, &QEventLoop::quit);
         eventLoop.exec();
 
         KDSoapMessage returnMessage = watcher->returnMessage();
@@ -363,7 +363,7 @@ private Q_SLOTS:
 
         // Qt5: use spy.wait() instead.
         QEventLoop eventLoop;
-        connect(&service, SIGNAL(heartbeatDone()), &eventLoop, SLOT(quit()));
+        connect(&service, &RpcExample::heartbeatDone, &eventLoop, &QEventLoop::quit);
         RPCEXAMPLE__HeartbeatParams params;
         service.asyncHeartbeat(params);
         eventLoop.exec();

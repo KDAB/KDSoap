@@ -51,14 +51,14 @@ MainWindow::MainWindow(QWidget *parent)
     mLblAnim->setMovie(mMovAnim);
     mMovAnim->start();
 
-    connect(mBtnSync, SIGNAL(clicked()), this, SLOT(syncCall()));
-    connect(mBtnAsync, SIGNAL(clicked()), this, SLOT(asyncCall()));
+    connect(mBtnSync, &QPushButton::clicked, this, &MainWindow::syncCall);
+    connect(mBtnAsync, &QPushButton::clicked, this, &MainWindow::asyncCall);
 
     mService = new BLZService::BLZServiceSOAP11Binding(this);
 
-    connect(mService, SIGNAL(getBankDone(TNS__GetBankResponseType)), this, SLOT(done(const TNS__GetBankResponseType &)));
+    connect(mService, &BLZService::BLZServiceSOAP11Binding::getBankDone, this, &MainWindow::done);
 
-    connect(mService, SIGNAL(getBankError(const KDSoapMessage &)), this, SLOT(doneError(const KDSoapMessage &)));
+    connect(mService, &BLZService::BLZServiceSOAP11Binding::getBankError, this, &MainWindow::doneError);
 
     nextBank();
 }

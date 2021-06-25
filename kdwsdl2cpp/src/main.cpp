@@ -342,7 +342,7 @@ int main(int argc, char **argv)
 #endif
 
     // so that we have an event loop, for downloads
-    QTimer::singleShot(0, &compiler, SLOT(run()));
+    QTimer::singleShot(0, &compiler, &KWSDL::Compiler::run);
 
     return app.exec();
 }

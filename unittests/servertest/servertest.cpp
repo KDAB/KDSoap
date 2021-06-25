@@ -916,7 +916,7 @@ private Q_SLOTS:
         QNetworkRequest request(QUrl { url });
         QNetworkReply *reply = manager.get(request);
         QEventLoop loop;
-        connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+        connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
         loop.exec();
 
         QCOMPARE(( int )reply->error(), ( int )QNetworkReply::NoError);
@@ -973,8 +973,8 @@ private Q_SLOTS:
         QNetworkRequest request(QUrl { url });
         QNetworkReply *reply = manager.get(request);
         QEventLoop loop;
-        connect(&download_timeout, SIGNAL(timeout()), &loop, SLOT(quit()));
-        connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+        connect(&download_timeout, &QTimer::timeout, &loop, &QEventLoop::quit);
+        connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
         download_timeout.start();
         loop.exec();
 
@@ -1036,7 +1036,7 @@ private Q_SLOTS:
         QNetworkRequest request(QUrl { url });
         QNetworkReply *reply = manager.get(request);
         QEventLoop loop;
-        connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+        connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
         loop.exec();
 
         if (expectedSuccess) {
@@ -1093,7 +1093,7 @@ private Q_SLOTS:
         QNetworkReply *reply;
         reply = manager.sendCustomRequest(request, customHttpVerb);
         QEventLoop loop;
-        connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+        connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
         loop.exec();
 
         QCOMPARE(( int )reply->error(), expectedError);
@@ -1114,7 +1114,7 @@ private Q_SLOTS:
         QNetworkAccessManager accessManager;
         QNetworkReply *reply = accessManager.post(request, rawCountryMessage());
         QEventLoop loop;
-        connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+        connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
         loop.exec();
         const QByteArray response = reply->readAll();
         QVERIFY(xmlBufferCompare(response, expectedCountryResponse()));
@@ -1240,7 +1240,7 @@ private Q_SLOTS:
         QNetworkAccessManager accessManager;
         QNetworkReply *reply = accessManager.post(request, rawCountryMessage());
         QEventLoop loop;
-        connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+        connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
         loop.exec();
         const QByteArray response = reply->readAll();
         QVERIFY(xmlBufferCompare(response, expectedCountryResponse()));
@@ -1259,7 +1259,7 @@ private Q_SLOTS:
         QNetworkAccessManager accessManager;
         QNetworkReply *reply = accessManager.get(request);
         QEventLoop loop;
-        connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+        connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
         loop.exec();
         const QByteArray response = reply->readAll();
         QCOMPARE(response.constData(), "");
@@ -1277,7 +1277,7 @@ private Q_SLOTS:
         QTest::ignoreMessage(QtWarningMsg, "Unknown HTTP request: \"HEAD\" ");
         QNetworkReply *reply = accessManager.head(request);
         QEventLoop loop;
-        connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+        connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
         loop.exec();
         QCOMPARE(( int )reply->error(), ( int )QNetworkReply::ContentOperationNotPermittedError);
         reply->deleteLater();
@@ -1347,7 +1347,7 @@ private Q_SLOTS:
         QNetworkAccessManager accessManager;
         QNetworkReply *reply = accessManager.post(request, rawCountryMessage());
         QEventLoop loop;
-        connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+        connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
         loop.exec();
         reply->readAll();
 

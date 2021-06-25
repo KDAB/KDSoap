@@ -481,7 +481,7 @@ private:
     {
         KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);
         QEventLoop loop;
-        connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher *)), &loop, SLOT(quit()));
+        connect(watcher, &KDSoapPendingCallWatcher::finished, &loop, &QEventLoop::quit);
         loop.exec();
     }
 

@@ -45,7 +45,7 @@ private slots:
         EmptySA responder;
         QSignalSpy spyDone(&responder, SIGNAL(echoStringDone(QString)));
         QEventLoop eventLoop;
-        connect(&responder, SIGNAL(echoStringDone(QString)), &eventLoop, SLOT(quit()));
+        connect(&responder, &EmptySA::echoStringDone, &eventLoop, &QEventLoop::quit);
         responder.asyncEchoString(QLatin1String("abc"));
         eventLoop.exec();
         QCOMPARE(spyDone.count(), 1);

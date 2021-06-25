@@ -44,17 +44,7 @@ private Q_SLOTS:
         //   here for compile testing.
 
         auto soapUdpClient = new KDSoapUdpClient(this);
-        connect(soapUdpClient, &KDSoapUdpClient::receivedMessage,
-                [=](const KDSoapMessage &message, const KDSoapHeaders &headers, const QHostAddress &address, quint16 port) {
-                    Q_UNUSED(headers);
-                    Q_UNUSED(port);
-                    if (message.messageAddressingProperties().action()
-                        == QStringLiteral("http://docs.oasis-open.org/ws-dd/ns/discovery/2009/01/ProbeMatches")) {
-                        TNS__ProbeMatchesType probeMatches;
-                        probeMatches.deserialize(message);
-                        qDebug() << "Received probe match from" << address;
-                    }
-                });
+        connect(soapUdpClient, &KDSoapUdpClient::receivedMessage, [=](const KDSoapMessage &message, const KDSoapHeaders &headers, const QHostAddress &address, quint16 port) { Q_UNUSED(headers); Q_UNUSED(port); if (message.messageAddressingProperties().action() == QStringLiteral("http://docs.oasis-open.org/ws-dd/ns/discovery/2009/01/ProbeMatches")) { TNS__ProbeMatchesType probeMatches; probeMatches.deserialize(message); qDebug() << "Received probe match from" << address; } });
         soapUdpClient->bind(3702);
 
         TNS__ProbeType probe;

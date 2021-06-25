@@ -51,7 +51,7 @@ private Q_SLOTS:
         job->setDirectory("dir");
 
         QEventLoop loop;
-        QObject::connect(job, SIGNAL(finished(KDSoapJob *)), &loop, SLOT(quit()));
+        QObject::connect(job, &CreateDirectoryJob::finished, &loop, &QEventLoop::quit);
         job->start();
         loop.exec();
     }
@@ -78,7 +78,7 @@ private Q_SLOTS:
         job->setUsername("me");
 
         QEventLoop loop;
-        QObject::connect(job, SIGNAL(finished(KDSoapJob *)), &loop, SLOT(quit()));
+        QObject::connect(job, &GetAllocationInfoJob::finished, &loop, &QEventLoop::quit);
         job->start();
         loop.exec();
 

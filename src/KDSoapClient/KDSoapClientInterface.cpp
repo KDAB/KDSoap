@@ -207,8 +207,8 @@ void KDSoapClientInterface::callNoReply(const QString &method, const KDSoapMessa
     QNetworkReply *reply = d->accessManager()->post(request, buffer);
     d->setupReply(reply);
     maybeDebugRequest(buffer->data(), reply->request(), reply);
-    QObject::connect(reply, SIGNAL(finished()), reply, SLOT(deleteLater()));
-    QObject::connect(reply, SIGNAL(finished()), buffer, SLOT(deleteLater()));
+    QObject::connect(reply, &QNetworkReply::finished, reply, &QNetworkReply::deleteLater);
+    QObject::connect(reply, &QNetworkReply::finished, buffer, &QBuffer::deleteLater);
 }
 
 void KDSoapClientInterfacePrivate::_kd_slotAuthenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator)
@@ -280,7 +280,7 @@ public Q_SLOTS:
 void KDSoapClientInterfacePrivate::setupReply(QNetworkReply *reply)
 {
     if (m_ignoreSslErrors) {
-        QObject::connect(reply, SIGNAL(sslErrors(QList<QSslError>)), reply, SLOT(ignoreSslErrors()));
+        QObject::connect(reply, &QNetworkReply::sslErrors, reply, QOverload<>::of(&QNetworkReply::ignoreSslErrors));
     } else {
 #ifndef QT_NO_SSL
         reply->ignoreSslErrors(m_ignoreErrorsList);
@@ -294,7 +294,7 @@ void KDSoapClientInterfacePrivate::setupReply(QNetworkReply *reply)
     }
     if (m_timeout >= 0) {
         TimeoutHandler *timeoutHandler = new TimeoutHandler(reply);
-        connect(timeoutHandler, SIGNAL(timeout()), timeoutHandler, SLOT(replyTimeout()));
+        connect(timeoutHandler, &TimeoutHandler::timeout, timeoutHandler, &TimeoutHandler::replyTimeout);
         timeoutHandler->start(m_timeout);
     }
 }

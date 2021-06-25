@@ -65,9 +65,8 @@ void KDSoapClientThread::run()
         locker.unlock();
 
         KDSoapThreadTask task(taskData); // must be created here, so that it's in the right thread
-        connect(&task, SIGNAL(taskDone()), &eventLoop, SLOT(quit()));
-        connect(&accessManager, SIGNAL(authenticationRequired(QNetworkReply *, QAuthenticator *)), &task,
-                SLOT(slotAuthenticationRequired(QNetworkReply *, QAuthenticator *)));
+        connect(&task, &KDSoapThreadTask::taskDone, &eventLoop, &QEventLoop::quit);
+        connect(&accessManager, &QNetworkAccessManager::authenticationRequired, &task, &KDSoapThreadTask::slotAuthenticationRequired);
         task.process(accessManager);
 
         // Process events until the task tells us the handling of that task is finished
@@ -101,7 +100,7 @@ void KDSoapThreadTask::process(QNetworkAccessManager &accessManager)
     pendingCall.d->soapVersion = m_data->m_iface->d->m_version;
 
     KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);
-    connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher *)), this, SLOT(slotFinished(KDSoapPendingCallWatcher *)));
+    connect(watcher, &KDSoapPendingCallWatcher::finished, this, &KDSoapThreadTask::slotFinished);
 }
 
 void KDSoapThreadTask::slotFinished(KDSoapPendingCallWatcher *watcher)

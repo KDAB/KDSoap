@@ -79,7 +79,7 @@ private Q_SLOTS:
         QSignalSpy loginDoneSpy(&sugar, SIGNAL(loginDone(TNS__Set_entry_result)));
         sugar.asyncLogin(user_auth, QString::fromLatin1("application"));
         QEventLoop loop;
-        connect(&sugar, SIGNAL(loginDone(TNS__Set_entry_result)), &loop, SLOT(quit()));
+        connect(&sugar, &Sugarsoap::loginDone, &loop, &QEventLoop::quit);
         loop.exec();
         const TNS__Set_entry_result result = loginDoneSpy[0][0].value<TNS__Set_entry_result>();
         QCOMPARE(result.id(), QString::fromLatin1("12345"));
@@ -101,7 +101,7 @@ private Q_SLOTS:
         job->setUser_auth(user_auth);
         job->setApplication_name(QString::fromLatin1("application"));
         QEventLoop loop;
-        connect(job, SIGNAL(finished(KDSoapJob *)), &loop, SLOT(quit()));
+        connect(job, &LoginJob::finished, &loop, &QEventLoop::quit);
         job->start();
         loop.exec();
         const TNS__Set_entry_result result = job->return_();
