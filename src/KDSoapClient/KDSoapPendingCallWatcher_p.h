@@ -16,6 +16,7 @@
 #ifndef KDSOAPPENDINGCALLWATCHER_P_H
 #define KDSOAPPENDINGCALLWATCHER_P_H
 
+// currently unused
 class KDSoapPendingCallWatcher::Private
 {
 public:
@@ -23,7 +24,6 @@ public:
         : q(qq)
     {
     }
-    void _kd_slotReplyFinished();
 
     KDSoapPendingCallWatcher *q;
 };

@@ -22,19 +22,15 @@
 KDSoapPendingCallWatcher::KDSoapPendingCallWatcher(const KDSoapPendingCall &call, QObject *parent)
     : QObject(parent)
     , KDSoapPendingCall(call)
-    , d(new Private(this))
+    , d(nullptr) // currently unused
 {
-    connect(call.d->reply.data(), SIGNAL(finished()), this, SLOT(_kd_slotReplyFinished()));
+    connect(call.d->reply.data(), &QNetworkReply::finished, this, [&]() {
+        emit finished(this);
+    });
 }
 
 KDSoapPendingCallWatcher::~KDSoapPendingCallWatcher()
 {
-    delete d;
-}
-
-void KDSoapPendingCallWatcher::Private::_kd_slotReplyFinished()
-{
-    emit q->finished(q);
 }
 
 #include "moc_KDSoapPendingCallWatcher.cpp"

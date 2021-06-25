@@ -65,7 +65,6 @@ Q_SIGNALS:
 private:
     friend class KDSoapPendingCallPrivate;
 
-    Q_PRIVATE_SLOT(d, void _kd_slotReplyFinished())
     class Private;
     Private *const d;
 };
