@@ -32,17 +32,8 @@ KDSoapPendingCallWatcher::~KDSoapPendingCallWatcher()
     delete d;
 }
 
-#if 0
-void KDSoapPendingCallWatcher::waitForFinished()
-{
-    // TODO?
-}
-#endif
-
 void KDSoapPendingCallWatcher::Private::_kd_slotReplyFinished()
 {
-    // Workaround Qt-4.5 emitting finished twice in testCallRefusedAuth
-    disconnect(q->KDSoapPendingCall::d->reply.data(), SIGNAL(finished()), q, nullptr);
     emit q->finished(q);
 }
 
