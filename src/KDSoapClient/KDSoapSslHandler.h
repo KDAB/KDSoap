@@ -98,10 +98,6 @@ private:
     QNetworkReply *m_reply;
 };
 
-#if QT_VERSION < 0x050000
-Q_DECLARE_METATYPE(KDSoapSslHandler *)
-#endif
-
 #endif // QT_NO_SSL
 
 #endif // KDSOAPSSLHANDLER_H
