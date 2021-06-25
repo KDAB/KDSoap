@@ -453,8 +453,8 @@ bool Converter::convertClientService()
                     doStartCode += callLine;
 
                     doStartCode += "KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);";
-                    doStartCode += "QObject::connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher*)),\n"
-                                   "                 this, SLOT(slotFinished(KDSoapPendingCallWatcher*)));";
+                    doStartCode += "QObject::connect(watcher, &KDSoapPendingCallWatcher::finished,\n"
+                                   "                 this, &" + jobClass.name() + "::slotFinished);";
                     doStart.setBody(doStartCode);
                     jobClass.addFunction(doStart);
 
@@ -798,9 +798,9 @@ void Converter::convertClientInputMessage(const Operation &operation, const Bind
         const QString finishedSlotName = QLatin1String("_kd_slot") + upperlize(operationName) + QLatin1String("Finished");
 
         code += "KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);";
-        code += QLatin1String("QObject::connect(watcher, SIGNAL(finished(KDSoapPendingCallWatcher*)),\n"
-                              "                 this, SLOT(")
-            + finishedSlotName + QLatin1String("(KDSoapPendingCallWatcher*)));");
+        code += QLatin1String("QObject::connect(watcher, &KDSoapPendingCallWatcher::finished,\n"
+                                   "                 this, &") + newClass.name() + QLatin1String("::")
+            + finishedSlotName + QLatin1String(");");
         asyncFunc.setBody(code);
         newClass.addFunction(asyncFunc);
     }
