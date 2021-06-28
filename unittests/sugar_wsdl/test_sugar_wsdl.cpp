@@ -76,7 +76,7 @@ private Q_SLOTS:
         user_auth.setUser_name(QString::fromLatin1("user"));
         user_auth.setPassword(QString::fromLatin1("pass"));
         qRegisterMetaType<TNS__Set_entry_result>("TNS__Set_entry_result");
-        QSignalSpy loginDoneSpy(&sugar, SIGNAL(loginDone(TNS__Set_entry_result)));
+        QSignalSpy loginDoneSpy(&sugar, &Sugarsoap::loginDone);
         sugar.asyncLogin(user_auth, QString::fromLatin1("application"));
         QEventLoop loop;
         connect(&sugar, &Sugarsoap::loginDone, &loop, &QEventLoop::quit);

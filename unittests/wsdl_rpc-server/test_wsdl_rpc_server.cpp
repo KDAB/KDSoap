@@ -354,11 +354,11 @@ private Q_SLOTS:
         RpcExample service;
         service.setEndPoint(server->endPoint());
 
-        QSignalSpy spy(&service, SIGNAL(heartbeatDone()));
+        QSignalSpy spy(&service, &RpcExample::heartbeatDone);
         QVERIFY(spy.isValid());
 
         qRegisterMetaType<KDSoapMessage>("KDSoapMessage");
-        QSignalSpy errorSpy(&service, SIGNAL(heartbeatError(KDSoapMessage)));
+        QSignalSpy errorSpy(&service, &RpcExample::heartbeatError);
         QVERIFY(errorSpy.isValid());
 
         // Qt5: use spy.wait() instead.

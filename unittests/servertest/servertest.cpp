@@ -952,7 +952,7 @@ private Q_SLOTS:
         QTimer download_timeout;
         download_timeout.setInterval(5000); // 5 seconds
         download_timeout.setSingleShot(true);
-        QSignalSpy timeout_spy(&download_timeout, SIGNAL(timeout()));
+        QSignalSpy timeout_spy(&download_timeout, &QTimer::timeout);
         CountryServerThread serverThread;
         CountryServer *server = serverThread.startThread();
 
