@@ -278,10 +278,10 @@ public Q_SLOTS:
 
 void KDSoapClientInterfacePrivate::setupReply(QNetworkReply *reply)
 {
+#ifndef QT_NO_SSL
     if (m_ignoreSslErrors) {
         QObject::connect(reply, &QNetworkReply::sslErrors, reply, QOverload<>::of(&QNetworkReply::ignoreSslErrors));
     } else {
-#ifndef QT_NO_SSL
         reply->ignoreSslErrors(m_ignoreErrorsList);
         if (m_sslHandler) {
             // create a child object of the reply, which will forward to m_sslHandler.
@@ -289,8 +289,8 @@ void KDSoapClientInterfacePrivate::setupReply(QNetworkReply *reply)
             // and sender() doesn't work for sync calls (from another thread) (SOAP-79/issue29)
             new KDSoapReplySslHandler(reply, m_sslHandler);
         }
-#endif
     }
+#endif
     if (m_timeout >= 0) {
         TimeoutHandler *timeoutHandler = new TimeoutHandler(reply);
         connect(timeoutHandler, &TimeoutHandler::timeout, timeoutHandler, &TimeoutHandler::replyTimeout);
