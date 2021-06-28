@@ -43,7 +43,7 @@ private slots:
     void testSoapResponder_async()
     {
         EmptySA responder;
-        QSignalSpy spyDone(&responder, SIGNAL(echoStringDone(QString)));
+        QSignalSpy spyDone(&responder, &EmptySA::echoStringDone);
         QEventLoop eventLoop;
         connect(&responder, &EmptySA::echoStringDone, &eventLoop, &QEventLoop::quit);
         responder.asyncEchoString(QLatin1String("abc"));
