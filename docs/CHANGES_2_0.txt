@@ -1,7 +1,7 @@
 
 General:
 ========
-* Supports Qt6
+* Supports Qt6 in addition to Qt5
 * The qmake buildsystem (via autogen.py) is removed.
 * buildsystem: a new 'docs' target is created when CMake -DKDSoap_DOCS=True.
 * buildsystem: the API manual is now generated in build/docs vice source/docs.
@@ -11,7 +11,13 @@ General:
 
 Client-side:
 ============
+* Added options to the KDSoapClient specifying the SOAP action sending method
 
 Server-side:
 ============
 
+WSDL parser / code generator changes, applying to both client and server side:
+================================================================
+* Fix generated code in case a variable is called "d" or "q" (#118)
+* Fix generated code for an enumeration type with a length restriction (#234)
+* Avoid potential type collisions in nested complexTypes (#239)
