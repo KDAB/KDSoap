@@ -125,9 +125,9 @@ int KDSoapServer::totalConnectionCount() const
 void KDSoapServer::resetTotalConnectionCount()
 {
     if (d->m_threadPool) {
-        return d->m_threadPool->resetTotalConnectionCount(this);
+        d->m_threadPool->resetTotalConnectionCount(this);
     } else if (d->m_mainThreadSocketList) {
-        return d->m_mainThreadSocketList->resetTotalConnectionCount();
+        d->m_mainThreadSocketList->resetTotalConnectionCount();
     }
 }
 
