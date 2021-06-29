@@ -77,16 +77,17 @@ cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_SKIP_RPATH=True -DCMAKE_BUILD_TYPE=R
 %{_libdir}/cmake/KDSoap/*
 %{_libdir}/libkdsoap.so
 %{_libdir}/libkdsoap-server.so
+%if 0%{?sle_version} >= 150200 && 0%{?is_opensuse}
+%{_libdir}/qt5/mkspecs/modules/*
+%endif
 %{_prefix}/share/mkspecs/
-%if %{defined fedora}
+%if 0%{?suse_version} > 1500
+%{_libdir}/qt5/mkspecs/modules/*
+%endif
 %if 0%{?fedora} > 28
 %{_libdir}/qt5/mkspecs/modules/*
-%else
-%dir %{_prefix}/mkspecs/
-%dir %{_prefix}/mkspecs/modules/
-%{_prefix}/mkspecs/modules/*.pri
 %endif
-%else
+%if %{defined rhel}
 %{_libdir}/qt5/mkspecs/modules/*
 %endif
 
