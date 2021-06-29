@@ -2,6 +2,7 @@
 General:
 ========
 * Supports Qt6 in addition to Qt5
+* Minimum Qt version is 5.9
 * The qmake buildsystem (via autogen.py) is removed.
 * buildsystem: a new 'docs' target is created when CMake -DKDSoap_DOCS=True.
 * buildsystem: the API manual is now generated in build/docs vice source/docs.

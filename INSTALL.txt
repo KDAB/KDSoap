@@ -7,7 +7,7 @@ KD SOAP requires Qt with Network and XML support enabled.
 Qt Version support:
  * KD SOAP 1.9 or below requires Qt4.6 up to Qt5.15
  * KD SOAP 1.10 requires Qt5.7 up to Qt5.15
- * KD SOAP 2.0 or above requires Qt5.7 up to Qt6.x
+ * KD SOAP 2.0 or above requires Qt5.9 up to Qt6.x
 
 Please see the comments at the top of CMakeLists.txt for
 the available configuration options you can pass to cmake.

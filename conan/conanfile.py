@@ -16,7 +16,7 @@ from conans import ConanFile, CMake, tools
 
 class KdsoapConan(ConanFile):
     name = "KDSoap"
-    version = "1.10.0"
+    version = "2.0.0"
     license = ("https://raw.githubusercontent.com/KDAB/KDSoap/kdsoap-{0}-release/LICENSE.txt,"
                "https://raw.githubusercontent.com/KDAB/KDSoap/kdsoap-{0}-release/LICENSE.AGPL3-modified.txt,"
                "https://raw.githubusercontent.com/KDAB/KDSoap/kdsoap-{0}-release/LICENSE.GPL.txt,"
