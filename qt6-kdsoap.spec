@@ -50,7 +50,7 @@ develop programs which need to access web services using the SOAP protocol.
 
 %build
 touch .license.accepted
-cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_SKIP_RPATH=True -DCMAKE_BUILD_TYPE=Release
+cmake . -DCMAKE_INSTALL_PREFIX=/usr -DKDSoap_QT6=True -DCMAKE_SKIP_RPATH=True -DCMAKE_BUILD_TYPE=Release
 %__make %{?_smp_mflags}
 
 %post -p /sbin/ldconfig
@@ -65,8 +65,8 @@ cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_SKIP_RPATH=True -DCMAKE_BUILD_TYPE=R
 %files
 %defattr(-,root,root)
 %{_prefix}/share/doc/KDSoap
-%{_libdir}/libkdsoap.so.*
-%{_libdir}/libkdsoap-server.so.*
+%{_libdir}/libkdsoap-qt6.so.*
+%{_libdir}/libkdsoap-server-qt6.so.*
 
 %files devel
 %defattr(-,root,root)
@@ -75,21 +75,9 @@ cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_SKIP_RPATH=True -DCMAKE_BUILD_TYPE=R
 %{_includedir}/KDSoapServer
 %dir %{_libdir}/cmake/KDSoap
 %{_libdir}/cmake/KDSoap/*
-%{_libdir}/libkdsoap.so
-%{_libdir}/libkdsoap-server.so
-%if 0%{?sle_version} >= 150200 && 0%{?is_opensuse}
-%{_libdir}/qt6/mkspecs/modules/*
-%endif
-%{_prefix}/share/mkspecs/
-%if 0%{?suse_version} > 1500
-%{_libdir}/qt6/mkspecs/modules/*
-%endif
-%if 0%{?fedora} > 28
-%{_libdir}/qt6/mkspecs/modules/*
-%endif
-%if %{defined rhel}
-%{_libdir}/qt6/mkspecs/modules/*
-%endif
+%{_libdir}/libkdsoap-qt6.so
+%{_libdir}/libkdsoap-server-qt6.so
+%{_prefix}/share/mkspecs/features/
 
 %changelog
 * Tue Jun 29 2021 Allen Winter <allen.winter@kdab.com> 2.0.0
