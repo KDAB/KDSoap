@@ -7,13 +7,15 @@ It can be used to create client applications for web services and also provides
 the means to create web services without the need for any further component such
 as a dedicated web server.
 
+KDSoap also supports writing SOAP servers easily.
+
 KD Soap targets C++ programmers who use Qt in their applications.
 
 For more information, see https://www.kdab.com/development-resources/qt-tools/kd-soap
 
 Using KD Soap
 =============
-KD Soap requires Qt 5.7.0 or newer, and a compiler with C++11 support.
+KD Soap requires Qt 5.9.0 or newer, and a compiler with C++11 support.
 Qt6 support is added starting with KD Soap version 2.0.
 
 See [INSTALL.txt](INSTALL.txt) for installation instructions using CMake.
