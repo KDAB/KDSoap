@@ -24,7 +24,7 @@ After reading the introductory overview files in doc/
 you will find more information at these places:
 
  * [detailed browsable API reference](https://docs.kdab.com/kdsoap)
- * [programmers manual with examples](doc/manual/kdsoap.pdf)
+ * [programmers manual with examples](docs/manual/kdsoap.pdf)
  * [our sorted example programs](examples/)
 
 Contact
