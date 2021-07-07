@@ -9,7 +9,7 @@ Client-side:
 
 Server-side:
 ============
-*
+* Disable HTTP/2 support (which Qt 6 enables by default), it causes trouble with some SOAP servers (issue #246).
 
 WSDL parser / code generator changes, applying to both client and server side:
 ================================================================

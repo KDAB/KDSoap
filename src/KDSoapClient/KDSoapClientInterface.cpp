@@ -89,6 +89,11 @@ QNetworkRequest KDSoapClientInterfacePrivate::prepareRequest(const QString &meth
 {
     QNetworkRequest request(QUrl(this->m_endPoint));
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    // HTTP/2 (on by default since Qt 6) creates trouble, disable it for now (https://github.com/KDAB/KDSoap/issues/246)
+    request.setAttribute(QNetworkRequest::Http2AllowedAttribute, false);
+#endif
+
     QString soapAction = action;
 
     if (soapAction.isNull()) {
