@@ -66,7 +66,7 @@ current contact information at www.novell.com.
          <xs:documentation>
 				If name is not present, the original name value from the
 				notification message will be used.
-				A container is requied for accepting a shared folder notification.
+				A container is required for accepting a shared folder notification.
 				It is the container id of the parent folder under which the new
 				folder will be placed.
 				If container is not present, the shared folder will be put
@@ -324,7 +324,7 @@ current contact information at www.novell.com.
 				Forwarding a message is a two step process.
 				First you call the method with the id of the original item.
 				A new mail item is returned.
-				It has the orignal subject.
+				It has the original subject.
 				The caller is responsible to prepend "Fwd:" or what ever they
 				want to modify the original subject.
 				If the caller wants the original message body returned, they need
@@ -1105,9 +1105,9 @@ current contact information at www.novell.com.
    <xs:element name="removeCustomDefinitionRequest">
       <xs:annotation>
          <xs:documentation>
-				This method remove the custom field defintion not the field and
+				This method remove the custom field definition not the field and
 				values within an item.
-				To delete custom defintions from personal address book entries, set
+				To delete custom definitions from personal address book entries, set
 				books = "1", else the definition will be deleted from mail items.
 				This method can take a long time to execute.
 				You can set doAsynchronous to have the custom field definition
@@ -1259,7 +1259,7 @@ current contact information at www.novell.com.
 				Replying to a message is a two step process.
 				First you call the method with the id of the original item.
 				A new mail item is returned.
-				It has the orignal subject.
+				It has the original subject.
 				The caller is responsible to prepend "Re:" or what ever they
 				want to modify the original subject.
 				If the caller wants the original message body returned, they need

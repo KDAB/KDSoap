@@ -36,7 +36,7 @@ Server-side:
   (fix compilation error, and set version to SOAP_1_2 in the 1.2 binding) (SOAP-44).
 * Fix handling of requests in RPC mode.
 * Fix small memory leak if the device returned from processFileRequest can not be accessed (SOAP-48).
-* Clean incoming path recieved via HTTP from "./" and "../" (SOAP-49).
+* Clean incoming path received via HTTP from "./" and "../" (SOAP-49).
 * Add ability to set custom ssl configuration for new connections.
 
 Code generator changes, applying to both client and server side:

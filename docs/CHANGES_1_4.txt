@@ -30,7 +30,7 @@ Code generator changes, applying to both client and server side:
 * Only set xsi:nil="true" on elements that are marked as nillable in the WSDL file.
 * Omit non-nillable empty elements of a complex type.
 * Support for minOccurs=0 for elements and use=optional for attributes:
-   omit such elements/attributes when they haven't been set by the C++ code explicitely. (SOAP-93/SOAP-80)
+   omit such elements/attributes when they haven't been set by the C++ code explicitly. (SOAP-93/SOAP-80)
    optionally wrap them in a boost::optional or use raw pointers so apps can find out the element is missing (issue43).
 * Support for attributes marked as "prohibited", ensuring they are not settable nor sent in the request. (SOAP-102)
 * Generate <service> element automatically if there's none in the WSDL file. (SOAP-60/issue9)

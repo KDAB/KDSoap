@@ -203,7 +203,7 @@ current contact information at www.novell.com.
 <!-- 
 Applications can be notified by the POA when an event they have subscribed to occurs (a.k.a. slap).  
 The object that is transported is defined by the Notify object.  There can be many notify instantances in one slap.  
-The notification instances will be seperated by \r\n.  For example,
+The notification instances will be separated by \r\n.  For example,
 
 <notify><userid>username</userid><key>GWEvents</key></notify>\r\n
 <notify><userid>username</userid><key>GWEvents</key></notify>\r\n

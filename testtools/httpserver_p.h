@@ -200,7 +200,7 @@ private:
 
         // We don't support multiple connexions so let's ask the client
         // to close the connection every time. See testCallNoReply which performs
-        // multiple connexions at the same time (QNAM keeps the old connexion open).
+        // multiple connexions at the same time (QNAM keeps the old connection open).
         httpResponse += "Connection: close\r\n";
         httpResponse += "\r\n";
         httpResponse += responseData;

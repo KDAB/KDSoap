@@ -96,7 +96,7 @@ void Settings::setWsdlFile(const QString &wsdlFile)
 {
     QString path = QDir::fromNativeSeparators(wsdlFile);
 
-    // Check first for files, since on Windows drive letters can be interpretted as schemes
+    // Check first for files, since on Windows drive letters can be interpreted as schemes
     if (QDir::isAbsolutePath(path)) {
         mWsdlUrl = QUrl::fromLocalFile(path);
         return;

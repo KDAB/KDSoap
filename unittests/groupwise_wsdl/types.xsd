@@ -1004,7 +1004,7 @@ file by physical or electronic mail, you may find current contact information at
 			Currently there is only one MessageBody part. The MessageBody part is
 			the text plain message body. The HTML message body will be an
 			attachment with a name "text.htm". The HTML message body can have
-			related part attachments. They are related if they come immediatelly
+			related part attachments. They are related if they come immediately
 			after the "text.htm" attachment and they have a "contentId" element.
 		</xs:documentation>
 	</xs:annotation>

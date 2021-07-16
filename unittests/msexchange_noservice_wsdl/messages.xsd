@@ -371,7 +371,7 @@
       <xs:element name="CreateAttachmentResponseMessage" type="m:AttachmentInfoResponseMessageType"/>
       <xs:element name="DeleteAttachmentResponseMessage" type="m:DeleteAttachmentResponseMessageType"/>
       <xs:element name="GetAttachmentResponseMessage" type="m:AttachmentInfoResponseMessageType"/>
-      <!-- Generic reponse to enumerating the items below a folder -->
+      <!-- Generic response to enumerating the items below a folder -->
       <xs:element name="FindItemResponseMessage" type="m:FindItemResponseMessageType"/>
       <xs:element name="MoveItemResponseMessage" type="m:ItemInfoResponseMessageType"/>
       <xs:element name="CopyItemResponseMessage" type="m:ItemInfoResponseMessageType"/>

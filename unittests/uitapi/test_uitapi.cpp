@@ -29,7 +29,7 @@ class UitapiRPCTest : public QObject
 
 private Q_SLOTS:
     // Using wsdl-generated code, create a job with an empty response,
-    // check that job emits finnished (https://github.com/KDAB/KDSoap/issues/94)
+    // check that job emits finished (https://github.com/KDAB/KDSoap/issues/94)
     void testEmptyRPCResponse()
     {
         // Prepare response

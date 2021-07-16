@@ -3704,7 +3704,7 @@
 							<documentation source="urn:x-fims:serviceDescription"
 								>Required</documentation>
 							<documentation source="urn:x-fims:contentOfServiceDescription">Kind of
-								duration supprted.</documentation>
+								duration supported.</documentation>
 							<documentation source="urn:x-fims:inclusionInRequest"
 								>Mandatory</documentation>
 							<documentation source="urn:x-fims:inclusionInResponse"
@@ -3817,7 +3817,7 @@
 								process.</documentation>
 							<documentation source="urn:x-fims:serviceDescription"
 								>Required</documentation>
-							<documentation source="urn:x-fims:contentOfServiceDescription">Suppport
+							<documentation source="urn:x-fims:contentOfServiceDescription">Support
 								or not.</documentation>
 							<documentation source="urn:x-fims:inclusionInRequest">Not
 								applicable</documentation>

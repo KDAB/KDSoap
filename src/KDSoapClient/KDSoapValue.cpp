@@ -353,8 +353,8 @@ void KDSoapValue::writeChildren(KDSoapNamespacePrefixes &namespacePrefixes, QXml
                                 const QString &messageNamespace, bool forceQualified) const
 {
     const KDSoapValueList &args = childValues();
-    const auto attibutes = args.attributes();
-    for (const KDSoapValue &attr : attibutes) {
+    const auto attributes = args.attributes();
+    for (const KDSoapValue &attr : attributes) {
         // Q_ASSERT(!attr.value().isNull());
 
         const QString attributeNamespace = attr.namespaceUri();

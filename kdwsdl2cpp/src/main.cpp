@@ -72,7 +72,7 @@ static void showHelp(const char *appName)
             "                            available types (helps with wrong namespaces)\n"
 #if !defined(QT_NO_SSL)
             "  -pkcs12file               Load a certificate from a PKCS12 file. You can use this option\n"
-            "                            if the WSDL file (or files refering to it) is served from a \n"
+            "                            if the WSDL file (or files referring to it) is served from a \n"
             "                            location which require certificate based authentication\n"
             "  -pkcs12password           Pass the password for the certificate file if required.\n"
             "                            This option is not secure and should be used with caution\n"
