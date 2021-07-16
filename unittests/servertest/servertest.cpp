@@ -552,20 +552,16 @@ private Q_SLOTS:
         QTest::addColumn<int>("maxThreads");
         QTest::addColumn<int>("numRequests");
         QTest::addColumn<int>("numClients");
-        QTest::addColumn<int>("expectedServerObjectsQt5");
-        QTest::addColumn<int>("expectedServerObjectsQt6");
+        QTest::addColumn<int>("expectedServerObjects");
 
         // QNetworkAccessManager only does 6 concurrent http requests
         // (QHttpNetworkConnectionPrivate::defaultHttpChannelCount = 6)
         // so with numRequests > 6, don't expect more than 6 threads being used; for this
         // we would need more than one QNAM, i.e. more than one KDSoapClientInterface.
 
-        // Qt6: Something changed in QNAM, the first two requests always end up in the same server object...
-        // Something related to pipelining? For 5 requests, QNAM opens 4 connections.
-
-        QTest::newRow("5_parallel_requests") << 5 << 5 << 1 << 5 << 4;
-        QTest::newRow("5_requests_in_3_threads") << 3 << 5 << 1 << 3 << 3;
-        QTest::newRow("3_requests_in_3_threads_from_2_clients") << 3 << 3 << 2 << 3 << 2; // this one reuses the idle threads
+        QTest::newRow("5_parallel_requests") << 5 << 5 << 1 << 5;
+        QTest::newRow("5_requests_in_3_threads") << 3 << 5 << 1 << 3;
+        QTest::newRow("3_requests_in_3_threads_from_2_clients") << 3 << 3 << 2 << 3; // this one reuses the idle threads
     }
 
     void testMultipleThreads()
@@ -573,8 +569,7 @@ private Q_SLOTS:
         QFETCH(int, maxThreads);
         QFETCH(int, numRequests);
         QFETCH(int, numClients);
-        QFETCH(int, expectedServerObjectsQt5);
-        QFETCH(int, expectedServerObjectsQt6);
+        QFETCH(int, expectedServerObjects);
         {
             KDSoapThreadPool threadPool;
             threadPool.setMaxThreadCount(maxThreads);
@@ -596,13 +591,7 @@ private Q_SLOTS:
                 for (const KDSoapMessage &response : qAsConst(m_returnMessages)) {
                     QCOMPARE(response.childValues().first().value().toString(), expectedCountry());
                 }
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-                QCOMPARE(s_serverObjects.count(), expectedServerObjectsQt5);
-                Q_UNUSED(expectedServerObjectsQt6)
-#else
-                QCOMPARE(s_serverObjects.count(), expectedServerObjectsQt6);
-                Q_UNUSED(expectedServerObjectsQt5)
-#endif
+                QCOMPARE(s_serverObjects.count(), expectedServerObjects);
                 QMapIterator<QThread *, CountryServerObject *> it(s_serverObjects);
                 while (it.hasNext()) {
                     QThread *thread = it.next().key();
