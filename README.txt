@@ -20,7 +20,7 @@ Qt6 support is added starting with KD Soap version 2.0.
 
 See [INSTALL.txt](INSTALL.txt) for installation instructions using CMake.
 
-After reading the introductory overview files in doc/
+After reading the introductory overview files in docs/
 you will find more information at these places:
 
  * [detailed browsable API reference](https://docs.kdab.com/kdsoap)
@@ -42,7 +42,7 @@ Stay up-to-date with KDAB product announcements:
 Get Involved
 ============
 KDAB will happily accept external contributions, but substantial contributions require
-a signed [Copyright Assignment Agreement](doc/KDSoap-CopyrightAssignmentForm.pdf).
+a signed [Copyright Assignment Agreement](docs/KDSoap-CopyrightAssignmentForm.pdf).
 
 Contact info@kdab.com for more information about the Copyright Assignment Agreement.
 
