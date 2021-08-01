@@ -15,5 +15,6 @@ project(ws_usernametoken_support)
 
 set(WSDL_FILES wsusernametoken.wsdl)
 set(ws_usernametoken_support_SRCS wsusernametokentest.cpp)
+set(KSWSDL2CPP_OPTION -no-sync -no-async -no-async-jobs)
 
 add_unittest(${ws_usernametoken_support_SRCS})

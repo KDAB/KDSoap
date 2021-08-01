@@ -12,6 +12,7 @@
 ##
 
 set(unqualified_formdefault_SRCS test_unqualified.cpp)
+set(KSWSDL2CPP_OPTION -no-async -no-async-jobs)
 set(WSDL_FILES unqualified.wsdl)
 add_unittest(${unqualified_formdefault_SRCS})
 

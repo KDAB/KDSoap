@@ -12,6 +12,7 @@
 ##
 
 set(import_definition_SRCS test_import_definition.cpp)
+set(KSWSDL2CPP_OPTION -no-async -no-async-jobs)
 set(WSDL_FILES import_definition.wsdl
 import_definition_wsdl.wsdl)
 add_unittest(${import_definition_SRCS})

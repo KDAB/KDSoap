@@ -13,6 +13,7 @@
 
 project(salesforce_wsdl)
 
+set(KSWSDL2CPP_OPTION -no-async -no-async-jobs)
 set(WSDL_FILES salesforce-partner.wsdl)
 set(salesforce_wsdl_SRCS salesforce_wsdl.cpp)
 

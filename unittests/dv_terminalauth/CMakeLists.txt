@@ -12,5 +12,6 @@
 ##
 
 set(dv_terminalauth_SRCS dv_terminalauth.cpp)
+set(KSWSDL2CPP_OPTION -no-async -no-async-jobs)
 set(WSDL_FILES WS_DV_TerminalAuth.wsdl)
 add_unittest(${dv_terminalauth_SRCS})

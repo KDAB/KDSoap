@@ -12,6 +12,7 @@
 ##
 
 set(element_ns_wsdl_SRCS testcall.cpp)
+set(KSWSDL2CPP_OPTION -no-async -no-async-jobs)
 set(WSDL_FILES test.wsdl)
 add_unittest(${element_ns_wsdl_SRCS})
 

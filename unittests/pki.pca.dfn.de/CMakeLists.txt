@@ -13,4 +13,5 @@
 
 set(pki.pca.dfn.de_SRCS test_pki.cpp)
 set(WSDL_FILES pki.pca.dfn.de.wsdl)
+set(KSWSDL2CPP_OPTION -no-async -no-async-jobs)
 add_unittest(${pki.pca.dfn.de_SRCS})
