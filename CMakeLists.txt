@@ -37,19 +37,7 @@
 #  Default=false
 #
 
-cmake_minimum_required(VERSION 3.0.2)
-if(POLICY CMP0020)
-  cmake_policy(SET CMP0020 NEW)
-endif()
-if(POLICY CMP0025)
-  cmake_policy(SET CMP0025 NEW)
-endif()
-if(POLICY CMP0054)
-  cmake_policy(SET CMP0054 NEW)
-endif()
-if(POLICY CMP0063)
-  cmake_policy(SET CMP0063 NEW) # silence warning due to CMAKE_CXX_VISIBILITY_PRESET
-endif()
+cmake_minimum_required(VERSION 3.3)
 
 if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/kdwsdl2cpp/libkode/common")
   message(FATAL_ERROR "Please do git submodule update --init --recursive")
