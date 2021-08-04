@@ -11,8 +11,8 @@
 ## Contact info@kdab.com if any conditions of this licensing are not clear to you.
 ##
 
-find_package(Qt${QT_MAJOR_VERSION} ${QT_MIN_VERSION} COMPONENTS Xml CONFIG REQUIRED) #libkode requires Xml
-list(APPEND QT_LIBRARIES Qt${QT_MAJOR_VERSION}::Xml)
+find_package(Qt${Qt_VERSION_MAJOR} ${QT_MIN_VERSION} COMPONENTS Xml CONFIG REQUIRED) #libkode requires Xml
+list(APPEND QT_LIBRARIES Qt${Qt_VERSION_MAJOR}::Xml)
 
 include_directories(libkode)
 

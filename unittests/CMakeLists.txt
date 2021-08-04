@@ -11,8 +11,8 @@
 ## Contact info@kdab.com if any conditions of this licensing are not clear to you.
 ##
 
-find_package(Qt${QT_MAJOR_VERSION} ${QT_MIN_VERSION} COMPONENTS Test CONFIG REQUIRED)
-list(APPEND QT_LIBRARIES Qt${QT_MAJOR_VERSION}::Test)
+find_package(Qt${Qt_VERSION_MAJOR} ${QT_MIN_VERSION} COMPONENTS Test CONFIG REQUIRED)
+list(APPEND QT_LIBRARIES Qt${Qt_VERSION_MAJOR}::Test)
 
 include_directories(../src/ ../src/KDSoapClient/ ../src/KDSoapServer/ ../testtools/ ../kdwsdl2cpp/ ../kdwsdl2cpp/src/ ../kdwsdl2cpp/libkode/code_generation/ ../kdwsdl2cpp/libkode/ ../kdwsdl2cpp/libkode/schema/ ../kdwsdl2cpp/wsdl/)
 include(${CMAKE_BINARY_DIR}/KDSoap/KDSoapMacros.cmake)

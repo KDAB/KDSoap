@@ -98,7 +98,7 @@ endif()
 if(${PROJECT_NAME}_QT6)
   set(QT_MIN_VERSION "6.0.0")
   find_package(Qt6 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS Core Network)
-  set(QT_MAJOR_VERSION 6)
+  set(Qt_VERSION_MAJOR 6)
   list(APPEND QT_LIBRARIES Qt6::Core Qt6::Network)
   set(${PROJECT_NAME}_LIBRARY_QTID "-qt6")
   set(libkode_QT6 ON)
@@ -106,7 +106,7 @@ else()
   # Qt 5.9 required for QNetworkRequest::NoLessSafeRedirectPolicy
   set(QT_MIN_VERSION "5.9.0")
   find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS Core Network)
-  set(QT_MAJOR_VERSION 5)
+  set(Qt_VERSION_MAJOR 5)
   list(APPEND QT_LIBRARIES Qt5::Core Qt5::Network)
   set(${PROJECT_NAME}_LIBRARY_QTID "")
 endif()
@@ -216,7 +216,7 @@ if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
 
   # Generate .pri file for qmake users
   #TODO: ECM does not support Qt6 yet
-  if(QT_MAJOR_VERSION EQUAL 5 AND
+  if(Qt_VERSION_MAJOR EQUAL 5 AND
      CMAKE_VERSION VERSION_GREATER "3.11.99" AND NOT CMAKE_CONFIGURATION_TYPES) # Not working with VS generator or older cmake versions
     include(ECMGeneratePriFile)
     ecm_generate_pri_file(BASE_NAME KDSoapClient
