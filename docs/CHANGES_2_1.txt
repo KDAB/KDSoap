@@ -1,7 +1,7 @@
 
 General:
 ========
-*
+* CMake buildsystem - increase min version to 3.3.0
 
 Client-side:
 ============

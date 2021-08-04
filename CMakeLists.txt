@@ -73,14 +73,6 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/ECM/modules")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/KDAB/modules")
 
-if(CMAKE_VERSION VERSION_LESS "3.1")
-  if(CMAKE_COMPILER_IS_GNUCXX)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-  endif()
-else()
-  set(CMAKE_CXX_STANDARD 11)
-endif()
-
 include(FeatureSummary)
 
 option(${PROJECT_NAME}_STATIC "Build statically" OFF)
@@ -126,6 +118,9 @@ include(KDQtInstallPaths) #to set QT_INSTALL_FOO variables
 set(CMAKE_INCLUDE_CURRENT_DIR TRUE)
 set(CMAKE_AUTOMOC TRUE)
 set(CMAKE_AUTORCC ON)
+
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Default to hidden visibility for symbols
 set(CMAKE_C_VISIBILITY_PRESET hidden)
