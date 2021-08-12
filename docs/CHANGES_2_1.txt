@@ -1,7 +1,8 @@
 
 General:
 ========
-* buildsystem - increase minimum CMake version to 3.3.0
+* buildsystem - Increase minimum CMake version to 3.3.0
+* buildsystem - Build in Release mode by default (in non-developer situations)
 
 Client-side:
 ============
