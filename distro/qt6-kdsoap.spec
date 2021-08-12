@@ -64,20 +64,19 @@ cmake . -DCMAKE_INSTALL_PREFIX=/usr -DKDSoap_QT6=True -DCMAKE_SKIP_RPATH=True -D
 
 %files
 %defattr(-,root,root)
-%{_prefix}/share/doc/KDSoap
+%{_prefix}/share/doc/KDSoap-qt6
 %{_libdir}/libkdsoap-qt6.so.*
 %{_libdir}/libkdsoap-server-qt6.so.*
 
 %files devel
 %defattr(-,root,root)
-%{_bindir}/kdwsdl2cpp
-%{_includedir}/KDSoapClient
-%{_includedir}/KDSoapServer
-%dir %{_libdir}/cmake/KDSoap
-%{_libdir}/cmake/KDSoap/*
+%{_bindir}/kdwsdl2cpp-qt6
+%{_includedir}/KDSoap-qt6/KDSoapClient
+%{_includedir}/KDSoap-qt6/KDSoapServer
+%dir %{_libdir}/cmake/KDSoap-qt6
+%{_libdir}/cmake/KDSoap-qt6/*
 %{_libdir}/libkdsoap-qt6.so
 %{_libdir}/libkdsoap-server-qt6.so
-%{_prefix}/share/mkspecs/features/
 
 %changelog
 * Tue Jun 29 2021 Allen Winter <allen.winter@kdab.com> 2.0.0
