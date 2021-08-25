@@ -75,4 +75,5 @@ add_custom_command(
 add_custom_target(kdsoap-api.qch ALL DEPENDS ${DOXYGEN_OUTPUT_DIR}/qch/kdsoap-api.qch)
 add_custom_target(docs DEPENDS kdsoap-api.qch)
 
-install(FILES ${DOXYGEN_OUTPUT_DIR}/qch/kdsoap-api.qch DESTINATION ${INSTALL_DOC_DIR})
+set(QCH_INSTALL_DIR ${CMAKE_INSTALL_DOCDIR} CACHE STRING "Install location of Qt Assistant help files.")
+install(FILES ${DOXYGEN_OUTPUT_DIR}/qch/kdsoap-api.qch DESTINATION ${QCH_INSTALL_DIR})
