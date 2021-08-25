@@ -11,6 +11,42 @@
 ## Contact info@kdab.com if any conditions of this licensing are not clear to you.
 ##
 
+# dot should come with Doxygen find_package(Doxygen)
+if(DOXYGEN_DOT_EXECUTABLE)
+  set(HAVE_DOT "YES")
+else()
+  set(HAVE_DOT "NO")
+  message(STATUS "Unable to provide inheritance diagrams for the API documentation. To fix, install the graphviz project from https://www.graphviz.org")
+endif()
+
+# latex
+set(HAVE_LATEX "NO")
+find_package(LATEX)
+set_package_properties(LATEX PROPERTIES
+  TYPE OPTIONAL
+  DESCRIPTION "A document preparation system"
+  URL "https://www.latex-project.org"
+  PURPOSE "Provides for building a PS or PDF version of the API documentation"
+)
+if(LATEX_FOUND)
+  if(MAKEINDEX_COMPILER)
+    set(HAVE_LATEX "YES")
+  else()
+    message(STATUS "The LaTeX makeindex compiler could not be located. Unable to generate the buildsystem for LaTex documentation generation.")
+  endif()
+endif()
+
+# qhelpgenerator
+find_program(QHELPGEN_EXECUTABLE qhelpgenerator
+  HINTS ${QT_INSTALL_BINS}
+)
+if(QHELPGEN_EXECUTABLE)
+  set(HAVE_QHELPGEN "YES")
+else()
+  set(HAVE_QHELPGEN "NO")
+  message(STATUS "Unable to generate the API documentation in qch format. To fix, install the qthelpgenerator program which comes with Qt.")
+endif()
+
 find_file(QDOC_QTCORE_TAG qtcore.tags
   HINTS ${QT_INSTALL_DOCS}/qtcore
   HINTS ${QT_INSTALL_DATA}/doc/qtcore
