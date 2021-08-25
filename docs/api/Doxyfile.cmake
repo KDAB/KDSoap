@@ -38,7 +38,7 @@ PROJECT_NAME           = "KD SOAP API Documentation"
 # could be handy for archiving the generated documentation or if some version
 # control system is used.
 
-PROJECT_NUMBER         = @KDSoap_VERSION@
+PROJECT_NUMBER         = @KDSoap_VERSION_MAJOR@.@KDSoap_VERSION_MINOR@
 
 # Using the PROJECT_BRIEF tag one can provide an optional one line description
 # for a project that appears at the top of each page and should give viewer a
