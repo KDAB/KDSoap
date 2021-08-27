@@ -101,4 +101,4 @@ private:
 
 QTEST_MAIN(MSExchangeNoServiceTest)
 
-#include "msexchange_noservice_wsdl.moc"
+#include "test_msexchange_noservice_wsdl.moc"

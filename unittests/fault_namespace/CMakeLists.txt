@@ -11,5 +11,5 @@
 ## Contact info@kdab.com if any conditions of this licensing are not clear to you.
 ##
 
-set(fault_namespace_SRCS fault_namespace.cpp)
+set(fault_namespace_SRCS test_fault_namespace.cpp)
 add_unittest(${fault_namespace_SRCS})

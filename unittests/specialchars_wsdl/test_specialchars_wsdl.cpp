@@ -42,4 +42,4 @@ void TestConversion::test()
 
 QTEST_MAIN(TestConversion)
 
-#include "testconversion.moc"
+#include "test_specialchars_wsdl.moc"

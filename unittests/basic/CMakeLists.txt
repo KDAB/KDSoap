@@ -10,9 +10,8 @@
 ##
 ## Contact info@kdab.com if any conditions of this licensing are not clear to you.
 ##
-
 project(basic)
 
-set(basic_SRCS basic.cpp)
+set(basic_SRCS test_basic.cpp)
 add_unittest(${basic_SRCS})
 

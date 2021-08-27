@@ -616,4 +616,4 @@ private:
 
 QTEST_MAIN(MSExchangeTest)
 
-#include "msexchange_wsdl.moc"
+#include "test_msexchange_wsdl.moc"

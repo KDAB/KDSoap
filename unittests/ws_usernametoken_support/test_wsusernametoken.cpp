@@ -95,4 +95,4 @@ private:
 
 QTEST_MAIN(WSUsernameTokenTest)
 
-#include "wsusernametokentest.moc"
+#include "test_wsusernametoken.moc"

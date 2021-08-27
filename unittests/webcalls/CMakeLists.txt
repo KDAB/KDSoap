@@ -13,6 +13,6 @@
 
 project(webcalls)
 
-set(webcalls_SRCS webcalls.cpp)
+set(webcalls_SRCS test_webcalls.cpp)
 add_unittest(${webcalls_SRCS})
 

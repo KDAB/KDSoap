@@ -11,7 +11,7 @@
 ## Contact info@kdab.com if any conditions of this licensing are not clear to you.
 ##
 
-set(optionaltype_pointer_SRCS testpointerapi.cpp)
+set(optionaltype_pointer_SRCS test_optionaltype_pointer.cpp)
 set(KSWSDL2CPP_OPTION -optional-element-type raw-pointer)
 set(WSDL_FILES test.wsdl)
 add_unittest(${optionaltype_pointer_SRCS})

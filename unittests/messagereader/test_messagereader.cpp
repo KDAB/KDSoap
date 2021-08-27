@@ -109,4 +109,4 @@ private Q_SLOTS:
 
 QTEST_MAIN(TestMessageReader)
 
-#include "messagereader.moc"
+#include "test_messagereader.moc"

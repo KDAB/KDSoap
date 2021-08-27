@@ -11,6 +11,6 @@
 ## Contact info@kdab.com if any conditions of this licensing are not clear to you.
 ##
 
-set(dv_terminalauth_SRCS dv_terminalauth.cpp)
+set(dv_terminalauth_SRCS test_dv_terminalauth.cpp)
 set(WSDL_FILES WS_DV_TerminalAuth.wsdl)
 add_unittest(${dv_terminalauth_SRCS})

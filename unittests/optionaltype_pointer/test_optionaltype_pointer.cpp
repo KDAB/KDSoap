@@ -14,7 +14,7 @@
 **
 ****************************************************************************/
 
-#include "testpointerapi.h"
+#include "test_optionaltype_pointer.h"
 #include <QTest>
 #include <QDebug>
 #include <QList>

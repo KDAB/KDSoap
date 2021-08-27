@@ -11,7 +11,7 @@
 ## Contact info@kdab.com if any conditions of this licensing are not clear to you.
 ##
 
-set(optionaltype_regular_SRCS testregularapi.cpp)
+set(optionaltype_regular_SRCS test_optionaltype_regular.cpp)
 set(WSDL_FILES test.wsdl)
 set(KSWSDL2CPP_OPTION -namespace KDAB)
 add_unittest(${optionaltype_regular_SRCS})

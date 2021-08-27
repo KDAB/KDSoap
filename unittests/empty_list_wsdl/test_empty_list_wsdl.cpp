@@ -55,4 +55,4 @@ private Q_SLOTS:
 
 QTEST_MAIN(EmptyListTest)
 
-#include "empty_list_wsdl.moc"
+#include "test_empty_list_wsdl.moc"

@@ -138,4 +138,4 @@ private:
 
 QTEST_MAIN(WebCalls)
 
-#include "webcalls.moc"
+#include "test_webcalls.moc"

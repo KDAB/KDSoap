@@ -1573,4 +1573,4 @@ void CountryServerObject::processRequest(const KDSoapMessage &request, KDSoapMes
     }
 }
 
-#include "servertest.moc"
+#include "test_serverlib.moc"

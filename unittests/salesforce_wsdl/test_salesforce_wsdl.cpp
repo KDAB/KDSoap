@@ -135,4 +135,4 @@ private:
 
 QTEST_MAIN(SalesForceTest)
 
-#include "salesforce_wsdl.moc"
+#include "test_salesforce_wsdl.moc"

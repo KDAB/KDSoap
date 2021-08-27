@@ -11,5 +11,5 @@
 ## Contact info@kdab.com if any conditions of this licensing are not clear to you.
 ##
 
-set(kddatetime_SRCS kddatetime.cpp)
+set(kddatetime_SRCS test_kddatetime.cpp)
 add_unittest(${kddatetime_SRCS})

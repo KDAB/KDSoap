@@ -11,6 +11,6 @@
 ## Contact info@kdab.com if any conditions of this licensing are not clear to you.
 ##
 
-set(empty_list_wsdl_SRCS empty_list_wsdl.cpp)
+set(empty_list_wsdl_SRCS test_empty_list_wsdl.cpp)
 set(WSDL_FILES empty_list.wsdl)
 add_unittest(${empty_list_wsdl_SRCS})

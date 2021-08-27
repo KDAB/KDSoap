@@ -14,26 +14,32 @@
 **
 ****************************************************************************/
 
-#include "KDSoapClientInterface.h"
-#include "wsdl_date_example.h"
+#include "KDSoapMessageWriter_p.h"
 #include <QTest>
-#include <QEventLoop>
-#include <QDebug>
 
-class DateExampleWSDL : public QObject
+class FaultNamespace : public QObject
 {
     Q_OBJECT
-public:
-private slots:
-    void slotCheckCompilation()
+private Q_SLOTS:
+
+    void testFaultMessageNamespace()
     {
-        DateExample service;
-        StringToDateJob job(&service);
-        QDate result = job.dateObject();
-        QCOMPARE(result, QDate());
+        KDSoapMessageWriter writer;
+        KDSoapMessage faultMessage;
+        faultMessage.setFault(true);
+        faultMessage.addArgument("faultCode", "fooCode");
+
+        const QByteArray faultString("Fault");
+        const QByteArray startTag("<soap:" + faultString + ">");
+        const QByteArray endTag("</soap:" + faultString + ">");
+
+        const QByteArray result = writer.messageToXml(faultMessage, faultString, KDSoapHeaders(), QMap<QString, KDSoapMessage>());
+
+        QVERIFY(result.contains(startTag));
+        QVERIFY(result.contains(endTag));
     }
 };
 
-QTEST_MAIN(DateExampleWSDL)
+QTEST_MAIN(FaultNamespace)
 
-#include "date_example.moc"
+#include "test_fault_namespace.moc"

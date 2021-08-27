@@ -54,4 +54,4 @@ private Q_SLOTS:
 
 QTEST_MAIN(EmptyElementTest)
 
-#include "empty_element_wsdl.moc"
+#include "test_empty_element_wsdl.moc"

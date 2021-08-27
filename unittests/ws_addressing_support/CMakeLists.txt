@@ -14,6 +14,6 @@
 project(ws_addressing_support)
 
 set(WSDL_FILES wsaddressing.wsdl)
-set(ws_addressing_support_SRCS wsaddressingtest.cpp)
+set(ws_addressing_support_SRCS test_wsaddressing.cpp)
 
 add_unittest(${ws_addressing_support_SRCS})

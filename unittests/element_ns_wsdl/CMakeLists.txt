@@ -11,7 +11,7 @@
 ## Contact info@kdab.com if any conditions of this licensing are not clear to you.
 ##
 
-set(element_ns_wsdl_SRCS testcall.cpp)
+set(element_ns_wsdl_SRCS test_element_ns_wsdl.cpp)
 set(WSDL_FILES test.wsdl)
 add_unittest(${element_ns_wsdl_SRCS})
 

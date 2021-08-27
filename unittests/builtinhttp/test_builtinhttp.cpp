@@ -513,4 +513,4 @@ private:
 
 QTEST_MAIN(BuiltinHttpTest)
 
-#include "builtinhttp.moc"
+#include "test_builtinhttp.moc"

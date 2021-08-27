@@ -83,4 +83,4 @@ private Q_SLOTS:
 
 QTEST_MAIN(TestDVTerminalAuth)
 
-#include "dv_terminalauth.moc"
+#include "test_dv_terminalauth.moc"

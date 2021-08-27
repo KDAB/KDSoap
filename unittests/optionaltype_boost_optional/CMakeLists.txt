@@ -11,7 +11,7 @@
 ## Contact info@kdab.com if any conditions of this licensing are not clear to you.
 ##
 
-set(optionaltype_boost_optional_SRCS testboostapi.cpp)
+set(optionaltype_boost_optional_SRCS test_boostapi.cpp)
 set(KSWSDL2CPP_OPTION -optional-element-type boost-optional)
 set(WSDL_FILES test.wsdl)
 add_unittest(${optionaltype_boost_optional_SRCS})

@@ -106,4 +106,4 @@ private Q_SLOTS:
 
 QTEST_MAIN(DefaultAttributeValueTest)
 
-#include "default_attribute_value_wsdl.moc"
+#include "test_default_attribute_value_wsdl.moc"

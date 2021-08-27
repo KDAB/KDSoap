@@ -13,7 +13,7 @@
 
 project(servertest)
 
-set(servertest_SRCS servertest.cpp)
+set(servertest_SRCS test_serverlib.cpp)
 set(EXTRA_LIBS kdsoap-server)
 add_unittest(${servertest_SRCS})
 

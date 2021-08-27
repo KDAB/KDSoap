@@ -11,6 +11,6 @@
 ## Contact info@kdab.com if any conditions of this licensing are not clear to you.
 ##
 
-set(date_example_SRCS date_example.cpp)
+set(date_example_SRCS test_date_example.cpp)
 set(WSDL_FILES date_example.wsdl)
 add_unittest(${date_example_SRCS})

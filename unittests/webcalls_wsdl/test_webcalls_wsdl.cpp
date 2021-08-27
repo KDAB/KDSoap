@@ -151,4 +151,4 @@ private:
 
 QTEST_MAIN(WebCallsWSDL)
 
-#include "webcalls_wsdl.moc"
+#include "test_webcalls_wsdl.moc"
