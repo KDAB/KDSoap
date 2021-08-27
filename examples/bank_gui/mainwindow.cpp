@@ -33,7 +33,7 @@ MainWindow::MainWindow(QWidget *parent)
     mLblResult = new QLabel(tr("Result: "), this);
     mLblAnim = new QLabel(this);
 
-    mMovAnim = new QMovie(QString::fromLatin1(":/animations/anim.mng"));
+    mMovAnim = new QMovie(QString::fromLatin1(":/animations/spinner.gif"));
 
     QVBoxLayout *centralLayout = new QVBoxLayout(this);
     QHBoxLayout *btnsLayout = new QHBoxLayout();

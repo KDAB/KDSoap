@@ -1,5 +1,5 @@
  <!DOCTYPE RCC><RCC version="1.0">
  <qresource prefix="/animations">
-     <file alias="anim.mng">anim.mng</file>
+     <file>spinner.gif</file>
  </qresource>
  </RCC>
