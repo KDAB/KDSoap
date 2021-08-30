@@ -113,17 +113,43 @@ private slots:
         }
     }
 
-    void testOrteLookup()
+    void testOrteLookupSync()
     {
-        // TODO OrteLookup::OrteLookupSoap12 lookup;
-        OrteLookup::OrteLookupSoap lookup;
-        // lookup.setSoapVersion(KDSoapClientInterface::SOAP1_2);
+        OrteLookup::OrteLookupSoap lookupService;
+        QCOMPARE(lookupService.clientInterface()->soapVersion(), KDSoapClientInterface::SOAP1_1);
         TNS__OrteStartWith args;
         args.setPrefix(QLatin1String("Berl"));
-        TNS__OrteStartWithResponse resp = lookup.orteStartWith(args);
-        if (!lookup.lastError().isEmpty()) {
-            qWarning("%s", qPrintable(lookup.lastError()));
+        const TNS__OrteStartWithResponse resp = lookupService.orteStartWith(args);
+        if (!lookupService.lastError().isEmpty()) {
+            qWarning("%s", qPrintable(lookupService.lastError()));
         }
+        QCOMPARE(resp.orteStartWithResult(), QString::fromLatin1("Berlin;Berlstedt"));
+    }
+
+    void testOrteLookup12Sync()
+    {
+        OrteLookup::OrteLookupSoap12 lookupService;
+        QCOMPARE(lookupService.clientInterface()->soapVersion(), KDSoapClientInterface::SOAP1_2);
+        TNS__OrteStartWith args;
+        args.setPrefix(QLatin1String("Berl"));
+        const TNS__OrteStartWithResponse resp = lookupService.orteStartWith(args);
+        if (!lookupService.lastError().isEmpty()) {
+            qWarning("%s", qPrintable(lookupService.lastError()));
+        }
+        QCOMPARE(resp.orteStartWithResult(), QString::fromLatin1("Berlin;Berlstedt"));
+    }
+
+    void testOrteLookupWithJob()
+    {
+        OrteLookup::OrteLookupSoap lookupService;
+        TNS__OrteStartWith args;
+        args.setPrefix(QLatin1String("Berl"));
+        auto *job = new OrteLookup::OrteLookupSoapJobs::OrteStartWithJob(&lookupService);
+        job->setParameters(args);
+        QSignalSpy spy(job, &KDSoapJob::finished);
+        job->start();
+        QVERIFY(spy.wait());
+        const TNS__OrteStartWithResponse resp = job->resultParameters();
         QCOMPARE(resp.orteStartWithResult(), QString::fromLatin1("Berlin;Berlstedt"));
     }
 
