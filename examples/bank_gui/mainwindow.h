@@ -25,6 +25,7 @@
 QT_BEGIN_NAMESPACE
 class QPushButton;
 class QLabel;
+class QProgressBar;
 class QMovie;
 QT_END_NAMESPACE
 
@@ -38,7 +39,7 @@ private slots:
     void syncCall();
     void asyncCall();
     void done(const TNS__GetBankResponseType &response);
-    void doneError(const KDSoapMessage &error);
+    void nextJob();
 
 private:
     void nextBank();
@@ -48,6 +49,7 @@ private:
     QLabel *mLblResult;
     QLabel *mLblAnim;
     QMovie *mMovAnim;
+    QProgressBar *mProgressBar;
 
     int mIndex = 0;
 
