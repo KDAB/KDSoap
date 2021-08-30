@@ -144,7 +144,7 @@ private slots:
         OrteLookup::OrteLookupSoap lookupService;
         TNS__OrteStartWith args;
         args.setPrefix(QLatin1String("Berl"));
-        auto *job = new OrteLookup::OrteLookupSoapJobs::OrteStartWithJob(&lookupService);
+        auto job = new OrteLookup::OrteLookupSoapJobs::OrteStartWithJob(&lookupService);
         job->setParameters(args);
         QSignalSpy spy(job, &KDSoapJob::finished);
         job->start();
