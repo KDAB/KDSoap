@@ -31,6 +31,8 @@ static int s_numCalls = 10;
 MainWindow::MainWindow(QWidget *parent)
     : QWidget(parent)
 {
+    setWindowTitle(tr("KDSoap test program"));
+    resize(600, 200);
     mBtnSync = new QPushButton(tr("Sync Calls"), this);
     mBtnAsync = new QPushButton(tr("Async Calls"), this);
     mLblResult = new QLabel(tr("Result: "), this);
@@ -58,6 +60,7 @@ MainWindow::MainWindow(QWidget *parent)
     centralLayout->addLayout(lblsLayout);
 
     mLblAnim->setMovie(mMovAnim);
+    mLblAnim->setFixedSize(66, 66);
 
     connect(mBtnSync, &QPushButton::clicked, this, &MainWindow::syncCall);
     connect(mBtnAsync, &QPushButton::clicked, this, &MainWindow::asyncCall);
