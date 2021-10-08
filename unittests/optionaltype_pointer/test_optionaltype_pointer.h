@@ -14,8 +14,8 @@
 **
 ****************************************************************************/
 
-#ifndef TESTPOINTERAPI_H
-#define TESTPOINTERAPI_H
+#ifndef TEST_OPTIONALTYPE_POINTER_H
+#define TEST_OPTIONALTYPE_POINTER_H
 
 #include <QObject>
 #include "wsdl_test.h"
@@ -35,4 +35,4 @@ private slots:
 private:
 };
 
-#endif // TESTPOINTERAPI_H
+#endif // TEST_OPTIONALTYPE_POINTER_H

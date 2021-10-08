@@ -14,8 +14,8 @@
 **
 ****************************************************************************/
 
-#ifndef TESTBOOSTAPI_H
-#define TESTBOOSTAPI_H
+#ifndef TEST_BOOSTAPI_H
+#define TEST_BOOSTAPI_H
 
 #include <QObject>
 #include "wsdl_test.h"
@@ -34,4 +34,4 @@ private slots:
 private:
 };
 
-#endif // TESTBOOSTAPI_H
+#endif // TEST_BOOSTAPI_H

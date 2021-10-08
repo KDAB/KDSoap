@@ -14,8 +14,8 @@
 **
 ****************************************************************************/
 
-#ifndef TESTCALL_H
-#define TESTCALL_H
+#ifndef TEST_ELEMENT_NS_WSDL_H
+#define TEST_ELEMENT_NS_WSDL_H
 
 #include <QObject>
 #include "wsdl_test.h"
@@ -33,4 +33,4 @@ private:
     PREFIX test_client;
 };
 
-#endif // TESTCALL_H
+#endif // TEST_ELEMENT_NS_WSDL_H
