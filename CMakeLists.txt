@@ -225,9 +225,13 @@ if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
       "${CMAKE_CURRENT_BINARY_DIR}/KDSoap/KDSoapMacros.cmake"
     DESTINATION "${INSTALL_LIBRARY_DIR}/cmake/KDSoap${${PROJECT_NAME}_LIBRARY_QTID}"
   )
+
   install(EXPORT KDSoapTargets NAMESPACE KDSoap::
     DESTINATION "${INSTALL_LIBRARY_DIR}/cmake/KDSoap${${PROJECT_NAME}_LIBRARY_QTID}"
   )
+
+  #Install the kdsoap features file for qmake users
+  add_subdirectory(features)
 
   # Generate .pri file for qmake users
   #TODO: ECM does not support Qt6 yet
@@ -244,35 +248,46 @@ if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
     )
     install(FILES ${pri_client_filename} ${pri_server_filename} DESTINATION ${ECM_MKSPECS_INSTALL_DIR})
   endif()
+else()
+  #Always disable tests, examples, docs when used as a submodule
+  set(${PROJECT_NAME}_IS_ROOT_PROJECT FALSE)
+  set(${PROJECT_NAME}_TESTS FALSE)
+  set(${PROJECT_NAME}_EXAMPLES FALSE)
+  set(${PROJECT_NAME}_DOCS FALSE)
+endif()
+
+if(${PROJECT_NAME}_TESTS)
+  enable_testing()
 endif()
 
 add_subdirectory(src)
 add_subdirectory(kdwsdl2cpp)
-if(${PROJECT_NAME}_IS_ROOT_PROJECT)
 
+if(${PROJECT_NAME}_IS_ROOT_PROJECT)
   export(TARGETS kdsoap kdsoap-server kdwsdl2cpp NAMESPACE KDSoap::
     FILE "${CMAKE_CURRENT_BINARY_DIR}/KDSoap/KDSoapTargets.cmake"
   )
+endif()
 
-  add_subdirectory(features)
-  if(${PROJECT_NAME}_TESTS)
-    enable_testing()
-    add_subdirectory(testtools)
-    add_subdirectory(unittests)
-  endif()
-  if(${PROJECT_NAME}_EXAMPLES)
-    add_subdirectory(examples)
-  endif()
+if(${PROJECT_NAME}_TESTS)
+  add_subdirectory(testtools)
+  add_subdirectory(unittests)
+endif()
 
-  if(${PROJECT_NAME}_DOCS)
-    add_subdirectory(docs) # needs to go last, in case there are build source files
-  else()
-    add_custom_target(docs
-      COMMAND ${CMAKE_COMMAND} -E echo "Sorry, there is no docs target since KDSoap_DOCS=OFF."
-      "Re-run cmake with the -DKSoap_DOCS=True option if you want to generate the documentation.")
-  endif()
+if(${PROJECT_NAME}_EXAMPLES)
+  add_subdirectory(examples)
+endif()
 
-  # Add uninstall target
+if(${PROJECT_NAME}_DOCS)
+  add_subdirectory(docs) # needs to go last, in case there are build source files
+else()
+  add_custom_target(docs
+    COMMAND ${CMAKE_COMMAND} -E echo "Sorry, there is no docs target since KDSoap_DOCS=OFF."
+    "Re-run cmake with the -DKSoap_DOCS=True option if you want to generate the documentation.")
+endif()
+
+if(${PROJECT_NAME}_IS_ROOT_PROJECT)
+  # Add uninstall target (not for submodules since parent projects typically have uninstall too)
   include(ECMUninstallTarget)
 endif()
 
