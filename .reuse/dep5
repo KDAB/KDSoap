@@ -4,12 +4,12 @@ Upstream-Contact:  <info@kdab.com>
 Source: https://www.github.com/KDAB/KDSoap
 
 Files: unittests/*/*.xsd  unittests/*/*.XSD unittests/*/*.xml unittests/*/*.wsdl testtools/*.qrc examples/*/*.qrc examples/*/*.wsdl *.html *.css docs/manual/*.pdf
-Copyright: 2010-2021 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
+Copyright: 2010-2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
 License: LGPL-2.1-only OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDAB-KDSoap OR LicenseRef-KDAB-KDSoap-US
 
 #artwork
 Files: images/*.png docs/api/*.png docs/*.png docs/*.odg examples/*/*.mng
-Copyright: 2010-2021 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
+Copyright: 2010-2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
 License: LGPL-2.1-only OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDAB-KDSoap OR LicenseRef-KDAB-KDSoap-US
 
 #3rdparty

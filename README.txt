@@ -53,7 +53,7 @@ Thanks to our [contributors](CONTRIBUTORS.txt).
 
 License
 =======
-The KD Soap Software is Copyright (C) 2010-2021, Klaralvdalens Datakonsult AB,
+The KD Soap Software is Copyright (C) 2010-2022, Klaralvdalens Datakonsult AB,
 and is available under the terms of:
 
 * [LGPL-2.1](LICENSES/LGPL-2.1-only.txt) or [LGPL-3.0](LICENSES/LGPL-3.0-only.txt)
