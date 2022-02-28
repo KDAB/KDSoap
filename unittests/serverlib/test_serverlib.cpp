@@ -935,7 +935,7 @@ private Q_SLOTS:
         QTest::newRow("dot_dot_at_start") << "../../path/to/file_download.txt" << readable << httpForbidden;
         QTest::newRow("with_query") << "/?query=../../path/to/file_download.txt" << readable << httpNotFound; // "GET /"
         QTest::newRow("another_query") << "?query=/../path/to/file_download.txt" << readable << httpForbidden;
-        QTest::newRow("query_is_ignored") << "/path/to/file_download.txt?a=b&c=d" << readable << httpOK;
+        QTest::newRow("query_is_preserved") << "/path/to/file_download.txt?a=b&c=d" << readable << httpNotFound;
         QTest::newRow("with_ref") << "#/../../../path/to/file_download.txt" << readable << httpForbidden;
         QTest::newRow("invalid") << "#/path/to/file_download.txt" << readable << httpForbidden;
     }

@@ -85,9 +85,10 @@ static HeadersMap parseHeaders(const QByteArray &headerData)
     const QByteArray arg1 = firstLine.at(1);
     const int queryPos = arg1.indexOf('?');
     const QByteArray path = queryPos >= 0 ? arg1.left(queryPos) : arg1;
+    const QByteArray query = queryPos >= 0 ? arg1.mid(queryPos) : QByteArray();
     // Unfortunately QDir::cleanPath works with QString
     const QByteArray cleanedPath = QDir::cleanPath(QString::fromUtf8(path)).toUtf8();
-    headersMap.insert("_path", cleanedPath);
+    headersMap.insert("_path", cleanedPath + query);
 
     const QByteArray &httpVersion = firstLine.at(2);
     headersMap.insert("_httpVersion", httpVersion);
