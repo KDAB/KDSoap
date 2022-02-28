@@ -32,6 +32,8 @@
 #include <QFileInfo>
 #include <QVarLengthArray>
 
+static const char s_forbidden[] = "HTTP/1.1 403 Forbidden\r\nContent-Length: 0\r\n\r\n";
+
 KDSoapServerSocket::KDSoapServerSocket(KDSoapSocketList *owner, QObject *serverObject)
 #ifndef QT_NO_SSL
     : QSslSocket()
@@ -74,10 +76,20 @@ static HeadersMap parseHeaders(const QByteArray &headerData)
         return headersMap;
     }
     const QByteArray &requestType = firstLine.at(0);
-    const QByteArray path = QDir::cleanPath(QString::fromLatin1(firstLine.at(1).constData())).toLatin1();
-    const QByteArray &httpVersion = firstLine.at(2);
     headersMap.insert("_requestType", requestType);
-    headersMap.insert("_path", path);
+
+    // Grammar from https://datatracker.ietf.org/doc/html/rfc7230#section-5.3.1
+    //  origin-form    = absolute-path [ "?" query ]
+    // and https://datatracker.ietf.org/doc/html/rfc3986#section-3.3
+    // says the path ends at the first '?' or '#' character
+    const QByteArray arg1 = firstLine.at(1);
+    const int queryPos = arg1.indexOf('?');
+    const QByteArray path = queryPos >= 0 ? arg1.left(queryPos) : arg1;
+    // Unfortunately QDir::cleanPath works with QString
+    const QByteArray cleanedPath = QDir::cleanPath(QString::fromUtf8(path)).toUtf8();
+    headersMap.insert("_path", cleanedPath);
+
+    const QByteArray &httpVersion = firstLine.at(2);
     headersMap.insert("_httpVersion", httpVersion);
 
     while (!sourceBuffer.atEnd()) {
@@ -275,6 +287,12 @@ void KDSoapServerSocket::handleRequest(const QMap<QByteArray, QByteArray> &httpH
     const QByteArray requestType = httpHeaders.value("_requestType");
     const QString path = QString::fromLatin1(httpHeaders.value("_path").constData());
 
+    if (!path.startsWith(QLatin1String("/"))) {
+        // denied for security reasons (ex: path starting with "..")
+        write(s_forbidden);
+        return;
+    }
+
     KDSoapServerAuthInterface *serverAuthInterface = qobject_cast<KDSoapServerAuthInterface *>(m_serverObject);
     if (serverAuthInterface) {
         const QByteArray authValue = httpHeaders.value("authorization");
@@ -404,8 +422,7 @@ bool KDSoapServerSocket::handleFileDownload(KDSoapServerObjectInterface *serverO
         return true;
     }
     if (!device->open(QIODevice::ReadOnly)) {
-        const QByteArray forbidden = "HTTP/1.1 403 Forbidden\r\nContent-Length: 0\r\n\r\n";
-        write(forbidden);
+        write(s_forbidden);
         delete device;
         return true; // handled!
     }

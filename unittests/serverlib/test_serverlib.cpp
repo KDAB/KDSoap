@@ -107,6 +107,7 @@ public:
 
     virtual QIODevice *processFileRequest(const QString &path, QByteArray &contentType) override
     {
+        Q_ASSERT(!path.startsWith(".."));
         if (path == QLatin1String("/path/to/file_download.txt")) {
             QFile *file = new QFile(QLatin1String("file_download.txt")); // local file, created by the unittest
             contentType = "text/plain";
@@ -917,26 +918,33 @@ private Q_SLOTS:
     {
         QTest::addColumn<QString>("fileToDownload"); // client
         QTest::addColumn<QFile::Permissions>("permissions"); // server
-        QTest::addColumn<QNetworkReply::NetworkError>("expectedReplyCode");
+        QTest::addColumn<QByteArray>("expectedHttpReply");
 
-        QFile::Permissions readable = QFile::ReadOwner | QFile::ReadUser;
-        QFile::Permissions writable = QFile::WriteOwner | QFile::WriteUser;
+        const QFile::Permissions readable = QFile::ReadOwner | QFile::ReadUser;
+        const QFile::Permissions writable = QFile::WriteOwner | QFile::WriteUser;
 
-        QTest::newRow("readable") << "file_download.txt" << readable << QNetworkReply::NoError;
-        QTest::newRow("nonexistent") << "nonexistent.txt" << readable << QNetworkReply::ContentNotFoundError;
-        QTest::newRow("unreadable") << "file_download.txt" << writable
-#if QT_VERSION >= QT_VERSION_CHECK(5, 9, 0) // this changed in qtbase 079aa711ec
-                                    << QNetworkReply::ContentAccessDenied;
-#else
-                                    << QNetworkReply::ContentOperationNotPermittedError;
-#endif
+        const QByteArray httpOK = "200 OK";
+        const QByteArray httpForbidden = "403 Forbidden";
+        const QByteArray httpNotFound = "404 Not Found";
+
+        QTest::newRow("readable") << "/path/to/file_download.txt" << readable << httpOK;
+        QTest::newRow("nonexistent") << "/nonexistent.txt" << readable << httpNotFound;
+        QTest::newRow("unreadable") << "/path/to/file_download.txt" << writable << httpForbidden;
+        QTest::newRow("dot_dot_in_middle") << "/subdir/../other/../path/to/file_download.txt" << readable << httpOK;
+        QTest::newRow("double_slash") << "/subdir/../other//../path//to/file_download.txt" << readable << httpOK;
+        QTest::newRow("dot_dot_at_start") << "../../path/to/file_download.txt" << readable << httpForbidden;
+        QTest::newRow("with_query") << "/?query=../../path/to/file_download.txt" << readable << httpNotFound; // "GET /"
+        QTest::newRow("another_query") << "?query=/../path/to/file_download.txt" << readable << httpForbidden;
+        QTest::newRow("query_is_ignored") << "/path/to/file_download.txt?a=b&c=d" << readable << httpOK;
+        QTest::newRow("with_ref") << "#/../../../path/to/file_download.txt" << readable << httpForbidden;
+        QTest::newRow("invalid") << "#/path/to/file_download.txt" << readable << httpForbidden;
     }
 
     void testFileDownload()
     {
         QFETCH(QString, fileToDownload);
         QFETCH(QFile::Permissions, permissions);
-        QFETCH(QNetworkReply::NetworkError, expectedReplyCode);
+        QFETCH(QByteArray, expectedHttpReply);
 
         QTimer download_timeout;
         download_timeout.setInterval(5000); // 5 seconds
@@ -949,38 +957,41 @@ private Q_SLOTS:
 
         const QString fileName = QString::fromLatin1("file_download.txt");
         QFile file(fileName);
-        QVERIFY(file.open(QIODevice::WriteOnly));
+        QVERIFY2(file.open(QIODevice::WriteOnly), qPrintable(file.errorString()));
         file.write("Hello world");
         file.flush();
         file.setPermissions(permissions);
-        QString pathInUrl = QString::fromLatin1("/path/to/") + fileToDownload;
-        QString url = server->endPoint();
-        url.chop(1) /*trailing slash*/;
-        url += pathInUrl;
 
-        QNetworkAccessManager manager;
-        QNetworkRequest request(QUrl { url });
-        QNetworkReply *reply = manager.get(request);
-        QEventLoop loop;
-        connect(&download_timeout, &QTimer::timeout, &loop, &QEventLoop::quit);
-        connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
-        download_timeout.start();
-        loop.exec();
+        ClientSocket socket(server);
+        QVERIFY(socket.waitForConnected());
+        const QByteArray request = "GET " + fileToDownload.toLatin1() + " HTTP/1.1\r\n"
+                                   "Content-Type: text/xml;charset=utf-8\r\n"
+                                   "Content-Length: 0\r\n"
+                                   "Host: 127.0.0.1:12345\r\n" // ignored
+                                   "\r\n";
+        socket.write(request);
+        QVERIFY(socket.waitForBytesWritten(3000));
+        QVERIFY(socket.bytesAvailable() || socket.waitForReadyRead(3000));
+        const QByteArray reply = socket.readAll();
 
         file.setPermissions(QFile::ReadOwner | QFile::ReadUser | QFile::WriteOwner | QFile::WriteUser);
         QFile::remove(fileName);
 
         QCOMPARE(timeout_spy.count(), 0);
 #if defined(Q_OS_WIN)
-        if (permissions & QFile::WriteOwner) {
+        if (!(permissions & QFile::ReadOwner)) {
             // on Windows, setting permissions to writeonly using QFile::setPermissions does not work
             // this has been confirmed in tst_qfile.cpp in the Qt unittests
             QEXPECT_FAIL("unreadable", "Windows does not currently support non-readable files.", Abort);
         }
 #endif
-        QCOMPARE(( int )reply->error(), ( int )expectedReplyCode);
-        if (expectedReplyCode == QNetworkReply::NoError) {
-            QCOMPARE(reply->readAll(), QByteArray("Hello world"));
+
+        const QByteArray firstLine = reply.left(reply.indexOf('\r'));
+        QCOMPARE(firstLine, "HTTP/1.1 " + expectedHttpReply);
+
+        if (expectedHttpReply.endsWith("OK")) {
+            const QByteArray lastLine = reply.mid(reply.lastIndexOf("\r\n") + 2);
+            QCOMPARE(lastLine, QByteArray("Hello world"));
         }
     }
 
