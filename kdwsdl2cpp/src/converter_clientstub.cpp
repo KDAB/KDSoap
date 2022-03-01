@@ -135,6 +135,7 @@ bool Converter::convertClientService()
                 KODE::Function ctor(newClass.name());
                 ctor.addArgument(KODE::Function::Argument(QLatin1String("QObject* _parent"), QLatin1String("nullptr")));
                 ctor.addInitializer(QLatin1String("QObject(_parent)"));
+                ctor.setExplicit(true);
                 KODE::Function dtor(QLatin1Char('~') + newClass.name());
                 KODE::Code ctorCode, dtorCode;
 
@@ -392,6 +393,7 @@ bool Converter::convertClientService()
                     KODE::Function ctor(jobClass.name());
                     ctor.addArgument(KODE::Function::Argument(QString::fromLatin1("%1* service").arg(fullyQualified(newClass))));
                     ctor.addArgument(KODE::Function::Argument(QLatin1String("QObject* _parent"), QLatin1String("nullptr")));
+                    ctor.setExplicit(true);
                     ctor.addInitializer(QLatin1String("KDSoapJob(_parent)"));
                     ctor.addInitializer(QLatin1String("mService(service)"));
 

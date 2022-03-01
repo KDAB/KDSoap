@@ -6,7 +6,7 @@ General:
 
 Client-side:
 ============
-*
+* Generate "explicit" in front of service and job constructors (issue #206)
 
 Server-side:
 ============
