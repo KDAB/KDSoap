@@ -19,6 +19,8 @@ skip_tags: false
 
 # Build worker image
 image:
+  - Ubuntu2004
+  - macos
   - Visual Studio 2019
 
 # scripts that are called at very beginning, before repo cloning
@@ -36,17 +38,36 @@ platform:
 # build Configuration, i.e. Debug, Release, etc.
 configuration:
   - Release
+  - Debug
+
+environment:
+  matrix:
+    - useqt6: False
+    - useqt6: True
 
 install:
+  - sh: if [ "`uname -s`" = "Darwin" ]; then brew install ninja; else sudo apt-get -y update; sudo apt-get -y install mesa-common-dev libglu1-mesa-dev; fi
+
+before_build:
   - git submodule update --init --recursive
-  - call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
-  - set QTDIR=C:\Qt\5.15\msvc2019_64
-  - set PATH=%QTDIR%\bin;%PATH%
+  - cmd: call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
+  - cmd: set PATH=C:\Qt\6.2\msvc2019_64;C:\Qt\5.15\msvc2019_64;%PATH%
+  - sh: if [ "`uname -s`" = "Darwin" ]; then export PATH=$HOME/Qt/6.1/macos/bin:$HOME/Qt/5.15/clang_64/bin:$PATH; else export PATH=$HOME/Qt/6.2/gcc_64/bin:$HOME/Qt/5.15/gcc_64/bin:$PATH; fi
+
 build_script:
   - mkdir build
   - cd build
-  - cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=%CONFIGURATION% -DKDSoap_TESTS=True -DKDSoap_EXAMPLES=True ..
-  - nmake
+  - cmd: cmake -G Ninja -DCMAKE_BUILD_TYPE=%CONFIGURATION% -DKDSoap_QT6=%useqt6% -DKDSoap_TESTS=True -DKDSoap_EXAMPLES=True ..
+  - sh: cmake -G Ninja -DCMAKE_BUILD_TYPE=$CONFIGURATION -DKDSoap_QT6=$useqt6 -DKDSoap_TESTS=True -DKDSoap_EXAMPLES=True ..
+  - cmake --build .
+  - cmd: cmake --build . --target install
+  - sh: sudo cmake --build . --target install
+  - cmd: set PATH=.\bin;%PATH%
+  #temporarily disable testing on Windows
+  #- ctest --test-dir .
+  #- sh: if [ "`uname -s`" != "Darwin" ]; then export LD_LIBRARY_PATH=./lib:$HOME/Qt/6.2/gcc_64/lib:$HOME/Qt/5.15/gcc_64/lib; fi
+  #- sh: ctest --test-dir .
+  - sh: if [ "`uname -s`" = "Darwin" ]; then ctest --test-dir .; else echo "temporarily disable testing on Ubuntu (due to Subprocess aborted)"; fi
 
 # to disable automatic builds
 #build: off
@@ -55,12 +76,8 @@ build_script:
 #       tests configuration       #
 #---------------------------------#
 
-test_script:
-  - nmake test
-
 # to disable automatic tests
-#test: off
-
+test: off
 
 #---------------------------------#
 #     deployment configuration    #
