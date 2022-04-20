@@ -989,7 +989,7 @@ private Q_SLOTS:
         const QByteArray firstLine = reply.left(reply.indexOf('\r'));
         QCOMPARE(firstLine, "HTTP/1.1 " + expectedHttpReply);
 
-        if (expectedHttpReply.endsWith("OK")) {
+        if (expectedHttpReply.endsWith("OK")) { // krazy:exclude=strings
             const QByteArray lastLine = reply.mid(reply.lastIndexOf("\r\n") + 2);
             QCOMPARE(lastLine, QByteArray("Hello world"));
         }
