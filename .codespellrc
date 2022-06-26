@@ -1,4 +1,4 @@
 [codespell]
-skip = *.wsdl,*.ts,./kdwsdl2cpp/libkode/*,./build-*,.git
+skip = *.wsdl,*.xsd,*.XSD,*.ts,./kdwsdl2cpp/libkode,./build-*,.git
 interactive = 3
-ignore-words-list = CrossSite
+ignore-words-list = crosssite,statics
