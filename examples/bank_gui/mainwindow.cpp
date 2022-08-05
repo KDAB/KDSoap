@@ -29,6 +29,10 @@
 #include <QMessageBox>
 #include <QTableWidget>
 
+#include <algorithm>
+
+#define PARALLEL_REQUESTS 0
+
 enum Columns {
     Code,
     Name
@@ -123,7 +127,13 @@ void MainWindow::asyncCalls()
     clearResults();
     mLblAnim->show();
     mMovAnim->start();
+#if PARALLEL_REQUESTS
+    for (int index = 0; index < mBankCodes.count(); ++index) {
+        createJob(index);
+    }
+#else
     createJob(0);
+#endif
 }
 
 void MainWindow::createJob(int index)
@@ -152,7 +162,9 @@ void MainWindow::done(int index, const TNS__GetBankResponseType &response)
 {
     setBankName(index, response.details().bezeichnung());
     if (index < mBankCodes.count() - 1) {
+#if !PARALLEL_REQUESTS
         createJob(index + 1);
+#endif
     } else {
         mMovAnim->stop();
         mLblAnim->hide();
