@@ -18,15 +18,18 @@
 #define MAINWINDOW_H
 
 #include <QWidget>
-#include "KDSoapClientInterface.h"
-#include "KDSoapMessage.h"
-#include "wsdl_BLZService.h"
+
+namespace BLZService {
+class BLZServiceSOAP11Binding;
+}
+class TNS__GetBankResponseType;
 
 QT_BEGIN_NAMESPACE
 class QPushButton;
 class QLabel;
 class QProgressBar;
 class QMovie;
+class QTableWidget;
 QT_END_NAMESPACE
 
 class MainWindow : public QWidget
@@ -38,23 +41,21 @@ public:
 private slots:
     void syncCall();
     void asyncCall();
-    void done(const TNS__GetBankResponseType &response);
-    void nextJob();
+    void done(int index, const TNS__GetBankResponseType &response);
+    void createJob(int index);
 
 private:
-    void nextBank();
+    void setBankName(int row, const QString &text);
+    void clearResults();
 
     QPushButton *mBtnAsync;
     QPushButton *mBtnSync;
-    QLabel *mLblResult;
+    QTableWidget *mTableWidget;
     QLabel *mLblAnim;
     QMovie *mMovAnim;
-    QProgressBar *mProgressBar;
-
-    int mIndex = 0;
+    QStringList mBankCodes;
 
     BLZService::BLZServiceSOAP11Binding *mService;
-    TNS__GetBankType mParameters;
 };
 
 #endif
