@@ -80,8 +80,8 @@ MainWindow::MainWindow(QWidget *parent)
     mLblAnim->setMovie(mMovAnim);
     mLblAnim->setFixedSize(66, 66);
 
-    connect(mBtnSync, &QPushButton::clicked, this, &MainWindow::syncCall);
-    connect(mBtnAsync, &QPushButton::clicked, this, &MainWindow::asyncCall);
+    connect(mBtnSync, &QPushButton::clicked, this, &MainWindow::syncCalls);
+    connect(mBtnAsync, &QPushButton::clicked, this, &MainWindow::asyncCalls);
 
     mService = new BLZService::BLZServiceSOAP11Binding(this);
 }
@@ -97,7 +97,7 @@ void MainWindow::clearResults()
     }
 }
 
-void MainWindow::syncCall()
+void MainWindow::syncCalls()
 {
     clearResults();
     mLblAnim->show();
@@ -118,7 +118,7 @@ void MainWindow::syncCall()
     mLblAnim->hide();
 }
 
-void MainWindow::asyncCall()
+void MainWindow::asyncCalls()
 {
     clearResults();
     mLblAnim->show();

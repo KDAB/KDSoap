@@ -39,8 +39,8 @@ public:
     MainWindow(QWidget *parent = 0);
 
 private slots:
-    void syncCall();
-    void asyncCall();
+    void syncCalls();
+    void asyncCalls();
     void done(int index, const TNS__GetBankResponseType &response);
     void createJob(int index);
 
