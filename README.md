@@ -7,8 +7,6 @@ It can be used to create client applications for web services and also provides
 the means to create web services without the need for any further component such
 as a dedicated web server.
 
-KDSoap also supports writing SOAP servers easily.
-
 KD Soap targets C++ programmers who use Qt in their applications.
 
 For more information, see https://www.kdab.com/development-resources/qt-tools/kd-soap
