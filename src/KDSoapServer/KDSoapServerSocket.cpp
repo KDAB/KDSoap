@@ -52,7 +52,7 @@ KDSoapServerSocket::KDSoapServerSocket(KDSoapSocketList *owner, QObject *serverO
     , m_chunkStart(0)
 {
     connect(this, &QIODevice::readyRead, this, &KDSoapServerSocket::slotReadyRead);
-    m_doDebug = qgetenv("KDSOAP_DEBUG").toInt();
+    m_doDebug = qEnvironmentVariableIsSet("KDSOAP_DEBUG");
 }
 
 // The socket is deleted when it emits disconnected() (see KDSoapSocketList::handleIncomingConnection).

@@ -292,7 +292,7 @@ void HttpServerThread::run()
     lock.unlock();
     m_ready.release();
 
-    const bool doDebug = qgetenv("KDSOAP_DEBUG").toInt();
+    const bool doDebug = qEnvironmentVariableIsSet("KDSOAP_DEBUG");
 
     if (doDebug) {
         qDebug() << "HttpServerThread listening on port" << m_port;
