@@ -14,32 +14,21 @@
 **
 ****************************************************************************/
 
-#include <QCoreApplication>
+#ifndef HELLOWORLD_SERVER_H
+#define HELLOWORLD_SERVER_H
 
-#include "KDSoapServer.h"
-#include "helloworld_serverobject.h"
-#include <iostream>
+#include "wsdl_helloworld.h"
+#include "KDSoapServerObjectInterface.h"
 
-class Server : public KDSoapServer
+class HelloWorldServerObject : public Hello_ServiceServerBase
 {
+    Q_OBJECT
+    Q_INTERFACES(KDSoapServerObjectInterface)
 public:
-    QObject *createServerObject() override
-    {
-        return new HelloWorldServerObject;
-    }
+    HelloWorldServerObject();
+    ~HelloWorldServerObject();
+
+    QString sayHello(const QString &msg) override;
 };
 
-int main(int argc, char **argv)
-{
-    QCoreApplication app(argc, argv);
-    Server server;
-    server.setLogLevel(Server::LogEveryCall);
-    const bool listening = server.listen(QHostAddress::Any, 8081);
-    if (!listening) {
-        std::cerr << "Cannot start server: " << qPrintable(server.errorString()) << std::endl;
-        return 1;
-    } else {
-        std::cout << "Listening..." << std::endl;
-    }
-    return app.exec();
-}
+#endif // HELLOWORLD_SERVER_H

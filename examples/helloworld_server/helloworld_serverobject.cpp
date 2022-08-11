@@ -14,21 +14,27 @@
 **
 ****************************************************************************/
 
-#ifndef HELLOWORLD_SERVER_H
-#define HELLOWORLD_SERVER_H
+#include <QCoreApplication>
 
-#include "wsdl_helloworld.h"
-#include "KDSoapServerObjectInterface.h"
+#include "KDSoapServer.h"
+#include "helloworld_serverobject.h"
+#include <iostream>
 
-class ServerObject : public Hello_ServiceServerBase
+HelloWorldServerObject::HelloWorldServerObject()
+    : Hello_ServiceServerBase()
 {
-    Q_OBJECT
-    Q_INTERFACES(KDSoapServerObjectInterface)
-public:
-    ServerObject();
-    ~ServerObject();
+}
 
-    QString sayHello(const QString &msg) override;
-};
+HelloWorldServerObject::~HelloWorldServerObject()
+{
+}
 
-#endif // HELLOWORLD_SERVER_H
+QString HelloWorldServerObject::sayHello(const QString &msg)
+{
+    if (msg.isEmpty()) {
+        setFault(QLatin1String("Client.Data"), QLatin1String("Empty message"), QLatin1String("HelloWorldServerObject"), tr("You must say something."));
+        return QString();
+    }
+    return tr("I'm helloworld_server and you said: %1").arg(msg);
+}
+
