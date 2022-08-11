@@ -96,6 +96,7 @@ void KDSoapThreadTask::process(QNetworkAccessManager &accessManager)
     QNetworkRequest request = m_data->m_iface->d->prepareRequest(m_data->m_method, m_data->m_action);
     QNetworkReply *reply = accessManager.post(request, buffer);
     m_data->m_iface->d->setupReply(reply);
+    maybeDebugRequest(buffer->data(), reply->request(), reply);
     KDSoapPendingCall pendingCall(reply, buffer);
     pendingCall.d->soapVersion = m_data->m_iface->d->m_version;
 
