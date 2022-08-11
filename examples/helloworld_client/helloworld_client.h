@@ -19,14 +19,14 @@
 
 #include "wsdl_helloworld.h"
 
-#include <QMainWindow>
+#include <QWidget>
 
 QT_BEGIN_NAMESPACE
 class QLineEdit;
 class QTextBrowser;
 QT_END_NAMESPACE
 
-class MainWindow : public QMainWindow
+class MainWindow : public QWidget
 {
     Q_OBJECT
 public:

@@ -24,14 +24,13 @@
 #include <QVBoxLayout>
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
+    : QWidget(parent)
 {
     m_service.setEndPoint(QLatin1String("http://localhost:8081"));
     m_service.setSoapVersion(KDSoapClientInterface::SOAP1_2);
     connect(&m_service, &Hello_Service::sayHelloDone, this, &MainWindow::sayHelloDone);
     connect(&m_service, &Hello_Service::sayHelloError, this, &MainWindow::sayHelloError);
-    QWidget *central = new QWidget;
-    QVBoxLayout *layout = new QVBoxLayout(central);
+    QVBoxLayout *layout = new QVBoxLayout(this);
     m_browser = new QTextBrowser;
     QLabel *label = new QLabel;
     label->setWordWrap(true);
@@ -40,7 +39,6 @@ MainWindow::MainWindow(QWidget *parent)
                       "&quot;Send&quot;.</p>"));
     layout->addWidget(label);
     layout->addWidget(m_browser);
-    layout->setContentsMargins(0, 0, 0, 0);
     QWidget *w1 = new QWidget;
     QHBoxLayout *l1 = new QHBoxLayout(w1);
     l1->setContentsMargins(0, 0, 0, 0);
@@ -51,12 +49,14 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_input, &QLineEdit::returnPressed, this, &MainWindow::sayHello);
     connect(pb1, &QAbstractButton::clicked, this, &MainWindow::sayHello);
     layout->addWidget(w1);
-    setCentralWidget(central);
+
+    m_input->setFocus();
 }
 
 void MainWindow::sayHello()
 {
     m_service.asyncSayHello(m_input->text().trimmed());
+    m_input->clear();
 }
 
 void MainWindow::sayHelloDone(const QString &reply)
