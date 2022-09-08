@@ -15,4 +15,3 @@ set(optionaltype_pointer_SRCS test_optionaltype_pointer.cpp)
 set(KSWSDL2CPP_OPTION -optional-element-type raw-pointer)
 set(WSDL_FILES test.wsdl)
 add_unittest(${optionaltype_pointer_SRCS})
-

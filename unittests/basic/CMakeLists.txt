@@ -14,4 +14,3 @@ project(basic)
 
 set(basic_SRCS test_basic.cpp)
 add_unittest(${basic_SRCS})
-

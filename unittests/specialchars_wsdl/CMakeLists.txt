@@ -14,4 +14,3 @@
 set(specialchars_wsdl_SRCS test_specialchars_wsdl.cpp)
 set(WSDL_FILES test.wsdl)
 add_unittest(${specialchars_wsdl_SRCS})
-

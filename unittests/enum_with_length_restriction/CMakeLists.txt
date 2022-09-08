@@ -14,4 +14,3 @@
 set(enum_with_length_restriction_SRCS test_enum_length_restriction.cpp)
 set(WSDL_FILES test_enum.wsdl)
 add_unittest(${enum_with_length_restriction_SRCS})
-

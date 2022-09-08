@@ -37,4 +37,3 @@ Code generator changes, applying to both client and server side:
 * Implement support for inheritance between complex types, using QSharedPointer as internal storage. (issue26/SOAP-87/SOAP-62)
 * Implement support for substitutionGroup, in order to send the correct element name (SOAP-87 followup, SOAP-97).
 * Fix crash when parsing elements without a type.
-

@@ -14,4 +14,3 @@
 set(element_ns_wsdl_SRCS test_element_ns_wsdl.cpp)
 set(WSDL_FILES test.wsdl)
 add_unittest(${element_ns_wsdl_SRCS})
-

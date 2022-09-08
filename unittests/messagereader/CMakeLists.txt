@@ -15,4 +15,3 @@ project(messagereader)
 
 set(messagereader_SRCS test_messagereader.cpp)
 add_unittest(${messagereader_SRCS})
-

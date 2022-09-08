@@ -37,4 +37,3 @@ QString HelloWorldServerObject::sayHello(const QString &msg)
     }
     return tr("I'm helloworld_server and you said: %1").arg(msg);
 }
-

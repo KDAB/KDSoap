@@ -33,4 +33,3 @@ EOF
 
 git add $subdir/CMakeLists.txt
 echo "add_subdirectory($subdir)" >> CMakeLists.txt
-

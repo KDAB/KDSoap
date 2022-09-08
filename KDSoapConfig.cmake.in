@@ -21,4 +21,3 @@ set(KDSoap_CODEGENERATOR KDSoap::kdwsdl2cpp)
 
 include("${CMAKE_CURRENT_LIST_DIR}/KDSoapTargets.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/KDSoapMacros.cmake")
-

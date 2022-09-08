@@ -67,4 +67,3 @@ wsdl_dir_short = $$WSDL_DIR
 contains(QMAKE_HOST.os,Windows):wsdl_dir_short ~= s,^.:,/,
 contains(wsdl_dir_short, ^[/\\\\].*):INCLUDEPATH += $$WSDL_DIR
 else:INCLUDEPATH += $$OUT_PWD/$$WSDL_DIR
-

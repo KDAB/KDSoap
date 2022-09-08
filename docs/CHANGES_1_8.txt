@@ -58,4 +58,3 @@ WSDL parser / code generator changes, applying to both client and server side:
 * Fix generated code for restriction to base class (it wouldn't compile)
 * Prepend "undef daylight" and "undef timezone" to all generated files, to fix compilation errors in wsdl files that use those names, due to nasty Windows macros
 * Added generation for default attribute values.
-

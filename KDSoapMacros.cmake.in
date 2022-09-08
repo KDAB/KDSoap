@@ -39,4 +39,3 @@ macro(KDSOAP_GENERATE_WSDL _sources)
     list(APPEND ${_sources} ${_header_wsdl_FILE} ${_source_wsdl_FILE} ${_sources_MOCS})
   endforeach()
 endmacro()
-

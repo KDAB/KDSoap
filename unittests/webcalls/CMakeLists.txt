@@ -15,4 +15,3 @@ project(webcalls)
 
 set(webcalls_SRCS test_webcalls.cpp)
 add_unittest(${webcalls_SRCS})
-
