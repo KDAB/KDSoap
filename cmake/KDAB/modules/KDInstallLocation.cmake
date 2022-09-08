@@ -1,3 +1,9 @@
+#
+# SPDX-FileCopyrightText: 2012-2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
 # Some default installation locations. These should be global, with any project
 # specific locations added to the end. These paths are all relative to the
 # install prefix.
@@ -18,11 +24,7 @@ if(NOT INSTALL_ARCHIVE_DIR)
     set(INSTALL_ARCHIVE_DIR ${CMAKE_INSTALL_LIBDIR})
 endif()
 if(NOT INSTALL_INCLUDE_DIR)
-    if(${PROJECT_NAME}_QT6)
-        set(INSTALL_INCLUDE_DIR ${CMAKE_INSTALL_INCLUDEDIR}/KDSoap-qt6)
-    else()
-        set(INSTALL_INCLUDE_DIR ${CMAKE_INSTALL_INCLUDEDIR})
-    endif()
+    set(INSTALL_INCLUDE_DIR ${CMAKE_INSTALL_INCLUDEDIR})
 endif()
 if(NOT INSTALL_DATADIR)
     set(INSTALL_DATADIR ${CMAKE_INSTALL_DATADIR})

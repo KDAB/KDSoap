@@ -35,4 +35,4 @@ SKIP Doxyfile.cmake|/genignore.py
 SKIP \.cmake-format\.py
 
 #skip the borrowed code in the cmake subdir
-SKIP /cmake/InstallLocation.cmake|/cmake/ECM/
+SKIP cmake/ECM|/cmake/KDAB/

@@ -142,7 +142,7 @@ else()
 endif()
 
 # setup default install locations
-include(InstallLocation)
+include(KDInstallLocation)
 include(KDQtInstallPaths) #to set QT_INSTALL_FOO variables
 
 set(CMAKE_INCLUDE_CURRENT_DIR TRUE)
