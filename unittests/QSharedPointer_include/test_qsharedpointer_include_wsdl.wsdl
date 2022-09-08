@@ -1,4 +1,4 @@
- 
+
 <definitions name="HelloService"
 targetNamespace="http://www.examples.com/wsdl/HelloService.wsdl"
 xmlns="http://schemas.xmlsoap.org/wsdl/"
@@ -10,7 +10,7 @@ xmlns:test="urn:test">
     <xsd:schema targetNamespace="urn:test"
     xmlns:xsd="http://www.w3.org/2001/XMLSchema" >
       <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/>
-      
+
       <xsd:complexType name="trajectoryPoint">
         <xsd:sequence>
           <xsd:element name="time" type="xsd:double"/>
@@ -78,7 +78,7 @@ xmlns:test="urn:test">
         use="encoded"/>
       </output>
     </operation>
-  </binding> 
+  </binding>
   <service name="Hello_Service">
     <documentation>WSDL File for HelloService</documentation>
     <port binding="tns:Hello_Binding" name="Hello_Port">

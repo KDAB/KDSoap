@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!-- 
+<?xml version="1.0" encoding="UTF-8"?><!--
 ================================================================================
 File:	groupwise.wsdl
 
@@ -11,43 +11,43 @@ include Novell's sample code in Your product(s) that interoperate with the
 applicable Novell product, and worldwide distribution rights to market,
 distribute, or sell Novell's sample code as a component of Your product.
 
-THE WORK IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, 
-INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
-PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL NOVELL OR THE AUTHORS 
-OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
-WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF 
+THE WORK IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL NOVELL OR THE AUTHORS
+OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
 OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS IN THE WORK.
 
 
-Alternatively, the contents of this file may be used under the terms of 
-GNU General Public License Version 2 (the "GPL") as explained below.  
-If you wish to allow use of your version of this file only under the terms 
-of the GPL, and not to allow others to use your version of this file under 
-the provisions appearing above, indicate your decision by deleting the 
-provisions above and replace them with the notice and other provisions required 
-by the GPL. If you do not delete the provisions above, a recipient may use 
+Alternatively, the contents of this file may be used under the terms of
+GNU General Public License Version 2 (the "GPL") as explained below.
+If you wish to allow use of your version of this file only under the terms
+of the GPL, and not to allow others to use your version of this file under
+the provisions appearing above, indicate your decision by deleting the
+provisions above and replace them with the notice and other provisions required
+by the GPL. If you do not delete the provisions above, a recipient may use
 your version of this file under the above provisions of the GPL.
 
 
-This file is free software; you can redistribute it and/or modify it under the 
-terms of version 2 of the GNU General Public License as published by the 
-Free Software Foundation.  This program is distributed in the hope that it will 
-be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of 
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
-for more details.  You should have received a copy of the GNU General Public License 
-along with this program; if not, contact Novell, Inc.  
+This file is free software; you can redistribute it and/or modify it under the
+terms of version 2 of the GNU General Public License as published by the
+Free Software Foundation.  This program is distributed in the hope that it will
+be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.  You should have received a copy of the GNU General Public License
+along with this program; if not, contact Novell, Inc.
 
-To contact Novell about this file by physical or electronic mail, you may find 
+To contact Novell about this file by physical or electronic mail, you may find
 current contact information at www.novell.com.
 ================================================================================
 --><definitions xmlns="http://schemas.xmlsoap.org/wsdl/" targetNamespace="http://schemas.novell.com/2005/01/GroupWise/groupwise.wsdl" xmlns:tns="http://schemas.novell.com/2005/01/GroupWise/groupwise.wsdl" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:types="http://schemas.novell.com/2005/01/GroupWise/types" xmlns:methods="http://schemas.novell.com/2005/01/GroupWise/methods" xmlns:events="http://schemas.novell.com/2005/01/GroupWise/events" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
-   
+
 	<types>
 		<schema xmlns="http://www.w3.org/2001/XMLSchema">
 			<import namespace="http://schemas.novell.com/2005/01/GroupWise/types" schemaLocation="types.xsd"/>
 			<import namespace="http://schemas.novell.com/2005/01/GroupWise/methods" schemaLocation="methods.xsd"/>
 			<import namespace="http://schemas.novell.com/2005/01/GroupWise/events" schemaLocation="events.xsd"/>
-		</schema>		
+		</schema>
 	</types>
 
    <message name="acceptRequestMessage">
@@ -1028,7 +1028,7 @@ current contact information at www.novell.com.
 
 
    <portType name="GroupWiseEventsPortType">
-   
+
      <operation name="cleanEventConfigurationRequest">
        <input message="tns:cleanEventConfigurationRequestMessage"/>
        <output message="tns:cleanEventConfigurationResponseMessage"/>
@@ -2044,7 +2044,7 @@ current contact information at www.novell.com.
         <soap:body use="literal"/>
       </output>
     </operation>
-   
+
     <operation name="removeEventsRequest">
       <soap:operation soapAction="removeEventsRequest" style="document"/>
       <input>

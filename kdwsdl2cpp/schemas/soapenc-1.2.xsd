@@ -18,11 +18,11 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
            xmlns:tns="http://www.w3.org/2003/05/soap-encoding"
            targetNamespace="http://www.w3.org/2003/05/soap-encoding" >
-        
+
   <xs:attributeGroup name="commonAttributes" >
     <xs:annotation>
 	  <xs:documentation>
-	    Attributes common to all elements that function as accessors or 
+	    Attributes common to all elements that function as accessors or
         represent independent (multi-ref) values.  The ref attribute is
         intended to be used in a manner like CONREF.  That is, the element
         content should be empty iff the ref attribute appears
@@ -78,10 +78,10 @@
 	  Pattern based restriction of the arraySizeBase list type. Used
     as the type of the arraySize attribute. Restricts asterisk ( * )
     to first list item only. Instances must contain at least an
-    asterisk ( * ) or a nonNegativeInteger. May contain other 
+    asterisk ( * ) or a nonNegativeInteger. May contain other
     nonNegativeIntegers as subsequent list items.
 	Valid instances include;
-	
+
 	  *
 	  1
 	  * 2
@@ -94,15 +94,15 @@
 	  <xs:pattern value="(\*|(\d+))(\s+\d+)*" />
 	</xs:restriction>
   </xs:simpleType>
-   
+
   <xs:attribute name="arraySize" type="tns:arraySize" />
   <xs:attribute name="itemType" type="xs:QName" />
 
   <xs:attributeGroup name="arrayAttributes" >
     <xs:attribute ref="tns:arraySize" />
 	<xs:attribute ref="tns:itemType" />
-  </xs:attributeGroup>    
-  
+  </xs:attributeGroup>
+
   <!-- 'Base64' can be used to serialize binary data using base64 encoding
        as defined in RFC2045 but without the MIME line length limitation. -->
 
@@ -110,7 +110,7 @@
     <xs:restriction base="xs:base64Binary" />
   </xs:simpleType>
 
- <!-- Element declarations corresponding to each of the simple types in the 
+ <!-- Element declarations corresponding to each of the simple types in the
       XML Schemas Specification. -->
 
   <xs:element name="duration" type="tns:duration" />
@@ -193,7 +193,7 @@
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
-  
+
   <xs:element name="boolean" type="tns:boolean" />
   <xs:complexType name="boolean" >
     <xs:simpleContent>
@@ -448,7 +448,7 @@
 
   <xs:element name="anyType" />
 
-  <!-- 
+  <!--
        For compatibility with XML 1.0 the following element declaration
        and associated complex type definition should NOT be used as
        its type is only applicable to attributes in XML 1.0. It is
@@ -463,7 +463,7 @@
     </xs:simpleContent>
   </xs:complexType>
 
-  <!-- 
+  <!--
        For compatibility with XML 1.0 the following element declaration
        and associated complex type definition should NOT be used as
        its type is only applicable to attributes in XML 1.0. It is
@@ -478,7 +478,7 @@
     </xs:simpleContent>
   </xs:complexType>
 
-  <!-- 
+  <!--
        For compatibility with XML 1.0 the following element declaration
        and associated complex type definition should NOT be used as
        its type is only applicable to attributes in XML 1.0. It is
@@ -493,7 +493,7 @@
     </xs:simpleContent>
   </xs:complexType>
 
-  <!-- 
+  <!--
        For compatibility with XML 1.0 the following element declaration
        and associated complex type definition should NOT be used as
        its type is only applicable to attributes in XML 1.0. It is
@@ -508,7 +508,7 @@
     </xs:simpleContent>
   </xs:complexType>
 
-  <!-- 
+  <!--
        For compatibility with XML 1.0 the following element declaration
        and associated complex type definition should NOT be used as
        its type is only applicable to attributes in XML 1.0. It is
@@ -523,7 +523,7 @@
     </xs:simpleContent>
   </xs:complexType>
 
-  <!-- 
+  <!--
        For compatibility with XML 1.0 the following element declaration
        and associated complex type definition should NOT be used as
        its type is only applicable to attributes in XML 1.0. It is

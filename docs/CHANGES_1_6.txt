@@ -9,7 +9,7 @@ Client-side:
 
 Server-side:
 ============
-* 
+*
 
 WSDL parser / code generator changes, applying to both client and server side:
 ================================================================

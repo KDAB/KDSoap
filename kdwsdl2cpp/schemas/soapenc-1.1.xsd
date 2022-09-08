@@ -2,24 +2,24 @@
 
 <!-- Schema for the SOAP/1.1 encoding
 
-Portions © 2001 DevelopMentor. 
-© 2001 W3C (Massachusetts Institute of Technology, Institut National de Recherche en Informatique et en Automatique, Keio University). All Rights Reserved.  
- 
+Portions © 2001 DevelopMentor.
+© 2001 W3C (Massachusetts Institute of Technology, Institut National de Recherche en Informatique et en Automatique, Keio University). All Rights Reserved.
+
 This document is governed by the W3C Software License [1] as described in the FAQ [2].
 [1] http://www.w3.org/Consortium/Legal/copyright-software-19980720
-[2] http://www.w3.org/Consortium/Legal/IPR-FAQ-20000620.html#DTD 
+[2] http://www.w3.org/Consortium/Legal/IPR-FAQ-20000620.html#DTD
 By obtaining, using and/or copying this work, you (the licensee) agree that you have read, understood, and will comply with the following terms and conditions:
 
 Permission to use, copy, modify, and distribute this software and its documentation, with or without modification,  for any purpose and without fee or royalty is hereby granted, provided that you include the following on ALL copies of the software and documentation or portions thereof, including modifications, that you make:
 
-1.  The full text of this NOTICE in a location viewable to users of the redistributed or derivative work. 
+1.  The full text of this NOTICE in a location viewable to users of the redistributed or derivative work.
 
-2.  Any pre-existing intellectual property disclaimers, notices, or terms and conditions. If none exist, a short notice of the following form (hypertext is preferred, text is permitted) should be used within the body of any redistributed or derivative code: "Copyright © 2001 World Wide Web Consortium, (Massachusetts Institute of Technology, Institut National de Recherche en Informatique et en Automatique, Keio University). All Rights Reserved. http://www.w3.org/Consortium/Legal/" 
+2.  Any pre-existing intellectual property disclaimers, notices, or terms and conditions. If none exist, a short notice of the following form (hypertext is preferred, text is permitted) should be used within the body of any redistributed or derivative code: "Copyright © 2001 World Wide Web Consortium, (Massachusetts Institute of Technology, Institut National de Recherche en Informatique et en Automatique, Keio University). All Rights Reserved. http://www.w3.org/Consortium/Legal/"
 
-3.  Notice of any changes or modifications to the W3C files, including the date changes were made. (We recommend you provide URIs to the location from which the code is derived.)   
+3.  Notice of any changes or modifications to the W3C files, including the date changes were made. (We recommend you provide URIs to the location from which the code is derived.)
 
 Original W3C files; http://www.w3.org/2001/06/soap-encoding
-Changes made: 
+Changes made:
      - reverted namespace to http://schemas.xmlsoap.org/soap/encoding/
      - reverted root to only allow 0 and 1 as lexical values
 	 - removed default value from root attribute declaration
@@ -34,13 +34,13 @@ The name and trademarks of copyright holders may NOT be used in advertising or p
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
            xmlns:tns="http://schemas.xmlsoap.org/soap/encoding/"
            targetNamespace="http://schemas.xmlsoap.org/soap/encoding/" >
-        
+
  <xs:attribute name="root" >
    <xs:annotation>
      <xs:documentation>
 	   'root' can be used to distinguish serialization roots from other
        elements that are present in a serialization but are not roots of
-       a serialized value graph 
+       a serialized value graph
 	 </xs:documentation>
    </xs:annotation>
    <xs:simpleType>
@@ -53,7 +53,7 @@ The name and trademarks of copyright holders may NOT be used in advertising or p
   <xs:attributeGroup name="commonAttributes" >
     <xs:annotation>
 	  <xs:documentation>
-	    Attributes common to all elements that function as accessors or 
+	    Attributes common to all elements that function as accessors or
         represent independent (multi-ref) values.  The href attribute is
         intended to be used in a manner like CONREF.  That is, the element
         content should be empty iff the href attribute appears
@@ -65,26 +65,26 @@ The name and trademarks of copyright holders may NOT be used in advertising or p
   </xs:attributeGroup>
 
   <!-- Global Attributes.  The following attributes are intended to be usable via qualified attribute names on any complex type referencing them. -->
-       
+
   <!-- Array attributes. Needed to give the type and dimensions of an array's contents, and the offset for partially-transmitted arrays. -->
-   
+
   <xs:simpleType name="arrayCoordinate" >
     <xs:restriction base="xs:string" />
   </xs:simpleType>
-          
+
   <xs:attribute name="arrayType" type="xs:string" />
   <xs:attribute name="offset" type="tns:arrayCoordinate" />
-  
+
   <xs:attributeGroup name="arrayAttributes" >
     <xs:attribute ref="tns:arrayType" />
     <xs:attribute ref="tns:offset" />
-  </xs:attributeGroup>    
-  
-  <xs:attribute name="position" type="tns:arrayCoordinate" /> 
-  
+  </xs:attributeGroup>
+
+  <xs:attribute name="position" type="tns:arrayCoordinate" />
+
   <xs:attributeGroup name="arrayMemberAttributes" >
     <xs:attribute ref="tns:position" />
-  </xs:attributeGroup>    
+  </xs:attributeGroup>
 
   <xs:group name="Array" >
     <xs:sequence>
@@ -96,18 +96,18 @@ The name and trademarks of copyright holders may NOT be used in advertising or p
   <xs:complexType name="Array" >
     <xs:annotation>
 	  <xs:documentation>
-	   'Array' is a complex type for accessors identified by position 
+	   'Array' is a complex type for accessors identified by position
 	  </xs:documentation>
 	</xs:annotation>
     <xs:group ref="tns:Array" minOccurs="0" />
     <xs:attributeGroup ref="tns:arrayAttributes" />
     <xs:attributeGroup ref="tns:commonAttributes" />
-  </xs:complexType> 
+  </xs:complexType>
 
-  <!-- 'Struct' is a complex type for accessors identified by name. 
+  <!-- 'Struct' is a complex type for accessors identified by name.
        Constraint: No element may be have the same name as any other,
        nor may any element have a maxOccurs > 1. -->
-   
+
   <xs:element name="Struct" type="tns:Struct" />
 
   <xs:group name="Struct" >
@@ -119,7 +119,7 @@ The name and trademarks of copyright holders may NOT be used in advertising or p
   <xs:complexType name="Struct" >
     <xs:group ref="tns:Struct" minOccurs="0" />
     <xs:attributeGroup ref="tns:commonAttributes"/>
-  </xs:complexType> 
+  </xs:complexType>
 
   <!-- 'Base64' can be used to serialize binary data using base64 encoding
        as defined in RFC2045 but without the MIME line length limitation. -->
@@ -128,7 +128,7 @@ The name and trademarks of copyright holders may NOT be used in advertising or p
     <xs:restriction base="xs:base64Binary" />
   </xs:simpleType>
 
- <!-- Element declarations corresponding to each of the simple types in the 
+ <!-- Element declarations corresponding to each of the simple types in the
       XML Schemas Specification. -->
 
   <xs:element name="duration" type="tns:duration" />
@@ -159,7 +159,7 @@ The name and trademarks of copyright holders may NOT be used in advertising or p
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
-  
+
 
   <xs:element name="time" type="tns:time" />
   <xs:complexType name="time" >
@@ -223,7 +223,7 @@ The name and trademarks of copyright holders may NOT be used in advertising or p
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
-  
+
   <xs:element name="boolean" type="tns:boolean" />
   <xs:complexType name="boolean" >
     <xs:simpleContent>
@@ -287,7 +287,7 @@ The name and trademarks of copyright holders may NOT be used in advertising or p
     </xs:simpleContent>
   </xs:complexType>
 
-  
+
   <xs:element name="string" type="tns:string" />
   <xs:complexType name="string" >
     <xs:simpleContent>

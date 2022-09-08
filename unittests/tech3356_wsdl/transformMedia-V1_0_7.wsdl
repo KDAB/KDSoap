@@ -6,7 +6,7 @@
 	   <schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 			<import namespace="http://base.fims.tv" schemaLocation="baseMediaService-V1_0_7.xsd">
 			</import>
-		</schema>	
+		</schema>
 		<schema targetNamespace="http://transformmedia.fims.tv" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 			xmlns:tns="http://transformmedia.fims.tv">
 			<include schemaLocation="transformMedia-V1_0_7.xsd"></include>
@@ -61,11 +61,11 @@
 	<wsdl:message name="FaultMsg">
 		<wsdl:part name="fault" element="bms:fault" >
 			<wsdl:documentation>This message represents a fault which might occur for a  management request.</wsdl:documentation></wsdl:part>
-	</wsdl:message>    
+	</wsdl:message>
 
 	<wsdl:portType name="TransformMedia">
-		<wsdl:documentation>This port type allows to send job requests to the transform media service. The transform media service has the capability to transform 
-one or more content items into one or more different formats. The operation input parameters are: a BMO (which has reference(s) to 
+		<wsdl:documentation>This port type allows to send job requests to the transform media service. The transform media service has the capability to transform
+one or more content items into one or more different formats. The operation input parameters are: a BMO (which has reference(s) to
 one or more content items) and the target format specification(s). The output of the transform media service is a BMO with one or more content items.</wsdl:documentation>
 		<wsdl:operation name="transform">
 			<wsdl:documentation>The transform operation transforms media format essences referenced by a BMO to produce new media essences in the specified format and resolution.</wsdl:documentation>
@@ -83,12 +83,12 @@ in the notifyAt element of the job request.</wsdl:documentation>
 			<wsdl:input message="tfms:transformNotificationMsg"></wsdl:input>
 		</wsdl:operation>
 		<wsdl:operation name="notifyFault">
-			<wsdl:documentation>This operation allows the transform media service to send a fault notification with information about the transform job failure to the endpoint 
+			<wsdl:documentation>This operation allows the transform media service to send a fault notification with information about the transform job failure to the endpoint
 specified in the notifyAt element of the job request.</wsdl:documentation>
 			<wsdl:input message="tfms:transformFaultNotificationMsg"></wsdl:input>
 		</wsdl:operation>
 	</wsdl:portType>
-	
+
 	 <wsdl:portType name="MediaServiceStatus">
 		<wsdl:documentation>The MediaServiceStatus interface provides a common SOAP interface for all FIMS services for managing jobs and queues.</wsdl:documentation>
 		<wsdl:operation name="manageJob">
@@ -110,7 +110,7 @@ specified in the notifyAt element of the job request.</wsdl:documentation>
 			<wsdl:fault name="fault" message="tfms:FaultMsg" />
 		</wsdl:operation>
 	</wsdl:portType>
-	 
+
 	 <wsdl:binding name="TransformMediaBinding" type="tfms:TransformMedia">
 	 	<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
 	 	<wsdl:operation name="transform">

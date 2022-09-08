@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <xs:schema id="types"
 		elementFormDefault="qualified"
-		version="Exchange2007_SP1" 
+		version="Exchange2007_SP1"
 		xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types"
 		targetNamespace="http://schemas.microsoft.com/exchange/services/2006/types"
 		xmlns:tns="http://schemas.microsoft.com/exchange/services/2006/types"
@@ -287,7 +287,7 @@
       <xs:enumeration value="calendar:UID"/>
       <xs:enumeration value="calendar:RecurrenceId"/>
       <xs:enumeration value="calendar:DateTimeStamp"/>
-      
+
       <!-- Task properties -->
 
       <xs:enumeration value="task:ActualWork"/>
@@ -1305,8 +1305,8 @@
           <xs:element name="Sensitivity" type="t:SensitivityChoicesType" minOccurs="0" />
           <xs:element name="Body" type="t:BodyType" minOccurs="0" />
           <xs:element name="Attachments" type="t:NonEmptyArrayOfAttachmentsType" minOccurs="0" />
-          <xs:element 
-							name="InternetMessageHeaders" 
+          <xs:element
+							name="InternetMessageHeaders"
 							type="t:NonEmptyArrayOfInternetHeadersType"
 							minOccurs="0" />
           <xs:element name="Sender" type="t:SingleRecipientType" minOccurs="0" />
@@ -2191,7 +2191,7 @@
           <xs:element name="UID" type="xs:string" minOccurs="0" />
           <xs:element name="RecurrenceId" type="xs:dateTime" minOccurs="0" />
           <xs:element name="DateTimeStamp" type="xs:dateTime" minOccurs="0" />
-          
+
           <!-- Single and Occurrence only -->
 
           <xs:element name="Start" type="xs:dateTime" minOccurs="0" />
@@ -2264,17 +2264,17 @@
           <xs:element name="IsDelegated" type="xs:boolean" minOccurs="0" />
           <xs:element name="IsOutOfDate" type="xs:boolean" minOccurs="0" />
           <xs:element name="HasBeenProcessed" type="xs:boolean" minOccurs="0" />
-          
+
           <!-- Meeting response related properties -->
-          
+
           <xs:element name="ResponseType" type="t:ResponseTypeType" minOccurs="0" />
 
           <!-- iCalendar properties -->
-          
+
           <xs:element name="UID" type="xs:string" minOccurs="0" />
           <xs:element name="RecurrenceId" type="xs:dateTime" minOccurs="0" />
           <xs:element name="DateTimeStamp" type="xs:dateTime" minOccurs="0" />
-          
+
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -3641,7 +3641,7 @@
       <xs:element name="Delete" type="xs:boolean" />
       <xs:element name="Modify" type="xs:boolean" />
       <xs:element name="Read" type="xs:boolean" />
-    </xs:sequence>	
+    </xs:sequence>
   </xs:complexType>
 
   <!-- Delegate Management types -->

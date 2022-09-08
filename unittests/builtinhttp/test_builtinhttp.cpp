@@ -427,7 +427,7 @@ private Q_SLOTS:
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedCountryRequestWithWSAddressingAction()));
     }
 
-    
+
 private:
     static QByteArray countryResponse()
     {

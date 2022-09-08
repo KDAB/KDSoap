@@ -22,7 +22,7 @@ The name "OASIS" is trademarks of OASIS, the owner and developer of this specifi
     targetNamespace="http://docs.oasis-open.org/ws-dd/ns/discovery/2009/01"
     xmlns:tns="http://docs.oasis-open.org/ws-dd/ns/discovery/2009/01"
     xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl"
-    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
     xmlns:xs="http://www.w3.org/2001/XMLSchema" >
   <wsdl:types>
     <xs:schema>
@@ -95,8 +95,8 @@ The name "OASIS" is trademarks of OASIS, the owner and developer of this specifi
     </wsdl:operation>
   </wsdl:portType>
 
-  <!-- If this portType is included in Types, it indicates the 
-       Target Service is a Discovery Proxy operating in a managed mode. 
+  <!-- If this portType is included in Types, it indicates the
+       Target Service is a Discovery Proxy operating in a managed mode.
        Discovery Proxies also implement tns:TargetService in an ad hoc mode.
   -->
   <wsdl:portType name="DiscoveryProxy">

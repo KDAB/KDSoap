@@ -45,7 +45,7 @@
     </portType>
     <binding name="PREFIXSoapHttp" type="tns:PREFIX">
         <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
-        
+
         <operation name="updateObjs">
             <soap:operation soapAction="http://test.example.com//Objs"/>
             <input>
@@ -58,7 +58,7 @@
     </binding>
     <service name="PREFIX">
         <port name="PREFIXSoapHttpPort" binding="tns:PREFIXSoapHttp">
-             <soap:address location="http://example.com/PREFIX_WS/PREFIXSoapHttpPort"/> 
+             <soap:address location="http://example.com/PREFIX_WS/PREFIXSoapHttpPort"/>
         </port>
     </service>
 </definitions>
