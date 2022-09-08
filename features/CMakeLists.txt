@@ -11,5 +11,5 @@
 ## Contact info@kdab.com if any conditions of this licensing are not clear to you.
 ##
 if(NOT ${PROJECT_NAME}_QT6)
-  install(FILES kdsoap.prf DESTINATION ${INSTALL_DATADIR}/mkspecs/features)
+    install(FILES kdsoap.prf DESTINATION ${INSTALL_DATADIR}/mkspecs/features)
 endif()

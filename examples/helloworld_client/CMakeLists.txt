@@ -15,7 +15,12 @@ project(helloworld_client)
 
 set(helloworld_client_SRCS main.cpp helloworld_client.h)
 
-KDSOAP_GENERATE_WSDL(helloworld_client_SRCS ../helloworld_server/helloworld.wsdl)
+kdsoap_generate_wsdl(helloworld_client_SRCS ../helloworld_server/helloworld.wsdl)
 
-add_executable(helloworld_client ${helloworld_client_SRCS})
-target_link_libraries(helloworld_client ${QT_LIBRARIES} kdsoap)
+add_executable(
+    helloworld_client
+    ${helloworld_client_SRCS}
+)
+target_link_libraries(
+    helloworld_client ${QT_LIBRARIES} kdsoap
+)

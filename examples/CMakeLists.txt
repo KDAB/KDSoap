@@ -11,7 +11,11 @@
 ## Contact info@kdab.com if any conditions of this licensing are not clear to you.
 ##
 
-find_package(Qt${Qt_VERSION_MAJOR} ${QT_MIN_VERSION} COMPONENTS Widgets CONFIG REQUIRED)
+find_package(
+    Qt${Qt_VERSION_MAJOR} ${QT_MIN_VERSION}
+    COMPONENTS Widgets CONFIG
+    REQUIRED
+)
 list(APPEND QT_LIBRARIES Qt${Qt_VERSION_MAJOR}::Widgets)
 
 include(${CMAKE_BINARY_DIR}/KDSoap/KDSoapMacros.cmake)
