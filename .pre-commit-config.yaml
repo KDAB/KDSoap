@@ -19,6 +19,11 @@ repos:
   hooks:
   - id: pylint
     exclude: ^(conan/conanfile.py|scripts/genignore.py)
+- repo: https://github.com/pre-commit/mirrors-autopep8
+  rev: v1.6.0
+  hooks:
+  - id: autopep8
+    exclude: ^(conan/conanfile.py)
 - repo: https://github.com/codespell-project/codespell
   rev: v2.1.0
   hooks:
