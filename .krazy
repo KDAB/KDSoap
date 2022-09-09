@@ -3,34 +3,28 @@ CHECKSETS qt5,c++,foss
 #KDAB-specific checks
 EXTRA kdabcopyright-reuse,fosslicense-reuse
 
-#additional checks
-EXTRA defines,null
-
-##checks to exclude for now
-#exclude intrusive checks to investigate later
-EXCLUDE constref,dpointer,inline,null,doublequote_chars
-#too many http: references in the unittests
+#exclude checks now being done by clazy or clang-tools
+EXCLUDE includes,strings,explicit,normalize,passbyvalue,operators,nullstrcompare,nullstrassign,doublequote_chars,qobject,sigsandslots,staticobjects,cpp
+#exclude more checks
+EXCLUDE qminmax,captruefalse,dpointer,inline,constref
+#exclude spelling as codespell is much, much better tool
+#too many false positives
 EXCLUDE insecurenet
+EXCLUDE spelling
 EXCLUDE style
-STYLE_LINEMAX 150
 
 #if you have a build subdir, skip it
 SKIP /build-
-#no need to check 3rdparty stuff
+
+#skip 3rdparty
 SKIP /libkode/
 SKIP /kdwsdl2cpp/
 SKIP /KDQName\.cpp|/KDQName\.h
-#nor examples
-SKIP /examples/
-#nor testtools
-SKIP /testtools/
-#skip generated headers
-SKIP /include/
-#skip generated cmake
-SKIP KDSoapConfig\.cmake\.in
+
+#skip scripts
+SKIP /scripts/
 #skip other cmake
-SKIP FindKDSoap\.cmake|KDSoapMacros\.cmake
-SKIP Doxyfile.cmake|/genignore.py
+SKIP Doxyfile.cmake
 SKIP \.cmake-format\.py
 
 #skip the borrowed code in the cmake subdir
