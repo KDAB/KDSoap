@@ -38,24 +38,18 @@ if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/kdwsdl2cpp/libkode/common")
     message(FATAL_ERROR "Please do git submodule update --init --recursive")
 endif()
 
-# Just to fix warnings with --warn-uninitialized
-if(NOT DEFINED USE_DEFAULT_INSTALL_LOCATION)
-    set(USE_DEFAULT_INSTALL_LOCATION FALSE)
-endif()
-if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-    set(CMAKE_INSTALL_PREFIX "")
-endif()
-
-# Allow using a non-KDAB install location
-set(KDAB_INSTALL True)
-if((NOT DEFINED ${USE_DEFAULT_INSTALL_LOCATION}) OR (NOT ${USE_DEFAULT_INSTALL_LOCATION}))
+# Allow using a non-KDAB install location.
+set(KDAB_INSTALL
+    True
+    CACHE INTERNAL "Install to default KDAB Location"
+)
+if(DEFINED CMAKE_INSTALL_PREFIX)
     if(NOT "${CMAKE_INSTALL_PREFIX}" STREQUAL "")
-        set(KDAB_INSTALL False)
+        set(KDAB_INSTALL
+            False
+            CACHE INTERNAL "Install to non-KDAB Location"
+        )
     endif()
-    set(USE_DEFAULT_INSTALL_LOCATION
-        ${KDAB_INSTALL}
-        CACHE INTERNAL "Install to default KDAB Location" FORCE
-    )
 endif()
 
 if(${CMAKE_VERSION} VERSION_LESS "3.12.0")
@@ -69,18 +63,6 @@ else()
     )
 endif()
 
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/ECM/modules")
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/KDAB/modules")
-
-include(FeatureSummary)
-
-option(${PROJECT_NAME}_STATIC "Build statically" OFF)
-option(${PROJECT_NAME}_TESTS "Build the tests" OFF)
-option(${PROJECT_NAME}_EXAMPLES "Build the examples" ON)
-option(${PROJECT_NAME}_DOCS "Build the API documentation" OFF)
-option(${PROJECT_NAME}_QT6 "Build against Qt 6" OFF)
-
 set(${PROJECT_NAME}_VERSION_MAJOR 2)
 set(${PROJECT_NAME}_VERSION_MINOR 1)
 set(${PROJECT_NAME}_VERSION_PATCH 0)
@@ -90,13 +72,16 @@ set(${PROJECT_NAME}_VERSION
 set(PROJECT_VERSION ${${PROJECT_NAME}_VERSION}) #needed for ECM
 set(${PROJECT_NAME}_SOVERSION ${${PROJECT_NAME}_VERSION_MAJOR})
 
-find_path(BOOST_OPTIONAL_DIR NAMES boost/optional.hpp)
-if(BOOST_OPTIONAL_DIR)
-    message(STATUS "Found boost/optional.hpp in ${BOOST_OPTIONAL_DIR}")
-    include_directories(${BOOST_OPTIONAL_DIR})
-    add_definitions(-DBOOST_OPTIONAL_FOUND
-    )# I'd really prefer using configure_file but this is more compatible with qmake
-endif()
+include(FeatureSummary)
+
+option(${PROJECT_NAME}_STATIC "Build statically" OFF)
+option(${PROJECT_NAME}_TESTS "Build the tests" OFF)
+option(${PROJECT_NAME}_EXAMPLES "Build the examples" ON)
+option(${PROJECT_NAME}_DOCS "Build the API documentation" OFF)
+option(${PROJECT_NAME}_QT6 "Build against Qt 6" OFF)
+
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/ECM/modules")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/KDAB/modules")
 
 # Set a default build type if none was specified
 set(default_build_type "Release")
@@ -135,10 +120,14 @@ else()
     list(APPEND QT_LIBRARIES Qt5::Core Qt5::Network)
     set(${PROJECT_NAME}_LIBRARY_QTID "")
 endif()
-
-# setup default install locations
-include(KDInstallLocation)
 include(KDQtInstallPaths) #to set QT_INSTALL_FOO variables
+
+find_path(BOOST_OPTIONAL_DIR NAMES boost/optional.hpp)
+if(BOOST_OPTIONAL_DIR)
+    message(STATUS "Found boost/optional.hpp in ${BOOST_OPTIONAL_DIR}")
+    include_directories(${BOOST_OPTIONAL_DIR})
+    add_definitions(-DBOOST_OPTIONAL_FOUND)# I'd really prefer using configure_file but this is more compatible with qmake
+endif()
 
 set(CMAKE_INCLUDE_CURRENT_DIR TRUE)
 set(CMAKE_AUTOMOC TRUE)
@@ -154,6 +143,7 @@ endif()
 set(CMAKE_C_VISIBILITY_PRESET hidden)
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
+
 
 add_definitions(-DQT_NO_CAST_TO_ASCII -DQT_NO_CAST_FROM_ASCII -DQT_NO_CAST_FROM_BYTEARRAY -DQURL_NO_CAST_FROM_STRING)
 add_definitions(-DUSE_EXCEPTIONS -DQT_FATAL_ASSERT -DQT_NO_FOREACH)
@@ -175,26 +165,28 @@ else()
     set(${PROJECT_NAME}_LIBRARY_MODE "SHARED")
 endif()
 
+if(KDAB_INSTALL)
+    if(UNIX)
+        set(CMAKE_INSTALL_PREFIX
+            "/usr/local/KDAB/${PROJECT_NAME}-${${PROJECT_NAME}_VERSION}"
+            CACHE INTERNAL "Install to default KDAB Location"
+        )
+    elseif(WIN32)
+        set(CMAKE_INSTALL_PREFIX
+            "C:\\KDAB\\${PROJECT_NAME}-${${PROJECT_NAME}_VERSION}"
+            CACHE INTERNAL "Install to default KDAB Location"
+        )
+    endif()
+endif()
+
+# setup default install locations
+include(KDInstallLocation)
+
 if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
     set(${PROJECT_NAME}_IS_ROOT_PROJECT TRUE)
 
     if(CMAKE_BUILD_TYPE MATCHES "Release")
         add_definitions(-DNDEBUG)
-    endif()
-
-    if(NOT CMAKE_BUILD_TYPE)
-        set(CMAKE_BUILD_TYPE
-            "Debug"
-            CACHE STRING "" FORCE
-        )
-    endif()
-
-    if(USE_DEFAULT_INSTALL_LOCATION)
-        if(UNIX)
-            set(CMAKE_INSTALL_PREFIX "/usr/local/KDAB/${PROJECT_NAME}-${${PROJECT_NAME}_VERSION}")
-        elseif(WIN32)
-            set(CMAKE_INSTALL_PREFIX "C:\\KDAB\\${PROJECT_NAME}-${${PROJECT_NAME}_VERSION}")
-        endif()
     endif()
 
     message(STATUS "Building ${PROJECT_NAME} ${${PROJECT_NAME}_VERSION} in ${CMAKE_BUILD_TYPE} mode. "
