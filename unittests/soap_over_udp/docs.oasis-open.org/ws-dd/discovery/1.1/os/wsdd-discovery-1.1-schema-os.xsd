@@ -122,7 +122,7 @@ The name "OASIS" is trademarks of OASIS, the owner and developer of this specifi
   <xs:element name="ResolveMatches" type="tns:ResolveMatchesType" />
   <xs:complexType name="ResolveMatchesType" >
     <xs:sequence>
-      <xs:element name="ResolveMatch" 
+      <xs:element name="ResolveMatch"
                   type="tns:ResolveMatchType"
                   minOccurs="0" />
       <xs:any namespace="##other"
@@ -192,7 +192,7 @@ The name "OASIS" is trademarks of OASIS, the owner and developer of this specifi
       <xs:element ref="tns:Sig" minOccurs="0" />
     </xs:sequence>
     <xs:anyAttribute namespace="##other" processContents="lax" />
-  </xs:complexType> 
+  </xs:complexType>
 
   <xs:element name="Sig" type="tns:SigType" />
   <xs:complexType name="SigType" >
@@ -207,7 +207,7 @@ The name "OASIS" is trademarks of OASIS, the owner and developer of this specifi
     <xs:attribute name="Refs" type="xs:IDREFS" use="required" />
     <xs:attribute name="Sig" type="xs:base64Binary" use="required" />
     <xs:anyAttribute namespace="##other" processContents="lax" />
-  </xs:complexType> 
+  </xs:complexType>
 
   <!-- //////////////////// General Headers //////////////////// -->
 

@@ -1,3 +1,9 @@
+/*
+ SPDX-FileCopyrightText: 2005 Tobias Koenig <tokoe@kde.org>
+
+ SPDX-License-Identifier: MIT
+*/
+
 #ifndef ELEMENTARGUMENTSERIALIZER_H
 #define ELEMENTARGUMENTSERIALIZER_H
 

@@ -6,7 +6,7 @@
    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
    xmlns:tns="http://www.ecerami.com/wsdl/HelloService.wsdl"
    xmlns:xsd="http://www.w3.org/2001/XMLSchema">
- 
+
    <message name="SayHelloRequest">
       <part name="firstName" type="xsd:string"/>
       <part name="lastName" type="xsd:string"/>
@@ -14,7 +14,7 @@
    <message name="SayHelloResponse">
       <part name="greeting" type="xsd:string"/>
    </message>
- 
+
    <portType name="Hello_PortType">
       <operation name="sayHello">
          <input message="tns:SayHelloRequest"/>
@@ -23,7 +23,7 @@
    </portType>
 
    <binding name="Hello_Binding" type="tns:Hello_PortType">
-      <soap:binding style="rpc" 
+      <soap:binding style="rpc"
          transport="http://schemas.xmlsoap.org/soap/http"/>
       <operation name="sayHello">
          <soap:operation soapAction="sayHello"/>
@@ -41,11 +41,11 @@
          </output>
       </operation>
    </binding>
- 
+
    <service name="Hello_Service">
       <documentation>WSDL File for HelloService</documentation>
       <port binding="tns:Hello_Binding" name="Hello_Port">
-         <soap:address 
+         <soap:address
             location="http://localhost:8080/soap/servlet/rpcrouter"/>
       </port>
    </service>

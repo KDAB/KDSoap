@@ -1,8 +1,7 @@
 CHECKSETS qt5,c++,foss
 
 #KDAB-specific checks
-EXTRA kdabcopyright-reuse,kdabcontactus,fosslicense-reuse
-EXCLUDE copyright,license
+EXTRA kdabcopyright-reuse,fosslicense-reuse
 
 #additional checks
 EXTRA defines,null
@@ -32,6 +31,7 @@ SKIP KDSoapConfig\.cmake\.in
 #skip other cmake
 SKIP FindKDSoap\.cmake|KDSoapMacros\.cmake
 SKIP Doxyfile.cmake|/genignore.py
+SKIP \.cmake-format\.py
 
 #skip the borrowed code in the cmake subdir
-SKIP /cmake/InstallLocation.cmake|/cmake/ECM/
+SKIP cmake/ECM|/cmake/KDAB/

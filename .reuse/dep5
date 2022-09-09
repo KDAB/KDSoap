@@ -3,24 +3,59 @@ Upstream-Name: KDSoap
 Upstream-Contact:  <info@kdab.com>
 Source: https://www.github.com/KDAB/KDSoap
 
-Files: unittests/*/*.xsd  unittests/*/*.XSD unittests/*/*.xml unittests/*/*.wsdl testtools/*.qrc examples/*/*.qrc examples/*/*.wsdl *.html *.css docs/manual/*.pdf
+#misc source code
+Files: unittests/*/*.xsd unittests/*/*.wsdl unittests/*/*.XSD unittests/*/*.xml testtools/*.qrc examples/*/*.qrc examples/*/*.wsdl *.html *.css docs/manual/*.pdf *.bat *.pem
 Copyright: 2010-2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
-License: LGPL-2.1-only OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDAB-KDSoap OR LicenseRef-KDAB-KDSoap-US
+License: MIT
 
 #artwork
-Files: images/*.png docs/api/*.png docs/*.png docs/*.odg examples/*/*.mng
+Files: images/*.png docs/api/*.png docs/*.png docs/*.odg examples/*/*.mng examples/*/*.gif
 Copyright: 2010-2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
-License: LGPL-2.1-only OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDAB-KDSoap OR LicenseRef-KDAB-KDSoap-US
+License: MIT
+
+#misc documentation
+Files: *md *.txt *.html docs/manual/*.pdf
+Copyright: 2010-2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
+License: MIT
+
+#misc config files
+Files: .pre-commit-config.yaml .codespellrc .krazy .cmake-format.py .clang-format .clang-tidy .clazy .codedocs .gitignore .gitmodules .mdlrc .mdlrc.rb .pep8 .pylintrc appveyor.yml docs/api/Doxyfile.cmake distro/*
+Copyright: 2010-2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
+License: BSD-3-Clause
+
+Files: kdwsdl2cpp/schemas/soapenc-1.1.xsd
+Copyright: 2001 DevelopMentor and 2001 W3C (Massachusetts Institute of Technology, Institut National de Recherche en Informatique et en Automatique, Keio University). All Rights Reserved.
+License: W3C
+
+Files: kdwsdl2cpp/schemas/soapenc-1.2.xsd
+Copyright: 2003 W3C(R) (MIT, ERCIM, Keio), All Rights Reserved.
+License: W3C
+
+Files: kdwsdl2cpp/schemas/schemas.qrc
+Copyright: 2005 Tobias Koenig <tokoe@kde.org>
+License: MIT
 
 #3rdparty
 Files: cmake/ECM/modules/*
-Copyright:
+Copyright: The KDE Project
 License: BSD-3-Clause
 
-Files:kdwsdl2cpp/wsdl/*
-Copyright: 2005 Tobias Koenig <tokoe@kde.org>
-License: LGPL-2.0-or-later
+Files: unittests/groupwise_wsdl/*.xsd unittests/groupwise_wsdl/*.wsdl
+Copyright: 2005-2006 Novell, Inc All Rights reserved.
+License: GPL-2.0-only OR LicenseRef-Novell
 
-Files:kdwsdl2cpp/src/*
-Copyright: 2005-2006 Tobias Koenig <tokoe@kde.org>, 2010 David Faure <dfaure@kdab.com>
-License: LGPL-2.0-or-later
+Files: unittests/salesforce_wsdl/*.wsdl
+Copyright: 1999-2010 salesforce.com, inc. All Rights reserved.
+License: BSD-3-Clause
+
+Files: unittests/soap_over_udp/*.wsdl unittests/soap_over_udp/docs.oasis-open.org/ws-dd/discovery/1.1/os/wsdd-discovery-1.1-schema-os.xsd unittests/soap_over_udp/www.w3.org/2006/03/addressing/ws-addr.xsd
+Copyright: 2009 OASIS(r) All Rights reserved.
+License: LicenseRef-OASIS
+
+Files: unittests/webcalls_wsdl/*.wsdl
+Copyright: 2003-2004 The Sporting Exchange Limited. All rights reserved.
+License: LicenseRef-SportingExchange
+
+Files: unittests/ws_discovery_wsdl/schemas.xmlsoap.org/ws/2005/04/discovery/ws-discovery.xsd unittests/ws_discovery_wsdl/schemas.xmlsoap.org/ws/2004/08/addressing unittests/ws_discovery_wsdl/*.wsdl
+Copyright: pyright © 2002-2004 BEA Systems Inc., International Business Machines Corporation, Microsoft Corporation, Inc, SAP AG, and Sun Microsystems, Inc.. All rights reserved.
+License: LicenseRef-Microsoft

@@ -2,11 +2,11 @@
 
 <!--
 
-Copyright 2003-2004 The Sporting Exchange Limited. All rights reserved. 
+Copyright 2003-2004 The Sporting Exchange Limited. All rights reserved.
 The presentation, distribution or other dissemination of the information contained herein by The Sporting Exchange Limited (Betfair) is not a license, either expressly or impliedly, to any intellectual property owned or controlled by Betfair.
-Save as provided by statute and to the fullest extent permitted by law, the following provisions set out the entire liability of Betfair (including any liability for the acts and omissions of its employees, agents and sub-contractors) to the User in respect of the use of its WSDL file whether in contract, tort, statute, equity or otherwise: 
+Save as provided by statute and to the fullest extent permitted by law, the following provisions set out the entire liability of Betfair (including any liability for the acts and omissions of its employees, agents and sub-contractors) to the User in respect of the use of its WSDL file whether in contract, tort, statute, equity or otherwise:
 (a)     The User acknowledges and agrees that (except as expressly provided in this Agreement) the WSDL is provided "AS IS" without warranties of any kind (whether express or implied);
-(b)    All conditions, warranties, terms and undertakings (whether express or implied, statutory or otherwise relating to the delivery, performance, quality, uninterrupted use, fitness for purpose, occurrence or reliability of the WSDL are hereby excluded to the fullest extent permitted by law; and 
+(b)    All conditions, warranties, terms and undertakings (whether express or implied, statutory or otherwise relating to the delivery, performance, quality, uninterrupted use, fitness for purpose, occurrence or reliability of the WSDL are hereby excluded to the fullest extent permitted by law; and
 (c)     Betfair shall not be liable to the User for loss of profit (whether direct or indirect), loss of contracts or goodwill, lost advertising, loss of data or any type of special, indirect, consequential or economic loss (including loss or damage suffered by the User as a result of an action brought by a third party) even if such loss was reasonably foreseeable or Betfair had been advised of the possibility of the User incurring such loss.
 No exclusion or limitation set out in this Agreement shall apply in the case of fraud or fraudulent concealment, death or personal injury resulting from the negligence of either party or any of its employees, agents or sub-contractors; and/or any breach of the obligations implied by (as appropriate) section 12 of the Sale of Goods Act 1979, section 2 of the Supply of Goods and Services Act 1982 or section 8 of the Supply of Goods (Implied Terms) Act 1973.
 
@@ -252,7 +252,7 @@ No exclusion or limitation set out in this Agreement shall apply in the case of 
           <xsd:element name="tCPrivacyPolicyChangeAcceptance" nillable="false" type="types:PrivacyPolicyChangeResponseEnum"/>
         </xsd:sequence>
       </xsd:complexType>
-      
+
       <xsd:simpleType name="PrivacyPolicyChangeResponseEnum">
         <xsd:restriction base="xsd:string">
           <xsd:enumeration value="NO_REPLY"/>
@@ -260,7 +260,7 @@ No exclusion or limitation set out in this Agreement shall apply in the case of 
           <xsd:enumeration value="REJECT"/>
         </xsd:restriction>
       </xsd:simpleType>
-          
+
       <xsd:complexType name="SubmitPasswordChangeLIMBMessage">
         <xsd:sequence>
           <xsd:element name="messageId" nillable="true" type="xsd:int"/>
@@ -403,7 +403,7 @@ No exclusion or limitation set out in this Agreement shall apply in the case of 
           <xsd:enumeration value="API_ERROR"/>
         </xsd:restriction>
       </xsd:simpleType>
-      
+
       <xsd:simpleType name="LogoutErrorEnum">
         <xsd:restriction base="xsd:string">
           <xsd:enumeration value="OK" />
@@ -426,7 +426,7 @@ No exclusion or limitation set out in this Agreement shall apply in the case of 
         </xsd:complexContent>
       </xsd:complexType>
 
-      
+
 
       <xsd:complexType name="KeepAliveResp">
         <xsd:complexContent>
@@ -506,7 +506,7 @@ No exclusion or limitation set out in this Agreement shall apply in the case of 
           <xsd:element name="orderIndex" nillable="false" type="xsd:int"/>
           <xsd:element name="startTime" type="xsd:dateTime"/>
           <xsd:element name="timezone" nillable="true" type="xsd:string"/>
-          <xsd:element name="venue" nillable="true" type="xsd:string"/>  
+          <xsd:element name="venue" nillable="true" type="xsd:string"/>
           <xsd:element name="betDelay" nillable="false" type="xsd:int"/>
           <xsd:element name="numberOfWinners" nillable="false" type="xsd:int"/>
           <xsd:element name="eventParentId" nillable="false" type="xsd:int"/>
@@ -529,7 +529,7 @@ No exclusion or limitation set out in this Agreement shall apply in the case of 
           <xsd:enumeration value="ADL"/><!-- asian double line -->
           <xsd:enumeration value="COUP"/><!-- coupon -->
         </xsd:restriction>
-      </xsd:simpleType>	  
+      </xsd:simpleType>
       <xsd:complexType name="ArrayOfMarketSummary">
         <xsd:sequence>
           <xsd:element form="qualified" maxOccurs="unbounded" minOccurs="0"
@@ -573,7 +573,7 @@ No exclusion or limitation set out in this Agreement shall apply in the case of 
         <xsd:sequence>
           <xsd:element name="id" nillable="false" type="xsd:int"/>
           <xsd:element name="name" nillable="true" type="xsd:string"/>
-          <xsd:element name="nextMarketId" nillable="false" type="xsd:int"/>          
+          <xsd:element name="nextMarketId" nillable="false" type="xsd:int"/>
           <xsd:element name="exchangeId" nillable="false" type="xsd:int"/>
         </xsd:sequence>
       </xsd:complexType>
@@ -601,7 +601,7 @@ No exclusion or limitation set out in this Agreement shall apply in the case of 
           <xsd:enumeration value="SUSPENDED"/>
         </xsd:restriction>
       </xsd:simpleType>
-      
+
       <xsd:complexType name="Runner">
         <xsd:sequence>
           <xsd:element name="asianLineId" nillable="false" type="xsd:int"/>
@@ -702,7 +702,7 @@ No exclusion or limitation set out in this Agreement shall apply in the case of 
           <xsd:enumeration value="GET_VENDOR_USERS"/>
           <xsd:enumeration value="GET_VENDORSUBSCRIPTION_INFO"/>
           <xsd:enumeration value="GET_VENDOR_INFO"/>
-          
+
         </xsd:restriction>
       </xsd:simpleType>
       <xsd:complexType name="ArrayOfServiceCall">
@@ -733,7 +733,7 @@ No exclusion or limitation set out in this Agreement shall apply in the case of 
       <xsd:complexType name="DepositFromPaymentCardResp">
       <xsd:annotation>
 		  <xsd:documentation>
-			  Result of a DepositFromPaymentCardReq.  If errorCode is set to CARD_AMOUNT_OUTSIDE_LIMIT then minAmount and maxAmount 
+			  Result of a DepositFromPaymentCardReq.  If errorCode is set to CARD_AMOUNT_OUTSIDE_LIMIT then minAmount and maxAmount
 			  will be set.  If errorCode is set to DEPOSIT_LIMIT_EXCEEDED then maxAmount will be set.
 		  </xsd:documentation>
       </xsd:annotation>
@@ -779,7 +779,7 @@ No exclusion or limitation set out in this Agreement shall apply in the case of 
 			<xsd:enumeration value="DUPLICATE_WITHDRAWAL"/>
 			<!-- The following four values added for new withdrawByBankTransfer operation -->
 			<!-- Do not use unless for other operations unless they are also new.  There  -->
-			<!-- will be some clients that are not aware of these new enum values.        -->			        
+			<!-- will be some clients that are not aware of these new enum values.        -->
             <xsd:enumeration value="DEPOSITS_NOT_CLEARED"/>
             <xsd:enumeration value="INVALID_BANK_ACCOUNT_DETAILS_FIELD"/>
             <xsd:enumeration value="EXPRESS_TRANSFER_NOT_AVAILABLE"/>
@@ -912,7 +912,7 @@ No exclusion or limitation set out in this Agreement shall apply in the case of 
           <xsd:enumeration value="CARD_NOT_VALID_FOR_ACCOUNT_CURRENCY"/>
           <xsd:enumeration value="INVALID_CARD_TYPE"/>
           <xsd:enumeration value="MAXIMUM_NUMBER_OF_CARDS_REACHED"/>
-          <xsd:enumeration value="INVALID_ISSUE_NUMBER"/>          
+          <xsd:enumeration value="INVALID_ISSUE_NUMBER"/>
           <xsd:enumeration value="API_ERROR"/>
         </xsd:restriction>
       </xsd:simpleType>
@@ -980,7 +980,7 @@ No exclusion or limitation set out in this Agreement shall apply in the case of 
           <xsd:enumeration value="INVALID_EXPIRY_DATE"/>
           <xsd:enumeration value="INVALID_START_DATE"/>
           <xsd:enumeration value="INVALID_ZIP_CODE"/>
-          <xsd:enumeration value="INVALID_ISSUE_NUMBER"/>                    
+          <xsd:enumeration value="INVALID_ISSUE_NUMBER"/>
           <xsd:enumeration value="API_ERROR"/>
           <xsd:enumeration value="CARD_NOT_FOUND"/>
         </xsd:restriction>
@@ -1021,7 +1021,7 @@ No exclusion or limitation set out in this Agreement shall apply in the case of 
           <xsd:element name="totalWithdrawals" nillable="true" type="xsd:double"/>
           <xsd:element name="netDeposits" nillable="true" type="xsd:double"/>
           <xsd:element name="validationStatus" nillable="true" type="xsd:string"/>
-          <xsd:element name="billingName" type="xsd:string"/>          
+          <xsd:element name="billingName" type="xsd:string"/>
 		  <xsd:element name="billingAddress1" nillable="true" type="xsd:string"/>
 		  <xsd:element name="billingAddress2" nillable="true" type="xsd:string"/>
 		  <xsd:element name="billingAddress3" nillable="true" type="xsd:string"/>
@@ -1033,7 +1033,7 @@ No exclusion or limitation set out in this Agreement shall apply in the case of 
 		  <xsd:element name="cardStatus" type="types:PaymentCardStatusEnum"/>
         </xsd:sequence>
       </xsd:complexType>
-	  
+
 	  <xsd:simpleType name="PaymentCardStatusEnum">
         <xsd:restriction base="xsd:string">
           <xsd:enumeration value="LOCKED"/>
@@ -1199,7 +1199,7 @@ No exclusion or limitation set out in this Agreement shall apply in the case of 
       		<xsd:extension base="types:APIRequest">
       			<xsd:sequence>
 	          		<xsd:element name="sourceWalletId" nillable="false" type="xsd:int" />
-	          		<xsd:element name="targetWalletId" nillable="false" type="xsd:int" />	          		
+	          		<xsd:element name="targetWalletId" nillable="false" type="xsd:int" />
       				<xsd:element name="amount" nillable="false" type="xsd:double" />
       			</xsd:sequence>
       		</xsd:extension>
@@ -1220,9 +1220,9 @@ No exclusion or limitation set out in this Agreement shall apply in the case of 
       	<xsd:restriction base="xsd:string">
       		<xsd:enumeration value="OK" />
       		<xsd:enumeration value="INVALID_AMOUNT" />
-			<xsd:enumeration value="TRANSFER_FAILED"/>   
-			<xsd:enumeration value="OVER_BALANCE"/>   
-      		<xsd:enumeration value="WALLETS_MUST_BE_DIFFERENT"/>         		   		
+			<xsd:enumeration value="TRANSFER_FAILED"/>
+			<xsd:enumeration value="OVER_BALANCE"/>
+      		<xsd:enumeration value="WALLETS_MUST_BE_DIFFERENT"/>
           	<xsd:enumeration value="SOURCE_WALLET_UNKNOWN" />
           	<xsd:enumeration value="SOURCE_WALLET_SUSPENDED" />
           	<xsd:enumeration value="SOURCE_WALLET_SUSPENDED_KYC" />
@@ -1268,7 +1268,7 @@ No exclusion or limitation set out in this Agreement shall apply in the case of 
           <xsd:enumeration value="API_ERROR"/>
         </xsd:restriction>
       </xsd:simpleType>
-      
+
       <xsd:complexType name="ConvertCurrencyResp">
         <xsd:complexContent>
           <xsd:extension base="types:APIResponse">
@@ -1423,7 +1423,7 @@ No exclusion or limitation set out in this Agreement shall apply in the case of 
           </xsd:extension>
         </xsd:complexContent>
       </xsd:complexType>
-      
+
       <xsd:simpleType name="ViewProfileV2ReqVersionEnum">
         <xsd:restriction base="xsd:string">
           <xsd:enumeration value="V1"/>
@@ -1602,7 +1602,7 @@ No exclusion or limitation set out in this Agreement shall apply in the case of 
 			<xsd:enumeration value="INVALID_TITLE"/>
 			<xsd:enumeration value="INVALID_USERNAME"/>
 			<xsd:enumeration value="INVALID_WORK_PHONE"/>
-			<xsd:enumeration value="RESERVED_PASSWORD"/>        
+			<xsd:enumeration value="RESERVED_PASSWORD"/>
         </xsd:restriction>
       </xsd:simpleType>
       <xsd:complexType name="ArrayOfValidationErrorsEnum">
@@ -1638,14 +1638,14 @@ No exclusion or limitation set out in this Agreement shall apply in the case of 
               <xsd:element name="informSpecialOffers" nillable="false" type="xsd:boolean"/>
               <xsd:element name="ipAddress" nillable="false" type="xsd:string"/>
               <xsd:element name="locale" nillable="true" type="xsd:string"/>
-              <xsd:element name="lossLimit" nillable="false" type="xsd:double"/>              
+              <xsd:element name="lossLimit" nillable="false" type="xsd:double"/>
               <xsd:element name="lossLimitFrequency" nillable="false" type="types:GamcareLimitFreqEnum"/>
               <xsd:element name="manualAddress" nillable="false" type="xsd:boolean"/>
               <xsd:element name="mobileTelephone" nillable="false" type="xsd:string"/>
               <xsd:element name="partnerId" nillable="false" type="xsd:int"/>
               <xsd:element name="password" nillable="true" type="xsd:string"/>
               <xsd:element name="postCode" nillable="true" type="xsd:string"/>
-              <xsd:element name="preferredName" nillable="true" type="xsd:string"/>              
+              <xsd:element name="preferredName" nillable="true" type="xsd:string"/>
               <xsd:element name="productId" nillable="false" type="xsd:int"/>
               <xsd:element name="question1" nillable="false" type="types:SecurityQuestion1Enum"/>
               <xsd:element name="question2" nillable="false" type="types:SecurityQuestion2Enum"/>
@@ -1659,7 +1659,7 @@ No exclusion or limitation set out in this Agreement shall apply in the case of 
               <xsd:element name="townCity" nillable="false" type="xsd:string"/>
               <xsd:element name="username" nillable="true" type="xsd:string"/>
               <xsd:element name="workTelephone" nillable="true" type="xsd:string"/>
-              <xsd:element name="nationalIdentifier" nillable="true" type="xsd:string"/>                  
+              <xsd:element name="nationalIdentifier" nillable="true" type="xsd:string"/>
             </xsd:sequence>
           </xsd:extension>
         </xsd:complexContent>
@@ -1677,7 +1677,7 @@ No exclusion or limitation set out in this Agreement shall apply in the case of 
           <xsd:enumeration value="DAILY"/>
           <xsd:enumeration value="WEEKLY"/>
 		  <xsd:enumeration value="MONTHLY"/>
-          <xsd:enumeration value="YEARLY"/>          
+          <xsd:enumeration value="YEARLY"/>
         </xsd:restriction>
       </xsd:simpleType>
       <xsd:simpleType name="GenderEnum">
@@ -1727,7 +1727,7 @@ No exclusion or limitation set out in this Agreement shall apply in the case of 
           <xsd:enumeration value="DEFAULT"/>
           <xsd:enumeration value="AGE_VERIFIED"/>
 		  <xsd:enumeration value="KYC"/>
-          <xsd:enumeration value="KYC_NON_AUS"/>          
+          <xsd:enumeration value="KYC_NON_AUS"/>
         </xsd:restriction>
       </xsd:simpleType>
 
@@ -1740,18 +1740,18 @@ No exclusion or limitation set out in this Agreement shall apply in the case of 
 				<xsd:enumeration value="INVALID_ANSWER"/>
 				<xsd:enumeration value="INVALID_PASSWORD"/>
 				<xsd:enumeration value="TOO_MANY_ATTEMPTS_ACCOUNT_SUSPENDED"/>
-				<xsd:enumeration value="API_ERROR"/>				
+				<xsd:enumeration value="API_ERROR"/>
 			</xsd:restriction>
-		</xsd:simpleType>	  
+		</xsd:simpleType>
 		<xsd:simpleType name="ModifyPasswordErrorEnum">
 			<xsd:restriction base="xsd:string">
 	            <xsd:enumeration value="OK"/>
 				<xsd:enumeration value="INVALID_PASSWORD"/>
 				<xsd:enumeration value="INVALID_NEW_PASSWORD"/>
 				<xsd:enumeration value="PASSWORDS_DONT_MATCH"/>
-				<xsd:enumeration value="API_ERROR"/>				
+				<xsd:enumeration value="API_ERROR"/>
 			</xsd:restriction>
-		</xsd:simpleType>	  
+		</xsd:simpleType>
 		<xsd:simpleType name="SetChatNameErrorEnum">
 			<xsd:restriction base="xsd:string">
 	            <xsd:enumeration value="OK"/>
@@ -1760,9 +1760,9 @@ No exclusion or limitation set out in this Agreement shall apply in the case of 
 				<xsd:enumeration value="ACCOUNT_NOT_FUNDED"/>
 				<xsd:enumeration value="CHAT_NAME_UNAVAILABLE"/>
 				<xsd:enumeration value="CANNOT_CHANGE_CHAT_NAME"/>
-				<xsd:enumeration value="API_ERROR"/>				
+				<xsd:enumeration value="API_ERROR"/>
 			</xsd:restriction>
-		</xsd:simpleType>	  
+		</xsd:simpleType>
 		<xsd:complexType name="ForgotPasswordReq">
 			<xsd:complexContent>
 			  <xsd:extension base="types:APIRequest">
@@ -1789,7 +1789,7 @@ No exclusion or limitation set out in this Agreement shall apply in the case of 
 					</xsd:sequence>
 				</xsd:extension>
 			</xsd:complexContent>
-		</xsd:complexType>	  
+		</xsd:complexType>
 		<xsd:complexType name="ModifyPasswordReq">
 			<xsd:complexContent>
 			  <xsd:extension base="types:APIRequest">
@@ -1810,7 +1810,7 @@ No exclusion or limitation set out in this Agreement shall apply in the case of 
 					</xsd:sequence>
 				</xsd:extension>
 			</xsd:complexContent>
-		</xsd:complexType>	 
+		</xsd:complexType>
 		<xsd:complexType name="SetChatNameReq">
 			<xsd:complexContent>
 			  <xsd:extension base="types:APIRequest">
@@ -1832,7 +1832,7 @@ No exclusion or limitation set out in this Agreement shall apply in the case of 
 			</xsd:complexContent>
 		</xsd:complexType>
     </xsd:schema>
-    
+
     <xsd:schema elementFormDefault="qualified" targetNamespace="http://www.betfair.com/publicapi/v3/BFGlobalService/">
       <xsd:import namespace="http://www.betfair.com/publicapi/types/global/v3/"/>
       <xsd:element name="login">
@@ -1849,7 +1849,7 @@ No exclusion or limitation set out in this Agreement shall apply in the case of 
           </xsd:sequence>
         </xsd:complexType>
       </xsd:element>
-      
+
       <xsd:element name="retrieveLIMBMessage">
         <xsd:complexType>
           <xsd:sequence>
@@ -1890,7 +1890,7 @@ No exclusion or limitation set out in this Agreement shall apply in the case of 
       <xsd:element name="logoutResponse">
         <xsd:complexType>
           <xsd:sequence>
-            <xsd:element name="Result" nillable="false" type="types:LogoutResp"/> 
+            <xsd:element name="Result" nillable="false" type="types:LogoutResp"/>
           </xsd:sequence>
         </xsd:complexType>
       </xsd:element>
@@ -2176,7 +2176,7 @@ No exclusion or limitation set out in this Agreement shall apply in the case of 
           </xsd:sequence>
         </xsd:complexType>
       </xsd:element>
-      
+
             <xsd:element name="modifyProfile">
         <xsd:complexType>
           <xsd:sequence>
@@ -2265,7 +2265,7 @@ No exclusion or limitation set out in this Agreement shall apply in the case of 
 		</xsd:element>
 
     </xsd:schema>
- 
+
   </wsdl:types>
   <wsdl:message name="loginIn">
     <wsdl:part element="tns:login" name="parameters"/>
@@ -2466,7 +2466,7 @@ No exclusion or limitation set out in this Agreement shall apply in the case of 
       <wsdl:input message="tns:loginIn" name="loginIn"/>
       <wsdl:output message="tns:loginOut" name="loginOut"/>
     </wsdl:operation>
-    
+
     <wsdl:operation name="retrieveLIMBMessage">
       <wsdl:input message="tns:retrieveLIMBMessageIn" name="retrieveLIMBMessageIn"/>
       <wsdl:output message="tns:retrieveLIMBMessageOut" name="retrieveLIMBMessageOut"/>
@@ -2599,7 +2599,7 @@ No exclusion or limitation set out in this Agreement shall apply in the case of 
   </wsdl:portType>
   <wsdl:binding name="BFGlobalService" type="tns:BFGlobalService">
     <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
-    
+
     <wsdl:operation name="login">
       <soap:operation soapAction="login" style="document"/>
       <wsdl:input name="loginIn">
@@ -2609,7 +2609,7 @@ No exclusion or limitation set out in this Agreement shall apply in the case of 
         <soap:body use="literal"/>
       </wsdl:output>
     </wsdl:operation>
-    
+
     <wsdl:operation name="retrieveLIMBMessage">
       <soap:operation soapAction="retrieveLIMBMessage" style="document"/>
       <wsdl:input name="retrieveLIMBMessageIn">
@@ -2872,7 +2872,7 @@ No exclusion or limitation set out in this Agreement shall apply in the case of 
 			<soap:body use="literal"/>
 		</wsdl:output>
 	</wsdl:operation>
-	
+
 
 	<wsdl:operation name="transferFunds">
 		<soap:operation soapAction="transferFunds" style="document" />

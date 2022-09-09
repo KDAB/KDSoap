@@ -1,3 +1,9 @@
+/*
+ SPDX-FileCopyrightText: 2005 Tobias Koenig <tokoe@kde.org>
+
+ SPDX-License-Identifier: MIT
+*/
+
 #include "elementargumentserializer.h"
 #include "converter.h" // upperlize(), COMMENT
 #include <code_generation/style.h>

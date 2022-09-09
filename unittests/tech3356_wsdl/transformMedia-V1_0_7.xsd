@@ -5,7 +5,7 @@
 	<!-- **************************** FIMS-defined resources ****************************** -->
 	<complexType name="TransformProfileType">
 		<annotation>
-			<documentation source="urn:x-fims:description">Profile used by the transform media service to 
+			<documentation source="urn:x-fims:description">Profile used by the transform media service to
 				perform a transformation on media content. The profile specifies the media format to be output.</documentation>
 			<documentation source="urn:x-fims:normativeRequirement"/>
 			<documentation source="urn:x-fims:serviceDescription"/>
@@ -41,10 +41,10 @@
 							<documentation source="urn:x-fims:description">Specifies a name for the file and,
 								where applicable, a pattern for the names of the files to be output.</documentation>
 							<documentation source="urn:x-fims:normativeRequirement">If the name is not provided,
-								the service shall automatically generate a file name. 
+								the service shall automatically generate a file name.
 								The pattern should be specified using a regular expression (IEEE POSIX Basic Regular Expressions (BRE) standard)
-								to specify a pattern to build the output file name. The regular expression should allow to reference the following 
-								variables in the expression: 
+								to specify a pattern to build the output file name. The regular expression should allow to reference the following
+								variables in the expression:
 								- Source file name;
 								- Date;
 								- Profile name used for the transformation;
@@ -52,7 +52,7 @@
 								- Frame reference;
 								- AutoIncrementCounter that is incremented by 1 for each new file.</documentation>
 							<documentation source="urn:x-fims:serviceDescription">Required</documentation>
-							<documentation source="urn:x-fims:contentOfServiceDescription">Support or not for this parameter. 
+							<documentation source="urn:x-fims:contentOfServiceDescription">Support or not for this parameter.
 								When multiple output files are produced, include details of the patterns.</documentation>
 							<documentation source="urn:x-fims:inclusionInRequest">Optional</documentation>
 							<documentation source="urn:x-fims:inclusionInResponse">Optional</documentation>
@@ -171,7 +171,7 @@
 			<documentation source="urn:x-fims:description">Fault
 				information for the transform media service.</documentation>
 			<documentation source="urn:x-fims:normativeRequirement">If
-				an exception is generated when the transform request message is submitted to the service, 
+				an exception is generated when the transform request message is submitted to the service,
 				it shall respond with a message based on the TransformFaultType.</documentation>
 			<documentation source="urn:x-fims:serviceDescription"/>
 			<documentation source="urn:x-fims:contentOfServiceDescription"/>
@@ -181,7 +181,7 @@
 				<sequence>
 					<element name="extendedCode" type="tfms:TransformErrorCodeType" minOccurs="0">
 						<annotation>
-							<documentation source="urn:x-fims:description">Transform service-specific 
+							<documentation source="urn:x-fims:description">Transform service-specific
 								error codes, as detailed in the TransformErrorCodeType.</documentation>
 							<documentation source="urn:x-fims:normativeRequirement">This element shall be set if
 								the service needs to provide service-specific error codes which
@@ -205,7 +205,7 @@
 		<annotation>
 			<documentation source="urn:x-fims:description">Notification of the successful completion of a
 				transform job.</documentation>
-			<documentation source="urn:x-fims:normativeRequirement">If one or more "notifyAt" 
+			<documentation source="urn:x-fims:normativeRequirement">If one or more "notifyAt"
 				elements are set for the associated transform job, then the service shall respond with a
 				notification to the specified endpoints when the job completes. (If notification is supported.)</documentation>
 			<documentation source="urn:x-fims:serviceDescription"/>
@@ -296,7 +296,7 @@
 			<documentation source="urn:x-fims:description">A job
 				completion notification that the transform media service sends to a
 				specified endpoint when the transform job ends.</documentation>
-			<documentation source="urn:x-fims:normativeRequirement">This notification shall be sent 
+			<documentation source="urn:x-fims:normativeRequirement">This notification shall be sent
 				to all &quot;notifyAt&quot; element is associated with the transform job.</documentation>
 			<documentation source="urn:x-fims:serviceDescription"/>
 			<documentation source="urn:x-fims:contentOfServiceDescription"/>
@@ -308,7 +308,7 @@
 				notification that the transform media service sends to a specified
 				endpoint if the transform job fails.
 				</documentation>
-			<documentation source="urn:x-fims:normativeRequirement">This fault notification shall be sent 
+			<documentation source="urn:x-fims:normativeRequirement">This fault notification shall be sent
 				to all &quot;notifyAt&quot; element is associated with the transform job.</documentation>
 			<documentation source="urn:x-fims:serviceDescription"/>
 			<documentation source="urn:x-fims:contentOfServiceDescription"/>

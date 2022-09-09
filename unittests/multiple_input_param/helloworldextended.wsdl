@@ -25,16 +25,16 @@
    <message name="SayHelloResponse">
       <part name="reply" type="xsd:string"/>
    </message>
- 
+
    <portType name="Hello_PortType">
       <operation name="sayHello">
          <input message="tns:SayHelloRequest"/>
          <output message="tns:SayHelloResponse"/>
       </operation>
    </portType>
-   
+
    <binding name="Hello_Binding" type="tns:Hello_PortType">
-      <soap:binding style="document" 
+      <soap:binding style="document"
          transport="http://schemas.xmlsoap.org/soap/http"/>
       <operation name="sayHello" style="document">
          <soap:operation soapAction="sayHello"/>
@@ -52,7 +52,7 @@
          </output>
       </operation>
 </binding>
- 
+
    <service name="Hello_Service">
       <documentation>WSDL File for HelloService</documentation>
       <port binding="tns:Hello_Binding" name="Hello_Port">
@@ -60,4 +60,3 @@
       </port>
    </service>
 </definitions>
-

@@ -30,7 +30,7 @@
       </xsd:complexType>
       <xsd:complexType name="idleState">
         <xsd:attribute type="xsd:string" name="errorDescription" use="optional"/>
-        <xsd:attribute type="xsd:boolean" name="isCanceled" use="optional"/>        
+        <xsd:attribute type="xsd:boolean" name="isCanceled" use="optional"/>
       </xsd:complexType>
       <xsd:complexType name="seanceRemovingState"/>
     </xsd:schema>

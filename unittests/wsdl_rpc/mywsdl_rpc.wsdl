@@ -1,9 +1,9 @@
-<?xml version='1.0' encoding='UTF-8' ?> 
+<?xml version='1.0' encoding='UTF-8' ?>
 <definitions  name ='MyWsdl'   targetNamespace = 'http://www.kdab.com/xml/MyWsdl/'
-  xmlns:kdab='http://www.kdab.com/xml/MyWsdl/' 
-	 xmlns:xsd='http://www.w3.org/2001/XMLSchema' 
-	 xmlns:soap='http://schemas.xmlsoap.org/wsdl/soap/' 
-	 xmlns:soap-enc='http://schemas.xmlsoap.org/soap/encoding/' 
+  xmlns:kdab='http://www.kdab.com/xml/MyWsdl/'
+	 xmlns:xsd='http://www.w3.org/2001/XMLSchema'
+	 xmlns:soap='http://schemas.xmlsoap.org/wsdl/soap/'
+	 xmlns:soap-enc='http://schemas.xmlsoap.org/soap/encoding/'
 	 xmlns='http://schemas.xmlsoap.org/wsdl/'>
   <types>
     <xsd:schema targetNamespace='http://www.kdab.com/xml/MyWsdl/' xmlns='http://www.w3.org/2001/XMLSchema'>

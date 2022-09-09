@@ -19,7 +19,7 @@
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
-			
+
 			<xs:element name="ClientType">
                 <xs:annotation>
                     <xs:documentation>
@@ -66,7 +66,7 @@
                     </xs:restriction>
                 </xs:simpleType>
             </xs:element>
-            
+
             <xs:simpleType name="PortalFeatureName">
                 <xs:annotation>
                     <xs:documentation>
@@ -208,26 +208,26 @@
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
-            
+
             <xs:element name="EmailAddressNotFoundFault">
 				<xs:annotation>
 					<xs:documentation>
 						Returned when email address is not found.
 					</xs:documentation>
-				</xs:annotation>            
+				</xs:annotation>
                 <xs:complexType>
                     <xs:sequence>
                         <xs:element ref="ErrorMessage"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
-            
+
             <xs:element name="NotificationEmailNotConfiguredFault">
 				<xs:annotation>
 					<xs:documentation>
 						Returned when the Notification &quot;Email(From)&quot; or &quot;Email(To)&quot; field is not configured on the VidyoPortal.
 					</xs:documentation>
-				</xs:annotation>            
+				</xs:annotation>
                 <xs:complexType>
                     <xs:sequence>
                         <xs:element ref="ErrorMessage"/>
@@ -311,7 +311,7 @@
                         <xs:element minOccurs="0" name="applicationVersion" type="xs:string"/>
                         <xs:element minOccurs="0" name="applicationOs" type="xs:string"/>
                         <xs:element minOccurs="0" name="deviceModel" type="xs:string"/>
-                        <xs:element minOccurs="0" name="pak2" type="xs:boolean"/>                        
+                        <xs:element minOccurs="0" name="pak2" type="xs:boolean"/>
 						<xs:any minOccurs="0"/>
 					</xs:sequence>
 				</xs:complexType>
@@ -388,7 +388,7 @@
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
-			
+
 			<xs:element name="GetPortalVersionRequest">
 				<xs:annotation>
 					<xs:documentation>
@@ -408,7 +408,7 @@
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
-			
+
 			<!-- ClientVersion -->
             <xs:element name="ClientVersionRequest">
                 <xs:annotation>
@@ -430,7 +430,7 @@
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
-            
+
             <xs:element name="GetPortalFeaturesRequest">
                 <xs:annotation>
                     <xs:documentation>
@@ -509,7 +509,7 @@
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
-            
+
             <xs:element name="RecoverPasswordRequest">
                 <xs:annotation>
                     <xs:documentation>
@@ -529,7 +529,7 @@
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
-            
+
             <xs:element name="WhatIsMyIPAddressRequest">
 				<xs:annotation>
 					<xs:documentation>

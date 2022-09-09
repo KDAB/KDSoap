@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!-- 
+<?xml version="1.0" encoding="UTF-8"?><!--
 ================================================================================
 File:	methods.xsd
 
@@ -11,37 +11,37 @@ include Novell's sample code in Your product(s) that interoperate with the
 applicable Novell product, and worldwide distribution rights to market,
 distribute, or sell Novell's sample code as a component of Your product.
 
-THE WORK IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, 
-INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
-PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL NOVELL OR THE AUTHORS 
-OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
-WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF 
+THE WORK IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL NOVELL OR THE AUTHORS
+OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
 OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS IN THE WORK.
 
 
-Alternatively, the contents of this file may be used under the terms of 
-GNU General Public License Version 2 (the "GPL") as explained below.  
-If you wish to allow use of your version of this file only under the terms 
-of the GPL, and not to allow others to use your version of this file under 
-the provisions appearing above, indicate your decision by deleting the 
-provisions above and replace them with the notice and other provisions required 
-by the GPL. If you do not delete the provisions above, a recipient may use 
+Alternatively, the contents of this file may be used under the terms of
+GNU General Public License Version 2 (the "GPL") as explained below.
+If you wish to allow use of your version of this file only under the terms
+of the GPL, and not to allow others to use your version of this file under
+the provisions appearing above, indicate your decision by deleting the
+provisions above and replace them with the notice and other provisions required
+by the GPL. If you do not delete the provisions above, a recipient may use
 your version of this file under the above provisions of the GPL.
 
 
-This file is free software; you can redistribute it and/or modify it under the 
-terms of version 2 of the GNU General Public License as published by the 
-Free Software Foundation.  This program is distributed in the hope that it will 
-be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of 
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
-for more details.  You should have received a copy of the GNU General Public License 
+This file is free software; you can redistribute it and/or modify it under the
+terms of version 2 of the GNU General Public License as published by the
+Free Software Foundation.  This program is distributed in the hope that it will
+be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.  You should have received a copy of the GNU General Public License
 along with this program; if not, contact Novell, Inc.
 
-To contact Novell about this file by physical or electronic mail, you may find 
+To contact Novell about this file by physical or electronic mail, you may find
 current contact information at www.novell.com.
 ================================================================================
 --><xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://schemas.novell.com/2005/01/GroupWise/methods" elementFormDefault="qualified" xmlns="http://schemas.novell.com/2005/01/GroupWise/methods" xmlns:types="http://schemas.novell.com/2005/01/GroupWise/types" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-   
+
 	<xs:import namespace="http://schemas.novell.com/2005/01/GroupWise/types" schemaLocation="types.xsd"/>
 
    <xs:element name="acceptRequest">
@@ -50,7 +50,7 @@ current contact information at www.novell.com.
             <xs:element name="items" type="types:ItemRefList"/>
             <xs:element name="comment" type="xs:string" nillable="1"/>
             <xs:element name="acceptLevel" type="types:AcceptLevel" nillable="1"/>
-            <xs:element name="recurrenceAllInstances" type="xs:unsignedInt" default="0" minOccurs="0"/> 
+            <xs:element name="recurrenceAllInstances" type="xs:unsignedInt" default="0" minOccurs="0"/>
          </xs:sequence>
       </xs:complexType>
    </xs:element>
@@ -260,7 +260,7 @@ current contact information at www.novell.com.
          <xs:sequence>
             <xs:element name="items" type="types:ItemRefList"/>
             <xs:element name="comment" type="xs:string" nillable="1"/>
-            <xs:element name="recurrenceAllInstances" type="xs:unsignedInt" default="0" minOccurs="0"/> 
+            <xs:element name="recurrenceAllInstances" type="xs:unsignedInt" default="0" minOccurs="0"/>
          </xs:sequence>
       </xs:complexType>
    </xs:element>
@@ -278,7 +278,7 @@ current contact information at www.novell.com.
             <xs:element name="commentToOrganizer" type="xs:string" nillable="1"/>
             <xs:element name="commentToDelegatee" type="xs:string" nillable="1"/>
             <xs:element name="distribution" type="types:Distribution"/>
-            <xs:element name="recurrenceAllInstances" type="xs:unsignedInt" default="0" minOccurs="0"/> 
+            <xs:element name="recurrenceAllInstances" type="xs:unsignedInt" default="0" minOccurs="0"/>
          </xs:sequence>
       </xs:complexType>
    </xs:element>
@@ -657,7 +657,7 @@ current contact information at www.novell.com.
 				In the case of searching for items, the new startDate will be
 				returned for use in the next call to getQuickMessagesRequest.
 				The startDate is the time value before this read was performed.
-				
+
 			</xs:documentation>
       </xs:annotation>
       <xs:complexType>
@@ -885,7 +885,7 @@ current contact information at www.novell.com.
             <xs:element name="id" type="types:uid"/>
             <xs:element name="notification" type="types:SharedFolderNotification" minOccurs="0"/>
             <xs:element name="updates" type="types:ItemChanges"/>
-            <xs:element name="recurrenceAllInstances" type="xs:unsignedInt" default="0" minOccurs="0"/> 
+            <xs:element name="recurrenceAllInstances" type="xs:unsignedInt" default="0" minOccurs="0"/>
          </xs:sequence>
       </xs:complexType>
    </xs:element>
@@ -1132,7 +1132,7 @@ current contact information at www.novell.com.
    <xs:element name="removeItemRequest">
       <xs:annotation>
          <xs:documentation>
-				If the container is not specified then the item is 
+				If the container is not specified then the item is
 				   removed from all of the containers that it is linked
 				   to and is stored in the "Trash".
 				If the container is specified then the item is only
@@ -1296,15 +1296,15 @@ current contact information at www.novell.com.
 				If a recipient has opened or accepted a Calendar item, a notice
 				will be placed in the recipient's in-box when the item is
 				retracted.  The notice can be affected by the following options:
-				
+
 				"comment":  The comment will be included in the notice.
 				"retractCausedByResend": When TRUE, the notice will be suppressed
-				in lieu of the 'new' calendar item that will be delivered to 
+				in lieu of the 'new' calendar item that will be delivered to
 				the recipient.
-				"retractingAllInstances": When TRUE, a single notice will be 
+				"retractingAllInstances": When TRUE, a single notice will be
 				placed in the recipient's in-box (instead of a notice for each auto-date
-				instance).  
-				
+				instance).
+
 				If no retractType is specified, the default is recipientMailboxes.
 			</xs:documentation>
       </xs:annotation>

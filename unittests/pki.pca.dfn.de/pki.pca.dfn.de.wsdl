@@ -3,7 +3,7 @@
   <wsdl:types>
     <schema targetNamespace="https://pki.pca.dfn.de/DFNCERT/Public" xmlns="http://www.w3.org/2001/XMLSchema">
       <import namespace="http://schemas.xmlsoap.org/soap/encoding/" />
-      
+
       <complexType name="ArrayOfInteger">
                 <complexContent>
                     <restriction base="soapenc:Array">
@@ -18,7 +18,7 @@
           </restriction>
         </complexContent>
       </complexType>
-      
+
       <complexType name="DFNCERTTypesRAInfo">
         <sequence>
           <element name="ID" nillable="true" type="xsd:int">
@@ -29,7 +29,7 @@
           </element>
         </sequence>
       </complexType>
-      
+
       <complexType name="ArrayOfDFNCERTTypesRAInfo">
         <complexContent>
           <restriction base="soapenc:Array">
@@ -37,7 +37,7 @@
           </restriction>
         </complexContent>
       </complexType>
-      
+
       <complexType name="DFNCERTTypesCAInfo">
         <sequence>
           <element name="RALoginID" nillable="true" type="xsd:int">
@@ -50,7 +50,7 @@
           </element>
         </sequence>
       </complexType>
-      
+
       <complexType name="DFNCERTTypesValidDomain">
         <sequence>
           <element name="Name" nillable="true" type="xsd:string">
@@ -59,7 +59,7 @@
           </element>
         </sequence>
       </complexType>
-  
+
       <complexType name="ArrayOfDFNCERTTypesValidDomain">
         <complexContent>
           <restriction base="soapenc:Array">
@@ -124,7 +124,7 @@
 
     </schema>
   </wsdl:types>
-  
+
   <wsdl:message name="newRequestRequest">
     <wsdl:part name="RaID" type="xsd:int" />
     <wsdl:part name="PKCS10" type="xsd:string" />
@@ -136,33 +136,33 @@
     <wsdl:part name="AddOrgUnit" type="xsd:string" />
     <wsdl:part name="Publish" type="xsd:boolean" />
   </wsdl:message>
-  
+
   <wsdl:message name="newRequestResponse">
     <wsdl:part name="newRequestReturn" type="xsd:int" />
   </wsdl:message>
-  
+
   <wsdl:message name="newRevocationRequestRequest">
     <wsdl:part name="RaID" type="xsd:int" />
     <wsdl:part name="Serial" type="xsd:integer" />
     <wsdl:part name="Reason" type="xsd:string" />
     <wsdl:part name="Pin" type="xsd:string" />
   </wsdl:message>
-  
+
   <wsdl:message name="newRevocationRequestResponse">
     <wsdl:part name="newRevocationRequestReturn" type="xsd:int" />
   </wsdl:message>
-  
+
   <wsdl:message name="getRequestPrintoutRequest">
     <wsdl:part name="RaID" type="xsd:int" />
     <wsdl:part name="Serial" type="xsd:int" />
     <wsdl:part name="Format" type="xsd:string" />
     <wsdl:part name="Pin" type="xsd:string" />
   </wsdl:message>
-  
+
   <wsdl:message name="getRequestPrintoutResponse">
     <wsdl:part name="getRequestPrintoutReturn" type="xsd:base64Binary" />
   </wsdl:message>
-  
+
   <wsdl:message name="getRequestInfoRequest">
     <wsdl:part name="RaID" type="xsd:int" />
     <wsdl:part name="Serial" type="xsd:int"/>

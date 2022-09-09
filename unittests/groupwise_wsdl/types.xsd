@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!-- 
+<?xml version="1.0" encoding="UTF-8"?><!--
 ================================================================================
 File:	types.xsd
 
@@ -11,31 +11,31 @@ include Novell's sample code in Your product(s) that interoperate with the
 applicable Novell product, and worldwide distribution rights to market,
 distribute, or sell Novell's sample code as a component of Your product.
 
-THE WORK IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, 
-INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
-PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL NOVELL OR THE AUTHORS 
-OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
-WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF 
+THE WORK IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL NOVELL OR THE AUTHORS
+OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
 OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS IN THE WORK.
 
 
-Alternatively, the contents of this file may be used under the terms of 
-GNU General Public License Version 2 (the "GPL") as explained below.  
-If you wish to allow use of your version of this file only under the terms 
-of the GPL, and not to allow others to use your version of this file under 
-the provisions appearing above, indicate your decision by deleting the 
-provisions above and replace them with the notice and other provisions required 
-by the GPL. If you do not delete the provisions above, a recipient may use 
+Alternatively, the contents of this file may be used under the terms of
+GNU General Public License Version 2 (the "GPL") as explained below.
+If you wish to allow use of your version of this file only under the terms
+of the GPL, and not to allow others to use your version of this file under
+the provisions appearing above, indicate your decision by deleting the
+provisions above and replace them with the notice and other provisions required
+by the GPL. If you do not delete the provisions above, a recipient may use
 your version of this file under the above provisions of the GPL.
 
 
-This file is free software; you can redistribute it and/or modify it under the 
-terms of version 2 of the GNU General Public License as published by the 
-Free Software Foundation.  This program is distributed in the hope that it will 
-be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of 
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
-for more details.  You should have received a copy of the GNU General Public License 
-along with this program; if not, contact Novell, Inc.  To contact Novell about this 
+This file is free software; you can redistribute it and/or modify it under the
+terms of version 2 of the GNU General Public License as published by the
+Free Software Foundation.  This program is distributed in the hope that it will
+be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.  You should have received a copy of the GNU General Public License
+along with this program; if not, contact Novell, Inc.  To contact Novell about this
 file by physical or electronic mail, you may find current contact information at www.novell.com.
 ================================================================================
 --><xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://schemas.novell.com/2005/01/GroupWise/types" elementFormDefault="qualified" xmlns:tns="http://schemas.novell.com/2005/01/GroupWise/types">
@@ -217,7 +217,7 @@ file by physical or electronic mail, you may find current contact information at
 		<xs:annotation>
 			<xs:documentation>
 				Return the sent items id if this returnSentItemsId is true.  The returnSentItemsId will be the first
-				id returned in the list.  This is the id of the item that is created in the sent items 
+				id returned in the list.  This is the id of the item that is created in the sent items
 				(a.k.a. outbox, itemSource=sent) folder.
 			</xs:documentation>
 		</xs:annotation>
@@ -446,7 +446,7 @@ file by physical or electronic mail, you may find current contact information at
 				<xs:documentation>
             The deltaInfo structure contains pointers or sequence numbers into a dynamic list.
             count:
-               Input:   The desired number of items to be returned in one read.  
+               Input:   The desired number of items to be returned in one read.
                         A count of "-1" means to return all the items in the list.
 								If omitted, all the items are returned.
                Output:  The actual number of items returned.
@@ -458,7 +458,7 @@ file by physical or electronic mail, you may find current contact information at
                Output:  The last sequence number successfully read.
             lastTimePORebuild:
                         The last time the administrator rebuilt the post office.  A post office rebuild
-                        resets all the sequence numbers.  If a rebuild occurs, a resync is required before 
+                        resets all the sequence numbers.  If a rebuild occurs, a resync is required before
                         new deltas can be applied to a local list.
 			</xs:documentation>
 			</xs:annotation>
@@ -917,7 +917,7 @@ file by physical or electronic mail, you may find current contact information at
 			<xs:element name="private" type="xs:boolean" minOccurs="0"/>
 			<xs:element name="opened" type="xs:boolean" minOccurs="0"/>
 			<xs:element name="read" type="xs:boolean" minOccurs="0"/>
-      <xs:element name="replied" type="xs:boolean" minOccurs="0"/>      
+      <xs:element name="replied" type="xs:boolean" minOccurs="0"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="JunkEntry">
@@ -1331,12 +1331,12 @@ file by physical or electronic mail, you may find current contact information at
 		</xs:annotation>
 		<xs:sequence>
 			<xs:element name="frequency" type="tns:Frequency" minOccurs="0"/>
-			<!--		
+			<!--
 			<xs:choice>
 -->
 			<xs:element name="count" type="xs:unsignedInt" minOccurs="0"/>
 			<xs:element name="until" type="xs:date" minOccurs="0"/>
-			<!--		
+			<!--
 			</xs:choice>
 -->
 			<xs:element name="interval" type="xs:unsignedInt" minOccurs="0"/>
@@ -1649,15 +1649,15 @@ file by physical or electronic mail, you may find current contact information at
 				The unique identifier is a application defined
 				string to uniquely identify an item. The string
 				can optionally consist of two parts. The first
-				part identifies a unique existence of an item. 
+				part identifies a unique existence of an item.
 				The second part of the string optionally specifies
-				instance information. The first and second part of 
-				the ID are separated by an '@'. For this reason 
-				neither the first nor second part can contain an 
+				instance information. The first and second part of
+				the ID are separated by an '@'. For this reason
+				neither the first nor second part can contain an
 				'@' symbol.
-				
-				To determine whether or not two items are the 
-				same item, the consumer of this API should 
+
+				To determine whether or not two items are the
+				same item, the consumer of this API should
 				compare the first part of the ids of the two
 				items (i.e. all of the id up to the @ symbol).
 			</xs:documentation>
@@ -1683,11 +1683,11 @@ file by physical or electronic mail, you may find current contact information at
 	<xs:simpleType name="UUID">
 		<xs:annotation>
 			<xs:documentation>
-				The UUID is the unique user ID on a given 
-				email system. This is used in various 
+				The UUID is the unique user ID on a given
+				email system. This is used in various
 				places to indicate that a sender or recipient
 				is an user internal to the collaboration
-				system instead of an external user (i.e. 
+				system instead of an external user (i.e.
 				internet address).
 			</xs:documentation>
 		</xs:annotation>

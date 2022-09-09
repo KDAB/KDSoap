@@ -2,26 +2,26 @@
 <schema xmlns="http://www.w3.org/2001/XMLSchema"
 	xmlns:desc="http://description.fims.tv"
 	targetNamespace="http://description.fims.tv" elementFormDefault="qualified">
-	
+
 	<import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd"/>
 
 	<element name="bmContentDescription" type="desc:bmContentDescriptionType"> </element>
 	<complexType name="bmContentDescriptionType">
 		<sequence>
-			<element name="title" type="desc:textElementType" minOccurs="0" maxOccurs="unbounded"/> 
-			<element name="alternativeTitle" type="desc:titleType" minOccurs="0" maxOccurs="unbounded"/> 
-			<element name="creator" type="desc:entityType" minOccurs="0" maxOccurs="unbounded"/> 
-			<element name="subject" type="desc:subjectType" minOccurs="0" maxOccurs="unbounded"/> 
-			<element name="description" type="desc:descriptionType" minOccurs="0" maxOccurs="unbounded"/> 
+			<element name="title" type="desc:textElementType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="alternativeTitle" type="desc:titleType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="creator" type="desc:entityType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="subject" type="desc:subjectType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="description" type="desc:descriptionType" minOccurs="0" maxOccurs="unbounded"/>
 			<element name="publisher" type="desc:entityType" minOccurs="0" maxOccurs="unbounded"/>
-			<element name="contributor" type="desc:entityType" minOccurs="0"	maxOccurs="unbounded"/> 
-			<element name="date" type="desc:dateType" minOccurs="0" maxOccurs="unbounded"/> 
-			<element name="type" type="desc:typeType" minOccurs="0" maxOccurs="unbounded"/> 
-			<element name="identifier" type="desc:identifierType" minOccurs="0" maxOccurs="unbounded"/> 
-			<element name="language" type="desc:languageType" minOccurs="0" maxOccurs="unbounded"/> 
-			<element name="coverage" type="desc:coverageType" minOccurs="0" maxOccurs="unbounded"/> 
-			<element name="rights" type="desc:rightsType" minOccurs="0" maxOccurs="unbounded"/> 
-			<element name="version" type="string" minOccurs="0"/> 
+			<element name="contributor" type="desc:entityType" minOccurs="0"	maxOccurs="unbounded"/>
+			<element name="date" type="desc:dateType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="type" type="desc:typeType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="identifier" type="desc:identifierType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="language" type="desc:languageType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="coverage" type="desc:coverageType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="rights" type="desc:rightsType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="version" type="string" minOccurs="0"/>
 		</sequence>
 		<attribute ref="xml:lang"></attribute>
 	</complexType>
@@ -29,50 +29,50 @@
 <complexType name="titleType">
 	<complexContent>
 		<extension base="desc:textElementType">
-			<attributeGroup ref="desc:typeGroup"/> 
+			<attributeGroup ref="desc:typeGroup"/>
 		</extension>
 	</complexContent>
 </complexType>
 	<complexType name="identifierType">
 		<simpleContent>
 			<extension base="string">
-				<attributeGroup ref="desc:typeGroup"/> 
-				<attributeGroup ref="desc:formatGroup"/> 
+				<attributeGroup ref="desc:typeGroup"/>
+				<attributeGroup ref="desc:formatGroup"/>
 			</extension>
 		</simpleContent>
 	</complexType>
 	<complexType name="subjectType">
 		<complexContent>
 			<extension base="desc:textElementType">
-				<attributeGroup ref="desc:typeGroup"/> 
+				<attributeGroup ref="desc:typeGroup"/>
 			</extension>
 		</complexContent>
 	</complexType>
 	<complexType name="typeType">
 		<sequence>
 			<element name="genre" minOccurs="0" maxOccurs="unbounded">
-				<complexType>	
+				<complexType>
 					<complexContent>
 					<extension base="desc:textElementType">
-						<attributeGroup ref="desc:typeGroup"/> 
+						<attributeGroup ref="desc:typeGroup"/>
 					</extension>
 				</complexContent>
 				</complexType>
 			</element>
 			<element name="objectType" minOccurs="0" maxOccurs="unbounded">
-				<complexType>	
+				<complexType>
 					<complexContent>
 						<extension base="desc:textElementType">
-							<attributeGroup ref="desc:typeGroup"/> 
+							<attributeGroup ref="desc:typeGroup"/>
 						</extension>
 					</complexContent>
 				</complexType>
 			</element>
 			<element name="targetAudience" minOccurs="0" maxOccurs="unbounded">
-				<complexType>	
+				<complexType>
 					<complexContent>
 						<extension base="desc:textElementType">
-							<attributeGroup ref="desc:typeGroup"/> 
+							<attributeGroup ref="desc:typeGroup"/>
 						</extension>
 					</complexContent>
 				</complexType>
@@ -82,7 +82,7 @@
 	<complexType name="descriptionType">
 			<complexContent>
 				<extension base="desc:textElementType">
-					<attributeGroup ref="desc:typeGroup"/> 
+					<attributeGroup ref="desc:typeGroup"/>
 				</extension>
 			</complexContent>
 	</complexType>
@@ -92,7 +92,7 @@
 				<complexType>
 					<complexContent>
 						<extension base="desc:textElementType">
-							<attributeGroup ref="desc:typeGroup"/> 
+							<attributeGroup ref="desc:typeGroup"/>
 						</extension>
 					</complexContent>
 				</complexType>
@@ -131,17 +131,17 @@
 	<complexType name="rightsType">
 				<sequence>
 					<element name="rightsExpression" type="desc:textElementType" minOccurs="0" maxOccurs="unbounded"/>
-					<element name="rightsLink" type="anyURI" minOccurs="0"/> 
-					<element name="rightsHolder" type="desc:entityType" minOccurs="0"/> 
-					<element name="exploitationIssues" type="desc:textElementType" minOccurs="0"/> 
-					<element name="coverage" type="desc:coverageType" minOccurs="0"/> 
-					<element name="rightsClearanceFlag" type="boolean" minOccurs="0"/> 
-					<element name="disclaimer" type="desc:textElementType" minOccurs="0" maxOccurs="unbounded"/> 
-					<element name="rightsId" type="desc:identifierType" minOccurs="0" maxOccurs="unbounded"/> 
+					<element name="rightsLink" type="anyURI" minOccurs="0"/>
+					<element name="rightsHolder" type="desc:entityType" minOccurs="0"/>
+					<element name="exploitationIssues" type="desc:textElementType" minOccurs="0"/>
+					<element name="coverage" type="desc:coverageType" minOccurs="0"/>
+					<element name="rightsClearanceFlag" type="boolean" minOccurs="0"/>
+					<element name="disclaimer" type="desc:textElementType" minOccurs="0" maxOccurs="unbounded"/>
+					<element name="rightsId" type="desc:identifierType" minOccurs="0" maxOccurs="unbounded"/>
 					<element name="contactDetails" type="desc:contactDetailsType" minOccurs="0"
-						maxOccurs="unbounded"/> 
+						maxOccurs="unbounded"/>
 				</sequence>
-				<attributeGroup ref="desc:typeGroup"/> 
+				<attributeGroup ref="desc:typeGroup"/>
 	</complexType>
 
 <complexType name="textElementType">
@@ -181,10 +181,10 @@
 		<sequence>
 			<element name="contactDetails" type="desc:contactDetailsType" minOccurs="0"
 				maxOccurs="unbounded"/>
-			
+
 			<element name="organisationDetails" type="desc:organisationDetailsType" minOccurs="0"
 				maxOccurs="unbounded"/>
-			
+
 			<element name="role" minOccurs="0" maxOccurs="unbounded">
 				<complexType>
 					<attributeGroup ref="desc:typeGroup"/>
@@ -208,7 +208,7 @@
 			</choice>
 			<element name="username" type="desc:textElementType" minOccurs="0" maxOccurs="unbounded"/>
 			<element name="occupation" type="desc:textElementType" minOccurs="0"/>
-			
+
 			<element name="details" type="desc:detailsType" minOccurs="0" maxOccurs="unbounded"/>
 			<element name="stageName" type="desc:textElementType" minOccurs="0" maxOccurs="unbounded">
 				<annotation>
@@ -336,5 +336,5 @@
 		<attributeGroup ref="desc:typeGroup"/>
 		<attribute ref="xml:lang"/>
 	</complexType>
-	
+
 </schema>

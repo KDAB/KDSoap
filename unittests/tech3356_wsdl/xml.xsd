@@ -2,9 +2,9 @@
 <xs:schema targetNamespace="http://www.w3.org/XML/1998/namespace" xmlns:xs="http://www.w3.org/2001/XMLSchema" xml:lang="en">
 
 	<xs:annotation>
-		<xs:documentation>This schema defines attributes and an 
-  		attribute group that enable schemas such as the ETSI TS 102 822-3-1 V1.3.1 (2005-06) 
-		metadata schema and schemas derived from it 
+		<xs:documentation>This schema defines attributes and an
+  		attribute group that enable schemas such as the ETSI TS 102 822-3-1 V1.3.1 (2005-06)
+		metadata schema and schemas derived from it
 		to allow xml:base, xml:lang or xml:space attributes
         on elements they define.</xs:documentation>
 	</xs:annotation>
@@ -13,7 +13,7 @@
    http://www.w3.org/TR/REC-xml for information about this namespace.
 
     This schema document describes the XML namespace, in a form
-    suitable for import by other schema documents.  
+    suitable for import by other schema documents.
 
     Note that local names in this namespace are intended to be defined
     only by the World Wide Web Consortium or its subgroups.  The
@@ -31,7 +31,7 @@
          is a language code for the natural language of the content of
          any element; its value is inherited.  This name is reserved
          by virtue of its definition in the XML specification.
-  
+
     space (as an attribute name): denotes an attribute whose
          value is a keyword indicating what whitespace processing
          discipline is intended for the content of the element; its
@@ -58,7 +58,7 @@
         &lt;type . . .>
          . . .
          &lt;attributeGroup ref="xml:specialAttrs"/>
- 
+
          will define a type which will schema-validate an instance
          element with any of those attributes</xs:documentation>
 	</xs:annotation>

@@ -7,4 +7,3 @@ Response parsing in KDSoapMessage: implement type conversion based on type infor
 Fix compilation error when the name of a wsdl:service contains a '-'.
 
 NEW: server side support
-

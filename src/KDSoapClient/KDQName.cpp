@@ -4,7 +4,7 @@
     SPDX-FileCopyrightText: 2005 Tobias Koenig <tokoe@kde.org>
                        based on wsdlpull parser by Vivek Krishna
 
-    SPDX-License-Identifier: LGPL-2.0-or-later
+    SPDX-License-Identifier: MIT
  */
 
 #include "KDQName.h"

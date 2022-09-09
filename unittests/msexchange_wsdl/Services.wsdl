@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
-				  xmlns:tns="http://schemas.microsoft.com/exchange/services/2006/messages" 
-				  xmlns:s="http://www.w3.org/2001/XMLSchema" 
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+				  xmlns:tns="http://schemas.microsoft.com/exchange/services/2006/messages"
+				  xmlns:s="http://www.w3.org/2001/XMLSchema"
 				  targetNamespace="http://schemas.microsoft.com/exchange/services/2006/messages"
 				  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
 				  xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types">
@@ -101,7 +101,7 @@
 		<wsdl:part name="Impersonation" element="t:ExchangeImpersonation"/>
 		<wsdl:part name="S2SAuth" element="t:SerializedSecurityContext"/>
 		<wsdl:part name="MailboxCulture" element="t:MailboxCulture"/>
---> 
+-->
 		<wsdl:part name="RequestVersion" element="t:RequestServerVersion"/>
   </wsdl:message>
 	<wsdl:message name="FindFolderSoapOut">
@@ -311,7 +311,7 @@
 		<wsdl:part name="SyncFolderItemsResult" element="tns:SyncFolderItemsResponse" />
 		<wsdl:part name="ServerVersion" element="t:ServerVersionInfo"/>
 	</wsdl:message>
-  
+
   <wsdl:message name="GetDelegateSoapIn">
 		<wsdl:part name="request" element="tns:GetDelegate" />
 		<wsdl:part name="Impersonation" element="t:ExchangeImpersonation"/>
@@ -385,7 +385,7 @@
     <wsdl:part name="SetUserOofSettingsResult" element="tns:SetUserOofSettingsResponse" />
     <wsdl:part name="ServerVersion" element="t:ServerVersionInfo"/>
   </wsdl:message>
-  
+
 	<wsdl:portType name="ExchangeServicePortType">
 		<wsdl:operation name="ResolveNames">
 			<wsdl:input message="tns:ResolveNamesSoapIn" />
@@ -532,7 +532,7 @@
     <wsdl:operation name="SetUserOofSettings">
       <wsdl:input message="tns:SetUserOofSettingsSoapIn" />
       <wsdl:output message="tns:SetUserOofSettingsSoapOut" />
-    </wsdl:operation>  
+    </wsdl:operation>
   </wsdl:portType>
 
 	<wsdl:binding name="ExchangeServiceBinding" type="tns:ExchangeServicePortType">
@@ -984,7 +984,7 @@
 				<soap:header message="tns:UpdateDelegateSoapOut" part="ServerVersion" use="literal"/>
 			</wsdl:output>
 		</wsdl:operation>
-		
+
 		<!-- Availability Service -->
 
     <!-- GetUserAvailability -->
@@ -1023,7 +1023,7 @@
         <soap:body parts="SetUserOofSettingsResult" use="literal" />
         <soap:header message="tns:SetUserOofSettingsSoapOut" part="ServerVersion" use="literal"/>
       </wsdl:output>
-    </wsdl:operation>    
+    </wsdl:operation>
   </wsdl:binding>
    <wsdl:service name="ExchangeServices">
      <wsdl:port name="ExchangeServicePort" binding="tns:ExchangeServiceBinding">
