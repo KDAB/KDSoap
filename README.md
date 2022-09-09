@@ -1,6 +1,5 @@
-# <a name="title"></a> KD Soap [![Logo](https://github.com/KDAB/KDSoap/blob/master/images/kdsoap-medium.png)](https://www.kdab.com/development-resources/qt-tools/kd-soap)
-Introduction
-============
+# Introduction
+
 KD Soap is a Qt-based client-side and server-side SOAP component.
 
 It can be used to create client applications for web services and also provides
@@ -9,27 +8,26 @@ as a dedicated web server.
 
 KD Soap targets C++ programmers who use Qt in their applications.
 
-For more information, see https://www.kdab.com/development-resources/qt-tools/kd-soap
+For more information, see <https://www.kdab.com/development-resources/qt-tools/kd-soap>
 
-Using KD Soap
-=============
+## Using KD Soap
+
 KD Soap requires Qt 5.9.0 or newer, and a compiler with C++11 support.
 Qt6 support is added starting with KD Soap version 2.0, and requires
 a compiler with C++17 support.
 
 See [INSTALL.txt](INSTALL.txt) for installation instructions using CMake.
 
-After reading the introductory overview files in docs/
-you will find more information at these places:
+Learn more at our:
 
- * [detailed browsable API reference](https://docs.kdab.com/kdsoap)
- * [programmers manual with examples](docs/manual/kdsoap.pdf)
- * [our sorted example programs](examples/)
+* [online API reference](https://docs.kdab.com/kdsoap)
+* [programmers manual with examples](docs/manual/kdsoap.pdf)
+* [sorted example programs](examples/)
 
-Contact
-=======
-* See our official home page: https://www.kdab.com/development-resources/qt-tools/kd-soap
-* Visit us on GitHub: https://github.com/KDAB/KDSoap
+## Contact
+
+* See our official home page: <https://www.kdab.com/development-resources/qt-tools/kd-soap>
+* Visit us on GitHub: <https://github.com/KDAB/KDSoap>
 * Email info@kdab.com for questions about copyright, licensing or commercial support.
 
 Stay up-to-date with KDAB product announcements:
@@ -38,17 +36,17 @@ Stay up-to-date with KDAB product announcements:
 * [KDAB Blogs](https://www.kdab.com/category/blogs)
 * [KDAB on Twitter](https://twitter.com/KDABQt)
 
-Get Involved
-============
+## Get Involved
+
 KDAB will happily accept external contributions.
 
 Please submit your contributions or issue reports from our GitHub space at
-https://github.com/KDAB/KDSoap.
+<https://github.com/KDAB/KDSoap>.
 
 Thanks to our [contributors](CONTRIBUTORS.txt).
 
-License
-=======
+## License
+
 The KD Soap Software is Copyright 2010-2022, Klarälvdalens Datakonsult AB (KDAB),
 and is available under the terms of the [MIT](LICENSES/MIT.txt) license.
 
@@ -62,8 +60,8 @@ available under any license.
 Various other freely distributable files are contained in the unittests
 and are not used in the library code itself.
 
-About KDAB
-==========
+## About KDAB
+
 KD Soap is supported and maintained by Klarälvdalens Datakonsult AB (KDAB).
 
 The KDAB Group is the global No.1 software consultancy for Qt, C++ and
@@ -75,7 +73,7 @@ We continue to help develop parts of Qt and are one of the major contributors
 to the Qt Project. We can give advanced or standard trainings anywhere
 around the globe on Qt as well as C++, OpenGL, 3D and more.
 
-Please visit https://www.kdab.com to meet the people who write code like this.
+Please visit <https://www.kdab.com> to meet the people who write code like this.
 
 KD SOAP and the KD SOAP logo are registered trademarks of Klaralvdalens Datakonsult AB
 in the European Union, the United States, and/or other countries.  Other product and
