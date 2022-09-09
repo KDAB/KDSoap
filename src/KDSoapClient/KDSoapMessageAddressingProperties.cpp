@@ -9,8 +9,8 @@
 ****************************************************************************/
 #include "KDSoapMessageAddressingProperties.h"
 
-#include "KDSoapNamespacePrefixes_p.h"
 #include "KDSoapNamespaceManager.h"
+#include "KDSoapNamespacePrefixes_p.h"
 
 #include <QDebug>
 #include <QLatin1String>

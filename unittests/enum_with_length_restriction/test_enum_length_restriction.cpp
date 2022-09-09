@@ -9,8 +9,8 @@
 ****************************************************************************/
 
 #include "httpserver_p.h"
-#include <QTest>
 #include "wsdl_test_enum.h"
+#include <QTest>
 
 class TestEnum : public QObject
 {

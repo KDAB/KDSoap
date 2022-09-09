@@ -7,9 +7,9 @@
 ** SPDX-License-Identifier: MIT
 **
 ****************************************************************************/
-#include "KDSoapSocketList_p.h"
-#include "KDSoapServerSocket_p.h"
 #include "KDSoapServer.h"
+#include "KDSoapServerSocket_p.h"
+#include "KDSoapSocketList_p.h"
 #include <QDebug>
 
 KDSoapSocketList::KDSoapSocketList(KDSoapServer *server)

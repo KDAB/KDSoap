@@ -11,8 +11,8 @@
 #ifndef TEST_ELEMENT_NS_WSDL_H
 #define TEST_ELEMENT_NS_WSDL_H
 
-#include <QObject>
 #include "wsdl_test.h"
+#include <QObject>
 
 class TestCall : public QObject
 {

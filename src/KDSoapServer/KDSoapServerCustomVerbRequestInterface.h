@@ -11,8 +11,8 @@
 #define KDSOAPSERVERCUSTOMVERBREQUESTINTERFACE_H
 
 #include "KDSoapServerGlobal.h"
-#include <QtCore/QObject>
 #include <QtCore/QMap>
+#include <QtCore/QObject>
 class KDSoapAuthentication;
 class KDSoapServerSocket;
 

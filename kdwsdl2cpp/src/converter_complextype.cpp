@@ -5,8 +5,8 @@
 */
 
 #include "converter.h"
-#include "settings.h"
 #include "elementargumentserializer.h"
+#include "settings.h"
 #include <code_generation/style.h>
 
 #include <QDebug>

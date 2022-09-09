@@ -8,10 +8,10 @@
 **
 ****************************************************************************/
 
+#include "KDDateTime.h"
 #include "KDSoapMessageReader_p.h"
 #include "KDSoapNamespaceManager.h"
 #include "KDSoapNamespacePrefixes_p.h"
-#include "KDDateTime.h"
 
 #include <QDebug>
 #include <QXmlStreamReader>
@@ -37,10 +37,15 @@ static int xmlTypeToMetaType(const QString &xmlType)
     {
         const char *xml; // xsd: prefix assumed
         const int metaTypeId;
-    } s_types[] = { { "string", QVariant::String }, // or QUrl
-                    { "base64Binary", QVariant::ByteArray }, { "int", QVariant::Int }, // or long, or uint, or longlong
-                    { "unsignedInt", QVariant::ULongLong },  { "boolean", QVariant::Bool }, { "float", QMetaType::Float },
-                    { "double", QVariant::Double },          { "time", QVariant::Time },    { "date", QVariant::Date } };
+    } s_types[] = {{"string", QVariant::String}, // or QUrl
+                   {"base64Binary", QVariant::ByteArray},
+                   {"int", QVariant::Int}, // or long, or uint, or longlong
+                   {"unsignedInt", QVariant::ULongLong},
+                   {"boolean", QVariant::Bool},
+                   {"float", QMetaType::Float},
+                   {"double", QVariant::Double},
+                   {"time", QVariant::Time},
+                   {"date", QVariant::Date}};
     // Speed: could be sorted and then we could use qBinaryFind
     for (const auto &type : s_types) {
         if (xmlType == QLatin1String(type.xml)) {

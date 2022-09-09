@@ -8,8 +8,8 @@
 **
 ****************************************************************************/
 #include "KDDateTime.h"
-#include <QSharedData>
 #include <QDebug>
+#include <QSharedData>
 
 class KDDateTimeData : public QSharedData
 {

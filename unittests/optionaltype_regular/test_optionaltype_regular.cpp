@@ -9,8 +9,8 @@
 ****************************************************************************/
 
 #include "test_optionaltype_regular.h"
-#include <QTest>
 #include <QDebug>
+#include <QTest>
 
 TestRegularApi::TestRegularApi()
 {

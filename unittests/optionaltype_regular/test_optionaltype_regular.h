@@ -11,8 +11,8 @@
 #ifndef TEST_OPTIONALTYPE_REGULAR_H
 #define TEST_OPTIONALTYPE_REGULAR_H
 
-#include <QObject>
 #include "wsdl_test.h"
+#include <QObject>
 
 class TestRegularApi : public QObject
 {

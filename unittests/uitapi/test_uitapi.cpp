@@ -9,11 +9,11 @@
 ****************************************************************************/
 
 
-#include "wsdl_uitapi.h"
 #include "httpserver_p.h"
-#include <QTest>
-#include <QEventLoop>
+#include "wsdl_uitapi.h"
 #include <QDebug>
+#include <QEventLoop>
+#include <QTest>
 
 using namespace KDSoapUnitTestHelpers;
 

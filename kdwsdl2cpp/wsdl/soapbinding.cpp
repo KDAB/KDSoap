@@ -8,8 +8,8 @@
 #include <common/nsmanager.h>
 #include <common/parsercontext.h>
 
-#include <QDebug>
 #include "soapbinding.h"
+#include <QDebug>
 
 using namespace KWSDL;
 

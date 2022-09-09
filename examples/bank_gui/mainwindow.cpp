@@ -11,17 +11,17 @@
 #include "mainwindow.h"
 #include "wsdl_BLZService.h"
 
-#include <QPushButton>
-#include <QLabel>
-#include <QHeaderView>
-#include <QMovie>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QString>
-#include <QProgressBar>
 #include <QDebug>
+#include <QHBoxLayout>
+#include <QHeaderView>
+#include <QLabel>
 #include <QMessageBox>
+#include <QMovie>
+#include <QProgressBar>
+#include <QPushButton>
+#include <QString>
 #include <QTableWidget>
+#include <QVBoxLayout>
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0) // We enable C++17 with Qt6, and std::random_shuffle is gone in 17
 #include <random>
@@ -31,7 +31,8 @@
 
 #define PARALLEL_REQUESTS 0
 
-enum Columns {
+enum Columns
+{
     Code,
     Name
 };
@@ -45,14 +46,14 @@ MainWindow::MainWindow(QWidget *parent)
     mBtnAsync = new QPushButton(tr("Async Calls"), this);
 
     // found on https://www.thebankcodes.com/blz/bybankname.php
-    mBankCodes = QStringList { QStringLiteral("10020000"), QStringLiteral("20130600"), QStringLiteral("10090000"), QStringLiteral("55060611"),
-                               QStringLiteral("64250040"), QStringLiteral("50310400"), QStringLiteral("50030000"), QStringLiteral("76069601"),
-                               QStringLiteral("43051040"), QStringLiteral("71162355") };
+    mBankCodes = QStringList {QStringLiteral("10020000"), QStringLiteral("20130600"), QStringLiteral("10090000"), QStringLiteral("55060611"),
+                              QStringLiteral("64250040"), QStringLiteral("50310400"), QStringLiteral("50030000"), QStringLiteral("76069601"),
+                              QStringLiteral("43051040"), QStringLiteral("71162355")};
 
     mTableWidget = new QTableWidget(this);
     mTableWidget->setRowCount(mBankCodes.count());
     mTableWidget->setColumnCount(2);
-    mTableWidget->setHorizontalHeaderLabels({ tr("Bank code"), tr("Bank name") });
+    mTableWidget->setHorizontalHeaderLabels({tr("Bank code"), tr("Bank name")});
     mTableWidget->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
     clearResults();
 

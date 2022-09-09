@@ -13,8 +13,8 @@
 #include "KDSoapGlobal.h"
 
 #include <QtCore/QDateTime>
-#include <QtCore/QVariant>
 #include <QtCore/QSharedDataPointer>
+#include <QtCore/QVariant>
 
 class KDDateTimeData;
 

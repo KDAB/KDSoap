@@ -10,13 +10,13 @@
 #ifndef KDSOAPPENDINGCALL_P_H
 #define KDSOAPPENDINGCALL_P_H
 
-#include <QSharedData>
-#include <QBuffer>
-#include <QXmlStreamReader>
-#include "KDSoapMessage.h"
-#include <QPointer>
 #include "KDSoapClientInterface.h"
+#include "KDSoapMessage.h"
+#include <QBuffer>
 #include <QNetworkReply>
+#include <QPointer>
+#include <QSharedData>
+#include <QXmlStreamReader>
 
 class KDSoapValue;
 

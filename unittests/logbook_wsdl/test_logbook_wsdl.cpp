@@ -11,11 +11,11 @@
 #include "KDSoapClientInterface.h"
 #include "KDSoapMessage.h"
 #include "KDSoapValue.h"
-#include "wsdl_logbookifv3.h"
 #include "httpserver_p.h"
-#include <QTest>
-#include <QEventLoop>
+#include "wsdl_logbookifv3.h"
 #include <QDebug>
+#include <QEventLoop>
+#include <QTest>
 
 // https://www.elogbook.org/logbookws/logbookifv3.asmx
 

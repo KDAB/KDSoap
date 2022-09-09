@@ -9,9 +9,9 @@
 ****************************************************************************/
 
 #include "test_optionaltype_pointer.h"
-#include <QTest>
 #include <QDebug>
 #include <QList>
+#include <QTest>
 
 TestPointerApi::TestPointerApi()
 {

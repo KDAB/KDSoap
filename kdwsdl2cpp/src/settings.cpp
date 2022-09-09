@@ -7,10 +7,10 @@
 #define QT_NO_CAST_TO_ASCII
 #define QT_NO_CAST_FROM_ASCII
 
+#include <QDebug>
 #include <QDir>
 #include <QDomDocument>
 #include <QFile>
-#include <QDebug>
 
 #include "settings.h"
 

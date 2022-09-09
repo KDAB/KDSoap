@@ -10,8 +10,8 @@
 
 #include "test_element_ns_wsdl.h"
 #include "httpserver_p.h"
-#include <QTest>
 #include <QDebug>
+#include <QTest>
 
 using namespace KDSoapUnitTestHelpers;
 

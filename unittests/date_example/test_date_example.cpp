@@ -10,9 +10,9 @@
 
 #include "KDSoapClientInterface.h"
 #include "wsdl_date_example.h"
-#include <QTest>
-#include <QEventLoop>
 #include <QDebug>
+#include <QEventLoop>
+#include <QTest>
 
 class DateExampleWSDL : public QObject
 {

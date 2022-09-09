@@ -11,8 +11,8 @@
 #ifndef KDSOAPUDPCLIENT_H
 #define KDSOAPUDPCLIENT_H
 
-#include "KDSoapGlobal.h"
 #include "KDSoapClientInterface.h"
+#include "KDSoapGlobal.h"
 
 #include <QAbstractSocket>
 #include <QObject>

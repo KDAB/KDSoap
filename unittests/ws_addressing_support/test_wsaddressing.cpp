@@ -10,12 +10,12 @@
 
 #include "httpserver_p.h"
 
-#include <QTest>
 #include <QDebug>
 #include <QObject>
+#include <QTest>
 
-#include "KDSoapClient/KDSoapMessageWriter_p.h"
 #include "KDSoapClient/KDSoapMessageAddressingProperties.h"
+#include "KDSoapClient/KDSoapMessageWriter_p.h"
 #include "KDSoapNamespaceManager.h"
 #include "wsdl_wsaddressing.h"
 

@@ -10,13 +10,13 @@
 
 #include "KDSoapClientInterface.h"
 #include "KDSoapMessage.h"
-#include "KDSoapValue.h"
 #include "KDSoapPendingCallWatcher.h"
-#include "wsdl_import_definition.h"
+#include "KDSoapValue.h"
 #include "httpserver_p.h"
-#include <QTest>
-#include <QEventLoop>
+#include "wsdl_import_definition.h"
 #include <QDebug>
+#include <QEventLoop>
+#include <QTest>
 
 using namespace KDSoapUnitTestHelpers;
 

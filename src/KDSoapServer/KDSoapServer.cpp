@@ -8,15 +8,15 @@
 **
 ****************************************************************************/
 #include "KDSoapServer.h"
-#include "KDSoapThreadPool.h"
 #include "KDSoapSocketList_p.h"
-#include <QMutex>
+#include "KDSoapThreadPool.h"
 #include <QFile>
+#include <QMutex>
 #ifdef Q_OS_UNIX
-#include <sys/time.h>
-#include <sys/resource.h>
 #include <errno.h>
 #include <limits.h>
+#include <sys/resource.h>
+#include <sys/time.h>
 #endif
 
 class KDSoapServer::Private

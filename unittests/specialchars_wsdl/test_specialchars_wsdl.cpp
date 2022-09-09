@@ -8,9 +8,9 @@
 **
 ****************************************************************************/
 
-#include <QTest>
-#include <QDebug>
 #include "wsdl_test.h"
+#include <QDebug>
+#include <QTest>
 
 class TestConversion : public QObject
 {

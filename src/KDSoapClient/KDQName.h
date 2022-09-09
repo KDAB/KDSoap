@@ -10,10 +10,10 @@
 #ifndef KDQNAME_H
 #define KDQNAME_H
 
-#include <QString>
-#include <QList>
 #include <QHash>
+#include <QList>
 #include <QMetaType>
+#include <QString>
 
 class KDSoapValue;
 

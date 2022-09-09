@@ -10,8 +10,8 @@
 #ifndef KDSOAPPENDINGCALL_H
 #define KDSOAPPENDINGCALL_H
 
-#include <QtCore/QExplicitlySharedDataPointer>
 #include "KDSoapMessage.h"
+#include <QtCore/QExplicitlySharedDataPointer>
 QT_BEGIN_NAMESPACE
 class QNetworkReply;
 class QBuffer;

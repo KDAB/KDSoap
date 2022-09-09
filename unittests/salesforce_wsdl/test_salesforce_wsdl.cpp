@@ -11,11 +11,11 @@
 #include "KDSoapClientInterface.h"
 #include "KDSoapMessage.h"
 #include "KDSoapValue.h"
-#include "wsdl_salesforce-partner.h"
 #include "httpserver_p.h"
-#include <QTest>
-#include <QEventLoop>
+#include "wsdl_salesforce-partner.h"
 #include <QDebug>
+#include <QEventLoop>
+#include <QTest>
 
 using namespace KDSoapUnitTestHelpers;
 

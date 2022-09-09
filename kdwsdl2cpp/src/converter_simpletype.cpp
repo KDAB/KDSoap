@@ -19,8 +19,8 @@ static KODE::Code createRangeCheckCode(const XSD::SimpleType *, const QString &b
 void Converter::addVariableInitializer(KODE::MemberVariable &variable) const
 {
     const QByteArray type = variable.type().toLatin1();
-    static const char *s_numericTypes[] = { "int",           "unsigned int", "quint64",        "qint64", "char",  "signed char",
-                                            "unsigned char", "short",        "unsigned short", "float",  "double" };
+    static const char *s_numericTypes[] = {"int", "unsigned int", "quint64", "qint64", "char", "signed char",
+                                           "unsigned char", "short", "unsigned short", "float", "double"};
     for (const char *numericType : s_numericTypes) {
         if (type == numericType) {
             variable.setInitializer("0");

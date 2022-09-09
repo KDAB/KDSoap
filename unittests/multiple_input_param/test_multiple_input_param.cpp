@@ -11,10 +11,10 @@
 #include "KDSoapClientInterface.h"
 #include "KDSoapMessage.h"
 #include "KDSoapValue.h"
-#include "wsdl_helloworldextended.h"
 #include "httpserver_p.h"
-#include <QTest>
+#include "wsdl_helloworldextended.h"
 #include <QDebug>
+#include <QTest>
 
 using namespace KDSoapUnitTestHelpers;
 

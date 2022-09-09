@@ -8,13 +8,13 @@
 **
 ****************************************************************************/
 
+#include "KDDateTime.h"
 #include "KDSoapClientInterface.h"
 #include "KDSoapMessage.h"
 #include "KDSoapValue.h"
-#include "KDDateTime.h"
 #include "httpserver_p.h"
-#include <QTest>
 #include <QDebug>
+#include <QTest>
 
 // Testcase for multiple services defined in one .wsdl file
 #include "wsdl_DWServiceCombined.h"

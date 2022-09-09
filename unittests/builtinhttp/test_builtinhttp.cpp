@@ -8,22 +8,22 @@
 **
 ****************************************************************************/
 
+#include "KDSoapAuthentication.h"
 #include "KDSoapClientInterface.h"
 #include "KDSoapMessage.h"
-#include "KDSoapValue.h"
-#include "KDSoapPendingCallWatcher.h"
-#include "KDSoapAuthentication.h"
 #include "KDSoapNamespaceManager.h"
+#include "KDSoapPendingCallWatcher.h"
 #include "KDSoapServer.h"
 #include "KDSoapServerObjectInterface.h"
+#include "KDSoapValue.h"
 #include "httpserver_p.h"
 
-#include <QTest>
+#include <QDebug>
 #include <QEventLoop>
 #include <QNetworkCookie>
 #include <QNetworkCookieJar>
 #include <QNetworkReply>
-#include <QDebug>
+#include <QTest>
 
 using namespace KDSoapUnitTestHelpers;
 
@@ -398,7 +398,7 @@ private Q_SLOTS:
         client.setSoapVersion(KDSoapClientInterface::SOAP1_2);
         QString action = QStringLiteral("http://localhost/getEmployeeCountry");
         server.setExpectedSoapAction(action.toLocal8Bit());
-        KDSoapMessage ret= client.call(QStringLiteral("getEmployeeCountry"), countryMessage(), action);
+        KDSoapMessage ret = client.call(QStringLiteral("getEmployeeCountry"), countryMessage(), action);
         QVERIFY(!ret.isFault());
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedCountryRequest12()));
         QCOMPARE(server.header("Content-Type").constData(), "application/soap+xml;charset=utf-8");
@@ -416,7 +416,7 @@ private Q_SLOTS:
         client.setSoapVersion(KDSoapClientInterface::SOAP1_2);
         QString action = QStringLiteral("http://localhost/getEmployeeCountry");
         server.setExpectedSoapAction(action.toLocal8Bit());
-        KDSoapMessage ret= client.call(QStringLiteral("getEmployeeCountry"), countryMessage(), action);
+        KDSoapMessage ret = client.call(QStringLiteral("getEmployeeCountry"), countryMessage(), action);
         QVERIFY(!ret.isFault());
         QVERIFY(xmlBufferCompare(server.receivedData(), expectedCountryRequestWithWSAddressingAction()));
     }
@@ -444,22 +444,22 @@ private:
     }
     static QByteArray expectedCountryRequest12()
     {
-        return QByteArray(xmlEnvBegin12()) +
-               "><soap:Body>"
-               "<n1:getEmployeeCountry xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
-               "<employeeName>David Ä Faure</employeeName>"
-               "</n1:getEmployeeCountry>"
-               "</soap:Body>" + xmlEnvEnd();
+        return QByteArray(xmlEnvBegin12()) + "><soap:Body>"
+                                             "<n1:getEmployeeCountry xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\">"
+                                             "<employeeName>David Ä Faure</employeeName>"
+                                             "</n1:getEmployeeCountry>"
+                                             "</soap:Body>"
+            + xmlEnvEnd();
     }
     static QByteArray expectedCountryRequestWithWSAddressingAction()
     {
-        return QByteArray(xmlEnvBegin12WithWSAddressing()) +
-               "><soap:Header><wsa:Action>http://localhost/getEmployeeCountry</wsa:Action></soap:Header>"
-               "<soap:Body>"
-               "<n1:getEmployeeCountry>"
-               "<employeeName>David Ä Faure</employeeName>"
-               "</n1:getEmployeeCountry>"
-               "</soap:Body>" + xmlEnvEnd();
+        return QByteArray(xmlEnvBegin12WithWSAddressing()) + "><soap:Header><wsa:Action>http://localhost/getEmployeeCountry</wsa:Action></soap:Header>"
+                                                             "<soap:Body>"
+                                                             "<n1:getEmployeeCountry>"
+                                                             "<employeeName>David Ä Faure</employeeName>"
+                                                             "</n1:getEmployeeCountry>"
+                                                             "</soap:Body>"
+            + xmlEnvEnd();
     }
     static QString countryMessageNamespace()
     {

@@ -7,13 +7,13 @@
 ** SPDX-License-Identifier: MIT
 **
 ****************************************************************************/
-#include "KDSoapMessageWriter_p.h"
-#include "KDSoapNamespacePrefixes_p.h"
 #include "KDSoapClientInterface_p.h"
+#include "KDSoapMessageWriter_p.h"
 #include "KDSoapNamespaceManager.h"
+#include "KDSoapNamespacePrefixes_p.h"
 #include "KDSoapValue.h"
-#include <QVariant>
 #include <QDebug>
+#include <QVariant>
 
 KDSoapMessageWriter::KDSoapMessageWriter()
     : m_version(KDSoap::SOAP1_1)

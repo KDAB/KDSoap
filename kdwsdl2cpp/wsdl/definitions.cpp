@@ -10,9 +10,9 @@
 #include <QFile>
 #include <QUrl>
 
-#include <common/nsmanager.h>
 #include <common/fileprovider.h>
 #include <common/messagehandler.h>
+#include <common/nsmanager.h>
 #include <common/parsercontext.h>
 
 #include <wsdl/port.h>

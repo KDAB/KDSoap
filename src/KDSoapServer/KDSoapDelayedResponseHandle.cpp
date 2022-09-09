@@ -10,8 +10,8 @@
 
 #include "KDSoapDelayedResponseHandle.h"
 #include "KDSoapServerSocket_p.h"
-#include <QSharedData>
 #include <QPointer>
+#include <QSharedData>
 
 class KDSoapDelayedResponseHandleData : public QSharedData
 {

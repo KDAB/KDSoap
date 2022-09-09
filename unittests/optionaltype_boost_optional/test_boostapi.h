@@ -11,8 +11,8 @@
 #ifndef TEST_BOOSTAPI_H
 #define TEST_BOOSTAPI_H
 
-#include <QObject>
 #include "wsdl_test.h"
+#include <QObject>
 
 class TestBoostApi : public QObject
 {

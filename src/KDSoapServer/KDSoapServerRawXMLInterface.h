@@ -11,8 +11,8 @@
 #define KDSOAPSERVERRAWXMLINTERFACE_H
 
 #include "KDSoapServerGlobal.h"
-#include <QtCore/QObject>
 #include <QtCore/QMap>
+#include <QtCore/QObject>
 class KDSoapRawXMLentication;
 class KDSoapServerSocket;
 class KDSoapServerRawXMLPrivate;

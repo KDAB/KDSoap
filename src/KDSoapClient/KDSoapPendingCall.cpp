@@ -8,11 +8,11 @@
 **
 ****************************************************************************/
 #include "KDSoapPendingCall.h"
-#include "KDSoapPendingCall_p.h"
-#include "KDSoapNamespaceManager.h"
 #include "KDSoapMessageReader_p.h"
-#include <QNetworkReply>
+#include "KDSoapNamespaceManager.h"
+#include "KDSoapPendingCall_p.h"
 #include <QDebug>
+#include <QNetworkReply>
 
 static void debugHelper(const QByteArray &data, const QList<QNetworkReply::RawHeaderPair> &headerList)
 {
@@ -109,12 +109,12 @@ void maybeDebugRequest(const QByteArray &data, const QNetworkRequest &request, Q
         }
         if (!method.isEmpty()) {
             QByteArray output = method + " " + reply->url().toString().toUtf8();
-            headerList << QNetworkReply::RawHeaderPair { {}, std::move(output) };
+            headerList << QNetworkReply::RawHeaderPair {{}, std::move(output)};
         }
     }
     const auto rawHeaders = request.rawHeaderList();
     for (const QByteArray &h : rawHeaders) {
-        headerList << QNetworkReply::RawHeaderPair { h, request.rawHeader(h) };
+        headerList << QNetworkReply::RawHeaderPair {h, request.rawHeader(h)};
     }
     debugHelper(data, headerList);
 }

@@ -13,8 +13,8 @@
 #include <QtCore/QSharedDataPointer>
 #include <QtCore/QVariant>
 
-#include "KDSoapValue.h"
 #include "KDSoapMessageAddressingProperties.h"
+#include "KDSoapValue.h"
 
 QT_BEGIN_NAMESPACE
 class QString;

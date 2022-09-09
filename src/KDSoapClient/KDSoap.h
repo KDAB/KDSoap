@@ -11,12 +11,12 @@
 #ifndef KDSOAP_H
 #define KDSOAP_H
 
+#include "KDSoapAuthentication.h"
 #include "KDSoapClientInterface.h"
 #include "KDSoapMessage.h"
+#include "KDSoapNamespaceManager.h"
 #include "KDSoapPendingCall.h"
 #include "KDSoapPendingCallWatcher.h"
 #include "KDSoapValue.h"
-#include "KDSoapAuthentication.h"
-#include "KDSoapNamespaceManager.h"
 
 #endif

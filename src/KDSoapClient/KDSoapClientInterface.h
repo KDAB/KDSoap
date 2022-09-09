@@ -10,10 +10,10 @@
 #ifndef KDSOAPCLIENTINTERFACE_H
 #define KDSOAPCLIENTINTERFACE_H
 
-#include <QtCore/QtGlobal>
-#include <QtCore/QString>
 #include "KDSoapMessage.h"
 #include "KDSoapPendingCall.h"
+#include <QtCore/QString>
+#include <QtCore/QtGlobal>
 
 class KDSoapAuthentication;
 class KDSoapSslHandler;

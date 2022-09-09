@@ -8,9 +8,9 @@
 **
 ****************************************************************************/
 
-#include <QCoreApplication>
 #include "KDSoapClientInterface.h"
 #include "KDSoapMessage.h"
+#include <QCoreApplication>
 
 #include <iostream>
 

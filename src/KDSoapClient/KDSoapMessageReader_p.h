@@ -11,8 +11,8 @@
 #ifndef KDSOAPMESSAGEREADER_P_H
 #define KDSOAPMESSAGEREADER_P_H
 
-#include "KDSoapMessage.h"
 #include "KDSoapClientInterface.h"
+#include "KDSoapMessage.h"
 
 class KDSOAP_EXPORT KDSoapMessageReader
 {

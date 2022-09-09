@@ -10,8 +10,8 @@
 #ifndef KDSOAPSOCKETLIST_P_H
 #define KDSOAPSOCKETLIST_P_H
 
-#include <QSet>
 #include <QObject>
+#include <QSet>
 QT_BEGIN_NAMESPACE
 class QTcpSocket;
 class QObject;

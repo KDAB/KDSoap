@@ -1,4 +1,7 @@
 ---
+Language: Json
+DisableFormat: true
+---
 BasedOnStyle: WebKit
 Language: Cpp
 Standard: Cpp11
@@ -7,7 +10,6 @@ IndentWidth: 4
 SpacesBeforeTrailingComments: 1
 TabWidth: 8
 UseTab: Never
-SortIncludes: false
 ContinuationIndentWidth: 4
 MaxEmptyLinesToKeep: 3
 BreakBeforeBinaryOperators: NonAssignment
@@ -47,8 +49,8 @@ AlignAfterOpenBracket: true
 AlwaysBreakBeforeMultilineStrings: false
 AlwaysBreakTemplateDeclarations: true
 BinPackParameters: true
-ColumnLimit: 150
-Cpp11BracedListStyle: false
+ColumnLimit: 0
+Cpp11BracedListStyle: true
 DerivePointerBinding: false
 ExperimentalAutoDetectBinPacking: false
 IndentCaseLabels: false

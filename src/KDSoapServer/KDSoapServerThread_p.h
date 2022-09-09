@@ -10,10 +10,10 @@
 #ifndef KDSOAPSERVERTHREAD_P_H
 #define KDSOAPSERVERTHREAD_P_H
 
-#include <QThread>
-#include <QSemaphore>
-#include <QMutex>
 #include <QHash>
+#include <QMutex>
+#include <QSemaphore>
+#include <QThread>
 class KDSoapServer;
 class KDSoapSocketList;
 

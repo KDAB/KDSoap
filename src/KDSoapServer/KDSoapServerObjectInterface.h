@@ -10,14 +10,14 @@
 #ifndef KDSOAPSERVEROBJECTINTERFACE_H
 #define KDSOAPSERVEROBJECTINTERFACE_H
 
+#include "KDSoapDelayedResponseHandle.h"
 #include "KDSoapServerGlobal.h"
 #include <KDSoapClient/KDSoapMessage.h>
-#include "KDSoapDelayedResponseHandle.h"
 
-#include <QtCore/QObject>
-#include <QtCore/QByteArray>
-#include <QtCore/QVector>
 #include <QIODevice>
+#include <QtCore/QByteArray>
+#include <QtCore/QObject>
+#include <QtCore/QVector>
 
 class KDSoapServerSocket;
 

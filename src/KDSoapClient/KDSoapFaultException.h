@@ -11,8 +11,8 @@
 #ifndef KDSOAPFAULTEXCEPTION_H
 #define KDSOAPFAULTEXCEPTION_H
 
-#include <QString>
 #include "KDSoapValue.h"
+#include <QString>
 
 /**
  * KDSoapFaultException is the base class for exceptions representing a fault element.

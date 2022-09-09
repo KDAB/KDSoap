@@ -7,23 +7,23 @@
 ** SPDX-License-Identifier: MIT
 **
 ****************************************************************************/
+#include "KDSoapServer.h"
+#include "KDSoapServerAuthInterface.h"
+#include "KDSoapServerCustomVerbRequestInterface.h"
+#include "KDSoapServerObjectInterface.h"
+#include "KDSoapServerRawXMLInterface.h"
 #include "KDSoapServerSocket_p.h"
 #include "KDSoapSocketList_p.h"
-#include "KDSoapServerObjectInterface.h"
-#include "KDSoapServerAuthInterface.h"
-#include "KDSoapServerRawXMLInterface.h"
-#include "KDSoapServerCustomVerbRequestInterface.h"
-#include "KDSoapServer.h"
 #include <KDSoapClient/KDSoapMessage.h>
-#include <KDSoapClient/KDSoapNamespaceManager.h>
 #include <KDSoapClient/KDSoapMessageReader_p.h>
 #include <KDSoapClient/KDSoapMessageWriter_p.h>
+#include <KDSoapClient/KDSoapNamespaceManager.h>
 #include <QBuffer>
-#include <QThread>
-#include <QMetaMethod>
-#include <QFile>
 #include <QDir>
+#include <QFile>
 #include <QFileInfo>
+#include <QMetaMethod>
+#include <QThread>
 #include <QVarLengthArray>
 
 static const char s_forbidden[] = "HTTP/1.1 403 Forbidden\r\nContent-Length: 0\r\n\r\n";
@@ -429,7 +429,7 @@ bool KDSoapServerSocket::handleFileDownload(KDSoapServerObjectInterface *serverO
     Q_ASSERT(written == response.size()); // Please report a bug if you hit this.
     Q_UNUSED(written);
 
-    char block[4096] = { 0 };
+    char block[4096] = {0};
     qint64 totalRead = 0;
     while (!device->atEnd()) {
         const qint64 in = device->read(block, sizeof(block));

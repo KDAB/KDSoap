@@ -8,8 +8,8 @@
 **
 ****************************************************************************/
 
-#include "KDSoapValue.h"
 #include "KDDateTime.h"
+#include "KDSoapValue.h"
 #include <QTest>
 
 class Basic : public QObject

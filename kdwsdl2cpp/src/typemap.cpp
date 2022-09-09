@@ -7,12 +7,12 @@
  SPDX-License-Identifier: MIT
 */
 
-#include <common/nsmanager.h>
 #include "settings.h"
+#include <common/nsmanager.h>
 
-#include <QDebug>
-#include "typemap.h"
 #include "converter.h"
+#include "typemap.h"
+#include <QDebug>
 
 using namespace KWSDL;
 

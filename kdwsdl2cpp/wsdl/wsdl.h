@@ -8,8 +8,8 @@
 #define KWSDL_WSDL_H
 
 #include <common/nsmanager.h>
-#include <wsdl/definitions.h>
 #include <kode_export.h>
+#include <wsdl/definitions.h>
 
 namespace KWSDL {
 

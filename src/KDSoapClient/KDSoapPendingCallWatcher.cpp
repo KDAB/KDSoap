@@ -10,8 +10,8 @@
 #include "KDSoapPendingCallWatcher.h"
 #include "KDSoapPendingCallWatcher_p.h"
 #include "KDSoapPendingCall_p.h"
-#include <QNetworkReply>
 #include <QDebug>
+#include <QNetworkReply>
 
 KDSoapPendingCallWatcher::KDSoapPendingCallWatcher(const KDSoapPendingCall &call, QObject *parent)
     : QObject(parent)

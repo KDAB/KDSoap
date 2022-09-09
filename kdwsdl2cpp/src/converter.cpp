@@ -4,11 +4,11 @@
  SPDX-License-Identifier: MIT
 */
 
-#include "settings.h"
-#include "elementargumentserializer.h"
 #include "converter.h"
-#include <code_generation/style.h>
+#include "elementargumentserializer.h"
+#include "settings.h"
 #include <QDebug>
+#include <code_generation/style.h>
 
 using namespace KWSDL;
 

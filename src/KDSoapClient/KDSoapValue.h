@@ -10,15 +10,15 @@
 #ifndef KDSOAPVALUE_H
 #define KDSOAPVALUE_H
 
-#include <QtCore/QString>
-#include <QtCore/QVariant>
+#include "KDSoapGlobal.h"
 #include <QtCore/QList>
 #include <QtCore/QPair>
 #include <QtCore/QSet>
-#include <QtCore/QVector>
 #include <QtCore/QSharedDataPointer>
+#include <QtCore/QString>
+#include <QtCore/QVariant>
+#include <QtCore/QVector>
 #include <QtCore/QXmlStreamNamespaceDeclarations>
-#include "KDSoapGlobal.h"
 
 #ifndef QT_NO_STL
 #include <algorithm>

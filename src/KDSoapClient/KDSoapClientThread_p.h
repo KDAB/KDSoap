@@ -11,13 +11,13 @@
 #ifndef KDSOAPCLIENTTHREAD_P_H
 #define KDSOAPCLIENTTHREAD_P_H
 
-#include "KDSoapMessage.h"
 #include "KDSoapAuthentication.h"
-#include <QtCore/QWaitCondition>
-#include <QtCore/QQueue>
-#include <QtCore/QThread>
+#include "KDSoapMessage.h"
 #include <QtCore/QMutex>
+#include <QtCore/QQueue>
 #include <QtCore/QSemaphore>
+#include <QtCore/QThread>
+#include <QtCore/QWaitCondition>
 #include <QtNetwork/QNetworkAccessManager>
 
 class KDSoapPendingCallWatcher;

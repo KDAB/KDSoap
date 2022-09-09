@@ -8,11 +8,11 @@
 **
 ****************************************************************************/
 
-#include "wsdl_mywsdl_rpc.h"
 #include "httpserver_p.h"
-#include <QTest>
-#include <QEventLoop>
+#include "wsdl_mywsdl_rpc.h"
 #include <QDebug>
+#include <QEventLoop>
+#include <QTest>
 
 using namespace KDSoapUnitTestHelpers;
 

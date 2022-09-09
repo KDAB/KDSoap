@@ -9,9 +9,9 @@
 ****************************************************************************/
 
 #include "httpserver_p.h"
-#include <QTest>
-#include <QDebug>
 #include "wsdl_soap12.h"
+#include <QDebug>
+#include <QTest>
 
 class AutoTestSoap12 : public QObject
 {

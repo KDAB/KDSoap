@@ -10,14 +10,14 @@
 #ifndef KDSOAPCLIENTINTERFACE_P_H
 #define KDSOAPCLIENTINTERFACE_P_H
 
-#include <QtNetwork/QSslConfiguration>
+#include <QtCore/QXmlStreamWriter>
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkCookieJar>
-#include <QtCore/QXmlStreamWriter>
+#include <QtNetwork/QSslConfiguration>
 
+#include "KDSoapAuthentication.h"
 #include "KDSoapClientInterface.h"
 #include "KDSoapClientThread_p.h"
-#include "KDSoapAuthentication.h"
 QT_BEGIN_NAMESPACE
 class QBuffer;
 QT_END_NAMESPACE

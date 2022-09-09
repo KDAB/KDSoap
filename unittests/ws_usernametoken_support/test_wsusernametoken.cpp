@@ -10,11 +10,11 @@
 
 #include "httpserver_p.h"
 
-#include <QTest>
 #include <QObject>
+#include <QTest>
 
-#include "KDSoapNamespaceManager.h"
 #include "KDSoapAuthentication.h"
+#include "KDSoapNamespaceManager.h"
 #include "wsdl_wsusernametoken.h"
 
 using namespace KDSoapUnitTestHelpers;

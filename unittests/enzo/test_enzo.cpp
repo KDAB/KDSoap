@@ -9,9 +9,9 @@
 ****************************************************************************/
 
 #include "httpserver_p.h"
-#include <QTest>
-#include <QDebug>
 #include "wsdl_EnzoService.h"
+#include <QDebug>
+#include <QTest>
 
 class TestEnzo : public QObject
 {

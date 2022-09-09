@@ -12,19 +12,19 @@
 #include "wsdl_sayhello.h"
 
 #include "httpserver_p.h"
-#include <QTest>
-#include <QEventLoop>
-#include <QDebug>
 #include <KDSoapClientInterface.h>
 #include <KDSoapMessage.h>
-#include <KDSoapServer.h>
 #include <KDSoapNamespaceManager.h>
-#include <KDSoapPendingCallWatcher.h>
 #include <KDSoapPendingCall.h>
+#include <KDSoapPendingCallWatcher.h>
+#include <KDSoapServer.h>
+#include <QDebug>
+#include <QEventLoop>
 #include <QNetworkAccessManager>
-#include <QNetworkRequest>
 #include <QNetworkReply>
+#include <QNetworkRequest>
 #include <QSignalSpy>
+#include <QTest>
 
 using namespace KDSoapUnitTestHelpers;
 

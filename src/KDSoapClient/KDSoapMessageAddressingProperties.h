@@ -10,8 +10,8 @@
 #ifndef KDSOAPMESSAGEADDRESSINGPROPERTIES_H
 #define KDSOAPMESSAGEADDRESSINGPROPERTIES_H
 
-#include <QtCore/QSharedDataPointer>
 #include "KDSoapGlobal.h"
+#include <QtCore/QSharedDataPointer>
 
 #include "KDSoapEndpointReference.h"
 #include "KDSoapValue.h"

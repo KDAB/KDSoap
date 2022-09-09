@@ -9,8 +9,8 @@
 ****************************************************************************/
 
 #include "test_boostapi.h"
-#include <QTest>
 #include <QDebug>
+#include <QTest>
 
 TestBoostApi::TestBoostApi()
 {

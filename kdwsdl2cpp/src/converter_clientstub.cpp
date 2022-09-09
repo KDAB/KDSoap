@@ -5,11 +5,11 @@
 */
 
 #include "converter.h"
-#include <code_generation/style.h>
 #include "elementargumentserializer.h"
 #include "settings.h"
-#include <QDebug>
 #include <QCoreApplication>
+#include <QDebug>
+#include <code_generation/style.h>
 
 using namespace KWSDL;
 
@@ -462,7 +462,8 @@ bool Converter::convertClientService()
 
                     doStartCode += "KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);";
                     doStartCode += "QObject::connect(watcher, &KDSoapPendingCallWatcher::finished,\n"
-                                   "                 this, &" + jobClass.name() + "::slotFinished);";
+                                   "                 this, &"
+                        + jobClass.name() + "::slotFinished);";
                     doStart.setBody(doStartCode);
                     jobClass.addFunction(doStart);
 
@@ -807,7 +808,8 @@ void Converter::convertClientInputMessage(const Operation &operation, const Bind
 
         code += "KDSoapPendingCallWatcher *watcher = new KDSoapPendingCallWatcher(pendingCall, this);";
         code += QLatin1String("QObject::connect(watcher, &KDSoapPendingCallWatcher::finished,\n"
-                                   "                 this, &") + newClass.name() + QLatin1String("::")
+                              "                 this, &")
+            + newClass.name() + QLatin1String("::")
             + finishedSlotName + QLatin1String(");");
         asyncFunc.setBody(code);
         newClass.addFunction(asyncFunc);

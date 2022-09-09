@@ -10,13 +10,13 @@
 #ifndef KDSOAPMESSAGEWRITER_P_H
 #define KDSOAPMESSAGEWRITER_P_H
 
-#include "KDSoapMessage.h"
 #include "KDSoapAuthentication.h"
 #include "KDSoapClientInterface.h"
-#include <QtCore/QXmlStreamWriter>
+#include "KDSoapMessage.h"
 #include <QtCore/QByteArray>
-#include <QtCore/QString>
 #include <QtCore/QMap>
+#include <QtCore/QString>
+#include <QtCore/QXmlStreamWriter>
 class KDSoapMessage;
 class KDSoapHeaders;
 class KDSoapNamespacePrefixes;

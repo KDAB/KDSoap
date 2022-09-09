@@ -8,12 +8,12 @@
 **
 ****************************************************************************/
 #include "KDSoapMessage.h"
+#include "KDDateTime.h"
 #include "KDSoapNamespaceManager.h"
 #include "KDSoapNamespacePrefixes_p.h"
-#include "KDDateTime.h"
 #include <QDebug>
-#include <QXmlStreamReader>
 #include <QVariant>
+#include <QXmlStreamReader>
 
 class KDSoapMessageData : public QSharedData
 {

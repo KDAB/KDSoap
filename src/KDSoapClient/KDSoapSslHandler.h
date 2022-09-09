@@ -11,9 +11,9 @@
 #ifndef KDSOAPSSLHANDLER_H
 #define KDSOAPSSLHANDLER_H
 
+#include "KDSoapGlobal.h"
 #include <QObject>
 #include <QSslError>
-#include "KDSoapGlobal.h"
 
 QT_BEGIN_NAMESPACE
 class QNetworkReply;

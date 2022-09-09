@@ -9,13 +9,13 @@
 ****************************************************************************/
 
 #include "KDSoapClientInterface.h"
-#include "wsdl_BLZService.h"
 #include "wsdl_BFGlobalService.h"
+#include "wsdl_BLZService.h"
 #include "wsdl_OrteLookup.h"
-#include <QTest>
-#include <QSignalSpy>
-#include <QEventLoop>
 #include <QDebug>
+#include <QEventLoop>
+#include <QSignalSpy>
+#include <QTest>
 
 class WebCallsWSDL : public QObject
 {

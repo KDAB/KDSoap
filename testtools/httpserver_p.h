@@ -13,18 +13,18 @@
 
 #include "KDSoapGlobal.h"
 #include <QBuffer>
-#include <QThread>
 #include <QMutex>
 #include <QSemaphore>
 #include <QTcpServer>
 #include <QTcpSocket>
+#include <QThread>
 #ifndef QT_NO_OPENSSL
 #include <QSslSocket>
 #endif
-#include <QUrl>
-#include <QStringList>
 #include <QSslCertificate>
 #include <QSslKey>
+#include <QStringList>
+#include <QUrl>
 
 class BlockingHttpServer;
 

@@ -8,14 +8,14 @@
 **
 ****************************************************************************/
 
+#include "KDDateTime.h"
 #include "KDSoapClientInterface.h"
 #include "KDSoapMessage.h"
 #include "KDSoapValue.h"
-#include "KDDateTime.h"
-#include "wsdl_DWService_12.h"
 #include "httpserver_p.h"
-#include <QTest>
+#include "wsdl_DWService_12.h"
 #include <QDebug>
+#include <QTest>
 
 using namespace KDSoapUnitTestHelpers;
 

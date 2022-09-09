@@ -8,13 +8,13 @@
 **
 ****************************************************************************/
 #include "KDSoapValue.h"
-#include "KDSoapNamespacePrefixes_p.h"
-#include "KDSoapNamespaceManager.h"
 #include "KDDateTime.h"
+#include "KDSoapNamespaceManager.h"
+#include "KDSoapNamespacePrefixes_p.h"
 #include <QDateTime>
-#include <QUrl>
 #include <QDebug>
 #include <QStringList>
+#include <QUrl>
 
 class KDSoapValue::Private : public QSharedData
 {
@@ -304,7 +304,7 @@ void KDSoapValue::writeElementContents(KDSoapNamespacePrefixes &namespacePrefixe
 {
     const QVariant value = this->value();
 
-    for (const QXmlStreamNamespaceDeclaration& decl : qAsConst(d->m_localNamespaceDeclarations)) {
+    for (const QXmlStreamNamespaceDeclaration &decl : qAsConst(d->m_localNamespaceDeclarations)) {
         writer.writeNamespace(decl.namespaceUri().toString(), decl.prefix().toString());
     }
 

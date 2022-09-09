@@ -13,8 +13,8 @@
 
 #include "KDSoapGlobal.h"
 #include "KDSoapValue.h"
-#include <QString>
 #include <QSharedDataPointer>
+#include <QString>
 
 class KDSoapEndpointReferenceData;
 /**

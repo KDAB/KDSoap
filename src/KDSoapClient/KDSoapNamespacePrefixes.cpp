@@ -7,9 +7,9 @@
 ** SPDX-License-Identifier: MIT
 **
 ****************************************************************************/
-#include "KDSoapNamespacePrefixes_p.h"
 #include "KDSoapClientInterface_p.h"
 #include "KDSoapNamespaceManager.h"
+#include "KDSoapNamespacePrefixes_p.h"
 
 void KDSoapNamespacePrefixes::writeStandardNamespaces(QXmlStreamWriter &writer, KDSoap::SoapVersion version, bool messageAddressingEnabled,
                                                       KDSoapMessageAddressingProperties::KDSoapAddressingNamespace messageAddressingNamespace)

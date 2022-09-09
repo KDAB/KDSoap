@@ -9,9 +9,9 @@
 ****************************************************************************/
 
 #include "httpserver_p.h"
-#include <QTest>
-#include <QDebug>
 #include "wsdl_test.h"
+#include <QDebug>
+#include <QTest>
 
 class TestIssue1 : public QObject
 {

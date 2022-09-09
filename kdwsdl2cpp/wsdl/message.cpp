@@ -6,10 +6,10 @@
 
 #include "message.h"
 
-#include <common/messagehandler.h>
-#include <common/parsercontext.h>
-#include <common/nsmanager.h>
 #include <QDebug>
+#include <common/messagehandler.h>
+#include <common/nsmanager.h>
+#include <common/parsercontext.h>
 
 using namespace KWSDL;
 

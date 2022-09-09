@@ -8,13 +8,13 @@
 **
 ****************************************************************************/
 #include "KDSoapAuthentication.h"
+#include "KDSoapNamespaceManager.h"
+#include "KDSoapNamespacePrefixes_p.h"
 #include <QAuthenticator>
 #include <QCryptographicHash>
 #include <QDateTime>
 #include <QDebug>
 #include <QNetworkReply>
-#include "KDSoapNamespacePrefixes_p.h"
-#include "KDSoapNamespaceManager.h"
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
 #include <QRandomGenerator>
 #endif
