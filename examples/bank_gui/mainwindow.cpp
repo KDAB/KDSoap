@@ -29,6 +29,10 @@
 #include <QMessageBox>
 #include <QTableWidget>
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0) // We enable C++17 with Qt6, and std::random_shuffle is gone in 17
+#include <random>
+#endif
+
 #include <algorithm>
 
 #define PARALLEL_REQUESTS 0
@@ -92,7 +96,13 @@ MainWindow::MainWindow(QWidget *parent)
 
 void MainWindow::clearResults()
 {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0) // We enable C++17 with Qt6, and std::random_shuffle is gone in 17
+    std::random_device rd;
+    std::mt19937 g(rd());
+    std::shuffle(mBankCodes.begin(), mBankCodes.end(), g);
+#else
     std::random_shuffle(mBankCodes.begin(), mBankCodes.end());
+#endif
     for (int row = 0; row < mBankCodes.count(); ++row) {
         auto *item = new QTableWidgetItem(mBankCodes.at(row));
         mTableWidget->setItem(row, Columns::Code, item);
