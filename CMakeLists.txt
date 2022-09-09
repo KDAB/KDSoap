@@ -32,7 +32,7 @@
 #  Default=false
 #
 
-cmake_minimum_required(VERSION 3.3)
+cmake_minimum_required(VERSION 3.12)
 
 if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/kdwsdl2cpp/libkode/common")
     message(FATAL_ERROR "Please do git submodule update --init --recursive")
@@ -52,16 +52,12 @@ if(DEFINED CMAKE_INSTALL_PREFIX)
     endif()
 endif()
 
-if(${CMAKE_VERSION} VERSION_LESS "3.12.0")
-    project(KDSoap LANGUAGES CXX)
-else()
-    project(
-        KDSoap
-        DESCRIPTION "A Qt-based client-side and server-side SOAP component"
-        HOMEPAGE_URL "https://github.com/KDAB/KDSoap"
-        LANGUAGES CXX
-    )
-endif()
+project(
+    KDSoap
+    DESCRIPTION "A Qt-based client-side and server-side SOAP component"
+    HOMEPAGE_URL "https://github.com/KDAB/KDSoap"
+    LANGUAGES CXX
+)
 
 set(${PROJECT_NAME}_VERSION_MAJOR 2)
 set(${PROJECT_NAME}_VERSION_MINOR 1)
@@ -143,7 +139,6 @@ endif()
 set(CMAKE_C_VISIBILITY_PRESET hidden)
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
-
 
 add_definitions(-DQT_NO_CAST_TO_ASCII -DQT_NO_CAST_FROM_ASCII -DQT_NO_CAST_FROM_BYTEARRAY -DQURL_NO_CAST_FROM_STRING)
 add_definitions(-DUSE_EXCEPTIONS -DQT_FATAL_ASSERT -DQT_NO_FOREACH)

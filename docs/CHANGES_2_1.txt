@@ -2,7 +2,7 @@
 General:
 ========
 * Re-license project to MIT and remove the commercial offering
-* buildsystem - Increase minimum CMake version to 3.3.0
+* buildsystem - Increase minimum CMake version to 3.12.0
 * buildsystem - Build in Release mode by default (in non-developer situations)
 
 Client-side:
