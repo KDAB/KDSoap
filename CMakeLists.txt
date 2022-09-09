@@ -1,15 +1,10 @@
-## This file is part of the KD Soap library.
-##
-## SPDX-FileCopyrightText: 2012-2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
-##
-## SPDX-License-Identifier: LGPL-2.1-only OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDAB-KDSoap OR LicenseRef-KDAB-KDSoap-US
-##
-## Licensees holding valid commercial KD Soap licenses may use this file in
-## accordance with the KD Soap Commercial License Agreement provided with
-## the Software.
-##
-## Contact info@kdab.com if any conditions of this licensing are not clear to you.
-##
+#
+# This file is part of the KD Soap project..
+#
+# SPDX-FileCopyrightText: 2012-2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
+#
+# SPDX-License-Identifier: MIT
+#
 
 # This is the top-level CMakeLists.txt file for the KDSoap project.
 #
@@ -211,7 +206,7 @@ if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
     set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib")
     set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib")
 
-    install(FILES README.md README-commercial.txt DESTINATION ${INSTALL_DOC_DIR})
+    install(FILES README.md DESTINATION ${INSTALL_DOC_DIR})
     if(NOT ${PROJECT_NAME}_QT6)
         install(FILES kdsoap.pri kdwsdl2cpp.pri DESTINATION ${INSTALL_DOC_DIR})
     endif()

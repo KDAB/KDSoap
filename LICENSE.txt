@@ -1,13 +1,14 @@
 License
 =======
 The KD Soap Software is Copyright 2010-2022 Klarälvdalens Datakonsult AB (KDAB),
-and is available under the terms of:
+and is available under the terms of the MIT license.
 
-* LGPL-2.1 or LGPL-3.0
-  (except libkdsoap-server, which has a modified AGPL3 license)
-* GPL-2.0 or GPL-3.0
-  (except libkdsoap-server, which has a modified AGPL3 license)
-* the KDAB commercial license, provided that you buy a license.
-  please contact info@kdab.com if you are interested in buying commercial licenses.
+Note that this project requires the 3rd party 'libkode' submodule
+that is licensed separately with LGPL-2.0-or-later; however, libkode
+is used for code-generation only and the resulting code can be made
+available under any license.
 
-See the licenses in the LICENSES folder.
+Various other freely distributable files are contained in the unittests
+and are not used in the library code itself.
+
+See the full license texts in the LICENSES folder.

@@ -3,6 +3,12 @@ import os
 import stat
 
 # Run this on Linux.
+# This file is part of the KD Soap project..
+#
+# SPDX-FileCopyrightText: 2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
+#
+# SPDX-License-Identifier: MIT
+#
 
 # This script, when run in KD Soap's source and build directory containing the results of a full
 # build, writes a list of files to be excluded from packaging to CPackIgnores.txt.

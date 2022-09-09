@@ -1,26 +1,17 @@
-######################################################################/
-## This file is part of the KD Soap library.
-##
-## SPDX-FileCopyrightText: 2010-2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
-##
-## SPDX-License-Identifier: LGPL-2.1-only OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDAB-KDSoap OR LicenseRef-KDAB-KDSoap-US
-##
-## Licensees holding valid commercial KD Soap licenses may use this file in
-## accordance with the KD Soap Commercial License Agreement provided with
-## the Software.
-##
-## Contact info@kdab.com if any conditions of this licensing are not clear to you.
-##
+#
+# This file is part of the KD Soap project..
+#
+# SPDX-FileCopyrightText: 2010-2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
+#
+# SPDX-License-Identifier: MIT
+#
 
 from conans import ConanFile, CMake, tools
 
 class KdsoapConan(ConanFile):
     name = "KDSoap"
     version = "2.0.0"
-    license = ("https://raw.githubusercontent.com/KDAB/KDSoap/kdsoap-{0}-release/LICENSE.txt,"
-               "https://raw.githubusercontent.com/KDAB/KDSoap/kdsoap-{0}-release/LICENSE.AGPL3-modified.txt,"
-               "https://raw.githubusercontent.com/KDAB/KDSoap/kdsoap-{0}-release/LICENSE.GPL.txt,"
-               "https://raw.githubusercontent.com/KDAB/KDSoap/kdsoap-{0}-release/LICENSE.LGPL.txt").format(version)
+    license = ("https://raw.githubusercontent.com/KDAB/KDSoap/master/LICENSES/MIT.txt")
     author = "Klaralvdalens Datakonsult AB (KDAB) info@kdab.com"
     url = "https://github.com/KDAB/KDSoap.git"
     description = "KD Soap is a Qt-based client-side and server-side SOAP component."

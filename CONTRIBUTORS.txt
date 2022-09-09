@@ -1,5 +1,3 @@
-People who have signed the CLA:
-
 Casper Meijn <casper@meijn.net>
 Matt Broadstone <mbroadst@gmail.com>
 Raphaël Cotty <raphael.cotty@gmail.com>

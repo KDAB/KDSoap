@@ -40,33 +40,27 @@ Stay up-to-date with KDAB product announcements:
 
 Get Involved
 ============
-KDAB will happily accept external contributions, but substantial contributions require
-a signed [Copyright Assignment Agreement](docs/KDSoap-CopyrightAssignmentForm.pdf).
-
-Contact info@kdab.com for more information about the Copyright Assignment Agreement.
+KDAB will happily accept external contributions.
 
 Please submit your contributions or issue reports from our GitHub space at
-https://github.com/KDAB/KDSoap
+https://github.com/KDAB/KDSoap.
 
 Thanks to our [contributors](CONTRIBUTORS.txt).
 
 License
 =======
-The KD Soap Software is Copyright (C) 2010-2022, Klaralvdalens Datakonsult AB,
-and is available under the terms of:
+The KD Soap Software is Copyright 2010-2022, Klarälvdalens Datakonsult AB (KDAB),
+and is available under the terms of the [MIT](LICENSES/MIT.txt) license.
 
-* [LGPL-2.1](LICENSES/LGPL-2.1-only.txt) or [LGPL-3.0](LICENSES/LGPL-3.0-only.txt)
-    (except libkdsoap-server, see [LicenseRef-KDAB-KDSoap-AGPL3-Modified.txt](LICENSES/LicenseRef-KDAB-KDSoap-AGPL3-Modified.txt))
-* [GPL-2.0](LICENSES/GPL-2.0-only.txt) or [GPL-3.0](LICENSES/GPL-3.0-only.txt)
-    (except libkdsoap-server, see [LicenseRef-KDAB-KDSoap-AGPL3-Modified.txt](LICENSES/LicenseRef-KDAB-KDSoap-AGPL3-Modified.txt))
-* the KDAB commercial license, provided that you buy a license.
-  please contact info@kdab.com if you are interested in buying commercial licenses.
+Contact KDAB at <info@kdab.com> to inquire about commercial licensing.
 
-Commercial licensing terms are available in
-[LicenseRef-KDAB-KDSoap.txt](LICENSES/LicenseRef-KDAB-KDSoap.txt),
-[LicenseRef-KDAB-KDSoap-US.txt](LICENSES/LicenseRef-KDAB-KDSoap-US.txt).
+Note that this project requires the 3rd party 'libkode' submodule
+that is licensed separately with LGPL-2.0-or-later; however, libkode
+is used for code-generation only and the resulting code can be made
+available under any license.
 
-See [README-commercial.txt](README-commercial.txt) for more details.
+Various other freely distributable files are contained in the unittests
+and are not used in the library code itself.
 
 About KDAB
 ==========
