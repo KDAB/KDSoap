@@ -246,30 +246,32 @@ if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
     #Install the kdsoap features file for qmake users
     add_subdirectory(features)
 
-    # Generate .pri file for qmake users
-    #TODO: ECM does not support Qt6 yet
-    if(Qt_VERSION_MAJOR EQUAL 5
-       AND CMAKE_VERSION VERSION_GREATER "3.11.99"
-       AND NOT CMAKE_CONFIGURATION_TYPES
-    ) # Not working with VS generator or older cmake versions
-        include(ECMGeneratePriFile)
-        ecm_generate_pri_file(
-            BASE_NAME
-            KDSoapClient
-            LIB_NAME
-            kdsoap
-            FILENAME_VAR
-            pri_client_filename
-        )
-        ecm_generate_pri_file(
-            BASE_NAME
-            KDSoapServer
-            LIB_NAME
-            kdsoap-server
-            FILENAME_VAR
-            pri_server_filename
-        )
-        install(FILES ${pri_client_filename} ${pri_server_filename} DESTINATION ${ECM_MKSPECS_INSTALL_DIR})
+    # Generate .pri file for qmake users (except when using the VS generator)
+    if(NOT CMAKE_CONFIGURATION_TYPES)
+        if(Qt_VERSION_MAJOR EQUAL 5 OR (Qt_VERSION_MAJOR EQUAL 6 AND Qt6Core_VERSION VERSION_GREATER "6.2"))
+            include(ECMGeneratePriFile)
+            ecm_generate_pri_file(
+                BASE_NAME
+                KDSoapClient
+                LIB_NAME
+                kdsoap${${PROJECT_NAME}_LIBRARY_QTID}
+                FILENAME_VAR
+                pri_client_filename
+                INCLUDE_INSTALL_DIR
+                ${INSTALL_INCLUDE_DIR}
+            )
+            ecm_generate_pri_file(
+                BASE_NAME
+                KDSoapServer
+                LIB_NAME
+                kdsoap-server${${PROJECT_NAME}_LIBRARY_QTID}
+                FILENAME_VAR
+                pri_server_filename
+                INCLUDE_INSTALL_DIR
+                ${INSTALL_INCLUDE_DIR}
+            )
+            install(FILES ${pri_client_filename} ${pri_server_filename} DESTINATION ${ECM_MKSPECS_INSTALL_DIR})
+        endif()
     endif()
 else()
     #Always disable tests, examples, docs when used as a submodule
