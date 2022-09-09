@@ -1,6 +1,8 @@
 /*
  SPDX-FileCopyrightText: 2005 Tobias Koenig <tokoe@kde.org>
+
  SPDX-FileCopyrightText: 2010 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
+ Author: David Faure <david.faure@kdab.com>
 
  SPDX-License-Identifier: MIT
 */
