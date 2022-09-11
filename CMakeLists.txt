@@ -140,18 +140,12 @@ set(CMAKE_C_VISIBILITY_PRESET hidden)
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 
+include(KDCompilerFlags)
+
 add_definitions(-DQT_NO_CAST_TO_ASCII -DQT_NO_CAST_FROM_ASCII -DQT_NO_CAST_FROM_BYTEARRAY -DQURL_NO_CAST_FROM_STRING)
 add_definitions(-DUSE_EXCEPTIONS -DQT_FATAL_ASSERT -DQT_NO_FOREACH)
 if(MSVC)
     add_definitions(-D_SCL_SECURE_NO_WARNINGS)
-endif()
-
-if(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-    include(CheckCXXCompilerFlag)
-    check_cxx_compiler_flag(-Wsuggest-override HAVE_GXX_SUGGEST_OVERRIDE)
-    if(HAVE_GXX_SUGGEST_OVERRIDE)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wsuggest-override")
-    endif()
 endif()
 
 if(${PROJECT_NAME}_STATIC)
