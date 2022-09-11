@@ -1,5 +1,5 @@
 Name:           qt6-kdsoap
-Version:        2.0.0
+Version:        2.1.0
 Release:        1
 Summary:        A Qt6-based client-side and server-side SOAP component
 Source0:        %{name}-%{version}.tar.gz
@@ -79,6 +79,8 @@ cmake . -DCMAKE_INSTALL_PREFIX=/usr -DKDSoap_QT6=True -DCMAKE_SKIP_RPATH=True -D
 %{_libdir}/libkdsoap-server-qt6.so
 
 %changelog
+* Sun Sep 11 2022 Allen Winter <allen.winter@kdab.com> 2.1.0
+  2.1.0
 * Tue Jun 29 2021 Allen Winter <allen.winter@kdab.com> 2.0.0
   2.0.0
 * Tue Dec 22 2020 Allen Winter <allen.winter@kdab.com> 1.10.0
