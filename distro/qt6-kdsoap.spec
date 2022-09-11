@@ -70,6 +70,12 @@ cmake . -DCMAKE_INSTALL_PREFIX=/usr -DKDSoap_QT6=True -DCMAKE_SKIP_RPATH=True -D
 
 %files devel
 %defattr(-,root,root)
+%if 0%{?fedora} > 35
+%{_libdir}/qt6/mkspecs/modules/*
+%endif
+#%dir %{_prefix}/share/mkspecs
+#%dir %{_prefix}/share/mkspecs/features
+#%{_prefix}/share/mkspecs/features/kdsoap.prf
 %{_bindir}/kdwsdl2cpp-qt6
 %{_includedir}/KDSoapClient-qt6
 %{_includedir}/KDSoapServer-qt6
