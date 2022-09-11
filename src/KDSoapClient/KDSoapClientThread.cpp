@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** This file is part of the KD Soap project..
+** This file is part of the KD Soap project.
 **
 ** SPDX-FileCopyrightText: 2010-2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
 **
@@ -8,18 +8,18 @@
 **
 ****************************************************************************/
 
-#include "KDSoapClientThread_p.h"
-#include <QDebug>
-#include "KDSoapPendingCallWatcher.h"
 #include "KDSoapClientInterface.h"
 #include "KDSoapClientInterface_p.h"
+#include "KDSoapClientThread_p.h"
 #include "KDSoapPendingCall.h"
+#include "KDSoapPendingCallWatcher.h"
 #include "KDSoapPendingCall_p.h"
-#include <QNetworkRequest>
-#include <QNetworkProxy>
-#include <QBuffer>
-#include <QEventLoop>
 #include <QAuthenticator>
+#include <QBuffer>
+#include <QDebug>
+#include <QEventLoop>
+#include <QNetworkProxy>
+#include <QNetworkRequest>
 
 KDSoapClientThread::KDSoapClientThread(QObject *parent)
     : QThread(parent)

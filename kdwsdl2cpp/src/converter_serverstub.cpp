@@ -7,9 +7,9 @@
 #include "converter.h"
 #include "elementargumentserializer.h"
 #include "settings.h"
-#include <code_generation/style.h>
-#include <QSet>
 #include <QDebug>
+#include <QSet>
+#include <code_generation/style.h>
 
 using namespace KWSDL;
 

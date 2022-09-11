@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** This file is part of the KD Soap project..
+** This file is part of the KD Soap project.
 **
 ** SPDX-FileCopyrightText: 2010-2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
 **
@@ -10,9 +10,9 @@
 #ifndef KDSOAPTHREADPOOL_H
 #define KDSOAPTHREADPOOL_H
 
-#include <QtCore/QObject>
-#include <QtCore/QHash>
 #include "KDSoapServerGlobal.h"
+#include <QtCore/QHash>
+#include <QtCore/QObject>
 class KDSoapServer;
 
 /**

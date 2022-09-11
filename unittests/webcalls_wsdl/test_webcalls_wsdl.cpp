@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** This file is part of the KD Soap project..
+** This file is part of the KD Soap project.
 **
 ** SPDX-FileCopyrightText: 2010-2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
 **
@@ -9,13 +9,13 @@
 ****************************************************************************/
 
 #include "KDSoapClientInterface.h"
-#include "wsdl_BLZService.h"
 #include "wsdl_BFGlobalService.h"
+#include "wsdl_BLZService.h"
 #include "wsdl_OrteLookup.h"
-#include <QTest>
-#include <QSignalSpy>
-#include <QEventLoop>
 #include <QDebug>
+#include <QEventLoop>
+#include <QSignalSpy>
+#include <QTest>
 
 class WebCallsWSDL : public QObject
 {

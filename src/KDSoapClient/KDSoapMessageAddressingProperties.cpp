@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** This file is part of the KD Soap project..
+** This file is part of the KD Soap project.
 **
 ** SPDX-FileCopyrightText: 2010-2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
 **
@@ -9,8 +9,8 @@
 ****************************************************************************/
 #include "KDSoapMessageAddressingProperties.h"
 
-#include "KDSoapNamespacePrefixes_p.h"
 #include "KDSoapNamespaceManager.h"
+#include "KDSoapNamespacePrefixes_p.h"
 
 #include <QDebug>
 #include <QLatin1String>

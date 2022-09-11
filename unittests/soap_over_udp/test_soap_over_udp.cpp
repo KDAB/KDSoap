@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** This file is part of the KD Soap project..
+** This file is part of the KD Soap project.
 **
 ** SPDX-FileCopyrightText: 2019-2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
 **
@@ -8,15 +8,15 @@
 **
 ****************************************************************************/
 
-#include "httpserver_p.h"
+#include "KDSoapMessage.h"
 #include "KDSoapUdpClient.h"
 #include "KDSoapUdpClient_p.h"
-#include "KDSoapMessage.h"
-#include <QNetworkDatagram>
-#include <QTest>
-#include <QSignalSpy>
-#include <QUuid>
+#include "httpserver_p.h"
 #include "wsdl_wsdd-discovery-200901.h"
+#include <QNetworkDatagram>
+#include <QSignalSpy>
+#include <QTest>
+#include <QUuid>
 
 Q_DECLARE_METATYPE(QHostAddress)
 

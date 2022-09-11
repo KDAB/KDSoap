@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** This file is part of the KD Soap project..
+** This file is part of the KD Soap project.
 **
 ** SPDX-FileCopyrightText: 2010-2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
 **
@@ -8,13 +8,13 @@
 **
 ****************************************************************************/
 #include "KDSoapAuthentication.h"
+#include "KDSoapNamespaceManager.h"
+#include "KDSoapNamespacePrefixes_p.h"
 #include <QAuthenticator>
 #include <QCryptographicHash>
 #include <QDateTime>
 #include <QDebug>
 #include <QNetworkReply>
-#include "KDSoapNamespacePrefixes_p.h"
-#include "KDSoapNamespaceManager.h"
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
 #include <QRandomGenerator>
 #endif

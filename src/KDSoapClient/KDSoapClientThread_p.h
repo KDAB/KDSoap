@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** This file is part of the KD Soap project..
+** This file is part of the KD Soap project.
 **
 ** SPDX-FileCopyrightText: 2010-2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
 **
@@ -11,13 +11,13 @@
 #ifndef KDSOAPCLIENTTHREAD_P_H
 #define KDSOAPCLIENTTHREAD_P_H
 
-#include "KDSoapMessage.h"
 #include "KDSoapAuthentication.h"
-#include <QtCore/QWaitCondition>
-#include <QtCore/QQueue>
-#include <QtCore/QThread>
+#include "KDSoapMessage.h"
 #include <QtCore/QMutex>
+#include <QtCore/QQueue>
 #include <QtCore/QSemaphore>
+#include <QtCore/QThread>
+#include <QtCore/QWaitCondition>
 #include <QtNetwork/QNetworkAccessManager>
 
 class KDSoapPendingCallWatcher;

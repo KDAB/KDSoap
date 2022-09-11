@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** This file is part of the KD Soap project..
+** This file is part of the KD Soap project.
 **
 ** SPDX-FileCopyrightText: 2010-2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
 **
@@ -11,8 +11,8 @@
 #include "KDSoapClientInterface.h"
 #include "wsdl_keep_unused_types.h"
 
-#include <QTest>
 #include <QDebug>
+#include <QTest>
 
 class KeepUnusedTypesArgumentKDWSDL2CPP : public QObject
 {

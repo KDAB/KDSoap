@@ -1,5 +1,5 @@
 #
-# This file is part of the KD Soap project..
+# This file is part of the KD Soap project.
 #
 # SPDX-FileCopyrightText: 2012-2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
 #
@@ -29,6 +29,7 @@ include(${CMAKE_BINARY_DIR}/KDSoap/KDSoapMacros.cmake)
 
 remove_definitions(-DQT_NO_CAST_FROM_ASCII)
 
+# Add a unittest named "kdsoap-name" for the specified source file name.cpp
 macro(add_unittest _source)
     set(_test ${_source})
     get_filename_component(_name ${_source} NAME_WE)

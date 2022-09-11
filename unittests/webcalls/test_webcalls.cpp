@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** This file is part of the KD Soap project..
+** This file is part of the KD Soap project.
 **
 ** SPDX-FileCopyrightText: 2010-2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
 **
@@ -10,11 +10,11 @@
 
 #include "KDSoapClientInterface.h"
 #include "KDSoapMessage.h"
-#include "KDSoapValue.h"
 #include "KDSoapPendingCallWatcher.h"
-#include <QTest>
-#include <QEventLoop>
+#include "KDSoapValue.h"
 #include <QDebug>
+#include <QEventLoop>
+#include <QTest>
 #include <QThread>
 
 class WebCalls : public QObject

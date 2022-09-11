@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** This file is part of the KD Soap project..
+** This file is part of the KD Soap project.
 **
 ** SPDX-FileCopyrightText: 2010-2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
 **
@@ -11,8 +11,8 @@
 #ifndef KDSOAPMESSAGEREADER_P_H
 #define KDSOAPMESSAGEREADER_P_H
 
-#include "KDSoapMessage.h"
 #include "KDSoapClientInterface.h"
+#include "KDSoapMessage.h"
 
 class KDSOAP_EXPORT KDSoapMessageReader
 {

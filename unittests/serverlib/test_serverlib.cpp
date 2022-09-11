@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** This file is part of the KD Soap project..
+** This file is part of the KD Soap project.
 **
 ** SPDX-FileCopyrightText: 2010-2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
 **
@@ -8,25 +8,25 @@
 **
 ****************************************************************************/
 
+#include "KDSoapAuthentication.h"
 #include "KDSoapClientInterface.h"
 #include "KDSoapMessage.h"
-#include "KDSoapValue.h"
-#include "KDSoapPendingCallWatcher.h"
 #include "KDSoapNamespaceManager.h"
-#include "KDSoapAuthentication.h"
+#include "KDSoapPendingCallWatcher.h"
 #include "KDSoapServer.h"
-#include "KDSoapThreadPool.h"
 #include "KDSoapServerAuthInterface.h"
+#include "KDSoapServerCustomVerbRequestInterface.h"
 #include "KDSoapServerObjectInterface.h"
 #include "KDSoapServerRawXMLInterface.h"
-#include "KDSoapServerCustomVerbRequestInterface.h"
+#include "KDSoapThreadPool.h"
+#include "KDSoapValue.h"
 #include "httpserver_p.h" // KDSoapUnitTestHelpers
-#include <QTest>
+#include <QAuthenticator>
 #include <QDebug>
 #include <QFile>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
-#include <QAuthenticator>
+#include <QTest>
 #ifndef QT_NO_OPENSSL
 #include <QSslConfiguration>
 #endif
@@ -897,7 +897,7 @@ private Q_SLOTS:
         url.chop(1) /*trailing slash*/;
         url += pathInUrl;
         QNetworkAccessManager manager;
-        QNetworkRequest request(QUrl { url });
+        QNetworkRequest request(QUrl {url});
         QNetworkReply *reply = manager.get(request);
         QEventLoop loop;
         connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
@@ -959,10 +959,10 @@ private Q_SLOTS:
         ClientSocket socket(server);
         QVERIFY(socket.waitForConnected());
         const QByteArray request = "GET " + fileToDownload.toLatin1() + " HTTP/1.1\r\n"
-                                   "Content-Type: text/xml;charset=utf-8\r\n"
-                                   "Content-Length: 0\r\n"
-                                   "Host: 127.0.0.1:12345\r\n" // ignored
-                                   "\r\n";
+                                                                        "Content-Type: text/xml;charset=utf-8\r\n"
+                                                                        "Content-Length: 0\r\n"
+                                                                        "Host: 127.0.0.1:12345\r\n" // ignored
+                                                                        "\r\n";
         socket.write(request);
         QVERIFY(socket.waitForBytesWritten(3000));
         QVERIFY(socket.bytesAvailable() || socket.waitForReadyRead(3000));
@@ -1026,7 +1026,7 @@ private Q_SLOTS:
         m_auth.setPassword(QLatin1String(provideCorrectAuth ? "pass42" : "invalid"));
         QNetworkAccessManager manager;
         connect(&manager, &QNetworkAccessManager::authenticationRequired, this, &ServerTest::slotAuthRequired);
-        QNetworkRequest request(QUrl { url });
+        QNetworkRequest request(QUrl {url});
         QNetworkReply *reply = manager.get(request);
         QEventLoop loop;
         connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
@@ -1081,7 +1081,7 @@ private Q_SLOTS:
         m_auth.setPassword(QLatin1String(provideCorrectAuth ? "pass42" : "invalid"));
         QNetworkAccessManager manager;
         connect(&manager, &QNetworkAccessManager::authenticationRequired, this, &ServerTest::slotAuthRequired);
-        QNetworkRequest request(QUrl { url });
+        QNetworkRequest request(QUrl {url});
         QNetworkReply *reply;
         reply = manager.sendCustomRequest(request, customHttpVerb);
         QEventLoop loop;
@@ -1509,7 +1509,9 @@ private:
             QVERIFY(line.endsWith('\n'));
             line.chop(1);
             if (!line.endsWith(expectedLines[i])) {
-                qDebug() << "line" << i << ":\n" << line << "\nexpected\n" << expectedLines[i];
+                qDebug() << "line" << i << ":\n"
+                         << line << "\nexpected\n"
+                         << expectedLines[i];
                 QVERIFY(line.endsWith(expectedLines[i]));
             }
         }

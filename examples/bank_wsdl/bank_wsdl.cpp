@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** This file is part of the KD Soap project..
+** This file is part of the KD Soap project.
 **
 ** SPDX-FileCopyrightText: 2019-2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
 **
@@ -8,9 +8,9 @@
 **
 ****************************************************************************/
 
-#include <QCoreApplication>
 #include "KDSoapClientInterface.h"
 #include "KDSoapMessage.h"
+#include <QCoreApplication>
 
 #include <iostream>
 

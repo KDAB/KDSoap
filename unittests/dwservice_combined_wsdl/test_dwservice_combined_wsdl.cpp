@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** This file is part of the KD Soap project..
+** This file is part of the KD Soap project.
 **
 ** SPDX-FileCopyrightText: 2010-2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
 **
@@ -8,13 +8,13 @@
 **
 ****************************************************************************/
 
+#include "KDDateTime.h"
 #include "KDSoapClientInterface.h"
 #include "KDSoapMessage.h"
 #include "KDSoapValue.h"
-#include "KDDateTime.h"
 #include "httpserver_p.h"
-#include <QTest>
 #include <QDebug>
+#include <QTest>
 
 // Testcase for multiple services defined in one .wsdl file
 #include "wsdl_DWServiceCombined.h"

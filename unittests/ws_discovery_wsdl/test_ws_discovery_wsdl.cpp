@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** This file is part of the KD Soap project..
+** This file is part of the KD Soap project.
 **
 ** SPDX-FileCopyrightText: 2010-2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
 **
@@ -8,9 +8,9 @@
 **
 ****************************************************************************/
 
-#include "wsdl_ws_discovery200504.h"
-#include "httpserver_p.h"
 #include "KDSoapMessageReader_p.h"
+#include "httpserver_p.h"
+#include "wsdl_ws_discovery200504.h"
 #include <QTest>
 
 // Apparently the original file is not available anymore: http://schemas.xmlsoap.org/ws/2005/04/discovery/ws-discovery.wsdl

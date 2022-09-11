@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** This file is part of the KD Soap project..
+** This file is part of the KD Soap project.
 **
 ** SPDX-FileCopyrightText: 2010-2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
 **
@@ -9,20 +9,20 @@
 ****************************************************************************/
 #include "KDSoapClientInterface.h"
 #include "KDSoapClientInterface_p.h"
-#include "KDSoapNamespaceManager.h"
 #include "KDSoapMessageWriter_p.h"
+#include "KDSoapNamespaceManager.h"
 #ifndef QT_NO_SSL
-#include "KDSoapSslHandler.h"
 #include "KDSoapReplySslHandler_p.h"
+#include "KDSoapSslHandler.h"
 #endif
 #include "KDSoapPendingCall_p.h"
-#include <QSslConfiguration>
-#include <QNetworkRequest>
-#include <QNetworkReply>
 #include <QAuthenticator>
-#include <QDebug>
 #include <QBuffer>
+#include <QDebug>
 #include <QNetworkProxy>
+#include <QNetworkReply>
+#include <QNetworkRequest>
+#include <QSslConfiguration>
 #include <QTimer>
 
 KDSoapClientInterface::KDSoapClientInterface(const QString &endPoint, const QString &messageNamespace)
@@ -143,9 +143,9 @@ QBuffer *KDSoapClientInterfacePrivate::prepareRequestBuffer(const QString &metho
     QBuffer *buffer = new QBuffer;
     auto setBufferData = [=](const KDSoapMessage &msg) {
         buffer->setData(msgWriter.messageToXml(msg,
-                                                     (m_style == KDSoapClientInterface::RPCStyle) ? method : QString(),
-                                                     headers, m_persistentHeaders,
-                                                     m_authentication));
+                                               (m_style == KDSoapClientInterface::RPCStyle) ? method : QString(),
+                                               headers, m_persistentHeaders,
+                                               m_authentication));
     };
 
     if (m_sendSoapActionInWsAddressingHeader) {
@@ -389,5 +389,5 @@ KDSoapSslHandler *KDSoapClientInterface::sslHandler() const
 }
 #endif
 
-#include "moc_KDSoapClientInterface_p.cpp"
 #include "KDSoapClientInterface.moc"
+#include "moc_KDSoapClientInterface_p.cpp"

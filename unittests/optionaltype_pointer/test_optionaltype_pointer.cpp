@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** This file is part of the KD Soap project..
+** This file is part of the KD Soap project.
 **
 ** SPDX-FileCopyrightText: 2014-2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
 **
@@ -9,9 +9,9 @@
 ****************************************************************************/
 
 #include "test_optionaltype_pointer.h"
-#include <QTest>
 #include <QDebug>
 #include <QList>
+#include <QTest>
 
 TestPointerApi::TestPointerApi()
 {

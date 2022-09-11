@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** This file is part of the KD Soap project..
+** This file is part of the KD Soap project.
 **
 ** SPDX-FileCopyrightText: 2010-2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
 **
@@ -8,8 +8,8 @@
 **
 ****************************************************************************/
 
-#include "KDSoapValue.h"
 #include "KDDateTime.h"
+#include "KDSoapValue.h"
 #include <QTest>
 
 class Basic : public QObject

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** This file is part of the KD Soap project..
+** This file is part of the KD Soap project.
 **
 ** SPDX-FileCopyrightText: 2020-2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
 **
@@ -11,8 +11,8 @@
 #ifndef KDSOAPUDPCLIENT_H
 #define KDSOAPUDPCLIENT_H
 
-#include "KDSoapGlobal.h"
 #include "KDSoapClientInterface.h"
+#include "KDSoapGlobal.h"
 
 #include <QAbstractSocket>
 #include <QObject>

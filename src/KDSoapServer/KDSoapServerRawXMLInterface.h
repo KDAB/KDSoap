@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** This file is part of the KD Soap project..
+** This file is part of the KD Soap project.
 **
 ** SPDX-FileCopyrightText: 2010-2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
 **
@@ -11,8 +11,8 @@
 #define KDSOAPSERVERRAWXMLINTERFACE_H
 
 #include "KDSoapServerGlobal.h"
-#include <QtCore/QObject>
 #include <QtCore/QMap>
+#include <QtCore/QObject>
 class KDSoapRawXMLentication;
 class KDSoapServerSocket;
 class KDSoapServerRawXMLPrivate;

@@ -5,8 +5,8 @@
 */
 
 #include <QCoreApplication>
-#include <QFile>
 #include <QDebug>
+#include <QFile>
 
 #include <wsdl/wsdl.h>
 

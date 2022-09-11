@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** This file is part of the KD Soap project..
+** This file is part of the KD Soap project.
 **
 ** SPDX-FileCopyrightText: 2010-2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
 **
@@ -10,8 +10,8 @@
 #ifndef KDSOAPPENDINGCALLWATCHER_H
 #define KDSOAPPENDINGCALLWATCHER_H
 
-#include <QtCore/QObject>
 #include "KDSoapPendingCall.h"
+#include <QtCore/QObject>
 
 /**
  * The KDSoapPendingCallWatcher class provides a convenient way for waiting for

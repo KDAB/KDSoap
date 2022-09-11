@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** This file is part of the KD Soap project..
+** This file is part of the KD Soap project.
 **
 ** SPDX-FileCopyrightText: 2017-2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
 **
@@ -8,15 +8,15 @@
 **
 ****************************************************************************/
 
-#include "wsdl_calc.h"
 #include "httpserver_p.h"
-#include <QTest>
-#include <QEventLoop>
-#include <QDebug>
+#include "wsdl_calc.h"
 #include <KDSoapClientInterface.h>
 #include <KDSoapMessage.h>
-#include <KDSoapServer.h>
 #include <KDSoapNamespaceManager.h>
+#include <KDSoapServer.h>
+#include <QDebug>
+#include <QEventLoop>
+#include <QTest>
 
 using namespace KDSoapUnitTestHelpers;
 

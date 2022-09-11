@@ -4,10 +4,10 @@
  SPDX-License-Identifier: MIT
 */
 
+#include <QDebug>
 #include <common/messagehandler.h>
 #include <common/nsmanager.h>
 #include <common/parsercontext.h>
-#include <QDebug>
 
 #include "binding.h"
 

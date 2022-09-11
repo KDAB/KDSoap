@@ -1,16 +1,18 @@
 /*
  SPDX-FileCopyrightText: 2005 Tobias Koenig <tokoe@kde.org>
+
  SPDX-FileCopyrightText: 2010 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
+ Author: David Faure <david.faure@kdab.com>
 
  SPDX-License-Identifier: MIT
 */
 
-#include <common/nsmanager.h>
 #include "settings.h"
+#include <common/nsmanager.h>
 
-#include <QDebug>
-#include "typemap.h"
 #include "converter.h"
+#include "typemap.h"
+#include <QDebug>
 
 using namespace KWSDL;
 
@@ -395,7 +397,7 @@ void TypeMap::addSchemaTypes(const XSD::Types &types, const QString &ns)
     }
 
     const XSD::Attribute::List attributes = types.attributes();
-    for (const XSD::Attribute attr : attributes) {
+    for (const XSD::Attribute &attr : attributes) {
         if (attr.nameSpace() == "http://www.w3.org/2003/05/soap-encoding") { // e.g. soap-enc:arrayType
             continue;
         }

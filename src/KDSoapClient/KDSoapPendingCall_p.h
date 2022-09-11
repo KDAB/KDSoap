@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** This file is part of the KD Soap project..
+** This file is part of the KD Soap project.
 **
 ** SPDX-FileCopyrightText: 2010-2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
 **
@@ -10,13 +10,13 @@
 #ifndef KDSOAPPENDINGCALL_P_H
 #define KDSOAPPENDINGCALL_P_H
 
-#include <QSharedData>
-#include <QBuffer>
-#include <QXmlStreamReader>
-#include "KDSoapMessage.h"
-#include <QPointer>
 #include "KDSoapClientInterface.h"
+#include "KDSoapMessage.h"
+#include <QBuffer>
 #include <QNetworkReply>
+#include <QPointer>
+#include <QSharedData>
+#include <QXmlStreamReader>
 
 class KDSoapValue;
 

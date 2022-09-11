@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** This file is part of the KD Soap project..
+** This file is part of the KD Soap project.
 **
 ** SPDX-FileCopyrightText: 2010-2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
 **
@@ -10,8 +10,8 @@
 #ifndef KDSOAPSOCKETLIST_P_H
 #define KDSOAPSOCKETLIST_P_H
 
-#include <QSet>
 #include <QObject>
+#include <QSet>
 QT_BEGIN_NAMESPACE
 class QTcpSocket;
 class QObject;

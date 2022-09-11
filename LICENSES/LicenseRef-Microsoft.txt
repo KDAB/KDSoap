@@ -41,4 +41,3 @@ permission. Title to copyright in the Specification will at all
 times remain with Microsoft.
 
 No other rights are granted by implication, estoppel or otherwise.
-

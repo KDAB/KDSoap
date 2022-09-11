@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** This file is part of the KD Soap project..
+** This file is part of the KD Soap project.
 **
 ** SPDX-FileCopyrightText: 2011-2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
 **
@@ -11,8 +11,8 @@
 #ifndef HELLOWORLD_SERVER_H
 #define HELLOWORLD_SERVER_H
 
-#include "wsdl_helloworld.h"
 #include "KDSoapServerObjectInterface.h"
+#include "wsdl_helloworld.h"
 
 class HelloWorldServerObject : public Hello_ServiceServerBase
 {

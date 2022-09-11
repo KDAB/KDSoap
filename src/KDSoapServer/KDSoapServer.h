@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** This file is part of the KD Soap project..
+** This file is part of the KD Soap project.
 **
 ** SPDX-FileCopyrightText: 2010-2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
 **
@@ -12,8 +12,8 @@
 
 #include "KDSoapServerGlobal.h"
 #include <KDSoapClient/KDSoapMessage.h>
-#include <QtNetwork/QTcpServer>
 #include <QtNetwork/QSslConfiguration>
+#include <QtNetwork/QTcpServer>
 
 class KDSoapThreadPool;
 

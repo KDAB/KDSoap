@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** This file is part of the KD Soap project..
+** This file is part of the KD Soap project.
 **
 ** SPDX-FileCopyrightText: 2010-2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
 **
@@ -10,15 +10,15 @@
 #ifndef KDSOAPVALUE_H
 #define KDSOAPVALUE_H
 
-#include <QtCore/QString>
-#include <QtCore/QVariant>
+#include "KDSoapGlobal.h"
 #include <QtCore/QList>
 #include <QtCore/QPair>
 #include <QtCore/QSet>
-#include <QtCore/QVector>
 #include <QtCore/QSharedDataPointer>
+#include <QtCore/QString>
+#include <QtCore/QVariant>
+#include <QtCore/QVector>
 #include <QtCore/QXmlStreamNamespaceDeclarations>
-#include "KDSoapGlobal.h"
 
 #ifndef QT_NO_STL
 #include <algorithm>

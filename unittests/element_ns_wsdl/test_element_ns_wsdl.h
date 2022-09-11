@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** This file is part of the KD Soap project..
+** This file is part of the KD Soap project.
 **
 ** SPDX-FileCopyrightText: 2014-2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
 **
@@ -11,8 +11,8 @@
 #ifndef TEST_ELEMENT_NS_WSDL_H
 #define TEST_ELEMENT_NS_WSDL_H
 
-#include <QObject>
 #include "wsdl_test.h"
+#include <QObject>
 
 class TestCall : public QObject
 {

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** This file is part of the KD Soap project..
+** This file is part of the KD Soap project.
 **
 ** SPDX-FileCopyrightText: 2015-2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
 **
@@ -13,8 +13,8 @@
 
 #include "KDSoapGlobal.h"
 #include "KDSoapValue.h"
-#include <QString>
 #include <QSharedDataPointer>
+#include <QString>
 
 class KDSoapEndpointReferenceData;
 /**

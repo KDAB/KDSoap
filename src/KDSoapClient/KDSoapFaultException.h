@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** This file is part of the KD Soap project..
+** This file is part of the KD Soap project.
 **
 ** SPDX-FileCopyrightText: 2010-2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
 **
@@ -11,8 +11,8 @@
 #ifndef KDSOAPFAULTEXCEPTION_H
 #define KDSOAPFAULTEXCEPTION_H
 
-#include <QString>
 #include "KDSoapValue.h"
+#include <QString>
 
 /**
  * KDSoapFaultException is the base class for exceptions representing a fault element.

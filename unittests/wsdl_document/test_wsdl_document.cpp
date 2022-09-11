@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** This file is part of the KD Soap project..
+** This file is part of the KD Soap project.
 **
 ** SPDX-FileCopyrightText: 2010-2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
 **
@@ -8,19 +8,19 @@
 **
 ****************************************************************************/
 
+#include "httpserver_p.h"
 #include "wsdl_mywsdl_document.h"
 #include "wsdl_thomas-bayer.h"
-#include "httpserver_p.h"
-#include <QTest>
-#include <QEventLoop>
-#include <QDebug>
 #include <KDSoapClientInterface.h>
 #include <KDSoapMessage.h>
-#include <KDSoapPendingCallWatcher.h>
 #include <KDSoapNamespaceManager.h>
+#include <KDSoapPendingCallWatcher.h>
+#include <QDebug>
+#include <QEventLoop>
 #include <QNetworkAccessManager>
-#include <QNetworkRequest>
 #include <QNetworkReply>
+#include <QNetworkRequest>
+#include <QTest>
 
 #ifndef QT_NO_OPENSSL
 #include <KDSoapSslHandler.h>
@@ -762,8 +762,8 @@ private:
     }
 };
 
-#include "KDSoapServerObjectInterface.h"
 #include "KDSoapServer.h"
+#include "KDSoapServerObjectInterface.h"
 
 class MyJob : public QObject
 {

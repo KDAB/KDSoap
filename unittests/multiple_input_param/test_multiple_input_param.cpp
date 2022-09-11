@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** This file is part of the KD Soap project..
+** This file is part of the KD Soap project.
 **
 ** SPDX-FileCopyrightText: 2010-2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
 **
@@ -11,10 +11,10 @@
 #include "KDSoapClientInterface.h"
 #include "KDSoapMessage.h"
 #include "KDSoapValue.h"
-#include "wsdl_helloworldextended.h"
 #include "httpserver_p.h"
-#include <QTest>
+#include "wsdl_helloworldextended.h"
 #include <QDebug>
+#include <QTest>
 
 using namespace KDSoapUnitTestHelpers;
 

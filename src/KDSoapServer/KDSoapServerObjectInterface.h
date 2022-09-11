@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** This file is part of the KD Soap project..
+** This file is part of the KD Soap project.
 **
 ** SPDX-FileCopyrightText: 2010-2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
 **
@@ -10,14 +10,14 @@
 #ifndef KDSOAPSERVEROBJECTINTERFACE_H
 #define KDSOAPSERVEROBJECTINTERFACE_H
 
+#include "KDSoapDelayedResponseHandle.h"
 #include "KDSoapServerGlobal.h"
 #include <KDSoapClient/KDSoapMessage.h>
-#include "KDSoapDelayedResponseHandle.h"
 
-#include <QtCore/QObject>
-#include <QtCore/QByteArray>
-#include <QtCore/QVector>
 #include <QIODevice>
+#include <QtCore/QByteArray>
+#include <QtCore/QObject>
+#include <QtCore/QVector>
 
 class KDSoapServerSocket;
 

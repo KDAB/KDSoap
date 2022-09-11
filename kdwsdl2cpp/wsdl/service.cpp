@@ -7,8 +7,8 @@
 #include "service.h"
 
 #include <common/messagehandler.h>
-#include <common/parsercontext.h>
 #include <common/nsmanager.h>
+#include <common/parsercontext.h>
 
 #include <QDebug>
 

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** This file is part of the KD Soap project..
+** This file is part of the KD Soap project.
 **
 ** SPDX-FileCopyrightText: 2010-2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
 **
@@ -9,13 +9,13 @@
 ****************************************************************************/
 
 #include "httpserver_p.h"
-#include <QNetworkRequest>
-#include <QNetworkReply>
-#include <QNetworkAccessManager>
-#include <QDomDocument>
 #include <QDateTime>
+#include <QDomDocument>
 #include <QEventLoop>
 #include <QFile>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+#include <QNetworkRequest>
 #ifndef QT_NO_OPENSSL
 #include <QSslConfiguration>
 #endif
@@ -149,7 +149,7 @@ bool KDSoapUnitTestHelpers::setSslConfiguration()
         qDebug() << "It is valid from" << cert.effectiveDate() << "to" << cert.expiryDate();
         return false;
     }
-    defaultConfig.setCaCertificates({ cert });
+    defaultConfig.setCaCertificates({cert});
     QSslConfiguration::setDefaultConfiguration(defaultConfig);
 
     return true;
@@ -484,13 +484,13 @@ const char *KDSoapUnitTestHelpers::xmlEnvBegin11()
 
 const char *KDSoapUnitTestHelpers::xmlEnvBegin11WithWSAddressing()
 {
-    return  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-            "<soap:Envelope"
-            " xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\""
-            " xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\""
-            " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\""
-            " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
-            " xmlns:wsa=\"http://www.w3.org/2005/08/addressing\"";
+    return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+           "<soap:Envelope"
+           " xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\""
+           " xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\""
+           " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\""
+           " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+           " xmlns:wsa=\"http://www.w3.org/2005/08/addressing\"";
 }
 
 
@@ -521,5 +521,5 @@ const char *KDSoapUnitTestHelpers::xmlEnvEnd()
     return "</soap:Envelope>";
 }
 
-#include "moc_httpserver_p.cpp"
 #include "httpserver_p.moc"
+#include "moc_httpserver_p.cpp"

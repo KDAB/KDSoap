@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** This file is part of the KD Soap project..
+** This file is part of the KD Soap project.
 **
 ** SPDX-FileCopyrightText: 2010-2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
 **
@@ -10,8 +10,8 @@
 #ifndef KDSOAPMESSAGEADDRESSINGPROPERTIES_H
 #define KDSOAPMESSAGEADDRESSINGPROPERTIES_H
 
-#include <QtCore/QSharedDataPointer>
 #include "KDSoapGlobal.h"
+#include <QtCore/QSharedDataPointer>
 
 #include "KDSoapEndpointReference.h"
 #include "KDSoapValue.h"

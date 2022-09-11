@@ -1,19 +1,19 @@
 /****************************************************************************
 **
-** This file is part of the KD Soap project..
+** This file is part of the KD Soap project.
 **
 ** SPDX-FileCopyrightText: 2010-2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
 **
 ** SPDX-License-Identifier: MIT
 **
 ****************************************************************************/
-#include "KDSoapMessageWriter_p.h"
-#include "KDSoapNamespacePrefixes_p.h"
 #include "KDSoapClientInterface_p.h"
+#include "KDSoapMessageWriter_p.h"
 #include "KDSoapNamespaceManager.h"
+#include "KDSoapNamespacePrefixes_p.h"
 #include "KDSoapValue.h"
-#include <QVariant>
 #include <QDebug>
+#include <QVariant>
 
 KDSoapMessageWriter::KDSoapMessageWriter()
     : m_version(KDSoap::SOAP1_1)

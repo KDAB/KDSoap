@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** This file is part of the KD Soap project..
+** This file is part of the KD Soap project.
 **
 ** SPDX-FileCopyrightText: 2010-2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
 **
@@ -11,9 +11,9 @@
 #ifndef KDSOAPSSLHANDLER_H
 #define KDSOAPSSLHANDLER_H
 
+#include "KDSoapGlobal.h"
 #include <QObject>
 #include <QSslError>
-#include "KDSoapGlobal.h"
 
 QT_BEGIN_NAMESPACE
 class QNetworkReply;

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** This file is part of the KD Soap project..
+** This file is part of the KD Soap project.
 **
 ** SPDX-FileCopyrightText: 2010-2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
 **
@@ -8,12 +8,12 @@
 **
 ****************************************************************************/
 #include "KDSoapMessage.h"
+#include "KDDateTime.h"
 #include "KDSoapNamespaceManager.h"
 #include "KDSoapNamespacePrefixes_p.h"
-#include "KDDateTime.h"
 #include <QDebug>
-#include <QXmlStreamReader>
 #include <QVariant>
+#include <QXmlStreamReader>
 
 class KDSoapMessageData : public QSharedData
 {

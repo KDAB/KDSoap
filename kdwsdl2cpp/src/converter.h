@@ -7,11 +7,11 @@
 #ifndef KWSDL_CONVERTER_H
 #define KWSDL_CONVERTER_H
 
-#include <common/nsmanager.h>
+#include <QSet>
 #include <code_generation/class.h>
+#include <common/nsmanager.h>
 #include <schema/parser.h>
 #include <wsdl/wsdl.h>
-#include <QSet>
 
 #include "namemapper.h"
 #include "typemap.h"

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** This file is part of the KD Soap project..
+** This file is part of the KD Soap project.
 **
 ** SPDX-FileCopyrightText: 2010-2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
 **
@@ -10,12 +10,12 @@
 
 #include "httpserver_p.h"
 
-#include <QTest>
 #include <QDebug>
 #include <QObject>
+#include <QTest>
 
-#include "KDSoapClient/KDSoapMessageWriter_p.h"
 #include "KDSoapClient/KDSoapMessageAddressingProperties.h"
+#include "KDSoapClient/KDSoapMessageWriter_p.h"
 #include "KDSoapNamespaceManager.h"
 #include "wsdl_wsaddressing.h"
 
