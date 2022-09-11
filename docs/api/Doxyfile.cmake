@@ -2223,7 +2223,7 @@ SKIP_FUNCTION_MACROS   = YES
 TAGFILES               = "@QDOC_TAG_DIR@/qtcore/qtcore.tags=https://doc.qt.io/qt-5/" \
                          "@QDOC_TAG_DIR@/qtgui/qtgui.tags=https://doc.qt.io/qt-5/" \
                          "@QDOC_TAG_DIR@/qtwidgets/qtwidgets.tags=https://doc.qt.io/qt-5/" \
-                         "@QDOC_TAG_DIR@/qtprintsupport/qtprintsupport.tags=https://doc.qt.io/qt-5/" \
+                         "@QDOC_TAG_DIR@/qtnetwork/qtnetwork.tags=https://doc.qt.io/qt-5/" \
                          "@QDOC_TAG_DIR@/qtxml/qtxml.tags=https://doc.qt.io/qt-5/"
 
 # When a file name is specified after GENERATE_TAGFILE, doxygen will create a
