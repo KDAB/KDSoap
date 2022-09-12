@@ -39,7 +39,7 @@ target_link_libraries(
 )
 target_include_directories(
     kdsoap-server
-    INTERFACE "$<INSTALL_INTERFACE:${INSTALL_INCLUDE_DIR}/KDSoapServer${${PROJECT_NAME}_LIBRARY_QTID}>"
+    INTERFACE "$<INSTALL_INTERFACE:${INSTALL_INCLUDE_DIR}>"
 )
 set_target_properties(
     kdsoap-server PROPERTIES SOVERSION ${${PROJECT_NAME}_SOVERSION} VERSION ${${PROJECT_NAME}_VERSION}
