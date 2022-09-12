@@ -39,7 +39,7 @@ target_link_libraries(
 )
 target_include_directories(
     kdsoap-server
-    INTERFACE "$<INSTALL_INTERFACE:${INSTALL_INCLUDE_DIR}>"
+    INTERFACE "$<INSTALL_INTERFACE:${INSTALL_INCLUDE_DIR}/KDSoapServer${${PROJECT_NAME}_LIBRARY_QTID}>"
 )
 set_target_properties(
     kdsoap-server PROPERTIES SOVERSION ${${PROJECT_NAME}_SOVERSION} VERSION ${${PROJECT_NAME}_VERSION}
@@ -88,7 +88,7 @@ if(KDSoap_IS_ROOT_PROJECT)
               KDSoapServerObjectInterface.h
               KDSoapServerGlobal.h
               KDSoapThreadPool.h
-        DESTINATION ${INSTALL_INCLUDE_DIR}/KDSoapServer
+        DESTINATION ${INSTALL_INCLUDE_DIR}/KDSoapServer${${PROJECT_NAME}_LIBRARY_QTID}
     )
 
     install(

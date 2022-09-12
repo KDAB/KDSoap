@@ -1,0 +1,15 @@
+Source: kdsoap
+Section: Miscellaneous
+Priority: optional
+Maintainer: Allen Winter <allen.winter@kdab.com>
+Build-Depends: debhelper (>=9), cdbs, cmake
+Standards-Version: 3.9.6
+Homepage: https://github.com/KDAB/KDSoap
+
+Package: qt6-kdsoap
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: A Qt6-based client-side and server-side SOAP component
+ KDSoap can be used to create client applications for web services
+ and also provides the means to create web services without the need
+ for any further component such as a dedicated web server.
