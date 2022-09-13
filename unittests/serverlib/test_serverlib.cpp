@@ -1450,7 +1450,7 @@ private:
         return QString::fromUtf8("David Ä Faure France");
     }
 
-    void verifySocketResponse(ClientSocket &socket, const QByteArray employeeName)
+    void verifySocketResponse(ClientSocket &socket, const QByteArray &employeeName)
     {
         QVERIFY(socket.waitForReadyRead());
         const QByteArray response = socket.readAll();
