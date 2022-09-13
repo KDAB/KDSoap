@@ -107,7 +107,7 @@ if(KDSoap_IS_ROOT_PROJECT)
               KDSoapEndpointReference.h
               KDQName.h
               KDSoapUdpClient.h
-        DESTINATION ${INSTALL_INCLUDE_DIR}/KDSoapClient${${PROJECT_NAME}_LIBRARY_QTID}
+        DESTINATION ${INSTALL_INCLUDE_DIR}/KDSoapClient
     )
 
     install(
