@@ -430,13 +430,13 @@ bool KDSoapServerSocket::handleFileDownload(KDSoapServerObjectInterface *serverO
     Q_UNUSED(written);
 
     char block[4096] = {0};
-    qint64 totalRead = 0;
+    //qint64 totalRead = 0;
     while (!device->atEnd()) {
         const qint64 in = device->read(block, sizeof(block));
         if (in <= 0) {
             break;
         }
-        totalRead += in;
+        //totalRead += in;
         if (in != write(block, in)) {
             // error = true;
             break;
