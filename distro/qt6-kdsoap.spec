@@ -77,8 +77,8 @@ cmake . -DCMAKE_INSTALL_PREFIX=/usr -DKDSoap_QT6=True -DCMAKE_SKIP_RPATH=True -D
 #%dir %{_prefix}/share/mkspecs/features
 #%{_prefix}/share/mkspecs/features/kdsoap.prf
 %{_bindir}/kdwsdl2cpp-qt6
-%{_includedir}/KDSoapClient-qt6
-%{_includedir}/KDSoapServer-qt6
+%{_includedir}/KDSoapClient
+%{_includedir}/KDSoapServer
 %dir %{_libdir}/cmake/KDSoap-qt6
 %{_libdir}/cmake/KDSoap-qt6/*
 %{_libdir}/libkdsoap-qt6.so
