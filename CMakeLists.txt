@@ -122,7 +122,7 @@ find_path(BOOST_OPTIONAL_DIR NAMES boost/optional.hpp)
 if(BOOST_OPTIONAL_DIR)
     message(STATUS "Found boost/optional.hpp in ${BOOST_OPTIONAL_DIR}")
     include_directories(${BOOST_OPTIONAL_DIR})
-    add_definitions(-DBOOST_OPTIONAL_FOUND)
+    add_definitions(-DBOOST_OPTIONAL_FOUND)# I'd really prefer using configure_file but this is more compatible with qmake
 endif()
 
 set(CMAKE_INCLUDE_CURRENT_DIR TRUE)
@@ -207,9 +207,7 @@ if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
         COMPATIBILITY
         AnyNewerVersion
     )
-    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/kdsoap_version.h"
-            DESTINATION ${INSTALL_INCLUDE_DIR}/KDSoapClient${${PROJECT_NAME}_LIBRARY_QTID}
-    )
+    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/kdsoap_version.h" DESTINATION ${INSTALL_INCLUDE_DIR}/KDSoapClient)
 
     configure_file(
         "${CMAKE_CURRENT_SOURCE_DIR}/KDSoapConfig-buildtree.cmake.in"
