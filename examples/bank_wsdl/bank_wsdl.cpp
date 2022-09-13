@@ -20,12 +20,12 @@ int main(int argc, char **argv)
 {
     QCoreApplication app(argc, argv);
 
-    const QString blz = QString::fromLatin1("20130600");
-    std::cout << "Looking up the bank with BLZ code " << qPrintable(blz) << "..." << std::endl;
+    const QString bankCode = QString::fromLatin1("20130600");
+    std::cout << "Looking up the bank with code " << qPrintable(bankCode) << "..." << std::endl;
 
     BLZService::BLZServiceSOAP11Binding service;
     TNS__GetBankType getBankType;
-    getBankType.setBlz(blz);
+    getBankType.setBlz(bankCode);
     TNS__GetBankResponseType response = service.getBank(getBankType);
 
     std::cout << "\"" << qPrintable(response.details().bezeichnung()) << "\" in " << qPrintable(response.details().ort()) << std::endl;
