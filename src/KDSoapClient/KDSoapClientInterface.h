@@ -79,6 +79,9 @@ public:
      */
     ~KDSoapClientInterface();
 
+    KDSoapClientInterface(const KDSoapClientInterface &) = delete;
+    KDSoapClientInterface &operator=(const KDSoapClientInterface &) = delete;
+
     /**
      * Calls the method \p method on this interface and passes the arguments specified in \p message
      * to the method.
