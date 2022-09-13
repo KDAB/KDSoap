@@ -1,0 +1,18 @@
+
+General:
+========
+* buildsystem - undo co-installability of Qt5 and Qt6 headers.
+  It would require that kdwsdl2cpp generates #include <KDSoapClient-qt6/KDSoapJob.h>
+  which in turn would break the build of KDSoap itself, so this gets tricky.
+
+Client-side:
+============
+*
+
+Server-side:
+============
+*
+
+WSDL parser / code generator changes, applying to both client and server side:
+================================================================
+*
