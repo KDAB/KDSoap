@@ -69,7 +69,7 @@ public:
     virtual ~KDSoapServerObjectInterface();
 
     KDSoapServerObjectInterface(const KDSoapServerObjectInterface &) = delete;
-    KDSoapServerObjectInterface &operator =(const KDSoapServerObjectInterface &) = delete;
+    KDSoapServerObjectInterface &operator=(const KDSoapServerObjectInterface &) = delete;
 
     /**
      * Handle \p request and return \p response.
