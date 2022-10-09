@@ -71,6 +71,6 @@ inline uint qHash(const KDQName &qn)
     return qHash(qn.nameSpace()) ^ qHash(qn.localName());
 }
 
-QDebug operator<<(QDebug dbg, const KDQName &qn);
+KDSOAP_EXPORT QDebug operator<<(QDebug dbg, const KDQName &qn);
 
 #endif
