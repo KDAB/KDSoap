@@ -55,7 +55,7 @@ public:
 
     /**
      * Sets the address of the endpoint reference
-     * @param address
+     * @param address address of the end point reference
      */
     void setAddress(const QString &address);
 
