@@ -23,15 +23,15 @@
 
    <binding name="Hello_Binding" type="tns:Hello_PortType">
       <wsaw:UsingAddressing wsdl:required="true" /> <!--NEED TO BE TAKEN INTO ACCOUNT -->
-      <soap:binding style="document"
+      <soap:binding style="rpc"
          transport="http://schemas.xmlsoap.org/soap/http"/>
-      <operation name="sayHello" style="document">
+      <operation name="sayHello" style="rpc">
          <soap:operation soapAction="sayHello"/>
          <input wsaw:Action="http://localhost:8081/hello">
-            <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:examples:helloservice" use="encoded"/>
+            <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://www.ecerami.com/wsdl/HelloService.wsdl" use="encoded"/>
          </input>
          <output>
-            <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:examples:helloservice" use="encoded"/>
+            <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://www.ecerami.com/wsdl/HelloService.wsdl" use="encoded"/>
          </output>
       </operation>
 </binding>

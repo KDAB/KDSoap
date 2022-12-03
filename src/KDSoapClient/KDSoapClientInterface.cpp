@@ -55,8 +55,6 @@ KDSoapClientInterfacePrivate::KDSoapClientInterfacePrivate()
     , m_authentication()
     , m_version(KDSoap::SOAP1_1)
     , m_style(KDSoapClientInterface::RPCStyle)
-    , m_ignoreSslErrors(false)
-    , m_timeout(30 * 60 * 1000) // 30 minutes, as documented
 {
 #ifndef QT_NO_SSL
     m_sslHandler = nullptr;
@@ -148,14 +146,19 @@ QBuffer *KDSoapClientInterfacePrivate::prepareRequestBuffer(const QString &metho
                                                m_authentication));
     };
 
-    if (m_sendSoapActionInWsAddressingHeader) {
+    if (m_sendSoapActionInWsAddressingHeader || m_hasMessageAddressingProperties) {
         KDSoapMessage messageCopy = message;
-        KDSoapMessageAddressingProperties prop = message.messageAddressingProperties();
-        if (!prop.action().isEmpty())
-            qWarning("Overwriting the action addressing parameter (%s) with the SOAP action (%s)",
-                     prop.action().toLocal8Bit().constData(), soapAction.toLocal8Bit().constData());
-        prop.setAction(soapAction);
-        messageCopy.setMessageAddressingProperties(prop);
+        if (m_hasMessageAddressingProperties) {
+            messageCopy.setMessageAddressingProperties(m_messageAddressingProperties);
+        }
+        if (m_sendSoapActionInWsAddressingHeader) {
+            KDSoapMessageAddressingProperties prop = message.messageAddressingProperties();
+            if (!prop.action().isEmpty())
+                qWarning("Overwriting the action addressing parameter (%s) with the SOAP action (%s)",
+                         prop.action().toLocal8Bit().constData(), soapAction.toLocal8Bit().constData());
+            prop.setAction(soapAction);
+            messageCopy.setMessageAddressingProperties(prop);
+        }
         setBufferData(messageCopy);
     } else {
         setBufferData(message);
@@ -347,6 +350,12 @@ int KDSoapClientInterface::timeout() const
 void KDSoapClientInterface::setTimeout(int msecs)
 {
     d->m_timeout = msecs;
+}
+
+void KDSoapClientInterface::setMessageAddressingProperties(const KDSoapMessageAddressingProperties &map)
+{
+    d->m_messageAddressingProperties = map;
+    d->m_hasMessageAddressingProperties = true;
 }
 
 bool KDSoapClientInterface::sendSoapActionInHttpHeader() const

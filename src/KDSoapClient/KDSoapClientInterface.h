@@ -336,6 +336,15 @@ public:
     void setTimeout(int msecs);
 
     /**
+     * Sets the message addressing properties that will be written
+     * in the header for all future messages.
+     * This method is useful for client code generated from WSDL.
+     * Note that this takes precedence over KDSoapMessage::setMessageAddressingProperties.
+     * \since 2.2
+     */
+    void setMessageAddressingProperties(const KDSoapMessageAddressingProperties &map);
+
+    /**
      * \brief setSendSoapActionInHttpHeader
      * \param sendInHttpHeader
      * This option can be used to enable/disable the sending of the SOAP action parameter

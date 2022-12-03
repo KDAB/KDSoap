@@ -42,16 +42,18 @@ public:
     QMap<QByteArray, QByteArray> m_httpHeaders;
     KDSoap::SoapVersion m_version;
     KDSoapClientInterface::Style m_style;
-    bool m_ignoreSslErrors;
+    KDSoapMessageAddressingProperties m_messageAddressingProperties;
     KDSoapHeaders m_lastResponseHeaders;
 #ifndef QT_NO_SSL
     QList<QSslError> m_ignoreErrorsList;
     QSslConfiguration m_sslConfiguration;
     KDSoapSslHandler *m_sslHandler;
 #endif
-    int m_timeout;
+    int m_timeout = 30 * 60 * 1000; // 30 minutes, as documented
+    bool m_ignoreSslErrors = false;
     bool m_sendSoapActionInHttpHeader = true;
     bool m_sendSoapActionInWsAddressingHeader = false;
+    bool m_hasMessageAddressingProperties = false;
 
     QNetworkAccessManager *accessManager();
     QNetworkRequest prepareRequest(const QString &method, const QString &action);
