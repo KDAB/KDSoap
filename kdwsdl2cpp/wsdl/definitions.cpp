@@ -15,6 +15,7 @@
 #include <common/nsmanager.h>
 #include <common/parsercontext.h>
 
+#include "../src/settings.h"
 #include <wsdl/port.h>
 
 #include <QDebug>
@@ -232,7 +233,7 @@ void Definitions::importDefinition(ParserContext *context, const QString &locati
         context->messageHandler()->warning(QString::fromLatin1("Definitions import: location tag required: %1").arg(location));
         return;
     }
-    FileProvider provider(mUseLocalFilesOnly);
+    FileProvider provider(Settings::self()->useLocalFilesOnly(), Settings::self()->importPathList());
     QString fileName;
     const QUrl locationUrl = urlForLocation(context, location);
     qDebug("Importing wsdl definition at %s", locationUrl.toEncoded().constData());
@@ -333,9 +334,4 @@ void Definitions::saveXML(ParserContext *context, QDomDocument &document) const
 void Definitions::setWantedService(const QString &name)
 {
     mWantedService = name;
-}
-
-void Definitions::setUseLocalFilesOnly(bool localFilesOnly)
-{
-    mUseLocalFilesOnly = localFilesOnly;
 }

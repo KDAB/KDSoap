@@ -31,8 +31,6 @@ public:
 
     void setWantedService(const QString &name);
 
-    void setUseLocalFilesOnly(bool localFilesOnly);
-
     void setName(const QString &name);
     QString name() const;
 

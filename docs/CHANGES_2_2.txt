@@ -13,4 +13,4 @@ Server-side:
 
 WSDL parser / code generator changes, applying to both client and server side:
 ================================================================
-*
+* Improve -import-path support by using the import path in more places in the code

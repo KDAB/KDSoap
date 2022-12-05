@@ -34,7 +34,7 @@ void Compiler::run()
 
 void Compiler::download()
 {
-    FileProvider provider(Settings::self()->useLocalFilesOnly());
+    FileProvider provider(Settings::self()->useLocalFilesOnly(), Settings::self()->importPathList());
 
     QString fileName;
     if (provider.get(Settings::self()->wsdlUrl(), fileName)) {
@@ -81,7 +81,6 @@ void Compiler::parse(const QDomElement &element)
     context.setDocumentBaseUrl(QUrl(Settings::self()->wsdlBaseUrl()));
 
     Definitions definitions;
-    definitions.setUseLocalFilesOnly(Settings::self()->useLocalFilesOnly());
     definitions.setWantedService(Settings::self()->wantedService());
     if (definitions.loadXML(&context, element)) {
 
