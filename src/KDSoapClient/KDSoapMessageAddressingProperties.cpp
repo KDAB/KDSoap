@@ -325,10 +325,6 @@ void KDSoapMessageAddressingProperties::writeMessageAddressingProperties(KDSoapN
         return;
     }
 
-    if (d->action.isEmpty()) {
-        return;
-    }
-
     const QString addressingNS = addressingNamespaceToString(d->addressingNamespace);
 
     if (!d->destination.isEmpty()) {

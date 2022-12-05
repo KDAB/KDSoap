@@ -6,6 +6,7 @@ General:
 Client-side:
 ============
 * Add KDSoapClientInterface::setMessageAddressingProperties() so that WS-Addressing support can be used with WSDL-generated services (issue #254)
+* Don't require a SOAP action in order to write addressing properties (also issue #254)
 
 Server-side:
 ============
