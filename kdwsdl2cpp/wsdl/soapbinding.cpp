@@ -15,8 +15,8 @@ using namespace KWSDL;
 
 // TODO: set namespace correctly
 
-static QString soapBindingTransportHTTP = QLatin1String("http://schemas.xmlsoap.org/soap/http");
-static QString soapStandardNamespace = QLatin1String("http://schemas.xmlsoap.org/wsdl/soap/");
+static const char soapBindingTransportHTTP[] = "http://schemas.xmlsoap.org/soap/http";
+static const char soapStandardNamespace[] = "http://schemas.xmlsoap.org/wsdl/soap/";
 
 static QString soapPrefix(ParserContext *context)
 {

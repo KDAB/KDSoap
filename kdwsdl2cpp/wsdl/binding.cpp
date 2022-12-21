@@ -13,9 +13,9 @@
 
 using namespace KWSDL;
 
-static QString soapStandardNamespace = QLatin1String("http://schemas.xmlsoap.org/wsdl/soap/");
-static QString soap12StandardNamespace = QLatin1String("http://schemas.xmlsoap.org/wsdl/soap12/");
-static QString httpStandardNamespace = QLatin1String("http://schemas.xmlsoap.org/wsdl/http/");
+static const char soapStandardNamespace[] = "http://schemas.xmlsoap.org/wsdl/soap/";
+static const char soap12StandardNamespace[] = "http://schemas.xmlsoap.org/wsdl/soap12/";
+static const char httpStandardNamespace[] = "http://schemas.xmlsoap.org/wsdl/http/";
 
 Binding::Binding()
     : mType(UnknownBinding)

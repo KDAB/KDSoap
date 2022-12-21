@@ -191,7 +191,7 @@ void Converter::generateServerMethod(KODE::Code &code, const Binding &binding, c
         if (soapStyle(binding) == SoapBinding::DocumentStyle) {
             code.addBlock(serializePart(retPart, "ret", "ret_nil", responseVarName, false));
         } else {
-            code += QString("KDSoapValue wrapper(\"%1\", QVariant(), \"%2\");").arg(outputMessage.name()).arg(outputMessage.nameSpace());
+            code += QString("KDSoapValue wrapper(\"%1\", QVariant(), \"%2\");").arg(outputMessage.name(), outputMessage.nameSpace());
             code.addBlock(serializePart(retPart, "ret", "ret_nil", "wrapper.childValues()", true));
             code += responseVarName + " = wrapper;";
         }
@@ -226,7 +226,7 @@ void Converter::generateDelayedReponseMethod(const QString &methodName, const QS
     if (soapStyle(binding) == SoapBinding::DocumentStyle) {
         code.addBlock(serializePart(retPart, "ret", "ret_nil", "_response", false));
     } else {
-        code += QString("KDSoapValue wrapper(\"%1\", QVariant(), \"%2\");").arg(outputMessage.name()).arg(outputMessage.nameSpace());
+        code += QString("KDSoapValue wrapper(\"%1\", QVariant(), \"%2\");").arg(outputMessage.name(), outputMessage.nameSpace());
         code.addBlock(serializePart(retPart, "ret", "ret_nil", "wrapper.childValues()", true));
         code += "_response = wrapper;";
     }

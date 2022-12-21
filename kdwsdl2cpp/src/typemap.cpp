@@ -100,7 +100,7 @@ void TypeMap::addBuiltinType(const char *typeName, const char *localType)
 {
     Entry entry;
     entry.builtinType = true;
-    entry.nameSpace = XMLSchemaURI;
+    entry.nameSpace = XMLSchemaURI();
     entry.typeName = typeName;
     entry.localType = localType;
     entry.basicType = !entry.localType.startsWith('Q') && !entry.localType.startsWith('K');
@@ -526,7 +526,7 @@ QString TypeMap::localInputType(const QName &typeName, const QName &elementName)
 // If the type is represented as a KDSoapValue already, no need to serialize/deserialize it
 bool KWSDL::TypeMap::isTypeAny(const QName &typeName) const
 {
-    return (typeName.nameSpace() == XMLSchemaURI && (typeName.localName() == "any" || typeName.localName() == "anyType"));
+    return (typeName.nameSpace() == XMLSchemaURI() && (typeName.localName() == "any" || typeName.localName() == "anyType"));
 }
 
 QString KWSDL::TypeMap::Entry::dumpBools() const
@@ -547,17 +547,17 @@ QString KWSDL::TypeMap::Entry::dumpBools() const
 QString KWSDL::TypeMap::deserializeBuiltin(const QName &typeName, const QName &elementName, const QString &var, const QString &qtTypeName) const
 {
     const QName type = typeName.isEmpty() ? baseTypeForElement(elementName) : typeName;
-    if (type.nameSpace() == XMLSchemaURI && type.localName() == "hexBinary") {
+    if (type.nameSpace() == XMLSchemaURI() && type.localName() == "hexBinary") {
         return "QByteArray::fromHex(" + var + ".value().toString().toLatin1())";
-    } else if (type.nameSpace() == XMLSchemaURI && type.localName() == "base64Binary") {
+    } else if (type.nameSpace() == XMLSchemaURI() && type.localName() == "base64Binary") {
         return "QByteArray::fromBase64(" + var + ".value().toString().toLatin1())";
-    } else if (type.nameSpace() == XMLSchemaURI && type.localName() == "dateTime") {
+    } else if (type.nameSpace() == XMLSchemaURI() && type.localName() == "dateTime") {
         Q_ASSERT(qtTypeName == QLatin1String("KDDateTime"));
         return "KDDateTime::fromDateString(" + var + ".value().toString())";
-    } else if (type.nameSpace() == XMLSchemaURI && type.localName() == "QName") {
+    } else if (type.nameSpace() == XMLSchemaURI() && type.localName() == "QName") {
         Q_ASSERT(qtTypeName == QLatin1String("KDQName"));
         return "KDQName::fromSoapValue(" + var + ")";
-    } else if (type.nameSpace() == XMLSchemaURI && type.localName() == "anySimpleType") {
+    } else if (type.nameSpace() == XMLSchemaURI() && type.localName() == "anySimpleType") {
         return var + ".value()";
     } else {
         return var + ".value().value<" + qtTypeName + ">()";
@@ -571,15 +571,15 @@ QString KWSDL::TypeMap::serializeBuiltin(const QName &baseTypeName, const QName 
     const QName baseType = baseTypeName.isEmpty() ? baseTypeForElement(elementName) : baseTypeName;
     // variantToTextValue also has support for calling toHex/toBase64 at runtime, but this fails
     // when the type derives from hexBinary and is named differently, see Telegram testcase.
-    if (baseType.nameSpace() == XMLSchemaURI && baseType.localName() == "hexBinary") {
+    if (baseType.nameSpace() == XMLSchemaURI() && baseType.localName() == "hexBinary") {
         value = "QString::fromLatin1(" + var + ".toHex().constData())";
-    } else if (baseType.nameSpace() == XMLSchemaURI && baseType.localName() == "base64Binary") {
+    } else if (baseType.nameSpace() == XMLSchemaURI() && baseType.localName() == "base64Binary") {
         value = "QString::fromLatin1(" + var + ".toBase64().constData())";
-    } else if (baseType.nameSpace() == XMLSchemaURI && baseType.localName() == "dateTime") {
+    } else if (baseType.nameSpace() == XMLSchemaURI() && baseType.localName() == "dateTime") {
         value = var + ".toDateString()";
-    } else if (baseType.nameSpace() == XMLSchemaURI && baseType.localName() == "QName") {
+    } else if (baseType.nameSpace() == XMLSchemaURI() && baseType.localName() == "QName") {
         return var + ".toSoapValue(" + name + ", " + namespaceString(typeNameSpace) + ", QString::fromLatin1(\"" + typeName + "\"))";
-    } else if (baseType.nameSpace() == XMLSchemaURI && baseType.localName() == "anySimpleType") {
+    } else if (baseType.nameSpace() == XMLSchemaURI() && baseType.localName() == "anySimpleType") {
         value = var;
     } else {
         value = "QVariant::fromValue(" + var + ")";

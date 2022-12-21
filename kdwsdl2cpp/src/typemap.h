@@ -15,9 +15,6 @@
 #include <common/qname.h>
 #include <schema/types.h>
 
-static const QString XMLSchemaURI(QLatin1String("http://www.w3.org/2001/XMLSchema"));
-static const QString XMLSchemaInstanceURI(QLatin1String("http://www.w3.org/2001/XMLSchema-instance"));
-
 class NSManager;
 
 namespace KWSDL {
@@ -106,6 +103,10 @@ public:
     void addSchemaTypes(const XSD::Types &types, const QString &ns);
 
     void dump() const;
+
+    static const QString XMLSchemaURI() {
+        return QStringLiteral("http://www.w3.org/2001/XMLSchema");
+    }
 
 private:
     void addBuiltinType(const char *typeName, const char *localType);

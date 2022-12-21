@@ -480,7 +480,7 @@ QString Converter::generateMemberVariable(const QString &rawName, const QString 
 static KODE::Code demarshalNameTest(const QName &type, const QString &tagName, bool *first)
 {
     KODE::Code demarshalCode;
-    if (type.nameSpace() == XMLSchemaURI && (type.localName() == QLatin1String("any"))) {
+    if (type.nameSpace() == TypeMap::XMLSchemaURI() && (type.localName() == QLatin1String("any"))) {
         demarshalCode += QString::fromLatin1(*first ? "" : "else ") + QLatin1String("{") + COMMENT;
     } else {
         demarshalCode +=

@@ -785,10 +785,10 @@ void Converter::convertClientInputMessage(const Operation &operation, const Bind
     asyncFunc.setDocs(QString::fromLatin1("Asynchronous call to %1.\n"
                                           "Remember to connect to %2 and %3.\n"
                                           "Deprecated, use %4 instead.")
-                          .arg(operation.name())
-                          .arg(lowerlize(operationName) + QLatin1String("Done"))
-                          .arg(lowerlize(operationName) + QLatin1String("Error"))
-                          .arg(upperlize(operationName) + QLatin1String("Job")));
+                          .arg(operation.name(),
+                               lowerlize(operationName) + QLatin1String("Done"),
+                               lowerlize(operationName) + QLatin1String("Error"),
+                               upperlize(operationName) + QLatin1String("Job")));
     const Message message = mWSDL.findMessage(operation.input().message());
     clientAddArguments(asyncFunc, message, newClass, operation, binding);
     KODE::Code code;
