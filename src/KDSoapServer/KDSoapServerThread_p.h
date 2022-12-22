@@ -21,7 +21,7 @@ class KDSoapServerThreadImpl : public QObject
 {
     Q_OBJECT
 public:
-    KDSoapServerThreadImpl();
+    KDSoapServerThreadImpl(); // created on stack, clazy:exclude=ctor-missing-parent-argument
     ~KDSoapServerThreadImpl();
 
 public Q_SLOTS:

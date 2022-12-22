@@ -17,6 +17,8 @@
 class Server : public KDSoapServer
 {
 public:
+    using KDSoapServer::KDSoapServer;
+
     QObject *createServerObject() override
     {
         return new HelloWorldServerObject;

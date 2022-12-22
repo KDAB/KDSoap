@@ -35,7 +35,7 @@ static bool usePointerForElement(const XSD::Element &elem, const KODE::Class &ne
     const QString typeName = typeMap.localType(elem.type());
     const bool polymorphic = isElementPolymorphic(elem, typeMap, isList);
     if (!isList && isElementOptional(elem) && newClass.qualifiedName() == typeName) {
-        if (qgetenv("KDSOAP_TYPE_DEBUG").toInt()) {
+        if (qEnvironmentVariableIsSet("KDSOAP_TYPE_DEBUG")) {
             qDebug() << "Using pointer for optional type" << typeName << "used inside itself";
         }
         // Optional "Foo" in class "Foo" - can't just have a value and bool, we need a pointer, to avoid infinite recursion
@@ -97,8 +97,7 @@ void Converter::convertComplexType(const XSD::ComplexType *type)
 
     newClass.setUseSharedData(true, QLatin1String("d_ptr") /*avoid clash with possible d() method */);
 
-    const bool doDebug = (qgetenv("KDSOAP_TYPE_DEBUG").toInt());
-    if (doDebug) {
+    if (qEnvironmentVariableIsSet("KDSOAP_TYPE_DEBUG")) {
         qDebug() << "Generating complex type" << className;
     }
 

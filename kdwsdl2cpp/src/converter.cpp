@@ -64,7 +64,7 @@ void Converter::setWSDL(const WSDL &wsdl)
         mNSManager.setPrefix(it.value(), it.key());
     }
 
-    if (qgetenv("KDSOAP_TYPE_DEBUG").toInt()) {
+    if (qEnvironmentVariableIsSet("KDSOAP_TYPE_DEBUG")) {
         mNSManager.dump();
     }
 
@@ -77,7 +77,7 @@ void Converter::setWSDL(const WSDL &wsdl)
     // set the xsd types
     mTypeMap.addSchemaTypes(mWSDL.definitions().type().types(), Settings::self()->nameSpace());
 
-    if (qgetenv("KDSOAP_TYPE_DEBUG").toInt()) {
+    if (qEnvironmentVariableIsSet("KDSOAP_TYPE_DEBUG")) {
         mTypeMap.dump();
     }
 }
@@ -273,7 +273,7 @@ void Converter::cleanupUnusedTypes()
     Type type = definitions.type();
     XSD::Types types = type.types();
 
-    const bool printDebug = qgetenv("KDSOAP_TYPE_DEBUG").toInt();
+    const bool printDebug = qEnvironmentVariableIsSet("KDSOAP_TYPE_DEBUG");
     if (printDebug) {
         qDebug() << "Before cleanup:";
         qDebug() << definitions.messages().count() << "messages";

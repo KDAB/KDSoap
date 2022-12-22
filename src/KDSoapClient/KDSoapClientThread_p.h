@@ -67,7 +67,7 @@ class KDSoapThreadTask : public QObject
 {
     Q_OBJECT
 public:
-    explicit KDSoapThreadTask(KDSoapThreadTaskData *data)
+    explicit KDSoapThreadTask(KDSoapThreadTaskData *data) // clazy:exclude=ctor-missing-parent-argument
         : m_data(data)
     {
     }

@@ -17,7 +17,7 @@ class Compiler : public QObject
     Q_OBJECT
 
 public:
-    Compiler();
+    Compiler(); // created on stack, clazy:exclude=ctor-missing-parent-argument
 
 public slots:
     void run();

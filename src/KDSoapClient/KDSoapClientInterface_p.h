@@ -28,7 +28,7 @@ class KDSoapClientInterfacePrivate : public QObject
 {
     Q_OBJECT
 public:
-    KDSoapClientInterfacePrivate();
+    KDSoapClientInterfacePrivate(); // clazy:exclude=ctor-missing-parent-argument
     ~KDSoapClientInterfacePrivate();
 
     // Warning: this accessManager is only used by asyncCall and callNoReply.

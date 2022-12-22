@@ -19,7 +19,7 @@ class HelloWorldServerObject : public Hello_ServiceServerBase
     Q_OBJECT
     Q_INTERFACES(KDSoapServerObjectInterface)
 public:
-    HelloWorldServerObject();
+    HelloWorldServerObject(); // clazy:exclude=ctor-missing-parent-argument
     ~HelloWorldServerObject();
 
     QString sayHello(const QString &msg) override;
