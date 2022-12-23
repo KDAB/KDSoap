@@ -93,14 +93,14 @@ private:
 
     QUrl mWsdlUrl;
     QString mOutputDirectory;
-    QString mHeaderFileName;
-    QString mImplementationFileName;
+    QString mHeaderFileName = QString::fromLatin1("kwsdl_generated");
+    QString mImplementationFileName = QString::fromLatin1("kwsdl_generated");
     QString mWantedService;
     QString mExportDeclaration;
     QString mNameSpace;
     QStringList mImportPathList;
     NSMapping mNamespaceMapping;
-    OptionalElementType mOptionalElementType;
+    OptionalElementType mOptionalElementType = Settings::ENone;
     bool mHeader = false;
     bool mImpl = false;
     bool mServer = false;

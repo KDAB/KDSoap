@@ -78,6 +78,7 @@ void KDSoapAuthentication::setOverrideWSUsernameCreatedTime(QDateTime overrideWS
     d->overrideWSUsernameCreatedTime = overrideWSUsernameCreatedTime;
 }
 
+// cppcheck-suppress passedByValue (cppcheck is correct, but changing it would be BIC)
 void KDSoapAuthentication::setOverrideWSUsernameNonce(QByteArray overrideWSUsernameNonce)
 {
     d->overrideWSUsernameNonce = overrideWSUsernameNonce;
