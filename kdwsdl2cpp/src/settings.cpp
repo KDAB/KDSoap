@@ -23,11 +23,8 @@ public:
 Q_GLOBAL_STATIC(SettingsSingleton, s_settings)
 
 Settings::Settings()
+    : mOutputDirectory(QDir::current().path())
 {
-    mOutputDirectory = QDir::current().path();
-    mHeaderFileName = QString::fromLatin1("kwsdl_generated");
-    mImplementationFileName = QString::fromLatin1("kwsdl_generated");
-    mOptionalElementType = Settings::ENone;
 }
 
 bool Settings::skipAsyncJobs() const
