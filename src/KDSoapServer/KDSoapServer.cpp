@@ -144,8 +144,7 @@ QString KDSoapServer::endPoint() const
     }
     const QString addressStr = address == QHostAddress::Any ? QString::fromLatin1("127.0.0.1") : address.toString();
     return QString::fromLatin1("%1://%2:%3%4")
-        .arg(QString::fromLatin1((d->m_features & Ssl) ? "https" : "http"))
-        .arg(addressStr)
+        .arg(QString::fromLatin1((d->m_features & Ssl) ? "https" : "http"), addressStr)
         .arg(serverPort())
         .arg(d->m_path);
 }

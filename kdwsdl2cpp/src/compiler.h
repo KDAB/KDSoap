@@ -12,12 +12,13 @@
 
 namespace KWSDL {
 
+// clazy:exclude-all=ctor-missing-parent-argument
 class Compiler : public QObject
 {
     Q_OBJECT
 
 public:
-    Compiler(); // created on stack, clazy:exclude=ctor-missing-parent-argument
+    Compiler(); // created on stack
 
 public slots:
     void run();

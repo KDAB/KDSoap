@@ -589,7 +589,6 @@ void Converter::createComplexTypeSerializer(KODE::Class &newClass, const XSD::Co
             QLatin1String("d_ptr->") + KODE::MemberVariable::memberVariableName(elem.name()); // always d_ptr->mEntries, actually
         const QString nilVariableName = QLatin1String("d_ptr->") + KODE::MemberVariable::memberVariableName(elem.name() + "_nil");
         const QName arrayType = type->arrayType();
-        const QString typeName = mTypeMap.localType(arrayType);
 
         marshalCode += QLatin1String("args.setArrayType(QString::fromLatin1(\"") + arrayType.nameSpace()
             + QLatin1String("\"), QString::fromLatin1(\"") + arrayType.localName() + QLatin1String("\"));");

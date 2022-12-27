@@ -73,13 +73,13 @@ void KDSoapAuthentication::setUseWSUsernameToken(bool useWSUsernameToken)
     d->useWSUsernameToken = useWSUsernameToken;
 }
 
-void KDSoapAuthentication::setOverrideWSUsernameCreatedTime(QDateTime overrideWSUsernameCreatedTime)
+void KDSoapAuthentication::setOverrideWSUsernameCreatedTime(QDateTime overrideWSUsernameCreatedTime) // clazy:exclude=function-args-by-ref
 {
     d->overrideWSUsernameCreatedTime = overrideWSUsernameCreatedTime;
 }
 
 // cppcheck-suppress passedByValue (cppcheck is correct, but changing it would be BIC)
-void KDSoapAuthentication::setOverrideWSUsernameNonce(QByteArray overrideWSUsernameNonce)
+void KDSoapAuthentication::setOverrideWSUsernameNonce(QByteArray overrideWSUsernameNonce) // clazy:exclude=function-args-by-ref
 {
     d->overrideWSUsernameNonce = overrideWSUsernameNonce;
 }

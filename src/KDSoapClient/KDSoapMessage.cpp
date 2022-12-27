@@ -124,9 +124,10 @@ QString KDSoapMessage::faultAsString() const
             faultCodeStr += faultCode.childValues().child(QLatin1String("Value")).value().toString();
             faultCode = faultCode.childValues().child(QLatin1String("Subcode"));
         }
+        const QString faultText =
+            childValues().child(QLatin1String("Reason")).childValues().child(QLatin1String("Text")).value().toString();
         return QObject::tr("Fault %1: %2")
-            .arg(faultCodeStr)
-            .arg(childValues().child(QLatin1String("Reason")).childValues().child(QLatin1String("Text")).value().toString());
+            .arg(faultCodeStr, faultText);
     } else {
         // This better be on a single line, since it's used by server-side logging too
         const QString actor = childValues().child(QLatin1String("faultactor")).value().toString();
