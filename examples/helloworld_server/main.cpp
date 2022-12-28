@@ -16,6 +16,7 @@
 
 class Server : public KDSoapServer
 {
+    Q_OBJECT
 public:
     using KDSoapServer::KDSoapServer;
 
@@ -39,3 +40,5 @@ int main(int argc, char **argv)
     }
     return app.exec();
 }
+
+#include "main.moc"

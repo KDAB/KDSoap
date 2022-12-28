@@ -451,7 +451,7 @@ QString SoapBinding::Header::part() const
     return mPart;
 }
 
-void SoapBinding::Header::setUse(const Use &use)
+void SoapBinding::Header::setUse(Use use)
 {
     mUse = use;
 }

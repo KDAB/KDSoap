@@ -404,7 +404,8 @@ bool Converter::convertClientService()
                     ctor.addInitializer(QLatin1String("mService(service)"));
 
                     const Message message = mWSDL.findMessage(operation.input().message());
-                    for (const Part &part : selectedParts(binding, message, operation, true /*input*/)) {
+                    const Part::List inputParts = selectedParts(binding, message, operation, true /*input*/);
+                    for (const Part &part : inputParts) {
                         const QString partName = part.name();
                         ctor.addInitializer(KODE::MemberVariable::memberVariableName(partName) + "()");
                         jobClass.addHeaderIncludes(mTypeMap.headerIncludes(part.type()));
@@ -412,7 +413,8 @@ bool Converter::convertClientService()
 
                     const Message outputMsg = mWSDL.findMessage(operation.output().message());
 
-                    for (const Part &part : selectedParts(binding, outputMsg, operation, false /*output*/)) {
+                    const Part::List outputParts = selectedParts(binding, outputMsg, operation, false /*output*/);
+                    for (const Part &part : outputParts) {
                         const QString varName = mNameMapper.escape(QLatin1String("result") + upperlize(part.name()));
                         ctor.addInitializer(KODE::MemberVariable::memberVariableName(varName) + "()");
                         jobClass.addHeaderIncludes(mTypeMap.headerIncludes(part.type()));
@@ -422,7 +424,7 @@ bool Converter::convertClientService()
 
                     QStringList inputGetters;
 
-                    for (const Part &part : selectedParts(binding, message, operation, true /*input*/)) {
+                    for (const Part &part : inputParts) {
                         const QString varType = mTypeMap.localType(part.type(), part.element());
                         const KODE::MemberVariable member(part.name(), varType);
                         jobClass.addMemberVariable(member);
@@ -472,7 +474,6 @@ bool Converter::convertClientService()
                     KODE::Code slotCode;
                     slotCode += QLatin1String("watcher->deleteLater();");
                     slotCode += QLatin1String("KDSoapMessage _reply = watcher->returnMessage();");
-                    const Part::List outputParts = selectedParts(binding, outputMsg, operation, false /*input*/);
                     const SoapBinding::Headers outputHeaders = getOutputHeaders(binding, operationName);
 
                     if (!outputParts.isEmpty() || !outputHeaders.isEmpty()) {
@@ -608,7 +609,7 @@ QName Converter::elementNameForPart(const Part &part, bool *qualified, bool *nil
     }
 }
 
-void Converter::addMessageArgument(KODE::Code &code, const SoapBinding::Style &bindingStyle, const Part &part, const QString &localVariableName,
+void Converter::addMessageArgument(KODE::Code &code, SoapBinding::Style bindingStyle, const Part &part, const QString &localVariableName,
                                    const QByteArray &messageName, bool varIsMember)
 {
     const QString partname =
@@ -648,7 +649,8 @@ void Converter::clientGenerateMessage(KODE::Code &code, const Binding &binding, 
 
     bool isBuiltin = false;
 
-    for (const Part &part : selectedParts(binding, message, operation, true /*input*/)) {
+    const Part::List inputParts = selectedParts(binding, message, operation, true /*input*/);
+    for (const Part &part : inputParts) {
         isBuiltin = isBuiltin || mTypeMap.isBuiltinType(part.type(), part.element());
         addMessageArgument(code, soapStyle(binding), part, part.name(), "message", varsAreMembers);
     }

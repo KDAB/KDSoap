@@ -75,7 +75,7 @@ private:
     bool clientAddAction(KODE::Code &code, const Binding &binding, const QString &operationName);
     void clientGenerateMessage(KODE::Code &code, const Binding &binding, const Message &message, const Operation &operation,
                                bool varsAreMembers = false);
-    void addMessageArgument(KODE::Code &code, const SoapBinding::Style &bindingStyle, const Part &part, const QString &localVariableName,
+    void addMessageArgument(KODE::Code &code, SoapBinding::Style bindingStyle, const Part &part, const QString &localVariableName,
                             const QByteArray &messageName, bool varIsMember = false);
     void createHeader(const SoapBinding::Header &header, KODE::Class &newClass);
     void addJobResultMember(KODE::Class &jobClass, const Part &part, const QString &varName, const QStringList &inputGetters);

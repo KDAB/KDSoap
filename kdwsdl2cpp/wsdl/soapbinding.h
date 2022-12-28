@@ -174,7 +174,7 @@ public:
         void setPart(const QString &part);
         QString part() const;
 
-        void setUse(const Use &use);
+        void setUse(Use use);
         Use use() const;
 
 #if 0
