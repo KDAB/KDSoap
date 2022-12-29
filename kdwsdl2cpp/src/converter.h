@@ -55,6 +55,9 @@ public:
     static QString shortenFilename(const QString &path);
 
 private:
+
+    static inline QName XmlAnyType = QName(QLatin1String("http://www.w3.org/2001/XMLSchema"), QLatin1String("any"));
+
     void cleanupUnusedTypes();
     void convertTypes();
 
@@ -120,6 +123,5 @@ QString upperlize(const QString &);
 QString lowerlize(const QString &);
 QString namespaceString(const QString &ns);
 
-static QName XmlAnyType(QLatin1String("http://www.w3.org/2001/XMLSchema"), QLatin1String("any"));
 
 #endif
