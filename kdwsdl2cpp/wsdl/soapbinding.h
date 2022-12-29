@@ -18,7 +18,7 @@
 
 namespace KWSDL {
 
-class KWSDL_EXPORT SoapBinding : public AbstractBinding
+class KWSDL_EXPORT SoapBinding final : public AbstractBinding
 {
 public:
     enum Style
@@ -272,7 +272,10 @@ public:
     };
 
     SoapBinding();
-    ~SoapBinding();
+    ~SoapBinding() override;
+    SoapBinding(const SoapBinding &other);
+    SoapBinding &operator=(const SoapBinding &other);
+    void swap(SoapBinding &other) noexcept;
 
     void setAddress(const Address &address);
     Address address() const;
@@ -301,6 +304,7 @@ private:
     Binding mBinding;
     Operation::Map mOperations;
     Address mAddress;
+    // if you add members, update the copy constructor and swap()
 };
 
 }

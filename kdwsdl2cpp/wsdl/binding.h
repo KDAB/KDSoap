@@ -72,7 +72,7 @@ private:
     BindingOperation::List mOperations;
 
     Type mType;
-    SoapBinding mSoapBinding;
+    SoapBinding mSoapBinding; // ## this should probably be a std::shared_ptr<AbstractBinding>?
     Version mVersion;
 };
 

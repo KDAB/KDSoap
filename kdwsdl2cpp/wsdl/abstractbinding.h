@@ -19,6 +19,9 @@ namespace KWSDL {
 class AbstractBinding
 {
 public:
+    AbstractBinding() = default;
+    AbstractBinding(const AbstractBinding &other) = delete;
+    AbstractBinding &operator=(const AbstractBinding &other) = delete;
     virtual ~AbstractBinding()
     {
     }

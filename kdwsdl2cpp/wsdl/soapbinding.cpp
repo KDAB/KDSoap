@@ -750,6 +750,28 @@ SoapBinding::~SoapBinding()
 {
 }
 
+SoapBinding::SoapBinding(const SoapBinding &other)
+    : mBinding(other.mBinding)
+    , mOperations(other.mOperations)
+    , mAddress(other.mAddress)
+{
+}
+
+SoapBinding &SoapBinding::operator=(const SoapBinding &other)
+{
+    SoapBinding copy(other);
+    swap(copy);
+    return *this;
+}
+
+void SoapBinding::swap(SoapBinding &other) noexcept
+{
+    using std::swap;
+    swap(mBinding, other.mBinding);
+    swap(mOperations, other.mOperations);
+    swap(mAddress, other.mAddress);
+}
+
 void SoapBinding::setAddress(const Address &address)
 {
     mAddress = address;
