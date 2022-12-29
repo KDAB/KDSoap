@@ -34,6 +34,9 @@ public:
      */
     KDSoapServerAuthInterface();
 
+    KDSoapServerAuthInterface(const KDSoapServerAuthInterface &other) = delete;
+    KDSoapServerAuthInterface &operator=(const KDSoapServerAuthInterface &other) = delete;
+
     /**
      * Destructor
      */

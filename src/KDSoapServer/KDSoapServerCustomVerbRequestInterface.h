@@ -35,6 +35,9 @@ public:
      */
     KDSoapServerCustomVerbRequestInterface();
 
+    KDSoapServerCustomVerbRequestInterface(const KDSoapServerCustomVerbRequestInterface &other) = delete;
+    KDSoapServerCustomVerbRequestInterface &operator=(const KDSoapServerCustomVerbRequestInterface &other) = delete;
+
     /**
      * Destructor
      */

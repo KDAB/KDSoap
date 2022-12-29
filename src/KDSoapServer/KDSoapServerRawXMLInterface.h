@@ -45,6 +45,9 @@ public:
      */
     KDSoapServerRawXMLInterface();
 
+    KDSoapServerRawXMLInterface(const KDSoapServerRawXMLInterface &other) = delete;
+    KDSoapServerRawXMLInterface &operator=(const KDSoapServerRawXMLInterface &other) = delete;
+
     /**
      * Destructor
      */
