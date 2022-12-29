@@ -12,7 +12,7 @@
 
 namespace KWSDL {
 
-// clazy:exclude-all=ctor-missing-parent-argument
+// clazy:excludeall=ctor-missing-parent-argument
 class Compiler : public QObject
 {
     Q_OBJECT

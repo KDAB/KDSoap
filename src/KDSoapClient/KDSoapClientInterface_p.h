@@ -24,6 +24,7 @@ QT_END_NAMESPACE
 class KDSoapMessage;
 class KDSoapNamespacePrefixes;
 
+// clazy:excludeall=ctor-missing-parent-argument
 class KDSoapClientInterfacePrivate : public QObject
 {
     Q_OBJECT

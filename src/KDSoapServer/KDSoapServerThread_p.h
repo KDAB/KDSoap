@@ -17,6 +17,7 @@
 class KDSoapServer;
 class KDSoapSocketList;
 
+// clazy:excludeall=ctor-missing-parent-argument
 class KDSoapServerThreadImpl : public QObject
 {
     Q_OBJECT

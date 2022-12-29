@@ -63,6 +63,7 @@ public:
     KDSoapHeaders m_headers;
 };
 
+// clazy:excludeall=ctor-missing-parent-argument
 class KDSoapThreadTask : public QObject
 {
     Q_OBJECT
