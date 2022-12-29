@@ -11,6 +11,8 @@
 
 #include <QDebug>
 
+#include <schema/simpletype.h>
+
 using namespace KWSDL;
 
 // Return true if the generated code should remember whether this elem was set by the user.
@@ -516,7 +518,7 @@ void Converter::createComplexTypeSerializer(KODE::Class &newClass, const XSD::Co
 
     const QString typeArgs = namespaceString(type->nameSpace()) + QLatin1String(", QString::fromLatin1(\"") + type->name() + QLatin1String("\")");
 
-    if (type->baseTypeName() != XmlAnyType && !type->baseTypeName().isEmpty() && !type->isArray()) {
+    if (type->baseTypeName() != XmlAnyType() && !type->baseTypeName().isEmpty() && !type->isArray()) {
 
         const QName baseName = type->baseTypeName();
 

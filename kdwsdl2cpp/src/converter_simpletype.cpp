@@ -114,7 +114,7 @@ void Converter::convertSimpleType(const XSD::SimpleType *type, const XSD::Simple
           A class can't derive from basic types (e.g. int or unsigned char), so
           we add setter and getter methods to set the value of this class.
          */
-        if (type->baseTypeName() != XmlAnyType && !type->baseTypeName().isEmpty() && !(type->facetType() & XSD::SimpleType::ENUM)) {
+        if (type->baseTypeName() != XmlAnyType() && !type->baseTypeName().isEmpty() && !(type->facetType() & XSD::SimpleType::ENUM)) {
             classDocumentation = "This class encapsulates a simple type.\n";
 
             const QName baseName = type->baseTypeName();
@@ -365,7 +365,7 @@ void Converter::createSimpleTypeSerializer(KODE::Class &newClass, const XSD::Sim
                 deserializeFunc.setBody(code);
             }
         }
-        if (type->baseTypeName() != XmlAnyType && !type->baseTypeName().isEmpty() && !(type->facetType() & XSD::SimpleType::ENUM)) {
+        if (type->baseTypeName() != XmlAnyType() && !type->baseTypeName().isEmpty() && !(type->facetType() & XSD::SimpleType::ENUM)) {
             // 'inherits' a basic type or another simple type -> using value.
 
             const QName baseName = type->baseTypeName();
