@@ -71,8 +71,14 @@ void KDDateTime::setTimeZone(const QString &timeZone)
         setTimeSpec(Qt::OffsetFromUTC);
         const int pos = timeZone.indexOf(QLatin1Char(':'));
         if (pos > 0) {
-            const int hours = timeZone.left(pos).toInt();
-            const int minutes = timeZone.mid(pos + 1).toInt();
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+            const int hours = timeZone.leftRef(pos).toInt();
+            const int minutes = timeZone.midRef(pos + 1).toInt();
+#else
+            const QStringView timeZoneView(timeZone);
+            const int hours = timeZoneView.first(pos).toInt();
+            const int minutes = timeZoneView.sliced(pos + 1).toInt();
+#endif
             const int offset = hours * 3600 + minutes * 60;
             setOffsetFromUtc(offset);
         }

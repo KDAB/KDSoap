@@ -14,12 +14,13 @@
 #include "KDSoapServerObjectInterface.h"
 #include "wsdl_helloworld.h"
 
+// clazy:excludeall=ctor-missing-parent-argument
 class HelloWorldServerObject : public Hello_ServiceServerBase
 {
     Q_OBJECT
     Q_INTERFACES(KDSoapServerObjectInterface)
 public:
-    HelloWorldServerObject(); // clazy:exclude=ctor-missing-parent-argument
+    HelloWorldServerObject();
     ~HelloWorldServerObject();
 
     QString sayHello(const QString &msg) override;
