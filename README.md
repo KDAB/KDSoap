@@ -47,7 +47,7 @@ Thanks to our [contributors](CONTRIBUTORS.txt).
 
 ## License
 
-The KD Soap Software is Copyright 2010-2022, Klarälvdalens Datakonsult AB (KDAB),
+The KD Soap Software is Copyright 2010-2023, Klarälvdalens Datakonsult AB (KDAB),
 and is available under the terms of the [MIT](LICENSES/MIT.txt) license.
 
 Contact KDAB at <info@kdab.com> to inquire about commercial licensing.
