@@ -1,4 +1,7 @@
-![KDSoap logo](https://github.com/KDAB/KDSoap/blob/kdsoap-2.1/images/kdsoap256.png?raw=true)
+<div>
+<img src="images/kdsoap-trademark.png" width="70%"/>
+<img src="images/kdsoap256.png" align="right"/>
+</div>
 
 # Introduction
 
