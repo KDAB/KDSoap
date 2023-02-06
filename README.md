@@ -1,3 +1,5 @@
+![KDSoap logo](https://github.com/KDAB/KDSoap/blob/kdsoap-2.1/images/kdsoap256.png?raw=true)
+
 # Introduction
 
 KD Soap is a Qt-based client-side and server-side SOAP component.
