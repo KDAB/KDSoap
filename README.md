@@ -1,6 +1,6 @@
 <div>
 <img src="images/kdsoap-trademark.png" width="70%"/>
-<img src="images/kdsoap256.png" align="right"/>
+<img src="images/kdsoap256.png"/>
 </div>
 
 # Introduction
