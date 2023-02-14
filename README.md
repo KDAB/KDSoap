@@ -1,3 +1,8 @@
+<div>
+<img src="images/kdsoap-trademark.png" width="68%"/>
+<img src="images/kdsoap256.png" height="200px"/>
+</div>
+
 # Introduction
 
 KD Soap is a Qt-based client-side and server-side SOAP component.
