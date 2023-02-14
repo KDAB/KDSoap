@@ -104,7 +104,8 @@ public:
 
     void dump() const;
 
-    static const QString XMLSchemaURI() {
+    static const QString XMLSchemaURI()
+    {
         return QStringLiteral("http://www.w3.org/2001/XMLSchema");
     }
 

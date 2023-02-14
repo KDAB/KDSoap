@@ -53,10 +53,12 @@ public:
     KODE::Class::List classes() const;
 
     static QString shortenFilename(const QString &path);
-    static QName XmlAnyType() { return QName(QLatin1String("http://www.w3.org/2001/XMLSchema"), QLatin1String("any")); }
+    static QName XmlAnyType()
+    {
+        return QName(QLatin1String("http://www.w3.org/2001/XMLSchema"), QLatin1String("any"));
+    }
 
 private:
-
     void cleanupUnusedTypes();
     void convertTypes();
 

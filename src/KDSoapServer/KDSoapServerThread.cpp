@@ -69,7 +69,7 @@ void KDSoapServerThread::resetTotalConnectionCountForServer(const KDSoapServer *
 void KDSoapServerThread::disconnectSocketsForServer(KDSoapServer *server, QSemaphore &semaphore)
 {
     if (d) {
-        QMetaObject::invokeMethod(d, "disconnectSocketsForServer", Q_ARG(KDSoapServer*, server), Q_ARG(QSemaphore*, &semaphore));
+        QMetaObject::invokeMethod(d, "disconnectSocketsForServer", Q_ARG(KDSoapServer *, server), Q_ARG(QSemaphore *, &semaphore));
     }
 }
 
@@ -87,7 +87,7 @@ void KDSoapServerThread::quitThread()
 void KDSoapServerThread::handleIncomingConnection(int socketDescriptor, KDSoapServer *server)
 {
     d->addIncomingConnection();
-    QMetaObject::invokeMethod(d, "handleIncomingConnection", Q_ARG(int, socketDescriptor), Q_ARG(KDSoapServer*, server));
+    QMetaObject::invokeMethod(d, "handleIncomingConnection", Q_ARG(int, socketDescriptor), Q_ARG(KDSoapServer *, server));
 }
 
 ////
