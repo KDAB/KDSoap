@@ -173,7 +173,7 @@ void KDSoapAuthentication::writeWSUsernameTokenHeader(QXmlStreamWriter &writer) 
 
     writer.writeStartElement(securityExtentionNS, QLatin1String("Security"));
     writer.writeStartElement(securityExtentionNS, QLatin1String("UsernameToken"));
-    if ( !d->omitNonceCreatedFromUsernameToken ) {
+    if (!d->omitNonceCreatedFromUsernameToken) {
         writer.writeStartElement(securityExtentionNS, QLatin1String("Nonce"));
         writer.writeCharacters(QString::fromLatin1(nonce.toBase64().constData()));
         writer.writeEndElement();
