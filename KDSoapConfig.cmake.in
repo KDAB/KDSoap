@@ -8,6 +8,11 @@
 
 @PACKAGE_INIT@
 
+include(CMakeFindDependencyMacro)
+
+find_dependency(Qt@Qt_VERSION_MAJOR@Core @QT_MIN_VERSION@)
+find_dependency(Qt@Qt_VERSION_MAJOR@Network @QT_MIN_VERSION@)
+
 set_and_check(KDSoap_INCLUDE_DIR "@PACKAGE_INSTALL_INCLUDE_DIR@")
 
 set(KDSoap_INCLUDE_DIRS "${KDSoap_INCLUDE_DIR}")
