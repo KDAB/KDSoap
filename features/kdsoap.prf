@@ -8,7 +8,7 @@
 
 KDSOAP_MAJOR_VERSION = 1
 
-:  # copy from environment:
+  # copy from environment:
   isEmpty( KDSOAPDIR ) {
     KDSOAPDIR=$$(KDSOAPDIR)
     KDSOAPDIR_BUILD=$$(KDSOAPDIR)
