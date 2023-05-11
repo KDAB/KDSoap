@@ -33,7 +33,7 @@ Learn more at our:
 
 * See our official home page: <https://www.kdab.com/development-resources/qt-tools/kd-soap>
 * Visit us on GitHub: <https://github.com/KDAB/KDSoap>
-* Email info@kdab.com with questions about this product..
+* Email info@kdab.com with questions about this product.
 
 Stay up-to-date with KDAB product announcements:
 
