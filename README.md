@@ -33,7 +33,7 @@ Learn more at our:
 
 * See our official home page: <https://www.kdab.com/development-resources/qt-tools/kd-soap>
 * Visit us on GitHub: <https://github.com/KDAB/KDSoap>
-* Email info@kdab.com for questions about copyright, licensing or commercial support.
+* Email info@kdab.com with questions about this product..
 
 Stay up-to-date with KDAB product announcements:
 
@@ -55,7 +55,7 @@ Thanks to our [contributors](CONTRIBUTORS.txt).
 The KD Soap Software is Copyright 2010-2023, Klarälvdalens Datakonsult AB (KDAB),
 and is available under the terms of the [MIT](LICENSES/MIT.txt) license.
 
-Contact KDAB at <info@kdab.com> to inquire about commercial licensing.
+Contact KDAB at <info@kdab.com> for any licensing queries.
 
 Note that this project requires the 3rd party 'libkode' submodule
 that is licensed separately with LGPL-2.0-or-later; however, libkode
