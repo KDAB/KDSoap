@@ -95,7 +95,7 @@ private:
 
     // Server Stub
     void convertServerService();
-    void generateServerMethod(KODE::Code &code, const Binding &binding, const Operation &operation, KODE::Class &newClass, bool first);
+    void generateServerMethod(KODE::Code &code, const Binding &binding, const Operation &operation, KODE::Class &newClass);
     void generateDelayedReponseMethod(const QString &methodName, const QString &retInputType, const Part &retPart, KODE::Class &newClass,
                                       const Binding &binding, const Message &outputMessage);
 
