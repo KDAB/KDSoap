@@ -20,8 +20,8 @@ skip_tags: false
 # Build worker image
 image:
   - Ubuntu2004
-  - macos-monterey
   - Visual Studio 2019
+#  - macos-monterey "SSL handshake failed: The root CA certificate is not trusted for this purpose" -- we don't feel like dealing with this Allen&David 12 September 2023
 
 # scripts that are called at very beginning, before repo cloning
 init:
@@ -53,6 +53,7 @@ before_build:
   - cmd: call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
   - cmd: set PATH=C:\Qt\6.2\msvc2019_64\bin;C:\Qt\5.15\msvc2019_64\bin;%PATH%
   - sh: if [ "`uname -s`" = "Darwin" ]; then export PATH=$HOME/Qt/6.3/macos/bin:$HOME/Qt/5.15/clang_64/bin:$PATH; else export PATH=$HOME/Qt/6.2/gcc_64/bin:$HOME/Qt/5.15/gcc_64/bin:$PATH; fi
+  - sh: export CTEST_OUTPUT_ON_FAILURE=1
 
 build_script:
   - mkdir build
