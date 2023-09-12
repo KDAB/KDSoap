@@ -62,7 +62,6 @@ void Converter::convertServerService()
 
             PortType portType = mWSDL.findPortType(binding.portTypeName());
             // qDebug() << portType.name();
-            bool first = true;
             const Operation::List operations = portType.operations();
             for (const Operation &operation : operations) {
                 const Operation::OperationType opType = operation.operationType();
@@ -71,21 +70,12 @@ void Converter::convertServerService()
                 case Operation::RequestResponseOperation: // the standard case
                 case Operation::SolicitResponseOperation:
                 case Operation::NotificationOperation:
-                    generateServerMethod(body, binding, operation, serverClass, first);
+                    generateServerMethod(body, binding, operation, serverClass);
                     break;
                 }
-                first = false;
             }
 
-            if (!first) {
-                body += "else {";
-                body.indent();
-            }
             body += "KDSoapServerObjectInterface::processRequest(_request, _response, _soapAction);" + COMMENT;
-            if (!first) {
-                body.unindent();
-                body += "}";
-            }
             processRequestMethod.setBody(body);
 
             serverClass.addFunction(processRequestMethod);
@@ -95,7 +85,7 @@ void Converter::convertServerService()
     }
 }
 
-void Converter::generateServerMethod(KODE::Code &code, const Binding &binding, const Operation &operation, KODE::Class &newClass, bool first)
+void Converter::generateServerMethod(KODE::Code &code, const Binding &binding, const Operation &operation, KODE::Class &newClass)
 {
     const QString requestVarName = "_request";
     const QString responseVarName = "_response";
@@ -120,7 +110,7 @@ void Converter::generateServerMethod(KODE::Code &code, const Binding &binding, c
             condition += " || _soapAction == \"" + op.action() + "\"";
         }
     }
-    code += QString(first ? "" : "else ") + "if (" + condition + ") {";
+    code += "if (" + condition + ") {";
     code.indent();
 
     QStringList inputVars;
@@ -205,6 +195,7 @@ void Converter::generateServerMethod(KODE::Code &code, const Binding &binding, c
 
         generateDelayedReponseMethod(methodName, retInputType, retPart, newClass, binding, outputMessage);
     }
+    code += "return;";
     code.unindent();
     code += "}";
 
