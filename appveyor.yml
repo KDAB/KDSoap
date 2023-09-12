@@ -20,8 +20,8 @@ skip_tags: false
 # Build worker image
 image:
   - Ubuntu2004
-  - macos-monterey
   - Visual Studio 2019
+#  - macos-monterey "SSL handshake failed: The root CA certificate is not trusted for this purpose" -- we don't feel like dealing with this Allen&David 12 September 2023
 
 # scripts that are called at very beginning, before repo cloning
 init:
