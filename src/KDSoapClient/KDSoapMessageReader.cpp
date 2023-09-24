@@ -70,7 +70,12 @@ static KDSoapValue parseElement(QXmlStreamReader &reader, const QXmlStreamNamesp
     val.setNamespaceDeclarations(reader.namespaceDeclarations());
     val.setEnvironmentNamespaceDeclarations(combinedNamespaceDeclarations);
     // qDebug() << "parsing" << name;
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QVariant::Type metaTypeId = QVariant::Invalid;
+#else
+    QMetaType::Type metaTypeId = QMetaType::UnknownType;
+#endif
+    const auto invalidType = metaTypeId;
 
     const QXmlStreamAttributes attributes = reader.attributes();
     for (const QXmlStreamAttribute &attribute : attributes) {
@@ -86,7 +91,7 @@ static KDSoapValue parseElement(QXmlStreamReader &reader, const QXmlStreamNamesp
                 const int pos = type.indexOf(QLatin1Char(':'));
                 const QString dataType = type.mid(pos + 1);
                 val.setType(namespaceForPrefix(combinedNamespaceDeclarations, type.left(pos)).toString(), dataType);
-                metaTypeId = static_cast<QVariant::Type>(xmlTypeToMetaType(dataType));
+                metaTypeId = static_cast<decltype(metaTypeId)>(xmlTypeToMetaType(dataType));
             }
             continue;
         } else if (ns == KDSoapNamespaceManager::soapEncoding() || ns == KDSoapNamespaceManager::soapEncoding200305()
@@ -115,9 +120,13 @@ static KDSoapValue parseElement(QXmlStreamReader &reader, const QXmlStreamNamesp
         // qDebug() << text << variant << metaTypeId;
         // With use=encoded, we have type info, we can convert the variant here
         // Otherwise, for servers, we do it later, once we know the method's parameter types.
-        if (metaTypeId != QVariant::Invalid) {
+        if (metaTypeId != invalidType) {
             QVariant copy = variant;
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
             if (!variant.convert(metaTypeId)) {
+#else
+            if (!variant.convert(QMetaType(metaTypeId))) {
+#endif
                 variant = copy;
             }
         }
