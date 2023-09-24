@@ -171,7 +171,6 @@ public:
     KDSoapMessageAddressingProperties messageAddressingProperties() const;
 
 private:
-    bool isNull() const;
     friend class KDSoapPendingCall;
     friend class KDSoapServerSocket;
     friend class KDSoapMessageWriter;

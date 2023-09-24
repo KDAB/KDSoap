@@ -216,8 +216,3 @@ KDSoapMessage KDSoapHeaders::header(const QString &name, const QString &namespac
     }
     return KDSoapMessage();
 }
-
-bool KDSoapMessage::isNull() const
-{
-    return childValues().isEmpty() && childValues().attributes().isEmpty() && value().isNull();
-}

@@ -90,7 +90,7 @@ QByteArray KDSoapMessageWriter::messageToXml(const KDSoapMessage &message, const
 
     const QString elementName = !method.isEmpty() ? method : message.name();
     if (elementName.isEmpty()) {
-        if (message.isNull()) {
+        if (message.isNil()) {
             // null message, ok (e.g. no arguments, in document/literal mode)
         } else {
             qWarning("ERROR: Non-empty message with an empty name!");
