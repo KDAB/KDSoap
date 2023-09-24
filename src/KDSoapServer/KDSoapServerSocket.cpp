@@ -472,7 +472,7 @@ void KDSoapServerSocket::sendReply(KDSoapServerObjectInterface *serverObjectInte
     const bool isFault = replyMsg.isFault();
 
     QByteArray xmlResponse;
-    if (!replyMsg.isNull()) {
+    if (!replyMsg.isNil()) {
         KDSoapMessageWriter msgWriter;
         // Note that the kdsoap client parsing code doesn't care for the name (except if it's fault), even in
         // Document mode. Other implementations do, though.
