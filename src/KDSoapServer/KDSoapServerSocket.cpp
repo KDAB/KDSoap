@@ -460,11 +460,13 @@ void KDSoapServerSocket::writeXML(const QByteArray &xmlResponse, bool isFault)
         qDebug() << "KDSoapServerSocket: writing" << httpHeaders << xmlResponse;
     }
     qint64 written = write(httpHeaders);
-    Q_ASSERT(written == httpHeaders.size()); // Please report a bug if you hit this.
+    if (written != httpHeaders.size()) {
+        qWarning() << "Only wrote" << written << "out of" << httpHeaders.size() << "bytes of HTTP headers. Error:" << errorString();
+    }
     written = write(xmlResponse);
-    Q_ASSERT(written == xmlResponse.size()); // Please report a bug if you hit this.
-    Q_UNUSED(written);
-    // flush() ?
+    if (written != xmlResponse.size()) {
+        qWarning() << "Only wrote" << written << "out of" << xmlResponse.size() << "bytes of reponse. Error:" << errorString();
+    }
 }
 
 void KDSoapServerSocket::sendReply(KDSoapServerObjectInterface *serverObjectInterface, const KDSoapMessage &replyMsg)
