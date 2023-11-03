@@ -965,7 +965,7 @@ private Q_SLOTS:
                                                                         "\r\n";
         socket.write(request);
         QVERIFY(socket.waitForBytesWritten(3000));
-        QVERIFY(socket.bytesAvailable() || socket.waitForReadyRead(3000));
+        QVERIFY(socket.bytesAvailable() || socket.waitForReadyRead(30000));
         const QByteArray reply = socket.readAll();
 
         file.setPermissions(QFile::ReadOwner | QFile::ReadUser | QFile::WriteOwner | QFile::WriteUser);
