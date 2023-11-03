@@ -465,7 +465,7 @@ void KDSoapServerSocket::writeXML(const QByteArray &xmlResponse, bool isFault)
     }
     written = write(xmlResponse);
     if (written != xmlResponse.size()) {
-        qWarning() << "Only wrote" << written << "out of" << xmlResponse.size() << "bytes of reponse. Error:" << errorString();
+        qWarning() << "Only wrote" << written << "out of" << xmlResponse.size() << "bytes of response. Error:" << errorString();
     }
 }
 
