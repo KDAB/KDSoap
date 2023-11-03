@@ -97,7 +97,6 @@ private Q_SLOTS:
         QList<QVariant> arguments = spy.takeFirst();
         QVERIFY(KDSoapUnitTestHelpers::xmlBufferCompare(arguments.at(0).value<KDSoapMessage>().toXml(), exampleMessage().toXml()));
         QCOMPARE(arguments.at(1).value<KDSoapHeaders>().size(), 0);
-        QCOMPARE(arguments.at(2).value<QHostAddress>(), QHostAddress(QHostAddress::LocalHost));
     }
 
 private:

@@ -31,10 +31,8 @@ KDSoapUdpClient::KDSoapUdpClient(QObject *parent)
     , d_ptr(new KDSoapUdpClientPrivate(this))
 {
     Q_D(KDSoapUdpClient);
-    d->socketIPv4 = new QUdpSocket(this);
-    connect(d->socketIPv4, &QIODevice::readyRead, d, &KDSoapUdpClientPrivate::readyRead);
-    d->socketIPv6 = new QUdpSocket(this);
-    connect(d->socketIPv6, &QIODevice::readyRead, d, &KDSoapUdpClientPrivate::readyRead);
+    d->socket = new QUdpSocket(this);
+    connect(d->socket, &QIODevice::readyRead, d, &KDSoapUdpClientPrivate::readyRead);
 }
 
 KDSoapUdpClient::~KDSoapUdpClient()
@@ -45,13 +43,10 @@ KDSoapUdpClient::~KDSoapUdpClient()
 bool KDSoapUdpClient::bind(quint16 port, QAbstractSocket::BindMode mode)
 {
     Q_D(KDSoapUdpClient);
-    const QHostAddress AnyIPv4(QLatin1String("0.0.0.0"));
-    bool rc = true;
-    // Workaround for lack of dual stack sockets in Qt4
-    // Qt5 supports binding to QHostAddress::Any, which will listen on both IPv4 and IPv6 interfaces.
-    // TODO: use a single socket now that we dropped Qt4 support
-    rc = d->socketIPv4->bind(AnyIPv4, port, mode) && rc;
-    rc = d->socketIPv6->bind(QHostAddress::AnyIPv6, port, mode) && rc;
+    const bool rc = d->socket->bind(QHostAddress::Any, port, mode);
+    if (!rc) {
+        qWarning() << "KDSoapUdpClient: failed to bind on port" << port << "mode" << mode << ":" << d->socket->errorString();
+    }
     return rc;
 }
 
@@ -74,29 +69,17 @@ bool KDSoapUdpClient::sendMessage(const KDSoapMessage &message, const KDSoapHead
         for (const auto &iface : allInterfaces) {
             if (iface.flags().testFlag(QNetworkInterface::IsUp) && iface.flags().testFlag(QNetworkInterface::CanMulticast)) {
                 // qDebug() << "Sending multicast to" << iface.name() << address << ":" << data;
-                if (address.protocol() == QAbstractSocket::IPv4Protocol) {
-                    d->socketIPv4->setMulticastInterface(iface);
-                    qint64 writtenSize = d->socketIPv4->writeDatagram(data, address, port);
-                    anySuccess = anySuccess || (writtenSize == data.size());
-                } else if (address.protocol() == QAbstractSocket::IPv6Protocol) {
-                    d->socketIPv6->setMulticastInterface(iface);
-                    qint64 writtenSize = d->socketIPv6->writeDatagram(data, address, port);
-                    anySuccess = anySuccess || (writtenSize == data.size());
-                }
+                d->socket->setMulticastInterface(iface);
+                const qint64 writtenSize = d->socket->writeDatagram(data, address, port);
+                anySuccess = anySuccess || (writtenSize == data.size());
             }
         }
         return anySuccess;
     } else {
         // qDebug() << "Sending to" << address << ":" << data;
-        if (address.protocol() == QAbstractSocket::IPv4Protocol) {
-            qint64 writtenSize = d->socketIPv4->writeDatagram(data, address, port);
-            return writtenSize == data.size();
-        } else if (address.protocol() == QAbstractSocket::IPv6Protocol) {
-            qint64 writtenSize = d->socketIPv6->writeDatagram(data, address, port);
-            return writtenSize == data.size();
-        }
+        const qint64 writtenSize = d->socket->writeDatagram(data, address, port);
+        return writtenSize == data.size();
     }
-    return false;
 }
 
 void KDSoapUdpClientPrivate::readyRead()

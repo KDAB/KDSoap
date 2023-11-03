@@ -21,9 +21,7 @@ class KDSoapUdpClientPrivate : public QObject
     Q_OBJECT
 public:
     explicit KDSoapUdpClientPrivate(KDSoapUdpClient *q)
-        : socketIPv4(0)
-        , socketIPv6(0)
-        , q_ptr(q)
+        : q_ptr(q)
     {
     }
 
@@ -33,8 +31,7 @@ public Q_SLOTS:
     void readyRead();
 
 public:
-    QUdpSocket *socketIPv4;
-    QUdpSocket *socketIPv6;
+    QUdpSocket *socket = nullptr;
     KDSoap::SoapVersion soapVersion = KDSoap::SOAP1_2;
 
 private:
