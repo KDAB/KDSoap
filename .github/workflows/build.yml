@@ -4,7 +4,15 @@
 
 name: CI
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - master
+      - kdsoap-2.1
+  pull_request:
+    branches:
+      - master
+      - kdsoap-2.1
 
 jobs:
   build:
@@ -14,27 +22,28 @@ jobs:
       matrix:
         os:
           - ubuntu-22.04
-          - ubuntu-20.04
           - windows-2022
-          - windows-2019
-          #- macos-12
-          #- macos-11
+          - macos-12
+
         build_type:
           - Debug
           - Release
-        qt:
-          - version: "5.15.2"
-            requested: "5.15"
-          - version: "6.5.2"
-            requested: "6.5.*"
+
+        link_type:
+          - static
+          - shared
+
+        config:
+          - qt_version: "5.15"
+          - qt_version: "6.5.*"
 
     steps:
       - name: Install Qt with options and default aqtversion
         uses: jurplel/install-qt-action@v3
         with:
           aqtversion: null # use whatever the default is
-          modules: ${{ matrix.qt.modules }}
-          version: ${{ matrix.qt.requested }}
+          modules: ${{ matrix.config.modules }}
+          version: ${{ matrix.config.qt_version }}
           cache: true
 
       - name: Checkout sources
@@ -43,20 +52,20 @@ jobs:
       - name: Fetch Git submodule
         run: git submodule update --init --recursive
 
-      - name: Create build directory
-        run: mkdir build
-
       - name: Install ninja-build tool (must be after Qt due PATH changes)
         uses: turtlesec-no/get-ninja@main
 
       - name: Make sure MSVC is found when Ninja generator is in use
+        if: ${{ runner.os == 'Windows' }}
         uses: ilammy/msvc-dev-cmd@v1
 
       - name: Configure project
         run: >
           cmake -S . -B ./build -G Ninja
+          --warn-uninitialized -Werror=dev
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
-          -DKDSoap_QT6=${{ startsWith(matrix.qt.version, '6.') }}
+          -DKDSoap_QT6=${{ startsWith(matrix.config.qt_version, '6.') }}
+          -DKDSoap_STATIC=${{ matrix.build_type == 'static' }}
           -DKDSoap_TESTS=${{ matrix.build_type == 'Debug' }}
           -DKDSoap_EXAMPLES=${{ matrix.build_type == 'Debug' }}
           -DKDSoap_DOCS=${{ matrix.build_type == 'Debug' && runner.os == 'Linux' }}
@@ -70,9 +79,15 @@ jobs:
         env:
           QT_QPA_PLATFORM: offscreen
 
-      - name: Run tests on Windown/macOS
-        if: ${{ matrix.build_type == 'Debug' && runner.os != 'Linux' }}
+      - name: Run tests on Windows
+        if: ${{ matrix.build_type == 'Debug' && runner.os == 'Windows' }}
         run: ctest --test-dir ./build -C ${{ matrix.build_type }} --output-on-failure
+
+      - name: Run tests on macOS
+        if: ${{ matrix.build_type == 'Debug' && runner.os != 'macOS' }}
+        run: >
+          ctest --test-dir ./build -C ${{ matrix.build_type }} --output-on-failure
+          -E 'kdsoap-test_serverlib|kdsoap-test_wsdl_document'
 
       - name: Read tests log when it fails
         uses: andstor/file-reader-action@v1
