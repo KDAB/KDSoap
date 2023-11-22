@@ -134,7 +134,7 @@ bool Definitions::loadXML(ParserContext *context, const QDomElement &element)
             QString oldName = mName;
             importDefinition(context, child.attribute(QLatin1String("location")));
             setTargetNamespace(oldTn);
-            mName = oldName;
+            mName = std::move(oldName);
         } else if (tagName.localName() == QLatin1String("types")) {
             if (!mType.loadXML(context, child)) {
                 return false;

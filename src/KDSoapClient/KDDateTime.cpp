@@ -96,7 +96,7 @@ KDDateTime KDDateTime::fromDateString(const QString &s)
     } else {
         QString maybeTz = s.right(6);
         if (maybeTz.startsWith(QLatin1Char('+')) || maybeTz.startsWith(QLatin1Char('-'))) {
-            tz = maybeTz;
+            tz = std::move(maybeTz);
             baseString.chop(6);
         }
     }

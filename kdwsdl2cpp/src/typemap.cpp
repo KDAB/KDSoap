@@ -455,7 +455,7 @@ void TypeMap::addSchemaTypes(const XSD::Types &types, const QString &ns)
           entry.localType = mNSManager->prefix( entry.nameSpace ).toUpper() + "__" + adaptLocalTypeName( elem.name() + "Element" );
         }*/
         // qDebug() << "Adding TypeMap entry for element" << entry.typeName << resolvedType;
-        mElementMap.append(entry);
+        mElementMap.append(std::move(entry));
     }
 }
 

@@ -91,7 +91,7 @@ void Settings::setWsdlFile(const QString &wsdlFile)
         path = QDir::current().path() + QLatin1Char('/') + path;
         mWsdlUrl = QUrl::fromLocalFile(path);
     } else {
-        mWsdlUrl = u;
+        mWsdlUrl = std::move(u);
     }
 }
 

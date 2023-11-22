@@ -139,7 +139,7 @@ QBuffer *KDSoapClientInterfacePrivate::prepareRequestBuffer(const QString &metho
     msgWriter.setMessageNamespace(m_messageNamespace);
     msgWriter.setVersion(m_version);
     QBuffer *buffer = new QBuffer;
-    auto setBufferData = [=](const KDSoapMessage &msg) {
+    auto setBufferData = [&](const KDSoapMessage &msg) {
         buffer->setData(msgWriter.messageToXml(msg,
                                                (m_style == KDSoapClientInterface::RPCStyle) ? method : QString(),
                                                headers, m_persistentHeaders,

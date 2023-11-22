@@ -127,7 +127,7 @@ static KDSoapValue parseElement(QXmlStreamReader &reader, const QXmlStreamNamesp
 #else
             if (!variant.convert(QMetaType(metaTypeId))) {
 #endif
-                variant = copy;
+                variant = std::move(copy);
             }
         }
         val.setValue(variant);

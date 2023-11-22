@@ -181,13 +181,13 @@ int main(int argc, char **argv)
                     QString uri = mapping.section("=", 0, -2);
                     QString target = mapping.section("=", -1, -1);
                     if (!uri.isEmpty() && !target.isEmpty()) {
-                        nsmapping[uri] = target;
+                        nsmapping[uri] = std::move(target);
                     }
                 }
             } else {
                 QString uri = mapping.section("=", 0, -2);
                 QString target = mapping.section("=", -1, -1);
-                nsmapping[uri] = target;
+                nsmapping[uri] = std::move(target);
             }
         } else if (opt == QLatin1String("-optional-element-type")) {
             ++arg;
