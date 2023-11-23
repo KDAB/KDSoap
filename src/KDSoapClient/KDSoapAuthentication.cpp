@@ -78,7 +78,6 @@ void KDSoapAuthentication::setOverrideWSUsernameCreatedTime(QDateTime overrideWS
     d->overrideWSUsernameCreatedTime = std::move(overrideWSUsernameCreatedTime);
 }
 
-// cppcheck-suppress passedByValue (cppcheck is correct, but changing it would be BIC)
 void KDSoapAuthentication::setOverrideWSUsernameNonce(QByteArray overrideWSUsernameNonce) // clazy:exclude=function-args-by-ref
 {
     d->overrideWSUsernameNonce = std::move(overrideWSUsernameNonce);
