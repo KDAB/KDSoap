@@ -60,13 +60,12 @@ if(WIN32)
     endif()
 endif()
 
-if(KDSoap_IS_ROOT_PROJECT)
-    include(ECMGenerateHeaders)
-    ecm_generate_headers(
+include(ECMGenerateHeaders)
+ecm_generate_headers(
         client_HEADERS
-        ORIGINAL
-        CAMELCASE
-        HEADER_NAMES
+    ORIGINAL
+    CAMELCASE
+    HEADER_NAMES
         KDSoapGlobal
         KDSoapMessage,KDSoapHeaders
         KDSoap
@@ -84,10 +83,11 @@ if(KDSoap_IS_ROOT_PROJECT)
         KDSoapAuthentication
         KDQName
         KDSoapUdpClient
-        COMMON_HEADER
+    COMMON_HEADER
         KDSoapClient
-    )
+)
 
+if(KDSoap_IS_ROOT_PROJECT)
     install(
         FILES ${client_HEADERS}
               KDSoapMessage.h
