@@ -62,29 +62,29 @@ endif()
 
 include(ECMGenerateHeaders)
 ecm_generate_headers(
-        client_HEADERS
+    client_HEADERS
     ORIGINAL
     CAMELCASE
     HEADER_NAMES
-        KDSoapGlobal
-        KDSoapMessage,KDSoapHeaders
-        KDSoap
-        KDDateTime
-        KDSoapJob
-        KDSoapClientInterface
-        KDSoapNamespaceManager
-        KDSoapSslHandler
-        KDSoapValue,KDSoapValueList
-        KDSoapPendingCallWatcher
-        KDSoapFaultException
-        KDSoapMessageAddressingProperties
-        KDSoapEndpointReference
-        KDSoapPendingCall
-        KDSoapAuthentication
-        KDQName
-        KDSoapUdpClient
+    KDSoapGlobal
+    KDSoapMessage,KDSoapHeaders
+    KDSoap
+    KDDateTime
+    KDSoapJob
+    KDSoapClientInterface
+    KDSoapNamespaceManager
+    KDSoapSslHandler
+    KDSoapValue,KDSoapValueList
+    KDSoapPendingCallWatcher
+    KDSoapFaultException
+    KDSoapMessageAddressingProperties
+    KDSoapEndpointReference
+    KDSoapPendingCall
+    KDSoapAuthentication
+    KDQName
+    KDSoapUdpClient
     COMMON_HEADER
-        KDSoapClient
+    KDSoapClient
 )
 
 if(KDSoap_IS_ROOT_PROJECT)
