@@ -33,6 +33,8 @@ add_library(
     kdsoap
     ${KDSoap_LIBRARY_MODE} ${SOURCES}
 )
+add_library(KDSoap::kdsoap ALIAS kdsoap)
+
 set_target_properties(kdsoap PROPERTIES OUTPUT_NAME "kdsoap${${PROJECT_NAME}_LIBRARY_QTID}")
 if(${PROJECT_NAME}_STATIC)
     target_compile_definitions(kdsoap PUBLIC KDSOAP_STATICLIB)
