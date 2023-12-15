@@ -49,7 +49,7 @@ public:
     /**
      * Fills in KDSoapMessage from a KDSoapValue.
      */
-    KDSoapMessage &operator=(const KDSoapValue &other);
+    KDSoapMessage &operator=(const KDSoapValue &other); // cppcheck-suppress duplInheritedMember
 
     /**
      * Compares two KDSoapMessages
