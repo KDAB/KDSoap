@@ -49,7 +49,7 @@ KDSoapMessage &KDSoapMessage::operator=(const KDSoapMessage &other)
     return *this;
 }
 
-KDSoapMessage &KDSoapMessage::operator=(const KDSoapValue &other)
+KDSoapMessage &KDSoapMessage::operator=(const KDSoapValue &other) // cppcheck-suppress duplInheritedMember
 {
     KDSoapValue::operator=(other);
     return *this;
