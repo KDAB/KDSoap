@@ -9,10 +9,12 @@ on:
     branches:
       - master
       - kdsoap-2.1
+      - kdsoap-2.2
   pull_request:
     branches:
       - master
       - kdsoap-2.1
+      - kdsoap-2.2
 
 jobs:
   build:
