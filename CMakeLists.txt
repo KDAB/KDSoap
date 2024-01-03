@@ -1,7 +1,7 @@
 #
 # This file is part of the KD Soap project.
 #
-# SPDX-FileCopyrightText: 2012-2023 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
+# SPDX-FileCopyrightText: 2012 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
 #
 # SPDX-License-Identifier: MIT
 #
@@ -208,7 +208,9 @@ if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
         AnyNewerVersion
     )
     if(${PROJECT_NAME}_QT6)
-        install(FILES "${CMAKE_CURRENT_BINARY_DIR}/kdsoap_version.h" DESTINATION ${INSTALL_INCLUDE_DIR}/KDSoapClient-Qt6/KDSoapClient)
+        install(FILES "${CMAKE_CURRENT_BINARY_DIR}/kdsoap_version.h"
+                DESTINATION ${INSTALL_INCLUDE_DIR}/KDSoapClient-Qt6/KDSoapClient
+        )
     else()
         install(FILES "${CMAKE_CURRENT_BINARY_DIR}/kdsoap_version.h" DESTINATION ${INSTALL_INCLUDE_DIR}/KDSoapClient)
     endif()
