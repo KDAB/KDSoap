@@ -46,9 +46,14 @@ endif()
 target_link_libraries(
     kdsoap ${QT_LIBRARIES}
 )
+if(${PROJECT_NAME}_QT6)
+    set(client_INCLUDE_DIR ${INSTALL_INCLUDE_DIR}/KDSoapClient-Qt6)
+else()
+    set(client_INCLUDE_DIR ${INSTALL_INCLUDE_DIR})
+endif()
 target_include_directories(
     kdsoap
-    INTERFACE "$<INSTALL_INTERFACE:${INSTALL_INCLUDE_DIR}>"
+    INTERFACE "$<INSTALL_INTERFACE:${client_INCLUDE_DIR}>"
 )
 set_target_properties(kdsoap PROPERTIES SOVERSION ${${PROJECT_NAME}_SOVERSION} VERSION ${${PROJECT_NAME}_VERSION})
 
@@ -111,7 +116,7 @@ if(KDSoap_IS_ROOT_PROJECT)
               KDSoapEndpointReference.h
               KDQName.h
               KDSoapUdpClient.h
-        DESTINATION ${INSTALL_INCLUDE_DIR}/KDSoapClient
+        DESTINATION ${client_INCLUDE_DIR}/KDSoapClient
     )
 
     install(
