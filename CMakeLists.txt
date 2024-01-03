@@ -207,7 +207,11 @@ if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
         COMPATIBILITY
         AnyNewerVersion
     )
-    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/kdsoap_version.h" DESTINATION ${INSTALL_INCLUDE_DIR}/KDSoapClient)
+    if(${PROJECT_NAME}_QT6)
+        install(FILES "${CMAKE_CURRENT_BINARY_DIR}/kdsoap_version.h" DESTINATION ${INSTALL_INCLUDE_DIR}/KDSoapClient-Qt6/KDSoapClient)
+    else()
+        install(FILES "${CMAKE_CURRENT_BINARY_DIR}/kdsoap_version.h" DESTINATION ${INSTALL_INCLUDE_DIR}/KDSoapClient)
+    endif()
 
     configure_file(
         "${CMAKE_CURRENT_SOURCE_DIR}/KDSoapConfig-buildtree.cmake.in"

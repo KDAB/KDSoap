@@ -1,7 +1,8 @@
 
 General:
 ========
-*
+* buildsystem - Add co-installability of Qt5 and Qt6 headers back.
+  Installs Qt6 headers into their own subdirectory so client code still works, but can be co-installed with Qt5 again.
 
 Client-side:
 ============
