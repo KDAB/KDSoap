@@ -129,7 +129,7 @@ if(KDSoap_IS_ROOT_PROJECT)
     if(MSVC AND NOT ${PROJECT_NAME}_STATIC)
         install(
             FILES "$<TARGET_PDB_FILE_DIR:kdsoap>/$<TARGET_PDB_FILE_NAME:kdsoap>"
-            DESTINATION ${INSTALL_LIBRARY_DIR}
+            DESTINATION ${INSTALL_RUNTIME_DIR}
             CONFIGURATIONS Debug RelWithDebInfo
         )
     endif()
