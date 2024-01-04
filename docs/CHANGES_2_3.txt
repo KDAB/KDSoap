@@ -1,12 +1,11 @@
 
 General:
 ========
-* 
+*
 Client-side:
 ============
-* 
+*
 
 Server-side:
 ============
 *
-
