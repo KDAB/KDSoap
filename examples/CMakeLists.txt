@@ -6,11 +6,11 @@
 #
 
 find_package(
-    Qt${Qt_VERSION_MAJOR} ${QT_MIN_VERSION}
+    Qt${QT_VERSION_MAJOR} ${QT_MIN_VERSION}
     COMPONENTS Widgets CONFIG
     REQUIRED
 )
-list(APPEND QT_LIBRARIES Qt${Qt_VERSION_MAJOR}::Widgets)
+list(APPEND QT_LIBRARIES Qt${QT_VERSION_MAJOR}::Widgets)
 
 include(${CMAKE_BINARY_DIR}/KDSoap/KDSoapMacros.cmake)
 include_directories(../src/ ../src/KDSoapClient/ ../src/KDSoapServer/)

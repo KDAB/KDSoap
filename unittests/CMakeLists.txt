@@ -6,11 +6,11 @@
 #
 
 find_package(
-    Qt${Qt_VERSION_MAJOR} ${QT_MIN_VERSION}
+    Qt${QT_VERSION_MAJOR} ${QT_MIN_VERSION}
     COMPONENTS Test CONFIG
     REQUIRED
 )
-list(APPEND QT_LIBRARIES Qt${Qt_VERSION_MAJOR}::Test)
+list(APPEND QT_LIBRARIES Qt${QT_VERSION_MAJOR}::Test)
 
 include_directories(
     ../src/
