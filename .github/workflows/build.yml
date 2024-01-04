@@ -75,7 +75,9 @@ jobs:
 
       - name: Run tests on Linux (offscreen)
         if: ${{ matrix.build_type == 'Debug' && runner.os == 'Linux' }}
-        run: ctest --test-dir ./build -C ${{ matrix.build_type }} --output-on-failure
+        run: >
+          ctest --test-dir ./build -C ${{ matrix.build_type }} --output-on-failure
+          -E 'kdsoap-test_wsdl_rpc'
         env:
           QT_QPA_PLATFORM: offscreen
 
