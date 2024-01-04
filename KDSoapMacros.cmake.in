@@ -37,7 +37,7 @@ macro(KDSOAP_GENERATE_WSDL _sources)
         SKIP_AUTOMOC ON
         SKIP_AUTOUIC ON
     )
-    qt@Qt_VERSION_MAJOR@_wrap_cpp(_sources_MOCS ${_header_wsdl_FILE})
+    qt@QT_VERSION_MAJOR@_wrap_cpp(_sources_MOCS ${_header_wsdl_FILE})
     list(APPEND ${_sources} ${_header_wsdl_FILE} ${_source_wsdl_FILE} ${_sources_MOCS})
   endforeach()
 endmacro()
