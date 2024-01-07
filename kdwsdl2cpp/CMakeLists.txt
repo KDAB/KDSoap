@@ -6,11 +6,11 @@
 #
 
 find_package(
-    Qt${Qt_VERSION_MAJOR} ${QT_MIN_VERSION}
+    Qt${QT_VERSION_MAJOR} ${QT_MIN_VERSION}
     COMPONENTS Xml CONFIG
     REQUIRED
 ) #libkode requires Xml
-list(APPEND QT_LIBRARIES Qt${Qt_VERSION_MAJOR}::Xml)
+list(APPEND QT_LIBRARIES Qt${QT_VERSION_MAJOR}::Xml)
 
 include_directories(libkode)
 

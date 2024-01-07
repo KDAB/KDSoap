@@ -101,14 +101,14 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 endif()
 
 if(${PROJECT_NAME}_QT6)
-    set(Qt_VERSION_MAJOR 6)
+    set(QT_VERSION_MAJOR 6)
     set(QT_MIN_VERSION "6.0.0")
     find_package(Qt6 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS Core Network)
     list(APPEND QT_LIBRARIES Qt6::Core Qt6::Network)
     set(${PROJECT_NAME}_LIBRARY_QTID "-qt6")
     set(libkode_QT6 ON)
 else()
-    set(Qt_VERSION_MAJOR 5)
+    set(QT_VERSION_MAJOR 5)
     # Qt 5.9 required for QNetworkRequest::NoLessSafeRedirectPolicy
     set(QT_MIN_VERSION "5.9.0")
     find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS Core Network)
@@ -247,7 +247,7 @@ if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
 
     # Generate .pri file for qmake users (except when using the VS generator)
     if(NOT CMAKE_CONFIGURATION_TYPES)
-        if(Qt_VERSION_MAJOR EQUAL 5 OR (Qt_VERSION_MAJOR EQUAL 6 AND Qt6Core_VERSION VERSION_GREATER "6.2"))
+        if(QT_VERSION_MAJOR EQUAL 5 OR (QT_VERSION_MAJOR EQUAL 6 AND Qt6Core_VERSION VERSION_GREATER "6.2"))
             include(ECMGeneratePriFile)
             ecm_generate_pri_file(
                 BASE_NAME
