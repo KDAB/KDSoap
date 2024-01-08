@@ -8,6 +8,10 @@ on:
   schedule:
   - cron: '0 3 * * *'
 
+env:
+  CLAZY_CHECKS: "level2,no-qstring-allocations,no-fully-qualified-moc-types"
+  CLAZY_IGNORE_DIRS: ".*libkode.*"
+
 jobs:
   build:
     runs-on: ${{ matrix.os }}
