@@ -1,5 +1,5 @@
 Name:           qt6-kdsoap
-Version:        2.1.1
+Version:        2.2.0
 Release:        1
 Summary:        A Qt6-based client-side and server-side SOAP component
 Source0:        %{name}-%{version}.tar.gz
@@ -70,21 +70,18 @@ cmake . -DCMAKE_INSTALL_PREFIX=/usr -DKDSoap_QT6=True -DCMAKE_SKIP_RPATH=True -D
 
 %files devel
 %defattr(-,root,root)
-%if 0%{?fedora} > 35
-%{_libdir}/qt6/mkspecs/modules/*
-%endif
-#%dir %{_prefix}/share/mkspecs
-#%dir %{_prefix}/share/mkspecs/features
-#%{_prefix}/share/mkspecs/features/kdsoap.prf
 %{_bindir}/kdwsdl2cpp-qt6
-%{_includedir}/KDSoapClient
-%{_includedir}/KDSoapServer
+%{_includedir}/KDSoapClient-Qt6
+%{_includedir}/KDSoapServer-Qt6
 %dir %{_libdir}/cmake/KDSoap-qt6
 %{_libdir}/cmake/KDSoap-qt6/*
 %{_libdir}/libkdsoap-qt6.so
 %{_libdir}/libkdsoap-server-qt6.so
+%{_libdir}/qt6/mkspecs/modules/*
 
 %changelog
+* Sun Jan 07 2024 Allen Winter <allen.winter@kdab.com> 2.2.0
+  2.2.0
 * Mon Sep 12 2022 Allen Winter <allen.winter@kdab.com> 2.1.1
   2.1.1
 * Sun Sep 11 2022 Allen Winter <allen.winter@kdab.com> 2.1.0
