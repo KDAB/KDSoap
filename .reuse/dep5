@@ -59,3 +59,8 @@ License: LicenseRef-SportingExchange
 Files: unittests/ws_discovery_wsdl/schemas.xmlsoap.org/ws/2005/04/discovery/ws-discovery.xsd unittests/ws_discovery_wsdl/schemas.xmlsoap.org/ws/2004/08/addressing unittests/ws_discovery_wsdl/*.wsdl
 Copyright: pyright © 2002-2004 BEA Systems Inc., International Business Machines Corporation, Microsoft Corporation, Inc, SAP AG, and Sun Microsystems, Inc.. All rights reserved.
 License: LicenseRef-Microsoft
+
+# doxygen awesome
+Files: docs/api/doxygen-awesome.css
+Copyright: 2021 - 2023 jothepro
+License: MIT
