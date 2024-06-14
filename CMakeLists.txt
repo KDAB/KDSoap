@@ -121,7 +121,6 @@ find_path(BOOST_OPTIONAL_DIR NAMES boost/optional.hpp)
 if(BOOST_OPTIONAL_DIR)
     message(STATUS "Found boost/optional.hpp in ${BOOST_OPTIONAL_DIR}")
     include_directories(${BOOST_OPTIONAL_DIR})
-    add_definitions(-DBOOST_OPTIONAL_FOUND)
 endif()
 
 set(CMAKE_INCLUDE_CURRENT_DIR TRUE)
