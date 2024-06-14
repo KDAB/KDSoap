@@ -25,6 +25,7 @@ class CalcTest : public QObject
     Q_OBJECT
 
 private Q_SLOTS:
+#if 0 // http://websrv.cs.fsu.edu/~engelen/calcserver.cgi no longer exists
     void testAddRequestRemote()
     {
         Calc service;
@@ -33,6 +34,7 @@ private Q_SLOTS:
         QCOMPARE(service.lastError(), QString());
         QCOMPARE(result, 10.0);
     }
+#endif
 
     void testAddRequestLocal()
     {
