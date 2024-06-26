@@ -88,6 +88,14 @@ public:
     bool useWSUsernameToken() const;
 
     /**
+     * Workaround some broken implementations like on some italian institutions
+     * Remove Nonce and Created from UsernameToken
+     */
+    void setOmitNonceCreatedFromUsernameToken(bool omitNonceCreatedFromUsernameToken);
+
+    bool omitNonceCreatedFromUsernameToken() const;
+
+    /**
      * Sets the created time used during WS-UsernameToken authentication
      * This is useful for devices with an incorrect time and during testing
      * \since 1.8
