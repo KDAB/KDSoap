@@ -94,7 +94,7 @@ public:
     KDSoapFaultException(const KDSoapFaultException &cpy);
 
     /**
-     * Constructs a KDSoapFaultException according to the SOAP 1.1 attriutes.
+     * Constructs a KDSoapFaultException according to the SOAP 1.1 attributes.
      *
      * \param faultCode a code for identifying the fault
      * \param faultString a human readable explanation of the fault
