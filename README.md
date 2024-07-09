@@ -25,7 +25,7 @@ See [INSTALL.txt](INSTALL.txt) for installation instructions using CMake.
 
 Learn more at our:
 
-* [online API reference](https://docs.kdab.com/kdsoap)
+* [online API reference](https://kdab.github.io/KDSoap)
 * [programmers manual with examples](docs/manual/kdsoap.pdf)
 * [sorted example programs](examples/)
 
