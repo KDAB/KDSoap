@@ -9,4 +9,5 @@ Client-side:
 
 Server-side:
 ============
-*
+* To avoid mixing up raw-xml requests in the same server object (#288), KDSoap now creates a server object for each incoming connection.
+  Make sure your server object is ready to be created multiple times (this was already a requirement when enabling multi-threading with setThreadPool()).
