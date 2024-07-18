@@ -54,6 +54,8 @@ KDSoapServerSocket::~KDSoapServerSocket()
 {
     // same as m_owner->socketDeleted, but safe in case m_owner is deleted first
     emit socketDeleted(this);
+
+    delete m_serverObject;
 }
 
 typedef QMap<QByteArray, QByteArray> HeadersMap;

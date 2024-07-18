@@ -14,21 +14,18 @@
 
 KDSoapSocketList::KDSoapSocketList(KDSoapServer *server)
     : m_server(server)
-    , m_serverObject(server->createServerObject())
     , m_totalConnectionCount(0)
 {
     Q_ASSERT(m_server);
-    Q_ASSERT(m_serverObject);
 }
 
 KDSoapSocketList::~KDSoapSocketList()
 {
-    delete m_serverObject;
 }
 
 KDSoapServerSocket *KDSoapSocketList::handleIncomingConnection(int socketDescriptor)
 {
-    KDSoapServerSocket *socket = new KDSoapServerSocket(this, m_serverObject);
+    KDSoapServerSocket *socket = new KDSoapServerSocket(this, m_server->createServerObject());
     socket->setSocketDescriptor(socketDescriptor);
 
 #ifndef QT_NO_SSL

@@ -1237,6 +1237,7 @@ void WsdlDocumentTest::testDisconnectDuringDelayedCall()
 {
     TestServerThread<DocServer> serverThread;
     DocServer *server = serverThread.startThread();
+    QPointer<DocServerObject> serverObject;
     {
         MyWsdlDocument service;
         service.setEndPoint(server->endPoint());
@@ -1246,14 +1247,14 @@ void WsdlDocumentTest::testDisconnectDuringDelayedCall()
         job->start();
         // Wait until the server method is called
         QTRY_VERIFY(server->lastServerObject());
-        QTRY_COMPARE(server->lastServerObject()->m_lastMethodCalled, QString::fromLatin1("delayedAddEmployee"));
+        serverObject = server->lastServerObject();
+        QTRY_COMPARE(serverObject->m_lastMethodCalled, QString::fromLatin1("delayedAddEmployee"));
 
         delete job;
     } // Disconnect the client
 
-    // Let the server continue
-
-    QTRY_COMPARE(server->lastServerObject()->m_lastMethodCalled, QString::fromLatin1("slotDelayedResponse"));
+    // Now that there's one server object per socket (#289), the server object gets deleted before the delayed response
+    QTRY_VERIFY(serverObject.isNull());
 }
 
 // Same as testSequenceInResponse (thomas-bayer.wsdl), but as a server test, by calling DocServer on a different path

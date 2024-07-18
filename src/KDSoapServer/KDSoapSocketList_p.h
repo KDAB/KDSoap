@@ -45,7 +45,6 @@ public Q_SLOTS:
 
 private:
     KDSoapServer *m_server;
-    QObject *m_serverObject;
     QSet<KDSoapServerSocket *> m_sockets;
     QAtomicInt m_totalConnectionCount;
 };

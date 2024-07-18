@@ -39,8 +39,8 @@ Q_DECLARE_METATYPE(QFile::Permissions)
 static const char *myWsdlNamespace = "http://www.kdab.com/xml/MyWsdl/";
 
 class CountryServerObject;
-typedef QMap<QThread *, CountryServerObject *> ServerObjectsMap;
-ServerObjectsMap s_serverObjects;
+typedef QList<CountryServerObject *> ServerObjectsList;
+ServerObjectsList s_serverObjects;
 QMutex s_serverObjectsMutex;
 
 class PublicThread : public QThread
@@ -88,13 +88,13 @@ public:
     {
         // qDebug() << "Server object created in thread" << QThread::currentThread();
         QMutexLocker locker(&s_serverObjectsMutex);
-        s_serverObjects.insert(QThread::currentThread(), this);
+        s_serverObjects.append(this);
     }
     ~CountryServerObject()
     {
         QMutexLocker locker(&s_serverObjectsMutex);
-        Q_ASSERT(s_serverObjects.value(QThread::currentThread()) == this);
-        s_serverObjects.remove(QThread::currentThread());
+        Q_ASSERT(s_serverObjects.contains(this));
+        s_serverObjects.removeOne(this);
     }
 
     virtual void processRequest(const KDSoapMessage &request, KDSoapMessage &response, const QByteArray &soapAction) override;
@@ -189,7 +189,7 @@ public: // SOAP-accessible methods
     {
         // Should be called in same thread as constructor
         s_serverObjectsMutex.lock();
-        Q_ASSERT(s_serverObjects.value(QThread::currentThread()) == this);
+        Q_ASSERT(s_serverObjects.contains(this));
         s_serverObjectsMutex.unlock();
         if (employeeName.isEmpty()) {
             setFault(QLatin1String("Client.Data"), QLatin1String("Empty employee name"), QLatin1String("CountryServerObject"),
@@ -403,7 +403,7 @@ private Q_SLOTS:
             QCOMPARE(response.childValues().first().value().toString(), expectedCountry());
 
             QCOMPARE(s_serverObjects.count(), 1);
-            QVERIFY(s_serverObjects.value(&serverThread)); // request handled by server thread itself (no thread pool)
+            QCOMPARE(s_serverObjects.at(0)->thread(), &serverThread); // request handled by server thread itself (no thread pool)
             QCOMPARE(server->totalConnectionCount(), 1);
             delete client;
             QTest::qWait(100);
@@ -533,7 +533,7 @@ private Q_SLOTS:
             const KDSoapMessage response = client->call(QLatin1String("getEmployeeCountry"), countryMessage());
             QCOMPARE(response.childValues().first().value().toString(), expectedCountry());
             QCOMPARE(s_serverObjects.count(), 1);
-            QThread *thread = s_serverObjects.begin().key();
+            QThread *thread = s_serverObjects.at(0)->thread();
             QVERIFY(thread != qApp->thread());
             QVERIFY(thread != &serverThread);
             QCOMPARE(server->totalConnectionCount(), 1);
@@ -547,7 +547,7 @@ private Q_SLOTS:
         QTest::addColumn<int>("maxThreads");
         QTest::addColumn<int>("numRequests");
         QTest::addColumn<int>("numClients");
-        QTest::addColumn<int>("expectedServerObjects");
+        QTest::addColumn<int>("expectedThreads");
 
         // QNetworkAccessManager only does 6 concurrent http requests
         // (QHttpNetworkConnectionPrivate::defaultHttpChannelCount = 6)
@@ -564,7 +564,7 @@ private Q_SLOTS:
         QFETCH(int, maxThreads);
         QFETCH(int, numRequests);
         QFETCH(int, numClients);
-        QFETCH(int, expectedServerObjects);
+        QFETCH(int, expectedThreads);
         {
             KDSoapThreadPool threadPool;
             threadPool.setMaxThreadCount(maxThreads);
@@ -586,13 +586,15 @@ private Q_SLOTS:
                 for (const KDSoapMessage &response : std::as_const(m_returnMessages)) {
                     QCOMPARE(response.childValues().first().value().toString(), expectedCountry());
                 }
-                QCOMPARE(s_serverObjects.count(), expectedServerObjects);
-                QMapIterator<QThread *, CountryServerObject *> it(s_serverObjects);
-                while (it.hasNext()) {
-                    QThread *thread = it.next().key();
+                QCOMPARE(s_serverObjects.count(), numRequests);
+                QSet<QThread *> usedThreads;
+                for (CountryServerObject *obj : qAsConst(s_serverObjects)) {
+                    QThread *thread = obj->thread();
                     QVERIFY(thread != qApp->thread());
                     QVERIFY(thread != &serverThread);
+                    usedThreads.insert(thread);
                 }
+                QCOMPARE(usedThreads.count(), expectedThreads);
             }
             QCOMPARE(server->totalConnectionCount(), numClients * numRequests);
         }
