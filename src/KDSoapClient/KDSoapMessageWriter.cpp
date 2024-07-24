@@ -67,10 +67,10 @@ QByteArray KDSoapMessageWriter::messageToXml(const KDSoapMessage &message, const
         // and xsi:type attributes that refer to n1, which isn't defined in the body...
         namespacePrefixes.writeNamespace(writer, messageNamespace, QLatin1String("n1") /*make configurable?*/);
         writer.writeStartElement(soapEnvelope, QLatin1String("Header"));
-        for (const KDSoapMessage &header : qAsConst(persistentHeaders)) {
+        for (const KDSoapMessage &header : std::as_const(persistentHeaders)) {
             header.writeChildren(namespacePrefixes, writer, header.use(), messageNamespace, true);
         }
-        for (const KDSoapMessage &header : qAsConst(headers)) {
+        for (const KDSoapMessage &header : std::as_const(headers)) {
             header.writeChildren(namespacePrefixes, writer, header.use(), messageNamespace, true);
         }
         if (message.hasMessageAddressingProperties()) {

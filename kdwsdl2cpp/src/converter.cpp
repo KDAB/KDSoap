@@ -99,7 +99,7 @@ public:
     void registerDerivedClasses()
     {
         XSD::ComplexType::List complexTypes = m_allTypes.complexTypes();
-        for (const XSD::ComplexType &derivedType : qAsConst(complexTypes)) {
+        for (const XSD::ComplexType &derivedType : std::as_const(complexTypes)) {
             const QName base = derivedType.baseTypeName();
             if (!base.isEmpty()) {
                 // Look for the base class and register type. Linear search, maybe we should use a QHash...
@@ -120,7 +120,7 @@ public:
         QSet<QName> typesToProcess = m_allUsedTypes;
         do {
             m_alsoUsedTypes.clear();
-            for (const QName &typeName : qAsConst(typesToProcess)) {
+            for (const QName &typeName : std::as_const(typesToProcess)) {
                 if (typeName.isEmpty()) {
                     continue;
                 }
@@ -222,7 +222,7 @@ public:
                 PortType portType = wsdl.findPortType(binding.portTypeName());
                 const Operation::List operations = portType.operations();
                 // qDebug() << "portType" << portType.name() << operations.count() << "operations";
-                for (const Operation &operation : qAsConst(operations)) {
+                for (const Operation &operation : std::as_const(operations)) {
                     // qDebug() << "  operation" << operation.operationType() << operation.name();
                     switch (operation.operationType()) {
                     case Operation::OneWayOperation:
@@ -298,7 +298,7 @@ void Converter::cleanupUnusedTypes()
     QSet<QString> usedTypesStrings; // for debug
     QSet<QName> usedElementNames;
     Message::List newMessages;
-    for (const QName &messageName : qAsConst(usedMessageNames)) {
+    for (const QName &messageName : std::as_const(usedMessageNames)) {
         // qDebug() << "used message:" << messageName;
         Message message = mWSDL.findMessage(messageName);
         newMessages.append(message);
@@ -395,13 +395,13 @@ void Converter::convertTypes()
 
     XSD::SimpleType::List simpleTypes = types.simpleTypes();
     qDebug() << "Converting" << simpleTypes.count() << "simple types";
-    for (const XSD::SimpleType &simpleType : qAsConst(simpleTypes)) {
+    for (const XSD::SimpleType &simpleType : std::as_const(simpleTypes)) {
         convertSimpleType(&simpleType, simpleTypes);
     }
 
     XSD::ComplexType::List complexTypes = types.complexTypes();
     qDebug() << "Converting" << complexTypes.count() << "complex types";
-    for (const XSD::ComplexType &complexType : qAsConst(complexTypes)) {
+    for (const XSD::ComplexType &complexType : std::as_const(complexTypes)) {
         convertComplexType(&complexType);
     }
 }

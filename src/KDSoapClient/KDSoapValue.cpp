@@ -304,7 +304,7 @@ void KDSoapValue::writeElementContents(KDSoapNamespacePrefixes &namespacePrefixe
 {
     const QVariant value = this->value();
 
-    for (const QXmlStreamNamespaceDeclaration &decl : qAsConst(d->m_localNamespaceDeclarations)) {
+    for (const QXmlStreamNamespaceDeclaration &decl : std::as_const(d->m_localNamespaceDeclarations)) {
         writer.writeNamespace(decl.namespaceUri().toString(), decl.prefix().toString());
     }
 
@@ -416,7 +416,7 @@ KDSoapValueList KDSoapValue::split() const
     const QStringList list = value().toString().split(QLatin1Char(' '), QString::SkipEmptyParts);
 #endif
     valueList.reserve(list.count());
-    for (const QString &part : qAsConst(list)) {
+    for (const QString &part : std::as_const(list)) {
         KDSoapValue value(*this);
         value.setValue(part);
         valueList << value;
@@ -426,7 +426,7 @@ KDSoapValueList KDSoapValue::split() const
 
 KDSoapValue KDSoapValueList::child(const QString &name) const
 {
-    for (const KDSoapValue &val : qAsConst(*this)) {
+    for (const KDSoapValue &val : std::as_const(*this)) {
         if (val.name() == name) {
             return val;
         }

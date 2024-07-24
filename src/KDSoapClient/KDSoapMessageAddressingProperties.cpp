@@ -289,7 +289,7 @@ static void writeKDSoapValueVariant(QXmlStreamWriter &writer, const KDSoapValue 
 static void writeKDSoapValueListHierarchy(KDSoapNamespacePrefixes &namespacePrefixes, QXmlStreamWriter &writer, const QString &addressingNS,
                                           const KDSoapValueList &values)
 {
-    for (const KDSoapValue &value : qAsConst(values)) {
+    for (const KDSoapValue &value : std::as_const(values)) {
         const QString topLevelName = value.name();
         writer.writeStartElement(addressingNS, topLevelName);
 
@@ -363,7 +363,7 @@ void KDSoapMessageAddressingProperties::writeMessageAddressingProperties(KDSoapN
         writer.writeEndElement();
     }
 
-    for (const KDSoapMessageRelationship::Relationship &relationship : qAsConst(d->relationships)) {
+    for (const KDSoapMessageRelationship::Relationship &relationship : std::as_const(d->relationships)) {
         if (relationship.uri.isEmpty()) {
             continue;
         }

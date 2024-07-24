@@ -53,7 +53,7 @@ void Creator::setImplementationFileName(const QString &implementationFileName)
 
 void Creator::setClasses(const KODE::Class::List &list)
 {
-    for (const KODE::Class &newClass : qAsConst(list)) {
+    for (const KODE::Class &newClass : std::as_const(list)) {
         _file.insertClass(newClass);
     }
 }

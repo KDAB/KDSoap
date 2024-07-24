@@ -176,7 +176,7 @@ void Definitions::fixUpDefinitions(/*ParserContext *context, const QDomElement &
     if (mServices.isEmpty()) {
         if (!mBindings.isEmpty()) {
             qDebug() << "No service tag found in the wsdl file, generating one service per binding";
-            for (const Binding &bind : qAsConst(mBindings)) {
+            for (const Binding &bind : std::as_const(mBindings)) {
                 Service service(mTargetNamespace);
                 service.setName(bind.name() + "Service");
 
@@ -194,7 +194,7 @@ void Definitions::fixUpDefinitions(/*ParserContext *context, const QDomElement &
         } else {
             Q_ASSERT(!mPortTypes.isEmpty());
             qDebug() << "No service or binding tag found in the wsdl file, generating only messages";
-            for (const PortType &portType : qAsConst(mPortTypes)) {
+            for (const PortType &portType : std::as_const(mPortTypes)) {
                 Binding binding(mTargetNamespace);
                 binding.setName(portType.name() + "Binding");
                 binding.setPortTypeName(QName(portType.nameSpace(), portType.name()));
