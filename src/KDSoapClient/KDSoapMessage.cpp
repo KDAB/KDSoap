@@ -199,7 +199,7 @@ void KDSoapMessage::setUse(Use use)
 
 KDSoapMessage KDSoapHeaders::header(const QString &name) const
 {
-    for (const KDSoapMessage &header : qAsConst(*this)) {
+    for (const KDSoapMessage &header : std::as_const(*this)) {
         if (header.name() == name) {
             return header;
         }
@@ -209,7 +209,7 @@ KDSoapMessage KDSoapHeaders::header(const QString &name) const
 
 KDSoapMessage KDSoapHeaders::header(const QString &name, const QString &namespaceUri) const
 {
-    for (const KDSoapMessage &header : qAsConst(*this)) {
+    for (const KDSoapMessage &header : std::as_const(*this)) {
         // qDebug() << "header(" << name << "," << namespaceUri << "): Looking at" << header.name() << "," << header.namespaceUri();
         if (header.name() == name && (namespaceUri.isEmpty() || header.namespaceUri() == namespaceUri)) {
             return header;

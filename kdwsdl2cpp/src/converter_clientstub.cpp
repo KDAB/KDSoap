@@ -82,7 +82,7 @@ bool Converter::convertClientService()
         QSet<QName> uniqueBindings = mWSDL.uniqueBindings(service);
         // qDebug() << "Looking at" << service.name() << uniqueBindings;
 
-        for (const QName &bindingName : qAsConst(uniqueBindings)) {
+        for (const QName &bindingName : std::as_const(uniqueBindings)) {
             const Binding binding = mWSDL.findBinding(bindingName);
 
             QString className = KODE::Style::className(service.name());
@@ -360,7 +360,7 @@ bool Converter::convertClientService()
                 }
             } // end of for each operation
 
-            for (const SoapBinding::Header &header : qAsConst(soapHeaders)) {
+            for (const SoapBinding::Header &header : std::as_const(soapHeaders)) {
                 createHeader(header, newClass);
             }
             bindingClasses.append(newClass);
@@ -374,7 +374,7 @@ bool Converter::convertClientService()
                 }
 
                 // for each operation, create a job class
-                for (const Operation &operation : qAsConst(operations)) {
+                for (const Operation &operation : std::as_const(operations)) {
                     Operation::OperationType opType = operation.operationType();
                     if (opType != Operation::SolicitResponseOperation && opType != Operation::RequestResponseOperation) {
                         continue;
@@ -495,7 +495,7 @@ bool Converter::convertClientService()
                                 slotCode += QLatin1String("_reply = _reply.childValues().at(0);") + COMMENT;
                             }
 
-                            for (const Part &part : qAsConst(outputParts)) {
+                            for (const Part &part : std::as_const(outputParts)) {
                                 const QString varName = mNameMapper.escape(QLatin1String("result") + upperlize(part.name()));
                                 const KODE::MemberVariable member(varName, QString());
                                 slotCode.addBlock(
@@ -504,7 +504,7 @@ bool Converter::convertClientService()
                                 addJobResultMember(jobClass, part, varName, inputGetters);
                             }
                         }
-                        for (const SoapBinding::Header &header : qAsConst(outputHeaders)) {
+                        for (const SoapBinding::Header &header : std::as_const(outputHeaders)) {
                             const QName messageName = header.message();
                             const QString partName = header.part();
                             const Message message = mWSDL.findMessage(messageName);
@@ -761,7 +761,7 @@ bool Converter::convertClientCall(const Operation &operation, const Binding &bin
         code.unindent();
         Q_ASSERT(soapStyle(binding) == SoapBinding::DocumentStyle); // RPC with multiple return values? impossible, we generate a single wrapper
 
-        for (const Part &part : qAsConst(outParts)) {
+        for (const Part &part : std::as_const(outParts)) {
             const QString argType = mTypeMap.localType(part.type(), part.element());
             Q_ASSERT(!argType.isEmpty());
             const QString lowerName = lowerlize(part.name());

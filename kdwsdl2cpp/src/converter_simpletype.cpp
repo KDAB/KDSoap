@@ -185,7 +185,7 @@ void Converter::convertSimpleType(const XSD::SimpleType *type, const XSD::Simple
                 baseCtor.addArgument(mTypeMap.localInputType(currentType, QName()) + " value");
                 QString beginLine = "setValue(";
                 QString endLine = ")";
-                for (const QName &base : qAsConst(parentBasicTypes)) {
+                for (const QName &base : std::as_const(parentBasicTypes)) {
                     beginLine += mTypeMap.localType(base) + '(';
                     endLine += ')';
                 }
@@ -294,7 +294,7 @@ void Converter::createSimpleTypeSerializer(KODE::Class &newClass, const XSD::Sim
             const QStringList enums = type->facetEnums();
             NameMapper nameMapper;
             QStringList escapedEnums;
-            for (const QString &facetEnum : qAsConst(enums)) {
+            for (const QString &facetEnum : std::as_const(enums)) {
                 escapedEnums.append(nameMapper.escape(escapeEnum(facetEnum)));
             }
 

@@ -938,7 +938,7 @@ void SoapBinding::synthesizePort(ParserContext *context, QDomDocument &document,
 
 bool SoapBinding::Headers::contains(const Header &other) const
 {
-    for (const Header &header : qAsConst(*this)) {
+    for (const Header &header : std::as_const(*this)) {
         if (header.mMessage == other.mMessage && header.mPart == other.mPart && header.mUse == other.mUse &&
 #if 0
                 header.mEncodingStyle == other.mEncodingStyle &&

@@ -153,7 +153,7 @@ void Operation::saveXML(ParserContext *context, QDomDocument &document, QDomElem
     case SolicitResponseOperation:
         mOutput.saveXML(context, QLatin1String("output"), document, element);
         mInput.saveXML(context, QLatin1String("input"), document, element);
-        for (const Fault &fault : qAsConst(mFaults)) {
+        for (const Fault &fault : std::as_const(mFaults)) {
             fault.saveXML(context, document, element);
         }
         break;
@@ -164,7 +164,7 @@ void Operation::saveXML(ParserContext *context, QDomDocument &document, QDomElem
     default:
         mInput.saveXML(context, QLatin1String("input"), document, element);
         mOutput.saveXML(context, QLatin1String("output"), document, element);
-        for (const Fault &fault : qAsConst(mFaults)) {
+        for (const Fault &fault : std::as_const(mFaults)) {
             fault.saveXML(context, document, element);
         }
         break;

@@ -21,7 +21,7 @@ void Converter::convertServerService()
 
         QSet<QName> uniqueBindings = mWSDL.uniqueBindings(service);
 
-        for (const QName &bindingName : qAsConst(uniqueBindings)) {
+        for (const QName &bindingName : std::as_const(uniqueBindings)) {
             // qDebug() << "binding" << bindingName;
             const Binding binding = mWSDL.findBinding(bindingName);
 
@@ -161,7 +161,7 @@ void Converter::generateServerMethod(KODE::Code &code, const Binding &binding, c
         // bool isBuiltin = false;
         // bool isComplex = false;
         Part retPart;
-        for (const Part &outPart : qAsConst(outParts) /* only one */) {
+        for (const Part &outPart : std::as_const(outParts) /* only one */) {
             retType = mTypeMap.localType(outPart.type(), outPart.element());
             retInputType = mTypeMap.localInputType(outPart.type(), outPart.element());
             // isBuiltin = mTypeMap.isBuiltinType( outPart.type(), outPart.element() );

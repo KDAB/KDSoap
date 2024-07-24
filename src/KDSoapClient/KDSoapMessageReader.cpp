@@ -22,7 +22,7 @@
 
 static QStringView namespaceForPrefix(const QXmlStreamNamespaceDeclarations &decls, const QString &prefix)
 {
-    for (const QXmlStreamNamespaceDeclaration &decl : qAsConst(decls)) {
+    for (const QXmlStreamNamespaceDeclaration &decl : std::as_const(decls)) {
         if (decl.prefix() == prefix) {
             return decl.namespaceUri();
         }

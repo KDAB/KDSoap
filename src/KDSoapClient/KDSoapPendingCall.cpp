@@ -22,7 +22,7 @@ static void debugHelper(const QByteArray &data, const QList<QNetworkReply::RawHe
     const bool optHttp = options.contains("http") || options.contains("https");
     const bool optReformat = options.contains("reformat");
     quint8 indentation = 4;
-    for (const QByteArray &opt : qAsConst(options)) {
+    for (const QByteArray &opt : std::as_const(options)) {
         if (opt.startsWith("indent=")) { // krazy:exclude=strings
             indentation = opt.mid(7).toUShort();
         }
@@ -30,7 +30,7 @@ static void debugHelper(const QByteArray &data, const QList<QNetworkReply::RawHe
 
     QByteArray toOutput;
     if (optHttp) {
-        for (const QNetworkReply::RawHeaderPair &header : qAsConst(headerList)) {
+        for (const QNetworkReply::RawHeaderPair &header : std::as_const(headerList)) {
             if (!header.first.isEmpty()) {
                 toOutput += header.first + ": ";
             }
