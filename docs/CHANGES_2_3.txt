@@ -1,7 +1,8 @@
 
 General:
 ========
-*
+* C++17 is now required. Qt-5.15 is still supported, in addition to the latest Qt6 versions.
+
 Client-side:
 ============
 *
