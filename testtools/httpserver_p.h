@@ -104,7 +104,7 @@ public:
     QByteArray header(const QByteArray &value) const
     {
         QMutexLocker lock(&m_mutex);
-        return m_headers.value(value);
+        return m_headers.value(value, m_headers.value(value.toLower()));
     }
 
     /**

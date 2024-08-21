@@ -1345,10 +1345,18 @@ private Q_SLOTS:
         loop.exec();
         reply->readAll();
 
-        QVERIFY(reply->rawHeaderList().contains("Access-Control-Allow-Origin"));
-        QCOMPARE(reply->rawHeader("Access-Control-Allow-Origin").constData(), "*");
-        QVERIFY(reply->rawHeaderList().contains("Access-Control-Allow-Headers"));
-        QCOMPARE(reply->rawHeader("Access-Control-Allow-Headers").constData(), "Content-Type");
+        const bool titleCase = reply->rawHeaderList().contains("Access-Control-Allow-Origin");
+        const bool lowerCase = reply->rawHeaderList().contains("access-control-allow-origin");
+        QVERIFY(titleCase || lowerCase);
+        if (titleCase) {
+            QCOMPARE(reply->rawHeader("Access-Control-Allow-Origin").constData(), "*");
+            QVERIFY(reply->rawHeaderList().contains("Access-Control-Allow-Headers"));
+            QCOMPARE(reply->rawHeader("Access-Control-Allow-Headers").constData(), "Content-Type");
+        } else { // Qt >= 6.8
+            QCOMPARE(reply->rawHeader("access-control-allow-origin").constData(), "*");
+            QVERIFY(reply->rawHeaderList().contains("access-control-allow-headers"));
+            QCOMPARE(reply->rawHeader("access-control-allow-headers").constData(), "Content-Type");
+        }
     }
 
     void testTimeout()
