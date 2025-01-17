@@ -438,9 +438,9 @@ void TypeMap::addSchemaTypes(const XSD::Types &types, const QString &ns)
             Q_ASSERT(0);
             continue;
         }
-        const QString resolvedType = (*it).localType;
+        QString resolvedType = (*it).localType;
         Q_ASSERT(!resolvedType.isEmpty());
-        entry.localType = resolvedType;
+        entry.localType = std::move(resolvedType);
         entry.basicType = (*it).basicType;
         entry.builtinType = (*it).builtinType;
         entry.complexType = (*it).complexType;

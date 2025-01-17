@@ -318,7 +318,7 @@ QString Converter::generateMemberVariable(const QString &rawName, const QString 
 
     KODE::MemberVariable nilVariable(rawName + "_nil", "bool");
 
-    const QString variableName = QLatin1String("d_ptr->") + variable.name();
+    QString variableName = QLatin1String("d_ptr->") + variable.name();
     const QString nilVariableName = QLatin1String("d_ptr->") + nilVariable.name();
     const QString upperName = upperlize(rawName);
     const QString lowerName = lowerlize(rawName);
