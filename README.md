@@ -70,7 +70,7 @@ and are not used in the library code itself.
 KD Soap is supported and maintained by Klarälvdalens Datakonsult AB (KDAB).
 
 The KDAB Group is the global No.1 software consultancy for Qt, C++ and
-OpenGL applications across desktop, embedded and mobile platforms.
+3D applications across desktop, embedded and mobile platforms.
 
 The KDAB Group provides consulting and mentoring for developing Qt applications
 from scratch and in porting from all popular and legacy frameworks to Qt.
