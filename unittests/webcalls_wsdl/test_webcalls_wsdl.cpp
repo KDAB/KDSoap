@@ -107,7 +107,7 @@ private slots:
         }
     }
 
-#if 0  // 2025: AJAX samples are no longer available
+#if 0 // 2025: AJAX samples are no longer available
     void testOrteLookupSync()
     {
         OrteLookup::OrteLookupSoap lookupService;
