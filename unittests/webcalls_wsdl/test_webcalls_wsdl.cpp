@@ -107,6 +107,7 @@ private slots:
         }
     }
 
+#if 0  // 2025: AJAX samples are no longer available
     void testOrteLookupSync()
     {
         OrteLookup::OrteLookupSoap lookupService;
@@ -146,6 +147,7 @@ private slots:
         const TNS__OrteStartWithResponse resp = job->resultParameters();
         QCOMPARE(resp.orteStartWithResult(), QString::fromLatin1("Berlin;Berlstedt"));
     }
+#endif
 
 protected slots:
     void slotGetBankDone(const TNS__GetBankResponseType &response)

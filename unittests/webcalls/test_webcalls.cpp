@@ -33,6 +33,7 @@ private slots:
 
     // Soap in Document mode.
 
+#if 0 // 2025: AJAX samples are no longer available
     void testAddIntegers_async()
     {
         qDebug() << Q_FUNC_INFO << "this=" << this << "thread()=" << thread() << "currentThread=" << QThread::currentThread()
@@ -68,6 +69,7 @@ private slots:
         QVERIFY2(!ret.isFault(), qPrintable(ret.faultAsString()));
         QCOMPARE(ret.arguments().first().value().toInt(), 85);
     }
+#endif
 
 #if 0 // 2020-02-12: service unavailable
     void testAsyncLiteralUse()
@@ -106,6 +108,7 @@ private slots:
         QCOMPARE(ret.faultAsString(), QString::fromLatin1("Fault code 1: Connection refused"));
     }
 
+#if 0 // 2025: AJAX samples are no longer available
     void testOrteLookup()
     {
         const QString endPoint = QString::fromLatin1("http://mathertel.de/AJAXEngine/S02_AJAXCoreSamples/OrteLookup.asmx?WSDL");
@@ -124,6 +127,7 @@ private slots:
         const QString retVal = m_returnMessage.arguments()[0].value().toString();
         QCOMPARE(retVal, QString::fromLatin1("Berlin;Berlstedt"));
     }
+#endif
 
 private:
     QEventLoop m_eventLoop;
