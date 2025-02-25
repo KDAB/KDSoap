@@ -50,7 +50,7 @@ develop programs which need to access web services using the SOAP protocol.
 
 %build
 touch .license.accepted
-cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_SKIP_RPATH=True -DCMAKE_BUILD_TYPE=Release
+cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_SKIP_RPATH=True -DCMAKE_BUILD_TYPE=Release -DKDSoap_QT6=False
 %__make %{?_smp_mflags}
 
 %post -p /sbin/ldconfig

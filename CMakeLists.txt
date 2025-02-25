@@ -12,7 +12,7 @@
 #
 # -DKDSoap_QT6=[true|false]
 #  Build against Qt6 rather than Qt5
-#  Default=false (Qt5 will be used even if Qt6 is available)
+#  Default=true
 #
 # -DKDSoap_STATIC=[true|false]
 #  Build static libraries
@@ -73,7 +73,7 @@ option(${PROJECT_NAME}_STATIC "Build statically" OFF)
 option(${PROJECT_NAME}_TESTS "Build the tests" OFF)
 option(${PROJECT_NAME}_EXAMPLES "Build the examples" ON)
 option(${PROJECT_NAME}_DOCS "Build the API documentation" OFF)
-option(${PROJECT_NAME}_QT6 "Build against Qt 6" OFF)
+option(${PROJECT_NAME}_QT6 "Build against Qt 6" ON)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/ECM/modules")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/KDAB/modules")

@@ -2,6 +2,7 @@
 General:
 ========
 * C++17 is now required. Qt-5.15 is still supported, in addition to the latest Qt6 versions.
+* KDSoap now looks for Qt6 by default, rather than Qt5. If your Qt5 build broke, pass -DKDSoap_QT6=OFF to CMake.
 
 Client-side:
 ============
