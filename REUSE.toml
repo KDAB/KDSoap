@@ -26,7 +26,7 @@ SPDX-License-Identifier = "MIT"
 
 #misc config files
 [[annotations]]
-path = [".pre-commit-config.yaml", ".codespellrc", ".krazy", ".cmake-format.py", ".clang-format", ".clang-tidy", ".clazy", ".codedocs", ".gitignore", ".gitmodules", ".mdlrc", ".mdlrc.rb", ".pep8", ".pylintrc", "docs/api/Doxyfile.cmake", "distro/**", "REUSE.toml"]
+path = ["CMakePresets.json", ".pre-commit-config.yaml", ".codespellrc", ".krazy", ".cmake-format.py", ".clang-format", ".clang-tidy", ".clazy", ".codedocs", ".gitignore", ".gitmodules", ".mdlrc", ".mdlrc.rb", ".pep8", ".pylintrc", "docs/api/Doxyfile.cmake", "distro/**", "REUSE.toml"]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>"
 SPDX-License-Identifier = "BSD-3-Clause"
