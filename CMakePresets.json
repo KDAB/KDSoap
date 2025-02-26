@@ -1,0 +1,90 @@
+{
+  "version": 5,
+  "configurePresets": [
+    {
+      "name": "base",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build-${presetName}",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+      },
+      "warnings": {
+        "uninitialized": true
+      },
+      "errors": {
+        "dev": true
+      }
+    },
+    {
+      "name": "static-base",
+      "hidden": true,
+      "generator": "Ninja",
+      "cacheVariables": {
+        "KDSoap_STATIC": "ON"
+      },
+      "inherits": ["base"]
+    },
+    {
+      "name": "dev",
+      "inherits": ["base"],
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "KDSoap_STATIC": "OFF",
+        "KDSoap_TESTS": "ON",
+        "KDSoap_EXAMPLES": "ON",
+        "KDSoap_QT6": "ON"
+      }
+    },
+    {
+      "name": "dev-asan",
+      "inherits": ["dev"],
+      "cacheVariables": {
+        "ECM_ENABLE_SANITIZERS": "'address;undefined'"
+      }
+    },
+    {
+      "name": "dev-static",
+      "inherits": ["dev"],
+      "cacheVariables": {
+        "KDSoap_STATIC": "ON"
+      }
+    },
+    {
+      "name": "clazy",
+      "inherits": "dev",
+      "cacheVariables": {
+        "KDSoap_EXAMPLES": "OFF",
+        "KDSoap_TESTS": "OFF"
+      },
+      "environment": {
+        "CXX": "clazy",
+        "CCACHE_DISABLE": "ON"
+      }
+    },
+    {
+      "name": "release",
+      "inherits": "base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "release-static",
+      "inherits": ["release"],
+      "cacheVariables": {
+        "KDSoap_STATIC": "ON"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "clazy",
+      "configurePreset": "clazy",
+      "environment": {
+        "CLAZY_CHECKS": "level2,detaching-member,heap-allocated-small-trivial-type,isempty-vs-count,qstring-varargs,qvariant-template-instantiation,raw-environment-function,reserve-candidates,signal-with-return-value,thread-with-slots,no-ctor-missing-parent-argument,no-missing-typeinfo,no-skipped-base-method",
+        "CCACHE_DISABLE": "ON"
+      }
+    }
+  ]
+}

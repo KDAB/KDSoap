@@ -67,3 +67,4 @@ configure.sh
 /unittests/enum_escape/enum_escape
 /unittests/literal_true_false/literal_true_false
 /unittests/msexchange_noservice_wsdl/msexchange_noservice_wsdl
+/build-*
