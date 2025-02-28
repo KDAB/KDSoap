@@ -2,11 +2,19 @@
 #
 # SPDX-License-Identifier: MIT
 
-name: CI Nightly
+name: Tidy and Clazy
 
 on:
-  schedule:
-    - cron: "0 3 * * *"
+  push:
+    branches:
+      - master
+      - kdsoap-2.1
+      - kdsoap-2.2
+  pull_request:
+    branches:
+      - master
+      - kdsoap-2.1
+      - kdsoap-2.2
 
 jobs:
   build:
@@ -47,9 +55,8 @@ jobs:
           sudo apt update -qq
           echo ${{ join(matrix.config.apt_pgks, ' ') }} | xargs sudo apt install -y
 
-      - uses: actions/checkout@v4
-        with:
-          ref: "master" # schedule.cron do not allow branch setting
+      - name: Checkout sources
+        uses: actions/checkout@v4
 
       - name: Fetch Git submodules
         run: git submodule update --init --recursive
