@@ -6,11 +6,7 @@ name: CI Nightly
 
 on:
   schedule:
-  - cron: '0 3 * * *'
-
-env:
-  CLAZY_CHECKS: "level2,no-qstring-allocations,no-fully-qualified-moc-types"
-  CLAZY_IGNORE_DIRS: ".*libkode.*"
+    - cron: "0 3 * * *"
 
 jobs:
   build:
@@ -23,11 +19,14 @@ jobs:
 
         config:
           - name: clang-tidy
-            cmake_arg: '-DCMAKE_CXX_CLANG_TIDY=clang-tidy'
+            # To be moved to a cmake preset
+            cmake_arg: "-DCMAKE_CXX_CLANG_TIDY=clang-tidy -B ./build -G Ninja --warn-uninitialized -Werror=dev -DCMAKE_BUILD_TYPE=Debug -DKDSoap_QT6=ON -DKDSoap_TESTS=ON"
+            cmake_build_arg: "./build"
             qt_version: "6.6"
 
           - name: clazy
-            cmake_arg: '-DCMAKE_CXX_COMPILER=clazy'
+            cmake_arg: "--preset=clazy"
+            cmake_build_arg: "--preset=clazy"
             qt_version: "6.6"
             apt_pgks:
               - clazy
@@ -50,20 +49,14 @@ jobs:
 
       - uses: actions/checkout@v4
         with:
-          ref: 'master' # schedule.cron do not allow branch setting
+          ref: "master" # schedule.cron do not allow branch setting
 
       - name: Fetch Git submodules
         run: git submodule update --init --recursive
 
       - name: Configure project
         run: >
-          cmake -S . -B ./build -G Ninja ${{ matrix.config.cmake_arg }}
-          -DCMAKE_BUILD_TYPE=Release
-          --warn-uninitialized -Werror=dev
-          -DCMAKE_BUILD_TYPE=Debug
-          -DKDSoap_QT6=ON
-          -DKDSoap_TESTS=ON
+          cmake -S . ${{ matrix.config.cmake_arg }}
 
       - name: Build Project
-        id: ctest
-        run: cmake --build ./build
+        run: cmake --build ${{ matrix.config.cmake_build_arg }}
