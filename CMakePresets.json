@@ -63,6 +63,15 @@
       }
     },
     {
+      "name": "clang-tidy",
+      "inherits": "dev",
+      "cacheVariables": {
+        "KDSoap_EXAMPLES": "OFF",
+        "KDSoap_TESTS": "OFF",
+        "CMAKE_CXX_CLANG_TIDY": "clang-tidy"
+      }
+    },
+    {
       "name": "release",
       "inherits": "base",
       "cacheVariables": {
@@ -86,6 +95,10 @@
         "CCACHE_DISABLE": "ON",
         "CLAZY_IGNORE_DIRS": ".*libkode.*"
       }
+    },
+    {
+      "name": "clang-tidy",
+      "configurePreset": "clang-tidy"
     }
   ]
 }
