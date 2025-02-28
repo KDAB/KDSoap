@@ -27,14 +27,11 @@ jobs:
 
         config:
           - name: clang-tidy
-            # To be moved to a cmake preset
-            cmake_arg: "-DCMAKE_CXX_CLANG_TIDY=clang-tidy -B ./build -G Ninja --warn-uninitialized -Werror=dev -DCMAKE_BUILD_TYPE=Debug -DKDSoap_QT6=ON -DKDSoap_TESTS=ON"
-            cmake_build_arg: "./build"
+            preset: "clang-tidy"
             qt_version: "6.6"
 
           - name: clazy
-            cmake_arg: "--preset=clazy"
-            cmake_build_arg: "--preset=clazy"
+            preset: "clazy"
             qt_version: "6.6"
             apt_pgks:
               - clazy
@@ -63,7 +60,7 @@ jobs:
 
       - name: Configure project
         run: >
-          cmake -S . ${{ matrix.config.cmake_arg }}
+          cmake --preset=${{ matrix.config.preset }}
 
       - name: Build Project
-        run: cmake --build ${{ matrix.config.cmake_build_arg }}
+        run: cmake --build --preset=${{ matrix.config.preset }}
