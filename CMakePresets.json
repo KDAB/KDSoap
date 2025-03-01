@@ -55,7 +55,8 @@
       "inherits": "dev",
       "cacheVariables": {
         "KDSoap_EXAMPLES": "OFF",
-        "KDSoap_TESTS": "OFF"
+        "KDSoap_TESTS": "OFF",
+        "CMAKE_COMPILE_WARNING_AS_ERROR": "ON"
       },
       "environment": {
         "CXX": "clazy",
