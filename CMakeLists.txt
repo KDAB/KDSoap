@@ -102,6 +102,18 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
     )
 endif()
 
+if(CMAKE_COMPILE_WARNING_AS_ERROR)
+    # These -Wno-error flags are here to enable -Werror for clazy in CI
+    # it doesn't mean we endorse those warnings.
+    # MSVC is untested and probably will have a few hundered errors
+    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+        add_compile_options(-Wno-error=deprecated-declarations)
+        if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+            add_compile_options(-Wno-error=documentation -Wno-error=unused-private-field -Wno-error=c++20-extensions)
+        endif()
+    endif()
+endif()
+
 if(${PROJECT_NAME}_QT6)
     set(QT_VERSION_MAJOR 6)
     set(QT_MIN_VERSION "6.0.0")
