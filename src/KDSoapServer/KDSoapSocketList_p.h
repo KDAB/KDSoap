@@ -19,7 +19,7 @@ QT_END_NAMESPACE
 class KDSoapServer;
 class KDSoapServerSocket;
 
-class KDSoapSocketList : public QObject
+class KDSoapSocketList : public QObject // clazy:exclude=ctor-missing-parent-argument
 {
     Q_OBJECT
 public:
