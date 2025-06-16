@@ -165,14 +165,14 @@ bool KDSoapValue::operator!=(const KDSoapValue &other) const
 static QString variantToTextValue(const QVariant &value, const QString &typeNs, const QString &type)
 {
     switch (value.userType()) {
-    case QVariant::Char:
+    case QMetaType::QChar:
     // fall-through
-    case QVariant::String:
+    case QMetaType::QString:
         return value.toString();
-    case QVariant::Url:
+    case QMetaType::QUrl:
         // xmlpatterns/data/qatomicvalue.cpp says to do this:
         return value.toUrl().toString();
-    case QVariant::ByteArray: {
+    case QMetaType::QByteArray: {
         const QByteArray data = value.toByteArray();
         if (typeNs == KDSoapNamespaceManager::xmlSchema1999() || typeNs == KDSoapNamespaceManager::xmlSchema2001()) {
             if (type == QLatin1String("hexBinary")) {
@@ -184,19 +184,19 @@ static QString variantToTextValue(const QVariant &value, const QString &typeNs, 
         const QByteArray b64 = value.toByteArray().toBase64();
         return QString::fromLatin1(b64.constData(), b64.size());
     }
-    case QVariant::Int:
+    case QMetaType::Int:
     // fall-through
-    case QVariant::LongLong:
+    case QMetaType::LongLong:
     // fall-through
-    case QVariant::UInt:
+    case QMetaType::UInt:
         return QString::number(value.toLongLong());
-    case QVariant::ULongLong:
+    case QMetaType::ULongLong:
         return QString::number(value.toULongLong());
-    case QVariant::Bool:
+    case QMetaType::Bool:
     case QMetaType::Float:
-    case QVariant::Double:
+    case QMetaType::Double:
         return value.toString();
-    case QVariant::Time: {
+    case QMetaType::QTime: {
         const QTime time = value.toTime();
         if (time.msec()) {
             // include milli-seconds
@@ -205,11 +205,11 @@ static QString variantToTextValue(const QVariant &value, const QString &typeNs, 
             return time.toString(Qt::ISODate);
         }
     }
-    case QVariant::Date:
+    case QMetaType::QDate:
         return value.toDate().toString(Qt::ISODate);
-    case QVariant::DateTime: // https://www.w3.org/TR/xmlschema-2/#dateTime
+    case QMetaType::QDateTime: // https://www.w3.org/TR/xmlschema-2/#dateTime
         return KDDateTime(value.toDateTime()).toDateString();
-    case QVariant::Invalid:
+    case QMetaType::UnknownType:
         qDebug() << "ERROR: Got invalid QVariant in a KDSoapValue";
         return QString();
     default:
@@ -232,33 +232,33 @@ static QString variantToTextValue(const QVariant &value, const QString &typeNs, 
 static QString variantToXMLType(const QVariant &value)
 {
     switch (value.userType()) {
-    case QVariant::Char:
+    case QMetaType::QChar:
     // fall-through
-    case QVariant::String:
+    case QMetaType::QString:
     // fall-through
-    case QVariant::Url:
+    case QMetaType::QUrl:
         return QLatin1String("xsd:string");
-    case QVariant::ByteArray:
+    case QMetaType::QByteArray:
         return QLatin1String("xsd:base64Binary");
-    case QVariant::Int:
+    case QMetaType::Int:
     // fall-through
-    case QVariant::LongLong:
+    case QMetaType::LongLong:
     // fall-through
-    case QVariant::UInt:
+    case QMetaType::UInt:
         return QLatin1String("xsd:int");
-    case QVariant::ULongLong:
+    case QMetaType::ULongLong:
         return QLatin1String("xsd:unsignedInt");
-    case QVariant::Bool:
+    case QMetaType::Bool:
         return QLatin1String("xsd:boolean");
     case QMetaType::Float:
         return QLatin1String("xsd:float");
-    case QVariant::Double:
+    case QMetaType::Double:
         return QLatin1String("xsd:double");
-    case QVariant::Time:
+    case QMetaType::QTime:
         return QLatin1String("xsd:time"); // correct? xmlpatterns fallsback to datetime because of missing timezone
-    case QVariant::Date:
+    case QMetaType::QDate:
         return QLatin1String("xsd:date");
-    case QVariant::DateTime:
+    case QMetaType::QDateTime:
         return QLatin1String("xsd:dateTime");
     default:
         if (value.userType() == qMetaTypeId<float>()) {

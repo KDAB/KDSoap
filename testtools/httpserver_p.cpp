@@ -46,7 +46,11 @@ static bool textBufferCompare(const QByteArray &source, const QByteArray &dest, 
 
 static void initHashSeed()
 {
+#if QT_VERSION < QT_VERSION_CHECK(6, 6, 0)
     qSetGlobalQHashSeed(0);
+#else
+    QHashSeed::setDeterministicGlobalSeed();
+#endif
 }
 
 Q_CONSTRUCTOR_FUNCTION(initHashSeed)

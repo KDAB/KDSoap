@@ -38,7 +38,11 @@ private Q_SLOTS:
 
         // Override the nonce and timestamp to make the test output consistent.
         auth.setOverrideWSUsernameNonce(QByteArray::fromBase64("LKqI6G/AikKCQrN0zqZFlg=="));
+#if QT_VERSION < QT_VERSION_CHECK(6, 5, 0)
         auth.setOverrideWSUsernameCreatedTime(QDateTime(QDate(2010, 9, 16), QTime(7, 50, 45), Qt::UTC)); // 2010-09-16T07:50:45Z
+#else
+        auth.setOverrideWSUsernameCreatedTime(QDateTime(QDate(2010, 9, 16), QTime(7, 50, 45), QTimeZone(QTimeZone::UTC))); // 2010-09-16T07:50:45Z
+#endif
 
         client.setAuthentication(auth);
 

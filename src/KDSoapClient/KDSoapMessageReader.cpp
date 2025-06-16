@@ -37,15 +37,15 @@ static int xmlTypeToMetaType(const QString &xmlType)
     {
         const char *xml; // xsd: prefix assumed
         const int metaTypeId;
-    } s_types[] = {{"string", QVariant::String}, // or QUrl
-                   {"base64Binary", QVariant::ByteArray},
-                   {"int", QVariant::Int}, // or long, or uint, or longlong
-                   {"unsignedInt", QVariant::ULongLong},
-                   {"boolean", QVariant::Bool},
+    } s_types[] = {{"string", QMetaType::QString}, // or QUrl
+                   {"base64Binary", QMetaType::QByteArray},
+                   {"int", QMetaType::Int}, // or long, or uint, or longlong
+                   {"unsignedInt", QMetaType::ULongLong},
+                   {"boolean", QMetaType::Bool},
                    {"float", QMetaType::Float},
-                   {"double", QVariant::Double},
-                   {"time", QVariant::Time},
-                   {"date", QVariant::Date}};
+                   {"double", QMetaType::Double},
+                   {"time", QMetaType::QTime},
+                   {"date", QMetaType::QDate}};
     // Speed: could be sorted and then we could use qBinaryFind
     for (const auto &type : s_types) {
         if (xmlType == QLatin1String(type.xml)) {
