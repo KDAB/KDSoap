@@ -10,6 +10,9 @@
 #include "KDDateTime.h"
 #include <QDebug>
 #include <QSharedData>
+#if QT_VERSION >= QT_VERSION_CHECK(6, 5, 0)
+#include <QTimeZone>
+#endif
 
 class KDDateTimeData : public QSharedData
 {
@@ -64,11 +67,21 @@ void KDDateTime::setTimeZone(const QString &timeZone)
     // Just in case someone cares: set the time spec in QDateTime accordingly.
     // We can't do this the other way round, there's no public API for the offset-from-utc case.
     if (timeZone == QLatin1String("Z")) {
+#if QT_VERSION < QT_VERSION_CHECK(6, 5, 0)
         setTimeSpec(Qt::UTC);
+#else
+        QDateTime::setTimeZone(QTimeZone(QTimeZone::UTC));
+#endif
     } else if (timeZone.isEmpty()) {
+#if QT_VERSION < QT_VERSION_CHECK(6, 5, 0)
         setTimeSpec(Qt::LocalTime);
+#else
+        QDateTime::setTimeZone(QTimeZone(QTimeZone::LocalTime));
+#endif
     } else {
+#if QT_VERSION < QT_VERSION_CHECK(6, 5, 0)
         setTimeSpec(Qt::OffsetFromUTC);
+#endif
         const int pos = timeZone.indexOf(QLatin1Char(':'));
         if (pos > 0) {
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
@@ -80,7 +93,11 @@ void KDDateTime::setTimeZone(const QString &timeZone)
             const int minutes = timeZoneView.sliced(pos + 1).toInt();
 #endif
             const int offset = hours * 3600 + minutes * 60;
+#if QT_VERSION < QT_VERSION_CHECK(6, 5, 0)
             setOffsetFromUtc(offset);
+#else
+            QDateTime::setTimeZone(QTimeZone::fromSecondsAheadOfUtc(offset));
+#endif
         }
     }
 }

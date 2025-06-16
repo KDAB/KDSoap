@@ -47,14 +47,22 @@ void Compiler::download()
         }
 
         // qDebug() << "parsing" << fileName;
+        QDomDocument doc;
+#if QT_VERSION < QT_VERSION_CHECK(6, 5, 0)
         QString errorMsg;
         int errorLine, errorCol;
-        QDomDocument doc;
         if (!doc.setContent(&file, false, &errorMsg, &errorLine, &errorCol)) {
             qDebug("%s at (%d,%d)", qPrintable(errorMsg), errorLine, errorCol);
             QCoreApplication::exit(2);
             return;
         }
+#else
+        if (auto result = doc.setContent(&file); !result) {
+            qDebug("%s at (%lld,%lld)", qPrintable(result.errorMessage), result.errorLine, result.errorColumn);
+            QCoreApplication::exit(2);
+            return;
+        }
+#endif
 
         parse(doc.documentElement());
 

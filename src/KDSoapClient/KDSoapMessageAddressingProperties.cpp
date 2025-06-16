@@ -278,7 +278,11 @@ static void writeAddressField(QXmlStreamWriter &writer, const QString &addressin
 static void writeKDSoapValueVariant(QXmlStreamWriter &writer, const KDSoapValue &value)
 {
     const QVariant valueToWrite = value.value();
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     if (valueToWrite.canConvert(QVariant::String)) {
+#else
+    if (valueToWrite.canConvert(QMetaType(QMetaType::QString))) {
+#endif
         writer.writeCharacters(valueToWrite.toString());
     } else {
         qWarning("Warning: KDSoapMessageAddressingProperties call to writeKDSoapValueVariant could not write the given KDSoapValue "

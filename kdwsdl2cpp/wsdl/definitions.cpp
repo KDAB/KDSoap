@@ -246,6 +246,7 @@ void Definitions::importDefinition(ParserContext *context, const QString &locati
         }
 
         QDomDocument doc(QLatin1String("kwsdl"));
+#if QT_VERSION < QT_VERSION_CHECK(6, 5, 0)
         QString errorMsg;
         int errorLine, errorColumn;
         bool ok = doc.setContent(&file, false, &errorMsg, &errorLine, &errorColumn);
@@ -253,6 +254,12 @@ void Definitions::importDefinition(ParserContext *context, const QString &locati
             qDebug("Error[%d:%d] %s", errorLine, errorColumn, qPrintable(errorMsg));
             return;
         }
+#else
+        if (auto result = doc.setContent(&file); !result) {
+            qDebug("Error[%lld:%lld] %s", result.errorLine, result.errorColumn, qPrintable(result.errorMessage));
+            return;
+        }
+#endif
 
         // prepare the new context to avoid infinite recursion
         QDomElement rootNode = doc.documentElement();
