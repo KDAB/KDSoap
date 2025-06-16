@@ -92,7 +92,7 @@ void KDDateTime::setTimeZone(const QString &timeZone)
             const int hours = timeZoneView.first(pos).toInt();
             const int minutes = timeZoneView.sliced(pos + 1).toInt();
 #endif
-            const int offset = hours * 3600 + minutes * 60;
+            const int offset = hours * 3600 + (hours >= 0 ? minutes : -minutes) * 60;
 #if QT_VERSION < QT_VERSION_CHECK(6, 5, 0)
             setOffsetFromUtc(offset);
 #else
