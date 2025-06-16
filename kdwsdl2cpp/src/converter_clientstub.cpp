@@ -376,7 +376,7 @@ bool Converter::convertClientService()
                 // for each operation, create a job class
                 for (const Operation &operation : std::as_const(operations)) {
                     Operation::OperationType opType = operation.operationType();
-                    if (opType != Operation::SolicitResponseOperation && opType != Operation::RequestResponseOperation) {
+                    if (opType == Operation::NotificationOperation) {
                         continue;
                     }
 
