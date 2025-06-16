@@ -2,23 +2,14 @@
 **
 ** This file is part of the KD Soap project.
 **
-** SPDX-FileCopyrightText: 2010 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
+** SPDX-FileCopyrightText: 2025 Jonathan Brady <jtjbrady@users.noreply.github.com>
 **
 ** SPDX-License-Identifier: MIT
 **
 ****************************************************************************/
 
-#include "KDSoapClientInterface.h"
-#include "KDSoapMessage.h"
-#include "KDSoapPendingCallWatcher.h"
-#include "KDSoapValue.h"
-#include "httpserver_p.h"
 #include "wsdl_jobs.h"
-#include <QDebug>
-#include <QEventLoop>
 #include <QTest>
-
-using namespace KDSoapUnitTestHelpers;
 
 class LiteralTest : public QObject
 {
