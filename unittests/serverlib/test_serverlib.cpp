@@ -588,7 +588,7 @@ private Q_SLOTS:
                 }
                 QCOMPARE(s_serverObjects.count(), numRequests);
                 QSet<QThread *> usedThreads;
-                for (CountryServerObject *obj : qAsConst(s_serverObjects)) {
+                for (CountryServerObject *obj : std::as_const(s_serverObjects)) {
                     QThread *thread = obj->thread();
                     QVERIFY(thread != qApp->thread());
                     QVERIFY(thread != &serverThread);
