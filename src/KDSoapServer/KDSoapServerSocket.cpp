@@ -83,8 +83,12 @@ static HeadersMap parseHeaders(const QByteArray &headerData)
     const QByteArray path = queryPos >= 0 ? arg1.left(queryPos) : arg1;
     const QByteArray query = queryPos >= 0 ? arg1.mid(queryPos) : QByteArray();
     // Unfortunately QDir::cleanPath works with QString
-    const QByteArray cleanedPath = QDir::cleanPath(QString::fromUtf8(path)).toUtf8();
-    headersMap.insert("_path", cleanedPath + query);
+    QByteArray cleanedPath = QDir::cleanPath(QString::fromUtf8(path)).toUtf8();
+    // And unfortunately it keeps "//<host>/" unchanged on Windows
+    while (cleanedPath.startsWith("//")) // while() so we also clean up "///"
+        cleanedPath = cleanedPath.mid(1);
+    headersMap.insert("_path", cleanedPath);
+    headersMap.insert("_query", query);
 
     const QByteArray &httpVersion = firstLine.at(2);
     headersMap.insert("_httpVersion", httpVersion);
@@ -279,21 +283,35 @@ void KDSoapServerSocket::slotReadyRead()
     m_receivedData = false;
 }
 
+// We're working in a virtual filesystem here, we have no physical root dir nor a concept of symlinks
+// So all we can check is that the path doesn't contain so many "../" that we're going out of the virtual root
+static bool isPathSecure(const QString &path)
+{
+    // The input path has already gone through cleanPath, so we just need to check it doesn't start with ..
+    if (!path.startsWith(QLatin1Char('/')))
+        return false;
+    if (path.startsWith(QLatin1String("/..")))
+        return false;
+    return true;
+}
+
 void KDSoapServerSocket::handleRequest(const QMap<QByteArray, QByteArray> &httpHeaders, const QByteArray &receivedData)
 {
-    const QByteArray requestType = httpHeaders.value("_requestType");
-    const QString path = QString::fromLatin1(httpHeaders.value("_path").constData());
-
-    if (!path.startsWith(QLatin1String("/"))) {
-        // denied for security reasons (ex: path starting with "..")
+    const QString path = QString::fromUtf8(httpHeaders.value("_path").constData());
+    if (!isPathSecure(path)) {
+        // denied for security reasons
         write(s_forbidden);
         return;
     }
 
+    const QByteArray requestType = httpHeaders.value("_requestType");
+    const QString query = QString::fromUtf8(httpHeaders.value("_query").constData());
+    const QString pathAndQuery = path + query;
+
     KDSoapServerAuthInterface *serverAuthInterface = qobject_cast<KDSoapServerAuthInterface *>(m_serverObject);
     if (serverAuthInterface) {
         const QByteArray authValue = httpHeaders.value("authorization");
-        if (!serverAuthInterface->handleHttpAuth(authValue, path)) {
+        if (!serverAuthInterface->handleHttpAuth(authValue, pathAndQuery)) {
             // send auth request (Qt supports basic, ntlm and digest)
             const QByteArray unauthorized =
                 "HTTP/1.1 401 Authorization Required\r\nWWW-Authenticate: Basic realm=\"example\"\r\nContent-Length: 0\r\n\r\n";
@@ -334,9 +352,9 @@ void KDSoapServerSocket::handleRequest(const QMap<QByteArray, QByteArray> &httpH
     }
 
     if (requestType == "GET") {
-        if (path == server->wsdlPathInUrl() && handleWsdlDownload()) {
+        if (pathAndQuery == server->wsdlPathInUrl() && handleWsdlDownload()) {
             return;
-        } else if (handleFileDownload(serverObjectInterface, path)) {
+        } else if (handleFileDownload(serverObjectInterface, pathAndQuery)) {
             return;
         }
 
@@ -382,7 +400,7 @@ void KDSoapServerSocket::handleRequest(const QMap<QByteArray, QByteArray> &httpH
     m_method = requestMsg.name();
 
     if (!replyMsg.isFault()) {
-        makeCall(serverObjectInterface, requestMsg, replyMsg, requestHeaders, soapAction, path);
+        makeCall(serverObjectInterface, requestMsg, replyMsg, requestHeaders, soapAction, pathAndQuery);
     }
 
     if (serverObjectInterface && m_delayedResponse) {

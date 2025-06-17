@@ -934,6 +934,12 @@ private Q_SLOTS:
         QTest::newRow("query_is_preserved") << "/path/to/file_download.txt?a=b&c=d" << readable << httpNotFound;
         QTest::newRow("with_ref") << "#/../../../path/to/file_download.txt" << readable << httpForbidden;
         QTest::newRow("invalid") << "#/path/to/file_download.txt" << readable << httpForbidden;
+
+        QTest::newRow("leading_double_slash") << "//path/to/file_download.txt" << readable << httpOK;
+        QTest::newRow("leading_triple_slash") << "///path/to/file_download.txt" << readable << httpOK;
+        QTest::newRow("leading_triple_slash_and_dot_dot") << "///../path/to/file_download.txt" << readable << httpForbidden;
+        QTest::newRow("leading_double_slash_and_dot_dot") << "//../path/to/file_download.txt" << readable << httpForbidden;
+        QTest::newRow("leading_slash_and_dot_dot") << "/../path/to/file_download.txt" << readable << httpForbidden;
     }
 
     void testFileDownload()
