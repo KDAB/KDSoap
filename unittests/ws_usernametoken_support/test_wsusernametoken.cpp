@@ -12,6 +12,7 @@
 
 #include <QObject>
 #include <QTest>
+#include <QTimeZone>
 
 #include "KDSoapAuthentication.h"
 #include "KDSoapNamespaceManager.h"
