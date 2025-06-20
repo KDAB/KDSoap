@@ -378,16 +378,19 @@ void KDSoapServerSocket::handleRequest(const QMap<QByteArray, QByteArray> &httpH
     } // TODO handle parse errors?
 
     // check soap version and extract soapAction header
+    KDSoap::SoapVersion soapVersion = KDSoap::SoapVersion::SOAP1_1;
     QByteArray soapAction;
     const QByteArray contentType = httpHeaders.value("content-type");
     if (contentType.startsWith("text/xml")) { // krazy:exclude=strings
         // SOAP 1.1
+        soapVersion = KDSoap::SoapVersion::SOAP1_1;
         soapAction = httpHeaders.value("soapaction");
         // The SOAP standard allows quotation marks around the SoapAction, so we have to get rid of these.
         soapAction = stripQuotes(soapAction);
 
     } else if (contentType.startsWith("application/soap+xml")) { // krazy:exclude=strings
         // SOAP 1.2
+        soapVersion = KDSoap::SoapVersion::SOAP1_2;
         // Example: application/soap+xml;charset=utf-8;action=ActionHex
         const QList<QByteArray> parts = contentType.split(';');
         for (const QByteArray &part : std::as_const(parts)) {
@@ -400,7 +403,7 @@ void KDSoapServerSocket::handleRequest(const QMap<QByteArray, QByteArray> &httpH
     m_method = requestMsg.name();
 
     if (!replyMsg.isFault()) {
-        makeCall(serverObjectInterface, requestMsg, replyMsg, requestHeaders, soapAction, pathAndQuery);
+        makeCall(serverObjectInterface, requestMsg, replyMsg, requestHeaders, soapAction, pathAndQuery, soapVersion);
     }
 
     if (serverObjectInterface && m_delayedResponse) {
@@ -496,6 +499,7 @@ void KDSoapServerSocket::sendReply(KDSoapServerObjectInterface *serverObjectInte
     QByteArray xmlResponse;
     if (!replyMsg.isNil()) {
         KDSoapMessageWriter msgWriter;
+        msgWriter.setVersion(serverObjectInterface->requestVersion());
         // Note that the kdsoap client parsing code doesn't care for the name (except if it's fault), even in
         // Document mode. Other implementations do, though.
         QString responseName = isFault ? QString::fromLatin1("Fault") : replyMsg.name();
@@ -552,7 +556,7 @@ void KDSoapServerSocket::handleError(KDSoapMessage &replyMsg, const char *errorC
 }
 
 void KDSoapServerSocket::makeCall(KDSoapServerObjectInterface *serverObjectInterface, const KDSoapMessage &requestMsg, KDSoapMessage &replyMsg,
-                                  const KDSoapHeaders &requestHeaders, const QByteArray &soapAction, const QString &path)
+                                  const KDSoapHeaders &requestHeaders, const QByteArray &soapAction, const QString &path, KDSoap::SoapVersion soapVersion)
 {
     Q_ASSERT(serverObjectInterface);
 
@@ -566,6 +570,7 @@ void KDSoapServerSocket::makeCall(KDSoapServerObjectInterface *serverObjectInter
 
         // Call method on m_serverObject
         serverObjectInterface->setRequestHeaders(requestHeaders, soapAction);
+        serverObjectInterface->setRequestVersion(soapVersion);
 
         KDSoapServer *server = m_owner->server();
         if (path != server->path()) {
