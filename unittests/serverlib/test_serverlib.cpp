@@ -50,21 +50,43 @@ public:
 };
 
 static const char s_longEmployeeName[] = "This is a long string in order to test chunking in this test";
-static QByteArray rawCountryMessage(const QByteArray &employeeName = "David Ä Faure")
+static QByteArray rawCountryMessage(const QByteArray &employeeName = "David Ä Faure", const KDSoapClientInterface::SoapVersion soapVersion = KDSoapClientInterface::SoapVersion::SOAP1_1)
 {
-    return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" "
-           "xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" "
-           "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><soap:Body><n1:getEmployeeCountry "
-           "xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\"><employeeName>"
-        + employeeName + "</employeeName></n1:getEmployeeCountry></soap:Body></soap:Envelope>";
+    switch (soapVersion) {
+    case KDSoapClientInterface::SoapVersion::SOAP1_1:
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" "
+               "xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" "
+               "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><soap:Body><n1:getEmployeeCountry "
+               "xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\"><employeeName>"
+            + employeeName + "</employeeName></n1:getEmployeeCountry></soap:Body></soap:Envelope>";
+    case KDSoapClientInterface::SoapVersion::SOAP1_2:
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><soap:Envelope xmlns:soap=\"http://www.w3.org/2003/05/soap-envelope\" "
+               "xmlns:soap-enc=\"http://www.w3.org/2003/05/soap-encoding\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" "
+               "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><soap:Body><n1:getEmployeeCountry "
+               "xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\"><employeeName>"
+            + employeeName + "</employeeName></n1:getEmployeeCountry></soap:Body></soap:Envelope>";
+    default:
+        return "<error/>"; // Returning nothing results in the test hanging.
+    }
 }
-static QByteArray expectedCountryResponse(const QByteArray &employeeName = "David Ä Faure")
+static QByteArray expectedCountryResponse(const QByteArray &employeeName = "David Ä Faure", const KDSoapClientInterface::SoapVersion soapVersion = KDSoapClientInterface::SoapVersion::SOAP1_1)
 {
-    return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" "
-           "xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" "
-           "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><soap:Body><n1:getEmployeeCountry "
-           "xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\"><employeeCountry>"
-        + employeeName + " France</employeeCountry>getEmployeeCountryResponse</n1:getEmployeeCountry></soap:Body></soap:Envelope>\n";
+    switch (soapVersion) {
+    case KDSoapClientInterface::SoapVersion::SOAP1_1:
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" "
+               "xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+               "xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\"><soap:Body><n1:getEmployeeCountry "
+               "xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\"><employeeCountry>"
+            + employeeName + " France</employeeCountry>getEmployeeCountryResponse</n1:getEmployeeCountry></soap:Body></soap:Envelope>\n";
+    case KDSoapClientInterface::SoapVersion::SOAP1_2:
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><soap:Envelope xmlns:soap=\"http://www.w3.org/2003/05/soap-envelope\" "
+               "xmlns:soap-enc=\"http://www.w3.org/2003/05/soap-encoding\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" "
+               "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><soap:Body><n1:getEmployeeCountry "
+               "xmlns:n1=\"http://www.kdab.com/xml/MyWsdl/\"><employeeCountry>"
+            + employeeName + " France</employeeCountry>getEmployeeCountryResponse</n1:getEmployeeCountry></soap:Body></soap:Envelope>\n";
+    default:
+        return "<error/>";
+    }
 }
 
 class CountryServerObject : public QObject,
@@ -1238,12 +1260,12 @@ private Q_SLOTS:
         request.setHeader(QNetworkRequest::ContentTypeHeader, soapHeader.toUtf8());
 
         QNetworkAccessManager accessManager;
-        QNetworkReply *reply = accessManager.post(request, rawCountryMessage());
+        QNetworkReply *reply = accessManager.post(request, rawCountryMessage("David Ä Faure", KDSoapClientInterface::SoapVersion::SOAP1_2));
         QEventLoop loop;
         connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
         loop.exec();
         const QByteArray response = reply->readAll();
-        QVERIFY(xmlBufferCompare(response, expectedCountryResponse()));
+        QVERIFY(xmlBufferCompare(response, expectedCountryResponse("David Ä Faure", KDSoapClientInterface::SoapVersion::SOAP1_2)));
     }
 
     void testGetShouldFail()

@@ -30,6 +30,7 @@ public:
     KDSoapValue m_detailValue;
     QString m_responseNamespace;
     QByteArray m_soapAction;
+    KDSoap::SoapVersion m_requestVersion;
     // QPointer in case the client disconnects during a delayed response
     QPointer<KDSoapServerSocket> m_serverSocket;
 };
@@ -156,6 +157,11 @@ void KDSoapServerObjectInterface::setRequestHeaders(const KDSoapHeaders &headers
     d->m_responseHeaders.clear();
 }
 
+void KDSoapServerObjectInterface::setRequestVersion(KDSoap::SoapVersion requestVersion)
+{
+    d->m_requestVersion = requestVersion;
+}
+
 void KDSoapServerObjectInterface::setResponseHeaders(const KDSoapHeaders &headers)
 {
     d->m_responseHeaders = headers;
@@ -199,6 +205,19 @@ void KDSoapServerObjectInterface::writeHTTP(const QByteArray &httpReply)
 void KDSoapServerObjectInterface::writeXML(const QByteArray &reply, bool isFault)
 {
     d->m_serverSocket->writeXML(reply, isFault);
+}
+
+void KDSoapServerObjectInterface::copyFrom(KDSoapServerObjectInterface *other)
+{
+    d->m_requestHeaders = other->d->m_requestHeaders;
+    d->m_soapAction = other->d->m_soapAction;
+    d->m_serverSocket = other->d->m_serverSocket;
+    d->m_requestVersion = other->d->m_requestVersion;
+}
+
+KDSoap::SoapVersion KDSoapServerObjectInterface::requestVersion() const
+{
+    return d->m_requestVersion;
 }
 
 void KDSoapServerObjectInterface::setResponseNamespace(const QString &ns)

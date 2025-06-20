@@ -17,6 +17,7 @@
 #include <QSslSocket>
 #endif
 
+#include <KDSoapClient/KDSoapClientInterface.h>
 #include <QMap>
 QT_BEGIN_NAMESPACE
 class QObject;
@@ -52,7 +53,7 @@ private:
     bool handleWsdlDownload();
     bool handleFileDownload(KDSoapServerObjectInterface *serverObjectInterface, const QString &path);
     void makeCall(KDSoapServerObjectInterface *serverObjectInterface, const KDSoapMessage &requestMsg, KDSoapMessage &replyMsg,
-                  const KDSoapHeaders &requestHeaders, const QByteArray &soapAction, const QString &path);
+                  const KDSoapHeaders &requestHeaders, const QByteArray &soapAction, const QString &path, KDSoap::SoapVersion soapVersion);
     void handleError(KDSoapMessage &replyMsg, const char *errorCode, const QString &error);
     void setSocketEnabled(bool enabled);
     void writeXML(const QByteArray &xmlResponse, bool isFault);
