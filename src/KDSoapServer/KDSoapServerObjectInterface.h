@@ -12,6 +12,7 @@
 
 #include "KDSoapDelayedResponseHandle.h"
 #include "KDSoapServerGlobal.h"
+#include <KDSoapClient/KDSoapClientInterface.h>
 #include <KDSoapClient/KDSoapMessage.h>
 
 #include <QIODevice>
@@ -252,10 +253,24 @@ public:
      */
     void writeXML(const QByteArray &reply, bool isFault = false);
 
+    /**
+     * Copy the information from other to this.
+     * @param other KDSoapServerObjectInterface
+     * \since 2.3
+     */
+    void copyFrom(KDSoapServerObjectInterface *other);
+
+    /**
+     * Return the SOAP version of the incoming request.
+     * \since 2.3
+     */
+    KDSoap::SoapVersion requestVersion() const;
+
 private:
     friend class KDSoapServerSocket;
     void setServerSocket(KDSoapServerSocket *serverSocket); // only valid during processRequest()
     void setRequestHeaders(const KDSoapHeaders &headers, const QByteArray &soapAction);
+    void setRequestVersion(KDSoap::SoapVersion requestVersion);
     KDSoapHeaders responseHeaders() const;
     QString responseNamespace() const;
     void storeFaultAttributes(KDSoapMessage &message) const;

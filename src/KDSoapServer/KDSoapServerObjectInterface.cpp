@@ -30,6 +30,7 @@ public:
     KDSoapValue m_detailValue;
     QString m_responseNamespace;
     QByteArray m_soapAction;
+    KDSoap::SoapVersion m_requestVersion = KDSoap::SoapVersion::SOAP1_1;
     // QPointer in case the client disconnects during a delayed response
     QPointer<KDSoapServerSocket> m_serverSocket;
 };
@@ -58,8 +59,7 @@ void KDSoapServerObjectInterface::processRequest(const KDSoapMessage &request, K
 {
     const QString method = request.name();
     qDebug() << "Slot not found:" << method << "[soapAction =" << soapAction << "]" /* << "in" << metaObject()->className()*/;
-    const KDSoap::SoapVersion soapVersion = KDSoap::SOAP1_1; // TODO version selection on the server side
-    response.createFaultMessage(QString::fromLatin1("Server.MethodNotFound"), QString::fromLatin1("%1 not found").arg(method), soapVersion);
+    response.createFaultMessage(QString::fromLatin1("Server.MethodNotFound"), QString::fromLatin1("%1 not found").arg(method), d->m_requestVersion);
 }
 
 QIODevice *KDSoapServerObjectInterface::processFileRequest(const QString &path, QByteArray &contentType)
@@ -77,9 +77,8 @@ void KDSoapServerObjectInterface::processRequestWithPath(const KDSoapMessage &re
     qWarning("Invalid path: \"%s\"", qPrintable(path));
     // qWarning() << "Invalid path:" << path << "[method =" << method << "; soapAction =" << soapAction << "]" /* << "in" <<
     // metaObject()->className();
-    const KDSoap::SoapVersion soapVersion = KDSoap::SOAP1_1; // TODO version selection on the server side
     response.createFaultMessage(QString::fromLatin1("Client.Data"), QString::fromLatin1("Method %1 not found in path %2").arg(method, path),
-                                soapVersion);
+                                d->m_requestVersion);
 }
 
 KDSoapServerObjectInterface::HttpResponseHeaderItems KDSoapServerObjectInterface::additionalHttpResponseHeaderItems() const
@@ -156,6 +155,11 @@ void KDSoapServerObjectInterface::setRequestHeaders(const KDSoapHeaders &headers
     d->m_responseHeaders.clear();
 }
 
+void KDSoapServerObjectInterface::setRequestVersion(KDSoap::SoapVersion requestVersion)
+{
+    d->m_requestVersion = requestVersion;
+}
+
 void KDSoapServerObjectInterface::setResponseHeaders(const KDSoapHeaders &headers)
 {
     d->m_responseHeaders = headers;
@@ -198,7 +202,20 @@ void KDSoapServerObjectInterface::writeHTTP(const QByteArray &httpReply)
 
 void KDSoapServerObjectInterface::writeXML(const QByteArray &reply, bool isFault)
 {
-    d->m_serverSocket->writeXML(reply, isFault);
+    d->m_serverSocket->writeXML(reply, isFault, d->m_requestVersion);
+}
+
+void KDSoapServerObjectInterface::copyFrom(KDSoapServerObjectInterface *other)
+{
+    d->m_requestHeaders = other->d->m_requestHeaders;
+    d->m_soapAction = other->d->m_soapAction;
+    d->m_serverSocket = other->d->m_serverSocket;
+    d->m_requestVersion = other->d->m_requestVersion;
+}
+
+KDSoap::SoapVersion KDSoapServerObjectInterface::requestVersion() const
+{
+    return d->m_requestVersion;
 }
 
 void KDSoapServerObjectInterface::setResponseNamespace(const QString &ns)
