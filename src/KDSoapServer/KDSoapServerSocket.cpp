@@ -24,7 +24,9 @@
 #include <QFileInfo>
 #include <QMetaMethod>
 #include <QThread>
+#include <QUuid>
 #include <QVarLengthArray>
+#include <cmath>
 
 static const char s_forbidden[] = "HTTP/1.1 403 Forbidden\r\nContent-Length: 0\r\n\r\n";
 
@@ -129,7 +131,24 @@ static QByteArray stripQuotes(const QByteArray &bar)
     return bar;
 }
 
-static QByteArray httpResponseHeaders(bool fault, const QByteArray &contentType, int responseDataSize, QObject *serverObject)
+static QByteArray additionalHttpHeaders(KDSoapServerObjectInterface *serverObjectInterface)
+{
+    QByteArray httpResponse;
+
+    if (serverObjectInterface) {
+        const KDSoapServerObjectInterface::HttpResponseHeaderItems &additionalItems = serverObjectInterface->additionalHttpResponseHeaderItems();
+        for (const KDSoapServerObjectInterface::HttpResponseHeaderItem &headerItem : additionalItems) {
+            httpResponse += headerItem.m_name;
+            httpResponse += ": ";
+            httpResponse += headerItem.m_value;
+            httpResponse += "\r\n";
+        }
+    }
+
+    return httpResponse;
+}
+
+static QByteArray httpResponseHeaders(bool fault, const QByteArray &contentType, int responseDataSize, KDSoapServerObjectInterface *serverObjectInterface)
 {
     QByteArray httpResponse;
     httpResponse.reserve(50);
@@ -148,16 +167,7 @@ static QByteArray httpResponseHeaders(bool fault, const QByteArray &contentType,
     httpResponse += QByteArray::number(responseDataSize);
     httpResponse += "\r\n";
 
-    KDSoapServerObjectInterface *serverObjectInterface = qobject_cast<KDSoapServerObjectInterface *>(serverObject);
-    if (serverObjectInterface) {
-        const KDSoapServerObjectInterface::HttpResponseHeaderItems &additionalItems = serverObjectInterface->additionalHttpResponseHeaderItems();
-        for (const KDSoapServerObjectInterface::HttpResponseHeaderItem &headerItem : std::as_const(additionalItems)) {
-            httpResponse += headerItem.m_name;
-            httpResponse += ": ";
-            httpResponse += headerItem.m_value;
-            httpResponse += "\r\n";
-        }
-    }
+    httpResponse += additionalHttpHeaders(serverObjectInterface);
 
     httpResponse += "\r\n"; // end of headers
     return httpResponse;
@@ -352,7 +362,7 @@ void KDSoapServerSocket::handleRequest(const QMap<QByteArray, QByteArray> &httpH
     }
 
     if (requestType == "GET") {
-        if (pathAndQuery == server->wsdlPathInUrl() && handleWsdlDownload()) {
+        if (pathAndQuery == server->wsdlPathInUrl() && handleWsdlDownload(serverObjectInterface)) {
             return;
         } else if (handleFileDownload(serverObjectInterface, pathAndQuery)) {
             return;
@@ -414,7 +424,7 @@ void KDSoapServerSocket::handleRequest(const QMap<QByteArray, QByteArray> &httpH
     }
 }
 
-bool KDSoapServerSocket::handleWsdlDownload()
+bool KDSoapServerSocket::handleWsdlDownload(KDSoapServerObjectInterface *serverObjectInterface)
 {
     KDSoapServer *server = m_owner->server();
     const QString wsdlFile = server->wsdlFile();
@@ -422,12 +432,85 @@ bool KDSoapServerSocket::handleWsdlDownload()
     if (wf.open(QIODevice::ReadOnly)) {
         // qDebug() << "Returning wsdl file contents";
         const QByteArray responseText = wf.readAll();
-        const QByteArray response = httpResponseHeaders(false, "application/xml", responseText.size(), m_serverObject);
+        const QByteArray response = httpResponseHeaders(false, "application/xml", responseText.size(), serverObjectInterface);
         write(response);
         write(responseText);
         return true;
     }
     return false;
+}
+
+std::optional<QVector<QPair<int, int>>> KDSoapServerSocket::determineFileRanges(int fileSize)
+{
+    QVector<QPair<int, int>> requestedRanges;
+
+    if (auto i = m_httpHeaders.constFind("range"); i != m_httpHeaders.constEnd()) {
+        if (QByteArray range = i.value().trimmed(); range.startsWith("bytes=")) {
+            if (const auto ranges = range.mid(6).split(','); ranges.size() > 5) {
+                // RFC 7233, section 6.1 denial-of-service
+                // Servers ought to ignore, coalesce, or reject egregious range requests
+            } else {
+                for (const auto &range : ranges) {
+                    if (auto parts = range.split('-'); parts.size() != 2) {
+                        // Invalid range header
+                        requestedRanges.clear();
+                        break;
+                    } else {
+                        bool ok = true;
+                        int start = parts.at(0).isEmpty() ? -1 : parts.at(0).toUInt(&ok),
+                            end = !ok || parts.at(1).isEmpty() ? -1 : parts.at(1).toUInt(&ok);
+                        if (!ok || (start < 0 && end < 0)) {
+                            // Invalid range header
+                            requestedRanges.clear();
+                            break;
+                        } else if (start < 0) {
+                            // Start is missing, so end is taken to mean "number of bytes at end of file"
+                            start = qMax(0, fileSize - end);
+                            end = fileSize - 1;
+                        } else if (end < 0) {
+                            // End is missing, so is taken to mean "end of file"
+                            end = fileSize - 1;
+                        } else
+                            end = qMin<int>(end, fileSize - 1);
+
+                        if (start <= end)
+                            requestedRanges.append({start, end});
+                    }
+                }
+
+                if (requestedRanges.isEmpty()) {
+                    // Unsatisfiable range (416 Range Not Satisfiable)
+                    const QByteArray notSatisfiable = "HTTP/1.1 416 Range Not Satisfiable\r\nContent-Length: 0\r\n\r\n";
+                    write(notSatisfiable);
+                    return std::nullopt;
+                }
+
+                if (requestedRanges.size() > 1) {
+                    std::sort(requestedRanges.begin(), requestedRanges.end(), [](const QPair<int, int> first, const QPair<int, int> second) {
+                        return first.first < second.first || (first.first == second.first && first.second < second.second);
+                    });
+
+                    // Coalesce
+                    for (auto first = requestedRanges.begin(), next = first + 1; next != requestedRanges.end();) {
+                        if (next->first <= first->second) {
+                            // Next is directly after (or overlaps) first, so merge it into first.
+                            first->second = qMax(first->second, next->second);
+                            next = requestedRanges.erase(next);
+                        } else {
+                            first = next;
+                            ++next;
+                        }
+                    }
+                }
+
+                // Check if we are returning whole file
+                if (requestedRanges.size() == 1 && requestedRanges.first().first == 0 && requestedRanges.first().second == fileSize - 1)
+                    requestedRanges.clear();
+            }
+        }
+    }
+
+    return requestedRanges;
 }
 
 bool KDSoapServerSocket::handleFileDownload(KDSoapServerObjectInterface *serverObjectInterface, const QString &path)
@@ -444,7 +527,86 @@ bool KDSoapServerSocket::handleFileDownload(KDSoapServerObjectInterface *serverO
         delete device;
         return true; // handled!
     }
-    const QByteArray response = httpResponseHeaders(false, contentType, device->size(), m_serverObject);
+
+    if (auto r = determineFileRanges(device->size()); !r) {
+        delete device;
+        return true;
+    } else if (const QVector<QPair<int, int>> requestedRanges = *r; !requestedRanges.isEmpty()) {
+        QByteArray response;
+        response.reserve(50);
+        response += "HTTP/1.1 206 Partial Content\r\n";
+        response += "Accept-Ranges: bytes\r\n";
+
+        auto writeRange = [this, device](const QPair<int, int> range) {
+            device->seek(range.first);
+
+            char block[4096] = {0};
+            qint64 totalRead = 0, toRead = range.second - range.first + 1;
+            ;
+            while (!device->atEnd() && toRead > totalRead) {
+                const qint64 in = device->read(block, qMin<qint64>(toRead - totalRead, sizeof(block)));
+                if (in <= 0) {
+                    break;
+                }
+                totalRead += in;
+                if (in != write(block, in)) {
+                    // error = true;
+                    break;
+                }
+            }
+        };
+
+        if (requestedRanges.size() == 1) {
+            const auto &range = requestedRanges.first();
+            response += "Content-Type: " + contentType + "\r\n";
+            response += "Content-Length: " + QByteArray::number(range.second - range.first + 1) + "\r\n";
+            response += "Content-Range: bytes " + QByteArray::number(range.first) + "-" + QByteArray::number(range.second) + "/" + QByteArray::number(device->size()) + "\r\n";
+            response += additionalHttpHeaders(serverObjectInterface);
+            response += "\r\n"; // end of headers
+
+            if (m_doDebug) {
+                qDebug() << "KDSoapServerSocket: file download response" << response;
+            }
+            write(response);
+
+            writeRange(range);
+        } else {
+            const QByteArray boundary = "--=NextPart_" + QUuid::createUuid().toByteArray(QUuid::StringFormat::WithoutBraces);
+            response += "Content-Type: multipart/byteranges; boundary=" + boundary + "\r\n";
+
+            const QByteArray
+                headerStart = "\r\n--" + boundary + "\r\nContent-Type: " + contentType + "\r\nContent-Range: bytes ",
+                headerEnd = "/" + QByteArray::number(device->size()) + "\r\n\r\n";
+            int length = boundary.size() + 8; // Last multipart marker
+            for (const auto &range : requestedRanges) {
+                length += headerStart.size() + headerEnd.size();
+                length += int(log10(range.first) + 1) + 1 + int(log10(range.second) + 1);
+                length += range.second - range.first + 1;
+            }
+
+            response += "Content-Length: " + QByteArray::number(length) + "\r\n";
+            response += additionalHttpHeaders(serverObjectInterface);
+            response += "\r\n"; // end of headers
+
+            if (m_doDebug) {
+                qDebug() << "KDSoapServerSocket: file download response" << response;
+            }
+            write(response);
+            for (const auto &range : requestedRanges) {
+                write(headerStart);
+                write(QByteArray::number(range.first) + "-" + QByteArray::number(range.second));
+                write(headerEnd);
+
+                writeRange(range);
+            }
+            write("\r\n--" + boundary + "--\r\n");
+        }
+
+        delete device;
+        return true;
+    }
+
+    const QByteArray response = httpResponseHeaders(false, contentType, device->size(), serverObjectInterface);
     if (m_doDebug) {
         qDebug() << "KDSoapServerSocket: file download response" << response;
     }
@@ -475,10 +637,10 @@ bool KDSoapServerSocket::handleFileDownload(KDSoapServerObjectInterface *serverO
     return true;
 }
 
-void KDSoapServerSocket::writeXML(const QByteArray &xmlResponse, bool isFault, KDSoap::SoapVersion soapVersion)
+void KDSoapServerSocket::writeXML(KDSoapServerObjectInterface *serverObjectInterface, const QByteArray &xmlResponse, bool isFault)
 {
-    const QByteArray httpHeaders = httpResponseHeaders(isFault, soapVersion == KDSoap::SoapVersion::SOAP1_1 ? "text/xml" : "application/soap+xml;charset=utf-8",
-                                                       xmlResponse.size(), m_serverObject);
+    const QByteArray httpHeaders = httpResponseHeaders(isFault, serverObjectInterface->requestVersion() == KDSoap::SoapVersion::SOAP1_1 ? "text/xml" : "application/soap+xml;charset=utf-8",
+                                                       xmlResponse.size(), serverObjectInterface);
     if (m_doDebug) {
         qDebug() << "KDSoapServerSocket: writing" << httpHeaders << xmlResponse;
     }
@@ -518,7 +680,7 @@ void KDSoapServerSocket::sendReply(KDSoapServerObjectInterface *serverObjectInte
         xmlResponse = msgWriter.messageToXml(replyMsg, responseName, responseHeaders, QMap<QString, KDSoapMessage>());
     }
 
-    writeXML(xmlResponse, isFault, serverObjectInterface->requestVersion());
+    writeXML(serverObjectInterface, xmlResponse, isFault);
 
     // All done, check if we should log this
     KDSoapServer *server = m_owner->server();
