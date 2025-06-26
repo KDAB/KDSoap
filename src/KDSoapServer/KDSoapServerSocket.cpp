@@ -507,12 +507,9 @@ void KDSoapServerSocket::sendReply(KDSoapServerObjectInterface *serverObjectInte
             responseName = m_method;
         }
         QString responseNamespace = m_messageNamespace;
-        KDSoapHeaders responseHeaders;
-        if (serverObjectInterface) {
-            responseHeaders = serverObjectInterface->responseHeaders();
-            if (!serverObjectInterface->responseNamespace().isEmpty()) {
-                responseNamespace = serverObjectInterface->responseNamespace();
-            }
+        KDSoapHeaders responseHeaders = serverObjectInterface->responseHeaders();
+        if (!serverObjectInterface->responseNamespace().isEmpty()) {
+            responseNamespace = serverObjectInterface->responseNamespace();
         }
         msgWriter.setMessageNamespace(responseNamespace);
         xmlResponse = msgWriter.messageToXml(replyMsg, responseName, responseHeaders, QMap<QString, KDSoapMessage>());
