@@ -98,6 +98,7 @@ add_subdirectory(empty_element_wsdl)
 add_subdirectory(ws_discovery_wsdl)
 add_subdirectory(soap_over_udp)
 add_subdirectory(kdwsdl2cpp_jobs)
+add_subdirectory(ranges)
 
 # These need internet access
 add_subdirectory(webcalls)
