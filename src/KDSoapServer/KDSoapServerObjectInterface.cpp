@@ -202,7 +202,7 @@ void KDSoapServerObjectInterface::writeHTTP(const QByteArray &httpReply)
 
 void KDSoapServerObjectInterface::writeXML(const QByteArray &reply, bool isFault)
 {
-    d->m_serverSocket->writeXML(reply, isFault, d->m_requestVersion);
+    d->m_serverSocket->writeXML(this, reply, isFault);
 }
 
 void KDSoapServerObjectInterface::copyFrom(KDSoapServerObjectInterface *other)
