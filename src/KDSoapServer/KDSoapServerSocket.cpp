@@ -129,7 +129,7 @@ static QByteArray stripQuotes(const QByteArray &bar)
     return bar;
 }
 
-static QByteArray httpResponseHeaders(bool fault, const QByteArray &contentType, int responseDataSize, QObject *serverObject)
+static QByteArray httpResponseHeaders(bool fault, const QByteArray &contentType, int responseDataSize, const QByteArray &contentEncoding, QObject *serverObject)
 {
     QByteArray httpResponse;
     httpResponse.reserve(50);
@@ -146,6 +146,10 @@ static QByteArray httpResponseHeaders(bool fault, const QByteArray &contentType,
     httpResponse += contentType;
     httpResponse += "\r\nContent-Length: ";
     httpResponse += QByteArray::number(responseDataSize);
+    if (!contentEncoding.isEmpty()) {
+        httpResponse += "Content-Encoding: ";
+        httpResponse += contentEncoding;
+    }
     httpResponse += "\r\n";
 
     KDSoapServerObjectInterface *serverObjectInterface = qobject_cast<KDSoapServerObjectInterface *>(serverObject);
@@ -352,7 +356,7 @@ void KDSoapServerSocket::handleRequest(const QMap<QByteArray, QByteArray> &httpH
     }
 
     if (requestType == "GET") {
-        if (pathAndQuery == server->wsdlPathInUrl() && handleWsdlDownload()) {
+        if (pathAndQuery == server->wsdlPathInUrl() && handleWsdlDownload(serverObjectInterface)) {
             return;
         } else if (handleFileDownload(serverObjectInterface, pathAndQuery)) {
             return;
@@ -414,17 +418,20 @@ void KDSoapServerSocket::handleRequest(const QMap<QByteArray, QByteArray> &httpH
     }
 }
 
-bool KDSoapServerSocket::handleWsdlDownload()
+bool KDSoapServerSocket::handleWsdlDownload(KDSoapServerObjectInterface *serverObjectInterface)
 {
     KDSoapServer *server = m_owner->server();
-    const QString wsdlFile = server->wsdlFile();
-    QFile wf(wsdlFile);
-    if (wf.open(QIODevice::ReadOnly)) {
+    const auto [wsdlFile, encoding] = serverObjectInterface->fileForEncoding(server->wsdlFile());
+    if (wsdlFile && wsdlFile->open(QIODevice::ReadOnly)) {
+        // TODO: Add Content-Encoding header
         // qDebug() << "Returning wsdl file contents";
-        const QByteArray responseText = wf.readAll();
-        const QByteArray response = httpResponseHeaders(false, "application/xml", responseText.size(), m_serverObject);
+        const QByteArray responseText = wsdlFile->readAll();
+        const QByteArray response = httpResponseHeaders(false, "application/xml", responseText.size(), encoding, m_serverObject);
         write(response);
         write(responseText);
+        return true;
+    } else if (!wsdlFile && !encoding.isEmpty()) {
+        write(encoding); // Report the error from fileForEncoding
         return true;
     }
     return false;
@@ -435,8 +442,10 @@ bool KDSoapServerSocket::handleFileDownload(KDSoapServerObjectInterface *serverO
     QByteArray contentType;
     QIODevice *device = serverObjectInterface->processFileRequest(path, contentType);
     if (!device) {
-        const QByteArray notFound = "HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\n\r\n";
-        write(notFound);
+        if (!serverObjectInterface->hasFault()) {
+            const QByteArray notFound = "HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\n\r\n";
+            write(notFound);
+        }
         return true;
     }
     if (!device->open(QIODevice::ReadOnly)) {
@@ -444,7 +453,7 @@ bool KDSoapServerSocket::handleFileDownload(KDSoapServerObjectInterface *serverO
         delete device;
         return true; // handled!
     }
-    const QByteArray response = httpResponseHeaders(false, contentType, device->size(), m_serverObject);
+    const QByteArray response = httpResponseHeaders(false, contentType, device->size(), QByteArray(), m_serverObject);
     if (m_doDebug) {
         qDebug() << "KDSoapServerSocket: file download response" << response;
     }
@@ -478,7 +487,7 @@ bool KDSoapServerSocket::handleFileDownload(KDSoapServerObjectInterface *serverO
 void KDSoapServerSocket::writeXML(const QByteArray &xmlResponse, bool isFault, KDSoap::SoapVersion soapVersion)
 {
     const QByteArray httpHeaders = httpResponseHeaders(isFault, soapVersion == KDSoap::SoapVersion::SOAP1_1 ? "text/xml" : "application/soap+xml;charset=utf-8",
-                                                       xmlResponse.size(), m_serverObject);
+                                                       xmlResponse.size(), QByteArray(), m_serverObject);
     if (m_doDebug) {
         qDebug() << "KDSoapServerSocket: writing" << httpHeaders << xmlResponse;
     }

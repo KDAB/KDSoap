@@ -10,8 +10,15 @@
 #include "KDSoapServerObjectInterface.h"
 #include "KDSoapClient/KDSoapValue.h"
 #include "KDSoapServerSocket_p.h"
+#include <QBuffer>
 #include <QDebug>
+#include <QFileInfo>
+#include <QMetaEnum>
 #include <QPointer>
+#include <QResource>
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#include "ByteArrayViewSplitter.h"
+#endif
 
 class KDSoapServerObjectInterface::Private
 {
@@ -33,6 +40,7 @@ public:
     KDSoap::SoapVersion m_requestVersion = KDSoap::SoapVersion::SOAP1_1;
     // QPointer in case the client disconnects during a delayed response
     QPointer<KDSoapServerSocket> m_serverSocket;
+    QMap<QByteArray, QByteArray> m_httpHeaders;
 };
 
 KDSoapServerObjectInterface::HttpResponseHeaderItem::HttpResponseHeaderItem(const QByteArray &name, const QByteArray &value)
@@ -183,6 +191,7 @@ KDSoapDelayedResponseHandle KDSoapServerObjectInterface::prepareDelayedResponse(
 void KDSoapServerObjectInterface::setServerSocket(KDSoapServerSocket *serverSocket)
 {
     d->m_serverSocket = serverSocket;
+    d->m_httpHeaders = d->m_serverSocket->m_httpHeaders;
 }
 
 void KDSoapServerObjectInterface::sendDelayedResponse(const KDSoapDelayedResponseHandle &responseHandle, const KDSoapMessage &response)
@@ -191,6 +200,161 @@ void KDSoapServerObjectInterface::sendDelayedResponse(const KDSoapDelayedRespons
     if (socket) {
         socket->sendDelayedReply(this, response);
     }
+}
+
+namespace {
+// Parses an Accept-Encoding header into a bitmask of EncodingFormat values.
+//
+// See RFC 9110 §12.5.3: Accept-Encoding
+// Recognizes q-values (q=0 means "not acceptable") and wildcard "*" entries.
+//
+// Accept-Encoding: gzip, deflate, br, identity;q=0
+// Accept-Encoding: *, identity;q=0  → means "anything except identity"
+// Accept-Encoding: *;q=0, gzip      → means "anything except gzip"
+KDSoapServerSocket::EncodingFormats parseAcceptEncoding(const QByteArray &headerValue)
+{
+    KDSoapServerSocket::EncodingFormats formats; // Accepted formats
+    KDSoapServerSocket::EncodingFormats rejectedFormats; // Explicitly rejected formats (q=0)
+
+    const QMetaEnum metaEnum = QMetaEnum::fromType<KDSoapServerSocket::EncodingFormats>();
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    using PartType = QByteArrayView;
+    const auto parts = ByteArrayViewSplitter(headerValue, ',', Qt::SkipEmptyParts);
+#else
+    using PartType = QByteArray;
+    const auto parts = headerValue.split(',');
+#endif
+
+    for (const auto &rawPart : parts) {
+        const auto part = rawPart.trimmed();
+        if (part.isEmpty())
+            continue;
+
+        // Per RFC 9110 §12.5.3, we parse each `token[;q=value]`
+        const int semiPos = part.indexOf(';');
+        const auto encoding = semiPos >= 0 ? part.left(semiPos).trimmed() : part;
+        const auto params = semiPos >= 0 ? part.mid(semiPos + 1).trimmed() : PartType();
+
+        // Parse q= parameter (if present) looking for q=0 (rejection)
+        bool rejected = false;
+        if (params.startsWith("q=")) {
+            bool ok = false;
+            const float qVal = params.mid(2).trimmed().toFloat(&ok);
+            if (ok && qVal == 0.0f) {
+                rejected = true;
+            }
+        }
+
+        // Handle wildcard "*" — add all known formats not explicitly rejected
+        if (encoding == "*") {
+            if (!rejected) {
+                // Accept all known formats (per our enum) except already rejected ones
+                for (int i = 0; i < metaEnum.keyCount(); ++i) {
+                    const auto val = static_cast<KDSoapServerSocket::EncodingFormat>(metaEnum.value(i));
+                    if (!rejectedFormats.testFlag(val))
+                        formats |= val;
+                }
+            } else if (!formats.testFlag(KDSoapServerSocket::EncodingFormat::identity)) {
+                // Reject all formats not specifically mentioned, including identity
+                rejectedFormats |= KDSoapServerSocket::EncodingFormat::identity;
+                qInfo() << __LINE__ << formats << rejectedFormats;
+            }
+            continue;
+        }
+
+        // Normalize encoding to lowercase and look up enum value
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+        const int value = metaEnum.keyToValue(QByteArray(encoding.constData(), encoding.size()).toLower().constData());
+#else
+        const int value = metaEnum.keyToValue(encoding.toLower().constData());
+#endif
+        if (value >= 0) {
+            const auto format = static_cast<KDSoapServerSocket::EncodingFormats>(value);
+
+            if (rejected) {
+                // Remove from accepted in case it was added earlier (e.g. by *) and add to rejected
+                formats &= ~format;
+                rejectedFormats |= format;
+            } else {
+                // Accept format and remove from rejected
+                formats |= format;
+                rejectedFormats &= ~format;
+            }
+        }
+        // Unknown encodings are ignored per RFC 9110 §12.5.3
+    }
+
+    // Ensure identity is accepted unless explicitly rejected
+    if (!rejectedFormats.testFlag(KDSoapServerSocket::EncodingFormat::identity)) {
+        formats |= KDSoapServerSocket::EncodingFormat::identity;
+    }
+
+    return formats;
+}
+
+// Convert QResource::Compression enum to our HTTP encoding enum
+KDSoapServerSocket::EncodingFormat compressionToEncodingFormat(QResource::Compression c)
+{
+    switch (c) {
+    case QResource::NoCompression:
+        return KDSoapServerSocket::EncodingFormat::identity;
+    case QResource::ZlibCompression:
+        // Qt uses zlib internally, HTTP calls this "deflate" (RFC 7231 §4.2.2)
+        return KDSoapServerSocket::EncodingFormat::deflate;
+    case QResource::ZstdCompression:
+        // zstd
+        return KDSoapServerSocket::EncodingFormat::zstd;
+    }
+    return KDSoapServerSocket::EncodingFormat::identity;
+}
+}
+
+std::pair<QIODevice *, QByteArray> KDSoapServerObjectInterface::fileForEncoding(const QString &logicalPath)
+{
+    QFileInfo fileInfo(logicalPath);
+    if (!fileInfo.exists()) {
+        qWarning() << "File does not exist:" << logicalPath;
+        return {nullptr, QByteArrayLiteral("HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\n\r\n")};
+    }
+
+    const QString resolvedPath = fileInfo.absoluteFilePath();
+    const auto acceptedEncodings = parseAcceptEncoding(d->m_httpHeaders.value("accept-encoding"));
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+    // Attempt to interpret as a Qt resource
+    if (QResource res(resolvedPath); res.isValid()) {
+        KDSoapServerSocket::EncodingFormat resourceCompression = compressionToEncodingFormat(res.compressionAlgorithm());
+
+        // If resource is compressed and the format is accepted
+        if (resourceCompression != KDSoapServerSocket::EncodingFormat::identity && acceptedEncodings.testFlag(resourceCompression)) {
+            QBuffer *buffer = new QBuffer;
+            // Per https://doc.qt.io/archives/qt-5.13/qresource.html and
+            // https://doc.qt.io/archives/qt-5.13/qbytearray.html#qUncompress
+            // the resource has a 4 byte header which contains the big endian uncompressed size.
+            buffer->setData(reinterpret_cast<const char *>(res.data() + 4), res.size() - 4);
+
+            // Return compressed content with Content-Encoding
+            const auto metaEnum = QMetaEnum::fromType<KDSoapServerSocket::EncodingFormats>();
+            return {buffer, QByteArray::fromRawData(metaEnum.valueToKey(resourceCompression), ::qstrlen(metaEnum.valueToKey(resourceCompression)))};
+        }
+    }
+#endif
+
+    // At this point:
+    // - Either it's not a Qt resource, or
+    // - It's a resource but compression was not accepted
+
+    // RFC 9110 §8.4.4: "If the identity encoding is not acceptable, the origin server SHOULD send a 406 (Not Acceptable) response."
+    if (!acceptedEncodings.testFlag(KDSoapServerSocket::EncodingFormat::identity)) {
+        qWarning() << "Uncompressed file rejected by Accept-Encoding:" << resolvedPath;
+        return {nullptr, QByteArrayLiteral("HTTP/1.1 406 Not Acceptable\r\nContent-Length: 0\r\n\r\n")};
+    }
+
+    // Fall back to serving uncompressed version via QFile
+    QFile *file = new QFile(resolvedPath);
+
+    return {file, QByteArray()};
 }
 
 void KDSoapServerObjectInterface::writeHTTP(const QByteArray &httpReply)
@@ -210,6 +374,7 @@ void KDSoapServerObjectInterface::copyFrom(KDSoapServerObjectInterface *other)
     d->m_requestHeaders = other->d->m_requestHeaders;
     d->m_soapAction = other->d->m_soapAction;
     d->m_serverSocket = other->d->m_serverSocket;
+    d->m_httpHeaders = other->d->m_httpHeaders;
     d->m_requestVersion = other->d->m_requestVersion;
 }
 

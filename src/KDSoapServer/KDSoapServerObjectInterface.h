@@ -236,6 +236,37 @@ public:
     void sendDelayedResponse(const KDSoapDelayedResponseHandle &responseHandle, const KDSoapMessage &response);
 
     /**
+     * Resolves a logical file path to a QIODevice suitable for HTTP serving.
+     * This function uses QDir search paths to locate the file, and transparently handles
+     * both resource files (qrc:/) and on-disk files. If the resource is stored in a compressed
+     * format (e.g., zstd or deflate), and the client's Accept-Encoding header allows it,
+     * the compressed content will be served directly using a QBuffer.
+     * \param logicalPath the logical file path (can be relative; QDir search paths are used)
+     * \return A pair consisting of:
+     *         - a QIODevice pointer containing the file contents (or nullptr on error),
+     *         - the encoding used (for the Content-Encoding header), or an error message
+     *           if the device is null.
+     * If the encoding is "identity" (i.e., uncompressed), an empty QByteArray is returned
+     * for the second element.
+     * If no acceptable encoding is available (e.g., the client sent "identity;q=0" and
+     * the resource is only available uncompressed), the function returns nullptr and
+     * a ready-to-send HTTP 406 response.
+     * This function follows the semantics of RFC 9110 §12.5.3 (formerly RFC 7231 §5.3.4),
+     * which defines how to interpret the Accept-Encoding header. In particular:
+     * - The absence of Accept-Encoding implies "identity" is acceptable.
+     * - "identity;q=0" explicitly excludes uncompressed content.
+     * - "*" can exclude all unspecified encodings unless overridden.
+     *
+     * \note This function expands the input to an absolute path using QDir search paths,
+     * but it does not enforce security checks. Callers are responsible for verifying
+     * that the resolved file is safe to serve (e.g., preventing directory traversal,
+     * validating MIME type or allowed locations).
+     *
+     * \since 2.3
+     */
+    std::pair<QIODevice *, QByteArray> fileForEncoding(const QString &logicalPath);
+
+    /**
      * Low-level method, not needed for normal operations.
      * Call this method to write an HTTP reply back, e.g. in case of an error.
      * Example: writeHTTP("HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\n\r\n");
