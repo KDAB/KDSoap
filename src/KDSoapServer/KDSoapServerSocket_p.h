@@ -39,6 +39,19 @@ public:
     KDSoapServerSocket(KDSoapSocketList *owner, QObject *serverObject);
     ~KDSoapServerSocket();
 
+    // EncodingFormat represents recognized HTTP Content-Encoding values.
+    // See RFC 9110 §8.4.1: https://datatracker.ietf.org/doc/html/rfc9110#section-8.4.1
+    enum EncodingFormat
+    { // Note: deliberately lowercase for matching purposes
+        identity = 0x1, // No compression
+        gzip = 0x2, // Gzip - RFC 9110 §8.4.2.1 (uses RFC 1952 format), NOT supported by rcc, supported by QNetworkAccessManager
+        deflate = 0x4, // Zlib - RFC 9110 §8.4.2.2 (uses RFC 1950 format), supported by rcc, supported by QNetworkAccessManager
+        br = 0x8, // Brotli - RFC 7932, NOT supported by rcc, supported by QNetworkAccessManager if built with Brotli (Qt >= 5.10)
+        zstd = 0x10 // Zstd - RFC 8878, supported by rcc, NOT supported by QNetworkAccessManager
+    };
+    Q_DECLARE_FLAGS(EncodingFormats, EncodingFormat)
+    Q_FLAG(EncodingFormats)
+
     void setResponseDelayed();
     void sendDelayedReply(KDSoapServerObjectInterface *serverObjectInterface, const KDSoapMessage &replyMsg);
     void sendReply(KDSoapServerObjectInterface *serverObjectInterface, const KDSoapMessage &replyMsg);
@@ -50,7 +63,7 @@ private Q_SLOTS:
 
 private:
     void handleRequest(const QMap<QByteArray, QByteArray> &headers, const QByteArray &receivedData);
-    bool handleWsdlDownload();
+    bool handleWsdlDownload(KDSoapServerObjectInterface *serverObjectInterface);
     bool handleFileDownload(KDSoapServerObjectInterface *serverObjectInterface, const QString &path);
     void makeCall(KDSoapServerObjectInterface *serverObjectInterface, const KDSoapMessage &requestMsg, KDSoapMessage &replyMsg,
                   const KDSoapHeaders &requestHeaders, const QByteArray &soapAction, const QString &path, KDSoap::SoapVersion soapVersion);
@@ -78,5 +91,7 @@ private:
     QString m_messageNamespace;
     QString m_method;
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(KDSoapServerSocket::EncodingFormats)
 
 #endif // KDSOAPSERVERSOCKET_P_H

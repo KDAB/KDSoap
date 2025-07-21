@@ -1,0 +1,7 @@
+ <!DOCTYPE RCC><RCC version="1.0">
+ <qresource prefix="/">
+     <file compression-algorithm="none">file_no_compression.txt</file>
+     <file compression-algorithm="zlib">file_deflate.txt</file>
+     <!--file compression-algorithm="zstd">file_zstd.txt</file-->
+ </qresource>
+ </RCC>
