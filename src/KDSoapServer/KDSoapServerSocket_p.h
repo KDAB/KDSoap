@@ -11,7 +11,6 @@
 #define KDSOAPSERVERSOCKET_P_H
 
 #include <QtGlobal>
-#include <optional>
 
 #include <QTcpSocket> //may define QT_NO_SSL
 #ifndef QT_NO_SSL
@@ -52,7 +51,18 @@ private Q_SLOTS:
 private:
     void handleRequest(const QMap<QByteArray, QByteArray> &headers, const QByteArray &receivedData);
     bool handleWsdlDownload(KDSoapServerObjectInterface *serverObjectInterface);
-    std::optional<QVector<QPair<int, int>>> determineFileRanges(int fileSize);
+
+    struct FileRange {
+        enum class Type {
+            InvalidRange,
+            FullFile,
+            ValidRanges,
+        } type;
+        QVector<QPair<int,int>> ranges = {};
+    };
+    FileRange determineFileRanges(int fileSize) const;
+
+    void writeFileRanges(QIODevice *device, const QVector<QPair<int, int>> &requestedRanges, const QByteArray &contentType, const QByteArray &additionalHttpHeaders);
     bool handleFileDownload(KDSoapServerObjectInterface *serverObjectInterface, const QString &path);
     void makeCall(KDSoapServerObjectInterface *serverObjectInterface, const KDSoapMessage &requestMsg, KDSoapMessage &replyMsg,
                   const KDSoapHeaders &requestHeaders, const QByteArray &soapAction, const QString &path, KDSoap::SoapVersion soapVersion);
