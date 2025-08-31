@@ -200,43 +200,53 @@ void TestRangeRequests::testValidRanges()
         QCOMPARE(reply->readAll().size(), 0);
     }
 
-    reply->deleteLater();
+    delete reply;
 }
 
 void TestRangeRequests::testMultipleRanges_data()
 {
     QTest::addColumn<QString>("rangeHeader");
     QTest::addColumn<QList<QByteArray>>("expectedRanges");
-    QTest::addColumn<int>("expectedStatusCode");
+    QTest::addColumn<QList<int>>("expectedStatusCodes");
 
     QTest::newRow("separate_non-overlapping") << "bytes=100-199,300-399"
-                                              << QList<QByteArray> {expectedRange(100, 100), expectedRange(300, 100)} << 206;
+                                              << QList<QByteArray> {expectedRange(100, 100), expectedRange(300, 100)}
+                                              << QList<int> {206};
 
     QTest::newRow("adjacent_should_coalesce") << "bytes=400-499,500-599"
-                                              << QList<QByteArray> {expectedRange(400, 200)} << 206;
+                                              << QList<QByteArray> {expectedRange(400, 200)}
+                                              << QList<int> {206};
 
     QTest::newRow("overlapping_should_coalesce") << "bytes=600-700,650-750"
-                                                 << QList<QByteArray> {expectedRange(600, 151)} << 206;
+                                                 << QList<QByteArray> {expectedRange(600, 151)}
+                                                 << QList<int> {206};
 
-    QTest::newRow("gapped_should_stay_separate") << "bytes=800-850,860-900"
-                                                 << QList<QByteArray> {expectedRange(800, 51), expectedRange(860, 41)} << 206;
+    QTest::newRow("small_gap_may_coalesce") << "bytes=400-489,500-599"
+                                            << QList<QByteArray> {expectedRange(400, 200)}
+                                            << QList<int> {206};
 
-    // Range covers full file, status can be 200 or 206, let's pick 206 and accept both in test
+    QTest::newRow("gapped_should_stay_separate") << "bytes=700-750,860-900"
+                                                 << QList<QByteArray> {expectedRange(700, 51), expectedRange(860, 41)}
+                                                 << QList<int> {206};
+
     QTest::newRow("suffix_equal_to_file") << "bytes=-2048"
-                                          << QList<QByteArray> {expectedRange(0, 2048)} << 200;
+                                          << QList<QByteArray> {expectedRange(0, 2048)}
+                                          << QList<int> {200, 206};
 
     QTest::newRow("unsatisfiable_range") << "bytes=3000-4000"
-                                         << QList<QByteArray> {} << 416;
+                                         << QList<QByteArray> {}
+                                         << QList<int> {416};
 
     QTest::newRow("separate_non-overlapping_includes_start") << "bytes=0-100,200-299"
-                                                             << QList<QByteArray> {expectedRange(0, 100), expectedRange(200, 100)} << 206;
+                                                             << QList<QByteArray> {expectedRange(0, 100), expectedRange(200, 100)}
+                                                             << QList<int> {206};
 }
 
 void TestRangeRequests::testMultipleRanges()
 {
     QFETCH(QString, rangeHeader);
     QFETCH(QList<QByteArray>, expectedRanges);
-    QFETCH(int, expectedStatusCode);
+    QFETCH(QList<int>, expectedStatusCodes);
 
     QNetworkRequest request(testUrl);
     request.setRawHeader("Range", rangeHeader.toUtf8());
@@ -246,23 +256,14 @@ void TestRangeRequests::testMultipleRanges()
     QVERIFY(spy.wait());
 
     const int status = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    QVERIFY(expectedStatusCodes.contains(status));
 
-    if (expectedRanges.isEmpty()) {
-        QCOMPARE(status, 416);
-        QCOMPARE(status, expectedStatusCode);
-    } else if (expectedRanges.size() == 1) {
-        if (expectedStatusCode == 200 && status != 200) {
-            // Accept 200 or 206 when full content is returned for request
-            QCOMPARE(status, 206);
-        } else
-            QCOMPARE(status, expectedStatusCode);
+    if (expectedRanges.size() == 1) {
         const QByteArray contentTypeHeader = reply->header(QNetworkRequest::ContentTypeHeader).toByteArray();
         QVERIFY(!contentTypeHeader.startsWith("multipart/byteranges"));
         const QByteArray data = reply->readAll();
         QCOMPARE(data, expectedRanges.first());
-    } else {
-        QCOMPARE(status, 206);
-        QCOMPARE(status, expectedStatusCode);
+    } else if (expectedRanges.size() > 1) {
         const QByteArray contentTypeHeader = reply->header(QNetworkRequest::ContentTypeHeader).toByteArray();
         QVERIFY(contentTypeHeader.startsWith("multipart/byteranges; boundary="));
         const QByteArray boundary = contentTypeHeader.split('=').last();
@@ -294,7 +295,7 @@ void TestRangeRequests::testMultipleRanges()
         QVERIFY(body.mid(pos).startsWith(closingBoundary));
     }
 
-    reply->deleteLater();
+    delete reply;
 }
 
 void TestRangeRequests::testInvalidRanges_data()
@@ -334,7 +335,7 @@ void TestRangeRequests::testInvalidRanges()
 
     QCOMPARE(status, expectedStatus);
 
-    reply->deleteLater();
+    delete reply;
 }
 
 void TestRangeRequests::testPartiallyUnsatisfiableRanges()
@@ -352,7 +353,7 @@ void TestRangeRequests::testPartiallyUnsatisfiableRanges()
     const QByteArray data = reply->readAll();
     QCOMPARE(data, expectedRange(0, 100));
 
-    reply->deleteLater();
+    delete reply;
 }
 
 void TestRangeRequests::testUnsatisfiableRanges_data()
@@ -423,7 +424,7 @@ void TestRangeRequests::testRangeWithWhitespace()
             QVERIFY(body.contains(rangeData));
         }
     }
-    reply->deleteLater();
+    delete reply;
 }
 
 void TestRangeRequests::testAdjacentRangesCoalesced()
@@ -443,7 +444,7 @@ void TestRangeRequests::testAdjacentRangesCoalesced()
     // Should contain the combined range from 100-299 (length 200)
     QCOMPARE(content, expectedRange(100, 200));
 
-    reply->deleteLater();
+    delete reply;
 }
 
 #if 0
@@ -455,17 +456,17 @@ void TestRangeRequests::testHeadRequestReturnsHeaders()
     QSignalSpy spy(reply, &QNetworkReply::finished);
     QVERIFY(spy.wait());
 
-           // HEAD should return 200 OK (full file) with Content-Length but no body
+    // HEAD should return 200 OK (full file) with Content-Length but no body
     QCOMPARE(reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt(), 200);
 
     QVariant contentLength = reply->header(QNetworkRequest::ContentLengthHeader);
     QVERIFY(contentLength.isValid());
     QCOMPARE(contentLength.toInt(), testFileData.size());
 
-           // Should have no body on HEAD
+    // Should have no body on HEAD
     QCOMPARE(reply->readAll().size(), 0);
 
-    reply->deleteLater();
+    delete reply;
 }
 
 void TestRangeRequests::testHeadRequestWithRange()
@@ -478,7 +479,7 @@ void TestRangeRequests::testHeadRequestWithRange()
     QSignalSpy spy(reply, &QNetworkReply::finished);
     QVERIFY(spy.wait());
 
-           // Should return 206 Partial Content with Content-Length 100 but no body on HEAD
+    // Should return 206 Partial Content with Content-Length 100 but no body on HEAD
     int status = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     QVERIFY(status == 206 || status == 200);
 
@@ -486,10 +487,10 @@ void TestRangeRequests::testHeadRequestWithRange()
     QVERIFY(contentLength.isValid());
     QCOMPARE(contentLength.toInt(), 100);
 
-           // Should have no body on HEAD
+    // Should have no body on HEAD
     QCOMPARE(reply->readAll().size(), 0);
 
-    reply->deleteLater();
+    delete reply;
 }
 #endif
 
