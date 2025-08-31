@@ -52,13 +52,15 @@ private:
     void handleRequest(const QMap<QByteArray, QByteArray> &headers, const QByteArray &receivedData);
     bool handleWsdlDownload(KDSoapServerObjectInterface *serverObjectInterface);
 
-    struct FileRange {
-        enum class Type {
+    struct FileRange
+    {
+        enum class Type
+        {
             InvalidRange,
             FullFile,
             ValidRanges,
         } type;
-        QVector<QPair<int,int>> ranges = {};
+        QVector<QPair<int, int>> ranges = {};
     };
     FileRange determineFileRanges(int fileSize) const;
 
