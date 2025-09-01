@@ -92,13 +92,11 @@ private slots:
     void testRangeWithWhitespace_data();
     void testRangeWithWhitespace();
 
-#if 0
     // Test HEAD request without Range header returns correct headers, no body
     void testHeadRequestReturnsHeaders();
 
     // Test HEAD request with Range header returns headers, no body, status 200 or 206
     void testHeadRequestWithRange();
-#endif
 
 private:
     QByteArray expectedRange(int start, int length);
@@ -447,7 +445,7 @@ void TestRangeRequests::testAdjacentRangesCoalesced()
     delete reply;
 }
 
-#if 0
+
 void TestRangeRequests::testHeadRequestReturnsHeaders()
 {
     QNetworkRequest request(testUrl);
@@ -456,6 +454,7 @@ void TestRangeRequests::testHeadRequestReturnsHeaders()
     QSignalSpy spy(reply, &QNetworkReply::finished);
     QVERIFY(spy.wait());
 
+    QEXPECT_FAIL("", "HEAD requests not implemented by KDSoap", Abort);
     // HEAD should return 200 OK (full file) with Content-Length but no body
     QCOMPARE(reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt(), 200);
 
@@ -479,6 +478,7 @@ void TestRangeRequests::testHeadRequestWithRange()
     QSignalSpy spy(reply, &QNetworkReply::finished);
     QVERIFY(spy.wait());
 
+    QEXPECT_FAIL("", "HEAD requests not implemented by KDSoap", Abort);
     // Should return 206 Partial Content with Content-Length 100 but no body on HEAD
     int status = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     QVERIFY(status == 206 || status == 200);
@@ -492,7 +492,6 @@ void TestRangeRequests::testHeadRequestWithRange()
 
     delete reply;
 }
-#endif
 
 QTEST_MAIN(TestRangeRequests)
 #include "test_ranges.moc"
