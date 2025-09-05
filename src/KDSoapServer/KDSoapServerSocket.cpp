@@ -558,7 +558,7 @@ KDSoapServerSocket::FileRange KDSoapServerSocket::determineFileRanges(int fileSi
         }
     }
 
-    return {FileRange::Type::ValidRanges, requestedRanges};
+    return {FileRange::Type::ValidRanges, std::move(requestedRanges)};
 }
 
 void KDSoapServerSocket::writeFileRanges(QIODevice *device, const QVector<QPair<int, int>> &requestedRanges, const QByteArray &contentType, const QByteArray &additionalHttpHeaders)
