@@ -38,10 +38,11 @@ jobs:
         config:
           - qt_version: "5.15"
           - qt_version: "6.5.*"
+          - qt_version: "6.10.0" # Bump to latest freely
 
     steps:
       - name: Install Qt with options and default aqtversion
-        uses: jurplel/install-qt-action@v3
+        uses: jurplel/install-qt-action@v4
         with:
           aqtversion: null # use whatever the default is
           modules: ${{ matrix.config.modules }}
