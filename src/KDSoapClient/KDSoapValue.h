@@ -391,7 +391,9 @@ private:
     QVariant d; // for extensions
 };
 
+#ifndef QT_NO_JAVA_STYLE_ITERATORS
 typedef QListIterator<KDSoapValue> KDSoapValueListIterator;
+#endif
 
 // Q_DECLARE_METATYPE(KDSoapValueList)
 
