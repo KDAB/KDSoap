@@ -25,7 +25,7 @@ jobs:
         os:
           - ubuntu-22.04
           - windows-2022
-          - macos-13
+          - macos-latest
 
         build_type:
           - Debug
@@ -39,6 +39,12 @@ jobs:
           - qt_version: "5.15"
           - qt_version: "6.5.*"
           - qt_version: "6.10.0" # Bump to latest freely
+
+        exclude:
+          # There's no ARM binaries for Qt 5.15 via aqtinstall
+          - os: macos-latest
+            config:
+              qt_version: "5.15"
 
     steps:
       - name: Install Qt with options and default aqtversion
