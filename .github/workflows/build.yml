@@ -38,7 +38,7 @@ jobs:
         config:
           - qt_version: "5.15"
           - qt_version: "6.5.*"
-          - qt_version: "6.10.0" # Bump to latest freely
+          - qt_version: "6.11.0" # Bump to latest freely
 
         exclude:
           # There's no ARM binaries for Qt 5.15 via aqtinstall
@@ -47,11 +47,9 @@ jobs:
               qt_version: "5.15"
 
     steps:
-      - name: Install Qt with options and default aqtversion
+      - name: Install Qt
         uses: jurplel/install-qt-action@v4
         with:
-          aqtversion: null # use whatever the default is
-          modules: ${{ matrix.config.modules }}
           version: ${{ matrix.config.qt_version }}
           cache: true
 
