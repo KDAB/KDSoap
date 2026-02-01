@@ -1,0 +1,92 @@
+# SPDX-FileCopyrightText: 2023 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
+#
+# SPDX-License-Identifier: MIT
+
+name: CI (Sanitizers)
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: true
+      matrix:
+        os:
+          - ubuntu-24.04
+        preset: ['dev-asan']
+        include:
+          - preset: dev-asan
+            qt-flavor: asan
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+
+      - name: Fetch Git submodule
+        run: git submodule update --init --recursive
+
+      - name: Install QtGui dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            libgl1-mesa-dev \
+            libgstreamer-gl1.0-0 \
+            libpulse-dev \
+            libxcb-glx0 \
+            libxcb-icccm4 \
+            libxcb-image0 \
+            libxcb-keysyms1 \
+            libxcb-randr0 \
+            libxcb-render-util0 \
+            libxcb-render0 \
+            libxcb-shape0 \
+            libxcb-shm0 \
+            libxcb-sync1 \
+            libxcb-util1 \
+            libxcb-xfixes0 \
+            libxcb-xinerama0 \
+            libxcb1 \
+            libxkbcommon-dev \
+            libxkbcommon-x11-0 \
+            libxcb-xkb-dev \
+            libxcb-cursor0
+
+      - name: Checkout CI tools
+        uses: actions/checkout@v4
+        with:
+          repository: KDABLabs/ci-release-tools
+          path: ci-release-tools
+          ref: main
+
+      - name: Setup Sanitized Qt
+        run: |
+          ./ci-release-tools/src/build_qt/ci-download-qt.sh 6.11.0 qt-6.11-${{ matrix.qt-flavor }}
+          echo "~/Qt/qt-6.11-${{ matrix.qt-flavor }}/bin" >> $GITHUB_PATH
+          echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH:~/Qt/qt-6.11-${{ matrix.qt-flavor }}/lib/" >> $GITHUB_ENV
+
+      - name: Configure project
+        run: >
+          cmake --preset=${{ matrix.preset }}
+          -DKDSoap_QT6=ON
+          -DKDSoap_STATIC=ON
+          -DKDSoap_TESTS=ON
+          -DKDSoap_EXAMPLES=OFF
+          -DKDSoap_DOCS=OFF
+
+      - name: Build Project
+        run: cmake --build ./build-${{ matrix.preset }}
+
+      - name: Run tests on Linux (offscreen)
+        run: >
+          ctest --test-dir ./build-${{ matrix.preset }} --output-on-failure
+          -E 'kdsoap-test_wsdl_rpc'
+        env:
+          QT_QPA_PLATFORM: offscreen
+          LSAN_OPTIONS: detect_leaks=0 # for now
