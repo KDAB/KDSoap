@@ -112,7 +112,8 @@ private Q_SLOTS:
             QCOMPARE(QString::fromUtf8(server.receivedData().constData()), QString::fromUtf8(expectedRequestXml.constData()));
             const QByteArray headers = server.receivedHeaders();
             QVERIFY(headers.contains("SoapAction: \"http://www.kdab.com/AddEmployee\"")
-                    || headers.contains("soapaction: \"http://www.kdab.com/AddEmployee\"")); // Qt >= 6.8
+                    || headers.contains("soapaction: \"http://www.kdab.com/AddEmployee\"") // Qt > 6.8  && Qt < 6.10.2
+                    || headers.contains("Soapaction: \"http://www.kdab.com/AddEmployee\"")); // Qt >= 6.10.2
         }
 
         // Test utf8

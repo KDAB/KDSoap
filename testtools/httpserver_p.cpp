@@ -342,7 +342,7 @@ void HttpServerThread::run()
 
         m_headers = parseHeaders(m_receivedHeaders);
 
-        if (m_headers.value("Content-Length").toInt() > m_receivedData.size()) {
+        if (headerValue("Content-Length").toInt() > m_receivedData.size()) {
             // if (doDebug)
             //    qDebug() << "Storing partial request" << request;
             m_partialRequest = request;
@@ -351,20 +351,20 @@ void HttpServerThread::run()
 
         m_partialRequest.clear();
 
-        if (m_headers.value("_path").endsWith("terminateThread")) { // we're asked to exit
+        if (headerValue("_path").endsWith("terminateThread")) { // we're asked to exit
             break; // normal exit
         }
 
-        QList<QByteArray> contentTypes = m_headers.value("Content-Type").split(';');
+        QList<QByteArray> contentTypes = headerValue("Content-Type").split(';');
         if (contentTypes[0] == "text/xml") {
-            if (m_headers.value("SoapAction").isEmpty()) {
+            if (headerValue("SoapAction").isEmpty()) {
                 qDebug() << "ERROR: no SoapAction set for Soap 1.1";
                 break;
             }
 
-            if (!m_expectedSoapAction.isEmpty() && m_headers.value("SoapAction") != m_expectedSoapAction) {
+            if (!m_expectedSoapAction.isEmpty() && headerValue("SoapAction") != m_expectedSoapAction) {
                 qDebug("ERROR: Client sent SoapAction HTTP header (\"%s\") which does not match the expected (\"%s\")",
-                       m_headers.value("SoapAction").constData(), m_expectedSoapAction.constData());
+                       headerValue("SoapAction").constData(), m_expectedSoapAction.constData());
                 break;
             }
         } else if (m_clientSendsActionInHttpHeader
@@ -386,7 +386,7 @@ void HttpServerThread::run()
                 if (actionParts[0] != m_expectedSoapAction) {
                     qDebug("ERROR: The 'action' parameter which was sent in the HTTP Content-type header (\"%s\") "
                            "does not match the expected SOAP action: \"%s\"",
-                           m_headers.value("SoapAction").constData(), m_expectedSoapAction.constData());
+                           headerValue("SoapAction").constData(), m_expectedSoapAction.constData());
                     break;
                 }
             }
@@ -398,10 +398,7 @@ void HttpServerThread::run()
         // qDebug() << "data received:" << m_receivedData;
 
         if (m_features & BasicAuth) {
-            QByteArray authValue = m_headers.value("Authorization");
-            if (authValue.isEmpty()) {
-                authValue = m_headers.value("authorization"); // as sent by Qt-4.5
-            }
+            const QByteArray authValue = headerValue("Authorization");
             bool authOk = false;
             if (!authValue.isEmpty()) {
                 // qDebug() << "got authValue=" << authValue; // looks like "Basic <base64 of user:pass>"
