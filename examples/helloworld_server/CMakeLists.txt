@@ -8,7 +8,7 @@
 project(helloworld_server)
 
 set(KSWSDL2CPP_OPTION "-server")
-set(helloworld_server_SRCS main.cpp helloworld_serverobject.cpp)
+set(helloworld_server_SRCS main.cpp helloworld_serverobject.cpp helloworld_serverobject.h)
 
 kdsoap_generate_wsdl(helloworld_server_SRCS helloworld.wsdl)
 

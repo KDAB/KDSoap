@@ -7,7 +7,7 @@
 
 project(bank_gui)
 
-set(bank_gui_SRCS bank_gui.cpp mainwindow.cpp)
+set(bank_gui_SRCS bank_gui.cpp mainwindow.cpp mainwindow.h)
 
 kdsoap_generate_wsdl(bank_gui_SRCS BLZService.wsdl)
 
