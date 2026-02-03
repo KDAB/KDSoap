@@ -55,4 +55,3 @@ jobs:
           -E 'kdsoap-test_wsdl_rpc'
         env:
           QT_QPA_PLATFORM: offscreen
-          LSAN_OPTIONS: detect_leaks=0 # for now
