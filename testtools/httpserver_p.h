@@ -101,10 +101,54 @@ public:
         m_receivedHeaders.clear();
     }
 
+    constexpr bool isAsciiUpper(char32_t c) const
+    {
+        return c >= 'A' && c <= 'Z';
+    }
+
+    constexpr bool isAsciiLower(char32_t c) const
+    {
+        return c >= 'a' && c <= 'z';
+    }
+
+    constexpr char toAsciiLower(char ch) const
+    {
+        return isAsciiUpper(ch) ? ch - 'A' + 'a' : ch;
+    }
+
+    constexpr char toAsciiUpper(char ch) const
+    {
+        return isAsciiLower(ch) ? ch - 'a' + 'A' : ch;
+    }
+
+    const QByteArray convertToTitleCase(const QByteArray &value) const
+    {
+        QByteArray ba;
+        bool toUpperNext = true;
+        // In qt 6.10.2 Qt uses TitleCase
+        for (const char b : value) {
+            ba += toUpperNext ? toAsciiUpper(b) : toAsciiLower(b);
+            toUpperNext = b == '-';
+        }
+        return ba;
+    }
+
+    QByteArray headerValue(const QByteArray &value) const
+    {
+        QByteArray newHeaderValue = m_headers.value(value);
+        if (newHeaderValue.isEmpty()) {
+            newHeaderValue = m_headers.value(convertToTitleCase(value));
+            if (newHeaderValue.isEmpty()) {
+                newHeaderValue = m_headers.value(value.toLower());
+            }
+        }
+        return newHeaderValue;
+    }
+
     QByteArray header(const QByteArray &value) const
     {
         QMutexLocker lock(&m_mutex);
-        return m_headers.value(value, m_headers.value(value.toLower()));
+        return headerValue(value);
     }
 
     /**
