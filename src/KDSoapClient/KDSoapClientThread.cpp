@@ -121,3 +121,5 @@ void KDSoapThreadTask::slotAuthenticationRequired(QNetworkReply *reply, QAuthent
 {
     m_data->m_authentication.handleAuthenticationRequired(reply, authenticator);
 }
+
+#include "moc_KDSoapClientThread_p.cpp"

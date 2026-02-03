@@ -78,3 +78,5 @@ void KDSoapSocketList::resetTotalConnectionCount()
 {
     m_totalConnectionCount = 0;
 }
+
+#include "moc_KDSoapSocketList_p.cpp"
