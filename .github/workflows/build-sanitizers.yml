@@ -20,10 +20,12 @@ jobs:
       matrix:
         os:
           - ubuntu-24.04
-        preset: ['dev-asan']
+        preset: ['dev-asan', 'dev-tsan']
         include:
           - preset: dev-asan
             qt-flavor: asan
+          - preset: dev-tsan
+            qt-flavor: tsan
     steps:
       - name: Checkout sources
         uses: actions/checkout@v4
