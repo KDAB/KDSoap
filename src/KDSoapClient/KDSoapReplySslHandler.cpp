@@ -32,3 +32,5 @@ void KDSoapReplySslHandler::slotReplySslErrors(const QList<QSslError> &errors)
 }
 
 #endif
+
+#include "moc_KDSoapReplySslHandler_p.cpp"

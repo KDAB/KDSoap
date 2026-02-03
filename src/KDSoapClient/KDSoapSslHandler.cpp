@@ -42,3 +42,5 @@ void KDSoapSslHandler::handleSslErrors(QNetworkReply *reply, const QList<QSslErr
     Q_EMIT sslErrors(this, errors);
 }
 #endif
+
+#include "moc_KDSoapSslHandler.cpp"

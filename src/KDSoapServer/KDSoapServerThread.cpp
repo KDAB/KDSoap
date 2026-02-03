@@ -184,3 +184,5 @@ void KDSoapServerThreadImpl::resetTotalConnectionCountForServer(const KDSoapServ
         sockets->resetTotalConnectionCount();
     }
 }
+
+#include "moc_KDSoapServerThread_p.cpp"

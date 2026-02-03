@@ -111,3 +111,7 @@ void KDSoapUdpClientPrivate::receivedDatagram(const QByteArray &messageData, con
 
     emit q->receivedMessage(replyMessage, replyHeaders, senderAddress, senderPort);
 }
+
+#include "moc_KDSoapUdpClient.cpp"
+
+#include "moc_KDSoapUdpClient_p.cpp"
