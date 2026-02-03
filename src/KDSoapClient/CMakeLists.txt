@@ -7,25 +7,46 @@
 
 set(SOURCES
     KDSoapMessage.cpp
+    KDSoapMessage.h
     KDSoapClientInterface.cpp
+    KDSoapClientInterface.h
     KDSoapPendingCall.cpp
+    KDSoapPendingCall.h
     KDSoapPendingCallWatcher.cpp
+    KDSoapPendingCallWatcher.h
     KDSoapClientThread.cpp
+    KDSoapClientThread_p.h
     KDSoapValue.cpp
+    KDSoapValue.h
     KDSoapAuthentication.cpp
+    KDSoapAuthentication.h
     KDSoapNamespaceManager.cpp
+    KDSoapNamespaceManager.h
     KDSoapMessageWriter.cpp
+    KDSoapMessageWriter_p.h
     KDSoapMessageReader.cpp
+    KDSoapMessageReader_p.h
     KDDateTime.cpp
+    KDDateTime.h
     KDSoapNamespacePrefixes.cpp
+    KDSoapNamespacePrefixes_p.h
     KDSoapJob.cpp
+    KDSoapJob.h
     KDSoapSslHandler.cpp
+    KDSoapSslHandler.h
     KDSoapReplySslHandler.cpp
+    KDSoapReplySslHandler_p.h
     KDSoapFaultException.cpp
+    KDSoapFaultException.h
     KDSoapMessageAddressingProperties.cpp
+    KDSoapMessageAddressingProperties.h
     KDSoapEndpointReference.cpp
+    KDSoapEndpointReference.h
     KDQName.cpp
+    KDQName.h
     KDSoapUdpClient.cpp
+    KDSoapUdpClient.h
+    KDSoapUdpClient_p.h
 )
 
 add_library(

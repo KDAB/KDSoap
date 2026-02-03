@@ -9,17 +9,25 @@ include_directories(.. ../KDSoapClient)
 
 set(SOURCES
     KDSoapDelayedResponseHandle.cpp
+    KDSoapDelayedResponseHandle.h
     KDSoapServer.cpp
+    KDSoapServer.h
     KDSoapServerObjectInterface.cpp
+    KDSoapServerObjectInterface.h
     KDSoapServerSocket.cpp
+    KDSoapServerSocket_p.h
     KDSoapServerThread.cpp
-    KDSoapServerThread.cpp
-    KDSoapServerThread.cpp
+    KDSoapServerThread_p.h
     KDSoapServerAuthInterface.cpp
+    KDSoapServerAuthInterface.h
     KDSoapServerRawXMLInterface.cpp
+    KDSoapServerRawXMLInterface.h
     KDSoapServerCustomVerbRequestInterface.cpp
+    KDSoapServerCustomVerbRequestInterface.h
     KDSoapSocketList.cpp
+    KDSoapSocketList_p.h
     KDSoapThreadPool.cpp
+    KDSoapThreadPool.h
 )
 
 set_source_files_properties(KDSoapServerObjectInterface.cpp PROPERTIES SKIP_AUTOMOC TRUE)
