@@ -957,13 +957,13 @@ class DocServer : public KDSoapServer
 {
     Q_OBJECT
 public:
-    DocServer()
-        : KDSoapServer()
+    explicit DocServer(QObject *parent = nullptr)
+        : KDSoapServer(parent)
         , m_lastServerObject(0)
     {
         setPath(QLatin1String("/xml"));
     }
-    virtual QObject *createServerObject() override
+    QObject *createServerObject() override
     {
         m_lastServerObject = new DocServerObject;
         return m_lastServerObject;
@@ -975,7 +975,7 @@ public:
     }
 
 private:
-    DocServerObject *m_lastServerObject; // only for unittest purposes
+    DocServerObject *m_lastServerObject = nullptr; // only for unittest purposes
 };
 
 void WsdlDocumentTest::testServerAddEmployee()

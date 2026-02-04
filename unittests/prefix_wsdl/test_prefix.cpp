@@ -99,9 +99,8 @@ class GuestServer : public KDSoapServer
 {
     Q_OBJECT
 public:
-    GuestServer()
-        : KDSoapServer()
-        , m_lastServerObject(0)
+    explicit GuestServer(QObject *parent = nullptr)
+        : KDSoapServer(parent)
     {
         setPath(QLatin1String("/xml"));
     }
@@ -117,7 +116,7 @@ public:
     }
 
 private:
-    GuestServerObject *m_lastServerObject; // only for unittest purposes
+    GuestServerObject *m_lastServerObject = nullptr; // only for unittest purposes
 };
 
 class PrefixTest : public QObject

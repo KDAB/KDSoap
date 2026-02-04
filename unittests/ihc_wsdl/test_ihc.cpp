@@ -137,9 +137,8 @@ class IHCServer : public KDSoapServer
 {
     Q_OBJECT
 public:
-    IHCServer()
-        : KDSoapServer()
-        , m_lastServerObject(0)
+    explicit IHCServer(QObject *parent = nullptr)
+        : KDSoapServer(parent)
     {
     }
     virtual QObject *createServerObject() override
@@ -153,7 +152,7 @@ public:
     }
 
 private:
-    IHCServerObject *m_lastServerObject;
+    IHCServerObject *m_lastServerObject = nullptr;
 };
 
 class IHCResourceInteractionTest : public QObject

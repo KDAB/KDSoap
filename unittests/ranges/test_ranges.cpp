@@ -22,11 +22,12 @@ class FileServerObject final : public QObject, public KDSoapServerObjectInterfac
     Q_OBJECT
     Q_INTERFACES(KDSoapServerObjectInterface)
 public:
-    explicit FileServerObject(const QByteArray &data)
-        : m_data(data)
+    explicit FileServerObject(const QByteArray &data, QObject *parent = nullptr)
+        : QObject(parent)
+        , m_data(data)
     {
     }
-    ~FileServerObject() = default;
+    ~FileServerObject() override = default;
 
     QIODevice *processFileRequest(const QString &path, QByteArray &contentType) override
     {
@@ -46,8 +47,9 @@ class FileServer final : public KDSoapServer
 {
     Q_OBJECT
 public:
-    explicit FileServer(const QByteArray &data)
-        : m_data(data)
+    explicit FileServer(const QByteArray &data, QObject *parent = nullptr)
+        : KDSoapServer(parent)
+        , m_data(data)
     {
     }
     ~FileServer() = default;
