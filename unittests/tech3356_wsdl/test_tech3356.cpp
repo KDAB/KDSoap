@@ -44,13 +44,12 @@ class TransformMediaBindingServer : public KDSoapServer
 {
     Q_OBJECT
 public:
-    TransformMediaBindingServer()
-        : KDSoapServer()
-        , m_lastServerObject(0)
+    explicit TransformMediaBindingServer(QObject *parent = nullptr)
+        : KDSoapServer(parent)
     {
         setPath(QLatin1String("/xml"));
     }
-    virtual QObject *createServerObject() override
+    QObject *createServerObject() override
     {
         m_lastServerObject = new TransformMediaBindingServerObject;
         return m_lastServerObject;
@@ -62,7 +61,7 @@ public:
     }
 
 private:
-    TransformMediaBindingServerObject *m_lastServerObject; // only for unittest purposes
+    TransformMediaBindingServerObject *m_lastServerObject = nullptr; // only for unittest purposes
 };
 
 // Server side to perform job status request
@@ -105,13 +104,12 @@ class TransformMediaStatusBindingServer : public KDSoapServer
 {
     Q_OBJECT
 public:
-    TransformMediaStatusBindingServer()
-        : KDSoapServer()
-        , m_lastServerObject(0)
+    explicit TransformMediaStatusBindingServer(QObject *parent = nullptr)
+        : KDSoapServer(parent)
     {
         setPath(QLatin1String("/xml"));
     }
-    virtual QObject *createServerObject() override
+    QObject *createServerObject() override
     {
         m_lastServerObject = new TransformMediaStatusBindingServerObject;
         return m_lastServerObject;
@@ -123,7 +121,7 @@ public:
     }
 
 private:
-    TransformMediaStatusBindingServerObject *m_lastServerObject; // only for unittest purposes
+    TransformMediaStatusBindingServerObject *m_lastServerObject = nullptr; // only for unittest purposes
 };
 
 class Tech3356Test : public QObject

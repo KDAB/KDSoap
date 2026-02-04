@@ -37,7 +37,7 @@ class KDSoapServerSocket
     Q_OBJECT
 public:
     KDSoapServerSocket(KDSoapSocketList *owner, QObject *serverObject);
-    ~KDSoapServerSocket();
+    ~KDSoapServerSocket() override;
 
     void setResponseDelayed();
     void sendDelayedReply(KDSoapServerObjectInterface *serverObjectInterface, const KDSoapMessage &replyMsg);

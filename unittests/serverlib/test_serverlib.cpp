@@ -101,8 +101,8 @@ class CountryServerObject : public QObject,
     Q_INTERFACES(KDSoapServerRawXMLInterface)
     Q_INTERFACES(KDSoapServerCustomVerbRequestInterface)
 public:
-    CountryServerObject(bool auth, bool rawXML)
-        : QObject()
+    CountryServerObject(bool auth, bool rawXML, QObject *parent = nullptr)
+        : QObject(parent)
         , KDSoapServerObjectInterface()
         , m_requireAuth(auth)
         , m_useRawXML(rawXML)
@@ -265,14 +265,14 @@ class CountryServer : public KDSoapServer
 {
     Q_OBJECT
 public:
-    CountryServer()
-        : KDSoapServer()
+    explicit CountryServer(QObject *parent = nullptr)
+        : KDSoapServer(parent)
         , m_requireAuth(false)
         , m_useRawXML(false)
     {
     }
 
-    virtual QObject *createServerObject() override
+    QObject *createServerObject() override
     {
         return new CountryServerObject(m_requireAuth, m_useRawXML);
     }

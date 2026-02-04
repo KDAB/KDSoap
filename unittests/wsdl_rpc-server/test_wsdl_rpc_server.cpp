@@ -55,13 +55,12 @@ class HelloServer : public KDSoapServer
 {
     Q_OBJECT
 public:
-    HelloServer()
-        : KDSoapServer()
-        , m_lastServerObject(0)
+    explicit HelloServer(QObject *parent = nullptr)
+        : KDSoapServer(parent)
     {
         setPath(QLatin1String("/hello"));
     }
-    virtual QObject *createServerObject() override
+    QObject *createServerObject() override
     {
         m_lastServerObject = new HelloServerObject;
         return m_lastServerObject;
@@ -72,7 +71,7 @@ public:
     }
 
 private:
-    HelloServerObject *m_lastServerObject;
+    HelloServerObject *m_lastServerObject = nullptr;
 };
 
 class RpcExampleServerObject : public RpcExampleServerBase
@@ -173,13 +172,12 @@ class RpcExampleServer : public KDSoapServer
 {
     Q_OBJECT
 public:
-    RpcExampleServer()
-        : KDSoapServer()
-        , m_lastServerObject(0)
+    explicit RpcExampleServer(QObject *parent = nullptr)
+        : KDSoapServer(parent)
     {
         setPath(QLatin1String("/rpcexample"));
     }
-    virtual QObject *createServerObject() override
+    QObject *createServerObject() override
     {
         m_lastServerObject = new RpcExampleServerObject;
         return m_lastServerObject;
@@ -190,7 +188,7 @@ public:
     }
 
 private:
-    RpcExampleServerObject *m_lastServerObject;
+    RpcExampleServerObject *m_lastServerObject = nullptr;
 };
 
 class RPCServerTest : public QObject
