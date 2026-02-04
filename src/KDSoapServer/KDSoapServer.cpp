@@ -278,7 +278,7 @@ void KDSoapServer::suspend()
     if (d->m_threadPool) {
         d->m_threadPool->disconnectSockets(this);
     } else if (d->m_mainThreadSocketList) {
-        d->m_mainThreadSocketList->disconnectAll();
+        d->m_mainThreadSocketList->clear();
     }
 }
 

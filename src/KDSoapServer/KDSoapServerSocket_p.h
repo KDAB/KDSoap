@@ -42,8 +42,11 @@ public:
     void setResponseDelayed();
     void sendDelayedReply(KDSoapServerObjectInterface *serverObjectInterface, const KDSoapMessage &replyMsg);
     void sendReply(KDSoapServerObjectInterface *serverObjectInterface, const KDSoapMessage &replyMsg);
-Q_SIGNALS:
-    void socketDeleted(KDSoapServerSocket *);
+
+    void disconnectSocket();
+
+    bool disconnectedByServer() const;
+
 
 private Q_SLOTS:
     void slotReadyRead();
@@ -79,6 +82,7 @@ private:
     bool m_doDebug;
     bool m_socketEnabled;
     bool m_receivedData;
+    bool m_disconnectedByServer = false;
 
     // Current request being assembled
     bool m_useRawXML;
