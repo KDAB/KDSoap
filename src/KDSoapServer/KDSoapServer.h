@@ -35,7 +35,7 @@ public:
      *
      * By default it will not use threads to handle requests, see setThreadPool for that.
      */
-    explicit KDSoapServer(QObject *parent = 0);
+    explicit KDSoapServer(QObject *parent = nullptr);
 
     /**
      * Destructor.

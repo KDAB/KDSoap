@@ -51,7 +51,7 @@ class KDSoapServerThread : public QThread
 {
     Q_OBJECT
 public:
-    explicit KDSoapServerThread(QObject *parent = 0);
+    explicit KDSoapServerThread(QObject *parent = nullptr);
     ~KDSoapServerThread();
 
     void startThread();
@@ -66,7 +66,7 @@ public:
     void handleIncomingConnection(int socketDescriptor, KDSoapServer *server);
 
 protected:
-    virtual void run() override;
+    void run() override;
 
 private:
     void start(); // use startThread instead

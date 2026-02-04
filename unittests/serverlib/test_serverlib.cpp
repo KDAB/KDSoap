@@ -119,7 +119,7 @@ public:
         s_serverObjects.removeOne(this);
     }
 
-    virtual void processRequest(const KDSoapMessage &request, KDSoapMessage &response, const QByteArray &soapAction) override;
+    void processRequest(const KDSoapMessage &request, KDSoapMessage &response, const QByteArray &soapAction) override;
 
     virtual QIODevice *processFileRequest(const QString &path, QByteArray &contentType) override
     {
