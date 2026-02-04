@@ -21,6 +21,7 @@ KDSoapSocketList::KDSoapSocketList(KDSoapServer *server)
 
 KDSoapSocketList::~KDSoapSocketList()
 {
+    clear();
 }
 
 KDSoapServerSocket *KDSoapSocketList::handleIncomingConnection(int socketDescriptor)
@@ -39,16 +40,14 @@ KDSoapServerSocket *KDSoapSocketList::handleIncomingConnection(int socketDescrip
     }
 #endif
 
-    QObject::connect(socket, &KDSoapServerSocket::disconnected, socket, &KDSoapServerSocket::deleteLater);
+    QObject::connect(socket, &KDSoapServerSocket::disconnected, this, [socket, this]() {
+        if (!socket->disconnectedByServer()) {
+            m_sockets.remove(socket);
+            socket->deleteLater();
+        }
+    });
     m_sockets.insert(socket);
-    connect(socket, &KDSoapServerSocket::socketDeleted, this, &KDSoapSocketList::socketDeleted);
     return socket;
-}
-
-void KDSoapSocketList::socketDeleted(KDSoapServerSocket *socket)
-{
-    // qDebug() << Q_FUNC_INFO;
-    m_sockets.remove(socket);
 }
 
 int KDSoapSocketList::socketCount() const
@@ -56,11 +55,13 @@ int KDSoapSocketList::socketCount() const
     return m_sockets.count();
 }
 
-void KDSoapSocketList::disconnectAll()
+void KDSoapSocketList::clear()
 {
     for (KDSoapServerSocket *socket : std::as_const(m_sockets)) {
-        socket->close(); // will disconnect
+        socket->disconnectSocket();
+        socket->deleteLater();
     }
+    m_sockets.clear();
 }
 
 int KDSoapSocketList::totalConnectionCount() const

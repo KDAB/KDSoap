@@ -29,7 +29,7 @@ public:
     KDSoapServerSocket *handleIncomingConnection(int socketDescriptor);
 
     int socketCount() const;
-    void disconnectAll();
+    void clear();
 
     int totalConnectionCount() const;
     void increaseConnectionCount();
@@ -39,9 +39,6 @@ public:
     {
         return m_server;
     }
-
-public Q_SLOTS:
-    void socketDeleted(KDSoapServerSocket *socket);
 
 private:
     KDSoapServer *m_server;

@@ -164,7 +164,7 @@ void KDSoapServerThreadImpl::disconnectSocketsForServer(KDSoapServer *server, QS
     QMutexLocker lock(&m_socketListMutex);
     KDSoapSocketList *sockets = m_socketLists.value(server);
     if (sockets) {
-        sockets->disconnectAll();
+        sockets->clear();
     }
     semaphore->release();
 }

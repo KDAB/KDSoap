@@ -53,10 +53,18 @@ KDSoapServerSocket::KDSoapServerSocket(KDSoapSocketList *owner, QObject *serverO
 // The socket is deleted when it emits disconnected() (see KDSoapSocketList::handleIncomingConnection).
 KDSoapServerSocket::~KDSoapServerSocket()
 {
-    // same as m_owner->socketDeleted, but safe in case m_owner is deleted first
-    emit socketDeleted(this);
-
     delete m_serverObject;
+}
+
+bool KDSoapServerSocket::disconnectedByServer() const
+{
+    return m_disconnectedByServer;
+}
+
+void KDSoapServerSocket::disconnectSocket()
+{
+    m_disconnectedByServer = true;
+    close();
 }
 
 typedef QMap<QByteArray, QByteArray> HeadersMap;
