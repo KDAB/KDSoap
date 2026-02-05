@@ -776,8 +776,9 @@ class MyJob : public QObject
 {
     Q_OBJECT
 public:
-    MyJob(const KDSoapDelayedResponseHandle &handle)
-        : m_handle(handle)
+    MyJob(const KDSoapDelayedResponseHandle &handle, QObject *parent = nullptr)
+        : QObject(parent)
+        , m_handle(handle)
     {
         QTimer::singleShot(200, this, &MyJob::slotDone);
     }
@@ -791,6 +792,7 @@ private Q_SLOTS:
     void slotDone()
     {
         emit done(this);
+        deleteLater();
     }
 
 private:
@@ -858,7 +860,7 @@ public:
         m_lastMethodCalled = QLatin1String("delayedAddEmployee");
 
         KDSoapDelayedResponseHandle handle = prepareDelayedResponse();
-        MyJob *job = new MyJob(handle);
+        MyJob *job = new MyJob(handle, this);
         connect(job, &MyJob::done, this, &DocServerObject::slotDelayedResponse);
         return "THIS VALUE IS IGNORED";
     }
