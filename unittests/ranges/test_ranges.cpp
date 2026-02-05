@@ -34,7 +34,7 @@ public:
         Q_ASSERT(!path.startsWith(".."));
         if (path == QLatin1String("/path/to/file_download.txt")) {
             contentType = "text/plain";
-            return new QBuffer(new QByteArray(m_data)); // KDSoap will delete this
+            return new QBuffer(&m_data); // KDSoap will delete this
         }
         return nullptr;
     }
