@@ -57,7 +57,7 @@ jobs:
           cache: true
 
       - name: Checkout sources
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Fetch Git submodule
         run: git submodule update --init --recursive
