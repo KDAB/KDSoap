@@ -54,7 +54,7 @@ jobs:
           echo ${{ join(matrix.config.apt_pgks, ' ') }} | xargs sudo apt install -y
 
       - name: Checkout sources
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Fetch Git submodules
         run: git submodule update --init --recursive
