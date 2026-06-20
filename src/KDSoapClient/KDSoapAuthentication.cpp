@@ -28,6 +28,7 @@ public:
     bool useWSUsernameToken = false;
     QDateTime overrideWSUsernameCreatedTime;
     QByteArray overrideWSUsernameNonce;
+    bool omitNonceCreatedFromUsernameToken = false;
 };
 
 KDSoapAuthentication::KDSoapAuthentication()
@@ -103,6 +104,16 @@ bool KDSoapAuthentication::useWSUsernameToken() const
     return d->useWSUsernameToken;
 }
 
+void KDSoapAuthentication::setOmitNonceCreatedFromUsernameToken(bool omitNonceCreatedFromUsernameToken)
+{
+    d->omitNonceCreatedFromUsernameToken = omitNonceCreatedFromUsernameToken;
+}
+
+bool KDSoapAuthentication::omitNonceCreatedFromUsernameToken() const
+{
+    return d->omitNonceCreatedFromUsernameToken;
+}
+
 QDateTime KDSoapAuthentication::overrideWSUsernameCreatedTime() const
 {
     return d->overrideWSUsernameCreatedTime;
@@ -161,13 +172,18 @@ void KDSoapAuthentication::writeWSUsernameTokenHeader(QXmlStreamWriter &writer) 
 
     writer.writeStartElement(securityExtentionNS, QLatin1String("Security"));
     writer.writeStartElement(securityExtentionNS, QLatin1String("UsernameToken"));
+    if (!d->omitNonceCreatedFromUsernameToken) {
+        writer.writeStartElement(securityExtentionNS, QLatin1String("Nonce"));
+        writer.writeCharacters(QString::fromLatin1(nonce.toBase64().constData()));
+        writer.writeEndElement();
 
-    writer.writeStartElement(securityExtentionNS, QLatin1String("Nonce"));
-    writer.writeCharacters(QString::fromLatin1(nonce.toBase64().constData()));
-    writer.writeEndElement();
+        writer.writeStartElement(securityUtilityNS, QLatin1String("Created"));
+        writer.writeCharacters(timestamp);
+        writer.writeEndElement();
+    }
 
-    writer.writeStartElement(securityUtilityNS, QLatin1String("Created"));
-    writer.writeCharacters(timestamp);
+    writer.writeStartElement(securityExtentionNS, QLatin1String("Username"));
+    writer.writeCharacters(d->user);
     writer.writeEndElement();
 
     writer.writeStartElement(securityExtentionNS, QLatin1String("Password"));
@@ -182,10 +198,6 @@ void KDSoapAuthentication::writeWSUsernameTokenHeader(QXmlStreamWriter &writer) 
                               QLatin1String("http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText"));
         writer.writeCharacters(d->password);
     }
-    writer.writeEndElement();
-
-    writer.writeStartElement(securityExtentionNS, QLatin1String("Username"));
-    writer.writeCharacters(d->user);
     writer.writeEndElement();
 
     writer.writeEndElement();
