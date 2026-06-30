@@ -46,6 +46,10 @@ jobs:
           - os: macos-latest
             config:
               qt_version: "5.15"
+          # ld: framework 'AGL' not found (QTBUG-137687)
+          - os: macos-latest
+            config:
+              qt_version: "6.5.*"
 
     steps:
       - name: Install Qt with options and default aqtversion
