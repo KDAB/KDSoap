@@ -1,0 +1,43 @@
+# This file is part of the KD Soap project.
+#
+# SPDX-FileCopyrightText: 2026 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
+#
+# SPDX-License-Identifier: MIT
+#
+
+# Indirect leak of 3 byte(s) in 1 object(s) allocated from:
+#    #0 0x7f520430954b in realloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:81
+#    #1 0x7b51f9f953c7  (/lib/x86_64-linux-gnu/libcrypto.so.3+0x26c3c7) (BuildId: aa3dafdd9b54db25d7c9f5335b73ca5fcb293b7f)
+#    #2 0x7b51f9f7c8cf  (/lib/x86_64-linux-gnu/libcrypto.so.3+0x2538cf) (BuildId: aa3dafdd9b54db25d7c9f5335b73ca5fcb293b7f)
+#    #3 0x7b51f9f7c5aa  (/lib/x86_64-linux-gnu/libcrypto.so.3+0x2535aa) (BuildId: aa3dafdd9b54db25d7c9f5335b73ca5fcb293b7f)
+#    #4 0x7b51f9f950f6  (/lib/x86_64-linux-gnu/libcrypto.so.3+0x26c0f6) (BuildId: aa3dafdd9b54db25d7c9f5335b73ca5fcb293b7f)
+#    #5 0x7b51f9f7c6e2  (/lib/x86_64-linux-gnu/libcrypto.so.3+0x2536e2) (BuildId: aa3dafdd9b54db25d7c9f5335b73ca5fcb293b7f)
+#    #6 0x7b51f9f7ca56  (/lib/x86_64-linux-gnu/libcrypto.so.3+0x253a56) (BuildId: aa3dafdd9b54db25d7c9f5335b73ca5fcb293b7f)
+#    #7 0x7b51f9f10e45 in OSSL_DECODER_do_all_provided (/lib/x86_64-linux-gnu/libcrypto.so.3+0x1e7e45) (BuildId: aa3dafdd9b54db25d7c9f5335b73ca5fcb293b7f)
+#    #8 0x7b51f9f12349 in OSSL_DECODER_CTX_new_for_pkey (/lib/x86_64-linux-gnu/libcrypto.so.3+0x1e9349) (BuildId: aa3dafdd9b54db25d7c9f5335b73ca5fcb293b7f)
+#    #9 0x7b51fa107430  (/lib/x86_64-linux-gnu/libcrypto.so.3+0x3de430) (BuildId: aa3dafdd9b54db25d7c9f5335b73ca5fcb293b7f)
+#    #10 0x7b51f9e21afa  (/lib/x86_64-linux-gnu/libcrypto.so.3+0xf8afa) (BuildId: aa3dafdd9b54db25d7c9f5335b73ca5fcb293b7f)
+#    #11 0x7b51f9e228a1  (/lib/x86_64-linux-gnu/libcrypto.so.3+0xf98a1) (BuildId: aa3dafdd9b54db25d7c9f5335b73ca5fcb293b7f)
+#    #12 0x7b51f9e21ee5  (/lib/x86_64-linux-gnu/libcrypto.so.3+0xf8ee5) (BuildId: aa3dafdd9b54db25d7c9f5335b73ca5fcb293b7f)
+#    #13 0x7b51f9e228a1  (/lib/x86_64-linux-gnu/libcrypto.so.3+0xf98a1) (BuildId: aa3dafdd9b54db25d7c9f5335b73ca5fcb293b7f)
+#    #14 0x7b51f9e21ee5  (/lib/x86_64-linux-gnu/libcrypto.so.3+0xf8ee5) (BuildId: aa3dafdd9b54db25d7c9f5335b73ca5fcb293b7f)
+#    #15 0x7b51f9e2311f in ASN1_item_d2i_ex (/lib/x86_64-linux-gnu/libcrypto.so.3+0xfa11f) (BuildId: aa3dafdd9b54db25d7c9f5335b73ca5fcb293b7f)
+#    #16 0x7b51fda94205 in q_d2i_X509(x509_st**, unsigned char const**, long) /qt6_ci/qtbase/src/plugins/tls/openssl/qsslsocket_openssl_symbols.cpp:228
+#    #17 0x7b51fda1a6d9 in QTlsPrivate::X509CertificateOpenSSL::certificatesFromPem(QByteArray const&, int) /qt6_ci/qtbase/src/plugins/tls/openssl/qx509_openssl.cpp:749
+#    #18 0x7f52032c41ed in QSslCertificate::fromData(QByteArray const&, QSsl::EncodingFormat) /qt6_ci/qtbase/src/network/ssl/qsslcertificate.cpp:753
+#    #19 0x7f52032d4a54 in QSslCertificate::fromFile(QString const&, QSsl::EncodingFormat) /qt6_ci/qtbase/src/network/ssl/qsslcertificate.cpp:776
+#    #20 0x7b51fd9e4091 in QTlsPrivate::systemCaCertificates() /qt6_ci/qtbase/src/plugins/tls/openssl/qtlsbackend_openssl.cpp:435
+#    #21 0x7b51fd9e8688 in QTlsBackendOpenSSL::systemCaCertificates() const /qt6_ci/qtbase/src/plugins/tls/openssl/qtlsbackend_openssl.cpp:450
+#    #22 0x7b51fd9e8688 in QTlsBackendOpenSSL::ensureCiphersAndCertsLoaded() const /qt6_ci/qtbase/src/plugins/tls/openssl/qtlsbackend_openssl.cpp:237
+#    #23 0x7b51fd9e8cdc in QTlsBackendOpenSSL::ensureInitialized() const /qt6_ci/qtbase/src/plugins/tls/openssl/qtlsbackend_openssl.cpp:189
+#    #24 0x7f5203694c95 in QSslSocketPrivate::ensureInitialized() /qt6_ci/qtbase/src/network/ssl/qsslsocket.cpp:2035
+#    #25 0x7f52032c0f2d in QSslCertificatePrivate::QSslCertificatePrivate() /qt6_ci/qtbase/src/network/ssl/qsslcertificate.cpp:126
+#    #26 0x7f52032c16bc in QSslCertificate::QSslCertificate(QByteArray const&, QSsl::EncodingFormat) /qt6_ci/qtbase/src/network/ssl/qsslcertificate.cpp:177
+#    #27 0x7f520363ac9c in QSslConfigurationPrivate::QSslConfigurationPrivate() /qt6_ci/qtbase/src/network/ssl/qsslconfiguration_p.h:64
+#    #28 0x7f520363ac9c in QSslConfiguration::QSslConfiguration() /qt6_ci/qtbase/src/network/ssl/qsslconfiguration.cpp:122
+#    #29 0x7f5203b0588e in KDSoapClientInterfacePrivate::KDSoapClientInterfacePrivate() KDSoap/src/KDSoapClient/KDSoapClientInterface.cpp:57
+#    #30 0x7f5203b03e3a in KDSoapClientInterface::KDSoapClientInterface(QString const&, QString const&) KDSoap/src/KDSoapClient/KDSoapClientInterface.cpp:29
+#    #31 0x55dd5687f53f in SforceService::clientInterface() const KDSoap/build-dev-asan/unittests/salesforce_wsdl/wsdl_salesforce-partner.cpp:18748
+# Introduced in Qt 6.12 / 358bdc0b90b
+
+leak:q_OSSL_PROVIDER_load
