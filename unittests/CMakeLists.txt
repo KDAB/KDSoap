@@ -28,6 +28,8 @@ include(${CMAKE_BINARY_DIR}/KDSoap/KDSoapMacros.cmake)
 
 remove_definitions(-DQT_NO_CAST_FROM_ASCII)
 
+set(LSAN_SUPPRESSIONS_FILE "${CMAKE_CURRENT_SOURCE_DIR}/lsan.sup")
+
 # Add a unittest named "kdsoap-name" for the specified source file name.cpp
 macro(add_unittest _source)
     set(_test ${_source})
@@ -45,6 +47,7 @@ macro(add_unittest _source)
     add_executable(${_name} ${_source} ${_test})
 
     add_test(NAME kdsoap-${_name} COMMAND ${_name})
+    set_tests_properties(kdsoap-${_name} PROPERTIES ENVIRONMENT "LSAN_OPTIONS=suppressions=${LSAN_SUPPRESSIONS_FILE}")
     target_link_libraries(${_name} ${QT_LIBRARIES} kdsoap testtools)
     if(EXTRA_LIBS)
         target_link_libraries(${_name} ${EXTRA_LIBS})
