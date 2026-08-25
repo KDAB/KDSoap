@@ -39,16 +39,24 @@ jobs:
         config:
           - qt_version: "5.15"
           - qt_version: "6.5.*"
+          - qt_version: "6.9.*"
 
         exclude:
           # There's no ARM binaries for Qt 5.15 via aqtinstall
           - os: macos-latest
             config:
               qt_version: "5.15"
-          # ld: framework 'AGL' not found (QTBUG-137687)
+          # ld: framework 'AGL' not found (QTBUG-137687), fixed in Qt 6.9.2
           - os: macos-latest
             config:
               qt_version: "6.5.*"
+          # 6.9 is only here to cover macOS, the others build 6.5
+          - os: ubuntu-22.04
+            config:
+              qt_version: "6.9.*"
+          - os: windows-2022
+            config:
+              qt_version: "6.9.*"
 
     steps:
       - name: Install Qt with options and default aqtversion
