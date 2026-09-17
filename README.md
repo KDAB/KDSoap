@@ -1,6 +1,6 @@
 <div>
-<img src="images/kdsoap-trademark.png" width="68%"/>
-<img src="images/kdsoap256.png" height="200px"/>
+<img src="images/kdsoap-trademark.png" alt="KDSoap" width="68%"/>
+<img src="images/kdsoap256.png" alt="KDSoap logo" height="200px"/>
 </div>
 
 # Introduction
@@ -33,7 +33,7 @@ Learn more at our:
 
 * See our official home page: <https://www.kdab.com/development-resources/qt-tools/kd-soap>
 * Visit us on GitHub: <https://github.com/KDAB/KDSoap>
-* Email info@kdab.com with questions about this product.
+* Email <info@kdab.com> with questions about this product.
 
 Stay up-to-date with KDAB product announcements:
 
