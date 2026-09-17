@@ -44,13 +44,10 @@ repos:
     exclude: (.py.cmake|Doxyfile.cmake)
   - id: cmake-format
     exclude: (.py.cmake|Doxyfile.cmake)
-- repo: https://github.com/markdownlint/markdownlint
-  rev: v0.18.1
+- repo: https://github.com/DavidAnson/markdownlint-cli2
+  rev: v0.23.2
   hooks:
-  - id: markdownlint
-    entry: mdl
-    language: ruby
-    files: \.(md|mdown|markdown)$
+  - id: markdownlint-cli2
 - repo: https://github.com/fsfe/reuse-tool
   rev: v6.2.0
   hooks:
