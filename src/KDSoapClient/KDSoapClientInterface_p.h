@@ -51,6 +51,7 @@ public:
     KDSoapSslHandler *m_sslHandler;
 #endif
     int m_timeout = 30 * 60 * 1000; // 30 minutes, as documented
+    int m_transferTimeout = 0; // 0 = no transfer timeout (idle/inactivity), as documented
     bool m_ignoreSslErrors = false;
     bool m_sendSoapActionInHttpHeader = true;
     bool m_sendSoapActionInWsAddressingHeader = false;

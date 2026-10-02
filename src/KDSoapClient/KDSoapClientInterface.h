@@ -336,6 +336,32 @@ public:
     void setTimeout(int msecs);
 
     /**
+     * Returns the transfer timeout used for requests, in milliseconds.
+     * A value of 0 (the default) means no transfer timeout.
+     * \since 2.4
+     */
+    int transferTimeout() const;
+
+    /**
+     * Sets the transfer timeout used for future requests, in milliseconds.
+     *
+     * Unlike setTimeout(), which limits the total duration of a call, the
+     * transfer timeout aborts the request only if no data is transferred
+     * within the given interval (it is reset on every progress event). This
+     * is the appropriate timeout for large or streamed transfers, where the
+     * total duration is legitimately long but a stalled connection should
+     * still be detected quickly.
+     *
+     * It is forwarded to QNetworkRequest::setTransferTimeout() and therefore
+     * requires Qt 5.15 or later; on older Qt versions the call has no effect.
+     *
+     * A value of 0 (the default) disables the transfer timeout; negative
+     * values are treated the same as 0.
+     * \since 2.4
+     */
+    void setTransferTimeout(int msecs);
+
+    /**
      * Sets the message addressing properties that will be written
      * in the header for all future messages.
      * This method is useful for client code generated from WSDL.

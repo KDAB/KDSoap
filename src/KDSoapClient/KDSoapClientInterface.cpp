@@ -130,6 +130,17 @@ QNetworkRequest KDSoapClientInterfacePrivate::prepareRequest(const QString &meth
     }
 #endif
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+    // Inactivity (transfer) timeout: aborts the request if no data is
+    // transferred within the interval; reset on every progress event. Suited
+    // to large/streamed transfers where the total duration is legitimately
+    // long. 0 = disabled (Qt default). setTimeout() above handles the total
+    // duration instead.
+    if (m_transferTimeout > 0) {
+        request.setTransferTimeout(m_transferTimeout);
+    }
+#endif
+
     return request;
 }
 
@@ -350,6 +361,16 @@ int KDSoapClientInterface::timeout() const
 void KDSoapClientInterface::setTimeout(int msecs)
 {
     d->m_timeout = msecs;
+}
+
+int KDSoapClientInterface::transferTimeout() const
+{
+    return d->m_transferTimeout;
+}
+
+void KDSoapClientInterface::setTransferTimeout(int msecs)
+{
+    d->m_transferTimeout = msecs;
 }
 
 void KDSoapClientInterface::setMessageAddressingProperties(const KDSoapMessageAddressingProperties &map)
